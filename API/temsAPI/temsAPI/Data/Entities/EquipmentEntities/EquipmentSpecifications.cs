@@ -5,11 +5,12 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace temsAPI.Data.Entities
+namespace temsAPI.Data.Entities.EquipmentEntities
 {
     public class EquipmentSpecifications
     {
         [Key]
+        public string EquipmentTypeID { get; set; }
         public EquipmentType EquipmentType { get; set; }
 
         [ForeignKey("PropertyID")]

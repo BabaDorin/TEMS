@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace temsAPI.Data.Entities
+namespace temsAPI.Data.Entities.EquipmentEntities
 {
     public class Property
     {
@@ -13,7 +13,9 @@ namespace temsAPI.Data.Entities
         public string ID { get; set; }
 
         public string Name { get; set; }
-        
+
+        public string DisplayName { get; set; }
+
         [ForeignKey("DataTypeID")]
         public DataType DataType { get; set; }
         public string DataTypeID { get; set; }

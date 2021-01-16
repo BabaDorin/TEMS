@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using temsAPI.Data.Entities;
+using temsAPI.Data.Entities.EquipmentEntities;
 
 namespace temsAPI.Contracts
 {
@@ -15,6 +15,7 @@ namespace temsAPI.Contracts
         IGenericRepository<Property> Properties { get; }
         IGenericRepository<DataType> DataType { get; }
         IGenericRepository<PropertyEquipmentTypeAssociation> PropertyEquipmentTypeAssociations { get; }
+        IGenericRepository<EquipmentDefinitionKinship> EquipmentDefinitionKinships { get; }
 
         Task Save();
     }

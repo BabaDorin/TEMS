@@ -12,13 +12,17 @@ namespace temsAPI.Data.Entities.EquipmentEntities
     public class EquipmentSpecifications
     {
         [Key]
-        public string EquipmentTypeID { get; set; }
+        public string ID { get; set; }
+
+        [ForeignKey("EquipmentTypeID")]
         public EquipmentType EquipmentType { get; set; }
+        public string EquipmentTypeID { get; set; }
+
 
         [ForeignKey("PropertyID")]
         public Property Property { get; set; }
         public string PropertyID { get; set; }
 
-        public string Value { get; set; }
+        public string? Value { get; set; }
     }
 }

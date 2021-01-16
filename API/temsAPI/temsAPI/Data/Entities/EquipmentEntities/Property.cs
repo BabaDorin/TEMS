@@ -14,10 +14,10 @@ namespace temsAPI.Data.Entities.EquipmentEntities
 
         public string Name { get; set; }
 
-        public string DisplayName { get; set; }
+        public string? DisplayName { get; set; }
 
         [ForeignKey("DataTypeID")]
         public DataType DataType { get; set; }
-        public string DataTypeID { get; set; }
+        public string? DataTypeID { get; set; }
     }
 }

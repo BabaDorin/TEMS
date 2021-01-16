@@ -4,14 +4,15 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace temsAPI.Data.Entities.UserEntities
+namespace temsAPI.Data.Entities.OtherEntities
 {
-    public class Privilege
+    public class Room
     {
         [Key]
         public string ID { get; set; }
 
-        public string? Identifier { get; set; }
+        public string Identifier { get; set; }
         public string? Description { get; set; }
+        public int? Floor { get; set; }
     }
 }

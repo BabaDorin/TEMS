@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using temsAPI.Data.Entities.EquipmentEntities;
+using temsAPI.Data.Entities.UserEntities;
 
 namespace temsAPI.Data
 {
@@ -23,5 +24,9 @@ namespace temsAPI.Data
         public DbSet<EquipmentDefinition> EquipmentDefinitions { get; set; }
         public DbSet<Equipment> Equipments { get; set; }
         public DbSet<EquipmentDefinitionKinship> EquipmentDefinitionKinships { get; set; }
+
+        // User related entities
+        public DbSet<Privilege> Privileges { get; set; }
+        public DbSet<RolePrivileges> RolePrivileges { get; set; }
     }
 }

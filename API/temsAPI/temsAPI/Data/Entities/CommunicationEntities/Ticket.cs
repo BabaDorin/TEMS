@@ -20,23 +20,33 @@ namespace temsAPI.Data.Entities.CommunicationEntities
 
         [ForeignKey("AuthorID")]
         public Personnel Author { get; set; }
+#nullable enable
         public string? AuthorID { get; set; }
 
         public string? AuthorName { get; set; }
+#nullable disable
+
 
         [ForeignKey("ClosedByID")]
         public IdentityUser ClosedBy { get; set; }
+#nullable enable
         public string? ClosedByID { get; set; }
 
         public string? Problem { get; set; }
         public string? Description { get; set; }
+#nullable disable
 
         [ForeignKey("EquipmentID")]
         public Equipment Equipment { get; set; }
+#nullable enable
         public string? EquipmentID { get; set; }
+#nullable disable
+
 
         [ForeignKey("RoomID")]
         public  Room  Room { get; set; }
+#nullable enable
         public string? RoomID { get; set; }
+#nullable disable
     }
 }

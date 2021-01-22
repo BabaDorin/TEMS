@@ -29,6 +29,7 @@ namespace temsAPI.Data
             base.OnModelCreating(modelBuilder);
         }
 
+
         // Equipment entities
         public DbSet<DataType> DataTypes { get; set; }
         public DbSet<Property> Properties { get; set; }

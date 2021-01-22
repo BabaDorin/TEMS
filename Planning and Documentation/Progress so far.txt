@@ -1,0 +1,13 @@
+[-] pending task
+[--] task in progress
+
+Active tasks:
+
+- Improve db design. Add OnDeleteCascade if needed
+
+
+
+
+Done
+18.01 - Database has been intialized (first version)
+22.01 - Seed data (Roles, adminUser, DataTypes)

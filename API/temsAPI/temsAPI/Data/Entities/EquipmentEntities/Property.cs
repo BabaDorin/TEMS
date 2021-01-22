@@ -16,12 +16,9 @@ namespace temsAPI.Data.Entities.EquipmentEntities
 
 #nullable enable
         public string? DisplayName { get; set; }
-#nullable disable
-
 
         [ForeignKey("DataTypeID")]
-        public DataType DataType { get; set; }
-#nullable enable
+        public DataType? DataType { get; set; }
         public string? DataTypeID { get; set; }
 #nullable disable
     }

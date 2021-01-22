@@ -13,6 +13,9 @@ namespace temsAPI.Data.Entities.KeyEntities
         public string ID { get; set; }
 
         public string Identifier { get; set; }
+
+#nullable enable
         public int? Copies { get; set; }
+#nullable disable
     }
 }

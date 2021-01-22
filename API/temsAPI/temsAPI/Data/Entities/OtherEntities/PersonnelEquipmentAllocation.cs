@@ -22,6 +22,9 @@ namespace temsAPI.Data.Entities.OtherEntities
         public string PersonnelID { get; set; }
 
         public DateTime DateAllocated { get; set; }
+#nullable enable
         public DateTime? DateReturned { get; set; }
+#nullable disable
+
     }
 }

@@ -15,13 +15,17 @@ namespace temsAPI.Data.Entities.CommunicationEntities
 
         public DateTime DateCreated { get; set; }
         public DateTime DateClosed { get; set; }
-
+#nullable enable
         public string? Text { get; set; }
+#nullable disable
+
 
         public bool Urgent { get; set; }
 
+#nullable enable
         [ForeignKey("CreatedByID")]
-        public IdentityUser CreatedBy { get; set; }
+        public IdentityUser? CreatedBy { get; set; }
         public string? CreatedByID { get; set; }
+#nullable disable
     }
 }

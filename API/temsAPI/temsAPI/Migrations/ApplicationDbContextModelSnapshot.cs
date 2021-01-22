@@ -491,7 +491,7 @@ namespace temsAPI.Migrations
                     b.Property<string>("ID")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("EquipmentTypeID")
+                    b.Property<string>("EquipmentDefinitionID")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("PropertyID")
@@ -502,7 +502,7 @@ namespace temsAPI.Migrations
 
                     b.HasKey("ID");
 
-                    b.HasIndex("EquipmentTypeID");
+                    b.HasIndex("EquipmentDefinitionID");
 
                     b.HasIndex("PropertyID");
 
@@ -931,15 +931,15 @@ namespace temsAPI.Migrations
 
             modelBuilder.Entity("temsAPI.Data.Entities.EquipmentEntities.EquipmentSpecifications", b =>
                 {
-                    b.HasOne("temsAPI.Data.Entities.EquipmentEntities.EquipmentType", "EquipmentType")
+                    b.HasOne("temsAPI.Data.Entities.EquipmentEntities.EquipmentDefinition", "EquipmentDefinition")
                         .WithMany()
-                        .HasForeignKey("EquipmentTypeID");
+                        .HasForeignKey("EquipmentDefinitionID");
 
                     b.HasOne("temsAPI.Data.Entities.EquipmentEntities.Property", "Property")
                         .WithMany()
                         .HasForeignKey("PropertyID");
 
-                    b.Navigation("EquipmentType");
+                    b.Navigation("EquipmentDefinition");
 
                     b.Navigation("Property");
                 });

@@ -16,8 +16,10 @@ namespace temsAPI.Data.Entities.EquipmentEntities
 
         public string Identifier { get; set; }
 
+#nullable enable
         [ForeignKey("EquipmentTypeID")]
-        public EquipmentType EquipmentType { get; set; }
+        public EquipmentType? EquipmentType { get; set; }
         public string? EquipmentTypeID { get; set; }
+#nullable disable
     }
 }

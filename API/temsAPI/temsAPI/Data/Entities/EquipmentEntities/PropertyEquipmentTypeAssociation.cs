@@ -9,6 +9,8 @@ namespace temsAPI.Data.Entities.EquipmentEntities
 {
     public class PropertyEquipmentTypeAssociation
     {
+        // Which properties belong to which equipment types
+
         [Key]
         public string ID { get; set; }
 

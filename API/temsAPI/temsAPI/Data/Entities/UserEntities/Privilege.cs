@@ -11,7 +11,9 @@ namespace temsAPI.Data.Entities.UserEntities
         [Key]
         public string ID { get; set; }
 
+#nullable enable
         public string? Identifier { get; set; }
         public string? Description { get; set; }
+#nullable disable
     }
 }

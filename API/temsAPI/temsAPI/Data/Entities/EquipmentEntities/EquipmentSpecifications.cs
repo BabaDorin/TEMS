@@ -8,21 +8,25 @@ using System.Threading.Tasks;
 
 namespace temsAPI.Data.Entities.EquipmentEntities
 {
-    [Index(nameof(EquipmentTypeID))]
+    [Index(nameof(EquipmentDefinitionID))]
     public class EquipmentSpecifications
     {
+        // Which properties relates to which equipment types.
+
         [Key]
         public string ID { get; set; }
 
-        [ForeignKey("EquipmentTypeID")]
-        public EquipmentType EquipmentType { get; set; }
-        public string EquipmentTypeID { get; set; }
+        [ForeignKey("EquipmentDefinitionID")]
+        public EquipmentDefinition EquipmentDefinition { get; set; }
+        public string EquipmentDefinitionID { get; set; }
 
 
         [ForeignKey("PropertyID")]
         public Property Property { get; set; }
         public string PropertyID { get; set; }
 
+#nullable enable
         public string? Value { get; set; }
+#nullable disable
     }
 }

@@ -22,6 +22,9 @@ namespace temsAPI.Data.Entities.KeyEntities
         public string KeyID { get; set; }
 
         public DateTime DateAllocated { get; set; }
+
+#nullable enable
         public DateTime? DateReturned { get; set; }
+#nullable disable
     }
 }

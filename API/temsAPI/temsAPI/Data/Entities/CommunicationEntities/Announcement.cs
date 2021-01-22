@@ -20,8 +20,11 @@ namespace temsAPI.Data.Entities.CommunicationEntities
 
         public string Message { get; set; }
 
+#nullable enable
         [ForeignKey("AuthorID")]
-        public IdentityUser Author { get; set; }
+        public IdentityUser? Author { get; set; }
         public string? AuthorID { get; set; }
+#nullable disable
+
     }
 }

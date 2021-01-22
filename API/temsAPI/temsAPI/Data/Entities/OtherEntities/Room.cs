@@ -12,7 +12,9 @@ namespace temsAPI.Data.Entities.OtherEntities
         public string ID { get; set; }
 
         public string Identifier { get; set; }
+#nullable enable
         public string? Description { get; set; }
         public int? Floor { get; set; }
+#nullable disable
     }
 }

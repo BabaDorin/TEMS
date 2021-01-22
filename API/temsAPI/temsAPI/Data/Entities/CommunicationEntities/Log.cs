@@ -15,24 +15,26 @@ namespace temsAPI.Data.Entities.CommunicationEntities
         public string ID { get; set; }
 
         public DateTime DateCreated { get; set; }
-        public string Text { get; set; }
+#nullable enable
+        public string? Text { get; set; }
 
         [ForeignKey("EquipmentID")]
-        public Equipment Equipment { get; set; }
+        public Equipment? Equipment { get; set; }
         public string? EquipmentID { get; set; }
 
         [ForeignKey("RoomID")]
-        public Room Room { get; set; }
+        public Room? Room { get; set; }
         public string? RoomID { get; set; }
 
         [ForeignKey("PersonnelID")]
-        public Personnel Personnel { get; set; }
+        public Personnel? Personnel { get; set; }
         public string? PersonnelID { get; set; }
 
         public bool IsImportant { get; set; }
         
         [ForeignKey("LogTypeID")]
-        public LogType LogType { get; set; }
+        public LogType? LogType { get; set; }
         public string? LogTypeID { get; set; }
+#nullable disable
     }
 }

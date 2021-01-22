@@ -3,92 +3,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace temsAPI.Migrations
 {
-    public partial class AddingTheRestOfTheEntities : Migration
+    public partial class AddingTEMSEntities : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_EquipmentSpecifications_EquipmentTypes_EquipmentTypeID1",
-                table: "EquipmentSpecifications");
-
-            migrationBuilder.DropPrimaryKey(
-                name: "PK_EquipmentSpecifications",
-                table: "EquipmentSpecifications");
-
-            migrationBuilder.DropIndex(
-                name: "IX_EquipmentSpecifications_EquipmentTypeID1",
-                table: "EquipmentSpecifications");
-
-            migrationBuilder.DropColumn(
-                name: "EquipmentTypeID1",
-                table: "EquipmentSpecifications");
-
-            migrationBuilder.AlterColumn<string>(
-                name: "EquipmentTypeID",
-                table: "EquipmentSpecifications",
-                type: "nvarchar(450)",
-                nullable: true,
-                oldClrType: typeof(string),
-                oldType: "nvarchar(450)");
-
-            migrationBuilder.AddColumn<string>(
-                name: "ID",
-                table: "EquipmentSpecifications",
-                type: "nvarchar(450)",
-                nullable: false,
-                defaultValue: "");
-
-            migrationBuilder.AlterColumn<DateTime>(
-                name: "RegisterDate",
-                table: "Equipments",
-                type: "datetime2",
-                nullable: true,
-                oldClrType: typeof(DateTime),
-                oldType: "datetime2");
-
-            migrationBuilder.AlterColumn<DateTime>(
-                name: "PurchaseDate",
-                table: "Equipments",
-                type: "datetime2",
-                nullable: true,
-                oldClrType: typeof(DateTime),
-                oldType: "datetime2");
-
-            migrationBuilder.AlterColumn<double>(
-                name: "Price",
-                table: "Equipments",
-                type: "float",
-                nullable: true,
-                oldClrType: typeof(double),
-                oldType: "float");
-
-            migrationBuilder.AlterColumn<DateTime>(
-                name: "DeletedDate",
-                table: "Equipments",
-                type: "datetime2",
-                nullable: true,
-                oldClrType: typeof(DateTime),
-                oldType: "datetime2");
-
-            migrationBuilder.AlterColumn<double>(
-                name: "Commentary",
-                table: "Equipments",
-                type: "float",
-                nullable: true,
-                oldClrType: typeof(double),
-                oldType: "float");
-
-            migrationBuilder.AddColumn<string>(
-                name: "EquipmentDefinitionID",
-                table: "Equipments",
-                type: "nvarchar(450)",
-                nullable: true);
-
-            migrationBuilder.AddPrimaryKey(
-                name: "PK_EquipmentSpecifications",
-                table: "EquipmentSpecifications",
-                column: "ID");
-
             migrationBuilder.CreateTable(
                 name: "Announcements",
                 columns: table => new
@@ -107,6 +25,37 @@ namespace temsAPI.Migrations
                         column: x => x.AuthorID,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "DataTypes",
+                columns: table => new
+                {
+                    ID = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DataTypes", x => x.ID);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "EquipmentTypes",
+                columns: table => new
+                {
+                    ID = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Type = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ParentEquipmentTypeID = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EquipmentTypes", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_EquipmentTypes_EquipmentTypes_ParentEquipmentTypeID",
+                        column: x => x.ParentEquipmentTypeID,
+                        principalTable: "EquipmentTypes",
+                        principalColumn: "ID",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -164,6 +113,19 @@ namespace temsAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Privileges",
+                columns: table => new
+                {
+                    ID = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Identifier = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Privileges", x => x.ID);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Rooms",
                 columns: table => new
                 {
@@ -200,6 +162,45 @@ namespace temsAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Properties",
+                columns: table => new
+                {
+                    ID = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DisplayName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DataTypeID = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Properties", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_Properties_DataTypes_DataTypeID",
+                        column: x => x.DataTypeID,
+                        principalTable: "DataTypes",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "EquipmentDefinitions",
+                columns: table => new
+                {
+                    ID = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Identifier = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    EquipmentTypeID = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EquipmentDefinitions", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_EquipmentDefinitions_EquipmentTypes_EquipmentTypeID",
+                        column: x => x.EquipmentTypeID,
+                        principalTable: "EquipmentTypes",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "KeyAllocations",
                 columns: table => new
                 {
@@ -227,28 +228,162 @@ namespace temsAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "PersonnelEquipmentAllocations",
+                name: "RolePrivileges",
                 columns: table => new
                 {
                     ID = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    EquipmentID = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    PersonnelID = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    DateAllocated = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    DateReturned = table.Column<DateTime>(type: "datetime2", nullable: true)
+                    RoleID = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    PrivilegeID = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PersonnelEquipmentAllocations", x => x.ID);
+                    table.PrimaryKey("PK_RolePrivileges", x => x.ID);
                     table.ForeignKey(
-                        name: "FK_PersonnelEquipmentAllocations_Equipments_EquipmentID",
-                        column: x => x.EquipmentID,
-                        principalTable: "Equipments",
+                        name: "FK_RolePrivileges_AspNetRoles_RoleID",
+                        column: x => x.RoleID,
+                        principalTable: "AspNetRoles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_RolePrivileges_Privileges_PrivilegeID",
+                        column: x => x.PrivilegeID,
+                        principalTable: "Privileges",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PersonnelRoomSupervisories",
+                columns: table => new
+                {
+                    ID = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    PersonnelID = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    RoomID = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    DateSet = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PersonnelRoomSupervisories", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_PersonnelRoomSupervisories_Personnel_PersonnelID",
+                        column: x => x.PersonnelID,
+                        principalTable: "Personnel",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_PersonnelEquipmentAllocations_Personnel_PersonnelID",
-                        column: x => x.PersonnelID,
-                        principalTable: "Personnel",
+                        name: "FK_PersonnelRoomSupervisories_Rooms_RoomID",
+                        column: x => x.RoomID,
+                        principalTable: "Rooms",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PropertyEquipmentTypeAssociations",
+                columns: table => new
+                {
+                    ID = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    TypeID = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    PropertyID = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PropertyEquipmentTypeAssociations", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_PropertyEquipmentTypeAssociations_EquipmentTypes_TypeID",
+                        column: x => x.TypeID,
+                        principalTable: "EquipmentTypes",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_PropertyEquipmentTypeAssociations_Properties_PropertyID",
+                        column: x => x.PropertyID,
+                        principalTable: "Properties",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "EquipmentDefinitionKinships",
+                columns: table => new
+                {
+                    ID = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ParentDefinitionID = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    ChildDefinitionID = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EquipmentDefinitionKinships", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_EquipmentDefinitionKinships_EquipmentDefinitions_ChildDefinitionID",
+                        column: x => x.ChildDefinitionID,
+                        principalTable: "EquipmentDefinitions",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_EquipmentDefinitionKinships_EquipmentDefinitions_ParentDefinitionID",
+                        column: x => x.ParentDefinitionID,
+                        principalTable: "EquipmentDefinitions",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Equipments",
+                columns: table => new
+                {
+                    ID = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ParentID = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    TEMSID = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    SerialNumber = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    Price = table.Column<double>(type: "float", nullable: true),
+                    Commentary = table.Column<double>(type: "float", nullable: true),
+                    EquipmentDefinitionID = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    PurchaseDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    RegisterDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DeletedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsDefect = table.Column<bool>(type: "bit", nullable: false),
+                    IsUsed = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Equipments", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_Equipments_EquipmentDefinitions_EquipmentDefinitionID",
+                        column: x => x.EquipmentDefinitionID,
+                        principalTable: "EquipmentDefinitions",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Equipments_Equipments_ParentID",
+                        column: x => x.ParentID,
+                        principalTable: "Equipments",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "EquipmentSpecifications",
+                columns: table => new
+                {
+                    ID = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    EquipmentDefinitionID = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    PropertyID = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    Value = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EquipmentSpecifications", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_EquipmentSpecifications_EquipmentDefinitions_EquipmentDefinitionID",
+                        column: x => x.EquipmentDefinitionID,
+                        principalTable: "EquipmentDefinitions",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_EquipmentSpecifications_Properties_PropertyID",
+                        column: x => x.PropertyID,
+                        principalTable: "Properties",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -296,27 +431,28 @@ namespace temsAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "PersonnelRoomSupervisories",
+                name: "PersonnelEquipmentAllocations",
                 columns: table => new
                 {
                     ID = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    EquipmentID = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     PersonnelID = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    RoomID = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    DateSet = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    DateAllocated = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DateReturned = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PersonnelRoomSupervisories", x => x.ID);
+                    table.PrimaryKey("PK_PersonnelEquipmentAllocations", x => x.ID);
                     table.ForeignKey(
-                        name: "FK_PersonnelRoomSupervisories_Personnel_PersonnelID",
-                        column: x => x.PersonnelID,
-                        principalTable: "Personnel",
+                        name: "FK_PersonnelEquipmentAllocations_Equipments_EquipmentID",
+                        column: x => x.EquipmentID,
+                        principalTable: "Equipments",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_PersonnelRoomSupervisories_Rooms_RoomID",
-                        column: x => x.RoomID,
-                        principalTable: "Rooms",
+                        name: "FK_PersonnelEquipmentAllocations_Personnel_PersonnelID",
+                        column: x => x.PersonnelID,
+                        principalTable: "Personnel",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -393,11 +529,6 @@ namespace temsAPI.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Equipments_EquipmentDefinitionID",
-                table: "Equipments",
-                column: "EquipmentDefinitionID");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Announcements_AuthorID",
                 table: "Announcements",
                 column: "AuthorID");
@@ -406,6 +537,61 @@ namespace temsAPI.Migrations
                 name: "IX_Announcements_DateCreated",
                 table: "Announcements",
                 column: "DateCreated");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_EquipmentDefinitionKinships_ChildDefinitionID",
+                table: "EquipmentDefinitionKinships",
+                column: "ChildDefinitionID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_EquipmentDefinitionKinships_ParentDefinitionID",
+                table: "EquipmentDefinitionKinships",
+                column: "ParentDefinitionID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_EquipmentDefinitions_EquipmentTypeID",
+                table: "EquipmentDefinitions",
+                column: "EquipmentTypeID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_EquipmentDefinitions_Identifier",
+                table: "EquipmentDefinitions",
+                column: "Identifier");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Equipments_EquipmentDefinitionID",
+                table: "Equipments",
+                column: "EquipmentDefinitionID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Equipments_ParentID",
+                table: "Equipments",
+                column: "ParentID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Equipments_SerialNumber",
+                table: "Equipments",
+                column: "SerialNumber");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Equipments_TEMSID",
+                table: "Equipments",
+                column: "TEMSID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_EquipmentSpecifications_EquipmentDefinitionID",
+                table: "EquipmentSpecifications",
+                column: "EquipmentDefinitionID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_EquipmentSpecifications_PropertyID",
+                table: "EquipmentSpecifications",
+                column: "PropertyID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_EquipmentTypes_ParentEquipmentTypeID",
+                table: "EquipmentTypes",
+                column: "ParentEquipmentTypeID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_KeyAllocations_KeyID",
@@ -458,6 +644,31 @@ namespace temsAPI.Migrations
                 column: "RoomID");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Properties_DataTypeID",
+                table: "Properties",
+                column: "DataTypeID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PropertyEquipmentTypeAssociations_PropertyID",
+                table: "PropertyEquipmentTypeAssociations",
+                column: "PropertyID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PropertyEquipmentTypeAssociations_TypeID",
+                table: "PropertyEquipmentTypeAssociations",
+                column: "TypeID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RolePrivileges_PrivilegeID",
+                table: "RolePrivileges",
+                column: "PrivilegeID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RolePrivileges_RoleID",
+                table: "RolePrivileges",
+                column: "RoleID");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_RoomEquipmentAllocations_EquipmentID",
                 table: "RoomEquipmentAllocations",
                 column: "EquipmentID");
@@ -491,36 +702,18 @@ namespace temsAPI.Migrations
                 name: "IX_ToDos_CreatedByID",
                 table: "ToDos",
                 column: "CreatedByID");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_Equipments_EquipmentDefinitions_EquipmentDefinitionID",
-                table: "Equipments",
-                column: "EquipmentDefinitionID",
-                principalTable: "EquipmentDefinitions",
-                principalColumn: "ID",
-                onDelete: ReferentialAction.Restrict);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_EquipmentSpecifications_EquipmentTypes_EquipmentTypeID",
-                table: "EquipmentSpecifications",
-                column: "EquipmentTypeID",
-                principalTable: "EquipmentTypes",
-                principalColumn: "ID",
-                onDelete: ReferentialAction.Restrict);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_Equipments_EquipmentDefinitions_EquipmentDefinitionID",
-                table: "Equipments");
-
-            migrationBuilder.DropForeignKey(
-                name: "FK_EquipmentSpecifications_EquipmentTypes_EquipmentTypeID",
-                table: "EquipmentSpecifications");
-
             migrationBuilder.DropTable(
                 name: "Announcements");
+
+            migrationBuilder.DropTable(
+                name: "EquipmentDefinitionKinships");
+
+            migrationBuilder.DropTable(
+                name: "EquipmentSpecifications");
 
             migrationBuilder.DropTable(
                 name: "FrequentTicketProblems");
@@ -538,6 +731,12 @@ namespace temsAPI.Migrations
                 name: "PersonnelRoomSupervisories");
 
             migrationBuilder.DropTable(
+                name: "PropertyEquipmentTypeAssociations");
+
+            migrationBuilder.DropTable(
+                name: "RolePrivileges");
+
+            migrationBuilder.DropTable(
                 name: "RoomEquipmentAllocations");
 
             migrationBuilder.DropTable(
@@ -553,110 +752,28 @@ namespace temsAPI.Migrations
                 name: "LogTypes");
 
             migrationBuilder.DropTable(
+                name: "Properties");
+
+            migrationBuilder.DropTable(
+                name: "Privileges");
+
+            migrationBuilder.DropTable(
+                name: "Equipments");
+
+            migrationBuilder.DropTable(
                 name: "Personnel");
 
             migrationBuilder.DropTable(
                 name: "Rooms");
 
-            migrationBuilder.DropPrimaryKey(
-                name: "PK_EquipmentSpecifications",
-                table: "EquipmentSpecifications");
+            migrationBuilder.DropTable(
+                name: "DataTypes");
 
-            migrationBuilder.DropIndex(
-                name: "IX_Equipments_EquipmentDefinitionID",
-                table: "Equipments");
+            migrationBuilder.DropTable(
+                name: "EquipmentDefinitions");
 
-            migrationBuilder.DropColumn(
-                name: "ID",
-                table: "EquipmentSpecifications");
-
-            migrationBuilder.DropColumn(
-                name: "EquipmentDefinitionID",
-                table: "Equipments");
-
-            migrationBuilder.AlterColumn<string>(
-                name: "EquipmentTypeID",
-                table: "EquipmentSpecifications",
-                type: "nvarchar(450)",
-                nullable: false,
-                defaultValue: "",
-                oldClrType: typeof(string),
-                oldType: "nvarchar(450)",
-                oldNullable: true);
-
-            migrationBuilder.AddColumn<string>(
-                name: "EquipmentTypeID1",
-                table: "EquipmentSpecifications",
-                type: "nvarchar(450)",
-                nullable: true);
-
-            migrationBuilder.AlterColumn<DateTime>(
-                name: "RegisterDate",
-                table: "Equipments",
-                type: "datetime2",
-                nullable: false,
-                defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                oldClrType: typeof(DateTime),
-                oldType: "datetime2",
-                oldNullable: true);
-
-            migrationBuilder.AlterColumn<DateTime>(
-                name: "PurchaseDate",
-                table: "Equipments",
-                type: "datetime2",
-                nullable: false,
-                defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                oldClrType: typeof(DateTime),
-                oldType: "datetime2",
-                oldNullable: true);
-
-            migrationBuilder.AlterColumn<double>(
-                name: "Price",
-                table: "Equipments",
-                type: "float",
-                nullable: false,
-                defaultValue: 0.0,
-                oldClrType: typeof(double),
-                oldType: "float",
-                oldNullable: true);
-
-            migrationBuilder.AlterColumn<DateTime>(
-                name: "DeletedDate",
-                table: "Equipments",
-                type: "datetime2",
-                nullable: false,
-                defaultValue: new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                oldClrType: typeof(DateTime),
-                oldType: "datetime2",
-                oldNullable: true);
-
-            migrationBuilder.AlterColumn<double>(
-                name: "Commentary",
-                table: "Equipments",
-                type: "float",
-                nullable: false,
-                defaultValue: 0.0,
-                oldClrType: typeof(double),
-                oldType: "float",
-                oldNullable: true);
-
-            migrationBuilder.AddPrimaryKey(
-                name: "PK_EquipmentSpecifications",
-                table: "EquipmentSpecifications",
-                column: "EquipmentTypeID");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_EquipmentSpecifications_EquipmentTypeID1",
-                table: "EquipmentSpecifications",
-                column: "EquipmentTypeID1");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_EquipmentSpecifications_EquipmentTypes_EquipmentTypeID1",
-                table: "EquipmentSpecifications",
-                column: "EquipmentTypeID1",
-                principalTable: "EquipmentTypes",
-                principalColumn: "ID",
-                onDelete: ReferentialAction.Restrict);
+            migrationBuilder.DropTable(
+                name: "EquipmentTypes");
         }
     }
 }

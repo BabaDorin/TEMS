@@ -16,5 +16,7 @@ namespace temsAPI.Data.Entities.OtherEntities
         public string? Description { get; set; }
         public int? Floor { get; set; }
 #nullable disable
+
+        public bool IsArchieved { get; set; }
     }
 }

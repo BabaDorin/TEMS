@@ -26,5 +26,7 @@ namespace temsAPI.Data.Entities.CommunicationEntities
         public string? AuthorID { get; set; }
 #nullable disable
 
+        public bool IsArchieved { get; set; }
+
     }
 }

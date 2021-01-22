@@ -7,6 +7,19 @@ namespace temsAPI.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.AddColumn<string>(
+                name: "Discriminator",
+                table: "AspNetUsers",
+                type: "nvarchar(max)",
+                nullable: false,
+                defaultValue: "");
+
+            migrationBuilder.AddColumn<bool>(
+                name: "IsArchieved",
+                table: "AspNetUsers",
+                type: "bit",
+                nullable: true);
+
             migrationBuilder.CreateTable(
                 name: "Announcements",
                 columns: table => new
@@ -15,7 +28,8 @@ namespace temsAPI.Migrations
                     DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DateClosed = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Message = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    AuthorID = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    AuthorID = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    IsArchieved = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -46,7 +60,8 @@ namespace temsAPI.Migrations
                 {
                     ID = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Type = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ParentEquipmentTypeID = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    ParentEquipmentTypeID = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    IsArchieved = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -77,7 +92,8 @@ namespace temsAPI.Migrations
                 {
                     ID = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Identifier = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Copies = table.Column<int>(type: "int", nullable: true, defaultValueSql: "1")
+                    Copies = table.Column<int>(type: "int", nullable: true, defaultValueSql: "1"),
+                    IsArchieved = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -105,7 +121,8 @@ namespace temsAPI.Migrations
                     PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Position = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ImagePath = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    ImagePath = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsArchieved = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -132,7 +149,8 @@ namespace temsAPI.Migrations
                     ID = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Identifier = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Floor = table.Column<int>(type: "int", nullable: true)
+                    Floor = table.Column<int>(type: "int", nullable: true),
+                    IsArchieved = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -187,7 +205,8 @@ namespace temsAPI.Migrations
                 {
                     ID = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Identifier = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    EquipmentTypeID = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    EquipmentTypeID = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    IsArchieved = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -399,7 +418,8 @@ namespace temsAPI.Migrations
                     RoomID = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     PersonnelID = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     IsImportant = table.Column<bool>(type: "bit", nullable: false),
-                    LogTypeID = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    LogTypeID = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    IsArchieved = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -497,7 +517,8 @@ namespace temsAPI.Migrations
                     Problem = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     EquipmentID = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    RoomID = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    RoomID = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    IsArchieved = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -774,6 +795,14 @@ namespace temsAPI.Migrations
 
             migrationBuilder.DropTable(
                 name: "EquipmentTypes");
+
+            migrationBuilder.DropColumn(
+                name: "Discriminator",
+                table: "AspNetUsers");
+
+            migrationBuilder.DropColumn(
+                name: "IsArchieved",
+                table: "AspNetUsers");
         }
     }
 }

@@ -2,13 +2,25 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using temsAPI.Data.Entities.CommunicationEntities;
 using temsAPI.Data.Entities.EquipmentEntities;
+using temsAPI.Data.Entities.KeyEntities;
+using temsAPI.Data.Entities.OtherEntities;
 using temsAPI.Data.Entities.UserEntities;
 
 namespace temsAPI.Contracts
 {
     interface IUnitOfWork: IDisposable
     {
+        // Communication entities
+        IGenericRepository<Announcement> Announcements { get; }
+        IGenericRepository<FrequentTicketProblem> FrequentTicketProblems { get; }
+        IGenericRepository<Log> Logs { get; }
+        IGenericRepository<LogType> LogTypes { get; }
+        IGenericRepository<Ticket> Tickets { get; }
+        IGenericRepository<ToDo> ToDos { get; }
+
+        // Equipment entities
         IGenericRepository<Equipment> Equipments { get; }
         IGenericRepository<EquipmentDefinition> EquipmentDefinitions { get; }
         IGenericRepository<EquipmentSpecifications> EquipmentSpecifications { get; }
@@ -18,9 +30,21 @@ namespace temsAPI.Contracts
         IGenericRepository<PropertyEquipmentTypeAssociation> PropertyEquipmentTypeAssociations { get; }
         IGenericRepository<EquipmentDefinitionKinship> EquipmentDefinitionKinships { get; }
 
+        // Key entities
+        IGenericRepository<Key> Keys { get; }
+        IGenericRepository<KeyAllocation> KeyAllocations { get; }
+
+        // Other entities
+        IGenericRepository<Personnel> Personnel { get; }
+        IGenericRepository<PersonnelEquipmentAllocation> PersonnelEquipmentAllocations { get; }
+        IGenericRepository<PersonnelRoomSupervisory> PersonnelRoomSupervisories { get; }
+        IGenericRepository<Room> Rooms { get; }
+        IGenericRepository<RoomEquipmentAllocation> RoomEquipmentAllocations { get; }
+
+        // User entities
+        IGenericRepository<TEMSUser> TEMSUsers { get; }
         IGenericRepository<Privilege> Privileges { get; }
         IGenericRepository<RolePrivileges> RolePrivileges { get; }
-
 
         Task Save();
     }

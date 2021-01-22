@@ -41,6 +41,7 @@ namespace temsAPI.Data
         public DbSet<EquipmentDefinitionKinship> EquipmentDefinitionKinships { get; set; }
 
         // User entities
+        public DbSet<TEMSUser> TEMSUsers { get; set; }
         public DbSet<Privilege> Privileges { get; set; }
         public DbSet<RolePrivileges> RolePrivileges { get; set; }
 

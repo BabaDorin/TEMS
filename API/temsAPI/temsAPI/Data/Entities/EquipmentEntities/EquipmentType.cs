@@ -19,5 +19,7 @@ namespace temsAPI.Data.Entities.EquipmentEntities
         public EquipmentType? ParentEquipmentType { get; set; }
         public string? ParentEquipmentTypeID { get; set; }
 #nullable disable
+
+        public bool IsArchieved { get; set; }
     }
 }

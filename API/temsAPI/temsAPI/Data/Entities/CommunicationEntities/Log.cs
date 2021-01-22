@@ -36,5 +36,7 @@ namespace temsAPI.Data.Entities.CommunicationEntities
         public LogType? LogType { get; set; }
         public string? LogTypeID { get; set; }
 #nullable disable
+        
+        public bool IsArchieved { get; set; }
     }
 }

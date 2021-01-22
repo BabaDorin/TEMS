@@ -10,7 +10,7 @@ using temsAPI.Data;
 namespace temsAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210122204411_AddingTEMSEntities")]
+    [Migration("20210122220214_AddingTEMSEntities")]
     partial class AddingTEMSEntities
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -84,6 +84,10 @@ namespace temsAPI.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -135,6 +139,8 @@ namespace temsAPI.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers");
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("IdentityUser");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -235,6 +241,9 @@ namespace temsAPI.Migrations
                     b.Property<DateTime>("DateCreated")
                         .HasColumnType("datetime2");
 
+                    b.Property<bool>("IsArchieved")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Message")
                         .HasColumnType("nvarchar(max)");
 
@@ -270,6 +279,9 @@ namespace temsAPI.Migrations
 
                     b.Property<string>("EquipmentID")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("IsArchieved")
+                        .HasColumnType("bit");
 
                     b.Property<bool>("IsImportant")
                         .HasColumnType("bit");
@@ -337,6 +349,9 @@ namespace temsAPI.Migrations
 
                     b.Property<string>("EquipmentID")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("IsArchieved")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Problem")
                         .HasColumnType("nvarchar(max)");
@@ -459,6 +474,9 @@ namespace temsAPI.Migrations
                     b.Property<string>("Identifier")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<bool>("IsArchieved")
+                        .HasColumnType("bit");
+
                     b.HasKey("ID");
 
                     b.HasIndex("EquipmentTypeID");
@@ -515,6 +533,9 @@ namespace temsAPI.Migrations
                 {
                     b.Property<string>("ID")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("IsArchieved")
+                        .HasColumnType("bit");
 
                     b.Property<string>("ParentEquipmentTypeID")
                         .HasColumnType("nvarchar(450)");
@@ -583,6 +604,9 @@ namespace temsAPI.Migrations
                     b.Property<string>("Identifier")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("IsArchieved")
+                        .HasColumnType("bit");
+
                     b.HasKey("ID");
 
                     b.ToTable("Keys");
@@ -624,6 +648,9 @@ namespace temsAPI.Migrations
 
                     b.Property<string>("ImagePath")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsArchieved")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
@@ -702,6 +729,9 @@ namespace temsAPI.Migrations
                     b.Property<string>("Identifier")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("IsArchieved")
+                        .HasColumnType("bit");
+
                     b.HasKey("ID");
 
                     b.ToTable("Rooms");
@@ -767,6 +797,16 @@ namespace temsAPI.Migrations
                     b.HasIndex("RoleID");
 
                     b.ToTable("RolePrivileges");
+                });
+
+            modelBuilder.Entity("temsAPI.Data.Entities.UserEntities.TEMSUser", b =>
+                {
+                    b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
+
+                    b.Property<bool>("IsArchieved")
+                        .HasColumnType("bit");
+
+                    b.HasDiscriminator().HasValue("TEMSUser");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

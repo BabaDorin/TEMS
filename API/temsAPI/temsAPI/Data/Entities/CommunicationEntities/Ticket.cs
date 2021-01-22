@@ -41,5 +41,7 @@ namespace temsAPI.Data.Entities.CommunicationEntities
         public  Room?  Room { get; set; }
         public string? RoomID { get; set; }
 #nullable disable
+
+        public bool IsArchieved { get; set; }
     }
 }

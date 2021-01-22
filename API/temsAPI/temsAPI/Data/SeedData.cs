@@ -5,13 +5,14 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using temsAPI.Data.Entities.EquipmentEntities;
+using temsAPI.Data.Entities.UserEntities;
 
 namespace temsAPI.Data
 {
     public static class SeedData
     {
         public static void Seed(
-            UserManager<IdentityUser> userManager,
+            UserManager<TEMSUser> userManager,
             RoleManager<IdentityRole> roleManager,
             ApplicationDbContext dbContext
             )
@@ -34,11 +35,11 @@ namespace temsAPI.Data
                 });
         }
 
-        private static void SeedUsers(UserManager<IdentityUser> userManager)
+        private static void SeedUsers(UserManager<TEMSUser> userManager)
         {
-            if (userManager.FindByNameAsync("Admin").Result == null)
+            if (userManager.FindByNameAsync("Administrator").Result == null)
             {
-                var user = new IdentityUser { UserName = "admin@localhost", Email = "admin@localhost" };
+                var user = new TEMSUser { UserName = "admin@localhost", Email = "admin@localhost" };
                 var result = userManager.CreateAsync(user, "Passw0rd!!").Result;
                 if (result.Succeeded)
                 {

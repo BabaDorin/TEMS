@@ -17,5 +17,7 @@ namespace temsAPI.Data.Entities.KeyEntities
 #nullable enable
         public int? Copies { get; set; }
 #nullable disable
+
+        public bool IsArchieved { get; set; }
     }
 }

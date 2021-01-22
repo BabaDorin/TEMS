@@ -3,7 +3,8 @@
 
 Active tasks:
 
-- Improve db design. Add OnDeleteCascade if needed
+-- Improve db design. Add OnDeleteCascade if needed
+-- add isArchieved field to core entities
 
 
 

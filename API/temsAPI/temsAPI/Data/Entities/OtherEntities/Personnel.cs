@@ -20,6 +20,8 @@ namespace temsAPI.Data.Entities.OtherEntities
         public string? ImagePath { get; set; }
 #nullable disable
 
+        public bool IsArchieved { get; set; }
+
         // BEFREE: Add multiple Emails and Phone numbers support later if needed.
     }
 }

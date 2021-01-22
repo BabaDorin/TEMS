@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using temsAPI.Data;
+using temsAPI.Data.Entities.UserEntities;
 
 namespace temsAPI
 {
@@ -32,7 +33,7 @@ namespace temsAPI
                     Configuration.GetConnectionString("SecondaryConnection")));
             services.AddDatabaseDeveloperPageExceptionFilter();
 
-            services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+            services.AddDefaultIdentity<TEMSUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddControllersWithViews();
@@ -42,7 +43,7 @@ namespace temsAPI
         public void Configure(
             IApplicationBuilder app, 
             IWebHostEnvironment env, 
-            UserManager<IdentityUser> userManager,
+            UserManager<TEMSUser> userManager,
             RoleManager<IdentityRole> roleManager,
             ApplicationDbContext dbContext
             )

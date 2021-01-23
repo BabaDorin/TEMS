@@ -1,0 +1,20 @@
+[-] pending task
+[--] task in progress
+[---] high priority task
+
+Active tasks:
+
+--- test if onDeleteCascade is implemeted by default by ef. If not, do it.
+-- Improve db design. Add OnDeleteCascade if needed
+-- add isArchieved field to core entities
+-- Using custom identity model (TEMSUser)
+- Change almost every occurence of IdentityUser to TEMSUser (only if needed).
+
+
+
+
+
+
+Done
+18.01 - Database has been intialized (first version)
+22.01 - Seed data (Roles, adminUser, DataTypes)

@@ -68,6 +68,7 @@ namespace temsAPI
             app.UseAuthorization();
 
             SeedData.Seed(userManager, roleManager, dbContext);
+            //DBTestScenarios.TestOnDeleteCascade(dbContext); 
 
             app.UseEndpoints(endpoints =>
             {

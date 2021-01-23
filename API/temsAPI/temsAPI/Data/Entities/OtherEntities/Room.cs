@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using temsAPI.Data.Entities.CommunicationEntities;
 
 namespace temsAPI.Data.Entities.OtherEntities
 {
@@ -18,5 +19,10 @@ namespace temsAPI.Data.Entities.OtherEntities
 #nullable disable
 
         public bool IsArchieved { get; set; }
+
+        public virtual ICollection<RoomEquipmentAllocation> RoomEquipmentAllocations { get; set; }
+        public virtual ICollection<PersonnelRoomSupervisory> PersonnelRoomSupervisories { get; set; }
+        public virtual ICollection<Log> Logs { get; set; }
+        public virtual ICollection<Ticket> Tickets  { get; set; }
     }
 }

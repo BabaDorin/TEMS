@@ -21,5 +21,8 @@ namespace temsAPI.Data.Entities.EquipmentEntities
 #nullable disable
 
         public bool IsArchieved { get; set; }
+
+        public virtual ICollection<PropertyEquipmentTypeAssociation> PropertyEquipmentTypeAssociations { get; set; }
+        public virtual ICollection<EquipmentDefinition> EquipmentDefinitions { get; set; }
     }
 }

@@ -30,7 +30,7 @@ namespace temsAPI
         {
             services.AddDbContextPool<ApplicationDbContext>(options =>
                 options.UseSqlServer(
-                    Configuration.GetConnectionString("SecondaryConnection")));
+                    Configuration.GetConnectionString("DefaultConnection")));
             services.AddDatabaseDeveloperPageExceptionFilter();
 
             services.AddDefaultIdentity<TEMSUser>(options => options.SignIn.RequireConfirmedAccount = true)
@@ -68,7 +68,7 @@ namespace temsAPI
             app.UseAuthorization();
 
             SeedData.Seed(userManager, roleManager, dbContext);
-            //DBTestScenarios.TestOnDeleteCascade(dbContext); 
+            DBTestScenarios.TestOnDeleteCascade(dbContext);
 
             app.UseEndpoints(endpoints =>
             {

@@ -20,8 +20,15 @@ namespace temsAPI.Data.Entities.EquipmentEntities
         [ForeignKey("EquipmentTypeID")]
         public EquipmentType? EquipmentType { get; set; }
         public string? EquipmentTypeID { get; set; }
+
+        [ForeignKey("ParentID")]
+        public EquipmentDefinition? Parent { get; set; }
+        public string? ParentID { get; set; }
 #nullable disable
 
         public bool IsArchieved { get; set; }
+        public virtual ICollection<EquipmentSpecifications> EquipmentSpecifications { get; set; }
+        public virtual ICollection<EquipmentDefinition> Children { get; set; }
+
     }
 }

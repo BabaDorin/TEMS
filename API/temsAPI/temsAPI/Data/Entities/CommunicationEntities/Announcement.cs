@@ -6,6 +6,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
+using temsAPI.Data.Entities.UserEntities;
 
 namespace temsAPI.Data.Entities.CommunicationEntities
 {
@@ -22,7 +23,7 @@ namespace temsAPI.Data.Entities.CommunicationEntities
 
 #nullable enable
         [ForeignKey("AuthorID")]
-        public IdentityUser? Author { get; set; }
+        public TEMSUser? Author { get; set; }
         public string? AuthorID { get; set; }
 #nullable disable
 

@@ -28,23 +28,22 @@ namespace temsAPI.Contracts
         IGenericRepository<Property> Properties { get; }
         IGenericRepository<DataType> DataTypes { get; }
         IGenericRepository<PropertyEquipmentTypeAssociation> PropertyEquipmentTypeAssociations { get; }
-        IGenericRepository<EquipmentDefinitionKinship> EquipmentDefinitionKinships { get; }
 
         // Key entities
         IGenericRepository<Key> Keys { get; }
         IGenericRepository<KeyAllocation> KeyAllocations { get; }
-
+        
+        // User entities
+        IGenericRepository<TEMSUser> TEMSUsers { get; }
+        IGenericRepository<Privilege> Privileges { get; }
+        IGenericRepository<RolePrivileges> RolePrivileges { get; }
+        
         // Other entities
         IGenericRepository<Personnel> Personnel { get; }
         IGenericRepository<PersonnelEquipmentAllocation> PersonnelEquipmentAllocations { get; }
         IGenericRepository<PersonnelRoomSupervisory> PersonnelRoomSupervisories { get; }
         IGenericRepository<Room> Rooms { get; }
         IGenericRepository<RoomEquipmentAllocation> RoomEquipmentAllocations { get; }
-
-        // User entities
-        IGenericRepository<TEMSUser> TEMSUsers { get; }
-        IGenericRepository<Privilege> Privileges { get; }
-        IGenericRepository<RolePrivileges> RolePrivileges { get; }
 
         Task Save();
     }

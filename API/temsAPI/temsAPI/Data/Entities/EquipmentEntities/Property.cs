@@ -21,5 +21,8 @@ namespace temsAPI.Data.Entities.EquipmentEntities
         public DataType? DataType { get; set; }
         public string? DataTypeID { get; set; }
 #nullable disable
+
+        public virtual ICollection<PropertyEquipmentTypeAssociation> PropertyEquipmentTypeAssociations { get; set; }
+        public virtual ICollection<EquipmentSpecifications> EquipmentSpecifications { get; set; }
     }
 }

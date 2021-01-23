@@ -22,5 +22,8 @@ namespace temsAPI.Data.Entities.OtherEntities
         public string RoomID { get; set; }
 
         public DateTime DateSet { get; set; }
+#nullable enable
+        public DateTime? DateCanceled { get; set; }
+#nullable disable 
     }
 }

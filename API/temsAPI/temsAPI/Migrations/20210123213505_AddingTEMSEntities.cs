@@ -206,11 +206,18 @@ namespace temsAPI.Migrations
                     ID = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Identifier = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     EquipmentTypeID = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    ParentID = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     IsArchieved = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_EquipmentDefinitions", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_EquipmentDefinitions_EquipmentDefinitions_ParentID",
+                        column: x => x.ParentID,
+                        principalTable: "EquipmentDefinitions",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_EquipmentDefinitions_EquipmentTypes_EquipmentTypeID",
                         column: x => x.EquipmentTypeID,
@@ -278,7 +285,8 @@ namespace temsAPI.Migrations
                     ID = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     PersonnelID = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     RoomID = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    DateSet = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    DateSet = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DateCanceled = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -323,31 +331,6 @@ namespace temsAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "EquipmentDefinitionKinships",
-                columns: table => new
-                {
-                    ID = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ParentDefinitionID = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    ChildDefinitionID = table.Column<string>(type: "nvarchar(450)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_EquipmentDefinitionKinships", x => x.ID);
-                    table.ForeignKey(
-                        name: "FK_EquipmentDefinitionKinships_EquipmentDefinitions_ChildDefinitionID",
-                        column: x => x.ChildDefinitionID,
-                        principalTable: "EquipmentDefinitions",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_EquipmentDefinitionKinships_EquipmentDefinitions_ParentDefinitionID",
-                        column: x => x.ParentDefinitionID,
-                        principalTable: "EquipmentDefinitions",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Equipments",
                 columns: table => new
                 {
@@ -358,6 +341,7 @@ namespace temsAPI.Migrations
                     Price = table.Column<double>(type: "float", nullable: true),
                     Commentary = table.Column<double>(type: "float", nullable: true),
                     EquipmentDefinitionID = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    RegisteredByID = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     PurchaseDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     RegisterDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     DeletedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -367,6 +351,12 @@ namespace temsAPI.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Equipments", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_Equipments_AspNetUsers_RegisteredByID",
+                        column: x => x.RegisteredByID,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Equipments_EquipmentDefinitions_EquipmentDefinitionID",
                         column: x => x.EquipmentDefinitionID,
@@ -560,16 +550,6 @@ namespace temsAPI.Migrations
                 column: "DateCreated");
 
             migrationBuilder.CreateIndex(
-                name: "IX_EquipmentDefinitionKinships_ChildDefinitionID",
-                table: "EquipmentDefinitionKinships",
-                column: "ChildDefinitionID");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_EquipmentDefinitionKinships_ParentDefinitionID",
-                table: "EquipmentDefinitionKinships",
-                column: "ParentDefinitionID");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_EquipmentDefinitions_EquipmentTypeID",
                 table: "EquipmentDefinitions",
                 column: "EquipmentTypeID");
@@ -580,6 +560,11 @@ namespace temsAPI.Migrations
                 column: "Identifier");
 
             migrationBuilder.CreateIndex(
+                name: "IX_EquipmentDefinitions_ParentID",
+                table: "EquipmentDefinitions",
+                column: "ParentID");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Equipments_EquipmentDefinitionID",
                 table: "Equipments",
                 column: "EquipmentDefinitionID");
@@ -588,6 +573,11 @@ namespace temsAPI.Migrations
                 name: "IX_Equipments_ParentID",
                 table: "Equipments",
                 column: "ParentID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Equipments_RegisteredByID",
+                table: "Equipments",
+                column: "RegisteredByID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Equipments_SerialNumber",
@@ -729,9 +719,6 @@ namespace temsAPI.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Announcements");
-
-            migrationBuilder.DropTable(
-                name: "EquipmentDefinitionKinships");
 
             migrationBuilder.DropTable(
                 name: "EquipmentSpecifications");

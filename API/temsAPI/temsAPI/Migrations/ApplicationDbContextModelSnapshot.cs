@@ -442,6 +442,9 @@ namespace temsAPI.Migrations
                     b.Property<DateTime?>("RegisterDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("RegisteredByID")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("SerialNumber")
                         .HasColumnType("nvarchar(450)");
 
@@ -453,6 +456,8 @@ namespace temsAPI.Migrations
                     b.HasIndex("EquipmentDefinitionID");
 
                     b.HasIndex("ParentID");
+
+                    b.HasIndex("RegisteredByID");
 
                     b.HasIndex("SerialNumber");
 
@@ -475,33 +480,18 @@ namespace temsAPI.Migrations
                     b.Property<bool>("IsArchieved")
                         .HasColumnType("bit");
 
+                    b.Property<string>("ParentID")
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("ID");
 
                     b.HasIndex("EquipmentTypeID");
 
                     b.HasIndex("Identifier");
 
+                    b.HasIndex("ParentID");
+
                     b.ToTable("EquipmentDefinitions");
-                });
-
-            modelBuilder.Entity("temsAPI.Data.Entities.EquipmentEntities.EquipmentDefinitionKinship", b =>
-                {
-                    b.Property<string>("ID")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("ChildDefinitionID")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("ParentDefinitionID")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("ID");
-
-                    b.HasIndex("ChildDefinitionID");
-
-                    b.HasIndex("ParentDefinitionID");
-
-                    b.ToTable("EquipmentDefinitionKinships");
                 });
 
             modelBuilder.Entity("temsAPI.Data.Entities.EquipmentEntities.EquipmentSpecifications", b =>
@@ -695,6 +685,9 @@ namespace temsAPI.Migrations
                     b.Property<string>("ID")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<DateTime?>("DateCanceled")
+                        .HasColumnType("datetime2");
+
                     b.Property<DateTime>("DateSet")
                         .HasColumnType("datetime2");
 
@@ -860,8 +853,8 @@ namespace temsAPI.Migrations
 
             modelBuilder.Entity("temsAPI.Data.Entities.CommunicationEntities.Announcement", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "Author")
-                        .WithMany()
+                    b.HasOne("temsAPI.Data.Entities.UserEntities.TEMSUser", "Author")
+                        .WithMany("Announcements")
                         .HasForeignKey("AuthorID");
 
                     b.Navigation("Author");
@@ -870,19 +863,20 @@ namespace temsAPI.Migrations
             modelBuilder.Entity("temsAPI.Data.Entities.CommunicationEntities.Log", b =>
                 {
                     b.HasOne("temsAPI.Data.Entities.EquipmentEntities.Equipment", "Equipment")
-                        .WithMany()
-                        .HasForeignKey("EquipmentID");
+                        .WithMany("Logs")
+                        .HasForeignKey("EquipmentID")
+                        .OnDelete(DeleteBehavior.ClientCascade);
 
                     b.HasOne("temsAPI.Data.Entities.CommunicationEntities.LogType", "LogType")
-                        .WithMany()
+                        .WithMany("Logs")
                         .HasForeignKey("LogTypeID");
 
                     b.HasOne("temsAPI.Data.Entities.OtherEntities.Personnel", "Personnel")
-                        .WithMany()
+                        .WithMany("Logs")
                         .HasForeignKey("PersonnelID");
 
                     b.HasOne("temsAPI.Data.Entities.OtherEntities.Room", "Room")
-                        .WithMany()
+                        .WithMany("Logs")
                         .HasForeignKey("RoomID");
 
                     b.Navigation("Equipment");
@@ -897,19 +891,20 @@ namespace temsAPI.Migrations
             modelBuilder.Entity("temsAPI.Data.Entities.CommunicationEntities.Ticket", b =>
                 {
                     b.HasOne("temsAPI.Data.Entities.OtherEntities.Personnel", "Author")
-                        .WithMany()
+                        .WithMany("Tickets")
                         .HasForeignKey("AuthorID");
 
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "ClosedBy")
-                        .WithMany()
+                    b.HasOne("temsAPI.Data.Entities.UserEntities.TEMSUser", "ClosedBy")
+                        .WithMany("ClosedTickets")
                         .HasForeignKey("ClosedByID");
 
                     b.HasOne("temsAPI.Data.Entities.EquipmentEntities.Equipment", "Equipment")
-                        .WithMany()
-                        .HasForeignKey("EquipmentID");
+                        .WithMany("Tickets")
+                        .HasForeignKey("EquipmentID")
+                        .OnDelete(DeleteBehavior.ClientCascade);
 
                     b.HasOne("temsAPI.Data.Entities.OtherEntities.Room", "Room")
-                        .WithMany()
+                        .WithMany("Tickets")
                         .HasForeignKey("RoomID");
 
                     b.Navigation("Author");
@@ -923,7 +918,7 @@ namespace temsAPI.Migrations
 
             modelBuilder.Entity("temsAPI.Data.Entities.CommunicationEntities.ToDo", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "CreatedBy")
+                    b.HasOne("temsAPI.Data.Entities.UserEntities.TEMSUser", "CreatedBy")
                         .WithMany()
                         .HasForeignKey("CreatedByID");
 
@@ -937,46 +932,47 @@ namespace temsAPI.Migrations
                         .HasForeignKey("EquipmentDefinitionID");
 
                     b.HasOne("temsAPI.Data.Entities.EquipmentEntities.Equipment", "Parent")
-                        .WithMany()
-                        .HasForeignKey("ParentID");
+                        .WithMany("Children")
+                        .HasForeignKey("ParentID")
+                        .OnDelete(DeleteBehavior.ClientCascade);
+
+                    b.HasOne("temsAPI.Data.Entities.UserEntities.TEMSUser", "RegisteredBy")
+                        .WithMany("RegisteredEquipments")
+                        .HasForeignKey("RegisteredByID");
 
                     b.Navigation("EquipmentDefinition");
 
                     b.Navigation("Parent");
+
+                    b.Navigation("RegisteredBy");
                 });
 
             modelBuilder.Entity("temsAPI.Data.Entities.EquipmentEntities.EquipmentDefinition", b =>
                 {
                     b.HasOne("temsAPI.Data.Entities.EquipmentEntities.EquipmentType", "EquipmentType")
-                        .WithMany()
-                        .HasForeignKey("EquipmentTypeID");
+                        .WithMany("EquipmentDefinitions")
+                        .HasForeignKey("EquipmentTypeID")
+                        .OnDelete(DeleteBehavior.ClientCascade);
+
+                    b.HasOne("temsAPI.Data.Entities.EquipmentEntities.EquipmentDefinition", "Parent")
+                        .WithMany("Children")
+                        .HasForeignKey("ParentID")
+                        .OnDelete(DeleteBehavior.ClientCascade);
 
                     b.Navigation("EquipmentType");
-                });
 
-            modelBuilder.Entity("temsAPI.Data.Entities.EquipmentEntities.EquipmentDefinitionKinship", b =>
-                {
-                    b.HasOne("temsAPI.Data.Entities.EquipmentEntities.EquipmentDefinition", "ChildDefinition")
-                        .WithMany()
-                        .HasForeignKey("ChildDefinitionID");
-
-                    b.HasOne("temsAPI.Data.Entities.EquipmentEntities.EquipmentDefinition", "ParentDefinition")
-                        .WithMany()
-                        .HasForeignKey("ParentDefinitionID");
-
-                    b.Navigation("ChildDefinition");
-
-                    b.Navigation("ParentDefinition");
+                    b.Navigation("Parent");
                 });
 
             modelBuilder.Entity("temsAPI.Data.Entities.EquipmentEntities.EquipmentSpecifications", b =>
                 {
                     b.HasOne("temsAPI.Data.Entities.EquipmentEntities.EquipmentDefinition", "EquipmentDefinition")
-                        .WithMany()
-                        .HasForeignKey("EquipmentDefinitionID");
+                        .WithMany("EquipmentSpecifications")
+                        .HasForeignKey("EquipmentDefinitionID")
+                        .OnDelete(DeleteBehavior.ClientCascade);
 
                     b.HasOne("temsAPI.Data.Entities.EquipmentEntities.Property", "Property")
-                        .WithMany()
+                        .WithMany("EquipmentSpecifications")
                         .HasForeignKey("PropertyID");
 
                     b.Navigation("EquipmentDefinition");
@@ -1005,12 +1001,14 @@ namespace temsAPI.Migrations
             modelBuilder.Entity("temsAPI.Data.Entities.EquipmentEntities.PropertyEquipmentTypeAssociation", b =>
                 {
                     b.HasOne("temsAPI.Data.Entities.EquipmentEntities.Property", "Property")
-                        .WithMany()
-                        .HasForeignKey("PropertyID");
+                        .WithMany("PropertyEquipmentTypeAssociations")
+                        .HasForeignKey("PropertyID")
+                        .OnDelete(DeleteBehavior.ClientCascade);
 
                     b.HasOne("temsAPI.Data.Entities.EquipmentEntities.EquipmentType", "Type")
-                        .WithMany()
-                        .HasForeignKey("TypeID");
+                        .WithMany("PropertyEquipmentTypeAssociations")
+                        .HasForeignKey("TypeID")
+                        .OnDelete(DeleteBehavior.ClientCascade);
 
                     b.Navigation("Property");
 
@@ -1020,12 +1018,14 @@ namespace temsAPI.Migrations
             modelBuilder.Entity("temsAPI.Data.Entities.KeyEntities.KeyAllocation", b =>
                 {
                     b.HasOne("temsAPI.Data.Entities.KeyEntities.Key", "Key")
-                        .WithMany()
-                        .HasForeignKey("KeyID");
+                        .WithMany("KeyAllocations")
+                        .HasForeignKey("KeyID")
+                        .OnDelete(DeleteBehavior.ClientCascade);
 
                     b.HasOne("temsAPI.Data.Entities.OtherEntities.Personnel", "Personnel")
-                        .WithMany()
-                        .HasForeignKey("PersonnelID");
+                        .WithMany("KeyAllocations")
+                        .HasForeignKey("PersonnelID")
+                        .OnDelete(DeleteBehavior.ClientCascade);
 
                     b.Navigation("Key");
 
@@ -1035,12 +1035,14 @@ namespace temsAPI.Migrations
             modelBuilder.Entity("temsAPI.Data.Entities.OtherEntities.PersonnelEquipmentAllocation", b =>
                 {
                     b.HasOne("temsAPI.Data.Entities.EquipmentEntities.Equipment", "Equipment")
-                        .WithMany()
-                        .HasForeignKey("EquipmentID");
+                        .WithMany("PersonnelEquipmentAllocations")
+                        .HasForeignKey("EquipmentID")
+                        .OnDelete(DeleteBehavior.ClientCascade);
 
                     b.HasOne("temsAPI.Data.Entities.OtherEntities.Personnel", "Personnel")
-                        .WithMany()
-                        .HasForeignKey("PersonnelID");
+                        .WithMany("PersonnelEquipmentAllocations")
+                        .HasForeignKey("PersonnelID")
+                        .OnDelete(DeleteBehavior.ClientCascade);
 
                     b.Navigation("Equipment");
 
@@ -1050,12 +1052,14 @@ namespace temsAPI.Migrations
             modelBuilder.Entity("temsAPI.Data.Entities.OtherEntities.PersonnelRoomSupervisory", b =>
                 {
                     b.HasOne("temsAPI.Data.Entities.OtherEntities.Personnel", "Personnel")
-                        .WithMany()
-                        .HasForeignKey("PersonnelID");
+                        .WithMany("PersonnelRoomSupervisories")
+                        .HasForeignKey("PersonnelID")
+                        .OnDelete(DeleteBehavior.ClientCascade);
 
                     b.HasOne("temsAPI.Data.Entities.OtherEntities.Room", "Room")
-                        .WithMany()
-                        .HasForeignKey("RoomID");
+                        .WithMany("PersonnelRoomSupervisories")
+                        .HasForeignKey("RoomID")
+                        .OnDelete(DeleteBehavior.ClientCascade);
 
                     b.Navigation("Personnel");
 
@@ -1065,12 +1069,14 @@ namespace temsAPI.Migrations
             modelBuilder.Entity("temsAPI.Data.Entities.OtherEntities.RoomEquipmentAllocation", b =>
                 {
                     b.HasOne("temsAPI.Data.Entities.EquipmentEntities.Equipment", "Equipment")
-                        .WithMany()
-                        .HasForeignKey("EquipmentID");
+                        .WithMany("RoomEquipmentAllocations")
+                        .HasForeignKey("EquipmentID")
+                        .OnDelete(DeleteBehavior.ClientCascade);
 
                     b.HasOne("temsAPI.Data.Entities.OtherEntities.Room", "Room")
-                        .WithMany()
-                        .HasForeignKey("RoomID");
+                        .WithMany("RoomEquipmentAllocations")
+                        .HasForeignKey("RoomID")
+                        .OnDelete(DeleteBehavior.ClientCascade);
 
                     b.Navigation("Equipment");
 
@@ -1090,6 +1096,83 @@ namespace temsAPI.Migrations
                     b.Navigation("Privilege");
 
                     b.Navigation("Role");
+                });
+
+            modelBuilder.Entity("temsAPI.Data.Entities.CommunicationEntities.LogType", b =>
+                {
+                    b.Navigation("Logs");
+                });
+
+            modelBuilder.Entity("temsAPI.Data.Entities.EquipmentEntities.Equipment", b =>
+                {
+                    b.Navigation("Children");
+
+                    b.Navigation("Logs");
+
+                    b.Navigation("PersonnelEquipmentAllocations");
+
+                    b.Navigation("RoomEquipmentAllocations");
+
+                    b.Navigation("Tickets");
+                });
+
+            modelBuilder.Entity("temsAPI.Data.Entities.EquipmentEntities.EquipmentDefinition", b =>
+                {
+                    b.Navigation("Children");
+
+                    b.Navigation("EquipmentSpecifications");
+                });
+
+            modelBuilder.Entity("temsAPI.Data.Entities.EquipmentEntities.EquipmentType", b =>
+                {
+                    b.Navigation("EquipmentDefinitions");
+
+                    b.Navigation("PropertyEquipmentTypeAssociations");
+                });
+
+            modelBuilder.Entity("temsAPI.Data.Entities.EquipmentEntities.Property", b =>
+                {
+                    b.Navigation("EquipmentSpecifications");
+
+                    b.Navigation("PropertyEquipmentTypeAssociations");
+                });
+
+            modelBuilder.Entity("temsAPI.Data.Entities.KeyEntities.Key", b =>
+                {
+                    b.Navigation("KeyAllocations");
+                });
+
+            modelBuilder.Entity("temsAPI.Data.Entities.OtherEntities.Personnel", b =>
+                {
+                    b.Navigation("KeyAllocations");
+
+                    b.Navigation("Logs");
+
+                    b.Navigation("PersonnelEquipmentAllocations");
+
+                    b.Navigation("PersonnelRoomSupervisories");
+
+                    b.Navigation("Tickets");
+                });
+
+            modelBuilder.Entity("temsAPI.Data.Entities.OtherEntities.Room", b =>
+                {
+                    b.Navigation("Logs");
+
+                    b.Navigation("PersonnelRoomSupervisories");
+
+                    b.Navigation("RoomEquipmentAllocations");
+
+                    b.Navigation("Tickets");
+                });
+
+            modelBuilder.Entity("temsAPI.Data.Entities.UserEntities.TEMSUser", b =>
+                {
+                    b.Navigation("Announcements");
+
+                    b.Navigation("ClosedTickets");
+
+                    b.Navigation("RegisteredEquipments");
                 });
 #pragma warning restore 612, 618
         }

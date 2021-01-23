@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using temsAPI.Data.Entities.EquipmentEntities;
 using temsAPI.Data.Entities.OtherEntities;
+using temsAPI.Data.Entities.UserEntities;
 
 namespace temsAPI.Data.Entities.CommunicationEntities
 {
@@ -27,7 +28,7 @@ namespace temsAPI.Data.Entities.CommunicationEntities
 
 
         [ForeignKey("ClosedByID")]
-        public IdentityUser? ClosedBy { get; set; }
+        public TEMSUser? ClosedBy { get; set; }
         public string? ClosedByID { get; set; }
 
         public string? Problem { get; set; }

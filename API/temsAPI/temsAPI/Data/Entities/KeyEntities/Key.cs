@@ -19,5 +19,7 @@ namespace temsAPI.Data.Entities.KeyEntities
 #nullable disable
 
         public bool IsArchieved { get; set; }
+
+        public virtual ICollection<KeyAllocation> KeyAllocations { get; set; }
     }
 }

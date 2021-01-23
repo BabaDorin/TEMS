@@ -65,8 +65,10 @@ namespace temsAPI.Data
             logs.Add("Success: " + !dbContext.PropertyEquipmentTypeAssociations.Any(q => q.PropertyID == pID));
 
             dbContext.Properties.Remove(dbContext.Properties.FirstOrDefault(q => q.ID == pID));
-            
+            dbContext.SaveChanges();
+
             logs.Add("DB Set to initial state.");
+            logs.Add("Test made on: " + DateTime.Now.ToString());
 
             WriteTestLogs.WriteTestLog(TestLog.OnDeleteCascade, false, logs);
         }

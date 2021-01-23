@@ -12,5 +12,7 @@ namespace temsAPI.Data.Entities.CommunicationEntities
         public string ID { get; set; }
 
         public string Type { get; set; }
+
+        public virtual ICollection<Log> Logs { get; set; }
     }
 }

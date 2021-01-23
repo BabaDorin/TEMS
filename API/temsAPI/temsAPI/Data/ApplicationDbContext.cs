@@ -26,6 +26,98 @@ namespace temsAPI.Data
                 .Property(b => b.Copies)
                 .HasDefaultValueSql("1");
 
+            // OnDeleteCascade PropertyEquipmentTypeAssociations
+            modelBuilder.Entity<EquipmentType>()
+                .HasMany(e => e.PropertyEquipmentTypeAssociations)
+                .WithOne(e => e.Type)
+                .OnDelete(DeleteBehavior.ClientCascade);
+
+            modelBuilder.Entity<Property>()
+                .HasMany(e => e.PropertyEquipmentTypeAssociations)
+                .WithOne(e => e.Property)
+                .OnDelete(DeleteBehavior.ClientCascade);
+
+            // OnDeleteCascade EquipmentSpecifications
+            modelBuilder.Entity<EquipmentDefinition>()
+                .HasMany(e => e.EquipmentSpecifications)
+                .WithOne(e => e.EquipmentDefinition)
+                .OnDelete(DeleteBehavior.ClientCascade);
+
+            // OnDeleteCascade EquipmentDefinition
+            modelBuilder.Entity<EquipmentType>()
+                .HasMany(e => e.EquipmentDefinitions)
+                .WithOne(e => e.EquipmentType)
+                .OnDelete(DeleteBehavior.ClientCascade);
+
+            // OnDeleteCascade Logs
+            modelBuilder.Entity<Equipment>()
+                .HasMany(e => e.Logs)
+                .WithOne(e => e.Equipment)
+                .OnDelete(DeleteBehavior.ClientCascade);
+
+            // OnDeleteCascade RoomEquipmentAllocations
+            modelBuilder.Entity<Equipment>()
+                .HasMany(e => e.RoomEquipmentAllocations)
+                .WithOne(e => e.Equipment)
+                .OnDelete(DeleteBehavior.ClientCascade);
+
+            modelBuilder.Entity<Room>()
+                .HasMany(e => e.RoomEquipmentAllocations)
+                .WithOne(e => e.Room)
+                .OnDelete(DeleteBehavior.ClientCascade);
+
+            // OnDeleteCascade PersonnelRoomSupervisory
+            modelBuilder.Entity<Personnel>()
+                .HasMany(e => e.PersonnelRoomSupervisories)
+                .WithOne(e => e.Personnel)
+                .OnDelete(DeleteBehavior.ClientCascade);
+
+            modelBuilder.Entity<Room>()
+                .HasMany(e => e.PersonnelRoomSupervisories)
+                .WithOne(e => e.Room)
+                .OnDelete(DeleteBehavior.ClientCascade);
+
+            // OnDeleteCascade PersonnelEquipmentAllocation
+            modelBuilder.Entity<Equipment>()
+                .HasMany(e => e.PersonnelEquipmentAllocations)
+                .WithOne(e => e.Equipment)
+                .OnDelete(DeleteBehavior.ClientCascade);
+
+            modelBuilder.Entity<Personnel>()
+                .HasMany(e => e.PersonnelEquipmentAllocations)
+                .WithOne(e => e.Personnel)
+                .OnDelete(DeleteBehavior.ClientCascade);
+
+            // OnDeleteCascade Equipment
+            modelBuilder.Entity<Equipment>()
+                .HasMany(e => e.Children)
+                .WithOne(e => e.Parent)
+                .OnDelete(DeleteBehavior.ClientCascade);
+
+            // OnDeleteCascade EquipmentDefinition
+            modelBuilder.Entity<EquipmentDefinition>()
+                .HasMany(e => e.Children)
+                .WithOne(e => e.Parent)
+                .OnDelete(DeleteBehavior.ClientCascade);
+
+            // OnDeleteCascade KeyAllocation
+            modelBuilder.Entity<Key>()
+                .HasMany(e => e.KeyAllocations)
+                .WithOne(e => e.Key)
+                .OnDelete(DeleteBehavior.ClientCascade);
+
+            modelBuilder.Entity<Personnel>()
+                .HasMany(e => e.KeyAllocations)
+                .WithOne(e => e.Personnel)
+                .OnDelete(DeleteBehavior.ClientCascade);
+
+            // OnDeleteCascade Tickets
+            modelBuilder.Entity<Equipment>()
+                .HasMany(e => e.Tickets)
+                .WithOne(e => e.Equipment)
+                .OnDelete(DeleteBehavior.ClientCascade);
+
+
             base.OnModelCreating(modelBuilder);
         }
 
@@ -38,7 +130,6 @@ namespace temsAPI.Data
         public DbSet<EquipmentSpecifications> EquipmentSpecifications { get; set; }
         public DbSet<EquipmentDefinition> EquipmentDefinitions { get; set; }
         public DbSet<Equipment> Equipments { get; set; }
-        public DbSet<EquipmentDefinitionKinship> EquipmentDefinitionKinships { get; set; }
 
         // User entities
         public DbSet<TEMSUser> TEMSUsers { get; set; }
@@ -46,7 +137,7 @@ namespace temsAPI.Data
         public DbSet<RolePrivileges> RolePrivileges { get; set; }
 
         // Communication entitites
-        public DbSet<Announcement> Announcements{ get; set; }
+        public DbSet<Announcement> Announcements { get; set; }
         public DbSet<FrequentTicketProblem> FrequentTicketProblems { get; set; }
         public DbSet<Ticket> Tickets { get; set; }
         public DbSet<ToDo> ToDos { get; set; }

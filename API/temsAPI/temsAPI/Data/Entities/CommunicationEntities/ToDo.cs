@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
+using temsAPI.Data.Entities.UserEntities;
 
 namespace temsAPI.Data.Entities.CommunicationEntities
 {
@@ -24,7 +25,7 @@ namespace temsAPI.Data.Entities.CommunicationEntities
 
 #nullable enable
         [ForeignKey("CreatedByID")]
-        public IdentityUser? CreatedBy { get; set; }
+        public TEMSUser? CreatedBy { get; set; }
         public string? CreatedByID { get; set; }
 #nullable disable
     }

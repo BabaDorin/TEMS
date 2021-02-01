@@ -1,0 +1,45 @@
+/*******************/
+/*Comment widgets*/
+/*******************/
+
+.comment-widgets {
+    position: relative;
+    margin-bottom: 10px;
+
+    .comment-row {
+        border-bottom: 1px solid rgba(120, 130, 140, .13);
+        padding: 20px 25px;
+        display: flex;
+        margin: 10px 0;
+
+        &:last-child {
+            border-bottom: 0px;
+        }
+
+        &:hover,
+        &.active {
+            background: $transparent-dark-bg;
+        }
+
+        .mail-desc{
+            font-size: 14px;
+        line-height: 25px;
+        color: #848a96;
+        }
+    }
+}
+
+.comment-text {
+    padding-left: 15px;
+    width: 100%;
+
+    p {
+        max-height: 65px;
+        width: 100%;
+        overflow: hidden;
+    }
+}
+
+.badge-rounded {
+    border-radius: 40px;
+}

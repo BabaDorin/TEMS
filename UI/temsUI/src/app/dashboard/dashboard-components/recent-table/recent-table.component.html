@@ -1,0 +1,59 @@
+<div class="row">
+    <!-- column -->
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <!-- title -->
+                <div class="d-md-flex align-items-center">
+                    <div>
+                        <h4 class="card-title font-16 text-uppercase">RECENT SALES</h4>
+                        <!-- <h5 class="card-subtitle">Overview of Top Selling Items</h5> -->
+                    </div>
+                    <div class="ml-auto">
+                        <div class="dl">
+                            <select class="form-control">
+                                <option value="0" selected>March 2017</option>
+                                <option value="1">April 2017</option>
+                                <option value="2">May 2017</option>
+                                <option value="3">June 2017</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <!-- title -->
+
+                <div class="table-responsive">
+                    <table class="table v-middle nowrap">
+                        <thead>
+                            <tr>
+                                <th class="border-top-0">#</th>
+                                <th class="border-top-0">NAME</th>
+                                <th class="border-top-0">SATATUS</th>
+                                <th class="border-top-0">DATE</th>
+                                <th class="border-top-0">PRICE</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor='let data of tableData'>
+                                <td> {{data.id}} </td>
+                                <td> {{data.Name}} </td>
+                                <td> {{data.Status}} </td>
+                                <td> {{data.Date.toDateString()}} </td>
+                                <td>
+                                    <span *ngIf='data.Price < 0' style="color: #f33155;">$ {{data.Price}} </span>
+                                    <span *ngIf='data.Price > 0 && data.Price < 500' style="color: #7ace4c;">$
+                                        {{data.Price}} </span>
+                                    <span *ngIf='data.Price > 500' style="color: #2cabe3;">$ {{data.Price}} </span>
+
+
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

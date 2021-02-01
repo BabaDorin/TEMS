@@ -1,0 +1,43 @@
+.cal-month-view .cal-header .cal-cell {
+    background: $info;
+    color: $white;
+    text-transform: uppercase;
+
+    &:hover {
+        background: $info;
+        color: $white;
+    }
+}
+
+.fc-button {
+    background: #3bbcf5;
+    border: 1px solid $info;
+    color: $white;
+    text-transform: capitalize;
+
+    &.active {
+        background: #3bbcf5;
+        color: $white;
+        border: 1px solid $info;
+        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15),
+            0 1px 2px rgba(0, 0, 0, 0.05);
+    }
+}
+
+.border-light-info {
+    border: 1px solid #3bbcf5;
+    border-radius: 4px;
+}
+
+.fc-state-default {
+
+    &.fc-corner-right {
+        border-top-right-radius: 4px !important;
+        border-bottom-right-radius: 4px !important;
+    }
+
+    &.fc-corner-left {
+        border-top-left-radius: 4px !important;
+        border-bottom-left-radius: 4px !important;
+    }
+}

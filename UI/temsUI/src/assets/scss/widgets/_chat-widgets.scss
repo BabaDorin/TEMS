@@ -1,0 +1,123 @@
+/*******************/
+/*Chat widget*/
+/*******************/
+.chat-box {
+    overflow: auto;
+}
+
+.chat-list {
+    margin: 0px;
+    padding: 0px;
+
+    .chat-item {
+        list-style: none;
+        margin-top: 30px;
+
+        .chat-img {
+            display: inline-block;
+            width: 45px;
+            vertical-align: top;
+
+            img {
+                width: 45px;
+                border-radius: 100%;
+            }
+        }
+
+        .chat-content {
+            width: calc(100% - 50px);
+            display: inline-block;
+            padding-left: 15px;
+
+            .box {
+                display: inline-block;
+                padding: 10px;
+                color: $gray-800;
+                background: $gray-100;
+            }
+        }
+
+        .chat-time,
+        .chat-time2 {
+            display: block;
+            font-size: 10px;
+            color: $gray-700;
+            margin-left: 60px;
+            margin-top: 5px;
+        }
+
+        .chat-time2 {
+            margin: 5px 0 15px 0;
+        }
+
+        &.odd {
+            position: relative;
+
+            .chat-img {
+                position: absolute;
+                right: 0;
+            }
+
+            .chat-content {
+                text-align: right;
+                width: calc(100% - 0px);
+                padding-left: 0;
+                padding-right: 15px;
+            }
+
+            .chat-time {
+                text-align: right;
+                margin-right: 60px;
+                margin-top: 5px;
+            }
+
+            .chat-content {
+                padding-right: 60px;
+
+                &.no-avatar {
+                    padding-right: 15px;
+                }
+            }
+
+            .box {
+                clear: both;
+                color: $white;
+                background: $info;
+            }
+
+            &.type-msg {
+                .chat-messages {
+                    .chat-content {
+                        margin-top: 3px;
+
+                        &:first-child {
+                            margin-top: 0;
+                        }
+                    }
+                }
+            }
+        }
+
+        &.odd+.odd {
+            margin-top: 5px;
+        }
+
+        &.reverse {
+            text-align: right;
+
+            .chat-time {
+                text-align: left;
+            }
+
+            .chat-content {
+                padding-left: 0px;
+                padding-right: 15px;
+            }
+        }
+    }
+}
+
+
+/*******************/
+/*Chat widget*/
+/*******************/

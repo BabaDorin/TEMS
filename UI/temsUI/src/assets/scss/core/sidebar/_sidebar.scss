@@ -1,0 +1,115 @@
+// Sidebar
+$sidebar-link-padding: 17px 13px;
+$sidebar-icon-size: 21px;
+$sidebar-first-level-padding: 0 0 10px 0;
+$sidebar-first-level-link-padding: 10px 15px;
+$sidebar-first-level-icon-size: 16px;
+
+/*******************
+Main sidebar
+******************/
+
+.left-sidebar {
+  position: absolute;
+  width: $sidebar-width-full;
+  height: 100%;
+  top: 0px;
+  z-index: 1;
+  padding-top: 60px;
+  background: $sidebar;
+  box-shadow: $shadow;
+  transition: 0.2s ease-in;
+}
+
+.material.left-sidebar {
+  box-shadow: 1px 0px 20px rgba(0, 0, 0, 0.08);
+}
+
+/*******************
+sidebar navigation
+******************/
+.scroll-sidebar {
+  height: calc(100% - 20px);
+  position: relative;
+}
+
+.ps__rail-y {
+  z-index: 9;
+}
+
+.sidebar-nav {
+  ul {
+    .sidebar-item {
+      width: $sidebar-width-full;
+      background: inherit;
+
+      .sidebar-link {
+        color: $sidebar-text;
+        padding: $sidebar-link-padding;
+        display: flex;
+        white-space: nowrap;
+        align-items: center;
+        line-height: 25px;
+        opacity: 0.8;
+        font-weight: 300;
+        border-left: 3px solid transparent;
+        i {
+          font-style: normal;
+          width: 35px;
+          line-height: 25px;
+          font-size: $sidebar-icon-size;
+          color: $sidebar-icons;
+          display: inline-block;
+          text-align: center;
+        }
+
+        &.active,
+        &:hover {
+          opacity: 1;
+        }
+        &.active {
+          font-weight: 500;
+          border-left: 3px solid $info;
+        }
+      }
+
+      &:hover {
+        background: rgba(0, 0, 0, 0.07);
+      }
+
+      &.selected > .sidebar-link {
+        /*background: rgba(0, 0, 0, 0.04);*/
+        opacity: 1;
+        background-color: $danger;
+        border-left: 3px solid transparent;
+        font-weight: 500;
+      }
+    }
+  }
+}
+
+/*******************
+ common m-p removed
+******************/
+.sidebar-nav {
+  ul {
+    margin: 0px;
+    padding: 0px;
+
+    li {
+      list-style: none;
+    }
+  }
+}
+
+.collapse.in {
+  display: block;
+}
+
+// truncate
+.hide-menu {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-right: 35px;
+}

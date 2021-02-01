@@ -1,0 +1,123 @@
+/*
+Template Name: Admin Template
+Author: Niravjoshi / Wrappixel
+File: scss
+*/
+
+// This is the extra scss
+.custom-control-input {
+  z-index: 1;
+}
+
+// Tooltip for the sparkline charts
+html body {
+  .jqstooltip,
+  .flotTip {
+    width: auto !important;
+    height: auto !important;
+    background: $gray-900;
+    color: $white;
+    padding: 5px 10px;
+  }
+}
+
+body .jqstooltip {
+  border-color: transparent;
+  border-radius: 60px;
+}
+
+// Tooltip for the chartist chart charts
+.chartist-tooltip {
+  position: absolute;
+  display: inline-block;
+  opacity: 0;
+  border-radius: $border-radius;
+  padding: 10px 20px;
+  background: $info;
+  color: $white;
+  text-align: center;
+  pointer-events: none;
+  z-index: 1;
+  -webkit-transition: opacity 0.2s linear;
+  -moz-transition: opacity 0.2s linear;
+  -o-transition: opacity 0.2s linear;
+  transition: opacity 0.2s linear;
+}
+
+.chartist-tooltip:before {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  margin-left: -5px;
+  border: 5px solid transparent;
+  border-top-color: $info;
+}
+
+.chartist-tooltip.tooltip-show {
+  opacity: 1;
+}
+
+.icon-list-demo {
+  .preview {
+    padding: 10px;
+
+    i {
+      font-size: 20px;
+      margin-right: 10px;
+    }
+  }
+
+  .f-icon {
+    padding: 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    i {
+      font-size: 20px;
+      margin-right: 10px;
+      width: 25px;
+    }
+  }
+}
+
+// Custom select
+.custom-select {
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  -o-appearance: none;
+  background-size: auto;
+}
+
+.material-icon-list-demo .icons div {
+  width: 33%;
+  padding: 10px;
+  display: inline-block;
+  line-height: 40px;
+
+  i {
+    font-size: 20px;
+    margin-right: 10px;
+  }
+
+  code {
+    margin-right: 10px;
+  }
+}
+
+@include media-breakpoint-down(sm) {
+  .material-icon-list-demo .icons div {
+    width: 100%;
+  }
+}
+// scrollbar
+.scrollable {
+  position: relative;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}

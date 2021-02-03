@@ -45,34 +45,39 @@ export const ROUTES: RouteInfo[] = [
   {
     path: '',
     title: 'Equipment',
-    isActive: true,
+    icon: 'mdi mdi-desktop-mac menu-icon',
+    isActive: false,
     showSubmenu: false,
     submenu: [
       {
         path: '/equipment/all',
         title: 'View',
-        isActive: true,
+        icon: 'mdi mdi-view-list menu-icon',
+        isActive: false,
         showSubmenu: false,
         submenu: []
       },
       {
         path: '/equipment/add',
         title: 'Add',
-        isActive: true,
+        icon: 'mdi mdi-plus menu-icon',
+        isActive: false,
         showSubmenu: false,
         submenu: []
       },
       {
         path: '/equipment/quick-access',
         title: 'Quick Access',
-        isActive: true,
+        icon: 'mdi mdi-format-horizontal-align-right menu-icon',
+        isActive: false,
         showSubmenu: false,
         submenu: []
       },
       {
         path: '/equipment/allocate',
         title: 'Allocate',
-        isActive: true,
+        icon: 'mdi mdi-transfer menu-icon',
+        isActive: false,
         showSubmenu: false,
         submenu: []
       },
@@ -81,27 +86,31 @@ export const ROUTES: RouteInfo[] = [
   {
     path: '',
     title: 'Rooms',
-    isActive: true,
+    icon: 'mdi mdi-panorama-wide-angle menu-icon',
+    isActive: false,
     showSubmenu: false,
     submenu: [
       {
         path: '/rooms/all',
         title: 'View',
-        isActive: true,
+        icon: 'mdi mdi-view-list menu-icon',
+        isActive: false,
         showSubmenu: false,
         submenu: []
       },
       {
         path: '/college-map',
         title: 'College Map',
-        isActive: true,
+        icon: 'mdi mdi-map menu-icon',
+        isActive: false,
         showSubmenu: false,
         submenu: []
       },
       {
         path: '/rooms/allocate',
         title: 'Allocate',
-        isActive: true,
+        icon: 'mdi mdi-transfer menu-icon',
+        isActive: false,
         showSubmenu: false,
         submenu: []
       },
@@ -110,27 +119,31 @@ export const ROUTES: RouteInfo[] = [
   {
     path: '',
     title: 'Personnel',
-    isActive: true,
+    icon: 'mdi mdi-account-multiple menu-icon',
+    isActive: false,
     showSubmenu: false,
     submenu: [
       {
         path: '/personnel/all',
         title: 'View',
-        isActive: true,
+        icon: 'mdi mdi-view-list menu-icon',
+        isActive: false,
         showSubmenu: false,
         submenu: []
       },
       {
         path: '/personnel/add',
         title: 'Add',
-        isActive: true,
+        icon: 'mdi mdi-plus menu-icon',
+        isActive: false,
         showSubmenu: false,
         submenu: []
       },
       {
         path: '/personnel/allocate',
         title: 'Allocate',
-        isActive: true,
+        icon: 'mdi mdi-transfer menu-icon',
+        isActive: false,
         showSubmenu: false,
         submenu: []
       },
@@ -139,27 +152,31 @@ export const ROUTES: RouteInfo[] = [
   {
     path: '',
     title: 'Keys',
-    isActive: true,
+    icon: 'mdi mdi-key-variant menu-icon',
+    isActive: false,
     showSubmenu: false,
     submenu: [
       {
         path: '/keys/all',
         title: 'View',
-        isActive: true,
+        icon: 'mdi mdi-key-change menu-icon',
+        isActive: false,
         showSubmenu: false,
         submenu: []
       },
       {
-        path: '/keys/add',
-        title: 'Add',
-        isActive: true,
+        path: '/keys/allocations',
+        title: 'View Allocations',
+        icon: 'mdi mdi-account-search menu-icon',
+        isActive: false,
         showSubmenu: false,
         submenu: []
       },
       {
         path: '/keys/allocate',
         title: 'Allocate',
-        isActive: true,
+        icon: 'mdi mdi-account-key menu-icon',
+        isActive: false,
         showSubmenu: false,
         submenu: []
       },
@@ -168,20 +185,23 @@ export const ROUTES: RouteInfo[] = [
   {
     path: '',
     title: 'Issues',
-    isActive: true,
+    icon: 'mdi mdi-information menu-icon',
+    isActive: false,
     showSubmenu: false,
     submenu: [
       {
         path: '/issues/all',
         title: 'View',
-        isActive: true,
+        icon: 'mdi mdi-alert menu-icon',
+        isActive: false,
         showSubmenu: false,
         submenu: []
       },
       {
         path: '/issues/add',
         title: 'Create New',
-        isActive: true,
+        icon: 'mdi mdi-plus menu-icon',
+        isActive: false,
         showSubmenu: false,
         submenu: []
       },
@@ -190,20 +210,23 @@ export const ROUTES: RouteInfo[] = [
   {
     path: '',
     title: 'Communication',
-    isActive: true,
+    icon: 'mdi mdi-information-variant menu-icon',
+    isActive: false,
     showSubmenu: false,
     submenu: [
       {
         path: '/communication/announcements',
         title: 'Announcements',
-        isActive: true,
+        icon: 'mdi mdi-bullhorn menu-icon',
+        isActive: false,
         showSubmenu: false,
         submenu: []
       },
       {
         path: '/communication/logs',
         title: 'Logs',
-        isActive: true,
+        icon: 'mdi mdi-format-align-center menu-icon',
+        isActive: false,
         showSubmenu: false,
         submenu: []
       },
@@ -212,51 +235,66 @@ export const ROUTES: RouteInfo[] = [
   {
     path: '/library/all',
     title: 'Library',
-    isActive: true,
+    icon: 'mdi mdi-microsoft menu-icon',
+    isActive: false,
     showSubmenu: false,
     submenu: []
   },
   {
     path: '/report-printing/general',
     title: 'Report Printing',
-    isActive: true,
+    icon: 'mdi mdi-printer menu-icon',
+    isActive: false,
     showSubmenu: false,
     submenu: []
   },
   {
     path: '',
     title: 'Administration',
-    isActive: true,
+    icon: 'mdi mdi-account-star menu-icon',
+    isActive: false,
     showSubmenu: false,
     submenu: [
       {
         path: '/administration/equipment-management',
         title: 'Equipment Management',
-        isActive: true,
+        icon: 'mdi mdi-database-plus menu-icon',
+        isActive: false,
         showSubmenu: false,
         submenu: []
       },
       {
         path: '/administration/user-management',
         title: 'User Management',
-        isActive: true,
+        icon: 'mdi mdi-account-multiple-outline menu-icon',
+        isActive: false,
         showSubmenu: false,
         submenu: []
       },
       {
         path: '/administration/role-management',
         title: 'Role Management',
-        isActive: true,
+        icon: 'mdi mdi-account-convert menu-icon',
+        isActive: false,
         showSubmenu: false,
         submenu: []
       },
       {
         path: '/administration/system-configuration',
-        title: 'System Configuration',
-        isActive: true,
+        title: 'System Configuration menu-icon',
+        icon: 'mdi mdi-sitemap',
+        isActive: false,
         showSubmenu: false,
         submenu: []
       }
     ]
+  },
+  {
+    path: '/administration/system-configuration',
+    title: 'Ciuta Ion',
+    icon: 'mdi mdi-wheelchair-accessibility menu-icon',
+    isActive: false,
+    showSubmenu: false,
+    submenu: []
   }
 ];

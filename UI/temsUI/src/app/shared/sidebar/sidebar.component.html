@@ -42,20 +42,20 @@
 -->
 <nav class="sidebar sidebar-offcanvas" id="sidebar">
   <ul class="nav">
-    <li class="nav-item" *ngFor="let sidebarNavItem of sidebarNavItems">
+    <li class="nav-item" *ngFor="let sidebarNavItem of sidebarNavItems"  [class]="{ 'active' : sidebarNavItem.isActive }">
 
       <!-- if it contains submenu -->
       <div *ngIf="sidebarNavItem.submenu.length != 0">
-        <a class="nav-link" (click)="sidebarNavItem.showSubmenu = !sidebarNavItem.showSubmenu"
-          [attr.aria-expanded]="sidebarNavItem.showSubmenu" aria-controls="ui-basic">
+        <a class="nav-link" (click)="sidebarNavItem.showSubmenu = !sidebarNavItem.showSubmenu; sidebarNavItem.isActive = !sidebarNavItem.isActive"
+          [attr.aria-expanded]="sidebarNavItem.showSubmenu" aria-controls="ui-basic" >
           <span class="menu-title">{{ sidebarNavItem.title }}</span>
           <i class="menu-arrow"></i>
-          <i class="mdi mdi-format-list-bulleted menu-icon"></i>
+          <i [class]="sidebarNavItem.icon"></i>
         </a>
         <div class="collapse" id="ui-basic" [ngbCollapse]="!sidebarNavItem.showSubmenu">
           <ul class="nav flex-column sub-menu">
             <li *ngFor="let submenu of sidebarNavItem.submenu" class="nav-item">
-              <a class="nav-link" [routerLink]="submenu.path">{{ submenu.title }}</a>
+              <a class="nav-link" [routerLink]="submenu.path">{{ submenu.title }} <i [class]="submenu.icon"></i></a>
             </li>
           </ul>
         </div>
@@ -64,7 +64,7 @@
       <div *ngIf="sidebarNavItem.submenu.length == 0">
         <a class="nav-link" [routerLink]="sidebarNavItem.path" >
           <span class="menu-title">{{ sidebarNavItem.title }}</span>
-          <i class="mdi mdi-home menu-icon"></i>
+          <i [class]="sidebarNavItem.icon"></i>
         </a>
       </div>
     </li>

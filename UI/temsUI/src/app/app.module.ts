@@ -1,68 +1,44 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import {
-  CommonModule,
-  LocationStrategy,
-  PathLocationStrategy
-} from '@angular/common';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { HttpClientModule, HttpClient } from '@angular/common/http';
-import { Routes, RouterModule } from '@angular/router';
+import { AppRoutingModule } from './app-routing.module';
 
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ChartsModule, ThemeService } from 'ng2-charts';
 
-import { FullComponent } from './layouts/full/full.component';
-
-import { NavigationComponent } from './shared/header-navigation/navigation.component';
-import { SidebarComponent } from './shared/sidebar/sidebar.component';
-import { BreadcrumbComponent } from './shared/breadcrumb/breadcrumb.component';
-
-
-import { Approutes } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { SpinnerComponent } from './shared/spinner.component';
-
-import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
-import { PERFECT_SCROLLBAR_CONFIG } from 'ngx-perfect-scrollbar';
-import { PerfectScrollbarConfigInterface } from 'ngx-perfect-scrollbar';
-
-const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
-  suppressScrollX: true,
-  wheelSpeed: 1,
-  wheelPropagation: true,
-  minScrollbarLength: 20
-};   
+import { NavbarComponent } from './shared/navbar/navbar.component';
+import { SidebarComponent } from './shared/sidebar/sidebar.component';
+import { FooterComponent } from './shared/footer/footer.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { TodoComponent } from './apps/todo-list/todo/todo.component';
+import { SpinnerComponent } from './shared/spinner/spinner.component';
+import { ContentAnimateDirective } from './shared/directives/content-animate.directive';
+import { TodoListComponent } from './apps/todo-list/todo-list.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    SpinnerComponent,
-    FullComponent,
-    NavigationComponent,
+    NavbarComponent,
     SidebarComponent,
-    BreadcrumbComponent,
+    FooterComponent,
+    DashboardComponent,
+    TodoListComponent,
+    TodoComponent,
+    SpinnerComponent,
+    ContentAnimateDirective
   ],
   imports: [
-    CommonModule,
     BrowserModule,
+    AppRoutingModule,
+    NgbModule,
     BrowserAnimationsModule,
     FormsModule,
-    HttpClientModule,
-	PerfectScrollbarModule,
-    NgbModule,
-    RouterModule.forRoot(Approutes, { useHash: false, relativeLinkResolution: 'legacy' })
+    ReactiveFormsModule,
+    ChartsModule
   ],
-  providers: [
-    {
-      provide: LocationStrategy,
-      useClass: PathLocationStrategy
-    },
-	{
-      provide: PERFECT_SCROLLBAR_CONFIG,
-      useValue: DEFAULT_PERFECT_SCROLLBAR_CONFIG
-    }
-  ],
+  providers: [ThemeService],
   bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule { }

@@ -47,7 +47,7 @@ import { ToastsContainer } from './toast/toast-container';
     ButtonsComponent,
     CardsComponent,
     ToastComponent,
-    ToastsContainer
+    ToastsContainer,
   ]
 })
 export class ComponentsModule {}

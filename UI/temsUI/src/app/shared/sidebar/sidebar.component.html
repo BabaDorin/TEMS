@@ -11,7 +11,7 @@
                 [routerLink]="sidebarnavItem.class === '' ? [sidebarnavItem.path] : null"
                 [ngClass]="[sidebarnavItem.class]" *ngIf="!sidebarnavItem.extralink;"
                 (click)="addExpandClass(sidebarnavItem.title)"
-                [routerLinkActive]="sidebarnavItem.submenu.length != 0 ? '' : 'active'">
+                [routerLinkActive]="sidebarnavItem.submenu.length != 2 ? '' : 'active'">
 
                 <i [ngClass]="[sidebarnavItem.icon]"></i>
 

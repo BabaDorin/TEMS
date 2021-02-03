@@ -6,30 +6,30 @@ import { FormControl, Validators } from '@angular/forms';
 	templateUrl: './rating.component.html',
 	styles: [
 		`
-			.star {
-				font-size: 1.5rem;
-				color: #b0c4de;
-			}
-			.filled {
-				color: #1e90ff;
-			}
-			.heart {
-				position: relative;
-				display: inline-block;
-				font-size: 3rem;
-				color: #d3d3d3;
-			}
-			.full {
-				color: red;
-			}
-			.half {
-				position: absolute;
-				display: inline-block;
-				overflow: hidden;
-				color: red;
-			}
-			.bad {
-			color: #deb0b0;
+		.star {
+			font-size: 1.5rem;
+			color: #b0c4de;
+		}
+		.filled {
+			color: #1e90ff;
+		}
+		.heart {
+			position: relative;
+			display: inline-block;
+			font-size: 3rem;
+			color: #d3d3d3;
+		}
+		.full {
+			color: red;
+		}
+		.half {
+			position: absolute;
+			display: inline-block;
+			overflow: hidden;
+			color: red;
+		}
+		.bad {
+		color: #deb0b0;
 		}
 		.filled.bad {
 			color: #ff1e1e;

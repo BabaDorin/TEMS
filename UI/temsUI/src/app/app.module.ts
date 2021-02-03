@@ -1,4 +1,3 @@
-// import * as $ from 'jquery';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {
@@ -42,7 +41,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     FullComponent,
     NavigationComponent,
     SidebarComponent,
-    BreadcrumbComponent
+    BreadcrumbComponent,
   ],
   imports: [
     CommonModule,

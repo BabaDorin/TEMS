@@ -8,6 +8,7 @@ import { map } from 'rxjs/operators';
 	templateUrl: './carousel.component.html',
 	providers: [NgbCarouselConfig]
 })
+
 export class NgbdCarouselBasicComponent {
 	showNavigationArrows = false;
 	showNavigationIndicators = false;
@@ -20,32 +21,31 @@ export class NgbdCarouselBasicComponent {
 
 		config.showNavigationArrows = true;
 		config.showNavigationIndicators = true;
-
-
 	}
+
 	paused = false;
-	  unpauseOnArrow = false;
-	  pauseOnIndicator = false;
-	  pauseOnHover = true;
+	unpauseOnArrow = false;
+	pauseOnIndicator = false;
+	pauseOnHover = true;
 
-	  @ViewChild('carousel', {static : true}) carousel: NgbCarousel=Object.create(null);
+	@ViewChild('carousel', { static: true }) carousel: NgbCarousel = Object.create(null);
 
-	  togglePaused() {
-	    if (this.paused) {
-	      this.carousel.cycle();
-	    } else {
-	      this.carousel.pause();
-	    }
-	    this.paused = !this.paused;
-	  }
+	togglePaused() {
+		if (this.paused) {
+			this.carousel.cycle();
+		} else {
+			this.carousel.pause();
+		}
+		this.paused = !this.paused;
+	}
 
-	  onSlide(slideEvent: NgbSlideEvent) {
-	    if (this.unpauseOnArrow && slideEvent.paused &&
-	      (slideEvent.source === NgbSlideEventSource.ARROW_LEFT || slideEvent.source === NgbSlideEventSource.ARROW_RIGHT)) {
-	      this.togglePaused();
-	    }
-	    if (this.pauseOnIndicator && !slideEvent.paused && slideEvent.source === NgbSlideEventSource.INDICATOR) {
-	      this.togglePaused();
-	    }
-	  }
+	onSlide(slideEvent: NgbSlideEvent) {
+		if (this.unpauseOnArrow && slideEvent.paused &&
+			(slideEvent.source === NgbSlideEventSource.ARROW_LEFT || slideEvent.source === NgbSlideEventSource.ARROW_RIGHT)) {
+			this.togglePaused();
+		}
+		if (this.pauseOnIndicator && !slideEvent.paused && slideEvent.source === NgbSlideEventSource.INDICATOR) {
+			this.togglePaused();
+		}
+	}
 }

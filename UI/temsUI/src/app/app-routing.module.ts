@@ -13,10 +13,13 @@ export const Approutes: Routes = [
         path: 'dashboard',
         loadChildren: () => import('./dashboard/dashboard.module').then(m => m.DashboardModule)
       },
-      {
-        path: 'component',
-        loadChildren: () => import('./component/component.module').then(m => m.ComponentsModule)
-      }
+      // {
+      //   path: 'component',
+      //   loadChildren: () => import('./component/component.module').then(m => m.ComponentsModule)
+      // }
+      // {
+      //   path: 'helloworld', component: HelloworldComponent
+      // },
     ]
   },
   {

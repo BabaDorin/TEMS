@@ -54,8 +54,7 @@ export class AppComponent implements OnInit{
     });
   }
 
-
-
+  
   ngOnInit() {
     // Scroll to top after route change
     this.router.events.subscribe((evt) => {

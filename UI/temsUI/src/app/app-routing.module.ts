@@ -1,3 +1,4 @@
+import { MdiComponent } from './public/icons/mdi/mdi.component';
 import { ViewLogsComponent } from './tems-components/communication/view-logs/view-logs.component';
 import { ViewAnnouncementsComponent } from './tems-components/communication/view-announcements/view-announcements.component';
 import { CreateIssueComponent } from './tems-components/issue/create-issue/create-issue.component';
@@ -23,10 +24,15 @@ import { ViewEquipmentComponent } from './tems-components/equipment/view-equipme
 import { AddEquipmentComponent } from './tems-components/equipment/add-equipment/add-equipment.component';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { DashboardComponent } from './reusable-components/dashboard/dashboard.component';
+import { DashboardComponent } from './public/dashboard/dashboard.component';
+import { AnalyticsComponent } from './tems-components/analytics/analytics.component';
+import { IconsModule } from './public/icons/icons.module';
 
 
 const routes: Routes = [
+  // Public
+  { path: 'icons', component: MdiComponent},
+
   // Equipment
   { path: 'equipment/all', component: ViewEquipmentComponent },
   { path: 'equipment/add', component: AddEquipmentComponent },
@@ -51,7 +57,6 @@ const routes: Routes = [
   { path: 'issues/all', component: ViewIssuesComponent },
   { path: 'issues/create', component: CreateIssueComponent },
 
-
   // Library
   { path: 'library/all', component: ViewLibraryComponent },
   
@@ -70,6 +75,10 @@ const routes: Routes = [
   // Communication
   { path: 'communication/announcements', component: ViewAnnouncementsComponent },
   { path: 'communication/logs', component: ViewLogsComponent },
+
+  // Analytics
+  { path: 'analytics', component:  AnalyticsComponent},
+  
 ];
 
 @NgModule({

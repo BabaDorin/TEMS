@@ -257,7 +257,7 @@ export const ROUTES: RouteInfo[] = [
     submenu: [
       {
         path: '/administration/equipment-management',
-        title: 'Equipment Management',
+        title: 'Equipment',
         icon: 'mdi mdi-database-plus menu-icon',
         isActive: false,
         showSubmenu: false,
@@ -265,7 +265,7 @@ export const ROUTES: RouteInfo[] = [
       },
       {
         path: '/administration/user-management',
-        title: 'User Management',
+        title: 'Users',
         icon: 'mdi mdi-account-multiple-outline menu-icon',
         isActive: false,
         showSubmenu: false,
@@ -273,7 +273,7 @@ export const ROUTES: RouteInfo[] = [
       },
       {
         path: '/administration/role-management',
-        title: 'Role Management',
+        title: 'Roles',
         icon: 'mdi mdi-account-convert menu-icon',
         isActive: false,
         showSubmenu: false,
@@ -281,8 +281,8 @@ export const ROUTES: RouteInfo[] = [
       },
       {
         path: '/administration/system-configuration',
-        title: 'System Configuration menu-icon',
-        icon: 'mdi mdi-sitemap',
+        title: 'Configuration',
+        icon: 'mdi mdi-sitemap menu-icon',
         isActive: false,
         showSubmenu: false,
         submenu: []
@@ -290,9 +290,9 @@ export const ROUTES: RouteInfo[] = [
     ]
   },
   {
-    path: '/administration/system-configuration',
-    title: 'Ciuta Ion',
-    icon: 'mdi mdi-wheelchair-accessibility menu-icon',
+    path: '/analytics',
+    title: 'Analytics',
+    icon: 'mdi mdi-chart-bar menu-icon',
     isActive: false,
     showSubmenu: false,
     submenu: []

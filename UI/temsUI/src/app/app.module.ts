@@ -10,12 +10,12 @@ import { AppComponent } from './app.component';
 import { NavbarComponent } from './shared/navbar/navbar.component';
 import { SidebarComponent } from './shared/sidebar/sidebar.component';
 import { FooterComponent } from './shared/footer/footer.component';
-import { DashboardComponent } from './reusable-components/dashboard/dashboard.component';
+import { DashboardComponent } from './public/dashboard/dashboard.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { TodoComponent } from './reusable-components/apps/todo-list/todo/todo.component';
+import { TodoComponent } from './public/apps/todo-list/todo/todo.component';
 import { SpinnerComponent } from './shared/spinner/spinner.component';
 import { ContentAnimateDirective } from './shared/directives/content-animate.directive';
-import { TodoListComponent } from './reusable-components/apps/todo-list/todo-list.component';
+import { TodoListComponent } from './public/apps/todo-list/todo-list.component';
 import { ViewEquipmentComponent } from './tems-components/equipment/view-equipment/view-equipment.component';
 import { AddEquipmentComponent } from './tems-components/equipment/add-equipment/add-equipment.component';
 import { QuickAccessComponent } from './tems-components/equipment/quick-access/quick-access.component';
@@ -39,6 +39,7 @@ import { UserManagementComponent } from './tems-components/admin/user-management
 import { RoleManagementComponent } from './tems-components/admin/role-management/role-management.component';
 import { SystemConfigComponent } from './tems-components/admin/system-config/system-config.component';
 import { EquipmentAllocationComponent } from './tems-components/equipment/equipment-allocation/equipment-allocation.component';
+import { AnalyticsComponent } from './tems-components/analytics/analytics.component';
 
 @NgModule({
   declarations: [
@@ -73,7 +74,8 @@ import { EquipmentAllocationComponent } from './tems-components/equipment/equipm
     UserManagementComponent,
     RoleManagementComponent,
     SystemConfigComponent,
-    EquipmentAllocationComponent
+    EquipmentAllocationComponent,
+    AnalyticsComponent
   ],
   imports: [
     BrowserModule,

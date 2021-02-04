@@ -198,7 +198,7 @@ export const ROUTES: RouteInfo[] = [
         submenu: []
       },
       {
-        path: '/issues/add',
+        path: '/issues/create',
         title: 'Create New',
         icon: 'mdi mdi-plus menu-icon',
         isActive: false,
@@ -241,7 +241,7 @@ export const ROUTES: RouteInfo[] = [
     submenu: []
   },
   {
-    path: '/report-printing/general',
+    path: 'reports/general',
     title: 'Report Printing',
     icon: 'mdi mdi-printer menu-icon',
     isActive: false,

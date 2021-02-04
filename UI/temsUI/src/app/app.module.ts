@@ -19,7 +19,6 @@ import { TodoListComponent } from './reusable-components/apps/todo-list/todo-lis
 import { ViewEquipmentComponent } from './tems-components/equipment/view-equipment/view-equipment.component';
 import { AddEquipmentComponent } from './tems-components/equipment/add-equipment/add-equipment.component';
 import { QuickAccessComponent } from './tems-components/equipment/quick-access/quick-access.component';
-import { AllocateComponent } from './tems-components/equipment/allocate/allocate.component';
 import { ViewRoomsComponent } from './tems-components/room/view-rooms/view-rooms.component';
 import { CollegeMapComponent } from './tems-components/college-map/college-map.component';
 import { RoomAllocationComponent } from './tems-components/room/room-allocation/room-allocation.component';
@@ -39,6 +38,7 @@ import { EquipmentManagementComponent } from './tems-components/admin/equipment-
 import { UserManagementComponent } from './tems-components/admin/user-management/user-management.component';
 import { RoleManagementComponent } from './tems-components/admin/role-management/role-management.component';
 import { SystemConfigComponent } from './tems-components/admin/system-config/system-config.component';
+import { EquipmentAllocationComponent } from './tems-components/equipment/equipment-allocation/equipment-allocation.component';
 
 @NgModule({
   declarations: [
@@ -54,7 +54,6 @@ import { SystemConfigComponent } from './tems-components/admin/system-config/sys
     ViewEquipmentComponent,
     AddEquipmentComponent,
     QuickAccessComponent,
-    AllocateComponent,
     ViewRoomsComponent,
     CollegeMapComponent,
     RoomAllocationComponent,
@@ -73,7 +72,8 @@ import { SystemConfigComponent } from './tems-components/admin/system-config/sys
     EquipmentManagementComponent,
     UserManagementComponent,
     RoleManagementComponent,
-    SystemConfigComponent
+    SystemConfigComponent,
+    EquipmentAllocationComponent
   ],
   imports: [
     BrowserModule,

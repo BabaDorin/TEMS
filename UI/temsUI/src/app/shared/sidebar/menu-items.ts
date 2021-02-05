@@ -1,3 +1,4 @@
+import { Role } from './../../models/role.model';
 import { RouteInfo } from './sidebar.metadata';
 
 // Sidebar Menu Items State
@@ -41,260 +42,265 @@ import { RouteInfo } from './sidebar.metadata';
 //         > Role Manager
 //         > System Configuration
 
-export const ROUTES: RouteInfo[] = [
-  {
-    path: '',
-    title: 'Equipment',
-    icon: 'mdi mdi-desktop-mac menu-icon',
-    isActive: false,
-    showSubmenu: false,
-    submenu: [
-      {
-        path: '/equipment/all',
-        title: 'View',
-        icon: 'mdi mdi-view-list menu-icon',
-        isActive: false,
-        showSubmenu: false,
-        submenu: []
-      },
-      {
-        path: '/equipment/add',
-        title: 'Add',
-        icon: 'mdi mdi-plus menu-icon',
-        isActive: false,
-        showSubmenu: false,
-        submenu: []
-      },
-      {
-        path: '/equipment/quick-access',
-        title: 'Quick Access',
-        icon: 'mdi mdi-format-horizontal-align-right menu-icon',
-        isActive: false,
-        showSubmenu: false,
-        submenu: []
-      },
-      {
-        path: '/equipment/allocate',
-        title: 'Allocate',
-        icon: 'mdi mdi-transfer menu-icon',
-        isActive: false,
-        showSubmenu: false,
-        submenu: []
-      },
-    ]
-  },
-  {
-    path: '',
-    title: 'Rooms',
-    icon: 'mdi mdi-panorama-wide-angle menu-icon',
-    isActive: false,
-    showSubmenu: false,
-    submenu: [
-      {
-        path: '/rooms/all',
-        title: 'View',
-        icon: 'mdi mdi-view-list menu-icon',
-        isActive: false,
-        showSubmenu: false,
-        submenu: []
-      },
-      {
-        path: '/college-map',
-        title: 'College Map',
-        icon: 'mdi mdi-map menu-icon',
-        isActive: false,
-        showSubmenu: false,
-        submenu: []
-      },
-      {
-        path: '/rooms/allocate',
-        title: 'Allocate',
-        icon: 'mdi mdi-transfer menu-icon',
-        isActive: false,
-        showSubmenu: false,
-        submenu: []
-      },
-    ]
-  },
-  {
-    path: '',
-    title: 'Personnel',
-    icon: 'mdi mdi-account-multiple menu-icon',
-    isActive: false,
-    showSubmenu: false,
-    submenu: [
-      {
-        path: '/personnel/all',
-        title: 'View',
-        icon: 'mdi mdi-view-list menu-icon',
-        isActive: false,
-        showSubmenu: false,
-        submenu: []
-      },
-      {
-        path: '/personnel/add',
-        title: 'Add',
-        icon: 'mdi mdi-plus menu-icon',
-        isActive: false,
-        showSubmenu: false,
-        submenu: []
-      },
-      {
-        path: '/personnel/allocate',
-        title: 'Allocate',
-        icon: 'mdi mdi-transfer menu-icon',
-        isActive: false,
-        showSubmenu: false,
-        submenu: []
-      },
-    ]
-  },
-  {
-    path: '',
-    title: 'Keys',
-    icon: 'mdi mdi-key-variant menu-icon',
-    isActive: false,
-    showSubmenu: false,
-    submenu: [
-      {
-        path: '/keys/all',
-        title: 'View',
-        icon: 'mdi mdi-key-change menu-icon',
-        isActive: false,
-        showSubmenu: false,
-        submenu: []
-      },
-      {
-        path: '/keys/allocations',
-        title: 'View Allocations',
-        icon: 'mdi mdi-account-search menu-icon',
-        isActive: false,
-        showSubmenu: false,
-        submenu: []
-      },
-      {
-        path: '/keys/allocate',
-        title: 'Allocate',
-        icon: 'mdi mdi-account-key menu-icon',
-        isActive: false,
-        showSubmenu: false,
-        submenu: []
-      },
-    ]
-  },
-  {
-    path: '',
-    title: 'Issues',
-    icon: 'mdi mdi-information menu-icon',
-    isActive: false,
-    showSubmenu: false,
-    submenu: [
-      {
-        path: '/issues/all',
-        title: 'View',
-        icon: 'mdi mdi-alert menu-icon',
-        isActive: false,
-        showSubmenu: false,
-        submenu: []
-      },
-      {
-        path: '/issues/create',
-        title: 'Create New',
-        icon: 'mdi mdi-plus menu-icon',
-        isActive: false,
-        showSubmenu: false,
-        submenu: []
-      },
-    ]
-  },
-  {
-    path: '',
-    title: 'Communication',
-    icon: 'mdi mdi-information-variant menu-icon',
-    isActive: false,
-    showSubmenu: false,
-    submenu: [
-      {
-        path: '/communication/announcements',
-        title: 'Announcements',
-        icon: 'mdi mdi-bullhorn menu-icon',
-        isActive: false,
-        showSubmenu: false,
-        submenu: []
-      },
-      {
-        path: '/communication/logs',
-        title: 'Logs',
-        icon: 'mdi mdi-format-align-center menu-icon',
-        isActive: false,
-        showSubmenu: false,
-        submenu: []
-      },
-    ]
-  },
-  {
-    path: '/library/all',
-    title: 'Library',
-    icon: 'mdi mdi-microsoft menu-icon',
-    isActive: false,
-    showSubmenu: false,
-    submenu: []
-  },
-  {
-    path: 'reports/general',
-    title: 'Report Printing',
-    icon: 'mdi mdi-printer menu-icon',
-    isActive: false,
-    showSubmenu: false,
-    submenu: []
-  },
-  {
-    path: '',
-    title: 'Administration',
-    icon: 'mdi mdi-account-star menu-icon',
-    isActive: false,
-    showSubmenu: false,
-    submenu: [
-      {
-        path: '/administration/equipment-management',
-        title: 'Equipment',
-        icon: 'mdi mdi-database-plus menu-icon',
-        isActive: false,
-        showSubmenu: false,
-        submenu: []
-      },
-      {
-        path: '/administration/user-management',
-        title: 'Users',
-        icon: 'mdi mdi-account-multiple-outline menu-icon',
-        isActive: false,
-        showSubmenu: false,
-        submenu: []
-      },
-      {
-        path: '/administration/role-management',
-        title: 'Roles',
-        icon: 'mdi mdi-account-convert menu-icon',
-        isActive: false,
-        showSubmenu: false,
-        submenu: []
-      },
-      {
-        path: '/administration/system-configuration',
-        title: 'Configuration',
-        icon: 'mdi mdi-sitemap menu-icon',
-        isActive: false,
-        showSubmenu: false,
-        submenu: []
-      }
-    ]
-  },
-  {
-    path: '/analytics',
-    title: 'Analytics',
-    icon: 'mdi mdi-chart-bar menu-icon',
-    isActive: false,
-    showSubmenu: false,
-    submenu: []
-  }
-];
+export class menuItems {
+
+  constructor(private role: Role) { }
+
+  ROUTES: RouteInfo[] = [
+    {
+      path: '',
+      title: 'Equipment',
+      icon: 'mdi mdi-desktop-mac menu-icon',
+      isActive: this.role.canManageEquipment,
+      showSubmenu: false,
+      submenu: [
+        {
+          path: '/equipment/all',
+          title: 'View',
+          icon: 'mdi mdi-view-list menu-icon',
+          isActive: false,
+          showSubmenu: false,
+          submenu: []
+        },
+        {
+          path: '/equipment/add',
+          title: 'Add',
+          icon: 'mdi mdi-plus menu-icon',
+          isActive: false,
+          showSubmenu: false,
+          submenu: []
+        },
+        {
+          path: '/equipment/quick-access',
+          title: 'Quick Access',
+          icon: 'mdi mdi-format-horizontal-align-right menu-icon',
+          isActive: false,
+          showSubmenu: false,
+          submenu: []
+        },
+        {
+          path: '/equipment/allocate',
+          title: 'Allocate',
+          icon: 'mdi mdi-transfer menu-icon',
+          isActive: false,
+          showSubmenu: false,
+          submenu: []
+        },
+      ]
+    },
+    {
+      path: '',
+      title: 'Rooms',
+      icon: 'mdi mdi-panorama-wide-angle menu-icon',
+      isActive: false,
+      showSubmenu: false,
+      submenu: [
+        {
+          path: '/rooms/all',
+          title: 'View',
+          icon: 'mdi mdi-view-list menu-icon',
+          isActive: false,
+          showSubmenu: false,
+          submenu: []
+        },
+        {
+          path: '/college-map',
+          title: 'College Map',
+          icon: 'mdi mdi-map menu-icon',
+          isActive: false,
+          showSubmenu: false,
+          submenu: []
+        },
+        {
+          path: '/rooms/allocate',
+          title: 'Allocate',
+          icon: 'mdi mdi-transfer menu-icon',
+          isActive: false,
+          showSubmenu: false,
+          submenu: []
+        },
+      ]
+    },
+    {
+      path: '',
+      title: 'Personnel',
+      icon: 'mdi mdi-account-multiple menu-icon',
+      isActive: false,
+      showSubmenu: false,
+      submenu: [
+        {
+          path: '/personnel/all',
+          title: 'View',
+          icon: 'mdi mdi-view-list menu-icon',
+          isActive: false,
+          showSubmenu: false,
+          submenu: []
+        },
+        {
+          path: '/personnel/add',
+          title: 'Add',
+          icon: 'mdi mdi-plus menu-icon',
+          isActive: false,
+          showSubmenu: false,
+          submenu: []
+        },
+        {
+          path: '/personnel/allocate',
+          title: 'Allocate',
+          icon: 'mdi mdi-transfer menu-icon',
+          isActive: false,
+          showSubmenu: false,
+          submenu: []
+        },
+      ]
+    },
+    {
+      path: '',
+      title: 'Keys',
+      icon: 'mdi mdi-key-variant menu-icon',
+      isActive: false,
+      showSubmenu: false,
+      submenu: [
+        {
+          path: '/keys/all',
+          title: 'View',
+          icon: 'mdi mdi-key-change menu-icon',
+          isActive: false,
+          showSubmenu: false,
+          submenu: []
+        },
+        {
+          path: '/keys/allocations',
+          title: 'View Allocations',
+          icon: 'mdi mdi-account-search menu-icon',
+          isActive: false,
+          showSubmenu: false,
+          submenu: []
+        },
+        {
+          path: '/keys/allocate',
+          title: 'Allocate',
+          icon: 'mdi mdi-account-key menu-icon',
+          isActive: false,
+          showSubmenu: false,
+          submenu: []
+        },
+      ]
+    },
+    {
+      path: '',
+      title: 'Issues',
+      icon: 'mdi mdi-information menu-icon',
+      isActive: false,
+      showSubmenu: false,
+      submenu: [
+        {
+          path: '/issues/all',
+          title: 'View',
+          icon: 'mdi mdi-alert menu-icon',
+          isActive: false,
+          showSubmenu: false,
+          submenu: []
+        },
+        {
+          path: '/issues/create',
+          title: 'Create New',
+          icon: 'mdi mdi-plus menu-icon',
+          isActive: false,
+          showSubmenu: false,
+          submenu: []
+        },
+      ]
+    },
+    {
+      path: '',
+      title: 'Communication',
+      icon: 'mdi mdi-information-variant menu-icon',
+      isActive: false,
+      showSubmenu: false,
+      submenu: [
+        {
+          path: '/communication/announcements',
+          title: 'Announcements',
+          icon: 'mdi mdi-bullhorn menu-icon',
+          isActive: false,
+          showSubmenu: false,
+          submenu: []
+        },
+        {
+          path: '/communication/logs',
+          title: 'Logs',
+          icon: 'mdi mdi-format-align-center menu-icon',
+          isActive: false,
+          showSubmenu: false,
+          submenu: []
+        },
+      ]
+    },
+    {
+      path: '/library/all',
+      title: 'Library',
+      icon: 'mdi mdi-microsoft menu-icon',
+      isActive: false,
+      showSubmenu: false,
+      submenu: []
+    },
+    {
+      path: 'reports/general',
+      title: 'Report Printing',
+      icon: 'mdi mdi-printer menu-icon',
+      isActive: false,
+      showSubmenu: false,
+      submenu: []
+    },
+    {
+      path: '',
+      title: 'Administration',
+      icon: 'mdi mdi-account-star menu-icon',
+      isActive: false,
+      showSubmenu: false,
+      submenu: [
+        {
+          path: '/administration/equipment-management',
+          title: 'Equipment',
+          icon: 'mdi mdi-database-plus menu-icon',
+          isActive: false,
+          showSubmenu: false,
+          submenu: []
+        },
+        {
+          path: '/administration/user-management',
+          title: 'Users',
+          icon: 'mdi mdi-account-multiple-outline menu-icon',
+          isActive: false,
+          showSubmenu: false,
+          submenu: []
+        },
+        {
+          path: '/administration/role-management',
+          title: 'Roles',
+          icon: 'mdi mdi-account-convert menu-icon',
+          isActive: false,
+          showSubmenu: false,
+          submenu: []
+        },
+        {
+          path: '/administration/system-configuration',
+          title: 'Configuration',
+          icon: 'mdi mdi-sitemap menu-icon',
+          isActive: false,
+          showSubmenu: false,
+          submenu: []
+        }
+      ]
+    },
+    {
+      path: '/analytics',
+      title: 'Analytics',
+      icon: 'mdi mdi-chart-bar menu-icon',
+      isActive: false,
+      showSubmenu: false,
+      submenu: []
+    }
+  ];  
+}

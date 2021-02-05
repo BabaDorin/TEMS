@@ -115,6 +115,6 @@ export class UserService {
   }
 
   constructor() {
-    this.role = this.personnel;
+    this.role = this.guest;
   }
 }

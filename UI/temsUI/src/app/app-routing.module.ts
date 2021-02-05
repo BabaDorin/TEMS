@@ -1,3 +1,17 @@
+import { ViewAnalyticsGuard } from './guards/analytics-guards/view-analytics/view-analytics.guard';
+import { ViewCommunicationGuard } from './guards/communication-guards/view-communication/view-communication.guard';
+import { ViewReportsGuard } from './guards/reports-guards/view-reports/view-reports.guard';
+import { AdminGuard } from './guards/administration/admin.guard';
+import { ViewEquipmentGuard } from './guards/equipment-guards/view-equipment/view-equipment.guard';
+import { ManageEquipmentGuard } from './guards/equipment-guards/manage-equipment/manage-equipment.guard';
+import { ViewLibraryGuard } from './guards/library-guards/view-library/view-library.guard';
+import { CreateIssuesGuard } from './guards/issues-guards/create-issues/create-issues.guard';
+import { ManageIssuesGuard } from './guards/issues-guards/manage-issues/manage-issues.guard';
+import { AllocateKeysGuard } from './guards/keys-guards/allocate-keys/allocate-keys.guard';
+import { ViewKeysGuard } from './guards/keys-guards/view-keys/view-keys.guard';
+import { ManagePersonnelGuard } from './guards/personnel-guards/manage-personnel/manage-personnel.guard';
+import { ViewPersonnelGuard } from './guards/personnel-guards/view-personnel/view-personnel.guard';
+import { AllocateEquipmentGuard } from './guards/equipment-guards/allocate-equipment/allocate-equipment.guard';
 import { MdiComponent } from './public/icons/mdi/mdi.component';
 import { ViewLogsComponent } from './tems-components/communication/view-logs/view-logs.component';
 import { ViewAnnouncementsComponent } from './tems-components/communication/view-announcements/view-announcements.component';
@@ -30,55 +44,57 @@ import { IconsModule } from './public/icons/icons.module';
 
 
 const routes: Routes = [
+  // Kind of home page
+  { path: '', component: DashboardComponent },
+
   // Public
   { path: 'icons', component: MdiComponent},
 
   // Equipment
-  { path: 'equipment/all', component: ViewEquipmentComponent },
-  { path: 'equipment/add', component: AddEquipmentComponent },
-  { path: 'equipment/quick-access', component: QuickAccessComponent },
-  { path: 'equipment/allocate', component: EquipmentAllocationComponent },
+  { path: 'equipment/all', component: ViewEquipmentComponent, canActivate: [ ViewEquipmentGuard ] },
+  { path: 'equipment/add', component: AddEquipmentComponent, canActivate: [ ManageEquipmentGuard ] },
+  { path: 'equipment/quick-access', component: QuickAccessComponent, canActivate: [ ViewEquipmentGuard ]},
+  { path: 'equipment/allocate', component: EquipmentAllocationComponent, canActivate: [ AllocateEquipmentGuard] },
 
   // Rooms
-  { path: 'rooms/all', component: ViewRoomsComponent },
-  { path: 'rooms/allocate', component: RoomAllocationComponent },
+  { path: 'rooms/all', component: ViewRoomsComponent, canActivate: [ ViewRoomsComponent ] },
+  { path: 'rooms/allocate', component: RoomAllocationComponent,  canActivate: [ AllocateEquipmentGuard]},
 
   // Personnel
-  { path: 'personnel/all', component: ViewPersonnelComponent },
-  { path: 'personnel/add', component: AddPersonnelComponent },
-  { path: 'personnel/allocate', component: PersonnelAllocationComponent },
+  { path: 'personnel/all', component: ViewPersonnelComponent, canActivate: [ ViewPersonnelGuard ] },
+  { path: 'personnel/add', component: AddPersonnelComponent, canActivate: [ ManagePersonnelGuard ] },
+  { path: 'personnel/allocate', component: PersonnelAllocationComponent, canActivate: [ AllocateEquipmentGuard] },
 
   // Keys
-  { path: 'keys/all', component: ViewKeysComponent },
-  { path: 'keys/allocate', component: KeysAllocationsComponent },
-  { path: 'keys/allocations', component: ViewKeysAllocationsComponent },
+  { path: 'keys/all', component: ViewKeysComponent, canActivate: [ ViewKeysGuard ]},
+  { path: 'keys/allocate', component: KeysAllocationsComponent, canActivate: [ AllocateKeysGuard ] },
+  { path: 'keys/allocations', component: ViewKeysAllocationsComponent, canActivate: [ AllocateKeysGuard ] },
 
   // Issues
-  { path: 'issues/all', component: ViewIssuesComponent },
-  { path: 'issues/create', component: CreateIssueComponent },
+  { path: 'issues/all', component: ViewIssuesComponent, canActivate: [ ViewIssuesComponent ] },
+  { path: 'issues/create', component: CreateIssueComponent, canActivate: [ CreateIssuesGuard ] },
 
   // Library
-  { path: 'library/all', component: ViewLibraryComponent },
+  { path: 'library/all', component: ViewLibraryComponent, canActivate: [ ViewLibraryGuard ] },
   
   // Administration
-  { path: 'administration/equipment-management', component: EquipmentManagementComponent },
-  { path: 'administration/user-management', component: UserManagementComponent },
-  { path: 'administration/role-management', component: RoleManagementComponent },
-  { path: 'administration/system-configuration', component: SystemConfigComponent },
+  { path: 'administration/equipment-management', component: EquipmentManagementComponent, canActivate: [ AdminGuard ] },
+  { path: 'administration/user-management', component: UserManagementComponent, canActivate: [ AdminGuard ] },
+  { path: 'administration/role-management', component: RoleManagementComponent, canActivate: [ AdminGuard ] },
+  { path: 'administration/system-configuration', component: SystemConfigComponent, canActivate: [ AdminGuard ] },
 
   // Reports
-  { path: 'reports/general', component: ReportsComponent },
+  { path: 'reports/general', component: ReportsComponent, canActivate: [ ViewReportsGuard ]  },
 
   // College Map
-  { path: 'college-map', component: CollegeMapComponent },
+  { path: 'college-map', component: CollegeMapComponent, canActivate: [ ViewRoomsComponent ] },
 
   // Communication
-  { path: 'communication/announcements', component: ViewAnnouncementsComponent },
-  { path: 'communication/logs', component: ViewLogsComponent },
+  { path: 'communication/announcements', component: ViewAnnouncementsComponent, canActivate: [ ViewCommunicationGuard ] },
+  { path: 'communication/logs', component: ViewLogsComponent, canActivate: [ ViewCommunicationGuard ] },
 
   // Analytics
-  { path: 'analytics', component:  AnalyticsComponent},
-  
+  { path: 'analytics', component:  AnalyticsComponent, canActivate: [ ViewAnalyticsGuard ]},
 ];
 
 @NgModule({

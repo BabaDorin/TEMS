@@ -4,6 +4,7 @@ export interface RouteInfo{
   title: string;
   icon: string;
   isActive: boolean;
+  isShown: boolean;
   showSubmenu: boolean;
   submenu: RouteInfo[];
 }

@@ -1,5 +1,12 @@
+=====================< Done >=====================
 Theme - done
 Sidebar - done
+link siderbarnavitems to components (routing) - done
+show / hide sidebar options depending on user's role (the fake one which comes from user-service).
 
 
-link siderbarnavitems to components (routing) - nope.
+
+
+=====================< Up Next >=======================
+
+restrict user access to components he does not have provilleges to.

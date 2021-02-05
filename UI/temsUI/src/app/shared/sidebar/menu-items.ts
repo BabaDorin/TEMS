@@ -1,4 +1,4 @@
-import { Role } from './../../models/role.model';
+import { Role } from '../../contracts/role.model';
 import { RouteInfo } from './sidebar.metadata';
 
 // Sidebar Menu Items State
@@ -51,7 +51,8 @@ export class menuItems {
       path: '',
       title: 'Equipment',
       icon: 'mdi mdi-desktop-mac menu-icon',
-      isActive: this.role.canManageEquipment,
+      isActive: false,
+      isShown: this.role.canViewEquipment || this.role.canManageEquipment || this.role.canAllocateEquipment,      
       showSubmenu: false,
       submenu: [
         {
@@ -59,6 +60,7 @@ export class menuItems {
           title: 'View',
           icon: 'mdi mdi-view-list menu-icon',
           isActive: false,
+          isShown: this.role.canViewEquipment || this.role.canManageEquipment,      
           showSubmenu: false,
           submenu: []
         },
@@ -67,6 +69,7 @@ export class menuItems {
           title: 'Add',
           icon: 'mdi mdi-plus menu-icon',
           isActive: false,
+          isShown: this.role.canManageEquipment,      
           showSubmenu: false,
           submenu: []
         },
@@ -74,6 +77,7 @@ export class menuItems {
           path: '/equipment/quick-access',
           title: 'Quick Access',
           icon: 'mdi mdi-format-horizontal-align-right menu-icon',
+          isShown: this.role.canViewEquipment || this.role.canManageEquipment,      
           isActive: false,
           showSubmenu: false,
           submenu: []
@@ -83,6 +87,7 @@ export class menuItems {
           title: 'Allocate',
           icon: 'mdi mdi-transfer menu-icon',
           isActive: false,
+          isShown: this.role.canManageEquipment || this.role.canAllocateEquipment,      
           showSubmenu: false,
           submenu: []
         },
@@ -93,6 +98,7 @@ export class menuItems {
       title: 'Rooms',
       icon: 'mdi mdi-panorama-wide-angle menu-icon',
       isActive: false,
+      isShown: this.role.canViewRooms || this.role.canManageRooms || this.role.canAllocateEquipment,      
       showSubmenu: false,
       submenu: [
         {
@@ -100,6 +106,7 @@ export class menuItems {
           title: 'View',
           icon: 'mdi mdi-view-list menu-icon',
           isActive: false,
+          isShown: this.role.canViewRooms || this.role.canManageRooms,      
           showSubmenu: false,
           submenu: []
         },
@@ -108,6 +115,7 @@ export class menuItems {
           title: 'College Map',
           icon: 'mdi mdi-map menu-icon',
           isActive: false,
+          isShown: this.role.canViewRooms || this.role.canManageRooms,      
           showSubmenu: false,
           submenu: []
         },
@@ -115,6 +123,7 @@ export class menuItems {
           path: '/rooms/allocate',
           title: 'Allocate',
           icon: 'mdi mdi-transfer menu-icon',
+          isShown: this.role.canManageRooms || this.role.canAllocateEquipment,      
           isActive: false,
           showSubmenu: false,
           submenu: []
@@ -125,6 +134,7 @@ export class menuItems {
       path: '',
       title: 'Personnel',
       icon: 'mdi mdi-account-multiple menu-icon',
+      isShown: this.role.canViewPersonnel || this.role.canManagePersonnel || this.role.canAllocateEquipment,  
       isActive: false,
       showSubmenu: false,
       submenu: [
@@ -133,6 +143,7 @@ export class menuItems {
           title: 'View',
           icon: 'mdi mdi-view-list menu-icon',
           isActive: false,
+          isShown: this.role.canViewPersonnel || this.role.canManagePersonnel,      
           showSubmenu: false,
           submenu: []
         },
@@ -141,6 +152,7 @@ export class menuItems {
           title: 'Add',
           icon: 'mdi mdi-plus menu-icon',
           isActive: false,
+          isShown: this.role.canManagePersonnel,      
           showSubmenu: false,
           submenu: []
         },
@@ -149,6 +161,7 @@ export class menuItems {
           title: 'Allocate',
           icon: 'mdi mdi-transfer menu-icon',
           isActive: false,
+          isShown: this.role.canManagePersonnel || this.role.canAllocateEquipment,
           showSubmenu: false,
           submenu: []
         },
@@ -159,6 +172,7 @@ export class menuItems {
       title: 'Keys',
       icon: 'mdi mdi-key-variant menu-icon',
       isActive: false,
+      isShown: this.role.canViewKeys || this.role.canManageKeys || this.role.canAllocateKeys,
       showSubmenu: false,
       submenu: [
         {
@@ -166,6 +180,7 @@ export class menuItems {
           title: 'View',
           icon: 'mdi mdi-key-change menu-icon',
           isActive: false,
+          isShown: this.role.canViewKeys || this.role.canManageKeys,      
           showSubmenu: false,
           submenu: []
         },
@@ -174,6 +189,7 @@ export class menuItems {
           title: 'View Allocations',
           icon: 'mdi mdi-account-search menu-icon',
           isActive: false,
+          isShown: this.role.canManageKeys  || this.role.canAllocateKeys,      
           showSubmenu: false,
           submenu: []
         },
@@ -182,6 +198,7 @@ export class menuItems {
           title: 'Allocate',
           icon: 'mdi mdi-account-key menu-icon',
           isActive: false,
+          isShown: this.role.canManageKeys || this.role.canAllocateKeys,
           showSubmenu: false,
           submenu: []
         },
@@ -192,6 +209,7 @@ export class menuItems {
       title: 'Issues',
       icon: 'mdi mdi-information menu-icon',
       isActive: false,
+      isShown: this.role.canViewIssues || this.role.canManageIssues || this.role.canCreateIssues,      
       showSubmenu: false,
       submenu: [
         {
@@ -199,6 +217,7 @@ export class menuItems {
           title: 'View',
           icon: 'mdi mdi-alert menu-icon',
           isActive: false,
+          isShown: this.role.canViewIssues || this.role.canManageIssues,      
           showSubmenu: false,
           submenu: []
         },
@@ -207,6 +226,7 @@ export class menuItems {
           title: 'Create New',
           icon: 'mdi mdi-plus menu-icon',
           isActive: false,
+          isShown: this.role.canManageIssues || this.role.canCreateIssues,      
           showSubmenu: false,
           submenu: []
         },
@@ -216,6 +236,7 @@ export class menuItems {
       path: '',
       title: 'Communication',
       icon: 'mdi mdi-information-variant menu-icon',
+      isShown: this.role.canViewCommunication || this.role.canManageCommunication,      
       isActive: false,
       showSubmenu: false,
       submenu: [
@@ -224,6 +245,7 @@ export class menuItems {
           title: 'Announcements',
           icon: 'mdi mdi-bullhorn menu-icon',
           isActive: false,
+          isShown: this.role.canViewCommunication || this.role.canManageCommunication,      
           showSubmenu: false,
           submenu: []
         },
@@ -232,6 +254,7 @@ export class menuItems {
           title: 'Logs',
           icon: 'mdi mdi-format-align-center menu-icon',
           isActive: false,
+          isShown: this.role.canViewCommunication || this.role.canManageCommunication,      
           showSubmenu: false,
           submenu: []
         },
@@ -242,6 +265,7 @@ export class menuItems {
       title: 'Library',
       icon: 'mdi mdi-microsoft menu-icon',
       isActive: false,
+      isShown: this.role.canViewLibrary || this.role.canManageLibrary,      
       showSubmenu: false,
       submenu: []
     },
@@ -250,6 +274,7 @@ export class menuItems {
       title: 'Report Printing',
       icon: 'mdi mdi-printer menu-icon',
       isActive: false,
+      isShown: this.role.canViewReports || this.role.canManageReports,      
       showSubmenu: false,
       submenu: []
     },
@@ -258,6 +283,7 @@ export class menuItems {
       title: 'Administration',
       icon: 'mdi mdi-account-star menu-icon',
       isActive: false,
+      isShown: this.role.hasAdminRights,      
       showSubmenu: false,
       submenu: [
         {
@@ -265,6 +291,7 @@ export class menuItems {
           title: 'Equipment',
           icon: 'mdi mdi-database-plus menu-icon',
           isActive: false,
+          isShown: this.role.hasAdminRights,
           showSubmenu: false,
           submenu: []
         },
@@ -272,6 +299,7 @@ export class menuItems {
           path: '/administration/user-management',
           title: 'Users',
           icon: 'mdi mdi-account-multiple-outline menu-icon',
+          isShown: this.role.hasAdminRights,
           isActive: false,
           showSubmenu: false,
           submenu: []
@@ -281,6 +309,7 @@ export class menuItems {
           title: 'Roles',
           icon: 'mdi mdi-account-convert menu-icon',
           isActive: false,
+          isShown: this.role.hasAdminRights,
           showSubmenu: false,
           submenu: []
         },
@@ -289,6 +318,7 @@ export class menuItems {
           title: 'Configuration',
           icon: 'mdi mdi-sitemap menu-icon',
           isActive: false,
+          isShown: this.role.hasAdminRights,
           showSubmenu: false,
           submenu: []
         }
@@ -299,6 +329,7 @@ export class menuItems {
       title: 'Analytics',
       icon: 'mdi mdi-chart-bar menu-icon',
       isActive: false,
+      isShown: this.role.canViewAnalytics,
       showSubmenu: false,
       submenu: []
     }

@@ -13,8 +13,13 @@ export interface Role{
     canViewRooms: boolean;
     canViewPersonnel: boolean;
     canViewKeys: boolean,
+    canViewIssues: boolean,
     canViewCommunication: boolean;
     canViewLibrary: boolean;
     canViewReports: boolean;
     canViewAnalytics: boolean;
+
+    canCreateIssues: boolean;
+    canAllocateEquipment: boolean;
+    canAllocateKeys: boolean;
 }

@@ -1,4 +1,4 @@
-import { Role } from './../../models/role.model';
+import { Role } from '../../contracts/role.model';
 import { Component, OnInit } from '@angular/core';
 import { menuItems } from './menu-items';
 import { RouteInfo } from './sidebar.metadata';

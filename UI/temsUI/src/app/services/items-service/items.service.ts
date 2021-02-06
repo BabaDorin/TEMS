@@ -6,4 +6,14 @@ import { Injectable } from '@angular/core';
 export class ItemsService {
 
   constructor() { }
+
+  // returns the list of registered equipment types
+  getEquipmentTypes(){
+
+  }
+
+  // returns the list of properties of a equipment type
+  getEquipmentTypeProperties(){
+
+  }
 }

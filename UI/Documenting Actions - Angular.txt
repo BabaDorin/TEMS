@@ -1,4 +1,11 @@
-How to add a component and link it to a sidebar button:
+Steps to follow when adding a new components:
+
 1) ng g c [component-name]
-2) After the component has been generated, add it to menu-items.ts and assign it with a route
-3) After that, register the root and the components in app.routing-module.cs
+
+2) If you need the component to have a dedicated sidebar navitem, insert like this:
+	How to add a component and link it to a sidebar button:
+	2) After the component has been generated, add it to menu-items.ts
+
+3) Provide a route to it (if needed)
+	create a route-guard (if needed) [ng g g component-guard]
+	dedicate a route to the components in app.routing-module.cs and indicate the route goard if it exists

@@ -1,12 +1,21 @@
 =====================< Done >=====================
-Theme - done
-Sidebar - done
-link siderbarnavitems to components (routing) - done
-show / hide sidebar options depending on user's role (the fake one which comes from user-service).
+-Theme - done
+-Sidebar - done
+-link siderbarnavitems to components (routing) - done
+-show / hide sidebar options depending on user's role (the fake one which comes from user-service).
+-restrict user access to components he does not have provilleges to.
+	-- sources: https://metanit.com/web/angular2/7.7.php
 
+
+
+=====================< Currently Working On >======================
+
+Start building core components
+1) Add Equipment and all it's sub-components. DeadLine: 07>02>2021, 23:59
 
 
 
 =====================< Up Next >=======================
 
-restrict user access to components he does not have provilleges to.
+Start building core components
+2) View Items

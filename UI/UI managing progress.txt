@@ -19,3 +19,8 @@ Start building core components
 
 Start building core components
 2) View Items
+
+
+=====================< ??? >========================
+
+Find a way to indicate which property of a type will serve as identifier.

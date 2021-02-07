@@ -11,7 +11,7 @@ export class UserService {
   role: Role;
 
   private admin = {
-    canManageEquipment: false,
+    canManageEquipment: true,
     canManageRooms: true,
     canManagePersonnel: true,
     canManageKeys: true,
@@ -115,6 +115,6 @@ export class UserService {
   }
 
   constructor() {
-    this.role = this.guest;
+    this.role = this.admin;
   }
 }

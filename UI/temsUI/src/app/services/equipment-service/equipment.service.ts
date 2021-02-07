@@ -116,7 +116,106 @@ export class EquipmentService {
               value: 'false'
             },
           ],
-          children: []
+          children: [
+            {
+              id: '1',
+              identifier: 'CB285A',
+              equipmentType: { id: '4', name: 'cartrige', children: [] },
+              properties: [
+                {
+                  id: '1',
+                  name: 'Model',
+                  displayName: 'Model',
+                  description: 'the model',
+                  dataType: { id: '1', name: 'string' },
+                  value: 'CB285A'
+                },
+                {
+                  id: '2',
+                  name: 'Color',
+                  displayName: 'Color',
+                  description: 'Color = true, B&W = false',
+                  dataType: { id: '2', name: 'bool' },
+                  value: 'false'
+                },
+              ],
+              children: [
+                {
+                  id: '1',
+                  identifier: 'CB285A',
+                  equipmentType: { id: '4', name: 'cartrige', children: [] },
+                  properties: [
+                    {
+                      id: '1',
+                      name: 'Model',
+                      displayName: 'Model',
+                      description: 'the model',
+                      dataType: { id: '1', name: 'string' },
+                      value: 'CB285A'
+                    },
+                    {
+                      id: '2',
+                      name: 'Color',
+                      displayName: 'Color',
+                      description: 'Color = true, B&W = false',
+                      dataType: { id: '2', name: 'bool' },
+                      value: 'false'
+                    },
+                  ],
+                  children: [
+                    {
+                      id: '1',
+                      identifier: 'CB285A',
+                      equipmentType: { id: '4', name: 'cartrige', children: [] },
+                      properties: [
+                        {
+                          id: '1',
+                          name: 'Model',
+                          displayName: 'Model',
+                          description: 'the model',
+                          dataType: { id: '1', name: 'string' },
+                          value: 'CB285A'
+                        },
+                        {
+                          id: '2',
+                          name: 'Color',
+                          displayName: 'Color',
+                          description: 'Color = true, B&W = false',
+                          dataType: { id: '2', name: 'bool' },
+                          value: 'false'
+                        },
+                      ],
+                      children: []
+                    }
+                  ]
+                },
+                {
+                  id: '1',
+                  identifier: 'CB285A',
+                  equipmentType: { id: '4', name: 'cartrige', children: [] },
+                  properties: [
+                    {
+                      id: '1',
+                      name: 'Model',
+                      displayName: 'Model',
+                      description: 'the model',
+                      dataType: { id: '1', name: 'string' },
+                      value: 'CB285A'
+                    },
+                    {
+                      id: '2',
+                      name: 'Color',
+                      displayName: 'Color',
+                      description: 'Color = true, B&W = false',
+                      dataType: { id: '2', name: 'bool' },
+                      value: 'false'
+                    },
+                  ],
+                  children: []
+                }
+              ]
+            }
+          ]
         }
       ]
     }

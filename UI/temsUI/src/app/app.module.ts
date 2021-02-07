@@ -1,3 +1,4 @@
+import { FormlyParserService } from './services/formly-parser-service/formly-parser.service';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
@@ -42,6 +43,8 @@ import { EquipmentAllocationComponent } from './tems-components/equipment/equipm
 import { AnalyticsComponent } from './tems-components/analytics/analytics.component';
 import { FormlyModule } from '@ngx-formly/core';
 import { FormlyMaterialModule } from '@ngx-formly/material';
+import { EquipmentService } from './services/equipment-service/equipment.service';
+import { FormlyWrapperComponent } from './public/formly/formly-wrapper/formly-wrapper.component';
 
 @NgModule({
   declarations: [
@@ -77,7 +80,8 @@ import { FormlyMaterialModule } from '@ngx-formly/material';
     RoleManagementComponent,
     SystemConfigComponent,
     EquipmentAllocationComponent,
-    AnalyticsComponent
+    AnalyticsComponent,
+    FormlyWrapperComponent
   ],
   imports: [
     BrowserModule,
@@ -87,10 +91,14 @@ import { FormlyMaterialModule } from '@ngx-formly/material';
     FormsModule,
     ReactiveFormsModule,
     ChartsModule,
-    FormlyModule.forRoot(),
+    FormlyModule.forRoot({
+      wrappers: [
+        {name: 'formly-wrapper', component: FormlyWrapperComponent}
+      ]
+    }),
     FormlyMaterialModule
   ],
-  providers: [ThemeService],
+  providers: [ThemeService, EquipmentService, FormlyParserService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

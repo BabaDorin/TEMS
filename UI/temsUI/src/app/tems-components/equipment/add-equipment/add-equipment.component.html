@@ -38,12 +38,12 @@
     </section>
 
     <!-- Provide data about the equipment -->
-    <section *ngIf="definitionSelected">
+    <!-- <section *ngIf="definitionSelected"> -->
       <!-- <div *ngFor="let prop of selectedFullDefinition.properties" class="form-group">
         <label>{{ prop.displayName }}</label>
         <input class="form-control" [value]=prop.value>
       </div> -->
-      <div class="form-group">
+      <!-- <div class="form-group">
         <div  class="border-left mt-2 pl-3">
           <br>
           <h4>{{ selectedFullDefinition.equipmentType.name }}: {{ selectedFullDefinition.identifier }}</h4>
@@ -72,15 +72,16 @@
         </div>
         
       </div>
-    </section>
+    </section> -->
  
       <button type="submit" class="btn btn-gradient-primary mr-2" [disabled]="!readyToBeSaved">Submit</button>
       <button class="btn btn-light">Cancel</button>
     </form>
 
-    <!-- <form [formGroup]="form" (ngSubmit)="onSubmit(model)">
-      <formly-form [form]="form" [fields]="fields" [model]="model"></formly-form>
+    <h4>SAUCE</h4>
+    <form *ngIf="formlyData.isVisible" [formGroup]="formlyData.form" (ngSubmit)="onSubmit(formlyData.model)">
+      <formly-form [form]="formlyData.form" [fields]="formlyData.fields" [model]="formlyData.model"></formly-form>
       <button type="submit" class="btn btn-default">Submit</button>
-    </form> -->
+    </form>
   </div>
 </div>

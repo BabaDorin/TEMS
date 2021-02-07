@@ -1,3 +1,4 @@
+import { AddDefinition } from './../../contracts/equipment/add-definition.model';
 import { LightDefinition } from './../../contracts/equipment/viewlight-definition.model';
 import { Property } from './../../contracts/equipment/view-property.model';
 import { Type } from './../../contracts/equipment/view-type.model';
@@ -64,5 +65,36 @@ export class EquipmentService {
 
     if(type.name == 'pc')
       return pcDefinitions;
+  }
+
+  getFullDefinition(definitionId: string){
+    // returns the full definition, including children definitions and so on...
+
+    let hpLaserJet: AddDefinition = {
+      id: '1',
+      identifier: 'HP LaserJet',
+      equipmentType: { id: '1', name: 'printer', children: []},
+      properties: [
+        {
+          id: '1',
+          name: 'Model',
+          displayName: 'Model',
+          description: 'the model',
+          dataType: { id: '1', name: 'string'},
+          value: 'HP LaserJet'
+        },
+        {
+          id: '2',
+          name: 'Color',
+          displayName: 'Color',
+          description: 'Color = true, B&W = false',
+          dataType: { id: '2', name: 'bool'},
+          value: 'false'
+        },
+      ],
+      children: []
+    }
+
+    return hpLaserJet;
   }
 }

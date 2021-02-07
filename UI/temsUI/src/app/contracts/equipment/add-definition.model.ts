@@ -1,5 +1,7 @@
+import { Type } from '@angular/core';
 import { AddProperty } from './add-property.model';
 import { AddType } from './add-type.model';
+
 export interface AddDefinition{
     id: string,
     identifier: string,

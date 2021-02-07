@@ -4,5 +4,6 @@ export interface AddProperty{
     name: string,
     displayName: string,
     description: string,
-    dataType: DataType
+    dataType: DataType,
+    value?: string
 }

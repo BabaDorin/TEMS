@@ -1,4 +1,4 @@
-import { DataType } from './../datatype.model';
+import { DataType } from '../datatype.model';
 export interface Property{
     id: string,
     displayName: string,

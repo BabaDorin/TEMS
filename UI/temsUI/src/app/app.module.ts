@@ -40,6 +40,8 @@ import { RoleManagementComponent } from './tems-components/admin/role-management
 import { SystemConfigComponent } from './tems-components/admin/system-config/system-config.component';
 import { EquipmentAllocationComponent } from './tems-components/equipment/equipment-allocation/equipment-allocation.component';
 import { AnalyticsComponent } from './tems-components/analytics/analytics.component';
+import { FormlyModule } from '@ngx-formly/core';
+import { FormlyMaterialModule } from '@ngx-formly/material';
 
 @NgModule({
   declarations: [
@@ -84,7 +86,9 @@ import { AnalyticsComponent } from './tems-components/analytics/analytics.compon
     BrowserAnimationsModule,
     FormsModule,
     ReactiveFormsModule,
-    ChartsModule
+    ChartsModule,
+    FormlyModule.forRoot(),
+    FormlyMaterialModule
   ],
   providers: [ThemeService],
   bootstrap: [AppComponent]

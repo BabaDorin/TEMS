@@ -1,4 +1,4 @@
-import { Role } from '../../contracts/role.model';
+import { Role } from '../../models/role.model';
 import { Injectable } from '@angular/core';
 
 @Injectable({

@@ -1,9 +1,10 @@
-import { AddDefinition } from './../../../contracts/equipment/add-definition.model';
-import { LightDefinition } from './../../../contracts/equipment/viewlight-definition.model';
+import { AddDefinition } from '../../../models/equipment/add-definition.model';
+import { LightDefinition } from '../../../models/equipment/viewlight-definition.model';
 import { EquipmentService } from './../../../services/equipment-service/equipment.service';
-import { Type } from './../../../contracts/equipment/view-type.model';
+import { Type } from '../../../models/equipment/view-type.model';
 import { Component, OnInit } from '@angular/core';
-import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
+import {FormGroup} from '@angular/forms';
+import {FormlyFieldConfig} from '@ngx-formly/core';
 
 @Component({
   selector: 'app-add-equipment',
@@ -45,9 +46,12 @@ export class AddEquipmentComponent implements OnInit {
   // definition related ------------------------------------------
   definitionsOfType: LightDefinition[];
   selectedDefinition: LightDefinition = {id: '', name: ''};
-  selectedFullDefinition: AddDefinition;
+  selectedFullDefinition: AddDefinition = undefined;
   private definitionSelected: boolean = false;
   private chosenEquipmentDefinition: string = "Choose a " + this.selectedType.name + " definition";
+
+  
+  
 
   definitionHasBeenSelected(definition: LightDefinition){
     // here we check if the selected definition is valid and user hasn't done any manipulation
@@ -59,12 +63,40 @@ export class AddEquipmentComponent implements OnInit {
       this.selectedFullDefinition = this.equipmentService.getFullDefinition(this.selectedDefinition.id);
 
       this.definitionSelected = true;
+
+      console.log(this.equipmentService.generateAddEquipmentOfDefinition(this.selectedFullDefinition));
     } 
     else{
       this.chosenEquipmentDefinition = "Choose a " + this.selectedType.name + " definition";
       this.definitionSelected = false;
     }
   }
+
+
+
+  // At this point we have the selectedFullDefinition, now, based on that,
+  // we have to create an add-equipment object and render a form of add-equipment, along
+  // with it's children.
+
+
+  // form = new FormGroup({});
+  // model: AddDefinition;
+  // fields: FormlyFieldConfig[] = [
+  //   {
+  //     key: 'identifier',
+  //     type: 'input',
+  //     templateOptions: {
+  //       label: 'Identifier',
+  //       defaultValue: this.selectedFullDefinition.identifier,
+  //       required: true,
+  //     }
+  //   }
+  // ];
+
+  // onSubmit() {
+  //   this.model.id = this.selectedFullDefinition.id,
+  //   console.log(this.model);
+  // }
 
   // general ------------------------------------------
   private readyToBeSaved: boolean = false;

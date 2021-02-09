@@ -1,3 +1,8 @@
+========================= ISSUES ============================
+Managing fiels with the same key but different input (add-equipment.component - formly) ??? :/
+
+
+
 =====================< Done >=====================
 -Theme - done
 -Sidebar - done

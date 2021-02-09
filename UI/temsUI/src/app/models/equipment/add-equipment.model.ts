@@ -25,6 +25,7 @@ export class AddEquipment implements IAddEquipment{
     purchaseDate: Date;
     isDefect: boolean;
     isUsed: boolean;
+    currency: string;
     children: AddEquipment[];
 
     constructor(definition: AddDefinition, temsid?:string, sn?:string){
@@ -35,7 +36,8 @@ export class AddEquipment implements IAddEquipment{
         this.definition = definition;
         this.purchaseDate = new Date(),
         this.isDefect = false;
-        this.isUsed = false;
+        this.isUsed = true;
+        this.currency = "LEI";
         this.children = [] as [];
 
         definition.children.forEach(childDefinition => {

@@ -75,12 +75,10 @@ export class AddEquipmentComponent implements OnInit {
 
       let addEq = this.equipmentService.generateAddEquipmentOfDefinition(this.selectedFullDefinition);
       let formlyFields = this.formlyParserService.parseAddEquipment(addEq);
-      console.log(formlyFields);
 
       this.formlyData.model = new AddEquipment(this.selectedFullDefinition);
       this.formlyData.fields = formlyFields;
       this.formlyData.isVisible = true;
-
     }
     else {
       this.chosenEquipmentDefinition = "Choose a " + this.selectedType.name + " definition";
@@ -89,6 +87,10 @@ export class AddEquipmentComponent implements OnInit {
   }
 
 
+  onSubmit(model) {
+    model.id = this.selectedFullDefinition.id,
+    console.log(model);
+  }
 
   // At this point we have the selectedFullDefinition, now, based on that,
   // we have to create an add-equipment object and render a form of add-equipment, along
@@ -99,10 +101,6 @@ export class AddEquipmentComponent implements OnInit {
 
 
 
-  // onSubmit() {
-  //   this.model.id = this.selectedFullDefinition.id,
-  //   console.log(this.model);
-  // }
 
   // general ------------------------------------------
   private readyToBeSaved: boolean = false;

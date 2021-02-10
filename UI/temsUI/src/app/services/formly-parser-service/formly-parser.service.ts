@@ -1,3 +1,4 @@
+import { AddType } from './../../models/equipment/add-type.model';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { Injectable } from '@angular/core';
 import { AddEquipment } from 'src/app/models/equipment/add-equipment.model';
@@ -76,14 +77,6 @@ export class FormlyParserService {
           }
         },
         {
-          key: 'description',
-          type: 'textarea',
-          defaultValue: addEquipment.description,
-          templateOptions: {
-            label: 'Description',
-          }
-        },
-        {
           fieldGroupClassName: 'row',
           fieldGroup: [
             {
@@ -137,5 +130,41 @@ export class FormlyParserService {
     });
 
     return formlyFieldsAddEquipment;
+  }
+
+  parseAddType(addType: AddType){
+    let parents = [];
+    addType.parents.forEach(parent => {
+      
+      parents.push({
+        value: parent.id,
+        label: parent.name
+      })
+    });
+
+
+    let formlyFieldsAddType: FormlyFieldConfig[] = [
+      {
+        template: '<h4>Add Type</h4>'
+      },
+      {
+        key: 'parents',
+        type: 'multicheckbox',
+        templateOptions: {
+          options: parents,
+          label: "Select Type's parents"
+        },
+      },
+      {
+        key: 'name',
+        type: 'input',
+        defaultValue: addType.name,
+        templateOptions: {
+          label: 'Name',
+        },
+      },
+    ];
+
+    return formlyFieldsAddType;
   }
 }

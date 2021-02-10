@@ -1,5 +1,17 @@
- export interface AddType{
+ export interface IAddType{
+    parents?: IAddType[],
     id: string,
     name: string,
-    children: AddType[]
+}
+
+export class AddType implements IAddType{
+    parents?: IAddType[];
+    id: string;
+    name: string;
+
+    constructor(){
+        this.parents = [];
+        this.name = '';
+        this.id = '';
+    }
 }

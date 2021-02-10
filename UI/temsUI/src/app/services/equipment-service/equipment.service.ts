@@ -74,7 +74,7 @@ export class EquipmentService {
     let hpLaserJet: AddDefinition = {
       id: '1',
       identifier: 'HP LaserJet',
-      equipmentType: { id: '1', name: 'printer', children: [] },
+      equipmentType: { id: '1', name: 'printer', parents: [] },
       properties: [
         {
           id: '1',

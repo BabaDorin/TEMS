@@ -98,14 +98,19 @@ export class AddEquipmentComponent implements OnInit {
   }
 
 
-  openDialog(): void {
-    const dialogRef = this.dialog.open(AddTypeComponent,{
-      width: '250px',
-    });
+  openDialog(componentName: string): void {
+    switch(componentName){
+      case 'add-type':
 
-    dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed');
-    });
+        const dialogRef = this.dialog.open(AddTypeComponent,{
+          width: '250px',
+        })
+    
+        dialogRef.afterClosed().subscribe(result => {
+          console.log('The dialog was closed');
+        });
+      break;
+    }
   }
 
   private readyToBeSaved: boolean = false;

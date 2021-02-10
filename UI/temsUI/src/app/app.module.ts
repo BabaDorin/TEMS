@@ -45,6 +45,10 @@ import { FormlyModule } from '@ngx-formly/core';
 import { FormlyMaterialModule } from '@ngx-formly/material';
 import { EquipmentService } from './services/equipment-service/equipment.service';
 import { FormlyWrapperComponent } from './public/formly/formly-wrapper/formly-wrapper.component';
+import { AddDefinitionComponent } from './tems-components/equipment/add-definition/add-definition.component';
+import { AddTypeComponent } from './tems-components/equipment/add-type/add-type.component';
+
+import {MatDialogModule} from '@angular/material/dialog';
 
 @NgModule({
   declarations: [
@@ -81,12 +85,15 @@ import { FormlyWrapperComponent } from './public/formly/formly-wrapper/formly-wr
     SystemConfigComponent,
     EquipmentAllocationComponent,
     AnalyticsComponent,
-    FormlyWrapperComponent
+    FormlyWrapperComponent,
+    AddTypeComponent,
+    AddDefinitionComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     NgbModule,
+    MatDialogModule,
     BrowserAnimationsModule,
     FormsModule,
     ReactiveFormsModule,
@@ -99,6 +106,7 @@ import { FormlyWrapperComponent } from './public/formly/formly-wrapper/formly-wr
     FormlyMaterialModule
   ],
   providers: [ThemeService, EquipmentService, FormlyParserService],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  entryComponents: [AddTypeComponent]
 })
 export class AppModule { }

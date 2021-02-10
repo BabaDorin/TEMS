@@ -1,12 +1,15 @@
+import { AddTypeComponent } from '.././add-type/add-type.component';
+import { AddType } from './../../../models/equipment/add-type.model';
 import { FormlyParserService } from './../../../services/formly-parser-service/formly-parser.service';
 import { AddDefinition } from '../../../models/equipment/add-definition.model';
 import { LightDefinition } from '../../../models/equipment/viewlight-definition.model';
 import { EquipmentService } from './../../../services/equipment-service/equipment.service';
 import { Type } from '../../../models/equipment/view-type.model';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject} from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { AddEquipment } from 'src/app/models/equipment/add-equipment.model';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-add-equipment',
@@ -16,8 +19,10 @@ import { AddEquipment } from 'src/app/models/equipment/add-equipment.model';
 })
 export class AddEquipmentComponent implements OnInit {
   // general methods
-  constructor(private equipmentService: EquipmentService,
-    private formlyParserService: FormlyParserService) { }
+  constructor(
+    private equipmentService: EquipmentService,
+    private formlyParserService: FormlyParserService,
+    public dialog: MatDialog) { }
 
   ngOnInit(): void {
     this.types = this.equipmentService.getTypes();
@@ -92,16 +97,16 @@ export class AddEquipmentComponent implements OnInit {
     console.log(model);
   }
 
-  // At this point we have the selectedFullDefinition, now, based on that,
-  // we have to create an add-equipment object and render a form of add-equipment, along
-  // with it's children.
 
+  openDialog(): void {
+    const dialogRef = this.dialog.open(AddTypeComponent,{
+      width: '250px',
+    });
 
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+    });
+  }
 
-
-
-
-
-  // general ------------------------------------------
   private readyToBeSaved: boolean = false;
 }

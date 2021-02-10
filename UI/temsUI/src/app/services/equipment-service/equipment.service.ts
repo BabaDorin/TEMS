@@ -71,9 +71,35 @@ export class EquipmentService {
   getFullDefinition(definitionId: string) {
     // returns the full definition, including children definitions and so on...
 
-    let hpLaserJet: AddDefinition = {
-      id: '1',
-      identifier: 'HP LaserJet',
+    let fullDefinitions: AddDefinition[] = [
+      {
+        id: '1',
+        identifier: 'HP LaserJet',
+        equipmentType: { id: '1', name: 'printer', parents: [] },
+        properties: [
+          {
+            id: '1',
+            name: 'Model',
+            displayName: 'Model',
+            description: 'the model',
+            dataType: { id: '1', name: 'string' },
+            value: 'HP LaserJet'
+          },
+          {
+            id: '2',
+            name: 'Color',
+            displayName: 'Color',
+            description: 'Color = true, B&W = false',
+            dataType: { id: '2', name: 'bool' },
+            value: 'false'
+          },
+        ],
+        children: [],
+      },
+
+      {
+      id: '2',
+      identifier: 'Lenovo M700',
       equipmentType: { id: '1', name: 'printer', parents: [] },
       properties: [
         {
@@ -95,7 +121,11 @@ export class EquipmentService {
       ],
       children: [],
     }
+  ];
 
+
+
+    // BELOW - Defintion with children
     // let hpLaserJet: AddDefinition = {
     //   id: '1',
     //   identifier: 'HP LaserJet',
@@ -245,7 +275,7 @@ export class EquipmentService {
     //   ]
     // }
 
-    return hpLaserJet;
+    return fullDefinitions.find(q => q.id == definitionId);
   }
 
   generateAddEquipmentOfDefinition(definition: AddDefinition) {

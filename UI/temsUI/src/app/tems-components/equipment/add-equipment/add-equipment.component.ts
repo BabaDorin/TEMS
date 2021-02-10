@@ -1,15 +1,16 @@
+import { AddDefinitionComponent } from './../add-definition/add-definition.component';
 import { AddTypeComponent } from '.././add-type/add-type.component';
-import { AddType } from './../../../models/equipment/add-type.model';
 import { FormlyParserService } from './../../../services/formly-parser-service/formly-parser.service';
 import { AddDefinition } from '../../../models/equipment/add-definition.model';
 import { LightDefinition } from '../../../models/equipment/viewlight-definition.model';
 import { EquipmentService } from './../../../services/equipment-service/equipment.service';
 import { Type } from '../../../models/equipment/view-type.model';
-import { Component, OnInit, Inject} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { AddEquipment } from 'src/app/models/equipment/add-equipment.model';
 import { MatDialog } from '@angular/material/dialog';
+import { ComponentType } from '@angular/cdk/portal';
 
 @Component({
   selector: 'app-add-equipment',
@@ -18,7 +19,7 @@ import { MatDialog } from '@angular/material/dialog';
   providers: []
 })
 export class AddEquipmentComponent implements OnInit {
-  // general methods
+
   constructor(
     private equipmentService: EquipmentService,
     private formlyParserService: FormlyParserService,
@@ -28,21 +29,29 @@ export class AddEquipmentComponent implements OnInit {
     this.types = this.equipmentService.getTypes();
   }
 
-  // type related ------------------------------------------
+  // type related -------------------------------------------------------------------------------------------------
+
   types: Type[];
   selectedType: Type = { id: '', name: '' };
   private typeSelected: boolean = false;
   private chosenEquipmentType: string = "Choose an equipment type"
 
   typeHasBeenSelected(type: Type) {
-    this.selectedType = type;
+    // clean the interface from previously selected definition (if it exists)
+    let isUnsavedModel = false; // true if the user has inserted some data into the 
+    // formly and now he wants to switch to another type, therefore the formly model will 
+    // get completely wiped out
+    if (!isUnsavedModel ||
+      isUnsavedModel && confirm('There are unsaved changes, do you still want to continue?')) {
+      this.wipeAddEquipmentFormly();
+    }
 
+    this.selectedType = type;
     // here we check if the selected type is valid and user hasn't done any manipulation
     if (this.types.find(type => type === this.selectedType) != undefined) {
       this.typeSelected = true;
       this.chosenEquipmentType = this.selectedType.name;
       this.definitionsOfType = this.equipmentService.getDefinitionsOfType(this.selectedType);
-      console.log('type found');
     }
     else {
       this.typeSelected = false;
@@ -51,39 +60,25 @@ export class AddEquipmentComponent implements OnInit {
     }
   }
 
-  // definition related ------------------------------------------
+  // definition related -------------------------------------------------------------------------------------------
+  
   definitionsOfType: LightDefinition[];
   selectedDefinition: LightDefinition = { id: '', name: '' };
   selectedFullDefinition: AddDefinition = undefined;
   private definitionSelected: boolean = false;
-  private chosenEquipmentDefinition: string = "Choose a " + this.selectedType.name + " definition";
-
-  
-  private formlyData = {
-    isVisible: false,
-    form: new FormGroup({}),
-    model: {} as any,
-    fields: [] as FormlyFieldConfig[],
-  }
-
+  private chosenEquipmentDefinition: string = "Choose a definition";
 
   definitionHasBeenSelected(definition: LightDefinition) {
+
     // here we check if the selected definition is valid and user hasn't done any manipulation
     this.selectedDefinition = definition;
     if (this.definitionsOfType.find(def => def === this.selectedDefinition) != undefined) {
-      this.chosenEquipmentDefinition = this.selectedDefinition.name;
-
-      // fetch all the data about the selected definition
-      this.selectedFullDefinition = this.equipmentService.getFullDefinition(this.selectedDefinition.id);
 
       this.definitionSelected = true;
+      this.chosenEquipmentDefinition = this.selectedDefinition.name;
+      this.selectedFullDefinition = this.equipmentService.getFullDefinition(this.selectedDefinition.id);
 
-      let addEq = this.equipmentService.generateAddEquipmentOfDefinition(this.selectedFullDefinition);
-      let formlyFields = this.formlyParserService.parseAddEquipment(addEq);
-
-      this.formlyData.model = new AddEquipment(this.selectedFullDefinition);
-      this.formlyData.fields = formlyFields;
-      this.formlyData.isVisible = true;
+      this.createAddEquipmentFormly();
     }
     else {
       this.chosenEquipmentDefinition = "Choose a " + this.selectedType.name + " definition";
@@ -91,27 +86,56 @@ export class AddEquipmentComponent implements OnInit {
     }
   }
 
+  // formly related -----------------------------------------------------------------------------------------------
 
+  private formlyData = {
+    isVisible: false,
+    form: new FormGroup({}),
+    model: {} as any,
+    fields: [] as FormlyFieldConfig[],
+  }
+
+  // True if for the parent equipment has been assigned a TEMSID or SerialNumber.
+  private readyToBeSaved: boolean = false;
+
+  createAddEquipmentFormly(){
+    let addEq = this.equipmentService.generateAddEquipmentOfDefinition(this.selectedFullDefinition);
+    let formlyFields = this.formlyParserService.parseAddEquipment(addEq);
+
+    this.formlyData.model = new AddEquipment(this.selectedFullDefinition);
+    this.formlyData.fields = formlyFields;
+    this.formlyData.isVisible = true;
+  }
+
+  wipeAddEquipmentFormly(){
+    this.chosenEquipmentDefinition = "Select a definition";
+    this.selectedDefinition = { id: '', name: '' };
+    this.selectedFullDefinition = undefined;
+    this.formlyData.isVisible = false;
+    this.formlyData.fields = [];
+    this.formlyData.model = {};
+  }
+
+  // Validate & send data to API
   onSubmit(model) {
     model.id = this.selectedFullDefinition.id,
     console.log(model);
   }
 
+  // Angular Material Dialog --------------------------------------------------------------------------------------
 
   openDialog(componentName: string): void {
-    switch(componentName){
-      case 'add-type':
+    let componentType: ComponentType<any>;
 
-        const dialogRef = this.dialog.open(AddTypeComponent,{
-          width: '250px',
-        })
-    
-        dialogRef.afterClosed().subscribe(result => {
-          console.log('The dialog was closed');
-        });
-      break;
+    switch (componentName) {
+      case 'add-type': componentType = AddTypeComponent; break;
+      case 'add-definition': componentType = AddDefinitionComponent; break;
     }
-  }
 
-  private readyToBeSaved: boolean = false;
+    const dialogRef = this.dialog.open(componentType)
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+    });
+  }
 }

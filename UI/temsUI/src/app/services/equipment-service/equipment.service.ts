@@ -1,3 +1,4 @@
+import { AddProperty } from './../../models/equipment/add-property.model';
 import { AddEquipment } from '../../models/equipment/add-equipment.model';
 import { AddDefinition } from '../../models/equipment/add-definition.model';
 import { LightDefinition } from '../../models/equipment/viewlight-definition.model';
@@ -21,12 +22,55 @@ export class EquipmentService {
 
   getTypes() {
     // fake service
-    let types: Type[] = [
+    let types = [
       { id: '1', name: 'printer' },
       { id: '2', name: 'laptop' },
       { id: '3', name: 'scanner' },
     ]
     return types;
+  }
+
+  getProperties(){
+
+    // id: string,
+    // name: string,
+    // displayName: string,
+    // description: string,
+    // dataType: DataType,
+    // value?: string
+
+    let properties: AddProperty[] =  [
+      {
+        id: '1',
+        name: 'model',
+        displayName: 'Model',
+        description: 'Model name',
+        dataType: { id: '1', name: 'string' },
+      },
+      {
+        id: '2',
+        name: 'Frequency',
+        displayName: 'Frequency',
+        description: 'Frequency in GHz',
+        dataType: { id: '2', name: 'number' },
+      },
+      {
+        id: '3',
+        name: 'color',
+        displayName: 'Color',
+        description: 'Black and White or Color',
+        dataType: { id: '3', name: 'bool' },
+      },
+      {
+        id: '4',
+        name: 'Resolution',
+        displayName: 'Resolution',
+        description: 'Resolution',
+        dataType: { id: '1', name: 'string' },
+      },
+    ];
+
+    return properties;
   }
 
   getPropertiesOfType(type: Type) {
@@ -75,7 +119,7 @@ export class EquipmentService {
       {
         id: '1',
         identifier: 'HP LaserJet',
-        equipmentType: { id: '1', name: 'printer', parents: [] },
+        equipmentType: { id: '1', name: 'printer', parents: [], properties: [] },
         properties: [
           {
             id: '1',
@@ -100,7 +144,7 @@ export class EquipmentService {
       {
       id: '2',
       identifier: 'Lenovo M700',
-      equipmentType: { id: '1', name: 'printer', parents: [] },
+      equipmentType: { id: '1', name: 'printer', parents: [], properties: [] },
       properties: [
         {
           id: '1',

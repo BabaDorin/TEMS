@@ -1,3 +1,5 @@
+import { EquipmentService } from './../equipment-service/equipment.service';
+import { AddDefinition } from './../../models/equipment/add-definition.model';
 import { AddType } from './../../models/equipment/add-type.model';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { Injectable } from '@angular/core';
@@ -12,7 +14,7 @@ export class FormlyParserService {
   // This service is used for parsing an object of type AddEquipment to a FormlyFieldCOnfig array.
   // Which is used by formly to render forms.
 
-  constructor() { }
+  constructor(private equipmentService: EquipmentService) { }
 
   parseAddEquipment(addEquipment: AddEquipment, formlyFields?: FormlyFieldConfig[]) {
     let formlyFieldsAddEquipment =
@@ -142,6 +144,16 @@ export class FormlyParserService {
       })
     });
 
+    let temsProperties = this.equipmentService.getProperties();
+    let properties = [];
+
+    temsProperties.forEach(property => {
+      properties.push({
+        value: property.id,
+        label: property.name
+      })
+    });
+
 
     let formlyFieldsAddType: FormlyFieldConfig[] = [
       {
@@ -149,22 +161,56 @@ export class FormlyParserService {
       },
       {
         key: 'parents',
-        type: 'multicheckbox',
+        type: 'chips',     
         templateOptions: {
-          options: parents,
-          label: "Select Type's parents"
+          label: 'Chips Label',
+          filter: ['Bilal', 'Haidar'],
+          required: true,
         },
       },
-      {
-        key: 'name',
-        type: 'input',
-        defaultValue: addType.name,
-        templateOptions: {
-          label: 'Name',
-        },
-      },
+      // {
+      //   key: 'parents',
+      //   type: 'multicheckbox',
+      //   templateOptions: {
+      //     options: parents,
+      //     label: "Select Type's parents"
+      //   },
+      // }
+      // },
+      // {
+      //   key: 'name',
+      //   type: 'input',
+      //   defaultValue: addType.name,
+      //   templateOptions: {
+      //     label: 'Name',
+      //   },
+      // },
     ];
 
     return formlyFieldsAddType;
+  }
+
+  parseAddDefinition(addDefintion: AddDefinition){
+    // let formlyFieldsAddDefinition: FormlyFieldConfig[] = [
+    //   {
+    //     template: '<h4>Add Definition</h4>'
+    //   },
+    //   {
+    //     key: 'parents',
+    //     type: 'multicheckbox',
+    //     templateOptions: {
+    //       options: parents,
+    //       label: "Select Type's parents"
+    //     },
+    //   },
+    //   {
+    //     key: 'name',
+    //     type: 'input',
+    //     defaultValue: addType.name,
+    //     templateOptions: {
+    //       label: 'Name',
+    //     },
+    //   },
+    // ];
   }
 }

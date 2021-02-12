@@ -1,3 +1,4 @@
+import { ChipsAutocompleteComponent } from './public/formly/chips-autocomplete/chips-autocomplete.component';
 import { FormlyParserService } from './services/formly-parser-service/formly-parser.service';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
@@ -47,6 +48,11 @@ import { EquipmentService } from './services/equipment-service/equipment.service
 import { FormlyWrapperComponent } from './public/formly/formly-wrapper/formly-wrapper.component';
 import { AddDefinitionComponent } from './tems-components/equipment/add-definition/add-definition.component';
 import { AddTypeComponent } from './tems-components/equipment/add-type/add-type.component';
+import { TagInputModule } from 'ngx-chips';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatIconModule } from '@angular/material/icon';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 import {MatDialogModule} from '@angular/material/dialog';
 
@@ -87,7 +93,8 @@ import {MatDialogModule} from '@angular/material/dialog';
     AnalyticsComponent,
     FormlyWrapperComponent,
     AddTypeComponent,
-    AddDefinitionComponent
+    AddDefinitionComponent,
+    ChipsAutocompleteComponent,
   ],
   imports: [
     BrowserModule,
@@ -98,11 +105,17 @@ import {MatDialogModule} from '@angular/material/dialog';
     FormsModule,
     ReactiveFormsModule,
     ChartsModule,
-    FormlyModule.forRoot({
-      wrappers: [
-        {name: 'formly-wrapper', component: FormlyWrapperComponent}
-      ]
-    }),
+    TagInputModule,
+    BrowserModule,
+    ReactiveFormsModule,
+    FormsModule,
+    MatChipsModule,
+    MatIconModule,
+    MatAutocompleteModule,
+    MatFormFieldModule,
+    FormlyMaterialModule,
+    BrowserAnimationsModule,
+    FormlyModule.forRoot(),
     FormlyMaterialModule
   ],
   providers: [ThemeService, EquipmentService, FormlyParserService],

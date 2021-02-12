@@ -15,6 +15,7 @@ export class ChipsAutocompleteComponent {
 
   // List of selected options
   @Input() alreadySelected;
+  @Input() label;
   // List of available for selection options
   @Input() availableOptions;
 

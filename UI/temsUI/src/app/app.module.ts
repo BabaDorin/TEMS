@@ -51,6 +51,7 @@ import { AddTypeComponent } from './tems-components/equipment/add-type/add-type.
 import { TagInputModule } from 'ngx-chips';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
+import {MatInputModule} from '@angular/material/input';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatFormFieldModule } from '@angular/material/form-field';
 
@@ -113,10 +114,14 @@ import {MatDialogModule} from '@angular/material/dialog';
     MatIconModule,
     MatAutocompleteModule,
     MatFormFieldModule,
+    MatInputModule,
     FormlyMaterialModule,
     BrowserAnimationsModule,
     FormlyModule.forRoot(),
     FormlyMaterialModule
+  ],
+  exports: [
+    MatFormFieldModule, MatInputModule
   ],
   providers: [ThemeService, EquipmentService, FormlyParserService],
   bootstrap: [AppComponent],

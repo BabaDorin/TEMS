@@ -1,6 +1,6 @@
-<mat-form-field class="example-chip-list">
-    <mat-label>Favorite Fruits</mat-label>
-    <mat-chip-list #chipList aria-label="Fruit selection">
+<mat-form-field class="tems-chip-list">
+    <mat-label>{{ label }}</mat-label>
+    <mat-chip-list #chipList aria-label="Option selection">
       <mat-chip
         *ngFor="let op of options"
         [selectable]="selectable"

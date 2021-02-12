@@ -161,30 +161,20 @@ export class FormlyParserService {
       },
       {
         key: 'parents',
-        type: 'chips',     
+        type: 'multicheckbox',
         templateOptions: {
-          label: 'Chips Label',
-          filter: ['Bilal', 'Haidar'],
-          required: true,
+          options: parents,
+          label: "Select Type's parents"
         },
       },
-      // {
-      //   key: 'parents',
-      //   type: 'multicheckbox',
-      //   templateOptions: {
-      //     options: parents,
-      //     label: "Select Type's parents"
-      //   },
-      // }
-      // },
-      // {
-      //   key: 'name',
-      //   type: 'input',
-      //   defaultValue: addType.name,
-      //   templateOptions: {
-      //     label: 'Name',
-      //   },
-      // },
+      {
+        key: 'name',
+        type: 'input',
+        defaultValue: addType.name,
+        templateOptions: {
+          label: 'Name',
+        },
+      },
     ];
 
     return formlyFieldsAddType;

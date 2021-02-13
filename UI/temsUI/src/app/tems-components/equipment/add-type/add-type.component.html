@@ -2,7 +2,8 @@
 
 <ng-container [formGroup]="this.formGroup">
   <app-chips-autocomplete #parentChips
-    [label]="labelSelectParentType"></app-chips-autocomplete>
+    [label]="labelSelectParentType"
+    [availableOptions]="parentTypeOptions"></app-chips-autocomplete>
 
   <mat-form-field class="example-full-width">
     <mat-label>Type Name</mat-label>
@@ -10,7 +11,8 @@
   </mat-form-field>
 
   <app-chips-autocomplete #propertyChips
-    [label]="labelSelectProperties"></app-chips-autocomplete>
+    [label]="labelSelectProperties"
+    [availableOptions]="propertyOptions"></app-chips-autocomplete>
 
   <button type="submit" class="btn btn-gradient-primary mr-2" (click)="onSubmit()">Submit</button>
 </ng-container>

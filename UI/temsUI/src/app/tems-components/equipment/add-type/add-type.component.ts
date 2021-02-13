@@ -30,7 +30,20 @@ export class AddTypeComponent implements OnInit {
   }
 
   labelSelectParentType = "Select parent type / types";
+  parentTypeOptions = [
+    {id: '1', value: 'Printer'},
+    {id: '2', value: 'Scanner'},
+    {id: '3', value: 'Laptop'},
+    {id: '4', value: 'TV'},
+  ]
+
   labelSelectProperties = "Select type's properties";
+  propertyOptions = [
+    {id: '1', value: 'Resolution'},
+    {id: '2', value: 'RAM'},
+    {id: '3', value: 'ProcessorSpeed'},
+    {id: '4', value: 'Frequency'},
+  ]
 
   ngOnInit(): void {
   }

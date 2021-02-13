@@ -1,3 +1,4 @@
+import { AddProperty } from './../../models/equipment/add-property.model';
 import { EquipmentService } from './../equipment-service/equipment.service';
 import { AddDefinition } from './../../models/equipment/add-definition.model';
 import { AddType } from './../../models/equipment/add-type.model';
@@ -134,10 +135,10 @@ export class FormlyParserService {
     return formlyFieldsAddEquipment;
   }
 
-  parseAddType(addType: AddType){
+  parseAddType(addType: AddType) {
     let parents = [];
     addType.parents.forEach(parent => {
-      
+
       parents.push({
         value: parent.id,
         label: parent.name
@@ -180,27 +181,118 @@ export class FormlyParserService {
     return formlyFieldsAddType;
   }
 
-  parseAddDefinition(addDefintion: AddDefinition){
-    // let formlyFieldsAddDefinition: FormlyFieldConfig[] = [
-    //   {
-    //     template: '<h4>Add Definition</h4>'
-    //   },
-    //   {
-    //     key: 'parents',
-    //     type: 'multicheckbox',
-    //     templateOptions: {
-    //       options: parents,
-    //       label: "Select Type's parents"
-    //     },
-    //   },
-    //   {
-    //     key: 'name',
-    //     type: 'input',
-    //     defaultValue: addType.name,
-    //     templateOptions: {
-    //       label: 'Name',
-    //     },
-    //   },
-    // ];
+  parseAddDefinition(addDefintion: AddDefinition, formlyFields?: FormlyFieldConfig[]) {
+    let formlyFieldsAddDefinition =
+      (formlyFields == undefined) ? [] as FormlyFieldConfig[] : formlyFields;
+
+    formlyFieldsAddDefinition.push({
+      wrappers: ['formly-wrapper'],
+      fieldGroup: [
+        {
+          className: 'section-label',
+          template: '<h5>' + addDefintion.equipmentType.name + '</h5>'
+        },
+        {
+          key: 'identifier',
+          type: 'input',
+          defaultValue: addDefintion.identifier,
+          templateOptions: {
+            label: 'Identifier',
+            required: true
+          },
+        },
+      ]
+    });
+
+    addDefintion.properties.forEach(property => {
+      formlyFieldsAddDefinition[formlyFieldsAddDefinition.length - 1].fieldGroup.push(
+        this.generatePropertyFieldGroup(property)
+      )
+    });
+
+    return formlyFieldsAddDefinition;
+  }
+
+  generatePropertyFieldGroup(addProperty: AddProperty): FormlyFieldConfig{
+    let propertyFieldGroup: FormlyFieldConfig;
+
+    switch(addProperty.dataType.name.toLowerCase()){
+      case 'string': 
+        propertyFieldGroup = {
+          key: addProperty.name,
+          type: 'input',
+          defaultValue: "default value",
+          templateOptions: {
+            label: addProperty.displayName,
+            required: addProperty.required,
+          },
+        }
+        break;
+      
+      case 'number':
+        propertyFieldGroup = {
+          key: addProperty.name,
+          type: 'input',
+          defaultValue: "default value",
+          templateOptions: {
+            type: 'number',
+            label: addProperty.displayName,
+            required: addProperty.required,
+            min: addProperty.min,
+            max: addProperty.max,
+          },
+        }
+        break;
+      
+      case 'select':
+        propertyFieldGroup = {
+          key: addProperty.name,
+          type: 'select',
+          templateOptions: {
+            label: addProperty.displayName,
+            required: addProperty.required,
+            options: addProperty.options
+          },
+        }
+        break;
+
+      case 'multicheckbox':
+        propertyFieldGroup = {
+          key: addProperty.name,
+          type: 'multiCheckbox',
+          templateOptions: {
+            label: addProperty.displayName,
+            required: addProperty.required,
+            options: addProperty.options
+          },
+        }
+        break;
+
+      case 'checkbox':
+        propertyFieldGroup = {
+          key: addProperty.name,
+          type: 'checkbox',
+          templateOptions: {
+            label: addProperty.displayName,
+            required: addProperty.required,
+          },
+        }
+        break;
+
+      case 'radiobutton':
+        propertyFieldGroup = {
+          key: addProperty.name,
+          type: 'radio',
+          templateOptions: {
+            label: addProperty.displayName,
+            required: addProperty.required,
+            options: addProperty.options
+          },
+        }
+        break;
+    }
+
+    return propertyFieldGroup;
+
   }
 }

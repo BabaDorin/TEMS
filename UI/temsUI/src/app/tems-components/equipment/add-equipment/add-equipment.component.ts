@@ -9,7 +9,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { AddEquipment } from 'src/app/models/equipment/add-equipment.model';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ComponentType } from '@angular/cdk/portal';
 
 @Component({
@@ -127,12 +127,20 @@ export class AddEquipmentComponent implements OnInit {
   openDialog(componentName: string): void {
     let componentType: ComponentType<any>;
 
+    let dialogRef: MatDialogRef<any>;
     switch (componentName) {
-      case 'add-type': componentType = AddTypeComponent; break;
-      case 'add-definition': componentType = AddDefinitionComponent; break;
+      case 'add-type': 
+        dialogRef = this.dialog.open(AddTypeComponent); 
+        break;
+      
+      case 'add-definition': 
+          dialogRef = this.dialog.open(AddDefinitionComponent, {
+          data: {
+            selectedType: this.selectedType
+          }
+        });
+        break;
     }
-
-    const dialogRef = this.dialog.open(componentType)
 
     dialogRef.afterClosed().subscribe(result => {
       console.log('The dialog was closed');

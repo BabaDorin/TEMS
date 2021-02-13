@@ -46,6 +46,7 @@ export class EquipmentService {
         displayName: 'Model',
         description: 'Model name',
         dataType: { id: '1', name: 'string' },
+        required: true,
       },
       {
         id: '2',
@@ -53,13 +54,16 @@ export class EquipmentService {
         displayName: 'Frequency',
         description: 'Frequency in GHz',
         dataType: { id: '2', name: 'number' },
+        required: true,
       },
       {
         id: '3',
         name: 'color',
         displayName: 'Color',
         description: 'Black and White or Color',
-        dataType: { id: '3', name: 'bool' },
+        dataType: { id: '3', name: 'radiobutton' },
+        options: [{value: 'color', label: 'color'}, {value: 'bw', label: 'black and white'}],
+        required: true,
       },
       {
         id: '4',
@@ -67,27 +71,74 @@ export class EquipmentService {
         displayName: 'Resolution',
         description: 'Resolution',
         dataType: { id: '1', name: 'string' },
+        required: true,
       },
     ];
 
     return properties;
   }
 
-  getPropertiesOfType(type: Type) {
+  getPropertiesOfType(typeId: string) {
     // send type to API, it will return the list of properties
 
     // fake service
-    let pcProperties: Property[] = [
-      { id: '1', displayName: 'Model', description: 'The model', dataType: { id: '1', name: 'string' } },
-      { id: '3', displayName: 'refreshRate', description: 'Monitors refresh rate', dataType: { id: '2', name: 'bool' } },
+    let pcProperties: AddProperty[] = [
+      {
+        id: '1',
+        name: 'model',
+        displayName: 'Model',
+        description: 'Model name',
+        dataType: { id: '1', name: 'string' },
+        required: true,
+      },
+      {
+        id: '2',
+        name: 'Frequency',
+        displayName: 'Frequency',
+        description: 'Frequency in GHz',
+        dataType: { id: '2', name: 'number' },
+        required: true,
+      },
+      {
+        id: '3',
+        name: 'color',
+        displayName: 'Color',
+        description: 'Black and White or Color',
+        dataType: { id: '3', name: 'radiobutton' },
+        options: [{value: 'color', label: 'color'}, {value: 'bw', label: 'black and white'}],
+        required: true,
+      },
     ];
 
-    let printerProperties: Property[] = [
-      { id: '1', displayName: 'Model', description: 'The model', dataType: { id: '1', name: 'string' } },
-      { id: '2', displayName: 'Color', description: 'Color or black and white?', dataType: { id: '2', name: 'bool' } },
+    let printerProperties: AddProperty[] = [
+      {
+        id: '1',
+        name: 'model',
+        displayName: 'Model',
+        description: 'Model name',
+        dataType: { id: '1', name: 'string' },
+        required: true,
+      },
+      {
+        id: '2',
+        name: 'Frequency',
+        displayName: 'Frequency',
+        description: 'Frequency in GHz',
+        dataType: { id: '2', name: 'number' },
+        required: true,
+      },
+      { 
+        id: '3',
+        name: 'color',
+        displayName: 'Color',
+        description: 'Black and White or Color',
+        dataType: { id: '3', name: 'radiobutton' },
+        options: [{value: 'color', label: 'color'}, {value: 'bw', label: 'black and white'}],
+        required: true,
+      },
     ];
 
-    return (type.name == 'printer') ? printerProperties : pcProperties;
+    return (typeId == '1') ? printerProperties : pcProperties;
   }
 
   getDefinitionsOfType(type: Type) {
@@ -127,15 +178,17 @@ export class EquipmentService {
             displayName: 'Model',
             description: 'the model',
             dataType: { id: '1', name: 'string' },
-            value: 'HP LaserJet'
+            value: 'HP LaserJet',
+            required: true
           },
           {
             id: '2',
-            name: 'Color',
+            name: 'color',
             displayName: 'Color',
             description: 'Color = true, B&W = false',
-            dataType: { id: '2', name: 'bool' },
-            value: 'false'
+            dataType: { id: '2', name: 'radiobutton' },
+            options: [{ value: 'color', label: 'color'}, { value: 'black and white', label: 'b&w'}],
+            required: true
           },
         ],
         children: [],
@@ -152,7 +205,8 @@ export class EquipmentService {
           displayName: 'Model',
           description: 'the model',
           dataType: { id: '1', name: 'string' },
-          value: 'HP LaserJet'
+          value: 'HP LaserJet',
+          required: true
         },
         {
           id: '2',
@@ -160,7 +214,8 @@ export class EquipmentService {
           displayName: 'Color',
           description: 'Color = true, B&W = false',
           dataType: { id: '2', name: 'bool' },
-          value: 'false'
+          value: 'false',
+          required: true
         },
       ],
       children: [],
@@ -320,6 +375,17 @@ export class EquipmentService {
     // }
 
     return fullDefinitions.find(q => q.id == definitionId);
+  }
+
+  getFullType(typeId: string){
+    let fullType: AddType = {
+      id: typeId,
+      name: (typeId=="1") ? 'printer' : (typeId == "2") ? 'laptop' : 'scanner',
+      properties: this.getPropertiesOfType(typeId),
+      //parents: 
+    }
+    
+    return fullType;
   }
 
   generateAddEquipmentOfDefinition(definition: AddDefinition) {

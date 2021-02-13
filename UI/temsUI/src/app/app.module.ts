@@ -117,7 +117,11 @@ import {MatDialogModule} from '@angular/material/dialog';
     MatInputModule,
     FormlyMaterialModule,
     BrowserAnimationsModule,
-    FormlyModule.forRoot(),
+    FormlyModule.forRoot({
+      wrappers: [
+        {name: 'formly-wrapper', component: FormlyWrapperComponent}
+      ]
+    }),
     FormlyMaterialModule
   ],
   exports: [

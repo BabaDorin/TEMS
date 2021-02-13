@@ -1,6 +1,6 @@
 import { AddDefinition } from './../../../models/equipment/add-definition.model';
-import { MatDialogRef } from '@angular/material/dialog';
-import { Component, OnInit } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Component, OnInit, Input, Inject } from '@angular/core';
 import { EquipmentService } from 'src/app/services/equipment-service/equipment.service';
 import { FormlyParserService } from 'src/app/services/formly-parser-service/formly-parser.service';
 import { FormlyFieldConfig } from '@ngx-formly/core';
@@ -16,8 +16,10 @@ export class AddDefinitionComponent implements OnInit {
   constructor(
     private formlyParserService : FormlyParserService,
     private equipmentService: EquipmentService,
+    @Inject(MAT_DIALOG_DATA) public data: any,
     public dialogRef?: MatDialogRef<AddDefinitionComponent>) {
   }
+
 
   private formlyData = {
     isVisible: false,
@@ -28,13 +30,17 @@ export class AddDefinitionComponent implements OnInit {
 
   ngOnInit(): void {
     let addDefinition = new AddDefinition();
+    addDefinition.equipmentType = this.equipmentService.getFullType(this.data.selectedType.id);
+ 
+    
+    // Properties are copied from the definition types because we don't want
+    // definition properties to be tight coupled to equipment properties.
+    // We may add / remove properties from a definition (this support will be added soon)
+    addDefinition.properties = addDefinition.equipmentType.properties;
 
-
-    this.formlyData.model = new AddDefinition();
-    // this.formlyData.fields = this.formlyParserService.AddDefinition(addDefinition);
-    this.formlyData.fields = [];
+    this.formlyData.model = {};
+    this.formlyData.fields = this.formlyParserService.parseAddDefinition(addDefinition);
+    // this.formlyData.fields = [];
     this.formlyData.isVisible = true;
   }
-
-
 }

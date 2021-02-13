@@ -43,4 +43,10 @@ export class AddDefinitionComponent implements OnInit {
     // this.formlyData.fields = [];
     this.formlyData.isVisible = true;
   }
+
+  onSubmit(model){
+    // Send data to API
+    console.log('submitted');
+    console.log(model);
+  }
 }

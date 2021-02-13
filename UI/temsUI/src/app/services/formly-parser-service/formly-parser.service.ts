@@ -220,9 +220,10 @@ export class FormlyParserService {
       case 'string': 
         propertyFieldGroup = {
           key: addProperty.name,
-          type: 'input',
+          type: 'input-tooltip',
           defaultValue: "default value",
           templateOptions: {
+            description: 'cf',
             label: addProperty.displayName,
             required: addProperty.required,
           },
@@ -232,10 +233,11 @@ export class FormlyParserService {
       case 'number':
         propertyFieldGroup = {
           key: addProperty.name,
-          type: 'input',
+          type: 'input-tooltip',
           defaultValue: "default value",
           templateOptions: {
             type: 'number',
+            description: 'FrequencyFrequencyFrequencyFrequencyFrequencyFrequencyFrequencyFrequencyFrequencyFrequencyFrequencyFrequencyFrequencyFrequencyFrequencyFrequencyFrequencyFrequencyFrequencyFrequencyFrequencyFrequencyFrequencyFrequencyFrequency',
             label: addProperty.displayName,
             required: addProperty.required,
             min: addProperty.min,

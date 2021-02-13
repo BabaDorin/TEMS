@@ -98,3 +98,8 @@ $demo1-theme: mat-light-theme((
 @import "./assets/scss/layout";
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+.mat-dialog{
+  max-height: calc(100vh - 210px);
+  overflow-y: auto;
+}

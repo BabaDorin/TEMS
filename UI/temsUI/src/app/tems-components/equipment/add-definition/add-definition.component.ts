@@ -29,14 +29,23 @@ export class AddDefinitionComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    let parentFullType = this.equipmentService.getFullType(this.data.selectedType.id);
+    
     let addDefinition = new AddDefinition();
-    addDefinition.equipmentType = this.equipmentService.getFullType(this.data.selectedType.id);
- 
+    addDefinition.equipmentType = parentFullType;
     
     // Properties are copied from the definition types because we don't want
     // definition properties to be tight coupled to equipment properties.
     // We may add / remove properties from a definition (this support will be added soon)
     addDefinition.properties = addDefinition.equipmentType.properties;
+
+    parentFullType.children.forEach(childType => {
+      let childDefinition = new AddDefinition();
+      childDefinition.equipmentType = childType;
+      childDefinition.properties = childType.properties;
+      
+      addDefinition.children.push(childDefinition);
+    });
 
     this.formlyData.model = {};
     this.formlyData.fields = this.formlyParserService.parseAddDefinition(addDefinition);

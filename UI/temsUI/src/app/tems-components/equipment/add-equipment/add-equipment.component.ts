@@ -11,6 +11,7 @@ import { FormlyFieldConfig } from '@ngx-formly/core';
 import { AddEquipment } from 'src/app/models/equipment/add-equipment.model';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ComponentType } from '@angular/cdk/portal';
+// import { Overlay } from '@angular/cdk/overlay';
 
 @Component({
   selector: 'app-add-equipment',
@@ -23,6 +24,7 @@ export class AddEquipmentComponent implements OnInit {
   constructor(
     private equipmentService: EquipmentService,
     private formlyParserService: FormlyParserService,
+    // private overlay: Overlay,
     public dialog: MatDialog) { }
 
   ngOnInit(): void {
@@ -134,10 +136,15 @@ export class AddEquipmentComponent implements OnInit {
         break;
       
       case 'add-definition': 
+          // const scrollStrategy = this.overlay.scrollStrategies.reposition();
           dialogRef = this.dialog.open(AddDefinitionComponent, {
           data: {
-            selectedType: this.selectedType
-          }
+            selectedType: this.selectedType,
+          },
+          maxHeight: '80vh',
+          autoFocus: false
+          // autoFocus: false,
+          // scrollStrategy: scrollStrategy,
         });
         break;
     }

@@ -181,7 +181,7 @@ export class FormlyParserService {
     return formlyFieldsAddType;
   }
 
-  parseAddDefinition(addDefintion: AddDefinition, formlyFields?: FormlyFieldConfig[]) {
+  parseAddDefinition(addDefinition: AddDefinition, formlyFields?: FormlyFieldConfig[]) {
     let formlyFieldsAddDefinition =
       (formlyFields == undefined) ? [] as FormlyFieldConfig[] : formlyFields;
 
@@ -190,12 +190,12 @@ export class FormlyParserService {
       fieldGroup: [
         {
           className: 'section-label',
-          template: '<h5>' + addDefintion.equipmentType.name + '</h5>'
+          template: '<h5>' + addDefinition.equipmentType.name + '</h5>'
         },
         {
           key: 'identifier',
           type: 'input',
-          defaultValue: addDefintion.identifier,
+          defaultValue: addDefinition.identifier,
           templateOptions: {
             label: 'Identifier',
             required: true
@@ -204,10 +204,16 @@ export class FormlyParserService {
       ]
     });
 
-    addDefintion.properties.forEach(property => {
+    addDefinition.properties.forEach(property => {
       formlyFieldsAddDefinition[formlyFieldsAddDefinition.length - 1].fieldGroup.push(
         this.generatePropertyFieldGroup(property)
       )
+    });
+
+    addDefinition.children.forEach(childDefininition => {
+      this.parseAddDefinition(
+        childDefininition, 
+        formlyFieldsAddDefinition[formlyFieldsAddDefinition.length - 1].fieldGroup);
     });
 
     return formlyFieldsAddDefinition;

@@ -8,6 +8,8 @@ import { AddProperty } from './add-property.model';
 
 export class AddType implements IAddType{
     parents?: IAddType[];
+    children?: IAddType[];
+
     id: string;
     name: string;
     properties: AddProperty[];

@@ -382,7 +382,23 @@ export class EquipmentService {
       id: typeId,
       name: (typeId=="1") ? 'printer' : (typeId == "2") ? 'laptop' : 'scanner',
       properties: this.getPropertiesOfType(typeId),
-      //parents: 
+      children: [
+        {
+          id: '1',
+          name: 'cartrige',
+          properties: this.getPropertiesOfType(typeId),
+        },
+        {
+          id: '1',
+          name: 'cartrige',
+          properties: this.getPropertiesOfType(typeId),
+        },
+        {
+          id: '1',
+          name: 'cartrige',
+          properties: this.getPropertiesOfType(typeId),
+        },
+      ]
     }
     
     return fullType;

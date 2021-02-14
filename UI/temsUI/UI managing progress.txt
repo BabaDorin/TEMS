@@ -1,8 +1,3 @@
-========================= ISSUES ============================
-Managing fiels with the same key but different input (add-equipment.component - formly) ??? :/
-
-
-
 =====================< Done >=====================
 -Theme - done
 -Sidebar - done
@@ -25,7 +20,28 @@ Start building core components
 Start building core components
 2) View Items
 
+...
+
+q) When creating a definition user can choose already defined definitions for children
+
+q) When adding a new equipment, user can choose another definition for a specific child type (for example
+for a PC he can chose another Power Supply, different from the one in definition)
+
+q) Add support for level 2+ children
+
+
+
 
 =====================< ??? >========================
 
 Find a way to indicate which property of a type will serve as identifier.
+
+
+
+======================= CLOSED ISSUES ======================================
+Managing fiels with the same key but different input (add-equipment.component - formly) ??? :/
+
+
+
+========================= ISSUES ============================
+

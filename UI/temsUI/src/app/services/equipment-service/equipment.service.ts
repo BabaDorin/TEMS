@@ -30,7 +30,7 @@ export class EquipmentService {
     return types;
   }
 
-  getProperties(){
+  getProperties() {
 
     // id: string,
     // name: string,
@@ -39,7 +39,7 @@ export class EquipmentService {
     // dataType: DataType,
     // value?: string
 
-    let properties: AddProperty[] =  [
+    let properties: AddProperty[] = [
       {
         id: '1',
         name: 'model',
@@ -62,7 +62,7 @@ export class EquipmentService {
         displayName: 'Color',
         description: 'Black and White or Color',
         dataType: { id: '3', name: 'radiobutton' },
-        options: [{value: 'color', label: 'color'}, {value: 'bw', label: 'black and white'}],
+        options: [{ value: 'color', label: 'color' }, { value: 'bw', label: 'black and white' }],
         required: true,
       },
       {
@@ -105,7 +105,7 @@ export class EquipmentService {
         displayName: 'Color',
         description: 'Black and White or Color',
         dataType: { id: '3', name: 'radiobutton' },
-        options: [{value: 'color', label: 'color'}, {value: 'bw', label: 'black and white'}],
+        options: [{ value: 'color', label: 'color' }, { value: 'bw', label: 'black and white' }],
         required: true,
       },
     ];
@@ -127,13 +127,13 @@ export class EquipmentService {
         dataType: { id: '2', name: 'number' },
         required: true,
       },
-      { 
+      {
         id: '3',
         name: 'color',
         displayName: 'Color',
         description: 'Black and White or Color',
         dataType: { id: '3', name: 'radiobutton' },
-        options: [{value: 'color', label: 'color'}, {value: 'bw', label: 'black and white'}],
+        options: [{ value: 'color', label: 'color' }, { value: 'bw', label: 'black and white' }],
         required: true,
       },
     ];
@@ -187,40 +187,93 @@ export class EquipmentService {
             displayName: 'Color',
             description: 'Color = true, B&W = false',
             dataType: { id: '2', name: 'radiobutton' },
-            options: [{ value: 'color', label: 'color'}, { value: 'black and white', label: 'b&w'}],
+            options: [{ value: 'color', label: 'color' }, { value: 'black and white', label: 'b&w' }],
             required: true
           },
         ],
-        children: [],
+        children: [
+        ],
       },
 
       {
-      id: '2',
-      identifier: 'Lenovo M700',
-      equipmentType: { id: '1', name: 'printer', parents: [], properties: [] },
-      properties: [
-        {
-          id: '1',
-          name: 'Model',
-          displayName: 'Model',
-          description: 'the model',
-          dataType: { id: '1', name: 'string' },
-          value: 'HP LaserJet',
-          required: true
+        id: '2',
+        identifier: 'Lenovo M700',
+        equipmentType: { id: '1', name: 'printer', parents: [], properties: [] },
+        properties: [
+          {
+            id: '1',
+            name: 'Model',
+            displayName: 'Model',
+            description: 'the model',
+            dataType: { id: '1', name: 'string' },
+            value: 'HP LaserJet',
+            required: true
+          },
+          {
+            id: '2',
+            name: 'Color',
+            displayName: 'Color',
+            description: 'Color = true, B&W = false',
+            dataType: { id: '2', name: 'bool' },
+            value: 'false',
+            required: true
+          },
+        ],
+        children: [{
+          id: '2',
+          identifier: 'Lenovo M700',
+          equipmentType: { id: '1', name: 'printer', parents: [], properties: [] },
+          properties: [
+            {
+              id: '1',
+              name: 'Model',
+              displayName: 'Model',
+              description: 'the model',
+              dataType: { id: '1', name: 'string' },
+              value: 'HP LaserJet',
+              required: true
+            },
+            {
+              id: '2',
+              name: 'Color',
+              displayName: 'Color',
+              description: 'Color = true, B&W = false',
+              dataType: { id: '2', name: 'bool' },
+              value: 'false',
+              required: true
+            },
+          ],
+          children: []
         },
         {
           id: '2',
-          name: 'Color',
-          displayName: 'Color',
-          description: 'Color = true, B&W = false',
-          dataType: { id: '2', name: 'bool' },
-          value: 'false',
-          required: true
-        },
+          identifier: 'not lenovo M700',
+          equipmentType: { id: '1', name: 'printer', parents: [], properties: [] },
+          properties: [
+            {
+              id: '1',
+              name: 'Model',
+              displayName: 'Model',
+              description: 'the model',
+              dataType: { id: '1', name: 'string' },
+              value: 'HP LaserJet',
+              required: true
+            },
+            {
+              id: '2',
+              name: 'Color',
+              displayName: 'Color',
+              description: 'Color = true, B&W = false',
+              dataType: { id: '2', name: 'bool' },
+              value: 'false',
+              required: true
+            },
+          ],
+          children: []
+        }
       ],
-      children: [],
-    }
-  ];
+      }
+    ];
 
 
 
@@ -377,10 +430,10 @@ export class EquipmentService {
     return fullDefinitions.find(q => q.id == definitionId);
   }
 
-  getFullType(typeId: string){
+  getFullType(typeId: string) {
     let fullType: AddType = {
       id: typeId,
-      name: (typeId=="1") ? 'printer' : (typeId == "2") ? 'laptop' : 'scanner',
+      name: (typeId == "1") ? 'printer' : (typeId == "2") ? 'laptop' : 'scanner',
       properties: this.getPropertiesOfType(typeId),
       children: [
         {
@@ -395,7 +448,7 @@ export class EquipmentService {
         },
       ]
     }
-    
+
     return fullType;
   }
 

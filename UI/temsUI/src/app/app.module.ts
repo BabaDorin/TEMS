@@ -101,6 +101,7 @@ import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatTreeModule} from '@angular/material/tree';
 import {OverlayModule} from '@angular/cdk/overlay';
 import { RepeatTypeComponent } from './public/formly/repeat-type/repeat-type.component';
+import { AddEquipmentRepeatComponent } from './public/formly/add-equipment-repeat/add-equipment-repeat.component';
 
 @NgModule({
   declarations: [
@@ -145,6 +146,7 @@ import { RepeatTypeComponent } from './public/formly/repeat-type/repeat-type.com
     SelectTooltipComponent,
     ButtonTypeComponent,
     RepeatTypeComponent,
+    AddEquipmentRepeatComponent,
   ],
   imports: [
     BrowserModule,
@@ -193,6 +195,7 @@ import { RepeatTypeComponent } from './public/formly/repeat-type/repeat-type.com
           },
         },
         { name: 'repeat', component: RepeatTypeComponent },
+        { name: 'eq-repeat', component: AddEquipmentRepeatComponent },
       ],
     }),
     FormlyMaterialModule

@@ -22,103 +22,226 @@ export class FormlyParserService {
     let formlyFieldsAddEquipment =
       (formlyFields == undefined) ? [] as FormlyFieldConfig[] : formlyFields;
 
-    formlyFieldsAddEquipment.push({
-      wrappers: ['formly-wrapper'],
-      fieldGroup: [
-        {
-          className: 'section-label',
-          template: '<h5><pre>' + addEquipment.definition.equipmentType.name + '</pre></h5>'
-        },
-        {
-          key: 'identifier',
-          type: 'input',
-          defaultValue: addEquipment.definition.identifier,
-          templateOptions: {
-            label: 'Identifier',
+
+    formlyFieldsAddEquipment.push(
+      {
+        wrappers: ['formly-wrapper'],
+        fieldGroup: [
+          {
+            className: 'section-label',
+            template: '<h5><pre>' + addEquipment.definition.equipmentType.name + '</pre></h5>'
           },
-          expressionProperties: {
-            'templateOptions.disabled': 'true',
+          {
+            key: 'identifier',
+            type: 'input',
+            defaultValue: addEquipment.definition.identifier,
+            templateOptions: {
+              label: 'Identifier',
+            },
+            expressionProperties: {
+              'templateOptions.disabled': 'true',
+            },
           },
-        },
-        {
-          key: 'temsid',
-          type: 'input',
-          defaultValue: addEquipment.temsid,
-          templateOptions: {
-            label: 'TEMSID',
+          {
+            key: 'temsid',
+            type: 'input',
+            defaultValue: addEquipment.temsid,
+            templateOptions: {
+              label: 'TEMSID',
+            }
+          },
+          {
+            key: 'serialNumber',
+            type: 'input',
+            // defaultValue: addEquipment.serialNumber,
+            templateOptions: {
+              label: 'Serial Number',
+            }
+          },
+          {
+            key: 'isDefect',
+            type: 'checkbox',
+            defaultValue: addEquipment.isDefect,
+            templateOptions: {
+              label: 'Is Defect',
+            }
+          },
+          {
+            key: 'isUsed',
+            type: 'checkbox',
+            defaultValue: addEquipment.isUsed,
+            templateOptions: {
+              label: 'Is Used',
+            }
+          },
+          {
+            key: 'description',
+            type: 'textarea',
+            defaultValue: addEquipment.description,
+            templateOptions: {
+              label: 'Description',
+            }
+          },
+          {
+            fieldGroupClassName: 'row',
+            fieldGroup: [
+              {
+                className: 'col-4',
+                key: 'price',
+                type: 'input',
+                templateOptions: {
+                  label: 'Price',
+                },
+              },
+              {
+                className: 'col-4',
+                key: 'currency',
+                type: 'select',
+                templateOptions: {
+                  label: 'Currency',
+                  options: [
+                    { label: 'LEI', value: 'lei' },
+                    { label: 'EUR', value: 'eur' },
+                    { label: 'USD', value: 'usd' },
+                  ],
+                },
+              },
+  
+              {
+                className: 'col-4',
+                type: 'input',
+                key: 'purchaseDate',
+                templateOptions: {
+                  type: 'date',
+                  label: 'Purchase Date',
+                },
+              }
+            ]
           }
-        },
-        {
-          key: 'serialNumber',
-          type: 'input',
-          // defaultValue: addEquipment.serialNumber,
+        ]
+      }
+    )
+
+
+    // key: 'conditions',
+    //   type: 'condition-repeat',
+    //   hideExpression: (model, formState, field) => field.parent.model.type !== 'LOGICAL',
+    //   templateOptions: {
+    //     label: 'Conditions',
+    //   },
+    //   fieldArray: {
+    //     fieldGroup: [],
+    //   },
+
+    if(addEquipment.children == undefined || addEquipment.children.length == 0)
+      return formlyFieldsAddEquipment;
+
+    let index = 0;
+    addEquipment.children.forEach(childAddEquipment => {
+      formlyFieldsAddEquipment[formlyFieldsAddEquipment.length-1].fieldGroup.push({
+        key:''+index++, // in reality - the index of child definition
+        type: 'eq-repeat',
+        wrappers: ['formly-wrapper'],
+        fieldArray: {
           templateOptions: {
-            label: 'Serial Number',
-          }
-        },
-        {
-          key: 'isDefect',
-          type: 'checkbox',
-          defaultValue: addEquipment.isDefect,
-          templateOptions: {
-            label: 'Is Defect',
-          }
-        },
-        {
-          key: 'isUsed',
-          type: 'checkbox',
-          defaultValue: addEquipment.isUsed,
-          templateOptions: {
-            label: 'Is Used',
-          }
-        },
-        {
-          key: 'description',
-          type: 'textarea',
-          defaultValue: addEquipment.description,
-          templateOptions: {
-            label: 'Description',
-          }
-        },
-        {
-          fieldGroupClassName: 'row',
+            btnText: '+ ' + childAddEquipment.definition.identifier,
+          },
           fieldGroup: [
             {
-              className: 'col-4',
-              key: 'price',
+              className: 'section-label',
+              template: '<h5><pre>' + childAddEquipment.definition.equipmentType.name + '</pre></h5>'
+            },
+            {
+              key: 'identifier',
               type: 'input',
+              defaultValue: childAddEquipment.definition.identifier,
               templateOptions: {
-                label: 'Price',
+                label: 'Identifier',
+              },
+              expressionProperties: {
+                'templateOptions.disabled': 'true',
               },
             },
             {
-              className: 'col-4',
-              key: 'currency',
-              type: 'select',
-              templateOptions: {
-                label: 'Currency',
-                options: [
-                  { label: 'LEI', value: 'lei' },
-                  { label: 'EUR', value: 'eur' },
-                  { label: 'USD', value: 'usd' },
-                ],
-              },
-            },
-
-            {
-              className: 'col-4',
+              key: 'temsid',
               type: 'input',
-              key: 'purchaseDate',
+              defaultValue: childAddEquipment.temsid,
               templateOptions: {
-                type: 'date',
-                label: 'Purchase Date',
-              },
+                label: 'TEMSID',
+              }
+            },
+            {
+              key: 'serialNumber',
+              type: 'input',
+              // defaultValue: addEquipment.serialNumber,
+              templateOptions: {
+                label: 'Serial Number',
+              }
+            },
+            {
+              key: 'isDefect',
+              type: 'checkbox',
+              defaultValue: childAddEquipment.isDefect,
+              templateOptions: {
+                label: 'Is Defect',
+              }
+            },
+            {
+              key: 'isUsed',
+              type: 'checkbox',
+              defaultValue: childAddEquipment.isUsed,
+              templateOptions: {
+                label: 'Is Used',
+              }
+            },
+            {
+              key: 'description',
+              type: 'textarea',
+              defaultValue: childAddEquipment.description,
+              templateOptions: {
+                label: 'Description',
+              }
+            },
+            {
+              fieldGroupClassName: 'row',
+              fieldGroup: [
+                {
+                  className: 'col-4',
+                  key: 'price',
+                  type: 'input',
+                  templateOptions: {
+                    label: 'Price',
+                  },
+                },
+                {
+                  className: 'col-4',
+                  key: 'currency',
+                  type: 'select',
+                  templateOptions: {
+                    label: 'Currency',
+                    options: [
+                      { label: 'LEI', value: 'lei' },
+                      { label: 'EUR', value: 'eur' },
+                      { label: 'USD', value: 'usd' },
+                    ],
+                  },
+                },
+    
+                {
+                  className: 'col-4',
+                  type: 'input',
+                  key: 'purchaseDate',
+                  templateOptions: {
+                    type: 'date',
+                    label: 'Purchase Date',
+                  },
+                }
+              ]
             }
           ]
         }
-      ]
-    }
-    );
+      })
+    });
 
     // Children data will be inserted into the last fieldGroup of parent.
     // The result will be smth like this
@@ -129,10 +252,11 @@ export class FormlyParserService {
     //  | |child Serial Number
     //  ....
 
-    addEquipment.children.forEach(childAddEquipment => {
-      this.parseAddEquipment(childAddEquipment, formlyFieldsAddEquipment[formlyFieldsAddEquipment.length - 1].fieldGroup);
-    });
+    // addEquipment.children.forEach(childAddEquipment => {
+    //   this.parseAddEquipment(childAddEquipment, formlyFieldsAddEquipment[formlyFieldsAddEquipment.length - 1].fieldGroup);
+    // });
 
+    console.log(formlyFieldsAddEquipment);
     return formlyFieldsAddEquipment;
   }
 

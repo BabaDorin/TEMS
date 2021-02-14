@@ -188,6 +188,9 @@ export class FormlyParserService {
     let fields : FormlyFieldConfig[] =
     [
       {
+        template: '<h3>' + addDefinition.equipmentType.name + ' definition</h3>'
+      },
+      {
         key: 'customer',
         wrappers: ['formly-wrapper'],
         fieldGroup: [
@@ -213,18 +216,20 @@ export class FormlyParserService {
       return fields;
 
     // Adding children with 'repeat' type
-    // 1) preparing
-      
     let tempKey = 0;
     addDefinition.children.forEach(childDefinition => {
 
       fields[fields.length - 1].fieldGroup.push(
         {
+          template: '<h4>' + childDefinition.equipmentType.name + ' definitions</h4>',
+        },
+        {
           key: ' '+tempKey++, // in realilty - this will be the child definition ID
           type: 'repeat',
+          wrappers: ['formly-wrapper'],
           fieldArray:{
             templateOptions: {
-              btnText: 'Add Another'
+              btnText: '+ ' + childDefinition.equipmentType.name,
             },
             fieldGroup: []
           }
@@ -239,131 +244,7 @@ export class FormlyParserService {
       });
     });
    
-    console.log(fields);
-
     return fields;
-
-    //       {
-    //         key: 'investments',
-    //         type: 'repeat',
-    //         fieldArray: {
-    //           fieldGroupClassName: 'row',
-    //           templateOptions: {
-    //             btnText: 'Add another investment',
-    //           },
-    //           fieldGroup: [
-    //             {
-    //               className: 'col-sm-4',
-    //               type: 'input',
-    //               key: 'customerId',
-    //               templateOptions: {
-    //                 label: 'Customer Id:',
-    //                 required: true,
-    //               },
-    //               expressionProperties: {
-    //                 'model.customerId': 'formState.model.customer.id',
-    //               },
-    //             },
-    //             {
-    //               className: 'col-sm-4',
-    //               type: 'input',
-    //               key: 'investmentName',
-    //               defaultValue: 'My name',
-    //               templateOptions: {
-    //                 label: 'Name of Investment:',
-    //                 required: true,
-    //               },
-    //             },
-    //             {
-    //               type: 'input',
-    //               key: 'investmentDate',
-    //               className: 'col-sm-3',
-    //               templateOptions: {
-    //                 type: 'date',
-    //                 label: 'Date of Investment:',
-    //               },
-    //             },
-    //             {
-    //               type: 'input',
-    //               key: 'stockIdentifier',
-    //               className: 'col-sm-3',
-    //               defaultValue: 'test',
-    //               templateOptions: {
-    //                 label: 'Stock Identifier:',
-    //                 addonRight: {
-    //                   class: 'fa fa-code',
-    //                   onClick: (to, fieldType, $event) => console.log(to, fieldType, $event),
-    //                 },
-    //               },
-    //             },
-    //           ],
-    //         },
-    //       },  
-    //     ]
-    //   }
-    // ];  
-
-
-
-
-
-
-    // let formlyFieldsAddDefinition =
-    //   (formlyFields == undefined) ? [] as FormlyFieldConfig[] : formlyFields;
-
-    // formlyFieldsAddDefinition.push({
-    //   wrappers: ['formly-wrapper'],
-    //   type: 'repeat',
-    //   fieldGroup: [
-    //     {
-    //       className: 'section-label',
-    //       template: '<h5>' + addDefinition.equipmentType.name + '</h5>'
-    //     },
-    //     {
-    //       key: 'identifier',
-    //       type: 'input',
-    //       defaultValue: addDefinition.identifier,
-    //       templateOptions: {
-    //         label: 'Identifier',
-    //         required: true
-    //       },
-    //     },
-    //   ]
-    // });
-
-    // addDefinition.properties.forEach(property => {
-    //   formlyFieldsAddDefinition[formlyFieldsAddDefinition.length - 1].fieldGroup.push(
-    //     this.generatePropertyFieldGroup(property)
-    //   )
-    // });
-
-    // addDefinition.children.forEach(childDefininition => {
-    //   this.parseAddDefinition(
-    //     childDefininition, 
-    //     formlyFieldsAddDefinition[formlyFieldsAddDefinition.length - 1].fieldGroup);
-
-    //     formlyFieldsAddDefinition[formlyFieldsAddDefinition.length - 1].fieldGroup.push(
-    //       {
-    //         type: 'button',
-    //         templateOptions: {
-    //           text: 'Click this guy',
-    //           btnType: 'info',
-    //           onClick: () => {
-
-    //             console.log(formlyFieldsAddDefinition[formlyFieldsAddDefinition.length - 1].fieldGroup);
-    //              this.parseAddDefinition(
-    //               childDefininition, 
-    //               formlyFieldsAddDefinition[formlyFieldsAddDefinition.length - 1].fieldGroup);
-
-    //             console.log(formlyFieldsAddDefinition[formlyFieldsAddDefinition.length - 1].fieldGroup);
-
-    //           },
-    //         },
-    //       }
-    //     )
-    // });
-
-    // return formlyFieldsAddDefinition;
   }
 
   generatePropertyFieldGroup(addProperty: AddProperty): FormlyFieldConfig {

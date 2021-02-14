@@ -50,96 +50,11 @@ export class AddDefinitionComponent implements OnInit {
 
     this.formlyData.model ={};
     this.formlyData.fields = this.formlyParserService.parseAddDefinition(addDefinition);
-   
-    // this.formlyData.fields = [
-    //   {
-    //     key: 'customer',
-    //     fieldGroup: [
-    //       {
-    //         key: 'id',
-    //         type: 'input',
-    //         defaultValue: '100',
-    //         templateOptions: {
-    //           required: true,
-    //           label: 'Id'
-    //         }
-    //       },
-    //       {
-    //         key: 'name',
-    //         type: 'input',
-    //         defaultValue: 'Test Customer',
-    //         templateOptions: {
-    //           required: true,
-    //           label: 'Customer Name'
-    //         }
-    //       },
-    //       {
-    //         key: 'investments',
-    //         type: 'repeat',
-    //         fieldArray: {
-    //           fieldGroupClassName: 'row',
-    //           templateOptions: {
-    //             btnText: 'Add another investment',
-    //           },
-    //           fieldGroup: [
-    //             {
-    //               className: 'col-sm-4',
-    //               type: 'input',
-    //               key: 'customerId',
-    //               templateOptions: {
-    //                 label: 'Customer Id:',
-    //                 required: true,
-    //               },
-    //               expressionProperties: {
-    //                 'model.customerId': 'formState.model.customer.id',
-    //               },
-    //             },
-    //             {
-    //               className: 'col-sm-4',
-    //               type: 'input',
-    //               key: 'investmentName',
-    //               defaultValue: 'My name',
-    //               templateOptions: {
-    //                 label: 'Name of Investment:',
-    //                 required: true,
-    //               },
-    //             },
-    //             {
-    //               type: 'input',
-    //               key: 'investmentDate',
-    //               className: 'col-sm-3',
-    //               templateOptions: {
-    //                 type: 'date',
-    //                 label: 'Date of Investment:',
-    //               },
-    //             },
-    //             {
-    //               type: 'input',
-    //               key: 'stockIdentifier',
-    //               className: 'col-sm-3',
-    //               defaultValue: 'test',
-    //               templateOptions: {
-    //                 label: 'Stock Identifier:',
-    //                 addonRight: {
-    //                   class: 'fa fa-code',
-    //                   onClick: (to, fieldType, $event) => console.log(to, fieldType, $event),
-    //                 },
-    //               },
-    //             },
-    //           ],
-    //         },
-    //       },  
-    //     ]
-    //   }
-    // ];  
     this.formlyData.isVisible = true;
   }
 
   onSubmit(model){
     // Send data to API
-    console.log('submitted');
     console.log(model);
-
-    // setInterval(() => { console.log(this.formlyData.fields)}, 4000)
   }
 }

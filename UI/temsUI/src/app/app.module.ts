@@ -3,6 +3,7 @@ import { ChipsAutocompleteComponent } from './public/formly/chips-autocomplete/c
 import { FormlyParserService } from './services/formly-parser-service/formly-parser.service';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { AgGridModule } from 'ag-grid-angular';
 import { AppRoutingModule } from './app-routing.module';
 
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
@@ -198,7 +199,8 @@ import { AddEquipmentRepeatComponent } from './public/formly/add-equipment-repea
         { name: 'eq-repeat', component: AddEquipmentRepeatComponent },
       ],
     }),
-    FormlyMaterialModule
+    FormlyMaterialModule,
+    AgGridModule
   ],
   exports: [
     MatFormFieldModule, 

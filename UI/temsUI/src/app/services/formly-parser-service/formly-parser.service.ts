@@ -5,6 +5,7 @@ import { AddType } from './../../models/equipment/add-type.model';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { Injectable } from '@angular/core';
 import { AddEquipment } from 'src/app/models/equipment/add-equipment.model';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -182,48 +183,194 @@ export class FormlyParserService {
   }
 
   parseAddDefinition(addDefinition: AddDefinition, formlyFields?: FormlyFieldConfig[]) {
-    let formlyFieldsAddDefinition =
-      (formlyFields == undefined) ? [] as FormlyFieldConfig[] : formlyFields;
 
-    formlyFieldsAddDefinition.push({
-      wrappers: ['formly-wrapper'],
-      fieldGroup: [
-        {
-          className: 'section-label',
-          template: '<h5>' + addDefinition.equipmentType.name + '</h5>'
-        },
-        {
-          key: 'identifier',
-          type: 'input',
-          defaultValue: addDefinition.identifier,
-          templateOptions: {
-            label: 'Identifier',
-            required: true
+    // initilizing fields
+    let fields : FormlyFieldConfig[] =
+    [
+      {
+        key: 'customer',
+        wrappers: ['formly-wrapper'],
+        fieldGroup: [
+          {
+            key: 'identifier',
+            type: 'input',
+            templateOptions: {
+              description: 'Name associated with this definition',
+              required: true,
+              label: 'Identifier'
+            }
           },
-        },
-      ]
-    });
+        ]
+      }
+    ];
 
+    // Adding inputs for parent's properties
     addDefinition.properties.forEach(property => {
-      formlyFieldsAddDefinition[formlyFieldsAddDefinition.length - 1].fieldGroup.push(
-        this.generatePropertyFieldGroup(property)
+        fields[fields.length - 1].fieldGroup.push(this.generatePropertyFieldGroup(property))
+    });
+
+    if(addDefinition.children.length == 0)
+      return fields;
+
+    // Adding children with 'repeat' type
+    // 1) preparing
+      
+    let tempKey = 0;
+    addDefinition.children.forEach(childDefinition => {
+
+      fields[fields.length - 1].fieldGroup.push(
+        {
+          key: ' '+tempKey++, // in realilty - this will be the child definition ID
+          type: 'repeat',
+          fieldArray:{
+            templateOptions: {
+              btnText: 'Add Another'
+            },
+            fieldGroup: []
+          }
+        }
       )
-    });
 
-    addDefinition.children.forEach(childDefininition => {
-      this.parseAddDefinition(
-        childDefininition, 
-        formlyFieldsAddDefinition[formlyFieldsAddDefinition.length - 1].fieldGroup);
+      let lastFieldGroup = fields[fields.length - 1].fieldGroup;
+      let destination = lastFieldGroup[lastFieldGroup.length - 1].fieldArray.fieldGroup;
+      
+      childDefinition.properties.forEach(property => {
+        destination.push(this.generatePropertyFieldGroup(property))
+      });
     });
+   
+    console.log(fields);
 
-    return formlyFieldsAddDefinition;
+    return fields;
+
+    //       {
+    //         key: 'investments',
+    //         type: 'repeat',
+    //         fieldArray: {
+    //           fieldGroupClassName: 'row',
+    //           templateOptions: {
+    //             btnText: 'Add another investment',
+    //           },
+    //           fieldGroup: [
+    //             {
+    //               className: 'col-sm-4',
+    //               type: 'input',
+    //               key: 'customerId',
+    //               templateOptions: {
+    //                 label: 'Customer Id:',
+    //                 required: true,
+    //               },
+    //               expressionProperties: {
+    //                 'model.customerId': 'formState.model.customer.id',
+    //               },
+    //             },
+    //             {
+    //               className: 'col-sm-4',
+    //               type: 'input',
+    //               key: 'investmentName',
+    //               defaultValue: 'My name',
+    //               templateOptions: {
+    //                 label: 'Name of Investment:',
+    //                 required: true,
+    //               },
+    //             },
+    //             {
+    //               type: 'input',
+    //               key: 'investmentDate',
+    //               className: 'col-sm-3',
+    //               templateOptions: {
+    //                 type: 'date',
+    //                 label: 'Date of Investment:',
+    //               },
+    //             },
+    //             {
+    //               type: 'input',
+    //               key: 'stockIdentifier',
+    //               className: 'col-sm-3',
+    //               defaultValue: 'test',
+    //               templateOptions: {
+    //                 label: 'Stock Identifier:',
+    //                 addonRight: {
+    //                   class: 'fa fa-code',
+    //                   onClick: (to, fieldType, $event) => console.log(to, fieldType, $event),
+    //                 },
+    //               },
+    //             },
+    //           ],
+    //         },
+    //       },  
+    //     ]
+    //   }
+    // ];  
+
+
+
+
+
+
+    // let formlyFieldsAddDefinition =
+    //   (formlyFields == undefined) ? [] as FormlyFieldConfig[] : formlyFields;
+
+    // formlyFieldsAddDefinition.push({
+    //   wrappers: ['formly-wrapper'],
+    //   type: 'repeat',
+    //   fieldGroup: [
+    //     {
+    //       className: 'section-label',
+    //       template: '<h5>' + addDefinition.equipmentType.name + '</h5>'
+    //     },
+    //     {
+    //       key: 'identifier',
+    //       type: 'input',
+    //       defaultValue: addDefinition.identifier,
+    //       templateOptions: {
+    //         label: 'Identifier',
+    //         required: true
+    //       },
+    //     },
+    //   ]
+    // });
+
+    // addDefinition.properties.forEach(property => {
+    //   formlyFieldsAddDefinition[formlyFieldsAddDefinition.length - 1].fieldGroup.push(
+    //     this.generatePropertyFieldGroup(property)
+    //   )
+    // });
+
+    // addDefinition.children.forEach(childDefininition => {
+    //   this.parseAddDefinition(
+    //     childDefininition, 
+    //     formlyFieldsAddDefinition[formlyFieldsAddDefinition.length - 1].fieldGroup);
+
+    //     formlyFieldsAddDefinition[formlyFieldsAddDefinition.length - 1].fieldGroup.push(
+    //       {
+    //         type: 'button',
+    //         templateOptions: {
+    //           text: 'Click this guy',
+    //           btnType: 'info',
+    //           onClick: () => {
+
+    //             console.log(formlyFieldsAddDefinition[formlyFieldsAddDefinition.length - 1].fieldGroup);
+    //              this.parseAddDefinition(
+    //               childDefininition, 
+    //               formlyFieldsAddDefinition[formlyFieldsAddDefinition.length - 1].fieldGroup);
+
+    //             console.log(formlyFieldsAddDefinition[formlyFieldsAddDefinition.length - 1].fieldGroup);
+
+    //           },
+    //         },
+    //       }
+    //     )
+    // });
+
+    // return formlyFieldsAddDefinition;
   }
 
-  generatePropertyFieldGroup(addProperty: AddProperty): FormlyFieldConfig{
+  generatePropertyFieldGroup(addProperty: AddProperty): FormlyFieldConfig {
     let propertyFieldGroup: FormlyFieldConfig;
 
-    switch(addProperty.dataType.name.toLowerCase()){
-      case 'string': 
+    switch (addProperty.dataType.name.toLowerCase()) {
+      case 'string':
         propertyFieldGroup = {
           key: addProperty.name,
           type: 'input-tooltip',
@@ -235,7 +382,7 @@ export class FormlyParserService {
           },
         }
         break;
-      
+
       case 'number':
         propertyFieldGroup = {
           key: addProperty.name,
@@ -251,7 +398,7 @@ export class FormlyParserService {
           },
         }
         break;
-      
+
       case 'select':
         propertyFieldGroup = {
           key: addProperty.name,

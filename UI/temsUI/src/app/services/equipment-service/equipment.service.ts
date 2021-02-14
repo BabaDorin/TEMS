@@ -389,13 +389,8 @@ export class EquipmentService {
           properties: this.getPropertiesOfType(typeId),
         },
         {
-          id: '1',
-          name: 'cartrige',
-          properties: this.getPropertiesOfType(typeId),
-        },
-        {
-          id: '1',
-          name: 'cartrige',
+          id: '2',
+          name: 'microprocessor',
           properties: this.getPropertiesOfType(typeId),
         },
       ]

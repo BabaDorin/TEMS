@@ -1,3 +1,4 @@
+import { ButtonTypeComponent } from './public/formly/button-type/button-type.component';
 import { ChipsAutocompleteComponent } from './public/formly/chips-autocomplete/chips-autocomplete.component';
 import { FormlyParserService } from './services/formly-parser-service/formly-parser.service';
 import { BrowserModule } from '@angular/platform-browser';
@@ -99,6 +100,7 @@ import {MatTabsModule} from '@angular/material/tabs';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatTreeModule} from '@angular/material/tree';
 import {OverlayModule} from '@angular/cdk/overlay';
+import { RepeatTypeComponent } from './public/formly/repeat-type/repeat-type.component';
 
 @NgModule({
   declarations: [
@@ -141,6 +143,8 @@ import {OverlayModule} from '@angular/cdk/overlay';
     ChipsAutocompleteComponent,
     InputTooltipComponent,
     SelectTooltipComponent,
+    ButtonTypeComponent,
+    RepeatTypeComponent,
   ],
   imports: [
     BrowserModule,
@@ -173,7 +177,22 @@ import {OverlayModule} from '@angular/cdk/overlay';
           name: 'input-tooltip',
           component: InputTooltipComponent,
           // wrappers: ['form-field'],
+          defaultOptions: {
+            type: 'text'
+          }
         },
+        {
+          name: 'button',
+          component: ButtonTypeComponent,
+          wrappers: ['form-field'],
+          defaultOptions: {
+            templateOptions: {
+              btnType: 'default',
+              type: 'button',
+            },
+          },
+        },
+        { name: 'repeat', component: RepeatTypeComponent },
       ],
     }),
     FormlyMaterialModule

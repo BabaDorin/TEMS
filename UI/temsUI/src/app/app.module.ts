@@ -1,3 +1,4 @@
+import { HttpClientModule } from '@angular/common/http';
 import { ButtonTypeComponent } from './public/formly/button-type/button-type.component';
 import { ChipsAutocompleteComponent } from './public/formly/chips-autocomplete/chips-autocomplete.component';
 import { FormlyParserService } from './services/formly-parser-service/formly-parser.service';
@@ -103,6 +104,8 @@ import {MatTreeModule} from '@angular/material/tree';
 import {OverlayModule} from '@angular/cdk/overlay';
 import { RepeatTypeComponent } from './public/formly/repeat-type/repeat-type.component';
 import { AddEquipmentRepeatComponent } from './public/formly/add-equipment-repeat/add-equipment-repeat.component';
+import { SummaryEquipmentAnalyticsComponent } from './tems-components/analytics/summary-equipment-analytics/summary-equipment-analytics.component';
+import { AgGridEquipmentComponent } from './tems-components/equipment/ag-grid-equipment/ag-grid-equipment.component';
 
 @NgModule({
   declarations: [
@@ -148,6 +151,8 @@ import { AddEquipmentRepeatComponent } from './public/formly/add-equipment-repea
     ButtonTypeComponent,
     RepeatTypeComponent,
     AddEquipmentRepeatComponent,
+    SummaryEquipmentAnalyticsComponent,
+    AgGridEquipmentComponent,
   ],
   imports: [
     BrowserModule,
@@ -158,6 +163,7 @@ import { AddEquipmentRepeatComponent } from './public/formly/add-equipment-repea
     FormsModule,
     ReactiveFormsModule,
     ChartsModule,
+    HttpClientModule,
     TagInputModule,
     BrowserModule,
     ReactiveFormsModule,

@@ -1,3 +1,8 @@
+=====================< Documentation >============
+Angular + asp.net pagination =>  Upvoted anwer on github
+
+
+
 =====================< Done >=====================
 -Theme - done
 -Sidebar - done

@@ -110,6 +110,7 @@ import { EquipmentDetailsComponent } from './tems-components/equipment/equipment
 import { EquipmentDetailsGeneralComponent } from './tems-components/equipment/equipment-details/equipment-details-general/equipment-details-general.component';
 import { EquipmentDetailsLogsComponent } from './tems-components/equipment/equipment-details/equipment-details-logs/equipment-details-logs.component';
 import { EquipmentDetailsAllocationsComponent } from './tems-components/equipment/equipment-details/equipment-details-allocations/equipment-details-allocations.component';
+import { ImageCarouselComponent } from './public/image-carousel/image-carousel.component';
 
 @NgModule({
   declarations: [
@@ -161,6 +162,8 @@ import { EquipmentDetailsAllocationsComponent } from './tems-components/equipmen
     EquipmentDetailsGeneralComponent,
     EquipmentDetailsLogsComponent,
     EquipmentDetailsAllocationsComponent,
+    ViewRoomsComponent,
+    ImageCarouselComponent,
   ],
   imports: [
     BrowserModule,

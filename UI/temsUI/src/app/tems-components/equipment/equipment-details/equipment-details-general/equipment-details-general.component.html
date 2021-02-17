@@ -1,1 +1,19 @@
-<p>equipment-details-general works!</p>
+<h3>Equipment General Information</h3>
+<br>
+
+<div *ngIf="edit==true">
+    edit = true
+</div>
+
+<div *ngIf="edit==false">
+    edit = false
+</div>
+
+<button class="btn btn-primary" (click)="edit=true">Edit data</button>
+
+<div *ngIf="equipment.photos.length > 0">
+    <h4>Equipment Images</h4>
+    <app-image-carousel></app-image-carousel>
+</div>
+<br>
+

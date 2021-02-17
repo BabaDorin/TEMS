@@ -1,3 +1,4 @@
+import { ViewEquipment } from './../../models/equipment/view-equipment.model';
 import { ViewEquipmentSimplified } from './../../models/equipment/view-equipment-simplified.model';
 import { AddProperty } from './../../models/equipment/add-property.model';
 import { AddEquipment } from '../../models/equipment/add-equipment.model';
@@ -95,6 +96,10 @@ export class EquipmentService {
     ];
 
     return equipments;
+  }
+
+  getEquipmentByID(id: string){
+    return new ViewEquipment();
   }
 
   getPropertiesOfType(typeId: string) {

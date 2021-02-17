@@ -41,6 +41,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { DashboardComponent } from './public/dashboard/dashboard.component';
 import { AnalyticsComponent } from './tems-components/analytics/analytics.component';
 import { IconsModule } from './public/icons/icons.module';
+import { EquipmentDetailsComponent } from './tems-components/equipment/equipment-details/equipment-details.component';
 
 
 const routes: Routes = [
@@ -51,6 +52,7 @@ const routes: Routes = [
   { path: 'icons', component: MdiComponent},
 
   // Equipment
+  { path: 'view/:id', component: EquipmentDetailsComponent, canActivate: [ ViewEquipmentGuard ] },
   { path: 'equipment/all', component: ViewEquipmentComponent, canActivate: [ ViewEquipmentGuard ] },
   { path: 'equipment/add', component: AddEquipmentComponent, canActivate: [ ManageEquipmentGuard ] },
   { path: 'equipment/quick-access', component: QuickAccessComponent, canActivate: [ ViewEquipmentGuard ]},

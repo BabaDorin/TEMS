@@ -106,6 +106,10 @@ import { RepeatTypeComponent } from './public/formly/repeat-type/repeat-type.com
 import { AddEquipmentRepeatComponent } from './public/formly/add-equipment-repeat/add-equipment-repeat.component';
 import { SummaryEquipmentAnalyticsComponent } from './tems-components/analytics/summary-equipment-analytics/summary-equipment-analytics.component';
 import { AgGridEquipmentComponent } from './tems-components/equipment/ag-grid-equipment/ag-grid-equipment.component';
+import { EquipmentDetailsComponent } from './tems-components/equipment/equipment-details/equipment-details.component';
+import { EquipmentDetailsGeneralComponent } from './tems-components/equipment/equipment-details/equipment-details-general/equipment-details-general.component';
+import { EquipmentDetailsLogsComponent } from './tems-components/equipment/equipment-details/equipment-details-logs/equipment-details-logs.component';
+import { EquipmentDetailsAllocationsComponent } from './tems-components/equipment/equipment-details/equipment-details-allocations/equipment-details-allocations.component';
 
 @NgModule({
   declarations: [
@@ -153,6 +157,10 @@ import { AgGridEquipmentComponent } from './tems-components/equipment/ag-grid-eq
     AddEquipmentRepeatComponent,
     SummaryEquipmentAnalyticsComponent,
     AgGridEquipmentComponent,
+    EquipmentDetailsComponent,
+    EquipmentDetailsGeneralComponent,
+    EquipmentDetailsLogsComponent,
+    EquipmentDetailsAllocationsComponent,
   ],
   imports: [
     BrowserModule,

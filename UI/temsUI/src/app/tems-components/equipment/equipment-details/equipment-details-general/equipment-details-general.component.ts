@@ -12,6 +12,8 @@ export class EquipmentDetailsGeneralComponent implements OnInit {
   @Input() equipmentId: string;
 
   equipment: ViewEquipment;
+  edit = false;
+
   constructor(private equipmentService: EquipmentService) { 
     this.equipment = equipmentService.getEquipmentByID(this.equipmentId);
     console.log(this.equipment);

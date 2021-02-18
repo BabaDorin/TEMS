@@ -1,15 +1,36 @@
-<h3>Equipment General Information</h3>
 <br>
+<h1>{{ equipment.identifier }}
+    <b *ngIf="equipment.temsID != undefined"> {{ equipment.temsID }}</b>
+    <b *ngIf="equipment.temsID == undefined && equipment.serialNumber != undefined">{{ equipment.serialNumber}}</b>
+</h1>
+<hr>
+<br>
+<div *ngIf="edit==false">
+    <div class="row">
+        <div class="col-md-6">
+            <!-- Common properties for each equipment go here -->
+            <p class="view-property"><b>Identifier: </b> {{ equipment.identifier }}</p>
+            <p class="view-property"><b>Type: </b> {{ equipment.type.name }}</p>
+            <p class="view-property"><b>TemsID: </b> {{ equipment.temsID }}</p>
+            <p class="view-property"><b>serial Number: </b> {{ equipment.serialNumber }}</p>
+            <p class="view-property"><b>Is Used: </b> {{ equipment.isUsed }}</p>
+            <p class="view-property"><b>Is Defect: </b> {{ equipment.isDefect }}</p>
+        </div>
+        <div class="col-md-6">
+            <!-- Speciic properties for current equipment go here -->
+            <p class="view-property" *ngFor="let property of equipment.specificTypeProperties">
+                <b>{{ property.displayName }}: </b> {{ property.value }}
+            </p>
+        </div>
+    </div>
+</div>
 
 <div *ngIf="edit==true">
     edit = true
 </div>
 
-<div *ngIf="edit==false">
-    edit = false
-</div>
 
-<button class="btn btn-primary" (click)="edit=true">Edit data</button>
+<button class="btn btn-primary" (click)="edit=!edit">Edit data</button>
 
 <div *ngIf="equipment.photos.length > 0">
     <h4>Equipment Images</h4>

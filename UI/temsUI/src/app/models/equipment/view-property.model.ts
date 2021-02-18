@@ -3,5 +3,6 @@ export interface Property{
     id: string,
     displayName: string,
     description: string,
-    dataType: DataType
+    dataType: DataType,
+    value: any
 }

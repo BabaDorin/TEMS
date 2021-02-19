@@ -9,24 +9,17 @@
     <div class="row">
         <div class="col-md-6">
             <!-- Common properties for each equipment go here -->
-            <p class="view-property"><b>Identifier: </b> {{ equipment.identifier }}</p>
-            <p class="view-property"><b>Type: </b> {{ equipment.type.name }}</p>
-            <p class="view-property"><b>TemsID: </b> {{ equipment.temsID }}</p>
-            <p class="view-property"><b>serial Number: </b> {{ equipment.serialNumber }}</p>
-            <p class="view-property"><b>Is Used: </b> {{ equipment.isUsed }}</p>
-            <p class="view-property"><b>Is Defect: </b> {{ equipment.isDefect }}</p>
+            <app-property-render [(properties)]="generalProperties"></app-property-render>
         </div>
         <div class="col-md-6">
             <!-- Speciic properties for current equipment go here -->
-            <p class="view-property" *ngFor="let property of equipment.specificTypeProperties">
-                <b>{{ property.displayName }}: </b> {{ property.value }}
-            </p>
+            <app-property-render [properties]="equipment.specificTypeProperties"></app-property-render>
         </div>
     </div>
 </div>
 
 <div *ngIf="edit==true">
-    edit = true
+    edit = true 
 </div>
 
 

@@ -13,7 +13,7 @@ export interface IViewEquipment{
     specificTypeProperties: Property[],
     children: ViewEquipment[];
     parents: ViewEquipment[];
-    idUsed: boolean,
+    isUsed: boolean,
     isDefect: boolean;
     price: number;
     photos: string[];
@@ -28,7 +28,7 @@ export class ViewEquipment implements IViewEquipment{
     type: Type;
     children: ViewEquipment[];
     parents: ViewEquipment[];
-    idUsed: boolean;
+    isUsed: boolean;
     isDefect: boolean;
     price: number;
     specificTypeProperties: Property[];
@@ -41,8 +41,8 @@ export class ViewEquipment implements IViewEquipment{
         this.serialNumber = "3044245435";
         this.type = { id: '1', name: 'Laptop' }
         this.room = { id: '1', identifier: '307'};
-        this.idUsed = true;
-        this.isDefect = false;
+        this.isUsed = true;
+        this.isDefect = true;
         this.children = [];
         this.parents = [];
         this.specificTypeProperties = [

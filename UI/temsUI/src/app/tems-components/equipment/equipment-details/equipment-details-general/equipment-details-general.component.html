@@ -17,17 +17,30 @@
         </div>
     </div>
 </div>
+<br>
+<br>
+<h2>Equipment's Children</h2>
+<hr>
+<div *ngFor="let child of equipment.children">
+    <mat-expansion-panel>
+        <mat-expansion-panel-header>
+            <b>{{ child.type }}: </b>  {{ child.identifier }}
+        </mat-expansion-panel-header>
 
-<div *ngIf="edit==true">
-    edit = true 
+        <ng-template matExpansionPanelContent>
+           <app-equipment-details-general [equipmentId]="child.id"></app-equipment-details-general>
+        </ng-template>
+    </mat-expansion-panel>
+    <br>
 </div>
 
-
-<button class="btn btn-primary" (click)="edit=!edit">Edit data</button>
 
 <div *ngIf="equipment.photos.length > 0">
     <h4>Equipment Images</h4>
     <app-image-carousel></app-image-carousel>
 </div>
 <br>
-
+<div *ngIf="edit==true">
+    edit = true
+</div>
+<button class="btn btn-primary" (click)="edit=!edit">Edit data</button>

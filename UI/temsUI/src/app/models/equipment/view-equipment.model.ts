@@ -3,6 +3,12 @@ import { ViewSimplifiedRoom } from './../room/view-room-simplified.model';
 import { Property } from './view-property.model';
 import { Type } from './view-type.model';
 
+export interface ILightViewEquipment{
+    id: string;
+    type: string;
+    identifier: string;
+}
+
 export interface IViewEquipment{
     id: string,
     identifier: string;
@@ -11,8 +17,8 @@ export interface IViewEquipment{
     room: ViewSimplifiedRoom;
     type: Type;
     specificTypeProperties: Property[],
-    children: ViewEquipment[];
-    parents: ViewEquipment[];
+    children: ILightViewEquipment[];
+    parents: ILightViewEquipment[];
     isUsed: boolean,
     isDefect: boolean;
     price: number;
@@ -26,8 +32,8 @@ export class ViewEquipment implements IViewEquipment{
     serialNumber: string;
     room: ViewSimplifiedRoom;
     type: Type;
-    children: ViewEquipment[];
-    parents: ViewEquipment[];
+    children: ILightViewEquipment[];
+    parents: ILightViewEquipment[];
     isUsed: boolean;
     isDefect: boolean;
     price: number;
@@ -43,7 +49,10 @@ export class ViewEquipment implements IViewEquipment{
         this.room = { id: '1', identifier: '307'};
         this.isUsed = true;
         this.isDefect = true;
-        this.children = [];
+        this.children = [
+            {id: '1', type: 'Processor', identifier: 'Intel Core i5 1050'},
+            {id: '2', type: 'Graphics Card', identifier: 'Nvidia Geforce 1650'},
+        ];
         this.parents = [];
         this.specificTypeProperties = [
             { id: '1', dataType: { id: '1', name: 'string' }, displayName: 'Model', description: 'Items model', value: "cf" },

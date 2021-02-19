@@ -27,8 +27,8 @@
             <b>{{ child.type }}: </b>  {{ child.identifier }}
         </mat-expansion-panel-header>
 
-        <ng-template matExpansionPanelContent>
-           <app-equipment-details-general [equipmentId]="child.id"></app-equipment-details-general>
+        <ng-template matExpansionPanelContent class="mat-exp-panel-content">
+           <app-equipment-details [equipmentId]="child.id"></app-equipment-details>
         </ng-template>
     </mat-expansion-panel>
     <br>

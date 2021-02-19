@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit } from '@angular/core';
+import { Component, ElementRef, Input, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
@@ -8,13 +8,14 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class EquipmentDetailsComponent implements OnInit {
 
-  equipmentId;
+  @Input() equipmentId;
   edit: boolean;
   // equipment: ViewEquipment;
   
 
   constructor(private _Activatedroute: ActivatedRoute, private elementRef: ElementRef) {
-    this.equipmentId = this._Activatedroute.snapshot.paramMap.get("id");
+    if(this.equipmentId == undefined)
+      this.equipmentId = this._Activatedroute.snapshot.paramMap.get("id");
     this.edit=false;
   }
 

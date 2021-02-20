@@ -6,6 +6,7 @@ import { FormlyFieldConfig } from '@ngx-formly/core';
 import { Injectable } from '@angular/core';
 import { AddEquipment } from 'src/app/models/equipment/add-equipment.model';
 import { Observable } from 'rxjs';
+import { ViewLog } from 'src/app/models/communication/logs/view-logs.model';
 
 @Injectable({
   providedIn: 'root'
@@ -106,7 +107,7 @@ export class FormlyParserService {
                   ],
                 },
               },
-  
+
               {
                 className: 'col-4',
                 type: 'input',
@@ -133,13 +134,13 @@ export class FormlyParserService {
     //     fieldGroup: [],
     //   },
 
-    if(addEquipment.children == undefined || addEquipment.children.length == 0)
+    if (addEquipment.children == undefined || addEquipment.children.length == 0)
       return formlyFieldsAddEquipment;
 
     let index = 0;
     addEquipment.children.forEach(childAddEquipment => {
-      formlyFieldsAddEquipment[formlyFieldsAddEquipment.length-1].fieldGroup.push({
-        key:''+index++, // in reality - the index of child definition
+      formlyFieldsAddEquipment[formlyFieldsAddEquipment.length - 1].fieldGroup.push({
+        key: '' + index++, // in reality - the index of child definition
         type: 'eq-repeat',
         wrappers: ['formly-wrapper'],
         fieldArray: {
@@ -226,7 +227,7 @@ export class FormlyParserService {
                     ],
                   },
                 },
-    
+
                 {
                   className: 'col-4',
                   type: 'input',
@@ -309,34 +310,34 @@ export class FormlyParserService {
   parseAddDefinition(addDefinition: AddDefinition, formlyFields?: FormlyFieldConfig[]) {
 
     // initilizing fields
-    let fields : FormlyFieldConfig[] =
-    [
-      {
-        template: '<h3>' + addDefinition.equipmentType.name + ' definition</h3>'
-      },
-      {
-        key: 'customer',
-        wrappers: ['formly-wrapper'],
-        fieldGroup: [
-          {
-            key: 'identifier',
-            type: 'input',
-            templateOptions: {
-              description: 'Name associated with this definition',
-              required: true,
-              label: 'Identifier'
-            }
-          },
-        ]
-      }
-    ];
+    let fields: FormlyFieldConfig[] =
+      [
+        {
+          template: '<h3>' + addDefinition.equipmentType.name + ' definition</h3>'
+        },
+        {
+          key: 'customer',
+          wrappers: ['formly-wrapper'],
+          fieldGroup: [
+            {
+              key: 'identifier',
+              type: 'input',
+              templateOptions: {
+                description: 'Name associated with this definition',
+                required: true,
+                label: 'Identifier'
+              }
+            },
+          ]
+        }
+      ];
 
     // Adding inputs for parent's properties
     addDefinition.properties.forEach(property => {
-        fields[fields.length - 1].fieldGroup.push(this.generatePropertyFieldGroup(property))
+      fields[fields.length - 1].fieldGroup.push(this.generatePropertyFieldGroup(property))
     });
 
-    if(addDefinition.children.length == 0)
+    if (addDefinition.children.length == 0)
       return fields;
 
     // Adding children with 'repeat' type
@@ -348,10 +349,10 @@ export class FormlyParserService {
           template: '<h4>' + childDefinition.equipmentType.name + ' definitions</h4>',
         },
         {
-          key: ' '+tempKey++, // in realilty - this will be the child definition ID
+          key: ' ' + tempKey++, // in realilty - this will be the child definition ID
           type: 'repeat',
           wrappers: ['formly-wrapper'],
-          fieldArray:{
+          fieldArray: {
             templateOptions: {
               btnText: '+ ' + childDefinition.equipmentType.name,
             },
@@ -362,14 +363,49 @@ export class FormlyParserService {
 
       let lastFieldGroup = fields[fields.length - 1].fieldGroup;
       let destination = lastFieldGroup[lastFieldGroup.length - 1].fieldArray.fieldGroup;
-      
+
       childDefinition.properties.forEach(property => {
         destination.push(this.generatePropertyFieldGroup(property))
       });
     });
-   
+
     return fields;
   }
+
+  parseAddLog(addLog: ViewLog) {
+    let fields: FormlyFieldConfig[] =
+      [
+        {
+          key: 'log',
+          fieldGroup: [
+            {
+              key: 'logType',
+              type: 'select',
+              templateOptions: {
+                required: true,
+                label: 'Log Type',
+                options: [
+                  { value: '1', label: 'Simple' },
+                  { value: '2', label: 'Repair' },
+                ]
+              }
+            },
+            {
+              key: 'text',
+              type: 'textarea',
+              templateOptions: {
+                label: 'Description',
+                placeholder: '...',
+                rows: 5,
+              },
+            }
+          ]
+        }
+      ];
+
+    return fields;
+  }
+
 
   generatePropertyFieldGroup(addProperty: AddProperty): FormlyFieldConfig {
     let propertyFieldGroup: FormlyFieldConfig;

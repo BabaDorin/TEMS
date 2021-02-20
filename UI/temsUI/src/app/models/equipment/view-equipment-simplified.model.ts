@@ -2,6 +2,7 @@ export interface IViewEquipmentSimplified{
     id: string,
     temsID: string,
     serialNumber: string,
+    temsidOrSn: string;
     definition: string,
     type: string,
     isUsed: boolean,
@@ -13,6 +14,7 @@ export class ViewEquipmentSimplified implements IViewEquipmentSimplified{
     id: string;
     temsID: string;
     serialNumber: string;
+    temsidOrSn: string;
     definition: string;
     type: string;
     isUsed: boolean;
@@ -23,6 +25,7 @@ export class ViewEquipmentSimplified implements IViewEquipmentSimplified{
         this.id = "id";
         this.temsID = "temsID";
         this.serialNumber = "serialNumber";
+        this.temsidOrSn = (this.temsID == undefined) ? this.temsID : this.serialNumber;
         this.definition = "definition";
         this.type = "type";
         this.isDefect = false;

@@ -1,3 +1,4 @@
+import { ViewEquipmentAllocation } from './../../models/equipment/view-equipment-allocation.model';
 import { ViewEquipment } from './../../models/equipment/view-equipment.model';
 import { ViewEquipmentSimplified } from './../../models/equipment/view-equipment-simplified.model';
 import { AddProperty } from './../../models/equipment/add-property.model';
@@ -98,8 +99,25 @@ export class EquipmentService {
     return equipments;
   }
 
+  getEquipmentSimplified(id: string){
+    return new ViewEquipmentSimplified();
+  }
+
   getEquipmentByID(id: string){
     return new ViewEquipment();
+  }
+
+  getEquipmentAllocations(id: string){
+    return [
+      new ViewEquipmentAllocation(),
+      new ViewEquipmentAllocation(),
+      new ViewEquipmentAllocation(),
+      new ViewEquipmentAllocation(),
+      new ViewEquipmentAllocation(),
+      new ViewEquipmentAllocation(),
+      new ViewEquipmentAllocation(),
+      new ViewEquipmentAllocation(),
+    ]
   }
 
   getAllAutocompleteOptions(){

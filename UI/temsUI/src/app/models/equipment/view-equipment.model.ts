@@ -1,5 +1,5 @@
 import { viewClassName } from '@angular/compiler';
-import { ViewSimplifiedRoom } from './../room/view-room-simplified.model';
+import { ViewRoomSimplified } from './../room/view-room-simplified.model';
 import { Property } from './view-property.model';
 import { Type } from './view-type.model';
 
@@ -14,7 +14,7 @@ export interface IViewEquipment{
     identifier: string;
     temsID: string,
     serialNumber: string,
-    room: ViewSimplifiedRoom;
+    room: ViewRoomSimplified;
     type: Type;
     specificTypeProperties: Property[],
     children: ILightViewEquipment[];
@@ -30,7 +30,7 @@ export class ViewEquipment implements IViewEquipment{
     identifier: string;
     temsID: string;
     serialNumber: string;
-    room: ViewSimplifiedRoom;
+    room: ViewRoomSimplified;
     type: Type;
     children: ILightViewEquipment[];
     parents: ILightViewEquipment[];

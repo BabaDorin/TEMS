@@ -1,4 +1,4 @@
-import { ViewSimplifiedRoom } from '../../room/view-room-simplified.model';
+import { ViewRoomSimplified } from '../../room/view-room-simplified.model';
 import { ViewEquipmentSimplified } from './../../equipment/view-equipment-simplified.model';
 import { LogType } from './log-type.model';
 
@@ -7,8 +7,8 @@ export interface IViewLog {
     dateCreated: Date;
     text?: string;
     equipment?: ViewEquipmentSimplified;
-    room?: ViewSimplifiedRoom;
-    personnel?: ViewSimplifiedRoom;
+    room?: ViewRoomSimplified;
+    personnel?: ViewRoomSimplified;
     logType: LogType;
     isImportant: boolean;
 }
@@ -18,8 +18,8 @@ export class ViewLog implements IViewLog {
     dateCreated: Date;
     text?: string;
     equipment?: ViewEquipmentSimplified;
-    room?: ViewSimplifiedRoom;
-    personnel?: ViewSimplifiedRoom;
+    room?: ViewRoomSimplified;
+    personnel?: ViewRoomSimplified;
     logType: LogType;
     isImportant: boolean;
 
@@ -31,6 +31,7 @@ export class ViewLog implements IViewLog {
             id: '1',
             temsID: 'LPB001',
             serialNumber: '22344',
+            temsidOrSn: 'LPB001',
             definition: 'Asus VivoBook',
             type: 'Laptoc',
             isUsed: true,

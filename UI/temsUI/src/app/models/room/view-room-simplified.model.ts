@@ -1,14 +1,14 @@
-export interface IViewSimplifiedRoom{
+export interface IViewRoomSimplified{
     id: string,
     identifier: string,
 }
 
-export class ViewSimplifiedRoom implements IViewSimplifiedRoom{
+export class ViewRoomSimplified implements IViewRoomSimplified{
     id: string;
     identifier: string;
-
+    
     constructor(){
-        this.id = "room ID";
-        this.identifier = "room identifier";
+        this.id = '1';
+        this.identifier = '307';
     }
 }

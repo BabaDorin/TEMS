@@ -1,1 +1,12 @@
-<p>equipment-details-logs works!</p>
+<mat-card *ngFor="let log of logs" class="mb-2">
+    <mat-card-header>
+        <p>
+            {{ log.logType.type }} <span class="text-muted float-right">{{ log.dateCreated | date:'medium' }}</span>
+        </p>
+    </mat-card-header>
+    <mat-card-content>
+        <p>
+            {{ log.text }}
+        </p>
+    </mat-card-content>
+</mat-card>

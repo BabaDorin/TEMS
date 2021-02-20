@@ -112,6 +112,7 @@ import { EquipmentDetailsLogsComponent } from './tems-components/equipment/equip
 import { EquipmentDetailsAllocationsComponent } from './tems-components/equipment/equipment-details/equipment-details-allocations/equipment-details-allocations.component';
 import { ImageCarouselComponent } from './public/image-carousel/image-carousel.component';
 import { PropertyRenderComponent } from './public/property-render/property-render.component';
+import { LogsService } from './services/logs-service/logs.service';
 
 @NgModule({
   declarations: [
@@ -276,7 +277,7 @@ import { PropertyRenderComponent } from './public/property-render/property-rende
     PortalModule,
     ScrollingModule,
   ],
-  providers: [ThemeService, EquipmentService, FormlyParserService],
+  providers: [ThemeService, EquipmentService, FormlyParserService, LogsService],
   bootstrap: [AppComponent],
   entryComponents: [AddTypeComponent]
 })

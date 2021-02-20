@@ -1,4 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { EquipmentService } from './../../../../services/equipment-service/equipment.service';
+import { Component, Input, OnInit } from '@angular/core';
+import { LogsService } from 'src/app/services/logs-service/logs.service';
+import { ViewLog } from 'src/app/models/communication/logs/view-logs.model';
 
 @Component({
   selector: 'app-equipment-details-logs',
@@ -7,9 +10,14 @@ import { Component, OnInit } from '@angular/core';
 })
 export class EquipmentDetailsLogsComponent implements OnInit {
 
-  constructor() { }
+  @Input() equipmentId;
+  logs: ViewLog[];
 
-  ngOnInit(): void {
+  constructor(private logsService: LogsService) { 
+
   }
 
+  ngOnInit(): void {
+    this.logs = this.logsService.getLogsByEquipmentId(this.equipmentId);
+  }
 }

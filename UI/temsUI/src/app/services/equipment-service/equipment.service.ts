@@ -102,6 +102,25 @@ export class EquipmentService {
     return new ViewEquipment();
   }
 
+  getAllAutocompleteOptions(){
+    return [
+      {id: '1', value: 'LPB301', },
+      {id: '2', value: 'LPB301', },
+      {id: '3', value: 'LPB301', },
+      {id: '4', value: 'LPB01', },
+      {id: '5', value: 'A2B301', },
+      {id: '6', value: 'WQE2N3II4I4220001', },
+      {id: '7', value: 'L04322', },
+      {id: '8', value: 'PC001', },
+      {id: '9', value: 'PC002', },
+      {id: '10', value: 'OC2332', },
+    ]
+  }
+
+  getFileterdAutocompleteOptions(filter: string){
+    // might be unusable..
+  }
+
   getPropertiesOfType(typeId: string) {
     // send type to API, it will return the list of properties
 

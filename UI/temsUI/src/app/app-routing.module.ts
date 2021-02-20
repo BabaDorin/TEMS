@@ -1,3 +1,4 @@
+import { ManageCommunicationGuard } from './guards/communication-guards/manage-communication/manage-communication.guard';
 import { ViewAnalyticsGuard } from './guards/analytics-guards/view-analytics/view-analytics.guard';
 import { ViewCommunicationGuard } from './guards/communication-guards/view-communication/view-communication.guard';
 import { ViewReportsGuard } from './guards/reports-guards/view-reports/view-reports.guard';
@@ -42,6 +43,7 @@ import { DashboardComponent } from './public/dashboard/dashboard.component';
 import { AnalyticsComponent } from './tems-components/analytics/analytics.component';
 import { IconsModule } from './public/icons/icons.module';
 import { EquipmentDetailsComponent } from './tems-components/equipment/equipment-details/equipment-details.component';
+import { AddLogComponent } from './tems-components/communication/add-log/add-log.component';
 
 
 const routes: Routes = [
@@ -94,6 +96,7 @@ const routes: Routes = [
   // Communication
   { path: 'communication/announcements', component: ViewAnnouncementsComponent, canActivate: [ ViewCommunicationGuard ] },
   { path: 'communication/logs', component: ViewLogsComponent, canActivate: [ ViewCommunicationGuard ] },
+  { path: 'communication/logs/add', component: AddLogComponent, canActivate: [ ManageCommunicationGuard ] },
 
   // Analytics
   { path: 'analytics', component:  AnalyticsComponent, canActivate: [ ViewAnalyticsGuard ]},

@@ -1,3 +1,5 @@
+import { RoomsService } from './services/rooms-service/rooms.service';
+import { PersonnelService } from './services/personnel-service/personnel.service';
 import { HttpClientModule } from '@angular/common/http';
 import { ButtonTypeComponent } from './public/formly/button-type/button-type.component';
 import { ChipsAutocompleteComponent } from './public/formly/chips-autocomplete/chips-autocomplete.component';
@@ -113,6 +115,7 @@ import { EquipmentDetailsAllocationsComponent } from './tems-components/equipmen
 import { ImageCarouselComponent } from './public/image-carousel/image-carousel.component';
 import { PropertyRenderComponent } from './public/property-render/property-render.component';
 import { LogsService } from './services/logs-service/logs.service';
+import { AddLogComponent } from './tems-components/communication/add-log/add-log.component';
 
 @NgModule({
   declarations: [
@@ -167,6 +170,7 @@ import { LogsService } from './services/logs-service/logs.service';
     ViewRoomsComponent,
     ImageCarouselComponent,
     PropertyRenderComponent,
+    AddLogComponent,
   ],
   imports: [
     BrowserModule,
@@ -277,7 +281,14 @@ import { LogsService } from './services/logs-service/logs.service';
     PortalModule,
     ScrollingModule,
   ],
-  providers: [ThemeService, EquipmentService, FormlyParserService, LogsService],
+  providers: [
+    ThemeService, 
+    EquipmentService, 
+    FormlyParserService, 
+    LogsService, 
+    PersonnelService, 
+    RoomsService
+  ],
   bootstrap: [AppComponent],
   entryComponents: [AddTypeComponent]
 })

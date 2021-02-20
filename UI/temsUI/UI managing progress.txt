@@ -17,13 +17,27 @@ Angular + asp.net pagination =>  Upvoted anwer on github
 
 Start building core components
 1) Add Equipment and all it's sub-components. DeadLine: 07>02>2021, 23:59
+	Make it more dynamic
+	Styling
+	Optimization
 
+2) View Items
+	Select multiple - allocate to a room, person
+	Add actions => View (redirects to details page), delete => archieves it and more..
+ 
+3) View item details along with it's children, parents, logs, issues and allocations, including creating new allocations.
+	From here will be available the following actions:
+		Update equipment information
+		allocate
+		Some quick actions like -> Mark as defect, mark as unused and so on.
+		View and create issues
+		---- view and create logs
 
 
 =====================< Up Next >=======================
 
 Start building core components
-2) View Items
+
 
 ...
 
@@ -49,4 +63,29 @@ Managing fiels with the same key but different input (add-equipment.component - 
 
 
 ========================= ISSUES ============================
+
+
+
+
+
+
+
+========================= API DB Changes ===========================
+
+
+Related to Issues!
+- Add label for Issues (Urgent, Medium, Future, Fixed);
+- Technicians / people with the necessary rights and choose what issue to solve
+- If an administrator is creating the issue, he can assign it to be solved to whoever he wants (among registered
+users).
+
+
+
+
+
+
+
+
+
+
 

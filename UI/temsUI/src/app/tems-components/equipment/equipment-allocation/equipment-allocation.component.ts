@@ -33,6 +33,7 @@ export class EquipmentAllocationComponent implements OnInit {
   allocatedToAutoCompleteOptions = [];
   allocatedToAlreadySelectedOptions = [];
   allocatedToChipsInputLabel = "Choose one...";
+  allodatedToMaxSelections = 1;
 
   // Alocate to [select]
   allocateToTypes = [
@@ -46,7 +47,9 @@ export class EquipmentAllocationComponent implements OnInit {
     private roomService: RoomsService,
     private personnelService: PersonnelService
   ) { 
-
+    this.equipment = {id: 1, value: 'lpb2000'};
+    this.room = {id: 1, value: 'room2000'};
+    this.personnel = {id: 1, value: 'personnel2000'};
   }
 
   ngOnInit(): void {
@@ -57,6 +60,19 @@ export class EquipmentAllocationComponent implements OnInit {
     this.selectedAllocateToType="room";
     this.allocatedToChipsInputLabel = 'Room identifier...';
     this.allocatedToAutoCompleteOptions = this.roomService.getAllAutocompleteOptions();
+    
+    if(this.equipment != undefined)
+      this.equipmentAlreadySelectedOptions = [ this.equipment ];
+    
+    if(this.room != undefined){
+      this.allocatedToAlreadySelectedOptions = [this.room];
+      this.selectedAllocateToType = 'room';
+    }
+
+    if(this.personnel != undefined){
+      this.allocatedToAlreadySelectedOptions = [this.personnel];
+      this.selectedAllocateToType = 'personnel';
+    }
   }
 
   onSelection(){
@@ -72,5 +88,20 @@ export class EquipmentAllocationComponent implements OnInit {
     }
 
     this.allocatedToAlreadySelectedOptions = [];
+  }
+
+  submit(){
+    if(this.equipmentIdentifierChips.options.length<1 || this.allocatedTo.options.length != 1)
+      return;
+
+    let model = {
+      equipment: this.equipmentIdentifierChips.options,
+      allocateTo: {
+        type: this.selectedAllocateToType,
+        identifier: this.allocatedTo.options
+      }
+    }
+
+    console.log(model);
   }
 }

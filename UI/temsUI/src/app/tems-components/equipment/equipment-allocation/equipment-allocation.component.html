@@ -17,7 +17,7 @@
             <div class="col-md-2"> => </div>
             <div class="col-md-5">
                 <mat-form-field appearance="fill">
-                    <mat-label>Choose the addressee</mat-label>
+                    <mat-label>Allocate to</mat-label>
                     <mat-select [(ngModel)]="selectedAllocateToType" (ngModelChange)="onSelection()">
                         <mat-option *ngFor="let type of allocateToTypes" [value]="type.value">
                             {{ type.viewValue }}
@@ -26,13 +26,15 @@
                 </mat-form-field>
 
                 <app-chips-autocomplete
+                #allocatedTo
                 [label]="allocatedToChipsInputLabel"
                 [availableOptions]="allocatedToAutoCompleteOptions"
-                [alreadySelected]="allocatedToAlreadySelectedOptions">
+                [alreadySelected]="allocatedToAlreadySelectedOptions"
+                [maxOptionsSelected]="allodatedToMaxSelections">
                 </app-chips-autocomplete>
             </div>
         </div>
-        <button class="btn btn-primary btn-block">Allocate</button>
+        <button class="btn btn-primary btn-block" (click)="submit()">Allocate</button>
         <br>
     </div>
 </div>

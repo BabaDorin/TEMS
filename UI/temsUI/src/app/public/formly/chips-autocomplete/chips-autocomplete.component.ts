@@ -18,6 +18,7 @@ export class ChipsAutocompleteComponent implements OnInit {
   @Input() alreadySelected;
   @Input() label;
   @Input() disabled: boolean;
+  @Input() maxOptionsSelected: number;
 
   // List of available for selection options
   @Input() availableOptions;
@@ -51,6 +52,7 @@ export class ChipsAutocompleteComponent implements OnInit {
      this.filteredOptions = this.formCtrl.valueChanges.pipe(
       startWith(null),
       map((op) => op ? this._filter(op) : this.availableOptions.slice()));
+    this.options = this.alreadySelected;
   }  
   // ISSUES: 1) DISPLAY AUTOCOMPLETE LIST ON CLICK
   // 2) IF THERE ARE 4 ITEMS, SELECTING ONE AND THEN DELETING IT WILL RESULT IN 3 ITEMS IN AUTOCOMPLETE
@@ -62,15 +64,19 @@ export class ChipsAutocompleteComponent implements OnInit {
   }
 
   add(event: MatChipInputEvent): void {
+
     const input = event.input;
     const value = event.value;
 
     // Add option
     let typedOption = this.availableOptions.find(q => q.value == value);
     if (typedOption != undefined) {
+      // if there is a maxOptionsSelected specified
+      if(this.maxOptionsSelected == this.options.length)
+       this.availableOptions.push(this.options.pop());
+      
       this.options.push(typedOption);
       this.availableOptions.splice(this.availableOptions.indexOf(typedOption), 1)
-
       input.value = '';
     }
 
@@ -89,9 +95,12 @@ export class ChipsAutocompleteComponent implements OnInit {
   }
 
   selected(event: MatAutocompleteSelectedEvent): void {
+    // if there is a maxOptionsSelected specified
+    if(this.maxOptionsSelected == this.options.length)
+      this.availableOptions.push(this.options.pop());
+
     this.options.push(event.option.value);
     console.log(event.option.value);
-
 
     let index = this.availableOptions.indexOf(event.option.value);
     this.availableOptions.splice(index, 1);

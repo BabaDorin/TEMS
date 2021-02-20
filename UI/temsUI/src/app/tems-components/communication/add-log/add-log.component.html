@@ -7,7 +7,8 @@
                 <!-- Choose type (Equipment, Room, personnel) -->
                 <mat-form-field appearance="fill">
                     <mat-label>Choose the addressee</mat-label>
-                    <mat-select [(ngModel)]="selectedAddresseeType" (ngModelChange)="onAddresseeSelection()">
+                    <mat-select [(ngModel)]="selectedAddresseeType" (ngModelChange)="onAddresseeSelection()"
+                    [disabled]="implicitAddressees != undefined">
                         <mat-option *ngFor="let type of addresseeTypes" [value]="type.value">
                             {{ type.viewValue }}
                         </mat-option>
@@ -16,6 +17,7 @@
 
                 <app-chips-autocomplete *ngIf="adresseeChosen"
                     #identifierChips
+                    [disabled]="implicitAddressees != undefined"
                     [label]="chipsInputLabel"
                     [availableOptions]="autoCompleteOptions"
                     [alreadySelected]="alreadySelectedOptions">

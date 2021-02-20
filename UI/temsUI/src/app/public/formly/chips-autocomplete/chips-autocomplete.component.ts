@@ -42,13 +42,12 @@ export class ChipsAutocompleteComponent implements OnInit {
   ngOnInit() {
     if (this.disabled == undefined) this.disabled = false;
     if(this.availableOptions == undefined) this.availableOptions = [];
-    this.options = [];
+    this.options = this.alreadySelected;
   }
 
   ngOnChanges() {
     /**********THIS FUNCTION WILL TRIGGER WHEN PARENT COMPONENT UPDATES 'someInput'**************/
     //Write your code here
-     console.log(this.availableOptions);
      this.filteredOptions = this.formCtrl.valueChanges.pipe(
       startWith(null),
       map((op) => op ? this._filter(op) : this.availableOptions.slice()));

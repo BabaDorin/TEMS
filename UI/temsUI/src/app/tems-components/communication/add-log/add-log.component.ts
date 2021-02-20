@@ -8,7 +8,6 @@ import { FormlyFieldConfig } from '@ngx-formly/core';
 import { FormGroup } from '@angular/forms';
 import { ViewLog } from 'src/app/models/communication/logs/view-logs.model';
 
-
 @Component({
   selector: 'app-add-log',
   templateUrl: './add-log.component.html',
@@ -24,10 +23,20 @@ export class AddLogComponent implements OnInit {
   // Otherwise, the user will have to choose to whom the log he is creating is addressed.
   // (Personnel, Room, Equipment).
 
-  @Input() equipmentId: string;
-  @Input() roomId: string;
-  @Input() personnelId: string;
+  @Input() equipment; // will have the format: { id: '11', value: 'LPB2003'}, might Add an interface later idk
+  @Input() room;
+  @Input() personnel;
+  @ViewChild('identifierChips', { static: false }) identifierChips: ChipsAutocompleteComponent;
+
   adresseeChosen: boolean = false;
+  implicitAddressees; // the addresser that comes from outside
+  selectedAddresseeType: string;
+  selectAddressee: any;
+  addresseeTypes = [
+    { value: 'equipment', viewValue: 'Equipment' },
+    { value: 'room', viewValue: 'Room' },
+    { value: 'personnel', viewValue: 'Personnel' }
+  ];
 
   private formlyData = {
     isVisible: false,
@@ -35,23 +44,13 @@ export class AddLogComponent implements OnInit {
     model: {} as any,
     fields: [] as FormlyFieldConfig[],
   }
-
-  @ViewChild('identifierChips', { static: false }) identifierChips: ChipsAutocompleteComponent;
-
-  selectedAddresseeType: string;
-
-  addresseeTypes = [
-    { value: 'equipment', viewValue: 'Equipment' },
-    { value: 'room', viewValue: 'Room' },
-    { value: 'personnel', viewValue: 'Personnel' }
-  ];
-
-  chipsInputLabel = "Identifier...";
   autoCompleteOptions = [];
   alreadySelectedOptions = [];
 
+  chipsInputLabel = "Identifier...";
+
   constructor(
-    private formlyParserService: FormlyParserService,
+    formlyParserService: FormlyParserService,
     private equipmentservice: EquipmentService,
     private roomService: RoomsService,
     private personnelService: PersonnelService) {
@@ -61,10 +60,28 @@ export class AddLogComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.adresseeChosen = this.equipmentId != undefined || this.roomId != undefined || this.personnelId != undefined;
+    this.adresseeChosen = this.equipment != undefined || this.room != undefined || this.personnel != undefined;
+
+    if(this.adresseeChosen){
+      if(this.equipment != undefined)
+        this.implicitAddressees = { type: 'equipment', entities: [ this.equipment ] }
+      
+      if(this.room != undefined)
+        this.implicitAddressees = { type: 'room', entities: [ this.room ] }
+
+      if(this.personnel != undefined)
+        this.implicitAddressees = { type: 'personnel', entities: [ this.personnel ] }
+
+        this.selectedAddresseeType = this.implicitAddressees.type;
+        this.alreadySelectedOptions = [ { value: this.implicitAddressees.entities[0].value } ];
+    }
   }
 
   onAddresseeSelection() {
+    // If we already have an andressee from outide, it won't react to any selections
+    if(this.implicitAddressees != undefined)
+      return;
+
     switch (this.selectedAddresseeType) {
       case 'equipment':
         this.chipsInputLabel = 'TEMSID or Serial Number...';
@@ -85,17 +102,23 @@ export class AddLogComponent implements OnInit {
   }
 
   onSubmit(model) {
+    // Primitive validation, might improve later.
+    if(model.log.logType){
 
-    if (model.log.logType != undefined
-      && this.selectedAddresseeType != undefined
-      && this.identifierChips.options.length > 0) {
-
+      // case 1: The Addresse comes from outside
+      if(this.implicitAddressees != undefined)
+      {
+        model.log.addreesses = this.implicitAddressees;
+        console.log(model);
+      }
+      // case 2: Adressees are indicated here
+      else if(this.selectedAddresseeType != undefined && this.identifierChips.options.length > 0){
         model.log.addreesses = {
           type: this.selectedAddresseeType,
           entities: this.identifierChips.options
-        }
-    
+        };
         console.log(model);
+      }
     }
   }
 }

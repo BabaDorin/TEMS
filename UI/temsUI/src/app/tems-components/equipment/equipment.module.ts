@@ -1,3 +1,4 @@
+import { MatIconModule } from '@angular/material/icon';
 import { ViewIssuesComponent } from './../issue/view-issues/view-issues.component';
 import { QuickAccessComponent } from './quick-access/quick-access.component';
 import { CreateIssueComponent } from './../issue/create-issue/create-issue.component';
@@ -78,7 +79,7 @@ import { MatRadioModule } from '@angular/material/radio';
     AgGridModule,
     ReactiveFormsModule,
     ScrollingModule,
-
+    MatIconModule,
     MatTabsModule,
     MatExpansionModule,
     MatSelectModule,

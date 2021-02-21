@@ -1,4 +1,4 @@
-import { ChipsAutocompleteComponent } from 'src/app/public/formly/chips-autocomplete/chips-autocomplete.component';
+import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 // import { RoomsService } from './services/rooms-service/rooms.service';
@@ -71,7 +71,7 @@ import { AutocompleteTypeComponent } from './public/formly/autocomplete-type/aut
     FormlyMaterialModule,
     BrowserAnimationsModule,
 
-
+    
     TagInputModule,
     MatInputModule,
     MatAutocompleteModule,
@@ -112,6 +112,7 @@ import { AutocompleteTypeComponent } from './public/formly/autocomplete-type/aut
   ],
   exports: [
     MatAutocompleteModule,
+    MatIconModule,
   ],
   providers: [
     ThemeService,

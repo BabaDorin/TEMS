@@ -7,6 +7,7 @@ import { FormlyParserService } from 'src/app/services/formly-parser-service/form
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { FormGroup } from '@angular/forms';
 import { ViewLog } from 'src/app/models/communication/logs/view-logs.model';
+import { IOption } from 'src/app/models/option.model';
 
 @Component({
   selector: 'app-add-log',
@@ -23,9 +24,9 @@ export class AddLogComponent implements OnInit {
   // Otherwise, the user will have to choose to whom the log he is creating is addressed.
   // (Personnel, Room, Equipment).
 
-  @Input() equipment; // will have the format: { id: '11', value: 'LPB2003'}, might Add an interface later idk
-  @Input() room;
-  @Input() personnel;
+  @Input() equipment: IOption[];
+  @Input() room: IOption[];
+  @Input() personnel: IOption[];
   @ViewChild('identifierChips', { static: false }) identifierChips: ChipsAutocompleteComponent;
 
   adresseeChosen: boolean = false;
@@ -62,15 +63,16 @@ export class AddLogComponent implements OnInit {
   ngOnInit(): void {
     this.adresseeChosen = this.equipment != undefined || this.room != undefined || this.personnel != undefined;
 
+    // 
     if(this.adresseeChosen){
       if(this.equipment != undefined)
-        this.implicitAddressees = { type: 'equipment', entities: [ this.equipment ] }
+        this.implicitAddressees = { type: 'equipment', entities: this.equipment }
       
       if(this.room != undefined)
-        this.implicitAddressees = { type: 'room', entities: [ this.room ] }
+        this.implicitAddressees = { type: 'room', entities: this.room }
 
       if(this.personnel != undefined)
-        this.implicitAddressees = { type: 'personnel', entities: [ this.personnel ] }
+        this.implicitAddressees = { type: 'personnel', entities: this.personnel }
 
         this.selectedAddresseeType = this.implicitAddressees.type;
         this.alreadySelectedOptions = [ { value: this.implicitAddressees.entities[0].value } ];
@@ -109,7 +111,6 @@ export class AddLogComponent implements OnInit {
       if(this.implicitAddressees != undefined)
       {
         model.log.addreesses = this.implicitAddressees;
-        console.log(model);
       }
       // case 2: Adressees are indicated here
       else if(this.selectedAddresseeType != undefined && this.identifierChips.options.length > 0){
@@ -117,7 +118,6 @@ export class AddLogComponent implements OnInit {
           type: this.selectedAddresseeType,
           entities: this.identifierChips.options
         };
-        console.log(model);
       }
     }
   }

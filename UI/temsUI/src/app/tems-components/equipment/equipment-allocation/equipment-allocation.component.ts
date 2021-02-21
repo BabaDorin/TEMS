@@ -1,8 +1,12 @@
+import { ViewPersonnelSimplified } from './../../../models/personnel/view-personnel-simplified.model';
+import { ViewEquipmentSimplified } from './../../../models/equipment/view-equipment-simplified.model';
 import { PersonnelService } from './../../../services/personnel-service/personnel.service';
 import { RoomsService } from './../../../services/rooms-service/rooms.service';
 import { EquipmentService } from 'src/app/services/equipment-service/equipment.service';
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { ChipsAutocompleteComponent } from 'src/app/public/formly/chips-autocomplete/chips-autocomplete.component';
+import { ViewRoomSimplified } from 'src/app/models/room/view-room-simplified.model';
+import { IOption } from 'src/app/models/option.model';
 
 @Component({
   selector: 'app-equipment-allocation',
@@ -17,9 +21,9 @@ export class EquipmentAllocationComponent implements OnInit {
   // 3) With the room already defined
   // 4) With the personnel already defined
 
-  @Input() equipment; // {id, value}
-  @Input() room; // {id, value}
-  @Input() personnel; // {id, value}
+  @Input() equipment: IOption[]; 
+  @Input() room: IOption[];
+  @Input() personnel: IOption[];
 
   @ViewChild('equipmentIdentifierChips', { static: false }) equipmentIdentifierChips: ChipsAutocompleteComponent;
   @ViewChild('allocatedTo', { static: false }) allocatedTo: ChipsAutocompleteComponent;
@@ -47,30 +51,25 @@ export class EquipmentAllocationComponent implements OnInit {
     private roomService: RoomsService,
     private personnelService: PersonnelService
   ) { 
-    this.equipment = {id: 1, value: 'lpb2000'};
-    this.room = {id: 1, value: 'room2000'};
-    this.personnel = {id: 1, value: 'personnel2000'};
   }
 
   ngOnInit(): void {
     this.equipmentAutoCompleteOptions = this.equipmentService.getAllAutocompleteOptions();
-    if(this.equipment != null)
-      this.equipmentAlreadySelectedOptions = [ this.equipment ];
-    
+
     this.selectedAllocateToType="room";
     this.allocatedToChipsInputLabel = 'Room identifier...';
     this.allocatedToAutoCompleteOptions = this.roomService.getAllAutocompleteOptions();
     
     if(this.equipment != undefined)
-      this.equipmentAlreadySelectedOptions = [ this.equipment ];
+      this.equipmentAlreadySelectedOptions = this.equipment;
     
     if(this.room != undefined){
-      this.allocatedToAlreadySelectedOptions = [this.room];
+      this.allocatedToAlreadySelectedOptions = this.room;
       this.selectedAllocateToType = 'room';
     }
 
     if(this.personnel != undefined){
-      this.allocatedToAlreadySelectedOptions = [this.personnel];
+      this.allocatedToAlreadySelectedOptions = this.personnel;
       this.selectedAllocateToType = 'personnel';
     }
   }
@@ -102,6 +101,5 @@ export class EquipmentAllocationComponent implements OnInit {
       }
     }
 
-    console.log(model);
   }
 }

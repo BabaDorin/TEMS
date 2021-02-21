@@ -26,13 +26,13 @@ export class CreateIssueComponent implements OnInit {
   }
 
   roomsAutoCompleteOptions;
-  @Input() roomsAlreadySelected;
+  @Input() roomsAlreadySelected: IOption[];
 
   equipmentAutoCompleteOptions;
-  @Input() equipmentAlredySelected;
+  @Input() equipmentAlreadySelected: IOption[];
 
   personnelAutocompleteOptions;
-  @Input() personnelAlreadySelected;
+  @Input() personnelAlreadySelected: IOption[];
 
   @ViewChild('assignees') assignees;
   @ViewChild('rooms') rooms;
@@ -58,16 +58,23 @@ export class CreateIssueComponent implements OnInit {
     if(this.roomsAlreadySelected == undefined)
       this.roomsAlreadySelected = [];
 
-    if(this.equipmentAlredySelected == undefined)
-      this.equipmentAlredySelected = [];
+    if(this.equipmentAlreadySelected == undefined)
+      this.equipmentAlreadySelected = [];
 
     if(this.personnelAlreadySelected == undefined)
       this.personnelAlreadySelected = [];
     
     this.isRegistered = true;
+
+    console.log(this.equipmentAlreadySelected);
   }
 
   onSubmit(model){
+    // What to do next =>
+    // check if registered or not
+    // send data to API
+    // Validate data.
+    
     model.personnel = this.personnel.options;
     model.rooms = this.rooms.options;
     model.equipment = this.equipment.options;

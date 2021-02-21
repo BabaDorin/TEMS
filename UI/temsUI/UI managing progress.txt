@@ -38,8 +38,8 @@ Start building core components
 
 Start building core components
 
-
-...
+q) Make EquipmentDetails=>Logs, Issues and Allocations GENERIC! In order
+to use the same component for rooms, equipment, personnel.
 
 q) When creating a definition user can choose already defined definitions for children
 

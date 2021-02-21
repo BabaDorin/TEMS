@@ -1,3 +1,4 @@
+import { ViewEquipmentSimplified } from './../../../../models/equipment/view-equipment-simplified.model';
 import { EquipmentService } from './../../../../services/equipment-service/equipment.service';
 import { Component, Input, OnInit } from '@angular/core';
 import { LogsService } from 'src/app/services/logs-service/logs.service';
@@ -12,7 +13,7 @@ import { AddLogComponent } from 'src/app/tems-components/communication/add-log/a
 })
 export class EquipmentDetailsLogsComponent implements OnInit {
 
-  @Input() equipmentId;
+  @Input() equipment: ViewEquipmentSimplified;
   logs: ViewLog[];
 
   constructor(
@@ -23,7 +24,7 @@ export class EquipmentDetailsLogsComponent implements OnInit {
 
 
   ngOnInit(): void {
-    this.logs = this.logsService.getLogsByEquipmentId(this.equipmentId);
+    this.logs = this.logsService.getLogsByEquipmentId(this.equipment.id);
   }
 
   addLog(){
@@ -33,10 +34,14 @@ export class EquipmentDetailsLogsComponent implements OnInit {
   openAddLogDialog(): void {
     let dialogRef: MatDialogRef<any>;
     dialogRef = this.dialog.open(AddLogComponent); 
-    dialogRef.componentInstance.equipment = {id: this.equipmentId, value: '1'};
+    dialogRef.componentInstance.equipment = [
+      {
+        id: this.equipment.id, 
+        value: this.equipment.temsidOrSn
+      }];
 
     dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed');
+      // Stuff
     });
   }
 }

@@ -1,3 +1,5 @@
+import { IOption } from './../../models/option.model';
+import { AddIssue } from './../../models/communication/issues/add-issue';
 import { AddProperty } from './../../models/equipment/add-property.model';
 import { EquipmentService } from './../equipment-service/equipment.service';
 import { AddDefinition } from './../../models/equipment/add-definition.model';
@@ -5,7 +7,7 @@ import { AddType } from './../../models/equipment/add-type.model';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { Injectable } from '@angular/core';
 import { AddEquipment } from 'src/app/models/equipment/add-equipment.model';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { ViewLog } from 'src/app/models/communication/logs/view-logs.model';
 
 @Injectable({
@@ -18,6 +20,44 @@ export class FormlyParserService {
   // Which is used by formly to render forms.
 
   constructor(private equipmentService: EquipmentService) { }
+
+  parseAddIssue(addIssue: AddIssue, frequentProblems: string[]) {
+    if (addIssue == undefined)
+      addIssue = new AddIssue();
+
+    let fields: FormlyFieldConfig[] =
+      [
+        {
+          key: 'issue',
+          fieldGroup: [
+            {
+              key: 'problem',
+              type: 'autocomplete',
+              templateOptions: {
+                required: true,
+                label: 'What is the problem?',
+                placeholder: 'Incarcare cartus...',
+                filter: (term) => of(term ? this.filterAutocomplete(term, frequentProblems) : frequentProblems.slice()),
+              },
+            },
+            {
+              key: 'problemDescription',
+              type: 'textarea',
+              templateOptions: {
+                label: 'Problem description - Helps a lot!',
+              },
+            }
+          ]
+        }
+      ];
+
+    return fields;
+  }
+
+  filterAutocomplete(name: string, autocomplete: string[]) {
+    return autocomplete.filter(criteria =>
+      criteria.toLowerCase().indexOf(name.toLowerCase()) === 0);
+  }
 
   parseAddEquipment(addEquipment: AddEquipment, formlyFields?: FormlyFieldConfig[]) {
     let formlyFieldsAddEquipment =
@@ -405,7 +445,6 @@ export class FormlyParserService {
 
     return fields;
   }
-
 
   generatePropertyFieldGroup(addProperty: AddProperty): FormlyFieldConfig {
     let propertyFieldGroup: FormlyFieldConfig;

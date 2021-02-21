@@ -1,3 +1,4 @@
+import { ViewIssuesComponent } from './../issue/view-issues/view-issues.component';
 import { QuickAccessComponent } from './quick-access/quick-access.component';
 import { CreateIssueComponent } from './../issue/create-issue/create-issue.component';
 import { ScrollingModule } from '@angular/cdk/scrolling';
@@ -39,7 +40,8 @@ import { MatOptionModule } from '@angular/material/core';
 import { AddLogComponent } from '../communication/add-log/add-log.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { SummaryEquipmentIssueAnalyticsComponent } from '../analytics/summary-equipment-issue-analytics/summary-equipment-issue-analytics.component';
-
+import { EquipmentDetailsIssuesComponent } from './equipment-details/equipment-details-issues/equipment-details-issues.component';
+import { MatRadioModule } from '@angular/material/radio';
 
 @NgModule({
   declarations: [
@@ -63,6 +65,8 @@ import { SummaryEquipmentIssueAnalyticsComponent } from '../analytics/summary-eq
     AddDefinitionComponent,
     SummaryEquipmentIssueAnalyticsComponent,
     QuickAccessComponent,
+    ViewIssuesComponent,
+    EquipmentDetailsIssuesComponent,
   ],
   imports: [
     CommonModule,
@@ -89,7 +93,7 @@ import { SummaryEquipmentIssueAnalyticsComponent } from '../analytics/summary-eq
     MatDialogModule,
     MatOptionModule,
     MatCardModule,
-
+    MatRadioModule,
     EquipmentService,
     FormlyParserService,
   ],

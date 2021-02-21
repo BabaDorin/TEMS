@@ -1,3 +1,5 @@
+import { MatInputModule } from '@angular/material/input';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 // import { RoomsService } from './services/rooms-service/rooms.service';
 import { PersonnelService } from './services/personnel-service/personnel.service';
 import { HttpClientModule } from '@angular/common/http';
@@ -32,6 +34,7 @@ import { RepeatTypeComponent } from './public/formly/repeat-type/repeat-type.com
 import { AddEquipmentRepeatComponent } from './public/formly/add-equipment-repeat/add-equipment-repeat.component';
 
 import { LogsService } from './services/logs-service/logs.service';
+import { AutocompleteTypeComponent } from './public/formly/autocomplete-type/autocomplete-type.component';
 
 @NgModule({
   declarations: [
@@ -49,6 +52,7 @@ import { LogsService } from './services/logs-service/logs.service';
     RepeatTypeComponent,
     AddEquipmentRepeatComponent,
     ViewRoomsComponent,
+    AutocompleteTypeComponent,
   ],
   imports: [
     BrowserModule,
@@ -65,6 +69,11 @@ import { LogsService } from './services/logs-service/logs.service';
     BrowserModule,
     FormlyMaterialModule,
     BrowserAnimationsModule,
+
+
+    TagInputModule,
+    MatInputModule,
+    MatAutocompleteModule,
     FormlyModule.forRoot({
       wrappers: [
         { name: 'formly-wrapper', component: FormlyWrapperComponent },
@@ -77,6 +86,11 @@ import { LogsService } from './services/logs-service/logs.service';
           defaultOptions: {
             type: 'text'
           }
+        },
+        {
+          name: 'autocomplete',
+          component: AutocompleteTypeComponent,
+          wrappers: ['form-field'],
         },
         {
           name: 'button',
@@ -95,7 +109,9 @@ import { LogsService } from './services/logs-service/logs.service';
     }),
     FormlyMaterialModule,
   ],
-  
+  exports: [
+    MatAutocompleteModule,
+  ],
   providers: [
     ThemeService,
     LogsService, 

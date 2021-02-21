@@ -25,6 +25,7 @@ export class AgGridEquipmentComponent implements OnInit {
   constructor(
     private http: HttpClient,
     private equipmentService: EquipmentService) {
+      console.log('here');
       this.rowData = equipmentService.getEquipment(); 
   }
 

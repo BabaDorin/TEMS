@@ -43,7 +43,7 @@ export class ChipsAutocompleteComponent implements OnInit {
   ngOnInit() {
     if (this.disabled == undefined) this.disabled = false;
     if(this.availableOptions == undefined) this.availableOptions = [];
-    this.options = this.alreadySelected;
+    this.options = (this.alreadySelected == undefined) ? [] : this.alreadySelected;
   }
 
   ngOnChanges() {
@@ -52,7 +52,7 @@ export class ChipsAutocompleteComponent implements OnInit {
      this.filteredOptions = this.formCtrl.valueChanges.pipe(
       startWith(null),
       map((op) => op ? this._filter(op) : this.availableOptions.slice()));
-    this.options = this.alreadySelected;
+    this.options = (this.alreadySelected == undefined) ? [] : this.alreadySelected;
   }  
   // ISSUES: 1) DISPLAY AUTOCOMPLETE LIST ON CLICK
   // 2) IF THERE ARE 4 ITEMS, SELECTING ONE AND THEN DELETING IT WILL RESULT IN 3 ITEMS IN AUTOCOMPLETE
@@ -72,7 +72,7 @@ export class ChipsAutocompleteComponent implements OnInit {
     let typedOption = this.availableOptions.find(q => q.value == value);
     if (typedOption != undefined) {
       // if there is a maxOptionsSelected specified
-      if(this.maxOptionsSelected == this.options.length)
+      if(this.maxOptionsSelected != undefined && this.maxOptionsSelected == this.options.length)
        this.availableOptions.push(this.options.pop());
       
       this.options.push(typedOption);
@@ -96,7 +96,7 @@ export class ChipsAutocompleteComponent implements OnInit {
 
   selected(event: MatAutocompleteSelectedEvent): void {
     // if there is a maxOptionsSelected specified
-    if(this.maxOptionsSelected == this.options.length)
+    if(this.maxOptionsSelected != undefined && this.maxOptionsSelected == this.options.length)
       this.availableOptions.push(this.options.pop());
 
     this.options.push(event.option.value);

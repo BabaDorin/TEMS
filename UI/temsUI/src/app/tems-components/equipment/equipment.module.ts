@@ -1,3 +1,5 @@
+import { QuickAccessComponent } from './quick-access/quick-access.component';
+import { CreateIssueComponent } from './../issue/create-issue/create-issue.component';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { MatButtonModule } from '@angular/material/button';
 import { AddDefinitionComponent } from './add-definition/add-definition.component';
@@ -35,8 +37,8 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { ImageCarouselComponent } from 'src/app/public/image-carousel/image-carousel.component';
 import { MatOptionModule } from '@angular/material/core';
 import { AddLogComponent } from '../communication/add-log/add-log.component';
-import { MatCheckboxModule } from '@angular/material/checkbox/public-api';
 import { MatDialogModule } from '@angular/material/dialog';
+import { SummaryEquipmentIssueAnalyticsComponent } from '../analytics/summary-equipment-issue-analytics/summary-equipment-issue-analytics.component';
 
 
 @NgModule({
@@ -57,7 +59,10 @@ import { MatDialogModule } from '@angular/material/dialog';
     ChipsAutocompleteComponent,
     AddLogComponent,
     AddTypeComponent,
+    CreateIssueComponent,
     AddDefinitionComponent,
+    SummaryEquipmentIssueAnalyticsComponent,
+    QuickAccessComponent,
   ],
   imports: [
     CommonModule,

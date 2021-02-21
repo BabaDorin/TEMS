@@ -1,1 +1,23 @@
-<p>quick-access works!</p>
+<div class="card">
+    <div class="card-body">
+        <div class="card-title">Insert Equipment's TEMSID or Serial Number</div>
+        <form class="example-form" (submit)="onSubmit()">
+            <mat-form-field class="example-full-width">
+              <mat-label>Number</mat-label>
+              <input type="text"
+                     placeholder="LPB021..."
+                     aria-label="Tems ID or Serial Number"
+                     matInput
+                     [formControl]="myControl"
+                     [matAutocomplete]="auto">
+              <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+                <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+                  {{option}} <span class="text-muted">   LaptocLaptocLaptocLaptocLaptocLaptoc</span>
+                </mat-option>
+              </mat-autocomplete>
+            </mat-form-field>
+            <br>
+            <button type="submit" class="btn btn-primary">Find</button>
+          </form>
+    </div>
+</div>

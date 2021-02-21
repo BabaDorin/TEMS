@@ -4,27 +4,32 @@
             <mat-tab label="General">
                 <ng-template matTabContent>
                     <app-equipment-details-general [equipmentId]="30">
-                        Loading
+                        Loading...
                     </app-equipment-details-general>
                 </ng-template>
             </mat-tab>
             <mat-tab label="Logs">
                 <ng-template matTabContent>
                     <app-equipment-details-logs>
-                        Loading
+                        Loading...
                     </app-equipment-details-logs>
                 </ng-template>
             </mat-tab>
             <mat-tab label="Issues">
-                <!-- <ng-template matTabContent>
-                    <app-equipment-details-allocations></app-equipment-details-allocations>
-                </ng-template> -->
-                Add EquipmentIssuesComponent
+                <ng-template matTabContent>
+                    <app-summary-equipment-issue-analytics>
+                        Loading...
+                    </app-summary-equipment-issue-analytics>
+                    <br>
+                    <app-create-issue>
+                        Loading...
+                    </app-create-issue>
+                </ng-template>
             </mat-tab>
             <mat-tab label="Allocations">
                 <ng-template matTabContent>
                     <app-equipment-details-allocations [equipment]="equipmentSimplified">
-                        Loading
+                        Loading...
                     </app-equipment-details-allocations>
                 </ng-template>
             </mat-tab>

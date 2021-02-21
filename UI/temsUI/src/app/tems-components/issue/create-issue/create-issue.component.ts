@@ -1,5 +1,9 @@
+import { IOption } from './../../../models/option.model';
+import { EquipmentService } from 'src/app/services/equipment-service/equipment.service';
+import { PersonnelService } from './../../../services/personnel-service/personnel.service';
+import { RoomsService } from './../../../services/rooms-service/rooms.service';
 import { FormlyParserService } from 'src/app/services/formly-parser-service/formly-parser.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { AddIssue } from 'src/app/models/communication/issues/add-issue';
@@ -11,8 +15,9 @@ import { AddIssue } from 'src/app/models/communication/issues/add-issue';
 })
 export class CreateIssueComponent implements OnInit {
 
-  frequentProblems = ['EchipamentDefect', 'Incarcare Cartus', 'Interventia unui tehnician'];
-
+  frequentProblems = ['Echipament Defect', 'Incarcare Cartus', 'Interventia unui tehnician'];
+  isRegistered: boolean;
+  
   private formlyData = {
     isVisible: false,
     form: new FormGroup({}),
@@ -20,11 +25,53 @@ export class CreateIssueComponent implements OnInit {
     fields: [] as FormlyFieldConfig[],
   }
 
+  roomsAutoCompleteOptions;
+  @Input() roomsAlreadySelected;
+
+  equipmentAutoCompleteOptions;
+  @Input() equipmentAlredySelected;
+
+  personnelAutocompleteOptions;
+  @Input() personnelAlreadySelected;
+
+  @ViewChild('assignees') assignees;
+  @ViewChild('rooms') rooms;
+  @ViewChild('personnel') personnel;
+  @ViewChild('equipment') equipment;
+
   constructor(
-    private formlyParserService: FormlyParserService
-  ) { }
+    private formlyParserService: FormlyParserService,
+    private roomService: RoomsService,
+    private personnelService: PersonnelService,
+    private equipmentService: EquipmentService,
+  ) {
+
+  }
 
   ngOnInit(): void {
     this.formlyData.fields = this.formlyParserService.parseAddIssue(new AddIssue, this.frequentProblems);
+
+    this.roomsAutoCompleteOptions = this.roomService.getAllAutocompleteOptions();
+    this.equipmentAutoCompleteOptions = this.equipmentService.getAllAutocompleteOptions();
+    this.personnelAutocompleteOptions = this.personnelService.getAllAutocompleteOptions();
+
+    if(this.roomsAlreadySelected == undefined)
+      this.roomsAlreadySelected = [];
+
+    if(this.equipmentAlredySelected == undefined)
+      this.equipmentAlredySelected = [];
+
+    if(this.personnelAlreadySelected == undefined)
+      this.personnelAlreadySelected = [];
+    
+    this.isRegistered = true;
+  }
+
+  onSubmit(model){
+    model.personnel = this.personnel.options;
+    model.rooms = this.rooms.options;
+    model.equipment = this.equipment.options;
+    model.assignees = this.assignees.options;
+    console.log(model);
   }
 }

@@ -46,6 +46,19 @@ export class FormlyParserService {
               templateOptions: {
                 label: 'Problem description - Helps a lot!',
               },
+            },
+            {
+              key: 'status',
+              type: 'radio',
+              templateOptions: {
+                label: 'Radio',
+                required: true,
+                options: [
+                  { value: 1, label: 'Urgent' },
+                  { value: 2, label: 'Mediu' },
+                  { value: 3, label: 'Pe viitor' },
+                ],
+              },
             }
           ]
         }

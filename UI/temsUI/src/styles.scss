@@ -104,5 +104,16 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   overflow-y: auto;
 }
 
+formly-field-mat-radio {
+  .mat-radio-group {
+    display: inline-flex;
+    flex-direction: column;
+  }
+
+  .mat-radio-button {
+    margin: 5px;
+  }
+}
+
 // @import "../node_modules/ag-grid-community/dist/styles/ag-grid.css";
 // @import "../node_modules/ag-grid-community/dist/styles/ag-theme-alpine.css";

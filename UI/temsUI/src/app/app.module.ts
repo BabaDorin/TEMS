@@ -1,7 +1,6 @@
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
-// import { RoomsService } from './services/rooms-service/rooms.service';
 import { PersonnelService } from './services/personnel-service/personnel.service';
 import { HttpClientModule } from '@angular/common/http';
 import { ButtonTypeComponent } from './public/formly/button-type/button-type.component';
@@ -23,7 +22,6 @@ import { TodoComponent } from './public/apps/todo-list/todo/todo.component';
 import { SpinnerComponent } from './shared/spinner/spinner.component';
 import { ContentAnimateDirective } from './shared/directives/content-animate.directive';
 import { TodoListComponent } from './public/apps/todo-list/todo-list.component';
-import { ViewRoomsComponent } from './tems-components/room/view-rooms/view-rooms.component';
 import { FormlyModule } from '@ngx-formly/core';
 import { FormlyMaterialModule } from '@ngx-formly/material';
 import { FormlyWrapperComponent } from './public/formly/formly-wrapper/formly-wrapper.component';
@@ -36,6 +34,7 @@ import { AddEquipmentRepeatComponent } from './public/formly/add-equipment-repea
 
 import { LogsService } from './services/logs-service/logs.service';
 import { AutocompleteTypeComponent } from './public/formly/autocomplete-type/autocomplete-type.component';
+import { RoomDetailsComponent } from './tems-components/room/room-details/room-details.component';
 
 @NgModule({
   declarations: [
@@ -49,11 +48,10 @@ import { AutocompleteTypeComponent } from './public/formly/autocomplete-type/aut
     SpinnerComponent,
     ContentAnimateDirective,
     FormlyWrapperComponent,
-    // ButtonTypeComponent,
     RepeatTypeComponent,
     AddEquipmentRepeatComponent,
-    ViewRoomsComponent,
     AutocompleteTypeComponent,
+    RoomDetailsComponent,
   ],
   imports: [
     BrowserModule,

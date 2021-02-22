@@ -80,6 +80,8 @@ Related to Issues!
 users).
 
 
+Related to rooms!
+- Add room label entity => types of rooms (Laboratory, simple class Room, deposit etc.)
 
 
 

@@ -34,8 +34,6 @@ import { AddEquipmentRepeatComponent } from './public/formly/add-equipment-repea
 
 import { LogsService } from './services/logs-service/logs.service';
 import { AutocompleteTypeComponent } from './public/formly/autocomplete-type/autocomplete-type.component';
-import { RoomDetailsComponent } from './tems-components/room/room-details/room-details.component';
-
 @NgModule({
   declarations: [
     AppComponent,
@@ -51,7 +49,6 @@ import { RoomDetailsComponent } from './tems-components/room/room-details/room-d
     RepeatTypeComponent,
     AddEquipmentRepeatComponent,
     AutocompleteTypeComponent,
-    RoomDetailsComponent,
   ],
   imports: [
     BrowserModule,

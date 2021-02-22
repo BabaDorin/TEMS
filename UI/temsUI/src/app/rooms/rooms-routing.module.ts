@@ -3,10 +3,12 @@ import { CollegeMapComponent } from './../tems-components/college-map/college-ma
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { RoomDetailsComponent } from '../tems-components/room/room-details/room-details.component';
+import { AddRoomComponent } from './add-room/add-room.component';
 
 const routes: Routes = [
   { path: '', component: ViewRoomsComponent },
   { path: 'view', component: ViewRoomsComponent },
+  { path: 'add', component: AddRoomComponent },
   { path: 'map', component: CollegeMapComponent },
   { path: 'details/:id', component: RoomDetailsComponent }
 ];

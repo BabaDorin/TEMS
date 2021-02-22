@@ -102,7 +102,7 @@ export class menuItems {
       showSubmenu: false,
       submenu: [
         {
-          path: '/rooms/all',
+          path: '/rooms/view',
           title: 'View',
           icon: 'mdi mdi-view-list menu-icon',
           isActive: false,
@@ -111,7 +111,16 @@ export class menuItems {
           submenu: []
         },
         {
-          path: '/college-map',
+          path: '/rooms/add',
+          title: '+ Add new',
+          icon: 'mdi mdi-plus menu-icon',
+          isActive: false,
+          isShown: this.role.canViewRooms || this.role.canManageRooms,      
+          showSubmenu: false,
+          submenu: []
+        },
+        {
+          path: '/rooms/map',
           title: 'College Map',
           icon: 'mdi mdi-map menu-icon',
           isActive: false,
@@ -119,15 +128,15 @@ export class menuItems {
           showSubmenu: false,
           submenu: []
         },
-        {
-          path: '/rooms/allocate',
-          title: 'Allocate',
-          icon: 'mdi mdi-transfer menu-icon',
-          isShown: this.role.canManageRooms || this.role.canAllocateEquipment,      
-          isActive: false,
-          showSubmenu: false,
-          submenu: []
-        },
+        // {
+        //   path: '/rooms/allocate',
+        //   title: 'Allocate',
+        //   icon: 'mdi mdi-transfer menu-icon',
+        //   isShown: this.role.canManageRooms || this.role.canAllocateEquipment,      
+        //   isActive: false,
+        //   showSubmenu: false,
+        //   submenu: []
+        // },
       ]
     },
     {
@@ -156,15 +165,15 @@ export class menuItems {
           showSubmenu: false,
           submenu: []
         },
-        {
-          path: '/personnel/allocate',
-          title: 'Allocate',
-          icon: 'mdi mdi-transfer menu-icon',
-          isActive: false,
-          isShown: this.role.canManagePersonnel || this.role.canAllocateEquipment,
-          showSubmenu: false,
-          submenu: []
-        },
+        // {
+        //   path: '/personnel/allocate',
+        //   title: 'Allocate',
+        //   icon: 'mdi mdi-transfer menu-icon',
+        //   isActive: false,
+        //   isShown: this.role.canManagePersonnel || this.role.canAllocateEquipment,
+        //   showSubmenu: false,
+        //   submenu: []
+        // },
       ]
     },
     {

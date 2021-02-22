@@ -29,4 +29,13 @@ export class RoomsService {
       new ViewRoomSimplified(),
     ];
   }
+
+  getRoomLabels(){
+    return[
+      { id: '1', value: 'Laboratory'},
+      { id: '2', value: 'Simple ClassRoom'},
+      { id: '3', value: 'Deposit'},
+      { id: '4', value: 'Idk'},
+    ]
+  }
 }

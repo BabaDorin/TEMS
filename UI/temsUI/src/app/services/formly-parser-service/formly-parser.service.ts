@@ -9,6 +9,7 @@ import { Injectable } from '@angular/core';
 import { AddEquipment } from 'src/app/models/equipment/add-equipment.model';
 import { Observable, of } from 'rxjs';
 import { ViewLog } from 'src/app/models/communication/logs/view-logs.model';
+import { AddRoom } from 'src/app/models/room/add-room.model';
 
 @Injectable({
   providedIn: 'root'
@@ -20,6 +21,61 @@ export class FormlyParserService {
   // Which is used by formly to render forms.
 
   constructor(private equipmentService: EquipmentService) { }
+
+  parseAddRoom(addRoom: AddRoom, roomLabels){
+    // identifier: string,
+    // floor: number,
+    // description: string,
+    // label: string,
+    let fields: FormlyFieldConfig[] =
+      [
+        {
+          key: 'room',
+          fieldGroup: [
+            {
+              key: 'identifier',
+              type: 'input',
+              templateOptions: {
+                required: true,
+                label: 'Room Identifier',
+                placeholder: '214'
+              }
+            },
+            {
+              key: 'floor',
+              type: 'input',
+              templateOptions: {
+                type: 'number',
+                label: 'Floor',
+                placeholder: '1',
+                min: 1,
+              }
+            },
+            {
+              key: 'description',
+              type: 'textarea',
+              templateOptions: {
+                label: 'Description',
+                placeholder: '...',
+                rows: 5,
+              },
+            },
+            {
+              key: 'label',
+              type: 'autocomplete',
+              templateOptions: {
+                required: true,
+                label: 'Room Label',
+                placeholder: 'Laboratory...',
+                filter: (term) => of(term ? this.filterAutocomplete(term, roomLabels) : roomLabels.slice()),
+              },
+            },
+          ]
+        }
+      ];
+
+    return fields;
+  }
 
   parseAddIssue(addIssue: AddIssue, frequentProblems: string[]) {
     if (addIssue == undefined)
@@ -67,7 +123,7 @@ export class FormlyParserService {
     return fields;
   }
 
-  filterAutocomplete(name: string, autocomplete: string[]) {
+  private filterAutocomplete(name: string, autocomplete: string[]) {
     return autocomplete.filter(criteria =>
       criteria.toLowerCase().indexOf(name.toLowerCase()) === 0);
   }

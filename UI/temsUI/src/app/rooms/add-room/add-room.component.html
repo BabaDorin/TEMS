@@ -1,1 +1,12 @@
-<p>add-room works!</p>
+<div class="card">
+    <div class="card-body">
+        <div class="card-title">Add Room</div>
+
+        <form [formGroup]="formlyData.form" (ngSubmit)="onSubmit(formlyData.model)">
+            <formly-form [form]="formlyData.form" [fields]="formlyData.fields" [model]="formlyData.model"></formly-form>
+            <br>
+            <button type="submit" class="btn btn-gradient-primary mr-2">Submit</button>
+        </form>
+    </div>
+</div>
+

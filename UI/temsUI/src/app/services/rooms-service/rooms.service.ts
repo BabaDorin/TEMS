@@ -1,5 +1,6 @@
+import { ViewRoomSimplified } from './../../models/room/view-room-simplified.model';
+import { ViewRoom } from './../../models/room/view-room.model';
 import { Injectable } from '@angular/core';
-import { ViewRoomSimplified } from 'src/app/models/room/view-room-simplified.model';
 
 @Injectable({
   providedIn: 'root'
@@ -37,5 +38,13 @@ export class RoomsService {
       { id: '3', value: 'Deposit'},
       { id: '4', value: 'Idk'},
     ]
+  }
+  
+  getRoomById(id: string){
+    return new ViewRoom();
+  }
+
+  getRoomSimplified(id: string){
+    return new ViewRoomSimplified();
   }
 }

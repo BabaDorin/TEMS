@@ -1,3 +1,4 @@
+import { PropertyRenderComponent } from './../public/property-render/property-render.component';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatTabsModule } from '@angular/material/tabs';
 import { FormlyModule } from '@ngx-formly/core';
@@ -24,6 +25,9 @@ import { MatRadioModule } from '@angular/material/radio';
 import { EquipmentService } from '../services/equipment-service/equipment.service';
 import { FormlyParserService } from '../services/formly-parser-service/formly-parser.service';
 import { AddRoomComponent } from './add-room/add-room.component';
+import { RoomDetailsGeneralComponent } from '../tems-components/room/room-details-general/room-details-general.component';
+import { RoomDetailsComponent } from '../tems-components/room/room-details/room-details.component';
+import { ImageCarouselComponent } from '../public/image-carousel/image-carousel.component';
 
 
 @NgModule({
@@ -31,7 +35,11 @@ import { AddRoomComponent } from './add-room/add-room.component';
     SummaryRoomsAnalyticsComponent,
     AgGridRoomsComponent,
     ViewRoomsComponent,
-    AddRoomComponent
+    AddRoomComponent,
+    RoomDetailsComponent,
+    RoomDetailsGeneralComponent,
+    ImageCarouselComponent,
+    PropertyRenderComponent,
   ],
   imports: [
     CommonModule,

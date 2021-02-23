@@ -18,12 +18,13 @@ export class EquipmentDetailsComponent implements OnInit {
 
   constructor(private activatedroute: ActivatedRoute, private elementRef: ElementRef,
     private equipmentService: EquipmentService) {
-    if(this.equipmentId == undefined)
-      this.equipmentId = this.activatedroute.snapshot.paramMap.get("id");
-    this.edit=false;
   }
 
   ngOnInit(): void {
+    if(this.equipmentId == undefined)
+      this.equipmentId = this.activatedroute.snapshot.paramMap.get("id");
+    this.edit=false;
+
     this.equipmentSimplified = this.equipmentService.getEquipmentSimplified(this.equipmentId);
   }
 

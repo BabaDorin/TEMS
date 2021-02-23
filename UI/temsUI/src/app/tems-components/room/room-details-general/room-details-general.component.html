@@ -1,0 +1,26 @@
+<br>
+<h1>{{ room.label }}
+    <b>{{ room.identifier }}</b>
+</h1>
+<hr>
+<br>
+<div *ngIf="edit==false">
+    <div class="row">
+        <div class="col-md-6">
+            <!-- Common properties for each equipment go here -->
+            <app-property-render [properties]="roomProperties"></app-property-render>
+        </div>
+    </div>
+</div>
+<br>
+<br>
+
+<div *ngIf="room.photos.length > 0">
+    <h4>Room images</h4>
+    <app-image-carousel></app-image-carousel>
+</div>
+<br>
+<div *ngIf="edit==true">
+    edit = true
+</div>
+<button class="btn btn-primary" (click)="edit=!edit">Edit data</button>

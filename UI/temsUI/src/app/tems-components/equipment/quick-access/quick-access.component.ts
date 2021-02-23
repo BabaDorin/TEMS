@@ -28,7 +28,6 @@ export class QuickAccessComponent implements OnInit {
     private roomService: RoomsService,
     private personnelService: PersonnelService
   ) {
-
   }
 
   ngOnInit() {
@@ -52,7 +51,7 @@ export class QuickAccessComponent implements OnInit {
       if (params['type']) {
         this.type = this.activatedroute.snapshot.paramMap.get("type");
 
-        if (['equipment', 'room', 'personnel'].indexOf(this.type) == -1) {
+        if (['equipment', 'rooms', 'personnel'].indexOf(this.type) == -1) {
           this.router.navigate(['/error-pages/404']);
         }
     
@@ -65,7 +64,7 @@ export class QuickAccessComponent implements OnInit {
             this.placeholder = "LPB021";
             break;
     
-          case 'room':
+          case 'rooms':
             this.options = this.roomService.getAllAutocompleteOptions()
               .map(q => q.value);
             this.header = "Find room by identifier";

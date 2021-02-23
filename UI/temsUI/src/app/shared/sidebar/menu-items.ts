@@ -120,7 +120,7 @@ export class menuItems {
           submenu: []
         },
         {
-          path: '/quick-access/room',
+          path: '/quick-access/rooms',
           title: 'Quick Access',
           icon: 'mdi mdi-format-horizontal-align-right menu-icon',
           isShown: this.role.canViewEquipment || this.role.canManageEquipment,      

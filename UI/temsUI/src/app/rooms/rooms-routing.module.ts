@@ -10,7 +10,7 @@ const routes: Routes = [
   { path: 'view', component: ViewRoomsComponent },
   { path: 'add', component: AddRoomComponent },
   { path: 'map', component: CollegeMapComponent },
-  { path: 'details/:id', component: RoomDetailsComponent }
+  { path: 'details/:id', component: RoomDetailsComponent,  }
 ];
 
 @NgModule({

@@ -16,10 +16,10 @@ export class EquipmentDetailsComponent implements OnInit {
   // equipment: ViewEquipment;
   
 
-  constructor(private _Activatedroute: ActivatedRoute, private elementRef: ElementRef,
+  constructor(private activatedroute: ActivatedRoute, private elementRef: ElementRef,
     private equipmentService: EquipmentService) {
     if(this.equipmentId == undefined)
-      this.equipmentId = this._Activatedroute.snapshot.paramMap.get("id");
+      this.equipmentId = this.activatedroute.snapshot.paramMap.get("id");
     this.edit=false;
   }
 

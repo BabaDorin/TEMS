@@ -74,7 +74,7 @@ export class menuItems {
           submenu: []
         },
         {
-          path: '/equipment/quick-access',
+          path: '/quick-access/equipment',
           title: 'Quick Access',
           icon: 'mdi mdi-format-horizontal-align-right menu-icon',
           isShown: this.role.canViewEquipment || this.role.canManageEquipment,      
@@ -112,10 +112,19 @@ export class menuItems {
         },
         {
           path: '/rooms/add',
-          title: '+ Add new',
+          title: 'Add',
           icon: 'mdi mdi-plus menu-icon',
           isActive: false,
           isShown: this.role.canViewRooms || this.role.canManageRooms,      
+          showSubmenu: false,
+          submenu: []
+        },
+        {
+          path: '/quick-access/room',
+          title: 'Quick Access',
+          icon: 'mdi mdi-format-horizontal-align-right menu-icon',
+          isShown: this.role.canViewEquipment || this.role.canManageEquipment,      
+          isActive: false,
           showSubmenu: false,
           submenu: []
         },

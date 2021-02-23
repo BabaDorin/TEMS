@@ -1,3 +1,4 @@
+import { QuickAccessComponent } from './tems-components/equipment/quick-access/quick-access.component';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
@@ -49,6 +50,7 @@ import { AutocompleteTypeComponent } from './public/formly/autocomplete-type/aut
     RepeatTypeComponent,
     AddEquipmentRepeatComponent,
     AutocompleteTypeComponent,
+    QuickAccessComponent,
   ],
   imports: [
     BrowserModule,
@@ -65,7 +67,6 @@ import { AutocompleteTypeComponent } from './public/formly/autocomplete-type/aut
     BrowserModule,
     FormlyMaterialModule,
     BrowserAnimationsModule,
-
     
     TagInputModule,
     MatInputModule,

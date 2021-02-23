@@ -1,9 +1,9 @@
 <div class="card">
     <div class="card-body">
-        <div class="card-title">Insert Equipment's TEMSID or Serial Number</div>
+        <div class="card-title">{{ header }}</div>
         <form class="example-form" (submit)="onSubmit()">
             <mat-form-field class="example-full-width">
-              <mat-label>Number</mat-label>
+              <mat-label>{{ label }}</mat-label>
               <input type="text"
                      placeholder="LPB021..."
                      aria-label="Tems ID or Serial Number"

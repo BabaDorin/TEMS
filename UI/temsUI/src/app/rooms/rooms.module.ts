@@ -1,3 +1,4 @@
+import { ChipsAutocompleteComponent } from 'src/app/public/formly/chips-autocomplete/chips-autocomplete.component';
 import { PropertyRenderComponent } from './../public/property-render/property-render.component';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatTabsModule } from '@angular/material/tabs';
@@ -28,6 +29,10 @@ import { AddRoomComponent } from './add-room/add-room.component';
 import { RoomDetailsGeneralComponent } from '../tems-components/room/room-details-general/room-details-general.component';
 import { RoomDetailsComponent } from '../tems-components/room/room-details/room-details.component';
 import { ImageCarouselComponent } from '../public/image-carousel/image-carousel.component';
+import { EntityLogsListComponent } from '../tems-components/entity-logs-list/entity-logs-list.component';
+import { RoomDetailsLogsComponent } from '../tems-components/room/room-details-logs/room-details-logs.component';
+import { AddLogComponent } from '../tems-components/communication/add-log/add-log.component';
+import { EntitySharedModuleModule } from '../tems-components/entity-shared-module/entity-shared-module.module';
 
 
 @NgModule({
@@ -38,8 +43,8 @@ import { ImageCarouselComponent } from '../public/image-carousel/image-carousel.
     AddRoomComponent,
     RoomDetailsComponent,
     RoomDetailsGeneralComponent,
-    ImageCarouselComponent,
-    PropertyRenderComponent,
+    EntityLogsListComponent,
+    RoomDetailsLogsComponent,
   ],
   imports: [
     CommonModule,
@@ -55,13 +60,14 @@ import { ImageCarouselComponent } from '../public/image-carousel/image-carousel.
     MatTabsModule,
     MatExpansionModule,
     MatSelectModule,
+    MatOptionModule,
+    EntitySharedModuleModule,
   ],
   exports: [
     MatFormFieldModule, 
     MatButtonModule,
     MatTooltipModule,
     MatAutocompleteModule,
-    // MatCheckboxModule,
     MatChipsModule,
     MatDialogModule,
     MatOptionModule,

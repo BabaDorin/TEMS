@@ -30,5 +30,4 @@ export class RoomDetailsGeneralComponent implements OnInit {
       { displayName: 'Issue State', value: this.room.issueState },
     ]
   }
-
 }

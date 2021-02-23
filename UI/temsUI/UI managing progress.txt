@@ -3,7 +3,7 @@ Angular + asp.net pagination =>  Upvoted anwer on github
 
 
 
-=====================< Done >=====================
+=====================< Done but need REFACTORING! >=====================
 -Theme - done
 -Sidebar - done
 -link siderbarnavitems to components (routing) - done
@@ -14,6 +14,17 @@ Angular + asp.net pagination =>  Upvoted anwer on github
 
 
 =====================< Currently Working On >======================
+
+Making details components more GENERIC!
+-- entityLogsListComponent => has three input parameters (room, equipment, personnel).
+Depending on the parameter that has been indicated (only one at a time, of course) it will
+extract all of the logs associated with that specific entity and will display them in a 
+list. 
+
+-- Create a module that contains all of shared components of room, eq and pers
+
+
+=====================< Up Next >=======================
 
 Start building core components
 1) Add Equipment and all it's sub-components. DeadLine: 07>02>2021, 23:59
@@ -34,9 +45,6 @@ Start building core components
 		---- view and create logs
 
 
-=====================< Up Next >=======================
-
-Start building core components
 
 q) Make EquipmentDetails=>Logs, Issues and Allocations GENERIC! In order
 to use the same component for rooms, equipment, personnel.

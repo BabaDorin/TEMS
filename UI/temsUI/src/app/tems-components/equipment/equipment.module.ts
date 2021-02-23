@@ -12,7 +12,6 @@ import { EquipmentAllocationComponent } from './equipment-allocation/equipment-a
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatChipsModule } from '@angular/material/chips';
-import { ChipsAutocompleteComponent } from 'src/app/public/formly/chips-autocomplete/chips-autocomplete.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { EquipmentService } from './../../services/equipment-service/equipment.service';
 import { MatSelectModule } from '@angular/material/select';
@@ -21,7 +20,6 @@ import { SummaryEquipmentAnalyticsComponent } from './../analytics/summary-equip
 import { AgGridEquipmentComponent } from './ag-grid-equipment/ag-grid-equipment.component';
 import { AgGridModule } from 'ag-grid-angular';
 import { AddEquipmentComponent } from './add-equipment/add-equipment.component';
-import { PropertyRenderComponent } from './../../public/property-render/property-render.component';
 import { FormlyModule } from '@ngx-formly/core';
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule, FormGroup, ReactiveFormsModule } from '@angular/forms';
@@ -35,13 +33,12 @@ import { EquipmentDetailsGeneralComponent } from './equipment-details/equipment-
 import { EquipmentDetailsLogsComponent } from './equipment-details/equipment-details-logs/equipment-details-logs.component';
 import { EquipmentDetailsAllocationsComponent } from './equipment-details/equipment-details-allocations/equipment-details-allocations.component';
 import { MatTabsModule } from '@angular/material/tabs';
-import { ImageCarouselComponent } from 'src/app/public/image-carousel/image-carousel.component';
 import { MatOptionModule } from '@angular/material/core';
-import { AddLogComponent } from '../communication/add-log/add-log.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { SummaryEquipmentIssueAnalyticsComponent } from '../analytics/summary-equipment-issue-analytics/summary-equipment-issue-analytics.component';
 import { EquipmentDetailsIssuesComponent } from './equipment-details/equipment-details-issues/equipment-details-issues.component';
 import { MatRadioModule } from '@angular/material/radio';
+import { EntitySharedModuleModule } from '../entity-shared-module/entity-shared-module.module';
 
 @NgModule({
   declarations: [
@@ -51,15 +48,11 @@ import { MatRadioModule } from '@angular/material/radio';
     EquipmentDetailsAllocationsComponent,
     EquipmentAllocationComponent,
     ViewEquipmentComponent,
-    PropertyRenderComponent,
     AddEquipmentComponent,
-    ImageCarouselComponent,
     InputTooltipComponent,
     SelectTooltipComponent,
     AgGridEquipmentComponent,
     SummaryEquipmentAnalyticsComponent,
-    ChipsAutocompleteComponent,
-    AddLogComponent,
     AddTypeComponent,
     CreateIssueComponent,
     AddDefinitionComponent,
@@ -81,6 +74,7 @@ import { MatRadioModule } from '@angular/material/radio';
     MatTabsModule,
     MatExpansionModule,
     MatSelectModule,
+    EntitySharedModuleModule
   ],
   exports: [
     MatFormFieldModule, 
@@ -95,6 +89,7 @@ import { MatRadioModule } from '@angular/material/radio';
     MatRadioModule,
     EquipmentService,
     FormlyParserService,
+    
   ],
   entryComponents: [AddTypeComponent]
 })

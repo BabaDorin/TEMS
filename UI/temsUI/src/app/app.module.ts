@@ -1,3 +1,5 @@
+import { EntitySharedModuleModule } from './tems-components/entity-shared-module/entity-shared-module.module';
+// import { PropertyRenderComponent } from './public/property-render/property-render.component';
 import { QuickAccessComponent } from './tems-components/equipment/quick-access/quick-access.component';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -29,12 +31,11 @@ import { FormlyWrapperComponent } from './public/formly/formly-wrapper/formly-wr
 import { TagInputModule } from 'ngx-chips';
 import { MatDialogModule } from '@angular/material/dialog';
 import { InputTooltipComponent } from './public/formly/input-tooltip/input-tooltip.component';
-
 import { RepeatTypeComponent } from './public/formly/repeat-type/repeat-type.component';
 import { AddEquipmentRepeatComponent } from './public/formly/add-equipment-repeat/add-equipment-repeat.component';
-
 import { LogsService } from './services/logs-service/logs.service';
 import { AutocompleteTypeComponent } from './public/formly/autocomplete-type/autocomplete-type.component';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -51,6 +52,9 @@ import { AutocompleteTypeComponent } from './public/formly/autocomplete-type/aut
     AddEquipmentRepeatComponent,
     AutocompleteTypeComponent,
     QuickAccessComponent,
+    
+    // common for equipment, room and personnel modules
+    // PropertyRenderComponent, 
   ],
   imports: [
     BrowserModule,
@@ -67,6 +71,7 @@ import { AutocompleteTypeComponent } from './public/formly/autocomplete-type/aut
     BrowserModule,
     FormlyMaterialModule,
     BrowserAnimationsModule,
+    EntitySharedModuleModule,
     
     TagInputModule,
     MatInputModule,

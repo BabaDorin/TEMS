@@ -16,6 +16,7 @@ import { RoomDetailsLogsComponent } from '../tems-components/room/room-details-l
 import { EntitySharedModule } from '../modules/entity-shared/entity-shared.module';
 import { MaterialModule } from '../modules/material/material.module';
 import { RoomDetailsIssuesComponent } from '../tems-components/room/room-details-issues/room-details-issues.component';
+import { RoomDetailsAllocationsComponent } from '../tems-components/room/room-details-allocations/room-details-allocations.component';
 
 
 @NgModule({
@@ -28,6 +29,7 @@ import { RoomDetailsIssuesComponent } from '../tems-components/room/room-details
     RoomDetailsGeneralComponent,
     RoomDetailsLogsComponent,
     RoomDetailsIssuesComponent,
+    RoomDetailsAllocationsComponent,
   ],
   imports: [
     CommonModule,

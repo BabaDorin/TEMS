@@ -11,6 +11,7 @@ import { AddLogComponent } from 'src/app/tems-components/communication/add-log/a
 import { CreateIssueComponent } from 'src/app/tems-components/issue/create-issue/create-issue.component';
 import { EntityLogsListComponent } from 'src/app/tems-components/entity-logs-list/entity-logs-list.component';
 import { SummaryIssuesAnalyticsComponent } from 'src/app/tems-components/analytics/summary-issues-analytics/summary-issues-analytics.component';
+import { EntityAllocationsListComponent } from 'src/app/tems-components/entity-allocations-list/entity-allocations-list.component';
 
 @NgModule({
   declarations: [
@@ -22,6 +23,7 @@ import { SummaryIssuesAnalyticsComponent } from 'src/app/tems-components/analyti
     EntityLogsListComponent,
     EntityIssuesListComponent,
     SummaryIssuesAnalyticsComponent,
+    EntityAllocationsListComponent,
   ],
   imports: [
     CommonModule,
@@ -36,7 +38,8 @@ import { SummaryIssuesAnalyticsComponent } from 'src/app/tems-components/analyti
     EquipmentAllocationComponent,
     EntityLogsListComponent,
     EntityIssuesListComponent,
-    SummaryIssuesAnalyticsComponent
+    SummaryIssuesAnalyticsComponent,
+    EntityAllocationsListComponent
   ]
 })
 export class EntitySharedModule { }

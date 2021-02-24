@@ -8,7 +8,8 @@
             <div class="row">
                 <div class="col-md-4">
                     <app-chips-autocomplete #rooms label="Select one or more rooms..."
-                        [availableOptions]="roomsAutoCompleteOptions" [alreadySelected]="roomsAlreadySelectedOptions">
+                        [availableOptions]="roomsAutoCompleteOptions" 
+                        [alreadySelected]="roomsAlreadySelected">
                     </app-chips-autocomplete>
                 </div>
                 <div class="col-md-4">
@@ -20,7 +21,7 @@
                 <div class="col-md-4">
                     <app-chips-autocomplete #personnel label="People who need help..."
                         [availableOptions]="personnelAutocompleteOptions"
-                        [alreadySelected]="personnelAlreadySelectedOptions">
+                        [alreadySelected]="personnelAlreadySelected">
                     </app-chips-autocomplete>
                 </div>
             </div>
@@ -29,7 +30,7 @@
                 <hr>
                 <app-chips-autocomplete #assignees label="Assign this issue to..."
                     [availableOptions]="personnelAutocompleteOptions" 
-                    [alreadySelected]="personnelAlreadySelectedOptions">
+                    [alreadySelected]="personnelAlreadySelected">
                 </app-chips-autocomplete>
             </div>
             <!-- 3 chips go here -->

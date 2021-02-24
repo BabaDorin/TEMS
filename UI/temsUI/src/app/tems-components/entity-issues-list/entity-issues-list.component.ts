@@ -1,58 +1,55 @@
+import { CreateIssueComponent } from './../issue/create-issue/create-issue.component';
+import { ViewIssueSimplified } from 'src/app/models/communication/issues/view-issue';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { IssuesService } from './../../services/issues-service/issues.service';
 import { Component, Input, OnInit } from '@angular/core';
-import { ViewLog } from 'src/app/models/communication/logs/view-logs.model';
 import { ViewEquipmentSimplified } from 'src/app/models/equipment/view-equipment-simplified.model';
 import { ViewPersonnelSimplified } from 'src/app/models/personnel/view-personnel-simplified.model';
 import { ViewRoomSimplified } from 'src/app/models/room/view-room-simplified.model';
-import { LogsService } from 'src/app/services/logs-service/logs.service';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { AddLogComponent } from '../communication/add-log/add-log.component';
 
 @Component({
-  selector: 'app-entity-logs-list',
-  templateUrl: './entity-logs-list.component.html',
-  styleUrls: ['./entity-logs-list.component.scss']
+  selector: 'app-entity-issues-list',
+  templateUrl: './entity-issues-list.component.html',
+  styleUrls: ['./entity-issues-list.component.scss']
 })
-export class EntityLogsListComponent implements OnInit {
+export class EntityIssuesListComponent implements OnInit {
 
   @Input() equipment: ViewEquipmentSimplified;
   @Input() room: ViewRoomSimplified;
   @Input() personnel: ViewPersonnelSimplified;
 
-  logs: ViewLog[];
+  issues: ViewIssueSimplified[];
   @Input() addLogEnabled: boolean = true;
-
-
+  
   constructor(
-    private logsService: LogsService,
+    private issuesService: IssuesService,
     public dialog: MatDialog
-  ) { 
-    
-  }
+  ) { }
 
   ngOnInit(): void {
     if(this.equipment == undefined && this.room == undefined && this.personnel == undefined){
-      console.warn('EntityLogsListComponent requires an entity in order to display logs');
+      console.warn('EntityIssuesListComponent requires an entity in order to display logs');
       return;
     }
 
     if(this.equipment)
-      this.logs = this.logsService.getLogsByEquipmentId(this.equipment.id);
+      this.issues = this.issuesService.getIssuesOfEquipment(this.equipment.id);
 
     if(this.room)
-      this.logs = this.logsService.getLogsByRoomId(this.room.id);
+      this.issues = this.issuesService.getIssuesOfRoom(this.room.id);
 
     if(this.personnel)
-      this.logs = this.logsService.getLogsByPersonnelId(this.personnel.id);
+      this.issues = this.issuesService.getIssuesOfPersonnel(this.personnel.id);
   }
 
-  private addLog(){
-    // Opens a dialog containing an instance of AddLogComponent
+  private addIssue(){
+    // Opens a dialog containing an instance of CreateIssueComponent
     
     let dialogRef: MatDialogRef<any>;
-    dialogRef = this.dialog.open(AddLogComponent); 
+    dialogRef = this.dialog.open(CreateIssueComponent); 
     
     if(this.equipment){
-      dialogRef.componentInstance.equipment = [
+      dialogRef.componentInstance.equipmentAlreadySelected = [
         {
           id: this.equipment.id, 
           value: this.equipment.temsidOrSn
@@ -60,7 +57,7 @@ export class EntityLogsListComponent implements OnInit {
     }
 
     if(this.room){
-      dialogRef.componentInstance.room = [
+      dialogRef.componentInstance.roomsAlreadySelected = [
         {
           id: this.room.id, 
           value: this.room.identifier
@@ -68,7 +65,7 @@ export class EntityLogsListComponent implements OnInit {
     }
 
     if(this.personnel){
-      dialogRef.componentInstance.personnel = [
+      dialogRef.componentInstance.personnelAlreadySelected = [
         {
           id: this.personnel.id, 
           value: this.personnel.name
@@ -79,4 +76,5 @@ export class EntityLogsListComponent implements OnInit {
       // Stuff
     });
   }
+
 }

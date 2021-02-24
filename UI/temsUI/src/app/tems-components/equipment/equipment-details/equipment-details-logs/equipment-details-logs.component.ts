@@ -21,8 +21,6 @@ export class EquipmentDetailsLogsComponent implements OnInit {
     public dialog: MatDialog) { 
   }
 
-
-
   ngOnInit(): void {
     this.logs = this.logsService.getLogsByEquipmentId(this.equipment.id);
   }

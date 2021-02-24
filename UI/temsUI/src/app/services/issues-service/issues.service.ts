@@ -1,3 +1,4 @@
+import { ViewIssueSimplified } from 'src/app/models/communication/issues/view-issue';
 import { ViewIssue } from './../../models/communication/issues/view-issue';
 import { Injectable } from '@angular/core';
 
@@ -10,14 +11,14 @@ export class IssuesService {
 
   getIssues(){
     return [
-      new ViewIssue(),
-      new ViewIssue(),
-      new ViewIssue(),
-      new ViewIssue(),
-      new ViewIssue(),
-      new ViewIssue(),
-      new ViewIssue(),
-      new ViewIssue(),
+      new ViewIssueSimplified(),
+      new ViewIssueSimplified(),
+      new ViewIssueSimplified(),
+      new ViewIssueSimplified(),
+      new ViewIssueSimplified(),
+      new ViewIssueSimplified(),
+      new ViewIssueSimplified(),
+      new ViewIssueSimplified(),
     ];
   }
 

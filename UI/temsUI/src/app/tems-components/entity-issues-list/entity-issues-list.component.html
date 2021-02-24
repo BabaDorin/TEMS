@@ -1,10 +1,3 @@
-<app-summary-issues-analytics>
-    Loading...
-</app-summary-issues-analytics>
-<br>
-<!-- <app-create-issue>
-    Loading...
-</app-create-issue> -->
 <button class="btn btn-secondary btn-sm" (click)="addIssue()">+ Create issue</button>
 <br>
 <mat-card *ngFor="let issue of issues" class="mb-2">
@@ -25,7 +18,7 @@
             rooms: <span *ngFor="let personnel of issue.personnel"> {{ personnel.name }}</span>
         </p>
         <p *ngIf="issue.problemDescription != undefined">
-            {{ issue.problemDescription }}
+            {{ issue.description }}
         </p>
     </mat-card-content>
 </mat-card>

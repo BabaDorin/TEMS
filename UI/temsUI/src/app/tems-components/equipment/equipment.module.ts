@@ -20,10 +20,10 @@ import { EquipmentDetailsComponent } from './equipment-details/equipment-details
 import { EquipmentDetailsGeneralComponent } from './equipment-details/equipment-details-general/equipment-details-general.component';
 import { EquipmentDetailsLogsComponent } from './equipment-details/equipment-details-logs/equipment-details-logs.component';
 import { EquipmentDetailsAllocationsComponent } from './equipment-details/equipment-details-allocations/equipment-details-allocations.component';
-import { SummaryEquipmentIssueAnalyticsComponent } from '../analytics/summary-equipment-issue-analytics/summary-equipment-issue-analytics.component';
 import { EquipmentDetailsIssuesComponent } from './equipment-details/equipment-details-issues/equipment-details-issues.component';
 import { MaterialModule } from 'src/app/modules/material/material.module';
 import { EntitySharedModule } from 'src/app/modules/entity-shared/entity-shared.module';
+import { EntityLogsListComponent } from '../entity-logs-list/entity-logs-list.component';
 
 @NgModule({
   declarations: [
@@ -37,7 +37,6 @@ import { EntitySharedModule } from 'src/app/modules/entity-shared/entity-shared.
     SummaryEquipmentAnalyticsComponent,
     AddTypeComponent,
     AddDefinitionComponent,
-    SummaryEquipmentIssueAnalyticsComponent,
     ViewIssuesComponent,
     EquipmentDetailsIssuesComponent,
   ],

@@ -10,6 +10,7 @@ import { AddEquipment } from 'src/app/models/equipment/add-equipment.model';
 import { Observable, of } from 'rxjs';
 import { ViewLog } from 'src/app/models/communication/logs/view-logs.model';
 import { AddRoom } from 'src/app/models/room/add-room.model';
+import { AddPersonnel } from 'src/app/models/personnel/add-personnel.model';
 
 @Injectable({
   providedIn: 'root'
@@ -598,5 +599,52 @@ export class FormlyParserService {
 
     return propertyFieldGroup;
 
+  }
+
+  parseAddPersonnel(addPersonnel: AddPersonnel){
+    let fields: FormlyFieldConfig[] =
+      [
+        {
+          key: 'personnel',
+          fieldGroup: [
+            {
+              key: 'name',
+              type: 'input',
+              templateOptions: {
+                required: true,
+                label: 'Name',
+              }
+            },
+            {
+              key: 'position',
+              type: 'input-tooltip',
+              templateOptions: {
+                label: 'Position',
+                placeholder: 'Profesor...',
+                description: 'Profession, For example: ICT Professor'
+              },
+            },
+            {
+              key: 'phoneNumber',
+              type: 'input-tooltip',
+              templateOptions: {
+                label: 'Phone Number',
+                description: 'It will be used to send SMS!'
+              },
+            },
+            {
+              key: 'email',
+              type: 'input',
+              templateOptions: {
+                type: 'email',
+                label: 'Email',
+                description: 'It will be used to send mails!'
+              },
+            },
+          ]
+        }
+      ];
+
+    return fields;
   }
 }

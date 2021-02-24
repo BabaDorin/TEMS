@@ -1,3 +1,4 @@
+import { AddPersonnelComponent } from './../../tems-components/personnel/add-personnel/add-personnel.component';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
@@ -11,18 +12,20 @@ import { FormlyModule } from '@ngx-formly/core';
 
 @NgModule({
   declarations: [
-    PersonnelDetailsComponent,
-
+    PersonnelDetailsComponent, 
+    AddPersonnelComponent,
   ],
+
   imports: [
     CommonModule,
     PersonnelRoutingModule,
-    EntitySharedModule,
     AgGridModule,
     MaterialModule,
     FormsModule,
     FormlyModule,
     ReactiveFormsModule,
+
+    EntitySharedModule,
   ]
 })
 export class PersonnelModule { }

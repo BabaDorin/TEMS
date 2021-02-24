@@ -21,7 +21,7 @@ Depending on the parameter that has been indicated (only one at a time, of cours
 extract all of the logs associated with that specific entity and will display them in a 
 list. 
 
--- Create a module that contains all of shared components of room, eq and pers
+--- Create a module that contains all of shared components of room, eq and pers
 
 
 =====================< Up Next >=======================

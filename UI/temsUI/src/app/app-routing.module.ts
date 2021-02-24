@@ -15,7 +15,8 @@ const routes: Routes = [
   { path: 'error-pages', loadChildren: () => import('./public/error-pages/error-pages.module').then(m => m.ErrorPagesModule) },
   
   { path: 'equipment', loadChildren: () => import('./tems-components/equipment/equipment.module').then(m => m.EquipmentModule) },
-  { path: 'rooms', loadChildren: () => import('./rooms/rooms.module').then(m => m.RoomsModule) },
+  { path: 'rooms', loadChildren: () => import('./modules/rooms/rooms.module').then(m => m.RoomsModule) },
+  { path: 'personnel', loadChildren: () => import('./modules/personnel/personnel.module').then(m => m.PersonnelModule) },
 
 
 ];

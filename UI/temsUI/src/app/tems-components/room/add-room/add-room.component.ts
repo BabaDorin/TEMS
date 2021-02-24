@@ -1,6 +1,6 @@
-import { IOption } from './../../models/option.model';
-import { RoomsService } from './../../services/rooms-service/rooms.service';
-import { FormlyParserService } from './../../services/formly-parser-service/formly-parser.service';
+import { IOption } from '../../../models/option.model';
+import { RoomsService } from '../../../services/rooms-service/rooms.service';
+import { FormlyParserService } from '../../../services/formly-parser-service/formly-parser.service';
 import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { FormlyFieldConfig } from '@ngx-formly/core';

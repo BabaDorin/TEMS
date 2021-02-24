@@ -45,6 +45,8 @@ Start building core components
 		---- view and create logs
 
 
+q) Use objects with the autocomplete control in QuickAccessComponent and redirect 
+to details/actualId instead of details/name or details/roomid and so on...
 
 q) Make EquipmentDetails=>Logs, Issues and Allocations GENERIC! In order
 to use the same component for rooms, equipment, personnel.
@@ -72,7 +74,7 @@ Managing fiels with the same key but different input (add-equipment.component - 
 
 ========================= ISSUES ============================
 
-
+Personnel quick access searches the record by name, (Problem - multiple records with the same id? :/)
 
 
 

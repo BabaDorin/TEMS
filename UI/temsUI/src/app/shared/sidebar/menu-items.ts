@@ -174,6 +174,15 @@ export class menuItems {
           showSubmenu: false,
           submenu: []
         },
+        {
+          path: '/quick-access/personnel',
+          title: 'Quick Access',
+          icon: 'mdi mdi-format-horizontal-align-right menu-icon',
+          isShown: this.role.canViewEquipment || this.role.canManageEquipment,      
+          isActive: false,
+          showSubmenu: false,
+          submenu: []
+        }
         // {
         //   path: '/personnel/allocate',
         //   title: 'Allocate',

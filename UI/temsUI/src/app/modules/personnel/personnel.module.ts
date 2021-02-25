@@ -12,6 +12,8 @@ import { MaterialModule } from '../material/material.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormlyModule } from '@ngx-formly/core';
 import { SummaryPersonnelAnalyticsComponent } from 'src/app/tems-components/analytics/summary-personnel-analytics/summary-personnel-analytics.component';
+import { PersonnelDetailsLogsComponent } from 'src/app/tems-components/personnel/personnel-details-logs/personnel-details-logs.component';
+import { PersonnelDetailsGeneralComponent } from 'src/app/tems-components/personnel/personnel-details-general/personnel-details-general.component';
 
 @NgModule({
   declarations: [
@@ -20,6 +22,8 @@ import { SummaryPersonnelAnalyticsComponent } from 'src/app/tems-components/anal
     ViewPersonnelComponent,
     SummaryPersonnelAnalyticsComponent,
     AgGridPersonnelComponent,
+    PersonnelDetailsLogsComponent,
+    PersonnelDetailsGeneralComponent,
   ],
 
   imports: [

@@ -1,0 +1,16 @@
+<br>
+<h1>{{ personnel.name }}</h1>
+<hr>
+<br>
+<div *ngIf="edit==false">
+    <div class="row">
+        <div class="col-md-6">
+            <app-property-render [properties]="personnelProperties"></app-property-render>
+        </div>
+    </div>
+</div>
+<br>
+<div *ngIf="edit==true">
+    edit = true
+</div>
+<button class="btn btn-primary" (click)="edit=!edit">Edit data</button>

@@ -1,3 +1,4 @@
+import { ViewPersonnel } from './../../models/personnel/view-personnel.model';
 import { Injectable } from '@angular/core';
 import { ViewPersonnelSimplified } from 'src/app/models/personnel/view-personnel-simplified.model';
 
@@ -28,5 +29,9 @@ export class PersonnelService {
       new ViewPersonnelSimplified(),
       new ViewPersonnelSimplified(),
     ]
+  }
+
+  getPersonnelById(personnelId: string){
+    return new ViewPersonnel();
   }
 }

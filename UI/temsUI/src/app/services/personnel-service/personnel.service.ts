@@ -1,5 +1,5 @@
-import { ViewPersonnelSimplified } from './../../models/personnel/view-personnel-simplified.model';
 import { Injectable } from '@angular/core';
+import { ViewPersonnelSimplified } from 'src/app/models/personnel/view-personnel-simplified.model';
 
 @Injectable({
   providedIn: 'root'
@@ -18,5 +18,15 @@ export class PersonnelService {
 
   getPersonnelSimplified(personnelId: string){
     return new ViewPersonnelSimplified();
+  }
+
+  getPersonnel(){
+    return [
+      new ViewPersonnelSimplified(),
+      new ViewPersonnelSimplified(),
+      new ViewPersonnelSimplified(),
+      new ViewPersonnelSimplified(),
+      new ViewPersonnelSimplified(),
+    ]
   }
 }

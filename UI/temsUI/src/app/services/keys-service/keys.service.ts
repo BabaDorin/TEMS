@@ -1,3 +1,4 @@
+import { ViewKeyAllocation } from './../../models/key/view-key-allocation.model';
 import { Injectable } from '@angular/core';
 import { ViewKeySimplified } from 'src/app/models/key/view-key.model';
 
@@ -18,4 +19,23 @@ export class KeysService {
     ]
   }
 
+  getAllocationsOfKey(keyId: string){
+    return [
+      new ViewKeyAllocation(),
+      new ViewKeyAllocation(),
+      new ViewKeyAllocation(),
+      new ViewKeyAllocation(),
+      new ViewKeyAllocation(),
+    ];
+  }
+
+  getAllocations(){
+    return [
+      new ViewKeyAllocation(),
+      new ViewKeyAllocation(),
+      new ViewKeyAllocation(),
+      new ViewKeyAllocation(),
+      new ViewKeyAllocation(),
+    ];
+  }
 }

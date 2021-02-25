@@ -15,6 +15,7 @@ import { SummaryPersonnelAnalyticsComponent } from 'src/app/tems-components/anal
 import { PersonnelDetailsLogsComponent } from 'src/app/tems-components/personnel/personnel-details-logs/personnel-details-logs.component';
 import { PersonnelDetailsGeneralComponent } from 'src/app/tems-components/personnel/personnel-details-general/personnel-details-general.component';
 import { PersonnelDetailsIssuesComponent } from 'src/app/tems-components/personnel/personnel-details-issues/personnel-details-issues.component';
+import { PersonnelDetailsAllocationsComponent } from 'src/app/tems-components/personnel/personnel-details-allocations/personnel-details-allocations.component';
 
 @NgModule({
   declarations: [
@@ -26,6 +27,7 @@ import { PersonnelDetailsIssuesComponent } from 'src/app/tems-components/personn
     PersonnelDetailsLogsComponent,
     PersonnelDetailsGeneralComponent,
     PersonnelDetailsIssuesComponent,
+    PersonnelDetailsAllocationsComponent,
   ],
 
   imports: [

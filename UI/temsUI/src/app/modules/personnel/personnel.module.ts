@@ -14,6 +14,7 @@ import { FormlyModule } from '@ngx-formly/core';
 import { SummaryPersonnelAnalyticsComponent } from 'src/app/tems-components/analytics/summary-personnel-analytics/summary-personnel-analytics.component';
 import { PersonnelDetailsLogsComponent } from 'src/app/tems-components/personnel/personnel-details-logs/personnel-details-logs.component';
 import { PersonnelDetailsGeneralComponent } from 'src/app/tems-components/personnel/personnel-details-general/personnel-details-general.component';
+import { PersonnelDetailsIssuesComponent } from 'src/app/tems-components/personnel/personnel-details-issues/personnel-details-issues.component';
 
 @NgModule({
   declarations: [
@@ -24,6 +25,7 @@ import { PersonnelDetailsGeneralComponent } from 'src/app/tems-components/person
     AgGridPersonnelComponent,
     PersonnelDetailsLogsComponent,
     PersonnelDetailsGeneralComponent,
+    PersonnelDetailsIssuesComponent,
   ],
 
   imports: [

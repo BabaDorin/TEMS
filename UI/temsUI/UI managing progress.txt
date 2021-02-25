@@ -93,6 +93,9 @@ users).
 Related to rooms!
 - Add room label entity => types of rooms (Laboratory, simple class Room, deposit etc.)
 
+Related to keys
+- Add roomId fied to keys table
+
 
 
 

@@ -1,7 +1,6 @@
-import { AllocationService } from './../../../services/allocation-service/allocation.service';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild} from '@angular/core';
 import { KeysService } from 'src/app/services/keys-service/keys.service';
-import { ViewKeyAllocation } from 'src/app/models/key/view-key-allocation.model';
+import { IOption } from 'src/app/models/option.model';
 
 @Component({
   selector: 'app-view-keys-allocations',
@@ -9,20 +8,26 @@ import { ViewKeyAllocation } from 'src/app/models/key/view-key-allocation.model'
   styleUrls: ['./view-keys-allocations.component.scss']
 })
 export class ViewKeysAllocationsComponent implements OnInit {
-
-  @Input() keyId;
-  allocations: ViewKeyAllocation[];
+  
+  @ViewChild('viewKeysAllocationsList') viewKeysAllocationsList;
+  keys: IOption[];
+  keyId: string;
 
   constructor(
-    private keyService: KeysService
-  ) { 
+    private keysService: KeysService
+  ){
 
   }
 
   ngOnInit(): void {
-    if(this.keyId)
-      this.allocations = this.keyService.getAllocationsOfKey(this.keyId);
-    else
-      this.allocations = this.keyService.getAllocations();
+    this.keys = this.keysService.getAutocompleteOptions();
+  }
+
+  keySelected(key){
+    this.keyId = key.id;
   }
 }
+
+
+
+

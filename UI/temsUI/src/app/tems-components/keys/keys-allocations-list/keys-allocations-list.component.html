@@ -1,0 +1,24 @@
+<div class="card">
+    <div class="card-body">
+        <!-- <button class="btn btn-secondary btn-sm" (click)="addAllocation()">+ Create allocation</button> -->
+        <br>
+        <mat-card *ngFor="let allocation of allocations" class="mb-2">
+            <mat-card-header>
+                <p>
+                    <b>{{ allocation.key.identifier }}</b> => <b>{{ allocation.personnel.name }}</b>
+                </p>
+                <p>
+                    Date allocated: {{ allocation.dateAllocated | date:'medium'}}
+                </p>
+                <p *ngIf="allocation.dateReturned != undefined">
+                    Date returned: {{ allocation.dateReturned | date:'medium'}}
+                </p>
+            </mat-card-header>
+            <mat-card-content>
+                <p *ngIf="allocation.description != undefined">
+                    {{ allocation.description }}
+                </p>
+            </mat-card-content>
+        </mat-card>
+    </div>
+</div>

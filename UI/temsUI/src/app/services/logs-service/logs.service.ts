@@ -24,4 +24,14 @@ export class LogsService {
   getLogsByPersonnelId(personnelId: string){
     return this.getLogsByEquipmentId('1'); // testing purposes
   }
+
+  getLogs(){
+    return [
+      new ViewLog(),
+      new ViewLog(),
+      new ViewLog(),
+      new ViewLog(),
+      new ViewLog(),
+    ]
+  }
 }

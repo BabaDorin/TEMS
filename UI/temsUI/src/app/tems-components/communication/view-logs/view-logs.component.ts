@@ -11,5 +11,5 @@ export class ViewLogsComponent implements OnInit {
 
   ngOnInit(): void {
   }
-
+  
 }

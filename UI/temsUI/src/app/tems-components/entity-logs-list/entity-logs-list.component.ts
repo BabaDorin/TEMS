@@ -30,10 +30,10 @@ export class EntityLogsListComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if(this.equipment == undefined && this.room == undefined && this.personnel == undefined){
-      console.warn('EntityLogsListComponent requires an entity in order to display logs');
-      return;
-    }
+    // if(this.equipment == undefined && this.room == undefined && this.personnel == undefined){
+    //   console.warn('EntityLogsListComponent requires an entity in order to display logs');
+    //   return;
+    // }
 
     if(this.equipment)
       this.logs = this.logsService.getLogsByEquipmentId(this.equipment.id);
@@ -43,6 +43,9 @@ export class EntityLogsListComponent implements OnInit {
 
     if(this.personnel)
       this.logs = this.logsService.getLogsByPersonnelId(this.personnel.id);
+    
+    if(this.logs == undefined)
+      this.logs = this.logsService.getLogs();
   }
 
   private addLog(){

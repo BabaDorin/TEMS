@@ -1,4 +1,6 @@
+import { AddAnnouncementComponent } from './../add-announcement/add-announcement.component';
 import { Component, OnInit } from '@angular/core';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ViewAnnouncement } from '../models/communication/announcement/view-announcement.model';
 import { CommunicationService } from '../services/communication-service/communication.service';
 
@@ -11,7 +13,8 @@ export class AnnouncementsListComponent implements OnInit {
 
   announcements: ViewAnnouncement[];
   constructor(
-    private communicationService: CommunicationService
+    private communicationService: CommunicationService,
+    public dialog: MatDialog
   ) { 
 
   }
@@ -21,7 +24,12 @@ export class AnnouncementsListComponent implements OnInit {
   }
 
   addAnnouncement(){
-    console.warn('AddAnnouncenementComponent has not ben implemented yet.');
-  }
+    
+    let dialogRef: MatDialogRef<any>;
+    dialogRef = this.dialog.open(AddAnnouncementComponent); 
 
+    dialogRef.afterClosed().subscribe(result => {
+      // Stuff
+    });
+  }
 }

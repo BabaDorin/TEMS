@@ -20,6 +20,7 @@ const routes: Routes = [
   { path: 'keys', loadChildren: () => import('./modules/keys/keys.module').then(m => m.KeysModule) },
   { path: 'issues', loadChildren: () => import('./modules/issues/issues.module').then(m => m.IssuesModule) },
   { path: 'analytics', loadChildren: () => import('./modules/analytics/analytics.module').then(m => m.AnalyticsModule) },
+  { path: 'communication', loadChildren: () => import('./modules/communication/communication.module').then(m => m.CommunicationModule) },
 
 ];
 

@@ -1,3 +1,5 @@
+import { ViewLibraryItem } from './../../../models/library/view-library-item.model';
+import { LibraryService } from './../../../services/library-service/library.service';
 import { Component, OnInit } from '@angular/core';
 
 @Component({
@@ -7,9 +9,13 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ViewLibraryComponent implements OnInit {
 
-  constructor() { }
+  libraryItems: ViewLibraryItem[];
+
+  constructor(
+    private libraryService: LibraryService
+  ) { }
 
   ngOnInit(): void {
+    this.libraryItems = this.libraryService.getItems();
   }
-
 }

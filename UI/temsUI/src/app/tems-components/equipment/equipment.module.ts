@@ -24,6 +24,7 @@ import { EquipmentDetailsIssuesComponent } from './equipment-details/equipment-d
 import { MaterialModule } from 'src/app/modules/material/material.module';
 import { EntitySharedModule } from 'src/app/modules/entity-shared/entity-shared.module';
 import { EntityLogsListComponent } from '../entity-logs-list/entity-logs-list.component';
+import { AnalyticsModule } from 'src/app/modules/analytics/analytics.module';
 
 @NgModule({
   declarations: [
@@ -34,9 +35,9 @@ import { EntityLogsListComponent } from '../entity-logs-list/entity-logs-list.co
     ViewEquipmentComponent,
     AddEquipmentComponent,
     AgGridEquipmentComponent,
-    SummaryEquipmentAnalyticsComponent,
     AddTypeComponent,
     AddDefinitionComponent,
+    SummaryEquipmentAnalyticsComponent,
     ViewIssuesComponent,
     EquipmentDetailsIssuesComponent,
   ],
@@ -47,8 +48,10 @@ import { EntityLogsListComponent } from '../entity-logs-list/entity-logs-list.co
     ScrollingModule,
     MaterialModule,
     TemsFormsModule,
+
     // Shared modules
-    EntitySharedModule
+    EntitySharedModule,
+    AnalyticsModule
   ],
   exports: [
   ],

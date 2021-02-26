@@ -27,10 +27,10 @@ export class EntityIssuesListComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    if(this.equipment == undefined && this.room == undefined && this.personnel == undefined){
-      console.warn('EntityIssuesListComponent requires an entity in order to display logs');
-      return;
-    }
+    // if(this.equipment == undefined && this.room == undefined && this.personnel == undefined){
+    //   this.issues = this.issuesService.getIssues();
+    //   return;
+    // }
 
     if(this.equipment)
       this.issues = this.issuesService.getIssuesOfEquipment(this.equipment.id);
@@ -40,6 +40,10 @@ export class EntityIssuesListComponent implements OnInit {
 
     if(this.personnel)
       this.issues = this.issuesService.getIssuesOfPersonnel(this.personnel.id);
+
+    // No entity provied = get all issues
+    if(this.issues == undefined) 
+      this.issues = this.issuesService.getIssues(); 
   }
 
   private addIssue(){

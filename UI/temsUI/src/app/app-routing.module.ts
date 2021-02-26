@@ -18,6 +18,8 @@ const routes: Routes = [
   { path: 'rooms', loadChildren: () => import('./modules/rooms/rooms.module').then(m => m.RoomsModule) },
   { path: 'personnel', loadChildren: () => import('./modules/personnel/personnel.module').then(m => m.PersonnelModule) },
   { path: 'keys', loadChildren: () => import('./modules/keys/keys.module').then(m => m.KeysModule) },
+  { path: 'issues', loadChildren: () => import('./modules/issues/issues.module').then(m => m.IssuesModule) },
+  { path: 'analytics', loadChildren: () => import('./modules/analytics/analytics.module').then(m => m.AnalyticsModule) },
 
 ];
 

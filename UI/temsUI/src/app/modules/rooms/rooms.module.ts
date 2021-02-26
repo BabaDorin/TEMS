@@ -11,20 +11,18 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AddRoomComponent } from '../../tems-components/room/add-room/add-room.component';
 import { RoomDetailsGeneralComponent } from '../../tems-components/room/room-details-general/room-details-general.component';
 import { RoomDetailsComponent } from '../../tems-components/room/room-details/room-details.component';
-import { EntityLogsListComponent } from '../../tems-components/entity-logs-list/entity-logs-list.component';
 import { RoomDetailsLogsComponent } from '../../tems-components/room/room-details-logs/room-details-logs.component';
 import { EntitySharedModule } from '../entity-shared/entity-shared.module';
 import { MaterialModule } from '../material/material.module';
 import { RoomDetailsIssuesComponent } from '../../tems-components/room/room-details-issues/room-details-issues.component';
 import { RoomDetailsAllocationsComponent } from '../../tems-components/room/room-details-allocations/room-details-allocations.component';
 
-
 @NgModule({
   declarations: [
-    SummaryRoomsAnalyticsComponent,
     AgGridRoomsComponent,
     ViewRoomsComponent,
     AddRoomComponent,
+    SummaryRoomsAnalyticsComponent,
     RoomDetailsComponent,
     RoomDetailsGeneralComponent,
     RoomDetailsLogsComponent,

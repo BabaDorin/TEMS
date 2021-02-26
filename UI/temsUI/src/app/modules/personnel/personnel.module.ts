@@ -16,15 +16,16 @@ import { PersonnelDetailsLogsComponent } from 'src/app/tems-components/personnel
 import { PersonnelDetailsGeneralComponent } from 'src/app/tems-components/personnel/personnel-details-general/personnel-details-general.component';
 import { PersonnelDetailsIssuesComponent } from 'src/app/tems-components/personnel/personnel-details-issues/personnel-details-issues.component';
 import { PersonnelDetailsAllocationsComponent } from 'src/app/tems-components/personnel/personnel-details-allocations/personnel-details-allocations.component';
+import { AnalyticsModule } from '../analytics/analytics.module';
 
 @NgModule({
   declarations: [
     PersonnelDetailsComponent, 
     AddPersonnelComponent,
     ViewPersonnelComponent,
-    SummaryPersonnelAnalyticsComponent,
     AgGridPersonnelComponent,
     PersonnelDetailsLogsComponent,
+    SummaryPersonnelAnalyticsComponent,
     PersonnelDetailsGeneralComponent,
     PersonnelDetailsIssuesComponent,
     PersonnelDetailsAllocationsComponent,
@@ -39,7 +40,9 @@ import { PersonnelDetailsAllocationsComponent } from 'src/app/tems-components/pe
     FormlyModule,
     ReactiveFormsModule,
 
+    // Shared modules
     EntitySharedModule,
+    AnalyticsModule,
   ]
 })
 export class PersonnelModule { }

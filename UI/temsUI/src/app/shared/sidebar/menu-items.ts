@@ -288,13 +288,32 @@ export class menuItems {
       ]
     },
     {
-      path: '/library/all',
+      path: '',
       title: 'Library',
       icon: 'mdi mdi-microsoft menu-icon',
       isActive: false,
       isShown: this.role.canViewLibrary || this.role.canManageLibrary,      
       showSubmenu: false,
-      submenu: []
+      submenu: [
+        {
+          path: '/library/all',
+          title: 'View library',
+          icon: 'mdi mdi-view-list menu-icon',
+          isActive: false,
+          isShown: this.role.canViewPersonnel || this.role.canManagePersonnel,      
+          showSubmenu: false,
+          submenu: []
+        },
+        {
+          path: '/library/add',
+          title: 'Upload item',
+          icon: 'mdi mdi-plus menu-icon',
+          isActive: false,
+          isShown: this.role.canManagePersonnel,      
+          showSubmenu: false,
+          submenu: []
+        },
+      ]
     },
     {
       path: 'reports/general',

@@ -8,6 +8,7 @@ export interface IViewLibraryItem {
     uploadedBy: ViewUserSimplified,
     removedBy?: ViewUserSimplified,
     imagePath?: string,
+    downloadLink?: string,
 }
 
 export class ViewLibraryItem implements IViewLibraryItem{

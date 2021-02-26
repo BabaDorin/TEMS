@@ -58,6 +58,7 @@ for a PC he can chose another Power Supply, different from the one in definition
 
 q) Add support for level 2+ children
 
+q) Add some sort of filtering to ViewIssuesComponent
 
 
 

@@ -9,7 +9,7 @@ export class IssuesService {
 
   constructor() { }
 
-  getIssues(){
+  getIssues(onlyClosed?: boolean, includingClosed?: boolean){
     return [
       new ViewIssueSimplified(),
       new ViewIssueSimplified(),
@@ -22,15 +22,15 @@ export class IssuesService {
     ];
   }
 
-  getIssuesOfRoom(roomId: string){
-    return this.getIssues();
+  getIssuesOfRoom(roomId: string, onlyClosed?: boolean, includingClosed?: boolean){
+    return this.getIssues(onlyClosed, includingClosed);
   }
 
-  getIssuesOfEquipment(equipmentId: string){
-    return this.getIssues();
+  getIssuesOfEquipment(equipmentId: string, onlyClosed?: boolean, includingClosed?: boolean){
+    return this.getIssues(onlyClosed, includingClosed);
   }
 
-  getIssuesOfPersonnel(personnelId: string){
-    return this.getIssues();
+  getIssuesOfPersonnel(personnelId: string, onlyClosed?: boolean, includingClosed?: boolean){
+    return this.getIssues(onlyClosed, includingClosed);
   }
 }

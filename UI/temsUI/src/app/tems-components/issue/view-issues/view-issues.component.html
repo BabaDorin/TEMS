@@ -1,14 +1,23 @@
 <div class="card">
     <div class="card-body">
-        <div class="card-title">View Issues</div>
-        <hr>
-        <br>
-        <app-summary-issues-analytics>
-            Loading...
-        </app-summary-issues-analytics>
-        <app-entity-issues-list>
-            Loading...
-        </app-entity-issues-list>
+        <mat-tab-group [@.disabled]="true">
+            <mat-tab label="Open">
+                <ng-template matTabContent>
+                    <app-summary-issues-analytics>
+                        Loading...
+                    </app-summary-issues-analytics>
+                    <app-entity-issues-list>
+                        Loading...
+                    </app-entity-issues-list>
+                </ng-template>
+            </mat-tab>
+            <mat-tab label="Closed">
+                <ng-template matTabContent>
+                    <app-entity-issues-list onlyClosed="true">
+                        Loading...
+                    </app-entity-issues-list>
+                </ng-template>
+            </mat-tab>
+        </mat-tab-group>
     </div>
 </div>
-

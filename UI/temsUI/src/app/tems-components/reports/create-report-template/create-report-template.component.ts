@@ -4,10 +4,7 @@ import { PersonnelService } from './../../../services/personnel-service/personne
 import { EquipmentService } from './../../../services/equipment-service/equipment.service';
 import { RoomsService } from './../../../services/rooms-service/rooms.service';
 import { FormGroup, FormControl } from '@angular/forms';
-import { flow } from 'lodash';
 import { Component, OnInit } from '@angular/core';
-import { filter, flatMap } from 'rxjs/operators';
-import { Type } from 'src/app/models/equipment/view-type.model';
 
 @Component({
   selector: 'app-create-report-template',
@@ -50,6 +47,7 @@ export class CreateReportTemplateComponent implements OnInit {
       personnel: new FormControl(),
       sepparateBy: new FormControl(),
       commonProperties: new FormControl(),
+      specificProperties: new FormControl(),
     });
 
     this.typesAutocompleteOptions = this.equipmentService.getTypesAutocomplete();
@@ -79,5 +77,19 @@ export class CreateReportTemplateComponent implements OnInit {
 
   onCommonPropChange(eventData){
     this.reportFormGroup.controls.commonProperties.setValue(eventData);
+  }
+
+  specificProperties: { type: IOption, properties:  CheckboxItem[]}[] = [];
+  onSpecificPropChange(eventData, type){
+    let typeSpecific = this.specificProperties.find(q => q.type == type);
+
+    if(typeSpecific != undefined){
+      typeSpecific.properties = eventData;
+    }
+    else{
+      this.specificProperties.push({type: type, properties: eventData});
+    }
+
+    this.reportFormGroup.controls.specificProperties.setValue(this.specificProperties);
   }
 }

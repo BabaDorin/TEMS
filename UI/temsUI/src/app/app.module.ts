@@ -39,7 +39,7 @@ import { MatDialogModule } from '@angular/material/dialog';
     SpinnerComponent,
     ContentAnimateDirective,
     QuickAccessComponent,
-  ],
+    ],
   imports: [
     BrowserModule,
     AppRoutingModule,

@@ -8,6 +8,7 @@ import { CheckboxItem } from 'src/app/models/checkboxItem.model';
 })
 export class CheckboxGroupComponent implements OnInit {
   @Input() options = Array<CheckboxItem>();
+  @Input() label: string;
   @Output() toggle = new EventEmitter<any[]>();
 
   constructor() { }

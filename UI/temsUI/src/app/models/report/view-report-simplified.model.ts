@@ -4,6 +4,7 @@ export interface IViewReportSimplified{
     name: string;
     description?: string;
     createdBy?: IViewUserSimplified,
+    isDefault?: boolean;
     dateCreated: Date;
 }
 
@@ -12,6 +13,7 @@ export class ViewReportSimplified implements IViewReportSimplified{
     name: string;
     description?: string;
     createdBy?: ViewUserSimplified;
+    isDefault?: boolean = true;
     dateCreated: Date;
     
     constructor(){

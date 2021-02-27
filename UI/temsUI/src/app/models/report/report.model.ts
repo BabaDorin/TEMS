@@ -5,6 +5,7 @@ export interface IReport{
     id?: string,
     name: string,
     description?: string,
+    isDefault?: boolean;
 
     rooms?: IOption[],
     personnel?: IOption[],
@@ -34,6 +35,7 @@ export class Report implements IReport
     id: string;
     name: string;
     description: string;
+    isDefault?: boolean = true;
     rooms: IOption[];
     personnel: IOption[];
     equipment: IOption[];

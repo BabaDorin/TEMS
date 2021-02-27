@@ -1,13 +1,9 @@
 .reportContainer{
     transition: 0.4s;
+    width: 200px;
 }
 
 .reportContainer:hover{
     background-color: gainsboro;
     cursor: pointer;
-}
-
-.limitedWidth{
-    width: 200px;
-    margin: 20px;
 }

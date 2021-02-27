@@ -1,5 +1,5 @@
+import { Report } from './../../models/report/report.model';
 import { ViewReportSimplified } from './../../models/report/view-report-simplified.model';
-import { ViewRoomSimplified } from 'src/app/models/room/view-room-simplified.model';
 import { Injectable } from '@angular/core';
 
 @Injectable({
@@ -9,9 +9,31 @@ export class ReportService {
 
   constructor() { }
 
-  getCustomReports(){
-    return [
-      new ViewReportSimplified() // TODO: Interface to display default and, after that, custom report templates
-    ]
+  getCustomTemplates(){
+    let custom = [
+      new ViewReportSimplified(), // TODO: Interface to display default and, after that, custom report templates
+      new ViewReportSimplified(), // TODO: Interface to display default and, after that, custom report templates
+    ];
+
+    custom.forEach(element => {
+      element.isDefault = false;
+    });
+
+    return custom;
+  }
+
+  getDefaultTemplates(){
+    let def = [
+      new ViewReportSimplified(), // TODO: Interface to display default and, after that, custom report templates
+      new ViewReportSimplified(), // TODO: Interface to display default and, after that, custom report templates
+      new ViewReportSimplified(), // TODO: Interface to display default and, after that, custom report templates
+      new ViewReportSimplified(), // TODO: Interface to display default and, after that, custom report templates
+    ];
+
+    def.forEach(element => {
+      element.isDefault = true;
+    });
+
+    return def;
   }
 }

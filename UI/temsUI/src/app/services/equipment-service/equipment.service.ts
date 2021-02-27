@@ -1,3 +1,4 @@
+import { CheckboxItem } from '../../models/checkboxItem.model';
 import { IOption } from 'src/app/models/option.model';
 import { ViewEquipmentAllocation } from './../../models/equipment/view-equipment-allocation.model';
 import { ViewEquipment } from './../../models/equipment/view-equipment.model';
@@ -97,6 +98,20 @@ export class EquipmentService {
     ];
 
     return properties;
+  }
+
+  getCommonProperties(){
+    return [
+      new CheckboxItem('temsid', 'Tems ID'),
+      new CheckboxItem('serialNumber', 'Serial Number'),
+    ]
+  }
+
+  getTypeSpecificProperties(type: IOption){
+    return [
+      new CheckboxItem('temsid', 'Tems ID'),
+      new CheckboxItem('serialNumber', 'Serial Number'),
+    ]
   }
 
   getEquipment(){

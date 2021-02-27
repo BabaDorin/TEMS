@@ -1,3 +1,4 @@
+import { CheckboxGroupComponent } from './../../shared/forms/checkbox-group/checkbox-group.component';
 import { TemsFormsModule } from './../tems-forms/tems-forms.module';
 import { CreateReportTemplateComponent } from './../../tems-components/reports/create-report-template/create-report-template.component';
 import { MaterialModule } from 'src/app/modules/material/material.module';
@@ -10,11 +11,13 @@ import { ReportContainerComponent } from 'src/app/tems-components/reports/report
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 
+
 @NgModule({
   declarations: [
     ReportsComponent,
     ReportContainerComponent,
-    CreateReportTemplateComponent    
+    CreateReportTemplateComponent,
+    CheckboxGroupComponent
   ],
   imports: [
     CommonModule,

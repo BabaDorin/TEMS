@@ -34,7 +34,7 @@
         </mat-step>
         <mat-step>
           <ng-template matStepLabel>Layout configuration</ng-template>
-          <ng-template *ngIf="reportFormGroup.controls.subject.value == 'equipment'">
+          <div *ngIf="reportFormGroup.controls.subject.value == 'equipment'">
 
             <div class="row">
               <div class="col-md-5">
@@ -76,13 +76,14 @@
             <div>
               <button mat-button matStepperNext>Next</button>
             </div>
-          </ng-template>
+          </div>
         </mat-step>
         <mat-step>
-          <ng-template matStepLabel>Report content configuration</ng-template>
-          <ng-template *ngIf="reportFormGroup.controls.subject.value == 'equipment'">
-            <!-- got here -->
-          </ng-template>
+          <ng-template matStepLabel>Data configuration</ng-template>
+          <app-checkbox-group [options]="equipmentCommonProperties" (toggle)="onCommonPropChange($event)">
+          </app-checkbox-group>
+          <app-checkbox-group [options]="typeSpecificProperties" (toggle)="onSpecificPropChange($event)">
+          </app-checkbox-group>
         </mat-step>
       </mat-vertical-stepper>
 

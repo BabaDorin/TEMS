@@ -1,3 +1,4 @@
+import { IOption } from 'src/app/models/option.model';
 import { ViewEquipmentAllocation } from './../../models/equipment/view-equipment-allocation.model';
 import { ViewEquipment } from './../../models/equipment/view-equipment.model';
 import { ViewEquipmentSimplified } from './../../models/equipment/view-equipment-simplified.model';
@@ -31,6 +32,23 @@ export class EquipmentService {
       { id: '3', name: 'scanner' },
     ]
     return types;
+  }
+
+  getTypesAutocomplete(){
+    return [
+      { id: '1', value: 'printer' },
+      { id: '2', value: 'laptop' },
+      { id: '3', value: 'scanner' },
+    ] 
+  }
+
+  getDefinitionsAutocomplete(ofTypes: IOption[]){
+    // if ofTypes = nul => all of the definitions
+    return [
+      { id: '1', value: 'printer' },
+      { id: '2', value: 'laptop' },
+      { id: '3', value: 'scanner' },
+    ]
   }
 
   getProperties() {

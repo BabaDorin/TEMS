@@ -11,7 +11,7 @@
         <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
       </mat-chip>
       <input
-        placeholder="New option..."
+        [placeholder]="placeholder"
         #optionInput
         [disabled]="disabled"
         [formControl]="formCtrl"

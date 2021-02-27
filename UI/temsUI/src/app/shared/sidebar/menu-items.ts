@@ -316,7 +316,7 @@ export class menuItems {
       ]
     },
     {
-      path: 'reports/general',
+      path: 'reports',
       title: 'Report Printing',
       icon: 'mdi mdi-printer menu-icon',
       isActive: false,

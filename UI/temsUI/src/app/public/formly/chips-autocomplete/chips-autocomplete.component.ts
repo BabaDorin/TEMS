@@ -1,4 +1,4 @@
-import { IOption } from 'src/app/models/option.model';
+import { IOption } from './../../../models/option.model';
 import { COMMA, ENTER, SPACE } from '@angular/cdk/keycodes';
 import { Component, ElementRef, Input, ViewChild, EventEmitter, Output, OnInit, forwardRef } from '@angular/core';
 import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR } from '@angular/forms';
@@ -14,28 +14,28 @@ import { map, startWith } from 'rxjs/operators';
   styleUrls: ['./chips-autocomplete.component.scss'],
   providers: [
     {
-       provide: NG_VALUE_ACCESSOR,
-       useExisting: forwardRef(() => ChipsAutocompleteComponent),
-       multi: true
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => ChipsAutocompleteComponent),
+      multi: true
     }
- ]
+  ]
 })
 export class ChipsAutocompleteComponent implements OnInit, ControlValueAccessor {
 
-  // List of selected options
-  @Input() alreadySelected;
-  @Input() label;
-  @Input() disabled: boolean;
+  // ISSUES: 1) DISPLAY AUTOCOMPLETE LIST ON CLICK
+
+
+  @Input() alreadySelected: IOption[];
+  @Input() label: string;
+  @Input() disabled: boolean = false;
   @Input() maxOptionsSelected: number;
   @Input() placeholder: string = 'New Option...';
-
-  // List of available for selection options
-  @Input() availableOptions;
+  @Input() onlyValuesFromAutocomplete: boolean = true;
+  @Input() availableOptions: IOption[] = [];
 
   // returns results to parent components
   @Output() dataCollected = new EventEmitter;
-
-  // Nofities parent that user has typed something, and returns what the
+  @Output() dataRemoved = new EventEmitter;
   // user has already typed - to update the list of options (if needed)
   @Output() Typing = new EventEmitter;
 
@@ -45,29 +45,24 @@ export class ChipsAutocompleteComponent implements OnInit, ControlValueAccessor 
   visible = true;
   selectable = true;
   removable = true;
-  separatorKeysCodes: number[] = [ENTER, COMMA, SPACE];
+  separatorKeysCodes: number[] = [ENTER, COMMA];
   formCtrl = new FormControl();
-  filteredOptions: Observable<string[]>;
-  options;
-
-  value = [];
+  filteredOptions: Observable<IOption[]>;
+  options: IOption[]; // Selected values
+  value = []; // Value accessor
 
   ngOnInit() {
-    if (this.disabled == undefined) this.disabled = false;
-    if (this.availableOptions == undefined) this.availableOptions = [];
     this.options = (this.alreadySelected == undefined) ? [] : this.alreadySelected;
   }
 
   ngOnChanges() {
-    /**********THIS FUNCTION WILL TRIGGER WHEN PARENT COMPONENT UPDATES 'someInput'**************/
-    //Write your code here
+    // When parent component updates some input parameters
     this.filteredOptions = this.formCtrl.valueChanges.pipe(
       startWith(null),
       map((op) => op ? this._filter(op) : this.availableOptions.slice()));
+
     this.options = (this.alreadySelected == undefined) ? [] : this.alreadySelected;
   }
-  // ISSUES: 1) DISPLAY AUTOCOMPLETE LIST ON CLICK
-  // 2) IF THERE ARE 4 ITEMS, SELECTING ONE AND THEN DELETING IT WILL RESULT IN 3 ITEMS IN AUTOCOMPLETE
 
   constructor() {
     this.filteredOptions = this.formCtrl.valueChanges.pipe(
@@ -75,48 +70,41 @@ export class ChipsAutocompleteComponent implements OnInit, ControlValueAccessor 
       map((op) => op ? this._filter(op) : this.availableOptions.slice()));
   }
 
-
+  // When the option has been typed
   add(event: MatChipInputEvent): void {
-
     const input = event.input;
     const value = event.value;
 
-    // Add option
-    let typedOption = this.availableOptions.find(q => q.value == value);
+    let typedOption = { id: undefined, value: value };
+
+    // If accepting only values from dropdown
+    if (this.onlyValuesFromAutocomplete == true) {
+      typedOption = this.availableOptions.find(q => q.value.toLowerCase() == value.toLowerCase());
+    }
+
     if (typedOption != undefined) {
-      // if there is a maxOptionsSelected specified
-      if (this.maxOptionsSelected != undefined && this.maxOptionsSelected == this.options.length)
-        this.availableOptions.push(this.options.pop());
+      this.maxOptionsSelectedValidation();
 
       this.options.push(typedOption);
-      this.availableOptions.splice(this.availableOptions.indexOf(typedOption), 1)
+
+      // Removing the typed option from availableOptions (if it exists)
+      if (this.availableOptions.find(q => q.value.toLowerCase() == value.toLowerCase()) != undefined) {
+        this.availableOptions.splice(this.availableOptions.indexOf(typedOption), 1)
+      }
+
       input.value = '';
       this.dataCollected.emit(this.options);
     }
+
     this.onChange(this.options);
     this.formCtrl.setValue(null);
   }
 
-  remove(op): void {
-    console.log('remove called');
-    const index = this.options.indexOf(op);
-
-    if (index >= 0) {
-      this.availableOptions.push(op);
-      this.options.splice(index, 1);
-      this.formCtrl.updateValueAndValidity();
-    }
-    this.onChange(this.options);
-    this.dataCollected.emit(this.options);
-  }
-
+  // When the option has been chosen
   selected(event: MatAutocompleteSelectedEvent): void {
-    // if there is a maxOptionsSelected specified
-    if (this.maxOptionsSelected != undefined && this.maxOptionsSelected == this.options.length)
-      this.availableOptions.push(this.options.pop());
-
+    
+    this.maxOptionsSelectedValidation();
     this.options.push(event.option.value);
-    console.log(event.option.value);
 
     let index = this.availableOptions.indexOf(event.option.value);
     this.availableOptions.splice(index, 1);
@@ -126,10 +114,41 @@ export class ChipsAutocompleteComponent implements OnInit, ControlValueAccessor 
     this.dataCollected.emit(this.options);
   }
 
-  private _filter(op): string[] {
+  remove(op): void {
+    const index = this.options.indexOf(op);
+    if (index >= 0) {
+      // Pushing option back to available option if it belongs there
+      if (op.id != undefined) {
+        this.availableOptions.push(op);
+      }
 
-    const filterValue = (typeof (op) == "string") ? op.toLowerCase() : op.value.toLowerCase;
-    return this.availableOptions.filter(op => op.value.toLowerCase().indexOf(filterValue) === 0);
+      this.options.splice(index, 1);
+      this.formCtrl.updateValueAndValidity();
+    }
+    this.onChange(this.options);
+    this.dataRemoved.emit(op);
+  }
+
+
+  // if there is a maxOptionsSelected specified
+  maxOptionsSelectedValidation() {
+    if(this.maxOptionsSelected == undefined)
+      return;
+    
+    if (this.maxOptionsSelected == this.options.length){
+      // If value belongs to available option, then it is inserted back there
+      // Otherwise, it is just pops out from options list.
+      let poppedOption = this.options.pop();
+      
+      if(poppedOption.id != undefined)
+        this.availableOptions.push(poppedOption);
+    }
+  }
+
+  private _filter(op): IOption[] {
+    const filterValue = (typeof (op) == "string") ? op.toLowerCase() : op.value.toLowerCase();
+    console.log('filter value: ' + filterValue);
+    return this.availableOptions.filter(option => option.value.toLowerCase().indexOf(filterValue) === 0);
   }
 
 

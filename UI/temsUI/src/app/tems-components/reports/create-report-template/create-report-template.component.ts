@@ -19,10 +19,10 @@ export class CreateReportTemplateComponent implements OnInit {
   typeSpecificProperties: { type: IOption, properties: CheckboxItem[] }[] = [];
 
   reportObjectOptions = [
-    {value: 'equipment', viewValue: 'Equipment'},
-    {value: 'rooms', viewValue: 'Rooms'},
-    {value: 'Personnel', viewValue: 'Personnel'},
-    {value: 'Allocations', viewValue: 'Allocations'}
+    { value: 'equipment', viewValue: 'Equipment' },
+    { value: 'rooms', viewValue: 'Rooms' },
+    { value: 'Personnel', viewValue: 'Personnel' },
+    { value: 'Allocations', viewValue: 'Allocations' }
   ];
 
   typesAutocompleteOptions: IOption[];
@@ -48,6 +48,9 @@ export class CreateReportTemplateComponent implements OnInit {
       sepparateBy: new FormControl(),
       commonProperties: new FormControl(),
       specificProperties: new FormControl(),
+      header: new FormControl(),
+      footer: new FormControl(),
+      signatories: new FormControl()
     });
 
     this.typesAutocompleteOptions = this.equipmentService.getTypesAutocomplete();
@@ -57,37 +60,55 @@ export class CreateReportTemplateComponent implements OnInit {
     this.personnelAutocompleteOptions = this.personnelService.getAllAutocompleteOptions();
     this.sepparateBy = 'none';
     this.equipmentCommonProperties = this.equipmentService.getCommonProperties();
+    this.equipmentCommonProperties.map(q => q.checked = true);
   }
-  submit(){
+  submit() {
     console.log(this.reportFormGroup);
   }
 
-  typeChanged(eventData){
+  typeAdded(eventData) {
+    // getting definitions for selected types
     this.definitionsAutocompleteOptions = this.equipmentService.getDefinitionsAutocomplete(eventData);
+
+    // Getting specific properties of selected types
     this.reportFormGroup.controls.types.value.forEach(element => {
-      if(this.typeSpecificProperties.find(q => q.type == element) == undefined){
+      if (this.typeSpecificProperties.find(q => q.type == element) == undefined) {
         this.typeSpecificProperties.push(
           {
-          type: element, 
-          properties: this.equipmentService.getTypeSpecificProperties(element)
+            type: element,
+            properties: this.equipmentService.getTypeSpecificProperties(element)
           });
       }
     });
   }
 
-  onCommonPropChange(eventData){
+  typeRemoved(eventData) {
+    // this.reportFormGroup.controls.types.value.remove(q => q.type == eventData)
+    // const index = this.reportFormGroup.controls.types.value.indexOf(q => q.type == eventData);
+    // if (index > -1) {
+    //   this.reportFormGroup.controls.types.value.splice(index, 1);
+    // }
+
+    const index = this.typeSpecificProperties.findIndex(q => q.type == eventData);
+    if(index> -1){
+      this.typeSpecificProperties.splice(index,1);
+    }
+    // console.log(this.reportFormGroup.controls.types.value);
+  }
+
+  onCommonPropChange(eventData) {
     this.reportFormGroup.controls.commonProperties.setValue(eventData);
   }
 
-  specificProperties: { type: IOption, properties:  CheckboxItem[]}[] = [];
-  onSpecificPropChange(eventData, type){
+  specificProperties: { type: IOption, properties: CheckboxItem[] }[] = [];
+  onSpecificPropChange(eventData, type) {
     let typeSpecific = this.specificProperties.find(q => q.type == type);
 
-    if(typeSpecific != undefined){
+    if (typeSpecific != undefined) {
       typeSpecific.properties = eventData;
     }
-    else{
-      this.specificProperties.push({type: type, properties: eventData});
+    else {
+      this.specificProperties.push({ type: type, properties: eventData });
     }
 
     this.reportFormGroup.controls.specificProperties.setValue(this.specificProperties);

@@ -12,3 +12,45 @@ Expected behavior: Association between Printer Type and Name Property to be remo
 Success: True
 DB Set to initial state.
 Test made on: 01/03/2021 16:55:49
+
+---------------------Test Case----------------------
+Part 1: Creating records
+EquipmentType table += Printer type
+Property table += Name
+PropertyEquipmentTypeAssociations table += PrinterType <=> Name
+DBContext Changes have been saved
+Part 2: Removing records in order to test OnDeleteCascade
+EquipmentType table -= Printer type
+DBContext Changes have been saved
+Expected behavior: Association between Printer Type and Name Property to be removed
+Success: True
+DB Set to initial state.
+Test made on: 01/03/2021 17:13:48
+
+---------------------Test Case----------------------
+Part 1: Creating records
+EquipmentType table += Printer type
+Property table += Name
+PropertyEquipmentTypeAssociations table += PrinterType <=> Name
+DBContext Changes have been saved
+Part 2: Removing records in order to test OnDeleteCascade
+EquipmentType table -= Printer type
+DBContext Changes have been saved
+Expected behavior: Association between Printer Type and Name Property to be removed
+Success: True
+DB Set to initial state.
+Test made on: 01/03/2021 17:18:24
+
+---------------------Test Case----------------------
+Part 1: Creating records
+EquipmentType table += Printer type
+Property table += Name
+PropertyEquipmentTypeAssociations table += PrinterType <=> Name
+DBContext Changes have been saved
+Part 2: Removing records in order to test OnDeleteCascade
+EquipmentType table -= Printer type
+DBContext Changes have been saved
+Expected behavior: Association between Printer Type and Name Property to be removed
+Success: True
+DB Set to initial state.
+Test made on: 01/03/2021 17:25:54

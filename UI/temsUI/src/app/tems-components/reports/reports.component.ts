@@ -3,6 +3,7 @@ import { ReportService } from './../../services/report-service/report.service';
 import { Report } from './../../models/report/report.model';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-reports',
@@ -19,13 +20,18 @@ export class ReportsComponent implements OnInit {
     private reportService: ReportService,
     private router: Router,
     private activatedroute: ActivatedRoute,
+    private http: HttpClient
   ) {
 
   }
 
   ngOnInit(): void {
     this.defaultTemplates = this.reportService.getDefaultTemplates();
-    this.customTemplates = this.reportService.getCustomTemplates();  
+    this.customTemplates = this.reportService.getCustomTemplates();
+    console.log('gonna fetch some data')
+    this.http.get('https://localhost:44358/WeatherForecast/get')
+    .subscribe((data) => alert(data));
+    console.log('data is gonna be displayed in an alert');
   }
 
   createTemplate(){

@@ -1,4 +1,4 @@
-import { IOption } from './../../models/option.model';
+import { IOption } from 'src/app/models/option.model';
 import { AddIssue } from './../../models/communication/issues/add-issue';
 import { AddProperty } from './../../models/equipment/add-property.model';
 import { EquipmentService } from './../equipment-service/equipment.service';
@@ -140,7 +140,7 @@ export class FormlyParserService {
         fieldGroup: [
           {
             className: 'section-label',
-            template: '<h5><pre>' + addEquipment.definition.equipmentType.name + '</pre></h5>'
+            template: '<h5><pre>' + addEquipment.definition.equipmentType.value + '</pre></h5>'
           },
           {
             key: 'identifier',
@@ -260,7 +260,7 @@ export class FormlyParserService {
           fieldGroup: [
             {
               className: 'section-label',
-              template: '<h5><pre>' + childAddEquipment.definition.equipmentType.name + '</pre></h5>'
+              template: '<h5><pre>' + childAddEquipment.definition.equipmentType.value + '</pre></h5>'
             },
             {
               key: 'identifier',
@@ -372,25 +372,24 @@ export class FormlyParserService {
   }
 
   parseAddType(addType: AddType) {
-    let parents = [];
-    addType.parents.forEach(parent => {
+    let parents: IOption[] = [];
 
+    addType.parents.forEach(parent => {
       parents.push({
-        value: parent.id,
-        label: parent.name
+        id: parent.id,
+        value: parent.name
       })
     });
 
     let temsProperties = this.equipmentService.getProperties();
-    let properties = [];
+    let properties: IOption[] = [];
 
     temsProperties.forEach(property => {
       properties.push({
-        value: property.id,
-        label: property.name
+        id: property.id,
+        value: property.name
       })
     });
-
 
     let formlyFieldsAddType: FormlyFieldConfig[] = [
       {
@@ -406,10 +405,13 @@ export class FormlyParserService {
       },
       {
         key: 'name',
-        type: 'input',
+        type: 'input-tooltip',
         defaultValue: addType.name,
         templateOptions: {
+          required: true,
+          placeholder: 'Printer...',
           label: 'Name',
+          description: "Type's name (Like Printer, Scanner, Laptop etc.)"
         },
       },
     ];
@@ -419,14 +421,13 @@ export class FormlyParserService {
 
   parseAddDefinition(addDefinition: AddDefinition, formlyFields?: FormlyFieldConfig[]) {
 
-    // initilizing fields
     let fields: FormlyFieldConfig[] =
       [
         {
-          template: '<h3>' + addDefinition.equipmentType.name + ' definition</h3>'
+          template: '<h4> Add new ' + addDefinition.equipmentType.value + ' definition</h4>'
         },
         {
-          key: 'customer',
+          key: 'addDefinition',
           wrappers: ['formly-wrapper'],
           fieldGroup: [
             {
@@ -456,15 +457,15 @@ export class FormlyParserService {
 
       fields[fields.length - 1].fieldGroup.push(
         {
-          template: '<h4>' + childDefinition.equipmentType.name + ' definitions</h4>',
+          template: '<h4>' + childDefinition.equipmentType.value + ' definitions</h4>',
         },
         {
-          key: ' ' + tempKey++, // in realilty - this will be the child definition ID
+          key: ''+tempKey++, // in realilty - this will be the child definition ID
           type: 'repeat',
           wrappers: ['formly-wrapper'],
           fieldArray: {
             templateOptions: {
-              btnText: '+ ' + childDefinition.equipmentType.name,
+              btnText: '+ ' + childDefinition.equipmentType.value,
             },
             fieldGroup: []
           }
@@ -478,7 +479,6 @@ export class FormlyParserService {
         destination.push(this.generatePropertyFieldGroup(property))
       });
     });
-
     return fields;
   }
 

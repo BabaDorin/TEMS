@@ -1,11 +1,7 @@
-import { ChipsAutocompleteComponent } from './../../../public/formly/chips-autocomplete/chips-autocomplete.component';
-import { Type } from './../../../models/equipment/view-type.model';
+import { IOption } from './../../../models/option.model';
 import { EquipmentService } from './../../../services/equipment-service/equipment.service';
-import { AddType } from './../../../models/equipment/add-type.model';
-import { FormlyFieldConfig, FormlyFormOptions } from '@ngx-formly/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { FormlyParserService } from './../../../services/formly-parser-service/formly-parser.service';
-import { Component, ElementRef, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 
 
@@ -18,43 +14,26 @@ import { MatDialogRef } from '@angular/material/dialog';
 export class AddTypeComponent implements OnInit {
   
   formGroup = new FormGroup({
+    parents: new FormControl(),
     typeName: new FormControl(),
+    properties: new FormControl(),
   });
-
-  @ViewChild('parentChips') parentChips: ChipsAutocompleteComponent;
-  @ViewChild('propertyChips') propertyChips: ChipsAutocompleteComponent;
 
   constructor(
     private equipmentService: EquipmentService,
     public dialogRef?: MatDialogRef<AddTypeComponent>) {
   }
 
-  labelSelectParentType = "Select parent type / types";
-  parentTypeOptions = [
-    {id: '1', value: 'Printer'},
-    {id: '2', value: 'Scanner'},
-    {id: '3', value: 'Laptop'},
-    {id: '4', value: 'TV'},
-  ]
-
-  labelSelectProperties = "Select type's properties";
-  propertyOptions = [
-    {id: '1', value: 'Resolution'},
-    {id: '2', value: 'RAM'},
-    {id: '3', value: 'ProcessorSpeed'},
-    {id: '4', value: 'Frequency'},
-  ]
+  parentTypeOptions: IOption[]; 
+  propertyOptions: IOption[];
 
   ngOnInit(): void {
+    this.parentTypeOptions = this.equipmentService.getTypes();
+    this.propertyOptions = this.equipmentService.getProperties().map(q => ({id: q.id, value: q.displayName}))
   }
 
   onSubmit(){
-    // find a way to allow only selecting only data that exists in the auto-complete dropwdown
-    let type = {
-      typeName: this.formGroup.get('typeName').value,
-      parentTypes: this.parentChips.options,
-      properties: this.propertyChips.options
-    }
-    console.log(type);
+    // Send to API
+    console.log(this.formGroup);
   }
 }

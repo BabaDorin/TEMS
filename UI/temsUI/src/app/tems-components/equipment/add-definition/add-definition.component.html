@@ -1,3 +1,14 @@
+<ng-container *ngIf="data == undefined">
+    <mat-form-field class="form-field">
+        <mat-label>Equipment Type</mat-label>
+        <mat-select (selectionChange)="onSelectionChanged($event)">
+          <mat-option *ngFor="let option of equipmentTypes" [value]="option.id">
+            {{ option.value }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+</ng-container>
+
 <form *ngIf="formlyData.isVisible" [formGroup]="formlyData.form" (ngSubmit)="onSubmit(formlyData.model)">
     <formly-form [form]="formlyData.form" [fields]="formlyData.fields" [model]="formlyData.model"></formly-form>
     <br>

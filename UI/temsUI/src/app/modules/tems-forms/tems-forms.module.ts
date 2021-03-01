@@ -38,10 +38,13 @@ import { MaterialModule } from '../material/material.module';
         {
           name: 'input-tooltip',
           component: InputTooltipComponent,
-          // wrappers: ['form-field'],
           defaultOptions: {
             type: 'text'
           }
+        },
+        {
+          name: 'select-tooltip',
+          component: SelectTooltipComponent,
         },
         {
           name: 'autocomplete',

@@ -1,5 +1,5 @@
+import { IOption } from './../../models/option.model';
 import { CheckboxItem } from '../../models/checkboxItem.model';
-import { IOption } from 'src/app/models/option.model';
 import { ViewEquipmentAllocation } from './../../models/equipment/view-equipment-allocation.model';
 import { ViewEquipment } from './../../models/equipment/view-equipment.model';
 import { ViewEquipmentSimplified } from './../../models/equipment/view-equipment-simplified.model';
@@ -25,12 +25,12 @@ export class EquipmentService {
   //  returns the list of properties for a specific type
   //  returns definitions of a specific type
 
-  getTypes() {
+  getTypes(): IOption[] {
     // fake service
     let types = [
-      { id: '1', name: 'printer' },
-      { id: '2', name: 'laptop' },
-      { id: '3', name: 'scanner' },
+      { id: '1', value: 'printer' },
+      { id: '2', value: 'laptop' },
+      { id: '3', value: 'scanner' },
     ]
     return types;
   }
@@ -235,36 +235,31 @@ export class EquipmentService {
     return (typeId == '1') ? printerProperties : pcProperties;
   }
 
-  getDefinitionsOfType(type: Type) {
+  getDefinitionsOfType(typeId: string) {
     // send type to API, it will return the list of properties
 
     // fake service
-    let printerDefinitions: LightDefinition[] = [
-      { id: '1', name: 'HP LaserJet' },
-      { id: '2', name: 'Lenovo M7000' }
+    let printerDefinitions: IOption[] = [
+      { id: '1', value: 'HP LaserJet' },
+      { id: '2', value: 'Lenovo M7000' }
     ];
 
-    let pcDefinitions: LightDefinition[] = [
-      { id: '3', name: 'Hantol' },
-      { id: '4', name: 'HPC' },
-      { id: '5', name: 'Sohoo' },
+    let pcDefinitions: IOption[] = [
+      { id: '3', value: 'Hantol' },
+      { id: '4', value: 'HPC' },
+      { id: '5', value: 'Sohoo' },
     ];
 
-    if (type.name == 'printer')
-      return printerDefinitions;
-
-    if (type.name == 'pc')
-      return pcDefinitions;
+    return printerDefinitions;
   }
 
   getFullDefinition(definitionId: string) {
     // returns the full definition, including children definitions and so on...
-
     let fullDefinitions: AddDefinition[] = [
       {
         id: '1',
         identifier: 'HP LaserJet',
-        equipmentType: { id: '1', name: 'printer', parents: [], properties: [] },
+        equipmentType: { id: '1', value: 'printer'},
         properties: [
           {
             id: '1',
@@ -292,7 +287,7 @@ export class EquipmentService {
       {
         id: '2',
         identifier: 'Lenovo M700',
-        equipmentType: { id: '1', name: 'printer', parents: [], properties: [] },
+        equipmentType: { id: '1', value: 'printer'},
         properties: [
           {
             id: '1',
@@ -316,7 +311,7 @@ export class EquipmentService {
         children: [{
           id: '2',
           identifier: 'Lenovo M700',
-          equipmentType: { id: '1', name: 'printer', parents: [], properties: [] },
+          equipmentType: { id: '1', value: 'printer'},
           properties: [
             {
               id: '1',
@@ -342,7 +337,7 @@ export class EquipmentService {
         {
           id: '2',
           identifier: 'not lenovo M700',
-          equipmentType: { id: '1', name: 'printer', parents: [], properties: [] },
+          equipmentType: { id: '1', value: 'printer'},
           properties: [
             {
               id: '1',
@@ -368,158 +363,6 @@ export class EquipmentService {
       ],
       }
     ];
-
-
-
-    // BELOW - Defintion with children
-    // let hpLaserJet: AddDefinition = {
-    //   id: '1',
-    //   identifier: 'HP LaserJet',
-    //   equipmentType: { id: '1', name: 'printer', children: [] },
-    //   properties: [
-    //     {
-    //       id: '1',
-    //       name: 'Model',
-    //       displayName: 'Model',
-    //       description: 'the model',
-    //       dataType: { id: '1', name: 'string' },
-    //       value: 'HP LaserJet'
-    //     },
-    //     {
-    //       id: '2',
-    //       name: 'Color',
-    //       displayName: 'Color',
-    //       description: 'Color = true, B&W = false',
-    //       dataType: { id: '2', name: 'bool' },
-    //       value: 'false'
-    //     },
-    //   ],
-    //   children: [
-    //     {
-    //       id: '1',
-    //       identifier: 'CB285A',
-    //       equipmentType: { id: '4', name: 'cartrige', children: [] },
-    //       properties: [
-    //         {
-    //           id: '1',
-    //           name: 'Model',
-    //           displayName: 'Model',
-    //           description: 'the model',
-    //           dataType: { id: '1', name: 'string' },
-    //           value: 'CB285A'
-    //         },
-    //         {
-    //           id: '2',
-    //           name: 'Color',
-    //           displayName: 'Color',
-    //           description: 'Color = true, B&W = false',
-    //           dataType: { id: '2', name: 'bool' },
-    //           value: 'false'
-    //         },
-    //       ],
-    //       children: [
-    //         {
-    //           id: '1',
-    //           identifier: 'CB285A',
-    //           equipmentType: { id: '4', name: 'cartrige', children: [] },
-    //           properties: [
-    //             {
-    //               id: '1',
-    //               name: 'Model',
-    //               displayName: 'Model',
-    //               description: 'the model',
-    //               dataType: { id: '1', name: 'string' },
-    //               value: 'CB285A'
-    //             },
-    //             {
-    //               id: '2',
-    //               name: 'Color',
-    //               displayName: 'Color',
-    //               description: 'Color = true, B&W = false',
-    //               dataType: { id: '2', name: 'bool' },
-    //               value: 'false'
-    //             },
-    //           ],
-    //           children: [
-    //             {
-    //               id: '1',
-    //               identifier: 'CB285A',
-    //               equipmentType: { id: '4', name: 'cartrige', children: [] },
-    //               properties: [
-    //                 {
-    //                   id: '1',
-    //                   name: 'Model',
-    //                   displayName: 'Model',
-    //                   description: 'the model',
-    //                   dataType: { id: '1', name: 'string' },
-    //                   value: 'CB285A'
-    //                 },
-    //                 {
-    //                   id: '2',
-    //                   name: 'Color',
-    //                   displayName: 'Color',
-    //                   description: 'Color = true, B&W = false',
-    //                   dataType: { id: '2', name: 'bool' },
-    //                   value: 'false'
-    //                 },
-    //               ],
-    //               children: [
-    //                 {
-    //                   id: '1',
-    //                   identifier: 'CB285A',
-    //                   equipmentType: { id: '4', name: 'cartrige', children: [] },
-    //                   properties: [
-    //                     {
-    //                       id: '1',
-    //                       name: 'Model',
-    //                       displayName: 'Model',
-    //                       description: 'the model',
-    //                       dataType: { id: '1', name: 'string' },
-    //                       value: 'CB285A'
-    //                     },
-    //                     {
-    //                       id: '2',
-    //                       name: 'Color',
-    //                       displayName: 'Color',
-    //                       description: 'Color = true, B&W = false',
-    //                       dataType: { id: '2', name: 'bool' },
-    //                       value: 'false'
-    //                     },
-    //                   ],
-    //                   children: []
-    //                 }
-    //               ]
-    //             },
-    //             {
-    //               id: '1',
-    //               identifier: 'CB285A',
-    //               equipmentType: { id: '4', name: 'cartrige', children: [] },
-    //               properties: [
-    //                 {
-    //                   id: '1',
-    //                   name: 'Model',
-    //                   displayName: 'Model',
-    //                   description: 'the model',
-    //                   dataType: { id: '1', name: 'string' },
-    //                   value: 'CB285A'
-    //                 },
-    //                 {
-    //                   id: '2',
-    //                   name: 'Color',
-    //                   displayName: 'Color',
-    //                   description: 'Color = true, B&W = false',
-    //                   dataType: { id: '2', name: 'bool' },
-    //                   value: 'false'
-    //                 },
-    //               ],
-    //               children: []
-    //             }
-    //           ]
-    //         }
-    //       ]
-    //     }
-    //   ]
-    // }
 
     return fullDefinitions.find(q => q.id == definitionId);
   }

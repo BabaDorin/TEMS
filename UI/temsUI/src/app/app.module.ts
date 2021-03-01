@@ -51,6 +51,7 @@ import { MatDialogModule } from '@angular/material/dialog';
     BrowserModule,
     BrowserAnimationsModule,
     TagInputModule,
+    HttpClientModule,
 
     MatInputModule,
     MatFormFieldModule,

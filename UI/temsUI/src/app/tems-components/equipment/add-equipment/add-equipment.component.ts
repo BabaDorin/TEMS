@@ -1,17 +1,15 @@
+import { IOption } from './../../../models/option.model';
 import { AddDefinitionComponent } from './../add-definition/add-definition.component';
 import { AddTypeComponent } from '.././add-type/add-type.component';
 import { FormlyParserService } from './../../../services/formly-parser-service/formly-parser.service';
 import { AddDefinition } from '../../../models/equipment/add-definition.model';
-import { LightDefinition } from '../../../models/equipment/viewlight-definition.model';
 import { EquipmentService } from './../../../services/equipment-service/equipment.service';
-import { Type } from '../../../models/equipment/view-type.model';
 import { Component, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { AddEquipment } from 'src/app/models/equipment/add-equipment.model';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ComponentType } from '@angular/cdk/portal';
-// import { Overlay } from '@angular/cdk/overlay';
 
 @Component({
   selector: 'app-add-equipment',
@@ -24,67 +22,60 @@ export class AddEquipmentComponent implements OnInit {
   constructor(
     private equipmentService: EquipmentService,
     private formlyParserService: FormlyParserService,
-    // private overlay: Overlay,
     public dialog: MatDialog) { }
 
+  formGroup = new FormGroup({
+    equipmentType: new FormControl(),
+    equipmentDefinition: new FormControl(),
+    properties: new FormControl(),
+  });
+
+  types: IOption[];
   ngOnInit(): void {
     this.types = this.equipmentService.getTypes();
   }
 
   // type related -------------------------------------------------------------------------------------------------
+  selectedType: IOption;
 
-  types: Type[];
-  selectedType: Type = { id: '', name: '' };
-  private typeSelected: boolean = false;
-  private chosenEquipmentType: string = "Choose an equipment type"
+  onTypeChanged(eventData) {
+    if(eventData.value == undefined)
+      return;
 
-  typeHasBeenSelected(type: Type) {
-    // clean the interface from previously selected definition (if it exists)
-    let isUnsavedModel = false; // true if the user has inserted some data into the 
+    // true if the user has inserted some data into the 
     // formly and now he wants to switch to another type, therefore the formly model will 
     // get completely wiped out
+    let isUnsavedModel = false; 
+
     if (!isUnsavedModel ||
       isUnsavedModel && confirm('There are unsaved changes, do you still want to continue?')) {
       this.wipeAddEquipmentFormly();
     }
 
-    this.selectedType = type;
     // here we check if the selected type is valid and user hasn't done any manipulation
-    if (this.types.find(type => type === this.selectedType) != undefined) {
-      this.typeSelected = true;
-      this.chosenEquipmentType = this.selectedType.name;
-      this.definitionsOfType = this.equipmentService.getDefinitionsOfType(this.selectedType);
-    }
-    else {
-      this.typeSelected = false;
+    if (this.types.find(q => q.id == eventData.value) != undefined)
+      this.definitionsOfType = this.equipmentService.getDefinitionsOfType(this.selectedType.id)
+    else
       this.definitionsOfType = undefined;
-      this.chosenEquipmentType = "Choose an equipment type";
-    }
+
+    console.log('Definitions of type:');
+    console.log(this.definitionsOfType);
   }
 
   // definition related -------------------------------------------------------------------------------------------
-  
-  definitionsOfType: LightDefinition[];
-  selectedDefinition: LightDefinition = { id: '', name: '' };
+
+  definitionsOfType: IOption[];
+  selectedDefinition: IOption;
   selectedFullDefinition: AddDefinition = undefined;
-  private definitionSelected: boolean = false;
-  private chosenEquipmentDefinition: string = "Choose a definition";
 
-  definitionHasBeenSelected(definition: LightDefinition) {
-
-    // here we check if the selected definition is valid and user hasn't done any manipulation
-    this.selectedDefinition = definition;
-    if (this.definitionsOfType.find(def => def === this.selectedDefinition) != undefined) {
-
-      this.definitionSelected = true;
-      this.chosenEquipmentDefinition = this.selectedDefinition.name;
-      this.selectedFullDefinition = this.equipmentService.getFullDefinition(this.selectedDefinition.id);
-
+  onDefinitionChanged(eventData){
+    if(eventData.value == undefined)
+      return;
+    
+    if (this.definitionsOfType.find(q => q.id == eventData.value) != undefined)
+    {
+      this.selectedFullDefinition = this.equipmentService.getFullDefinition(eventData.value);
       this.createAddEquipmentFormly();
-    }
-    else {
-      this.chosenEquipmentDefinition = "Choose a " + this.selectedType.name + " definition";
-      this.definitionSelected = false;
     }
   }
 
@@ -100,7 +91,7 @@ export class AddEquipmentComponent implements OnInit {
   // True if for the parent equipment has been assigned a TEMSID or SerialNumber.
   private readyToBeSaved: boolean = false;
 
-  createAddEquipmentFormly(){
+  createAddEquipmentFormly() {
     let addEq = this.equipmentService.generateAddEquipmentOfDefinition(this.selectedFullDefinition);
     let formlyFields = this.formlyParserService.parseAddEquipment(addEq);
 
@@ -109,9 +100,8 @@ export class AddEquipmentComponent implements OnInit {
     this.formlyData.isVisible = true;
   }
 
-  wipeAddEquipmentFormly(){
-    this.chosenEquipmentDefinition = "Select a definition";
-    this.selectedDefinition = { id: '', name: '' };
+  wipeAddEquipmentFormly() {
+    this.selectedDefinition = { id: '', value: '' };
     this.selectedFullDefinition = undefined;
     this.formlyData.isVisible = false;
     this.formlyData.fields = [];
@@ -121,30 +111,26 @@ export class AddEquipmentComponent implements OnInit {
   // Validate & send data to API
   onSubmit(model) {
     model.id = this.selectedFullDefinition.id,
-    console.log(model);
+      console.log(model);
   }
 
   // Angular Material Dialog --------------------------------------------------------------------------------------
-
   openDialog(componentName: string): void {
     let componentType: ComponentType<any>;
 
     let dialogRef: MatDialogRef<any>;
     switch (componentName) {
-      case 'add-type': 
-        dialogRef = this.dialog.open(AddTypeComponent); 
+      case 'add-type':
+        dialogRef = this.dialog.open(AddTypeComponent);
         break;
-      
-      case 'add-definition': 
-          // const scrollStrategy = this.overlay.scrollStrategies.reposition();
-          dialogRef = this.dialog.open(AddDefinitionComponent, {
+
+      case 'add-definition':
+        dialogRef = this.dialog.open(AddDefinitionComponent, {
           data: {
             selectedType: this.selectedType,
           },
           maxHeight: '80vh',
           autoFocus: false
-          // autoFocus: false,
-          // scrollStrategy: scrollStrategy,
         });
         break;
     }

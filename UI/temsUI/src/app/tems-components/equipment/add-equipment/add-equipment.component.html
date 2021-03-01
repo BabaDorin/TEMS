@@ -1,47 +1,41 @@
 <div class="card">
   <div class="card-body">
     <h4 class="card-title">Add Equipment</h4>
-    <p class="card-description">
-      Please, provide all of the necessary data in order to register the equipment.
-    </p>
+    <p class="card-description">Please, provide all of the necessary data in order to register the equipment.</p>
+    <hr>
+    <br>
 
-    <form class="forms-sample">
+    <form class="forms-sample" [formGroup]="formGroup">
 
     <!-- Choose Equipment Type -->
-    <section>
-      <h4>Equipment Type</h4>
-      <div class="form-group">
-        <div ngbDropdown>
-          <button class="btn btn-primary" type="button" id="dropdownMenuButton1" ngbDropdownToggle>
-            {{ chosenEquipmentType }}
-          </button>
-          <div ngbDropdownMenu aria-labelledby="dropdownMenuButton1">
-            <a class="dropdown-item" (click)="openDialog('add-type')">+ Add New</a>
-            <a *ngFor="let type of types" class="dropdown-item" (click)="typeHasBeenSelected(type)">{{ type.name }}</a>
-          </div>
-        </div>
-      </div>
-    </section>
+    <div class="form-group">
+      <mat-form-field>
+        <mat-label>Equipment Type</mat-label>
+        <mat-select formControlName="equipmentType" 
+        [(ngModel)]="selectedType" (selectionChange)="onTypeChanged($event)">
+          <mat-option (click)="openDialog('add-type')">+ Add New</mat-option>
+          <mat-option *ngFor="let type of types" [value]="type.id">{{ type.value }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
     
     <!-- Choose Equipment Definition -->
-    <section *ngIf="typeSelected">
-      <h4>Equipment Definition</h4>
-      <div ngbDropdown class="form-group">
-        <div>
-          <button class="btn btn-primary" type="button" id="dropdownMenuButton2" ngbDropdownToggle>
-            {{ chosenEquipmentDefinition }}
-          </button>
-          <div ngbDropdownMenu aria-labelledby="dropdownMenuButton2">
-            <a class="dropdown-item" (click)="openDialog('add-definition')">+ Add New</a>
-            <a *ngFor="let definition of definitionsOfType" class="dropdown-item" (click)="definitionHasBeenSelected(definition)">{{ definition.name }}</a>
-          </div>
-        </div>
+    <ng-container *ngIf="selectedType != undefined">
+      <div class="form-group">
+        <mat-form-field>
+          <mat-label>Equipment Definition</mat-label>
+          <mat-select formControlName="equipmentDefinition" 
+          [(ngModel)]="selectedDefinition" (selectionChange)="onDefinitionChanged($event)">
+            <mat-option (click)="openDialog('add-definition')">+ Add New</mat-option>
+            <mat-option *ngFor="let definition of definitionsOfType" [value]="definition.id">{{ definition.value }}</mat-option>
+          </mat-select>
+        </mat-form-field>
       </div>
-    </section>
+    </ng-container>
     </form>
 
     <form *ngIf="formlyData.isVisible" [formGroup]="formlyData.form" (ngSubmit)="onSubmit(formlyData.model)">
-      <formly-form [form]="formlyData.form" [fields]="formlyData.fields" [model]="formlyData.model"></formly-form>
+      <formly-form [form]="formlyData.form" [fields]="formlyData.fields" [model]="formlyData.model">Loading...</formly-form>
       <br>
       <button type="submit" class="btn btn-gradient-primary mr-2" [disabled]="readyToBeSaved">Submit</button>
     </form>

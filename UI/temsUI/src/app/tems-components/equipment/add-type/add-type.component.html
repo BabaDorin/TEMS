@@ -1,0 +1,24 @@
+<h4>Add Type</h4>
+
+<ng-container [formGroup]="this.formGroup">
+  <app-chips-autocomplete #parentChips
+    [label]="labelSelectParentType"
+    [availableOptions]="parentTypeOptions"></app-chips-autocomplete>
+
+  <mat-form-field class="example-full-width">
+    <mat-label>Type Name</mat-label>
+    <input matInput placeholder="Printer" formControlName="typeName">
+  </mat-form-field>
+
+  <app-chips-autocomplete #propertyChips
+    [label]="labelSelectProperties"
+    [availableOptions]="propertyOptions"></app-chips-autocomplete>
+
+  <button type="submit" class="btn btn-gradient-primary mr-2" (click)="onSubmit()">Submit</button>
+</ng-container>
+
+<!-- <form *ngIf="formlyData.isVisible" [formGroup]="formlyData.form" (ngSubmit)="onSubmit(formlyData.model)">
+    <formly-form [form]="formlyData.form" [fields]="formlyData.fields" [model]="formlyData.model"></formly-form>
+    <br>
+    <button type="submit" class="btn btn-gradient-primary mr-2" [disabled]="readyToBeSaved">Submit</button>
+</form> -->

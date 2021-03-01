@@ -1,0 +1,46 @@
+<br>
+<h1>{{ equipment.identifier }}
+    <b *ngIf="equipment.temsID != undefined"> {{ equipment.temsID }}</b>
+    <b *ngIf="equipment.temsID == undefined && equipment.serialNumber != undefined">{{ equipment.serialNumber}}</b>
+</h1>
+<hr>
+<br>
+<div *ngIf="edit==false">
+    <div class="row">
+        <div class="col-md-6">
+            <!-- Common properties for each equipment go here -->
+            <app-property-render [(properties)]="generalProperties"></app-property-render>
+        </div>
+        <div class="col-md-6">
+            <!-- Speciic properties for current equipment go here -->
+            <app-property-render [properties]="equipment.specificTypeProperties"></app-property-render>
+        </div>
+    </div>
+</div>
+<br>
+<br>
+<h2>Equipment's Children</h2>
+<hr>
+<div *ngFor="let child of equipment.children">
+    <mat-expansion-panel>
+        <mat-expansion-panel-header>
+            <b>{{ child.type }}: </b>  {{ child.identifier }}
+        </mat-expansion-panel-header>
+
+        <ng-template matExpansionPanelContent class="mat-exp-panel-content">
+           <app-equipment-details [equipmentId]="child.id"></app-equipment-details>
+        </ng-template>
+    </mat-expansion-panel>
+    <br>
+</div>
+
+
+<div *ngIf="equipment.photos.length > 0">
+    <h4>Equipment Images</h4>
+    <app-image-carousel></app-image-carousel>
+</div>
+<br>
+<div *ngIf="edit==true">
+    edit = true
+</div>
+<button class="btn btn-primary" (click)="edit=!edit">Edit data</button>

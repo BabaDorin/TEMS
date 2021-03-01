@@ -1,0 +1,21 @@
+<div class="card">
+  <div class="card-body">
+    <div class="card-title">
+      <h1>View Keys Allocations</h1>
+    </div>
+    <hr>
+    <br>
+    <form class="example-form">
+      <mat-form-field appearance="fill">
+        <mat-label>Choose a key to see it's allocations</mat-label>
+        <mat-select (selectionChange)="keySelected($event.value)">
+          <mat-option *ngFor="let key of keys"
+           [value]="key">{{ key.value }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </form>
+    <br>
+    <app-keys-allocations-list #viewKeysAllocationsList [keyId]="keyId"></app-keys-allocations-list>
+  </div>
+</div>

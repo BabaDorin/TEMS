@@ -1,0 +1,122 @@
+<div class="card">
+  <div class="card-body">
+    <div class="card-title">Create new report template</div>
+    <hr>
+    <br>
+    <form [formGroup]="reportFormGroup">
+      <p>If you want to save this template, assign it with a name and description if necessary</p>
+      <mat-form-field class="reportFormControl">
+        <mat-label>Name</mat-label>
+        <input matInput formControlName="name">
+      </mat-form-field>
+      <br>
+      <mat-form-field class="reportFormControl">
+        <mat-label>Description</mat-label>
+        <textarea matInput formControlName="description"></textarea>
+      </mat-form-field>
+      <br>
+      <hr>
+      <br>
+      <mat-vertical-stepper>
+        <mat-step>
+          <ng-template matStepLabel>Choose the subject</ng-template>
+          <mat-form-field class="reportFormControl">
+            <mat-label>Choose the report's subject</mat-label>
+            <mat-select formControlName="subject">
+              <mat-option *ngFor="let option of reportObjectOptions" [value]="option.value">
+                {{ option.viewValue }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <div>
+            <button mat-button matStepperNext>Next</button>
+          </div>
+        </mat-step>
+        <mat-step>
+          <ng-template matStepLabel>Layout configuration</ng-template>
+          <div *ngIf="reportFormGroup.controls.subject.value == 'equipment'">
+
+            <div class="row">
+              <div class="col-md-5">
+                <app-chips-autocomplete label="Equipment types" formControlName="types"
+                  placeholder="No selection = all types" [availableOptions]="typesAutocompleteOptions"
+                  (dataCollected)="typeAdded($event)"
+                  (dataRemoved)="typeRemoved($event)">
+                </app-chips-autocomplete>
+              </div>
+              <div class="col-md-5">
+                <app-chips-autocomplete label="Definitions for selected types" formControlName="definitions"
+                  placeholder="No selection = all definitions" [availableOptions]="definitionsAutocompleteOptions">
+                </app-chips-autocomplete>
+              </div>
+            </div>
+            <br>
+            <div class="row">
+              <div class="col-md-5">
+                <app-chips-autocomplete label="Include only equipment from these rooms" formControlName="rooms"
+                  placeholder="No selection = all of the rooms" [availableOptions]="roomsAutocompleteOptions">
+                </app-chips-autocomplete>
+              </div>
+              <div class="col-md-5">
+                <app-chips-autocomplete label="Include only equipment allocated to these people"
+                  formControlName="personnel" placeholder="No selection = all personnel"
+                  [availableOptions]="personnelAutocompleteOptions">
+                </app-chips-autocomplete>
+              </div>
+            </div>
+            <br>
+            <mat-label>Sepparate by:</mat-label><br><br>
+            <mat-radio-group formControlName="sepparateBy" [(ngModel)]="sepparateBy">
+              <mat-radio-button value="none">No separation</mat-radio-button><br>
+              <mat-radio-button value="rooms">By Rooms</mat-radio-button><br>
+              <mat-radio-button value="personnel">By Personnel</mat-radio-button><br>
+              <mat-radio-button value="type">By Type</mat-radio-button><br>
+              <mat-radio-button value="definition">By Definition</mat-radio-button><br>
+            </mat-radio-group>
+
+            <div>
+              <button mat-button matStepperNext>Next</button>
+            </div>
+          </div>
+        </mat-step>
+        <mat-step>
+          <ng-template matStepLabel>Choose report columns</ng-template>
+          <app-checkbox-group [options]="equipmentCommonProperties" label="Common proprerties for all types"
+            (toggle)="onCommonPropChange($event)">
+          </app-checkbox-group>
+          <br>
+          <br>
+          <!-- have to sync
+             this with the actual value of typespecificproperties -->
+          <ng-container *ngFor="let type of typeSpecificProperties">
+            <app-checkbox-group [options]="type.properties" label="Specific properties of {{ type.type.value }}"
+              (toggle)="onSpecificPropChange($event, type)">
+            </app-checkbox-group>
+          </ng-container>
+          <div>
+            <button mat-button matStepperNext>Next</button>
+          </div>
+        </mat-step>
+        <mat-step>
+          <ng-template matStepLabel>Additional report data</ng-template>
+          <br>
+          <mat-form-field class="reportFormControl">
+            <mat-label>Header</mat-label>
+            <textarea matInput formControlName="header"></textarea>
+          </mat-form-field>
+          <mat-form-field class="reportFormControl">
+            <mat-label>Footer</mat-label>
+            <textarea matInput formControlName="footer"></textarea>
+          </mat-form-field>
+          <!-- signatories   -->
+          <app-chips-autocomplete label="Signatories" formControlName="signatories"
+          [availableOptions]="personnelAutocompleteOptions"
+          onlyValuesFromAutocomplete="false">
+          </app-chips-autocomplete>
+        </mat-step>
+      </mat-vertical-stepper>
+      <button (click)="submit()">submit</button>
+    </form>
+
+  </div>
+</div>

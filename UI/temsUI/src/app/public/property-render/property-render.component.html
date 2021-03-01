@@ -1,0 +1,10 @@
+<p *ngFor="let prop of properties" class="view-property">
+    <span *ngIf="prop.dataType == undefined || prop.dataType.name == 'string' || prop.dataType.name == 'number'">
+        <b>{{ prop.displayName }}: </b> {{ prop.value }}
+    </span>
+
+    <span *ngIf="prop.dataType != undefined && prop.dataType.name == 'boolean'">
+        <b>{{ prop.displayName }}: </b> <i *ngIf="prop.value == true" class="dot true"></i>
+                                        <i *ngIf="prop.value == false" class="dot false"></i>
+    </span>
+</p>

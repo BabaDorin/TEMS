@@ -1,0 +1,23 @@
+<div class="card">
+    <div class="card-body">
+        <div class="card-title">View library items</div>
+        <hr>
+        <br>
+        <br>
+        <mat-card *ngFor="let item of libraryItems" class="mb-2">
+            <mat-card-header>
+                <p>
+                    {{ item.name }} 
+                    <span class="text-muted float-right">
+                        {{ item.dateUploaded | date:'medium' }}
+                    </span>
+                </p>
+            </mat-card-header>
+            <mat-card-content>
+                <p>
+                    {{ item.description }}
+                </p>
+            </mat-card-content>
+        </mat-card>
+    </div>
+</div>

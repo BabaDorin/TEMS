@@ -1,0 +1,48 @@
+<div class="card">
+    <div class="card-body">
+        <div class="card-title">Generate Reports</div>
+        <hr>
+        <br>
+        <br>
+        <h2>TEMS Default report templates</h2>
+        <br>
+        <div class="row">
+            <div class="col-md-2" class="limitedWidth" *ngFor="let template of defaultTemplates">
+                <app-report-container [template]="template"></app-report-container>
+            </div>
+        </div>
+        <br>
+        <h2>Custom report templates</h2>
+        <br>
+        <div class="row">
+            <div class="col-md-2" class="limitedWidth" *ngFor="let template of customTemplates">
+                <app-report-container [template]="template"></app-report-container>
+            </div>
+            <div class="col-md-2" class="limitedWidth">
+                <div class="d-flex align-items-center d-flex justify-content-center" style="height: 100%;">
+                    <mat-card style="margin: auto" class="reportContainer" (click)="createTemplate()">
+                        <mat-card-content>
+                            <div class="text-center">
+                                <svg width="50px" height="50px" viewBox="0 0 24 24" id="_24x24_On_Light_Plus"
+                                    data-name="24x24/On Light/Plus" xmlns="http://www.w3.org/2000/svg">
+                                    <path id="Shape" class="text-center"
+                                        d="M5,10.75V6.5H.75A.75.75,0,0,1,.75,5H5V.75a.75.75,0,0,1,1.5,0V5h4.25a.75.75,0,1,1,0,1.5H6.5v4.25a.75.75,0,1,1-1.5,0Z"
+                                        transform="translate(6 6)" fill="#141124" />
+                                </svg>
+                            </div>
+                            <p class="text-center">Add custom template</p>
+                        </mat-card-content>
+                    </mat-card>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<br>
+<div class="card">
+    <div class="card-body">
+        <div class="card-title">Last generated reports</div>
+        <hr>
+        <br>
+    </div>
+</div>

@@ -1,0 +1,35 @@
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">Add Log</h5>
+        <div class="row mt-3">
+            <div class="col-md-6">
+                <br>
+                <!-- Choose type (Equipment, Room, personnel) -->
+                <mat-form-field appearance="fill">
+                    <mat-label>Choose the addressee</mat-label>
+                    <mat-select [(ngModel)]="selectedAddresseeType" (ngModelChange)="onAddresseeSelection()"
+                    [disabled]="implicitAddressees != undefined">
+                        <mat-option *ngFor="let type of addresseeTypes" [value]="type.value">
+                            {{ type.viewValue }}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+
+                <app-chips-autocomplete *ngIf="adresseeChosen"
+                    #identifierChips
+                    [disabled]="implicitAddressees != undefined"
+                    [label]="chipsInputLabel"
+                    [availableOptions]="autoCompleteOptions"
+                    [alreadySelected]="alreadySelectedOptions">
+                </app-chips-autocomplete>
+            </div>
+            <div class="col-md-6">
+                <form *ngIf="formlyData.isVisible" [formGroup]="formlyData.form" (ngSubmit)="onSubmit(formlyData.model)">
+                    <formly-form [form]="formlyData.form" [fields]="formlyData.fields" [model]="formlyData.model"></formly-form>
+                    <br>
+                    <button type="submit" class="btn btn-gradient-primary mr-2">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

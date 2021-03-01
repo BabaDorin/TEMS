@@ -1,0 +1,14 @@
+<br>
+<button class="btn btn-secondary btn-sm" (click)="addAllocation()">+ Allocate</button>
+<br>
+<mat-card *ngFor="let allocation of allocations" class="mb-2">
+    <mat-card-header>
+        <p>
+            <span>{{ allocation.equipment.temsidOrSn }}</span>
+            <span class="text-muted float-right">Allocated: {{ allocation.dateAllocated | date:'medium' }}</span>
+        </p>
+        <p *ngIf="allocation.dateReturned != undefined">
+            <span class="text-muted float-right">Returned: {{ allocation.dateReturned | date:'medium' }}</span>
+        </p>
+    </mat-card-header>
+</mat-card>

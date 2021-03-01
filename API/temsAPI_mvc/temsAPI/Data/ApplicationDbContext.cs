@@ -19,6 +19,7 @@ namespace temsAPI.Data
 
         }
 
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Key>()
@@ -115,6 +116,7 @@ namespace temsAPI.Data
                 .HasMany(e => e.Tickets)
                 .WithOne(e => e.Equipment)
                 .OnDelete(DeleteBehavior.ClientCascade);
+
 
             base.OnModelCreating(modelBuilder);
         }

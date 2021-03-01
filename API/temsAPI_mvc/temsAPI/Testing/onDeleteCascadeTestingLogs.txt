@@ -1,5 +1,4 @@
-
----------------------Test Case----------------------
+﻿---------------------Test Case----------------------
 Part 1: Creating records
 EquipmentType table += Printer type
 Property table += Name
@@ -11,4 +10,4 @@ DBContext Changes have been saved
 Expected behavior: Association between Printer Type and Name Property to be removed
 Success: True
 DB Set to initial state.
-Test made on: 01/03/2021 16:55:49
+Test made on: 23/01/2021 23:51:34

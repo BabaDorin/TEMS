@@ -448,6 +448,17 @@ export class FormlyParserService {
       fields[fields.length - 1].fieldGroup.push(this.generatePropertyFieldGroup(property))
     });
 
+    fields[fields.length-1].fieldGroup.push(
+      {
+        key: 'description',
+        type: 'textarea',
+        templateOptions: {
+          label: 'Description',
+        }
+      },
+      this.generatePriceFields(),
+    );
+
     if (addDefinition.children.length == 0)
       return fields;
 
@@ -476,10 +487,54 @@ export class FormlyParserService {
       let destination = lastFieldGroup[lastFieldGroup.length - 1].fieldArray.fieldGroup;
 
       childDefinition.properties.forEach(property => {
-        destination.push(this.generatePropertyFieldGroup(property))
+        destination.push(this.generatePropertyFieldGroup(property));
       });
+      destination.push(
+        {
+          key: 'description',
+          type: 'textarea',
+          templateOptions: {
+            label: 'Description',
+          }
+        },
+        this.generatePriceFields(),
+      );
     });
     return fields;
+  }
+
+  generatePriceFields(){
+    return {
+      fieldGroupClassName: 'row',
+      fieldGroup: [
+        {
+          className: 'col-4',
+          key: 'price',
+          defaultValue: 0,
+          type: 'input-tooltip',
+          templateOptions: {
+            type: 'number',
+            min: 0,
+            description: 'The price can be overwritten equipments having this definition',
+            label: 'Price',
+          },
+        },
+        {
+          className: 'col-4',
+          key: 'currency',
+          type: 'select',
+          defaultValue: 'lei',
+          templateOptions: {
+            label: 'Currency',
+            options: [
+              { label: 'LEI', value: 'lei' },
+              { label: 'EUR', value: 'eur' },
+              { label: 'USD', value: 'usd' },
+            ],
+          },
+        },
+      ]
+    }
   }
 
   parseAddLog(addLog: ViewLog) {

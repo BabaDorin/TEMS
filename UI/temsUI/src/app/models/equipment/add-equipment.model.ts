@@ -1,4 +1,4 @@
-import { AddDefinition } from './../../models/equipment/add-definition.model';
+import { Definition } from './../../models/equipment/add-definition.model';
 import { AddType } from './add-type.model';
 
 export interface IAddEquipment{
@@ -7,7 +7,7 @@ export interface IAddEquipment{
     serialNumber: string,
     price: number,
     description: string,
-    definition: AddDefinition,
+    definition: Definition,
     purchaseDate: Date,
     isDefect: boolean,
     isUsed: boolean,
@@ -21,14 +21,14 @@ export class AddEquipment implements IAddEquipment{
     serialNumber: string;
     price: number;
     description: string;
-    definition: AddDefinition;
+    definition: Definition;
     purchaseDate: Date;
     isDefect: boolean;
     isUsed: boolean;
     currency: string;
     children: AddEquipment[];
 
-    constructor(definition: AddDefinition, temsid?:string, sn?:string){
+    constructor(definition: Definition, temsid?:string, sn?:string){
         this.temsid = temsid == undefined ? '' : temsid;
         this.serialNumber = sn == undefined ? '' : sn;
         this.price = 0;

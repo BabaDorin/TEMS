@@ -97,6 +97,8 @@ Related to rooms!
 Related to keys
 - Add roomId fied to keys table
 
+Related to propertyes
+Add description
 
 
 

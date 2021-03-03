@@ -15,6 +15,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormlyModule } from '@ngx-formly/core';
 import { MaterialModule } from '../material/material.module';
+import { specCharValidator } from 'src/app/models/validators';
 
 @NgModule({
   declarations: [
@@ -65,6 +66,12 @@ import { MaterialModule } from '../material/material.module';
         { name: 'repeat', component: RepeatTypeComponent },
         { name: 'eq-repeat', component: AddEquipmentRepeatComponent },
       ],
+      validators: [
+        { name: 'specCharValidator', validation: specCharValidator },
+      ],
+      validationMessages: [
+        { name: 'specCharValidator', message: 'No special characters or spaces allowed!' },
+      ]
     }),
   ],
   exports: [

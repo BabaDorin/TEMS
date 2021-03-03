@@ -18,6 +18,7 @@ import { EquipmentDetailsIssuesComponent } from './equipment-details/equipment-d
 import { MaterialModule } from 'src/app/modules/material/material.module';
 import { EntitySharedModule } from 'src/app/modules/entity-shared/entity-shared.module';
 import { AnalyticsModule } from 'src/app/modules/analytics/analytics.module';
+import { AddPropertyComponent } from './add-property/add-property.component';
 
 @NgModule({
   declarations: [
@@ -32,6 +33,7 @@ import { AnalyticsModule } from 'src/app/modules/analytics/analytics.module';
     AddDefinitionComponent,
     SummaryEquipmentAnalyticsComponent,
     EquipmentDetailsIssuesComponent,
+    AddPropertyComponent,
   ],
   imports: [
     CommonModule,

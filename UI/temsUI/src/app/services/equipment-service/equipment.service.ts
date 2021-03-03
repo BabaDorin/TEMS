@@ -5,7 +5,7 @@ import { ViewEquipment } from './../../models/equipment/view-equipment.model';
 import { ViewEquipmentSimplified } from './../../models/equipment/view-equipment-simplified.model';
 import { AddProperty } from './../../models/equipment/add-property.model';
 import { AddEquipment } from '../../models/equipment/add-equipment.model';
-import { AddDefinition, Definition } from '../../models/equipment/add-definition.model';
+import { Definition } from '../../models/equipment/add-definition.model';
 import { LightDefinition } from '../../models/equipment/viewlight-definition.model';
 import { Property } from '../../models/equipment/view-property.model';
 import { Type } from '../../models/equipment/view-type.model';
@@ -285,6 +285,7 @@ export class EquipmentService {
         ],
       },
       {
+        type: new Type(),
         id: '2',
         identifier: 'Lenovo M700',
         equipmentType: { id: '1', value: 'printer'},
@@ -309,6 +310,7 @@ export class EquipmentService {
           },
         ],
         children: [{
+          type: new Type(),
           id: '2',
           identifier: 'Lenovo M700',
           equipmentType: { id: '1', value: 'printer'},
@@ -335,6 +337,7 @@ export class EquipmentService {
           children: []
         },
         {
+          type: new Type(),
           id: '2',
           identifier: 'not lenovo M700',
           equipmentType: { id: '1', value: 'printer'},
@@ -389,7 +392,7 @@ export class EquipmentService {
     return fullType;
   }
 
-  generateAddEquipmentOfDefinition(definition: AddDefinition) {
+  generateAddEquipmentOfDefinition(definition: Definition) {
     return new AddEquipment(definition);
   }
 } 

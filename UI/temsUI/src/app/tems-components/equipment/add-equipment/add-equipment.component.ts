@@ -2,7 +2,7 @@ import { IOption } from './../../../models/option.model';
 import { AddDefinitionComponent } from './../add-definition/add-definition.component';
 import { AddTypeComponent } from '.././add-type/add-type.component';
 import { FormlyParserService } from './../../../services/formly-parser-service/formly-parser.service';
-import { AddDefinition } from '../../../models/equipment/add-definition.model';
+import { Definition } from '../../../models/equipment/add-definition.model';
 import { EquipmentService } from './../../../services/equipment-service/equipment.service';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
@@ -66,7 +66,7 @@ export class AddEquipmentComponent implements OnInit {
 
   definitionsOfType: IOption[];
   selectedDefinition: IOption;
-  selectedFullDefinition: AddDefinition = undefined;
+  selectedFullDefinition: Definition = undefined;
 
   onDefinitionChanged(eventData){
     if(eventData.value == undefined)

@@ -3,7 +3,7 @@ import { IOption } from 'src/app/models/option.model';
 import { AddIssue } from './../../models/communication/issues/add-issue';
 import { AddProperty } from './../../models/equipment/add-property.model';
 import { EquipmentService } from './../equipment-service/equipment.service';
-import { AddDefinition } from './../../models/equipment/add-definition.model';
+import { Definition } from './../../models/equipment/add-definition.model';
 import { AddType } from './../../models/equipment/add-type.model';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { Injectable } from '@angular/core';
@@ -304,7 +304,57 @@ export class FormlyParserService {
     return formlyFieldsAddType;
   }
 
-  parseAddDefinition(addDefinition: AddDefinition, formlyFields?: FormlyFieldConfig[]) {
+  parseAddProperty(){
+    let fields: FormlyFieldConfig[] =
+      [
+        {
+          key: 'addProperty',
+          fieldGroup: [
+            {
+              key: 'name',
+              type: 'input-tooltip',
+              templateOptions: {
+                label: 'Name',
+                placeholder: 'model',
+                description: 'The name that will be used by the system for building objects. No spaces or other special charaters allowed!',
+                required: true
+              },
+              validators: {
+                validation: ['specCharValidator']
+              }
+            },
+            {
+              key: 'displayName',
+              type: 'input-tooltip',
+              templateOptions: {
+                label: 'Display Name',
+                placeholder: 'Model',
+                required: true,
+                description: 'The name that will be displayed'
+              },
+            },
+            
+            {
+              key: 'dataType',
+              type: 'select',
+              templateOptions: {
+                required: true,
+                label: 'DataType',
+                options: [
+                  { value: 'string', label: 'Text' },
+                  { value: 'number', label: 'Number' },
+                  { value: 'bool', label: 'Boolean' }, // Other will appear soon
+                ]
+              }
+            },
+          ]
+        }
+      ];
+
+    return fields;
+  }
+
+  parseAddDefinition(addDefinition: Definition, formlyFields?: FormlyFieldConfig[]) {
 
     let fields: FormlyFieldConfig[] =
       [

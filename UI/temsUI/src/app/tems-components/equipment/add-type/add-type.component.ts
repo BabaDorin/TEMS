@@ -2,7 +2,9 @@ import { IOption } from './../../../models/option.model';
 import { EquipmentService } from './../../../services/equipment-service/equipment.service';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Component, OnInit } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { ComponentType } from '@angular/cdk/portal';
+import { AddPropertyComponent } from '../add-property/add-property.component';
 
 
 @Component({
@@ -21,6 +23,7 @@ export class AddTypeComponent implements OnInit {
 
   constructor(
     private equipmentService: EquipmentService,
+    public dialog: MatDialog,
     public dialogRef?: MatDialogRef<AddTypeComponent>) {
   }
 
@@ -59,5 +62,19 @@ export class AddTypeComponent implements OnInit {
   onSubmit(){
     // Send to API
     console.log(this.formGroup.value);
+  }
+
+  addProperty(){
+    console.log('gonna open');
+    this.openDialog();
+  }
+
+  openDialog(): void {
+    let dialogRef: MatDialogRef<any>;
+        dialogRef = this.dialog.open(AddPropertyComponent);
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+    });
   }
 }

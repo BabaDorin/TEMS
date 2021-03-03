@@ -1,5 +1,5 @@
 import { IOption } from './../../../models/option.model';
-import { AddDefinition } from './../../../models/equipment/add-definition.model';
+import { Definition } from './../../../models/equipment/add-definition.model';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Component, OnInit, Input, Inject } from '@angular/core';
 import { EquipmentService } from 'src/app/services/equipment-service/equipment.service';
@@ -29,7 +29,7 @@ export class AddDefinitionComponent implements OnInit {
     fields: [] as FormlyFieldConfig[],
   }
 
-  addDefinition: AddDefinition;
+  addDefinition: Definition;
   equipmentTypes: IOption[];
 
   ngOnInit(): void {
@@ -44,7 +44,7 @@ export class AddDefinitionComponent implements OnInit {
   }
 
   setDefinitionType(typeId: string) {
-    this.addDefinition = new AddDefinition();
+    this.addDefinition = new Definition();
     let parentFullType = this.equipmentService.getFullType(typeId);
 
     this.addDefinition.equipmentType = { id: parentFullType.id, value: parentFullType.name };
@@ -56,7 +56,7 @@ export class AddDefinitionComponent implements OnInit {
 
     if (parentFullType.children != undefined)
       parentFullType.children.forEach(childType => {
-        let childDefinition = new AddDefinition();
+        let childDefinition = new Definition();
         childDefinition.equipmentType = { id: childType.id, value: childType.name };
         childDefinition.properties = childType.properties;
 

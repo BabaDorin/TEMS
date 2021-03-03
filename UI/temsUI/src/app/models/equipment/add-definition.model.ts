@@ -1,29 +1,35 @@
-import { Type } from '@angular/core';
+import { Type } from './view-type.model';
 import { IOption } from '../option.model';
 import { AddProperty } from './add-property.model';
-import { AddType } from './add-type.model';
 
-export interface IAddDefinition{
+export interface IDefinition{
+    type: Type;
     id: string,
     identifier: string,
     equipmentType: IOption,
     properties: AddProperty[],
-    children: AddDefinition[]
+    children: Definition[],
+    price?: number,
+    currency?: string
 }
 
-export class AddDefinition{
+export class Definition implements IDefinition{
+    type: Type;
     id: string;
     identifier: string;
     equipmentType: IOption;
     properties: AddProperty[];
-    children: AddDefinition[];
+    children: Definition[];
+    price?: number;
+    currency?: string
 
     constructor(){
+        this.type = new Type()
         this.id = "";
         this.identifier = "";
         // this.equipmentType = new AddType();
         this.properties = [] as AddProperty[];
-        this.children = [] as AddDefinition[];
+        this.children = [] as Definition[];
     }
 }
 

@@ -5,7 +5,7 @@ import { ViewEquipment } from './../../models/equipment/view-equipment.model';
 import { ViewEquipmentSimplified } from './../../models/equipment/view-equipment-simplified.model';
 import { AddProperty } from './../../models/equipment/add-property.model';
 import { AddEquipment } from '../../models/equipment/add-equipment.model';
-import { AddDefinition } from '../../models/equipment/add-definition.model';
+import { AddDefinition, Definition } from '../../models/equipment/add-definition.model';
 import { LightDefinition } from '../../models/equipment/viewlight-definition.model';
 import { Property } from '../../models/equipment/view-property.model';
 import { Type } from '../../models/equipment/view-type.model';
@@ -255,8 +255,9 @@ export class EquipmentService {
 
   getFullDefinition(definitionId: string) {
     // returns the full definition, including children definitions and so on...
-    let fullDefinitions: AddDefinition[] = [
+    let fullDefinitions: Definition[] = [
       {
+        type: new Type(),
         id: '1',
         identifier: 'HP LaserJet',
         equipmentType: { id: '1', value: 'printer'},
@@ -283,7 +284,6 @@ export class EquipmentService {
         children: [
         ],
       },
-
       {
         id: '2',
         identifier: 'Lenovo M700',

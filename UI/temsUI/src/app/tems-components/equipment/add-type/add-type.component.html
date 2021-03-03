@@ -3,7 +3,8 @@
   <app-chips-autocomplete 
     label="Select parent type / types"
     formControlName="parents"
-    [availableOptions]="parentTypeOptions"></app-chips-autocomplete>
+    [availableOptions]="parentTypeOptions"
+    [alreadySelected]="parentTypeAlreadySelected"></app-chips-autocomplete>
 
   <mat-form-field class="example-full-width">
     <mat-label>Type Name</mat-label>
@@ -13,7 +14,8 @@
   <app-chips-autocomplete
     label="Select type's properties"
     formControlName="properties"
-    [availableOptions]="propertyOptions"></app-chips-autocomplete>
+    [availableOptions]="propertyOptions"
+    [alreadySelected]="propertyAlreadySelected"></app-chips-autocomplete>
 
   <button type="submit" class="btn btn-gradient-primary mr-2" (click)="onSubmit()">Submit</button>
 </form>

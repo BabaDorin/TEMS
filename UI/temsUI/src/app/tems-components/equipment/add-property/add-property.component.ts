@@ -12,7 +12,7 @@ import { FormlyFieldConfig } from '@ngx-formly/core';
 export class AddPropertyComponent implements OnInit {
 
   private formlyData = {
-    form: new FormGroup({}),
+    form: new FormGroup({}),ng s
     model: {} as any,
     fields: [] as FormlyFieldConfig[],
   }

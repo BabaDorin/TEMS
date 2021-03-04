@@ -13,5 +13,6 @@
   <button class="btn btn-link btn-fw text-secondary" (click)="addProperty()">+ Add new property</button>
   <br>
   <br>
-  <button type="submit" class="btn btn-gradient-primary mr-2" (click)="onSubmit()">Submit</button>
+  <button type="submit" class="btn btn-gradient-primary mr-2" (click)="onSubmit()"
+  [disabled]="formGroup.status=='INVALID'">Submit</button>
 </form>

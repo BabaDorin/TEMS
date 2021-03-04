@@ -1,9 +1,9 @@
-import { Type } from './view-type.model';
+import { EquipmentType } from './view-type.model';
 import { IOption } from '../option.model';
 import { AddProperty } from './add-property.model';
 
 export interface IDefinition{
-    type: Type;
+    type: EquipmentType;
     id: string,
     identifier: string,
     equipmentType: IOption,
@@ -14,7 +14,7 @@ export interface IDefinition{
 }
 
 export class Definition implements IDefinition{
-    type: Type;
+    type: EquipmentType;
     id: string;
     identifier: string;
     equipmentType: IOption;
@@ -24,7 +24,7 @@ export class Definition implements IDefinition{
     currency?: string
 
     constructor(){
-        this.type = new Type()
+        this.type = new EquipmentType()
         this.id = "";
         this.identifier = "";
         // this.equipmentType = new AddType();

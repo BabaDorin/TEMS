@@ -1,7 +1,7 @@
 import { viewClassName } from '@angular/compiler';
 import { ViewRoomSimplified } from './../room/view-room-simplified.model';
 import { Property } from './view-property.model';
-import { Type } from './view-type.model';
+import { EquipmentType } from './view-type.model';
 
 export interface ILightViewEquipment{
     id: string;
@@ -15,7 +15,7 @@ export interface IViewEquipment{
     temsID: string,
     serialNumber: string,
     room: ViewRoomSimplified;
-    type: Type;
+    type: EquipmentType;
     specificTypeProperties: Property[],
     children: ILightViewEquipment[];
     parents: ILightViewEquipment[];
@@ -31,7 +31,7 @@ export class ViewEquipment implements IViewEquipment{
     temsID: string;
     serialNumber: string;
     room: ViewRoomSimplified;
-    type: Type;
+    type: EquipmentType;
     children: ILightViewEquipment[];
     parents: ILightViewEquipment[];
     isUsed: boolean;
@@ -45,7 +45,7 @@ export class ViewEquipment implements IViewEquipment{
         this.identifier = "Asus Vivobook";
         this.temsID = "LPB001";
         this.serialNumber = "3044245435";
-        this.type = { id: '1', name: 'Laptop' }
+        this.type = new EquipmentType();
         this.room = { id: '1', identifier: '307'};
         this.isUsed = true;
         this.isDefect = true;

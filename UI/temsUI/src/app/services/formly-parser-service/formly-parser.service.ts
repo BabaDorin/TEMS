@@ -256,53 +256,53 @@ export class FormlyParserService {
     ]
   }
 
-  parseAddType(addType: AddType) {
-    let parents: IOption[] = [];
+  // parseAddType(addType: AddType) {
+  //   let parents: IOption[] = [];
 
-    addType.parents.forEach(parent => {
-      parents.push({
-        value: parent.id,
-        label: parent.name
-      })
-    });
+  //   addType.parents.forEach(parent => {
+  //     parents.push({
+  //       value: parent.id,
+  //       label: parent.name
+  //     })
+  //   });
 
-    let temsProperties = this.equipmentService.getProperties();
-    let properties: IOption[] = [];
+  //   let temsProperties = this.equipmentService.getProperties();
+  //   let properties: IOption[] = [];
 
-    temsProperties.forEach(property => {
-      properties.push({
-        value: property.id,
-        label: property.name
-      })
-    });
+  //   temsProperties.forEach(property => {
+  //     properties.push({
+  //       value: property.id,
+  //       label: property.name
+  //     })
+  //   });
 
-    let formlyFieldsAddType: FormlyFieldConfig[] = [
-      {
-        template: '<h4>Add Type</h4>'
-      },
-      {
-        key: 'parents',
-        type: 'multicheckbox',
-        templateOptions: {
-          options: parents,
-          label: "Select Type's parents"
-        },
-      },
-      {
-        key: 'name',
-        type: 'input-tooltip',
-        defaultValue: addType.name,
-        templateOptions: {
-          required: true,
-          placeholder: 'Printer...',
-          label: 'Name',
-          description: "Type's name (Like Printer, Scanner, Laptop etc.)"
-        },
-      },
-    ];
+  //   let formlyFieldsAddType: FormlyFieldConfig[] = [
+  //     {
+  //       template: '<h4>Add Type</h4>'
+  //     },
+  //     {
+  //       key: 'parents',
+  //       type: 'multicheckbox',
+  //       templateOptions: {
+  //         options: parents,
+  //         label: "Select Type's parents"
+  //       },
+  //     },
+  //     {
+  //       key: 'name',
+  //       type: 'input-tooltip',
+  //       defaultValue: addType.name,
+  //       templateOptions: {
+  //         required: true,
+  //         placeholder: 'Printer...',
+  //         label: 'Name',
+  //         description: "Type's name (Like Printer, Scanner, Laptop etc.)"
+  //       },
+  //     },
+  //   ];
 
-    return formlyFieldsAddType;
-  }
+  //   return formlyFieldsAddType;
+  // }
 
   parseAddProperty(){
     let fields: FormlyFieldConfig[] =

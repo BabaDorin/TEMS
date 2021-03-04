@@ -1,7 +1,8 @@
-import { switchMap, map } from 'rxjs/operators';
+import { AddType } from './../../models/equipment/add-type.model';
+import { EquipmentType } from './../../models/equipment/view-type.model';
+import { Definition } from './../../models/equipment/add-definition.model';
 import { API_PROP_URL, API_EQTYPE_URL } from './../../models/backend.config';
-import { HttpClient } from '@angular/common/http';
-import { viewClassName } from '@angular/compiler';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { IOption } from './../../models/option.model';
 import { CheckboxItem } from '../../models/checkboxItem.model';
 import { ViewEquipmentAllocation } from './../../models/equipment/view-equipment-allocation.model';
@@ -9,12 +10,7 @@ import { ViewEquipment } from './../../models/equipment/view-equipment.model';
 import { ViewEquipmentSimplified } from './../../models/equipment/view-equipment-simplified.model';
 import { AddProperty } from './../../models/equipment/add-property.model';
 import { AddEquipment } from '../../models/equipment/add-equipment.model';
-import { Definition } from '../../models/equipment/add-definition.model';
-import { LightDefinition } from '../../models/equipment/viewlight-definition.model';
-import { Property } from '../../models/equipment/view-property.model';
-import { Type } from '../../models/equipment/view-type.model';
-import { AddType } from '../../models/equipment/add-type.model';
-import { Injectable } from '@angular/core';
+import { Injectable, Type } from '@angular/core';
 import { Observable, of } from 'rxjs';
 
 @Injectable({
@@ -22,12 +18,22 @@ import { Observable, of } from 'rxjs';
 })
 export class EquipmentService {
 
+  httpOptions = {
+    headers: new HttpHeaders({
+      'Content-Type':'application/json; charset=utf-8'
+    })
+  }
   constructor(
     private http: HttpClient
   ) { }
 
   getTypes(): Observable<any> {
     return this.http.get(API_EQTYPE_URL + '/get');
+  }
+
+  postType(addType: AddType): Observable<any> {
+    console.log(addType);
+    return this.http.post<AddType>(API_EQTYPE_URL + '/insert', JSON.stringify(addType), this.httpOptions);
   }
 
   getTypesAutocomplete(): IOption[]{
@@ -198,142 +204,144 @@ export class EquipmentService {
   }
 
   getFullDefinition(definitionId: string): Definition {
-    // returns the full definition, including children definitions and so on...
-    let fullDefinitions: Definition[] = [
-      {
-        type: new Type(),
-        id: '1',
-        identifier: 'HP LaserJet',
-        equipmentType: { value: '1', label: 'printer'},
-        properties: [
-          {
-            id: '1',
-            name: 'Model',
-            displayName: 'Model',
-            description: 'the model',
-            dataType: { id: '1', name: 'string' },
-            value: 'HP LaserJet',
-            required: true
-          },
-          {
-            id: '2',
-            name: 'color',
-            displayName: 'Color',
-            description: 'Color = true, B&W = false',
-            dataType: { id: '2', name: 'radiobutton' },
-            options: [{ value: 'color', label: 'color' }, { value: 'black and white', label: 'b&w' }],
-            required: true
-          },
-        ],
-        children: [
-        ],
-      },
-      {
-        type: new Type(),
-        id: '2',
-        identifier: 'Lenovo M700',
-        equipmentType: { value: '1', label: 'printer'},
-        properties: [
-          {
-            id: '1',
-            name: 'Model',
-            displayName: 'Model',
-            description: 'the model',
-            dataType: { id: '1', name: 'string' },
-            value: 'HP LaserJet',
-            required: true
-          },
-          {
-            id: '2',
-            name: 'Color',
-            displayName: 'Color',
-            description: 'Color = true, B&W = false',
-            dataType: { id: '2', name: 'bool' },
-            value: 'false',
-            required: true
-          },
-        ],
-        children: [{
-          type: new Type(),
-          id: '2',
-          identifier: 'Lenovo M700',
-          equipmentType: { value: '1', label: 'printer'},
-          properties: [
-            {
-              id: '1',
-              name: 'Model',
-              displayName: 'Model',
-              description: 'the model',
-              dataType: { id: '1', name: 'string' },
-              value: 'HP LaserJet',
-              required: true
-            },
-            {
-              id: '2',
-              name: 'Color',
-              displayName: 'Color',
-              description: 'Color = true, B&W = false',
-              dataType: { id: '2', name: 'bool' },
-              value: 'false',
-              required: true
-            },
-          ],
-          children: []
-        },
-        {
-          type: new Type(),
-          id: '2',
-          identifier: 'not lenovo M700',
-          equipmentType: { value: '1', label: 'printer'},
-          properties: [
-            {
-              id: '1',
-              name: 'Model',
-              displayName: 'Model',
-              description: 'the model',
-              dataType: { id: '1', name: 'string' },
-              value: 'HP LaserJet',
-              required: true
-            },
-            {
-              id: '2',
-              name: 'Color',
-              displayName: 'Color',
-              description: 'Color = true, B&W = false',
-              dataType: { id: '2', name: 'bool' },
-              value: 'false',
-              required: true
-            },
-          ],
-          children: []
-        }
-      ],
-      }
-    ];
 
-    return fullDefinitions.find(q => q.id == definitionId);
+    return new Definition();
+    // // returns the full definition, including children definitions and so on...
+    // let fullDefinitions: Definition[] = [
+    //   {
+    //     type: new Type(),
+    //     id: '1',
+    //     identifier: 'HP LaserJet',
+    //     equipmentType: { value: '1', label: 'printer'},
+    //     properties: [
+    //       {
+    //         id: '1',
+    //         name: 'Model',
+    //         displayName: 'Model',
+    //         description: 'the model',
+    //         dataType: { id: '1', name: 'string' },
+    //         value: 'HP LaserJet',
+    //         required: true
+    //       },
+    //       {
+    //         id: '2',
+    //         name: 'color',
+    //         displayName: 'Color',
+    //         description: 'Color = true, B&W = false',
+    //         dataType: { id: '2', name: 'radiobutton' },
+    //         options: [{ value: 'color', label: 'color' }, { value: 'black and white', label: 'b&w' }],
+    //         required: true
+    //       },
+    //     ],
+    //     children: [
+    //     ],
+    //   },
+    //   {
+    //     type: new Type(),
+    //     id: '2',
+    //     identifier: 'Lenovo M700',
+    //     equipmentType: { value: '1', label: 'printer'},
+    //     properties: [
+    //       {
+    //         id: '1',
+    //         name: 'Model',
+    //         displayName: 'Model',
+    //         description: 'the model',
+    //         dataType: { id: '1', name: 'string' },
+    //         value: 'HP LaserJet',
+    //         required: true
+    //       },
+    //       {
+    //         id: '2',
+    //         name: 'Color',
+    //         displayName: 'Color',
+    //         description: 'Color = true, B&W = false',
+    //         dataType: { id: '2', name: 'bool' },
+    //         value: 'false',
+    //         required: true
+    //       },
+    //     ],
+    //     children: [{
+    //       type: new Type(),
+    //       id: '2',
+    //       identifier: 'Lenovo M700',
+    //       equipmentType: { value: '1', label: 'printer'},
+    //       properties: [
+    //         {
+    //           id: '1',
+    //           name: 'Model',
+    //           displayName: 'Model',
+    //           description: 'the model',
+    //           dataType: { id: '1', name: 'string' },
+    //           value: 'HP LaserJet',
+    //           required: true
+    //         },
+    //         {
+    //           id: '2',
+    //           name: 'Color',
+    //           displayName: 'Color',
+    //           description: 'Color = true, B&W = false',
+    //           dataType: { id: '2', name: 'bool' },
+    //           value: 'false',
+    //           required: true
+    //         },
+    //       ],
+    //       children: []
+    //     },
+    //     {
+    //       type: new Type(),
+    //       id: '2',
+    //       identifier: 'not lenovo M700',
+    //       equipmentType: { value: '1', label: 'printer'},
+    //       properties: [
+    //         {
+    //           id: '1',
+    //           name: 'Model',
+    //           displayName: 'Model',
+    //           description: 'the model',
+    //           dataType: { id: '1', name: 'string' },
+    //           value: 'HP LaserJet',
+    //           required: true
+    //         },
+    //         {
+    //           id: '2',
+    //           name: 'Color',
+    //           displayName: 'Color',
+    //           description: 'Color = true, B&W = false',
+    //           dataType: { id: '2', name: 'bool' },
+    //           value: 'false',
+    //           required: true
+    //         },
+    //       ],
+    //       children: []
+    //     }
+    //   ],
+    //   }
+    // ];
+    // return fullDefinitions.find(q => q.id == definitionId);
   }
 
-  getFullType(typeId: string): AddType {
-    let fullType: AddType = {
-      id: typeId,
-      name: (typeId == "1") ? 'printer' : (typeId == "2") ? 'laptop' : 'scanner',
-      properties: this.getPropertiesOfType(typeId),
-      children: [
-        {
-          id: '1',
-          name: 'cartrige',
-          properties: this.getPropertiesOfType(typeId),
-        },
-        {
-          id: '2',
-          name: 'microprocessor',
-          properties: this.getPropertiesOfType(typeId),
-        },
-      ]
-    }
-
-    return fullType;
+  getFullType(typeId: string): EquipmentType {
+    return new EquipmentType();
+    // let fullType: AddType = {
+    //   id: typeId,
+    //   name: (typeId == "1") ? 'printer' : (typeId == "2") ? 'laptop' : 'scanner',
+    //   properties: this.getPropertiesOfType(typeId),
+    //   children: [
+    //     {
+    //       id: '1',
+    //       name: 'cartrige',
+    //       properties: this.getPropertiesOfType(typeId),
+    //     },
+    //     {
+    //       id: '2',
+    //       name: 'microprocessor',
+    //       properties: this.getPropertiesOfType(typeId),
+    //     },
+    //   ]
+    // }
+    // return fullType;
+    // 
   }
 
   generateAddEquipmentOfDefinition(definition: Definition): AddEquipment {

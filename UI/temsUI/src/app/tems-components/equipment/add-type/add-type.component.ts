@@ -1,3 +1,4 @@
+import { AddType } from './../../../models/equipment/add-type.model';
 import { map } from 'rxjs/operators';
 import { IOption } from './../../../models/option.model';
 import { EquipmentService } from './../../../services/equipment-service/equipment.service';
@@ -22,7 +23,7 @@ export class AddTypeComponent implements OnInit, OnDestroy {
   formGroup = new FormGroup({
     parents: new FormControl(),
     typeName: new FormControl('', Validators.required),
-    properties: new FormControl(),
+    properties: new FormControl('', Validators.required),
   });
 
   constructor(
@@ -73,12 +74,34 @@ export class AddTypeComponent implements OnInit, OnDestroy {
   }
 
   onSubmit(){
-    // Send to API
-    console.log(this.formGroup.value);
+    if(
+      this.formGroup.controls.properties == null || 
+      this.formGroup.controls.properties.value.length == 0){
+      alert("At leas one property is required. If there isn't any, add some.")
+    }
+    else
+    {
+      let model: AddType = {
+        parents: this.parents == undefined ? [] as IOption[] : this.parents.value as IOption[],
+        name: this.formGroup.controls.typeName.value,
+        properties: this.properties == undefined ? [] as IOption[] : this.properties.value as IOption[],
+      }
+
+      this.equipmentService.postType(model).subscribe(response => {
+        console.log(response);
+      })
+    }
+  }
+
+  get parents(){
+    return this.formGroup.controls.parents;
+  }
+
+  get properties(){
+    return this.formGroup.controls.properties;
   }
 
   addProperty(){
-    console.log('gonna open');
     this.openDialog();
   }
 

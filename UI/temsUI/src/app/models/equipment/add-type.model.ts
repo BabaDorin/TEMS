@@ -1,18 +1,18 @@
-import { AddProperty } from './add-property.model';
- export interface IAddType{
-    parents?: IAddType[],
+import { IOption } from 'src/app/models/option.model';
+
+export interface IAddType{
+    parents?: IOption[],
     id?: string,
     name: string,
-    properties: AddProperty[];
+    properties: IOption[];
 }
 
 export class AddType implements IAddType{
-    parents?: IAddType[];
-    children?: IAddType[];
+    parents?: IOption[];
 
     id?: string;
     name: string;
-    properties: AddProperty[];
+    properties: IOption[];
 
     constructor(){
         this.parents = [];

@@ -50,30 +50,30 @@ export class AddDefinitionComponent extends TEMSComponent implements OnInit {
   }
 
   setDefinitionType(typeId: string) {
-    this.addDefinition = new Definition();
-    let parentFullType = this.equipmentService.getFullType(typeId);
+    // this.addDefinition = new Definition();
+    // let parentFullType = this.equipmentService.getFullType(typeId);
 
-    this.addDefinition.equipmentType = { value: parentFullType.id, label: parentFullType.name } as IOption;
+    // this.addDefinition.equipmentType = { value: parentFullType.id, label: parentFullType.name } as IOption;
     
-    // Properties are copied from the definition types because we don't want
-    // definition properties to be tight coupled to equipment properties.
-    // We may add / remove properties from a definition (this support will be added soon)
-    this.addDefinition.properties = parentFullType.properties;
+    // // Properties are copied from the definition types because we don't want
+    // // definition properties to be tight coupled to equipment properties.
+    // // We may add / remove properties from a definition (this support will be added soon)
+    // this.addDefinition.properties = parentFullType.properties;
 
-    if (parentFullType.children != undefined)
-      parentFullType.children.forEach(childType => {
-        let childDefinition = new Definition();
-        childDefinition.equipmentType = { value: childType.id, label: childType.name } as IOption;
-        childDefinition.properties = childType.properties;
+    // if (parentFullType.children != undefined)
+    //   parentFullType.children.forEach(childType => {
+    //     let childDefinition = new Definition();
+    //     childDefinition.equipmentType = { value: childType.id, label: childType.name } as IOption;
+    //     childDefinition.properties = childType.properties;
 
-        this.addDefinition.children.push(childDefinition);
-      });
+    //     this.addDefinition.children.push(childDefinition);
+    //   });
 
-    this.formlyData.model = {
-      typeId: typeId
-    };
-    this.formlyData.fields = this.formlyParserService.parseAddDefinition(this.addDefinition);
-    this.formlyData.isVisible = true;
+    // this.formlyData.model = {
+    //   typeId: typeId
+    // };
+    // this.formlyData.fields = this.formlyParserService.parseAddDefinition(this.addDefinition);
+    // this.formlyData.isVisible = true;
     // this.edit();
   }
 

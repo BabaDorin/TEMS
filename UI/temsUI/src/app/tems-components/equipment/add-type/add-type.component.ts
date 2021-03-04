@@ -1,10 +1,12 @@
+import { map } from 'rxjs/operators';
 import { IOption } from './../../../models/option.model';
 import { EquipmentService } from './../../../services/equipment-service/equipment.service';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ComponentType } from '@angular/cdk/portal';
 import { AddPropertyComponent } from '../add-property/add-property.component';
+import { Subscription } from 'rxjs';
 
 
 @Component({
@@ -13,8 +15,10 @@ import { AddPropertyComponent } from '../add-property/add-property.component';
   styleUrls: ['./add-type.component.scss']
 })
 
-export class AddTypeComponent implements OnInit {
+export class AddTypeComponent implements OnInit, OnDestroy {
   
+  subscriptions: Subscription[] = [];
+
   formGroup = new FormGroup({
     parents: new FormControl(),
     typeName: new FormControl('', Validators.required),
@@ -34,7 +38,9 @@ export class AddTypeComponent implements OnInit {
 
   ngOnInit(): void {
     this.parentTypeOptions = this.equipmentService.getTypes();
-    this.propertyOptions = this.equipmentService.getProperties().map(q => ({value: q.id, label: q.displayName}))
+    this.subscriptions.push(this.equipmentService.getProperties().subscribe(response => {
+      this.propertyOptions = response.map(r => ({value: r.id, label: r.displayName}));
+    }));
   }
 
   // To be implemented
@@ -76,5 +82,9 @@ export class AddTypeComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       console.log('The dialog was closed');
     });
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(s => s.unsubscribe());
   }
 }

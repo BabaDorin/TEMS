@@ -2,7 +2,7 @@ import { DataType } from '../datatype.model';
 export interface AddProperty{
     id: string,
     name: string,
-    required: boolean;
+    required?: boolean;
     displayName: string,
     description: string,
     dataType: DataType,

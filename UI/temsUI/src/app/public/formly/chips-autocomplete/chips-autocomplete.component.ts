@@ -25,7 +25,7 @@ export class ChipsAutocompleteComponent implements OnInit, ControlValueAccessor 
   // ISSUES: 1) DISPLAY AUTOCOMPLETE LIST ON CLICK
 
 
-  @Input() alreadySelected: IOption[];
+  @Input() alreadySelected: IOption[] = [];
   @Input() label: string;
   @Input() disabled: boolean = false;
   @Input() maxOptionsSelected: number;
@@ -52,7 +52,8 @@ export class ChipsAutocompleteComponent implements OnInit, ControlValueAccessor 
   value = []; // Value accessor
 
   ngOnInit() {
-    this.options = (this.alreadySelected == undefined) ? [] : this.alreadySelected;
+    this.options = this.alreadySelected;
+    if(this.availableOptions == undefined) this.availableOptions = [];
   }
 
   ngOnChanges() {
@@ -118,7 +119,7 @@ export class ChipsAutocompleteComponent implements OnInit, ControlValueAccessor 
     const index = this.options.indexOf(op);
     if (index >= 0) {
       // Pushing option back to available option if it belongs there
-      if (op.id != undefined) {
+      if (op.value != undefined) {
         this.availableOptions.push(op);
       }
 

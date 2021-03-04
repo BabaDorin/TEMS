@@ -1,3 +1,5 @@
+import { API_PROP_URL } from './../../models/backend.config';
+import { HttpClient } from '@angular/common/http';
 import { viewClassName } from '@angular/compiler';
 import { IOption } from './../../models/option.model';
 import { CheckboxItem } from '../../models/checkboxItem.model';
@@ -12,13 +14,16 @@ import { Property } from '../../models/equipment/view-property.model';
 import { Type } from '../../models/equipment/view-type.model';
 import { AddType } from '../../models/equipment/add-type.model';
 import { Injectable } from '@angular/core';
+import { Observable, of } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class EquipmentService {
 
-  constructor() { }
+  constructor(
+    private http: HttpClient
+  ) { }
 
   getTypes(): IOption[] {
     // fake service
@@ -46,44 +51,8 @@ export class EquipmentService {
     ]
   }
 
-  getProperties(): AddProperty[]{
-    let properties: AddProperty[] = [
-      {
-        id: '1',
-        name: 'model',
-        displayName: 'Model',
-        description: 'Model name',
-        dataType: { id: '1', name: 'string' },
-        required: true,
-      },
-      {
-        id: '2',
-        name: 'Frequency',
-        displayName: 'Frequency',
-        description: 'Frequency in GHz',
-        dataType: { id: '2', name: 'number' },
-        required: true,
-      },
-      {
-        id: '3',
-        name: 'color',
-        displayName: 'Color',
-        description: 'Black and White or Color',
-        dataType: { id: '3', name: 'radiobutton' },
-        options: [{ value: 'color', label: 'color' }, { value: 'bw', label: 'black and white' }],
-        required: true,
-      },
-      {
-        id: '4',
-        name: 'Resolution',
-        displayName: 'Resolution',
-        description: 'Resolution',
-        dataType: { id: '1', name: 'string' },
-        required: true,
-      },
-    ];
-
-    return properties;
+  getProperties(): Observable<any>{
+    return this.http.get(API_PROP_URL + '/get');
   }
 
   getCommonProperties(): CheckboxItem[]{

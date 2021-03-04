@@ -57,9 +57,6 @@ export class AddEquipmentComponent implements OnInit {
       this.definitionsOfType = this.equipmentService.getDefinitionsOfType(this.selectedType.value)
     else
       this.definitionsOfType = undefined;
-
-    console.log('Definitions of type:');
-    console.log(this.definitionsOfType);
   }
 
   // definition related -------------------------------------------------------------------------------------------

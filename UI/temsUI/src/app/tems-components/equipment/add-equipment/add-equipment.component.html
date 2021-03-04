@@ -14,7 +14,7 @@
         <mat-select formControlName="equipmentType" 
         [(ngModel)]="selectedType" (selectionChange)="onTypeChanged($event)">
           <mat-option (click)="openDialog('add-type')">+ Add New</mat-option>
-          <mat-option *ngFor="let type of types" [value]="type.id">{{ type.value }}</mat-option>
+          <mat-option *ngFor="let type of types" [value]="type.value">{{ type.label }}</mat-option>
         </mat-select>
       </mat-form-field>
     </div>
@@ -27,7 +27,7 @@
           <mat-select formControlName="equipmentDefinition" 
           [(ngModel)]="selectedDefinition" (selectionChange)="onDefinitionChanged($event)">
             <mat-option (click)="openDialog('add-definition')">+ Add New</mat-option>
-            <mat-option *ngFor="let definition of definitionsOfType" [value]="definition.id">{{ definition.value }}</mat-option>
+            <mat-option *ngFor="let definition of definitionsOfType" [value]="definition.value">{{ definition.label }}</mat-option>
           </mat-select>
         </mat-form-field>
       </div>

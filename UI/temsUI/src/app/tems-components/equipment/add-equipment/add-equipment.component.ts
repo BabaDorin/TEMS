@@ -1,10 +1,12 @@
+import { TEMSComponent } from 'src/app/tems/tems.component';
+import { Subscription } from 'rxjs';
 import { IOption } from './../../../models/option.model';
 import { AddDefinitionComponent } from './../add-definition/add-definition.component';
 import { AddTypeComponent } from '.././add-type/add-type.component';
 import { FormlyParserService } from './../../../services/formly-parser-service/formly-parser.service';
 import { Definition } from '../../../models/equipment/add-definition.model';
 import { EquipmentService } from './../../../services/equipment-service/equipment.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { AddEquipment } from 'src/app/models/equipment/add-equipment.model';
@@ -17,22 +19,26 @@ import { ComponentType } from '@angular/cdk/portal';
   styleUrls: ['./add-equipment.component.scss'],
   providers: []
 })
-export class AddEquipmentComponent implements OnInit {
+export class AddEquipmentComponent extends TEMSComponent implements OnInit {
 
   constructor(
     private equipmentService: EquipmentService,
     private formlyParserService: FormlyParserService,
-    public dialog: MatDialog) { }
-
+    public dialog: MatDialog) {
+      super();
+    }
+  
   formGroup = new FormGroup({
     equipmentType: new FormControl(),
     equipmentDefinition: new FormControl(),
     properties: new FormControl(),
   });
 
-  types: IOption[];
+  types: IOption[] = [];
   ngOnInit(): void {
-    this.types = this.equipmentService.getTypes();
+    this.subscriptions.push(this.equipmentService.getTypes().subscribe(response => {
+      this.types = response.map(r => ({value: r.id, label: r.name} as IOption));
+    }));
   }
 
   // type related -------------------------------------------------------------------------------------------------

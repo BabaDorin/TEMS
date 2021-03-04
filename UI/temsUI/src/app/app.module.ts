@@ -26,6 +26,7 @@ import { ContentAnimateDirective } from './shared/directives/content-animate.dir
 import { TodoListComponent } from './public/apps/todo-list/todo-list.component';
 import { TagInputModule } from 'ngx-chips';
 import { MatDialogModule } from '@angular/material/dialog';
+import { TEMSComponent } from './tems/tems.component';
 
 @NgModule({
   declarations: [
@@ -39,6 +40,7 @@ import { MatDialogModule } from '@angular/material/dialog';
     SpinnerComponent,
     ContentAnimateDirective,
     QuickAccessComponent,
+    TEMSComponent,
     ],
   imports: [
     BrowserModule,

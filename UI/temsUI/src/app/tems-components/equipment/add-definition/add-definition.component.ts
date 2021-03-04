@@ -1,26 +1,30 @@
+import { map } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
 import { IOption } from './../../../models/option.model';
 import { Definition } from './../../../models/equipment/add-definition.model';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Component, OnInit, Input, Inject } from '@angular/core';
+import { Component, OnInit, Input, Inject, OnDestroy } from '@angular/core';
 import { EquipmentService } from 'src/app/services/equipment-service/equipment.service';
 import { FormlyParserService } from 'src/app/services/formly-parser-service/formly-parser.service';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { FormGroup } from '@angular/forms';
+import { TEMSComponent } from 'src/app/tems/tems.component';
 
 @Component({
   selector: 'app-add-definition',
   templateUrl: './add-definition.component.html',
   styleUrls: ['./add-definition.component.scss']
 })
-export class AddDefinitionComponent implements OnInit {
+
+export class AddDefinitionComponent extends TEMSComponent implements OnInit {
 
   constructor(
     private formlyParserService: FormlyParserService,
     private equipmentService: EquipmentService,
     @Inject(MAT_DIALOG_DATA) public data: any,
     public dialogRef?: MatDialogRef<AddDefinitionComponent>) {
+      super();
   }
-
 
   private formlyData = {
     isVisible: false,
@@ -40,7 +44,9 @@ export class AddDefinitionComponent implements OnInit {
     if (this.data != undefined)
       this.setDefinitionType(this.data.selectedType);
     else
-      this.equipmentTypes = this.equipmentService.getTypes();
+      this.subscriptions.push(this.equipmentService.getTypes().subscribe(response => {
+        this.equipmentTypes = response.map(r => ({value: r.id, label: r.name} as IOption));
+      }));
   }
 
   setDefinitionType(typeId: string) {

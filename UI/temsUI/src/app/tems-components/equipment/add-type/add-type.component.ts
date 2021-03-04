@@ -37,9 +37,16 @@ export class AddTypeComponent implements OnInit, OnDestroy {
   propertyAlreadySelected: IOption[] = [];
 
   ngOnInit(): void {
-    this.parentTypeOptions = this.equipmentService.getTypes();
+    this.subscriptions.push(this.equipmentService.getTypes().subscribe(response=>{
+      this.parentTypeOptions = response.map(r => ({value: r.id, label: r.name}))
+      if(this.parentTypeOptions.length == 0)
+        this.formGroup.controls.parents.disable();
+    }));
+
     this.subscriptions.push(this.equipmentService.getProperties().subscribe(response => {
       this.propertyOptions = response.map(r => ({value: r.id, label: r.displayName}));
+      if(this.propertyOptions.length == 0)
+        this.formGroup.controls.properties.disable();
     }));
   }
 

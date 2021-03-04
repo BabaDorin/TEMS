@@ -1,4 +1,5 @@
-import { API_PROP_URL } from './../../models/backend.config';
+import { switchMap, map } from 'rxjs/operators';
+import { API_PROP_URL, API_EQTYPE_URL } from './../../models/backend.config';
 import { HttpClient } from '@angular/common/http';
 import { viewClassName } from '@angular/compiler';
 import { IOption } from './../../models/option.model';
@@ -25,14 +26,8 @@ export class EquipmentService {
     private http: HttpClient
   ) { }
 
-  getTypes(): IOption[] {
-    // fake service
-    let types = [
-      { value: '1', label: 'printer' },
-      { value: '2', label: 'laptop' },
-      { value: '3', label: 'scanner' },
-    ]
-    return types;
+  getTypes(): Observable<any> {
+    return this.http.get(API_EQTYPE_URL + '/get');
   }
 
   getTypesAutocomplete(): IOption[]{

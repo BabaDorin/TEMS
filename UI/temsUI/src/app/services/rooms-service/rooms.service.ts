@@ -1,3 +1,5 @@
+import { viewClassName } from '@angular/compiler';
+import { IOption } from 'src/app/models/option.model';
 import { ViewRoomSimplified } from './../../models/room/view-room-simplified.model';
 import { ViewRoom } from './../../models/room/view-room.model';
 import { Injectable } from '@angular/core';
@@ -9,21 +11,20 @@ export class RoomsService {
 
   constructor() { }
 
-  getAllAutocompleteOptions(){
+  getAllAutocompleteOptions(): IOption[]{
     return [
-      {id: '1', value: '100'},
-      {id: '2', value: '101'},
-      {id: '3', value: '103'},
-      {id: '4', value: '105'},
-      {id: '5', value: '106'},
-      {id: '6', value: '107'},
-      {id: '7', value: '108'},
-      {id: '8', value: '109'},
+      {value: '1', label: '100'},
+      {value: '2', label: '101'},
+      {value: '3', label: '103'},
+      {value: '4', label: '105'},
+      {value: '5', label: '106'},
+      {value: '6', label: '107'},
+      {value: '7', label: '108'},
+      {value: '8', label: '109'},
     ]
   }
 
-  // Mainly used by Ag-Grid-rooms
-  getRooms(){
+  getRooms(): ViewRoomSimplified[]{
     return [
       new ViewRoomSimplified(),
       new ViewRoomSimplified(),
@@ -31,20 +32,20 @@ export class RoomsService {
     ];
   }
 
-  getRoomLabels(){
+  getRoomLabels(): IOption[]{
     return[
-      { id: '1', value: 'Laboratory'},
-      { id: '2', value: 'Simple ClassRoom'},
-      { id: '3', value: 'Deposit'},
-      { id: '4', value: 'Idk'},
+      { value: '1', label: 'Laboratory'},
+      { value: '2', label: 'Simple ClassRoom'},
+      { value: '3', label: 'Deposit'},
+      { value: '4', label: 'Idk'},
     ]
   }
   
-  getRoomById(id: string){
+  getRoomById(id: string): ViewRoom{
     return new ViewRoom();
   }
 
-  getRoomSimplified(id: string){
+  getRoomSimplified(id: string): ViewRoomSimplified{
     return new ViewRoomSimplified();
   }
 }

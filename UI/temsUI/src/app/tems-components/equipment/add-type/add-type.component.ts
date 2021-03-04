@@ -34,22 +34,22 @@ export class AddTypeComponent implements OnInit {
 
   ngOnInit(): void {
     this.parentTypeOptions = this.equipmentService.getTypes();
-    this.propertyOptions = this.equipmentService.getProperties().map(q => ({id: q.id, value: q.displayName}))
+    this.propertyOptions = this.equipmentService.getProperties().map(q => ({value: q.id, label: q.displayName}))
   }
 
   // To be implemented
   update(){
     let objectFromServer = {
       parents: [
-        {id: '1', value: 'parent from server 1'},
-        {id: '2', value: 'parent from server 2'},
-        {id: '3', value: 'parent from server 3'}
+        {value: '1', label: 'parent from server 1'},
+        {value: '2', label: 'parent from server 2'},
+        {value: '3', label: 'parent from server 3'}
       ],
       typeName: 'TypeFromServer',
       properties: [
-        {id: '1', value: 'prop from server 1'},
-        {id: '2', value: 'prop from server 2'},
-        {id: '3', value: 'prop from server 3'}
+        {value: '1', label: 'prop from server 1'},
+        {value: '2', label: 'prop from server 2'},
+        {value: '3', label: 'prop from server 3'}
       ],
     }
 

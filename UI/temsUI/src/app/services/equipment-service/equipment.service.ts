@@ -1,3 +1,4 @@
+import { viewClassName } from '@angular/compiler';
 import { IOption } from './../../models/option.model';
 import { CheckboxItem } from '../../models/checkboxItem.model';
 import { ViewEquipmentAllocation } from './../../models/equipment/view-equipment-allocation.model';
@@ -19,48 +20,33 @@ export class EquipmentService {
 
   constructor() { }
 
-
-  // What it does
-  //  returns the list of types
-  //  returns the list of properties for a specific type
-  //  returns definitions of a specific type
-
   getTypes(): IOption[] {
     // fake service
     let types = [
-      { id: '1', value: 'printer' },
-      { id: '2', value: 'laptop' },
-      { id: '3', value: 'scanner' },
+      { value: '1', label: 'printer' },
+      { value: '2', label: 'laptop' },
+      { value: '3', label: 'scanner' },
     ]
     return types;
   }
 
-  getTypesAutocomplete(){
+  getTypesAutocomplete(): IOption[]{
     return [
-      { id: '1', value: 'printer' },
-      { id: '2', value: 'laptop' },
-      { id: '3', value: 'scanner' },
+      { value: '1', label: 'printer' },
+      { value: '2', label: 'laptop' },
+      { value: '3', label: 'scanner' },
     ] 
   }
 
-  getDefinitionsAutocomplete(ofTypes: IOption[]){
-    // if ofTypes = nul => all of the definitions
+  getDefinitionsAutocomplete(ofTypes: IOption[]): IOption[]{
     return [
-      { id: '1', value: 'printer' },
-      { id: '2', value: 'laptop' },
-      { id: '3', value: 'scanner' },
+      { value: '1', label: 'printer' },
+      { value: '2', label: 'laptop' },
+      { value: '3', label: 'scanner' },
     ]
   }
 
-  getProperties() {
-
-    // id: string,
-    // name: string,
-    // displayName: string,
-    // description: string,
-    // dataType: DataType,
-    // value?: string
-
+  getProperties(): AddProperty[]{
     let properties: AddProperty[] = [
       {
         id: '1',
@@ -100,21 +86,21 @@ export class EquipmentService {
     return properties;
   }
 
-  getCommonProperties(){
+  getCommonProperties(): CheckboxItem[]{
     return [
       new CheckboxItem('temsid', 'Tems ID'),
       new CheckboxItem('serialNumber', 'Serial Number'),
     ]
   }
 
-  getTypeSpecificProperties(type: IOption){
+  getTypeSpecificProperties(type: IOption): CheckboxItem[]{
     return [
       new CheckboxItem('temsid', 'Tems ID'),
       new CheckboxItem('serialNumber', 'Serial Number'),
     ]
   }
 
-  getEquipment(){
+  getEquipment(): ViewEquipmentSimplified[]{
     // returns the list of all equipment records
     let equipments: ViewEquipmentSimplified[] = [
       new ViewEquipmentSimplified(), new ViewEquipmentSimplified(), new ViewEquipmentSimplified(),
@@ -132,15 +118,15 @@ export class EquipmentService {
     return equipments;
   }
 
-  getEquipmentSimplified(id: string){
+  getEquipmentSimplified(id: string): ViewEquipmentSimplified{
     return new ViewEquipmentSimplified();
   }
 
-  getEquipmentByID(id: string){
+  getEquipmentByID(id: string): ViewEquipment{
     return new ViewEquipment();
   }
 
-  getEquipmentAllocations(id: string){
+  getEquipmentAllocations(id: string): ViewEquipmentAllocation[]{
     return [
       new ViewEquipmentAllocation(),
       new ViewEquipmentAllocation(),
@@ -153,18 +139,18 @@ export class EquipmentService {
     ]
   }
 
-  getAllAutocompleteOptions(){
+  getAllAutocompleteOptions(): IOption[] {
     return [
-      {id: '1', value: 'LPB301', },
-      {id: '2', value: 'LPB301', },
-      {id: '3', value: 'LPB301', },
-      {id: '4', value: 'LPB01', },
-      {id: '5', value: 'A2B301', },
-      {id: '6', value: 'WQE2N3II4I4220001', },
-      {id: '7', value: 'L04322', },
-      {id: '8', value: 'PC001', },
-      {id: '9', value: 'PC002', },
-      {id: '10', value: 'OC2332', },
+      {value: '1', label: 'LPB301', },
+      {value: '2', label: 'LPB301', },
+      {value: '3', label: 'LPB301', },
+      {value: '4', label: 'LPB01', },
+      {value: '5', label: 'A2B301', },
+      {value: '6', label: 'WQE2N3II4I4220001', },
+      {value: '7', label: 'L04322', },
+      {value: '8', label: 'PC001', },
+      {value: '9', label: 'PC002', },
+      {value: '10', label: 'OC2332', },
     ]
   }
 
@@ -172,10 +158,7 @@ export class EquipmentService {
     // might be unusable..
   }
 
-  getPropertiesOfType(typeId: string) {
-    // send type to API, it will return the list of properties
-
-    // fake service
+  getPropertiesOfType(typeId: string): AddProperty[] {
     let pcProperties: AddProperty[] = [
       {
         id: '1',
@@ -235,32 +218,29 @@ export class EquipmentService {
     return (typeId == '1') ? printerProperties : pcProperties;
   }
 
-  getDefinitionsOfType(typeId: string) {
-    // send type to API, it will return the list of properties
-
-    // fake service
+  getDefinitionsOfType(typeId: string): IOption[] {
     let printerDefinitions: IOption[] = [
-      { id: '1', value: 'HP LaserJet' },
-      { id: '2', value: 'Lenovo M7000' }
+      { value: '1', label: 'HP LaserJet' },
+      { value: '2', label: 'Lenovo M7000' }
     ];
 
     let pcDefinitions: IOption[] = [
-      { id: '3', value: 'Hantol' },
-      { id: '4', value: 'HPC' },
-      { id: '5', value: 'Sohoo' },
+      { value: '3', label: 'Hantol' },
+      { value: '4', label: 'HPC' },
+      { value: '5', label: 'Sohoo' },
     ];
 
     return printerDefinitions;
   }
 
-  getFullDefinition(definitionId: string) {
+  getFullDefinition(definitionId: string): Definition {
     // returns the full definition, including children definitions and so on...
     let fullDefinitions: Definition[] = [
       {
         type: new Type(),
         id: '1',
         identifier: 'HP LaserJet',
-        equipmentType: { id: '1', value: 'printer'},
+        equipmentType: { value: '1', label: 'printer'},
         properties: [
           {
             id: '1',
@@ -288,7 +268,7 @@ export class EquipmentService {
         type: new Type(),
         id: '2',
         identifier: 'Lenovo M700',
-        equipmentType: { id: '1', value: 'printer'},
+        equipmentType: { value: '1', label: 'printer'},
         properties: [
           {
             id: '1',
@@ -313,7 +293,7 @@ export class EquipmentService {
           type: new Type(),
           id: '2',
           identifier: 'Lenovo M700',
-          equipmentType: { id: '1', value: 'printer'},
+          equipmentType: { value: '1', label: 'printer'},
           properties: [
             {
               id: '1',
@@ -340,7 +320,7 @@ export class EquipmentService {
           type: new Type(),
           id: '2',
           identifier: 'not lenovo M700',
-          equipmentType: { id: '1', value: 'printer'},
+          equipmentType: { value: '1', label: 'printer'},
           properties: [
             {
               id: '1',
@@ -370,7 +350,7 @@ export class EquipmentService {
     return fullDefinitions.find(q => q.id == definitionId);
   }
 
-  getFullType(typeId: string) {
+  getFullType(typeId: string): AddType {
     let fullType: AddType = {
       id: typeId,
       name: (typeId == "1") ? 'printer' : (typeId == "2") ? 'laptop' : 'scanner',
@@ -392,7 +372,7 @@ export class EquipmentService {
     return fullType;
   }
 
-  generateAddEquipmentOfDefinition(definition: Definition) {
+  generateAddEquipmentOfDefinition(definition: Definition): AddEquipment {
     return new AddEquipment(definition);
   }
 } 

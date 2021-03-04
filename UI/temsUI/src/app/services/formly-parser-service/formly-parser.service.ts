@@ -261,8 +261,8 @@ export class FormlyParserService {
 
     addType.parents.forEach(parent => {
       parents.push({
-        id: parent.id,
-        value: parent.name
+        value: parent.id,
+        label: parent.name
       })
     });
 
@@ -271,8 +271,8 @@ export class FormlyParserService {
 
     temsProperties.forEach(property => {
       properties.push({
-        id: property.id,
-        value: property.name
+        value: property.id,
+        label: property.name
       })
     });
 

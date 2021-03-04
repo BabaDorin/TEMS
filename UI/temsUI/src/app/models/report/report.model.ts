@@ -51,9 +51,9 @@ export class Report implements IReport
         this.id = '1';
         this.name = 'custom report';
         this.description = 'custom report description';
-        this.rooms = [ { id: '1', value: '304'}];
-        this.personnel = [ { id: '1', value: 'Baba'}];
-        this.equipment = [ { id: '1', value: 'serialNumber'}];
+        this.rooms = [ { value: '1', label: '304'}];
+        this.personnel = [ { value: '1', label: 'Baba'}];
+        this.equipment = [ { value: '1', label: 'serialNumber'}];
         this.exportTo = 'excel';
     }
 }

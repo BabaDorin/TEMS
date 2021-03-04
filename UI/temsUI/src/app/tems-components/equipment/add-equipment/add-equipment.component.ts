@@ -53,8 +53,8 @@ export class AddEquipmentComponent implements OnInit {
     }
 
     // here we check if the selected type is valid and user hasn't done any manipulation
-    if (this.types.find(q => q.id == eventData.value) != undefined)
-      this.definitionsOfType = this.equipmentService.getDefinitionsOfType(this.selectedType.id)
+    if (this.types.find(q => q.value == eventData.value) != undefined)
+      this.definitionsOfType = this.equipmentService.getDefinitionsOfType(this.selectedType.value)
     else
       this.definitionsOfType = undefined;
 
@@ -72,7 +72,7 @@ export class AddEquipmentComponent implements OnInit {
     if(eventData.value == undefined)
       return;
     
-    if (this.definitionsOfType.find(q => q.id == eventData.value) != undefined)
+    if (this.definitionsOfType.find(q => q.value == eventData.value) != undefined)
     {
       this.selectedFullDefinition = this.equipmentService.getFullDefinition(eventData.value);
       this.createAddEquipmentFormly();
@@ -101,7 +101,7 @@ export class AddEquipmentComponent implements OnInit {
   }
 
   wipeAddEquipmentFormly() {
-    this.selectedDefinition = { id: '', value: '' };
+    this.selectedDefinition = { value: '', label: '' } as IOption;
     this.selectedFullDefinition = undefined;
     this.formlyData.isVisible = false;
     this.formlyData.fields = [];

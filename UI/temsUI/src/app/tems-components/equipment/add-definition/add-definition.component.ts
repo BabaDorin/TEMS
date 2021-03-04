@@ -47,7 +47,7 @@ export class AddDefinitionComponent implements OnInit {
     this.addDefinition = new Definition();
     let parentFullType = this.equipmentService.getFullType(typeId);
 
-    this.addDefinition.equipmentType = { id: parentFullType.id, value: parentFullType.name };
+    this.addDefinition.equipmentType = { value: parentFullType.id, label: parentFullType.name } as IOption;
     
     // Properties are copied from the definition types because we don't want
     // definition properties to be tight coupled to equipment properties.
@@ -57,7 +57,7 @@ export class AddDefinitionComponent implements OnInit {
     if (parentFullType.children != undefined)
       parentFullType.children.forEach(childType => {
         let childDefinition = new Definition();
-        childDefinition.equipmentType = { id: childType.id, value: childType.name };
+        childDefinition.equipmentType = { value: childType.id, label: childType.name } as IOption;
         childDefinition.properties = childType.properties;
 
         this.addDefinition.children.push(childDefinition);

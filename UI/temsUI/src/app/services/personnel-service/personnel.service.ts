@@ -1,3 +1,4 @@
+import { IOption } from 'src/app/models/option.model';
 import { ViewPersonnel } from './../../models/personnel/view-personnel.model';
 import { Injectable } from '@angular/core';
 import { ViewPersonnelSimplified } from 'src/app/models/personnel/view-personnel-simplified.model';
@@ -9,19 +10,19 @@ export class PersonnelService {
 
   constructor() { }
 
-  getAllAutocompleteOptions(){
+  getAllAutocompleteOptions(): IOption[]{
     return [
-      {id: '1', value:'Baba Dori'},
-      {id: '2', value:'Vasile Versace'},
-      {id: '3', value:'Ciuta Johnny'},
+      {value: '1', label:'Baba Dori'},
+      {value: '2', label:'Vasile Versace'},
+      {value: '3', label:'Ciuta Johnny'},
     ]
   }
 
-  getPersonnelSimplified(personnelId: string){
+  getPersonnelSimplified(personnelId: string): ViewPersonnelSimplified{
     return new ViewPersonnelSimplified();
   }
 
-  getPersonnel(){
+  getPersonnel(): ViewPersonnelSimplified[]{
     return [
       new ViewPersonnelSimplified(),
       new ViewPersonnelSimplified(),
@@ -31,7 +32,7 @@ export class PersonnelService {
     ]
   }
 
-  getPersonnelById(personnelId: string){
+  getPersonnelById(personnelId: string): ViewPersonnel{
     return new ViewPersonnel();
   }
 }

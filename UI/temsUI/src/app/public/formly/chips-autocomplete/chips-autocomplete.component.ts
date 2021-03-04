@@ -75,11 +75,11 @@ export class ChipsAutocompleteComponent implements OnInit, ControlValueAccessor 
     const input = event.input;
     const value = event.value;
 
-    let typedOption = { id: undefined, value: value };
+    let typedOption = { value: undefined, label: value };
 
     // If accepting only values from dropdown
     if (this.onlyValuesFromAutocomplete == true) {
-      typedOption = this.availableOptions.find(q => q.value.toLowerCase() == value.toLowerCase());
+      typedOption = this.availableOptions.find(q => q.label.toLowerCase() == value.toLowerCase());
     }
 
     if (typedOption != undefined) {
@@ -88,7 +88,7 @@ export class ChipsAutocompleteComponent implements OnInit, ControlValueAccessor 
       this.options.push(typedOption);
 
       // Removing the typed option from availableOptions (if it exists)
-      if (this.availableOptions.find(q => q.value.toLowerCase() == value.toLowerCase()) != undefined) {
+      if (this.availableOptions.find(q => q.label.toLowerCase() == value.toLowerCase()) != undefined) {
         this.availableOptions.splice(this.availableOptions.indexOf(typedOption), 1)
       }
 
@@ -140,15 +140,15 @@ export class ChipsAutocompleteComponent implements OnInit, ControlValueAccessor 
       // Otherwise, it is just pops out from options list.
       let poppedOption = this.options.pop();
       
-      if(poppedOption.id != undefined)
+      if(poppedOption.value != undefined)
         this.availableOptions.push(poppedOption);
     }
   }
 
   private _filter(op): IOption[] {
-    const filterValue = (typeof (op) == "string") ? op.toLowerCase() : op.value.toLowerCase();
+    const filterValue = (typeof (op) == "string") ? op.toLowerCase() : op.label.toLowerCase();
     console.log('filter value: ' + filterValue);
-    return this.availableOptions.filter(option => option.value.toLowerCase().indexOf(filterValue) === 0);
+    return this.availableOptions.filter(option => option.label.toLowerCase().indexOf(filterValue) === 0);
   }
 
 

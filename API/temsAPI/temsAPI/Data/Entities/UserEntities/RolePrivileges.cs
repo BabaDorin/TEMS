@@ -11,7 +11,7 @@ namespace temsAPI.Data.Entities.UserEntities
     public class RolePrivileges
     {
         [Key]
-        public string ID { get; set; }
+        public string Id { get; set; }
 
         [ForeignKey("RoleID")]
         public IdentityRole Role { get; set; }

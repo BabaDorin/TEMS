@@ -1,3 +1,4 @@
+import { Property } from 'src/app/models/equipment/view-property.model';
 import { AddEquipment } from './../../models/equipment/add-equipment.model';
 import { IOption } from 'src/app/models/option.model';
 import { AddIssue } from './../../models/communication/issues/add-issue';
@@ -355,6 +356,14 @@ export class FormlyParserService {
                 ]
               }
             },
+            {
+              key: 'required',
+              type: 'checkbox',
+              defaultValue: false,
+              templateOptions: {
+                label: 'Required',
+              },
+            },
           ]
         }
       ];
@@ -421,7 +430,28 @@ export class FormlyParserService {
             templateOptions: {
               btnText: '+ ' + childDefinition.equipmentType.value,
             },
-            fieldGroup: []
+            fieldGroup: [
+              {
+                className: 'col-6',
+                key: 'identifier',
+                type: 'input-tooltip',
+                templateOptions: {
+                  description: 'Name associated with this definition (If the desired definition already exists, select it from dropdown)',
+                  required: true,
+                  label: 'Identifier'
+                }
+              },
+              {
+                className: 'col-6',
+                key: 'identifier',
+                type: 'select',
+                templateOptions: {
+                  description: 'Choose an existing definition',
+                  label: 'Choose existing one',
+                  clickEvent: console.log('hello'),
+                }
+              },
+            ]
           }
         }
       )
@@ -514,7 +544,7 @@ export class FormlyParserService {
     return fields;
   }
 
-  generatePropertyFieldGroup(addProperty: AddProperty): FormlyFieldConfig {
+  generatePropertyFieldGroup(addProperty: Property): FormlyFieldConfig {
     let propertyFieldGroup: FormlyFieldConfig;
 
     switch (addProperty.dataType.name.toLowerCase()) {

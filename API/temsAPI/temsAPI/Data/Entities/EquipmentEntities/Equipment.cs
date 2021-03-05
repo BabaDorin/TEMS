@@ -16,7 +16,7 @@ namespace temsAPI.Data.Entities.EquipmentEntities
     public class Equipment
     {
         [Key]
-        public string ID { get; set; }
+        public string Id { get; set; }
 
 #nullable enable
         [ForeignKey("ParentID")]

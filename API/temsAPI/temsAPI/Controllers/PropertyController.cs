@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -17,8 +18,8 @@ namespace temsAPI.Controllers
 {
     public class PropertyController : TEMSController
     {
-        public PropertyController(IUnitOfWork unitOfWork, UserManager<TEMSUser> userManager) 
-            : base(unitOfWork, userManager)
+        public PropertyController(IMapper mapper, IUnitOfWork unitOfWork, UserManager<TEMSUser> userManager) 
+            : base(mapper, unitOfWork, userManager)
         {
 
         }
@@ -64,16 +65,17 @@ namespace temsAPI.Controllers
             // If we got so far, it might be valid.
             Property property = new Property()
             {
-                ID = Guid.NewGuid().ToString(),
+                Id = Guid.NewGuid().ToString(),
                 Name = viewModel.Name,
                 DisplayName = viewModel.DisplayName,
+                Required = viewModel.Required,
                 DataType = await _unitOfWork.DataTypes.Find(q => q.Name.ToLower() == viewModel.DataType.ToLower()),
             };
 
             await _unitOfWork.Properties.Create(property);
             await _unitOfWork.Save();
 
-            if (await _unitOfWork.Properties.isExists(q => q.ID == property.ID))
+            if (await _unitOfWork.Properties.isExists(q => q.Id == property.Id))
                 return ReturnResponse($"Success", Status.Succes);
             else
                 return ReturnResponse($"Fail", Status.Fail);

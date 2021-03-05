@@ -12,7 +12,7 @@ namespace temsAPI.Data.Entities.EquipmentEntities
     public class EquipmentDefinition
     {
         [Key]
-        public string ID { get; set; }
+        public string Id { get; set; }
 
         public string Identifier { get; set; }
 

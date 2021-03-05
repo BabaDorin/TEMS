@@ -2,8 +2,8 @@
     <mat-form-field class="form-field">
         <mat-label>Equipment Type</mat-label>
         <mat-select (selectionChange)="onSelectionChanged($event)">
-          <mat-option *ngFor="let option of equipmentTypes" [value]="option.id">
-            {{ option.value }}
+          <mat-option *ngFor="let option of equipmentTypes" [value]="option.value">
+            {{ option.label }}
           </mat-option>
         </mat-select>
       </mat-form-field>

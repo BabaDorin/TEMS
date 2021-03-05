@@ -33,7 +33,8 @@ export class AddPropertyComponent extends TEMSComponent implements OnInit {
       name: this.formlyData.model.addProperty.name,
       displayName: this.formlyData.model.addProperty.displayName,
       dataType: this.formlyData.model.addProperty.dataType,
-      description: this.formlyData.model.addProperty.description
+      description: this.formlyData.model.addProperty.description,
+      required: this.formlyData.model.addProperty.required
     }
     console.log(addProperty);
     this.subscriptions.push(this.equipmentService.postProperty(addProperty)

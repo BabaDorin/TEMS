@@ -10,7 +10,7 @@ namespace temsAPI.ViewModels.Property
         public string Name { get; set; }
         public string DisplayName { get; set; }
         public string DataType { get; set; }
-
+        public bool Required { get; set; } = false;
 #nullable enable
         public string? Description { get; set; }
 #nullable disable

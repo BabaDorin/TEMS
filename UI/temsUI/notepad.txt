@@ -1,0 +1,28 @@
+addDefinition: 
+- identifier required
+- parent's properties
+- description
+- price
+- currency
+- purchaseDate
+- children (with predefined identifiers)
+
+Type: (fullType)
+- id -
+- name -
+- properties: Property[] -
+- children: Type[] -
+
+Property: (fullProperty)
+- id - 
+- name - 
+- displayName - 
+- required - 
+- description - 
+- min - 
+- max -
+- options - 
+
+public string Id { get; set; } // rename
+public string Name { get; set; }
+public string? DisplayName { get; set; }

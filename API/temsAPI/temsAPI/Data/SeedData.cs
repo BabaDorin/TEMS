@@ -59,7 +59,7 @@ namespace temsAPI.Data
                      {
                          dbContext.DataTypes.Add(new DataType
                          {
-                             ID = Guid.NewGuid().ToString(),
+                             Id = Guid.NewGuid().ToString(),
                              Name = r
                          });
                          var result = dbContext.SaveChanges();
@@ -83,11 +83,11 @@ namespace temsAPI.Data
                 {
                     dbContext.Properties.Add(new Property
                     {
-                        ID = Guid.NewGuid().ToString(),
+                        Id = Guid.NewGuid().ToString(),
                         DataType = dbContext.DataTypes.ToList()[0],
                         DisplayName = prop,
                         Name = propName,
-                        DataTypeID = dbContext.DataTypes.ToList()[0].ID,
+                        DataTypeID = dbContext.DataTypes.ToList()[0].Id,
                     });
                 }
             });

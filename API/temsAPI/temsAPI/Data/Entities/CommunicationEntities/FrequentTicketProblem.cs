@@ -9,7 +9,7 @@ namespace temsAPI.Data.Entities.CommunicationEntities
     public class FrequentTicketProblem
     {
         [Key]
-        public string ID { get; set; }
+        public string Id { get; set; }
 
         public string Problem { get; set; }
     }

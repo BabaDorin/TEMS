@@ -12,7 +12,7 @@ namespace temsAPI.Data.Entities.EquipmentEntities
         // Which properties belong to which equipment types
 
         [Key]
-        public string ID { get; set; }
+        public string Id { get; set; }
 
         [ForeignKey("TypeID")]
         public EquipmentType Type { get; set; }

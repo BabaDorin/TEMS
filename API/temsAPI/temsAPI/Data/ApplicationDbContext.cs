@@ -26,15 +26,15 @@ namespace temsAPI.Data
                 .HasDefaultValueSql("1");
 
             // OnDeleteCascade PropertyEquipmentTypeAssociations
-            modelBuilder.Entity<EquipmentType>()
-                .HasMany(e => e.PropertyEquipmentTypeAssociations)
-                .WithOne(e => e.Type)
-                .OnDelete(DeleteBehavior.ClientCascade);
+            //modelBuilder.Entity<EquipmentType>()
+            //    .HasMany(e => e.PropertyEquipmentTypeAssociations)
+            //    .WithOne(e => e.Type)
+            //    .OnDelete(DeleteBehavior.ClientCascade);
 
-            modelBuilder.Entity<Property>()
-                .HasMany(e => e.PropertyEquipmentTypeAssociations)
-                .WithOne(e => e.Property)
-                .OnDelete(DeleteBehavior.ClientCascade);
+            //modelBuilder.Entity<Property>()
+            //    .HasMany(e => e.PropertyEquipmentTypeAssociations)
+            //    .WithOne(e => e.Property)
+            //    .OnDelete(DeleteBehavior.ClientCascade);
 
             // OnDeleteCascade EquipmentSpecifications
             modelBuilder.Entity<EquipmentDefinition>()

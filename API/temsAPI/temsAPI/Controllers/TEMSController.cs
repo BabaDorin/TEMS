@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -19,12 +20,15 @@ namespace temsAPI.Controllers
     {
         protected readonly IUnitOfWork _unitOfWork;
         protected readonly UserManager<TEMSUser> _userManager;
+        protected IMapper _mapper;
 
         public TEMSController(
+            IMapper mapper,
             IUnitOfWork unitOfWork,
             UserManager<TEMSUser> userManager
             )
         {
+            _mapper = mapper;
             _unitOfWork = unitOfWork;
             _userManager = userManager;
         }

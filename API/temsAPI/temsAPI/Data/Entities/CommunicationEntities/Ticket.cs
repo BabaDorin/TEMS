@@ -14,7 +14,7 @@ namespace temsAPI.Data.Entities.CommunicationEntities
     public class Ticket
     {
         [Key]
-        public string ID { get; set; }
+        public string Id { get; set; }
 
         public DateTime DateCreated { get; set; }
         public DateTime DateClosed { get; set; }

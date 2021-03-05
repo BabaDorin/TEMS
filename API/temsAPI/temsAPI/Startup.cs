@@ -16,6 +16,7 @@ using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data;
 using temsAPI.Data.Entities.UserEntities;
+using temsAPI.Mappings;
 using temsAPI.Repository;
 
 namespace temsAPI
@@ -44,6 +45,7 @@ namespace temsAPI
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.AddTransient<IUnitOfWork, UnitOfWork>();
+            services.AddAutoMapper(typeof(Maps));
 
             services.AddDefaultIdentity<TEMSUser>()
                 .AddRoles<IdentityRole>()

@@ -9,7 +9,7 @@ namespace temsAPI.Data.Entities.CommunicationEntities
     public class LogType
     {
         [Key]
-        public string ID { get; set; }
+        public string Id { get; set; }
 
         public string Type { get; set; }
 

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -11,13 +12,14 @@ using temsAPI.Data.Entities.EquipmentEntities;
 using temsAPI.Data.Entities.UserEntities;
 using temsAPI.ViewModels;
 using temsAPI.ViewModels.EquipmentType;
+using temsAPI.ViewModels.Property;
 
 namespace temsAPI.Controllers
 {
     public class EquipmentTypeController : TEMSController
     {
-        public EquipmentTypeController(IUnitOfWork unitOfWork, UserManager<TEMSUser> userManager)
-            : base(unitOfWork, userManager)
+        public EquipmentTypeController(IMapper mapper, IUnitOfWork unitOfWork, UserManager<TEMSUser> userManager)
+            : base(mapper, unitOfWork, userManager)
         {
 
         }
@@ -26,6 +28,31 @@ namespace temsAPI.Controllers
         public async Task<IList<EquipmentType>> Get()
         {
             return await _unitOfWork.EquipmentTypes.FindAll(q => q.IsArchieved == false);
+        }
+
+        [HttpPost]
+        public async Task<EquipmentTypeViewModel> GetFullType([FromBody]string typeId)
+        {
+            System.Threading.Thread.Sleep(2000);
+            if (!await _unitOfWork.EquipmentTypes.isExists(q => q.Id == typeId))
+                return null;
+
+            EquipmentType equipmentType = await _unitOfWork.EquipmentTypes.Find(q => q.Id == typeId,
+                includes: new List<string>() { nameof(equipmentType.Properties) }
+                );
+
+            foreach (var item in equipmentType.Properties)
+                item.DataType = await _unitOfWork.DataTypes.Find(q => q.Id == item.DataTypeID);
+
+            //equipmentType = _unitOfWork.
+            EquipmentTypeViewModel viewModel = new EquipmentTypeViewModel
+            {
+                Id = equipmentType.Id,
+                Name = equipmentType.Type,
+                Properties = _mapper.Map<List<PropertyViewModel>>(equipmentType.Properties)
+            };
+
+            return viewModel;
         }
 
         public IActionResult Index()
@@ -48,32 +75,33 @@ namespace temsAPI.Controllers
             // Invalid parents
             if (viewModel.Parents != null)
                 foreach (Option parent in viewModel.Parents)
-                    if (!await _unitOfWork.EquipmentTypes.isExists(q => q.ID == parent.Value))
+                    if (!await _unitOfWork.EquipmentTypes.isExists(q => q.Id == parent.Value))
                         return ReturnResponse($"Parent {parent.Label} not found.", Status.Fail);
 
 
             // Invalid properties
             if (viewModel.Properties != null)
                 foreach (Option property in viewModel.Properties)
-                    if (!await _unitOfWork.Properties.isExists(q => q.ID == property.Value))
+                    if (!await _unitOfWork.Properties.isExists(q => q.Id == property.Value))
                         return ReturnResponse($"Property {property.Label} not found.", Status.Fail);
 
 
             // If we got so far, it might be valid
             EquipmentType equipmentType = new EquipmentType
             {
-                ID = Guid.NewGuid().ToString(),
+                Id = Guid.NewGuid().ToString(),
                 Type = viewModel.Name,
             };
 
             if (viewModel.Properties != null)
                 foreach (Option prop in viewModel.Properties)
-                    equipmentType.PropertyEquipmentTypeAssociations.Add(new PropertyEquipmentTypeAssociation
-                    {
-                        ID = Guid.NewGuid().ToString(),
-                        PropertyID = prop.Value,
-                        TypeID = equipmentType.ID
-                    });
+                    //equipmentType.PropertyEquipmentTypeAssociations.Add(new PropertyEquipmentTypeAssociation
+                    //{
+                    //    Id = Guid.NewGuid().ToString(),
+                    //    PropertyID = prop.Value,
+                    //    TypeID = equipmentType.Id
+                    //});
+                    equipmentType.Properties.Add(await _unitOfWork.Properties.Find(q => q.Id == prop.Value));
 
             if (viewModel.Parents != null)
                 foreach (Option parent in viewModel.Parents)
@@ -82,14 +110,14 @@ namespace temsAPI.Controllers
                     {
                         Id = Guid.NewGuid().ToString(),
                         ParentEquipmentTypeId = parent.Value,
-                        ChildEquipmentTypeId = equipmentType.ID
+                        ChildEquipmentTypeId = equipmentType.Id
                     });
                 }
 
             await _unitOfWork.EquipmentTypes.Create(equipmentType);
             await _unitOfWork.Save();
 
-            if (await _unitOfWork.EquipmentTypes.isExists(q => q.ID == equipmentType.ID))
+            if (await _unitOfWork.EquipmentTypes.isExists(q => q.Id == equipmentType.Id))
                 return ReturnResponse($"Success", Status.Succes);
             else
                 return ReturnResponse($"Fail", Status.Fail);

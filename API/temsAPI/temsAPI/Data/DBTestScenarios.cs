@@ -25,7 +25,7 @@ namespace temsAPI.Data
             string etID = Guid.NewGuid().ToString();
             dbContext.EquipmentTypes.Add(new EquipmentType
             {
-                ID = etID,
+                Id = etID,
                 Type = "Printer"
             });
             logs.Add("EquipmentType table += Printer type");
@@ -34,7 +34,7 @@ namespace temsAPI.Data
             string pID = Guid.NewGuid().ToString();
             dbContext.Properties.Add(new Property
             {
-                ID = pID,
+                Id = pID,
                 DisplayName = "Denumire",
                 Name = "Name"
             });
@@ -43,7 +43,7 @@ namespace temsAPI.Data
             string petaID = Guid.NewGuid().ToString();
             dbContext.PropertyEquipmentTypeAssociations.Add(new PropertyEquipmentTypeAssociation
             {
-                ID = Guid.NewGuid().ToString(),
+                Id = Guid.NewGuid().ToString(),
                 PropertyID = pID,
                 TypeID = etID
             });
@@ -54,7 +54,7 @@ namespace temsAPI.Data
 
             logs.Add("Part 2: Removing records in order to test OnDeleteCascade");
 
-            dbContext.EquipmentTypes.Remove(dbContext.EquipmentTypes.FirstOrDefault(q => q.ID == etID));
+            dbContext.EquipmentTypes.Remove(dbContext.EquipmentTypes.FirstOrDefault(q => q.Id == etID));
             logs.Add("EquipmentType table -= Printer type");
             
             dbContext.SaveChanges();
@@ -64,7 +64,7 @@ namespace temsAPI.Data
 
             logs.Add("Success: " + !dbContext.PropertyEquipmentTypeAssociations.Any(q => q.PropertyID == pID));
 
-            dbContext.Properties.Remove(dbContext.Properties.FirstOrDefault(q => q.ID == pID));
+            dbContext.Properties.Remove(dbContext.Properties.FirstOrDefault(q => q.Id == pID));
             dbContext.SaveChanges();
 
             logs.Add("DB Set to initial state.");

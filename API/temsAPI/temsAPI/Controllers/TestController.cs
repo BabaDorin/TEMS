@@ -19,7 +19,7 @@ namespace temsAPI.Controllers
         {
             return new Personnel
             {
-                ID = "1"
+                Id = "1"
             };
         }
     }

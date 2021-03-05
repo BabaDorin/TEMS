@@ -11,7 +11,7 @@ namespace temsAPI.Data.Entities.KeyEntities
     public class KeyAllocation
     {
         [Key]
-        public string ID { get; set; }
+        public string Id { get; set; }
 
         [ForeignKey("PersonnelID")]
         public Personnel Personnel { get; set; }

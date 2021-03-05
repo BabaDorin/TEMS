@@ -3,36 +3,23 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using temsAPI.Data;
 
 namespace temsAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210305194817_fromIDtoId_ForBetterMapping")]
+    partial class fromIDtoId_ForBetterMapping
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("ProductVersion", "5.0.3")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-            modelBuilder.Entity("EquipmentTypeProperty", b =>
-                {
-                    b.Property<string>("EquipmentTypesId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("PropertiesId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("EquipmentTypesId", "PropertiesId");
-
-                    b.HasIndex("PropertiesId");
-
-                    b.ToTable("EquipmentTypeProperty");
-                });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
@@ -845,21 +832,6 @@ namespace temsAPI.Migrations
                     b.HasDiscriminator().HasValue("TEMSUser");
                 });
 
-            modelBuilder.Entity("EquipmentTypeProperty", b =>
-                {
-                    b.HasOne("temsAPI.Data.Entities.EquipmentEntities.EquipmentType", null)
-                        .WithMany()
-                        .HasForeignKey("EquipmentTypesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("temsAPI.Data.Entities.EquipmentEntities.Property", null)
-                        .WithMany()
-                        .HasForeignKey("PropertiesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -1068,12 +1040,14 @@ namespace temsAPI.Migrations
             modelBuilder.Entity("temsAPI.Data.Entities.EquipmentEntities.PropertyEquipmentTypeAssociation", b =>
                 {
                     b.HasOne("temsAPI.Data.Entities.EquipmentEntities.Property", "Property")
-                        .WithMany()
-                        .HasForeignKey("PropertyID");
+                        .WithMany("PropertyEquipmentTypeAssociations")
+                        .HasForeignKey("PropertyID")
+                        .OnDelete(DeleteBehavior.ClientCascade);
 
                     b.HasOne("temsAPI.Data.Entities.EquipmentEntities.EquipmentType", "Type")
-                        .WithMany()
-                        .HasForeignKey("TypeID");
+                        .WithMany("PropertyEquipmentTypeAssociations")
+                        .HasForeignKey("TypeID")
+                        .OnDelete(DeleteBehavior.ClientCascade);
 
                     b.Navigation("Property");
 
@@ -1193,11 +1167,15 @@ namespace temsAPI.Migrations
                     b.Navigation("EquipmentDefinitions");
 
                     b.Navigation("EquipmentTypeKinships");
+
+                    b.Navigation("PropertyEquipmentTypeAssociations");
                 });
 
             modelBuilder.Entity("temsAPI.Data.Entities.EquipmentEntities.Property", b =>
                 {
                     b.Navigation("EquipmentSpecifications");
+
+                    b.Navigation("PropertyEquipmentTypeAssociations");
                 });
 
             modelBuilder.Entity("temsAPI.Data.Entities.KeyEntities.Key", b =>

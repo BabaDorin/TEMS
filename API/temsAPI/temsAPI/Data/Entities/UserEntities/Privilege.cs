@@ -9,7 +9,7 @@ namespace temsAPI.Data.Entities.UserEntities
     public class Privilege
     {
         [Key]
-        public string ID { get; set; }
+        public string Id { get; set; }
 
 #nullable enable
         public string? Identifier { get; set; }

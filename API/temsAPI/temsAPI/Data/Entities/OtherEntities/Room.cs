@@ -10,7 +10,7 @@ namespace temsAPI.Data.Entities.OtherEntities
     public class Room
     {
         [Key]
-        public string ID { get; set; }
+        public string Id { get; set; }
 
         public string Identifier { get; set; }
 #nullable enable

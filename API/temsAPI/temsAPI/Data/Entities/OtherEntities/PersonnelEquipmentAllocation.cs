@@ -11,7 +11,7 @@ namespace temsAPI.Data.Entities.OtherEntities
     public class PersonnelEquipmentAllocation
     {
         [Key]
-        public string ID { get; set; }
+        public string Id { get; set; }
 
         [ForeignKey("EquipmentID")]
         public Equipment Equipment { get; set; }

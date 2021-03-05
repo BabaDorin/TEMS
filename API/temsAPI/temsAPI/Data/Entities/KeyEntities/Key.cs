@@ -10,7 +10,7 @@ namespace temsAPI.Data.Entities.KeyEntities
     public class Key
     {
         [Key]
-        public string ID { get; set; }
+        public string Id { get; set; }
 
         public string Identifier { get; set; }
 

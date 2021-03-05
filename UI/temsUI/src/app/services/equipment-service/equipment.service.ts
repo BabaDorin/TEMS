@@ -324,8 +324,9 @@ export class EquipmentService {
     // return fullDefinitions.find(q => q.id == definitionId);
   }
 
-  getFullType(typeId: string): EquipmentType {
-    return new EquipmentType();
+  getFullType(typeId: string): Observable<any> {
+    return this.http.post(API_EQTYPE_URL + '/getfulltype', JSON.stringify(typeId), this.httpOptions);
+    // return new EquipmentType();
     // let fullType: AddType = {
     //   id: typeId,
     //   name: (typeId == "1") ? 'printer' : (typeId == "2") ? 'laptop' : 'scanner',

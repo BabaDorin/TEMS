@@ -12,7 +12,7 @@ namespace temsAPI.Data.Entities.CommunicationEntities
     public class Log
     {
         [Key]
-        public string ID { get; set; }
+        public string Id { get; set; }
 
         public DateTime DateCreated { get; set; }
 #nullable enable

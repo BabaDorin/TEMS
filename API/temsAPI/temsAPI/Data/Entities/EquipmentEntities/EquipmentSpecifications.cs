@@ -14,7 +14,7 @@ namespace temsAPI.Data.Entities.EquipmentEntities
         // Which properties relates to which equipment types.
 
         [Key]
-        public string ID { get; set; }
+        public string Id { get; set; }
 
         [ForeignKey("EquipmentDefinitionID")]
         public EquipmentDefinition EquipmentDefinition { get; set; }

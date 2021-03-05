@@ -10,7 +10,7 @@ using temsAPI.Data.Entities.UserEntities;
 
 namespace temsAPI.Contracts
 {
-    interface IUnitOfWork: IDisposable
+    public interface IUnitOfWork: IDisposable
     {
         // Communication entities
         IGenericRepository<Announcement> Announcements { get; }

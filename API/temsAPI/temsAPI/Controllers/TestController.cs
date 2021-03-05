@@ -7,8 +7,6 @@ using temsAPI.Data.Entities.OtherEntities;
 
 namespace temsAPI.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
     public class TestController : Controller
     {
         public IActionResult Index()

@@ -7,8 +7,6 @@ using System.Threading.Tasks;
 
 namespace temsAPI.Controllers
 {
-    //[ApiController]
-    //[Route("api/[controller]")]
     public class WeatherForecastController : ControllerBase
     {
         private static readonly string[] Summaries = new[]

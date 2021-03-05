@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace temsAPI.Contracts
 {
-    interface IGenericRepository<T> where T : class
+    public interface IGenericRepository<T> where T : class
     {
         // Interface which defines CRUD
         // Every domain class should offer CRUD operations

@@ -13,8 +13,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using temsAPI.Contracts;
 using temsAPI.Data;
 using temsAPI.Data.Entities.UserEntities;
+using temsAPI.Repository;
 
 namespace temsAPI
 {
@@ -41,12 +43,21 @@ namespace temsAPI
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
+            services.AddTransient<IUnitOfWork, UnitOfWork>();
+
+            services.AddDefaultIdentity<TEMSUser>()
+                .AddRoles<IdentityRole>()
+                .AddEntityFrameworkStores<ApplicationDbContext>();
+
             services.AddCors(options =>
             {
                 options.AddPolicy(name: MyAllowSpecificOrigins,
                                   builder =>
                                   {
-                                      builder.WithOrigins("http://localhost:4200");
+                                      builder.WithOrigins("http://localhost:4200")
+                                      .AllowAnyOrigin()
+                                      .AllowAnyHeader()
+                                      .AllowAnyMethod();
                                   });
             });
 
@@ -75,8 +86,10 @@ namespace temsAPI
             app.UseHttpsRedirection();
 
             app.UseRouting();
-
+            app.UseCors(MyAllowSpecificOrigins);
             app.UseAuthorization();
+            app.UseAuthentication();
+            SeedData.Seed(userManager, roleManager, dbContext);
 
             //app.UseEndpoints(endpoints =>
             //{

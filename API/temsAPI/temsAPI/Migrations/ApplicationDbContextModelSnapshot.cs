@@ -168,10 +168,12 @@ namespace temsAPI.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("ProviderKey")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("ProviderDisplayName")
                         .HasColumnType("nvarchar(max)");
@@ -208,10 +210,12 @@ namespace temsAPI.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("Value")
                         .HasColumnType("nvarchar(max)");
@@ -521,17 +525,32 @@ namespace temsAPI.Migrations
                     b.Property<bool>("IsArchieved")
                         .HasColumnType("bit");
 
-                    b.Property<string>("ParentEquipmentTypeID")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<string>("Type")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("ID");
 
-                    b.HasIndex("ParentEquipmentTypeID");
-
                     b.ToTable("EquipmentTypes");
+                });
+
+            modelBuilder.Entity("temsAPI.Data.Entities.EquipmentEntities.EquipmentTypeKinship", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ChildEquipmentTypeId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ParentEquipmentTypeId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ChildEquipmentTypeId");
+
+                    b.HasIndex("ParentEquipmentTypeId");
+
+                    b.ToTable("EquipmentTypeKinships");
                 });
 
             modelBuilder.Entity("temsAPI.Data.Entities.EquipmentEntities.Property", b =>
@@ -976,11 +995,18 @@ namespace temsAPI.Migrations
                     b.Navigation("Property");
                 });
 
-            modelBuilder.Entity("temsAPI.Data.Entities.EquipmentEntities.EquipmentType", b =>
+            modelBuilder.Entity("temsAPI.Data.Entities.EquipmentEntities.EquipmentTypeKinship", b =>
                 {
-                    b.HasOne("temsAPI.Data.Entities.EquipmentEntities.EquipmentType", "ParentEquipmentType")
+                    b.HasOne("temsAPI.Data.Entities.EquipmentEntities.EquipmentType", "ChildEquipmentType")
                         .WithMany()
-                        .HasForeignKey("ParentEquipmentTypeID");
+                        .HasForeignKey("ChildEquipmentTypeId");
+
+                    b.HasOne("temsAPI.Data.Entities.EquipmentEntities.EquipmentType", "ParentEquipmentType")
+                        .WithMany("EquipmentTypeKinships")
+                        .HasForeignKey("ParentEquipmentTypeId")
+                        .OnDelete(DeleteBehavior.ClientCascade);
+
+                    b.Navigation("ChildEquipmentType");
 
                     b.Navigation("ParentEquipmentType");
                 });
@@ -1122,6 +1148,8 @@ namespace temsAPI.Migrations
             modelBuilder.Entity("temsAPI.Data.Entities.EquipmentEntities.EquipmentType", b =>
                 {
                     b.Navigation("EquipmentDefinitions");
+
+                    b.Navigation("EquipmentTypeKinships");
 
                     b.Navigation("PropertyEquipmentTypeAssociations");
                 });

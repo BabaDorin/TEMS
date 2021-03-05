@@ -9,6 +9,12 @@ using temsAPI.Data.Entities.UserEntities;
 
 namespace temsAPI.Controllers
 {
+    public enum Status
+    {
+        Succes = 1,
+        Fail = 0
+    }
+
     public class TEMSController : Controller
     {
         protected readonly IUnitOfWork _unitOfWork;
@@ -21,6 +27,11 @@ namespace temsAPI.Controllers
         {
             _unitOfWork = unitOfWork;
             _userManager = userManager;
+        }
+
+        protected JsonResult ReturnResponse(string message, Status status)
+        {
+            return Json(new { Message = message, Statis = status });
         }
     }
 }

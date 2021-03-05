@@ -11,18 +11,18 @@ namespace temsAPI.Data.Entities.EquipmentEntities
     {
         [Key]
         public string ID { get; set; }
-
         public string Type { get; set; }
-
-#nullable enable
-        [ForeignKey("ParentEquipmentTypeID")]
-        public EquipmentType? ParentEquipmentType { get; set; }
-        public string? ParentEquipmentTypeID { get; set; }
-#nullable disable
-
         public bool IsArchieved { get; set; }
 
         public virtual ICollection<PropertyEquipmentTypeAssociation> PropertyEquipmentTypeAssociations { get; set; }
         public virtual ICollection<EquipmentDefinition> EquipmentDefinitions { get; set; }
+        public virtual ICollection<EquipmentTypeKinship> EquipmentTypeKinships { get; set; }
+
+        public EquipmentType()
+        {
+            PropertyEquipmentTypeAssociations = new List<PropertyEquipmentTypeAssociation>();
+            EquipmentDefinitions = new List<EquipmentDefinition>();
+            EquipmentTypeKinships = new List<EquipmentTypeKinship>();
+        }
     }
 }

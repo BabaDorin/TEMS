@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace temsAPI.Migrations
 {
-    public partial class DatabaseInit : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -66,18 +66,11 @@ namespace temsAPI.Migrations
                 {
                     ID = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Type = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ParentEquipmentTypeID = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     IsArchieved = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_EquipmentTypes", x => x.ID);
-                    table.ForeignKey(
-                        name: "FK_EquipmentTypes_EquipmentTypes_ParentEquipmentTypeID",
-                        column: x => x.ParentEquipmentTypeID,
-                        principalTable: "EquipmentTypes",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -231,8 +224,8 @@ namespace temsAPI.Migrations
                 name: "AspNetUserLogins",
                 columns: table => new
                 {
-                    LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ProviderKey = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    LoginProvider = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
+                    ProviderKey = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
                     ProviderDisplayName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
@@ -276,8 +269,8 @@ namespace temsAPI.Migrations
                 columns: table => new
                 {
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    LoginProvider = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
                     Value = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
@@ -355,6 +348,31 @@ namespace temsAPI.Migrations
                     table.ForeignKey(
                         name: "FK_EquipmentDefinitions_EquipmentTypes_EquipmentTypeID",
                         column: x => x.EquipmentTypeID,
+                        principalTable: "EquipmentTypes",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "EquipmentTypeKinships",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ParentEquipmentTypeId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    ChildEquipmentTypeId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EquipmentTypeKinships", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_EquipmentTypeKinships_EquipmentTypes_ChildEquipmentTypeId",
+                        column: x => x.ChildEquipmentTypeId,
+                        principalTable: "EquipmentTypes",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_EquipmentTypeKinships_EquipmentTypes_ParentEquipmentTypeId",
+                        column: x => x.ParentEquipmentTypeId,
                         principalTable: "EquipmentTypes",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Restrict);
@@ -773,9 +791,14 @@ namespace temsAPI.Migrations
                 column: "PropertyID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_EquipmentTypes_ParentEquipmentTypeID",
-                table: "EquipmentTypes",
-                column: "ParentEquipmentTypeID");
+                name: "IX_EquipmentTypeKinships_ChildEquipmentTypeId",
+                table: "EquipmentTypeKinships",
+                column: "ChildEquipmentTypeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_EquipmentTypeKinships_ParentEquipmentTypeId",
+                table: "EquipmentTypeKinships",
+                column: "ParentEquipmentTypeId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_KeyAllocations_KeyID",
@@ -910,6 +933,9 @@ namespace temsAPI.Migrations
 
             migrationBuilder.DropTable(
                 name: "EquipmentSpecifications");
+
+            migrationBuilder.DropTable(
+                name: "EquipmentTypeKinships");
 
             migrationBuilder.DropTable(
                 name: "FrequentTicketProblems");

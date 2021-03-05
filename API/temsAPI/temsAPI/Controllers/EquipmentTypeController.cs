@@ -35,7 +35,7 @@ namespace temsAPI.Controllers
 
         //[ValidateAntiForgeryToken]
         [HttpPost]
-        public async Task<JsonResult> Insert([FromBody]AddEquipmentTypeViewModel viewModel)
+        public async Task<JsonResult> Insert([FromBody] AddEquipmentTypeViewModel viewModel)
         {
             // Invalid name
             if (String.IsNullOrEmpty((viewModel.Name = viewModel.Name.Trim())))
@@ -48,14 +48,14 @@ namespace temsAPI.Controllers
             // Invalid parents
             if (viewModel.Parents != null)
                 foreach (Option parent in viewModel.Parents)
-                    if(!await _unitOfWork.EquipmentTypes.isExists(q => q.ID == parent.Value))
+                    if (!await _unitOfWork.EquipmentTypes.isExists(q => q.ID == parent.Value))
                         return ReturnResponse($"Parent {parent.Label} not found.", Status.Fail);
 
 
             // Invalid properties
             if (viewModel.Properties != null)
                 foreach (Option property in viewModel.Properties)
-                    if(!await _unitOfWork.Properties.isExists(q => q.ID == property.Value))
+                    if (!await _unitOfWork.Properties.isExists(q => q.ID == property.Value))
                         return ReturnResponse($"Property {property.Label} not found.", Status.Fail);
 
 
@@ -75,21 +75,21 @@ namespace temsAPI.Controllers
                         TypeID = equipmentType.ID
                     });
 
-            if (viewModel.Properties != null)
-                if (viewModel.Parents != null)
-                    foreach (Option parent in viewModel.Parents)
+            if (viewModel.Parents != null)
+                foreach (Option parent in viewModel.Parents)
+                {
+                    equipmentType.EquipmentTypeKinships.Add(new EquipmentTypeKinship
                     {
-                        equipmentType.EquipmentTypeKinships.Add(new EquipmentTypeKinship
-                        {
-                            ParentEquipmentTypeId = parent.Value,
-                            ChildEquipmentTypeId = equipmentType.ID
-                        });
-                    }
+                        Id = Guid.NewGuid().ToString(),
+                        ParentEquipmentTypeId = parent.Value,
+                        ChildEquipmentTypeId = equipmentType.ID
+                    });
+                }
 
             await _unitOfWork.EquipmentTypes.Create(equipmentType);
             await _unitOfWork.Save();
 
-            if(await _unitOfWork.EquipmentTypes.isExists(q => q.ID == equipmentType.ID))
+            if (await _unitOfWork.EquipmentTypes.isExists(q => q.ID == equipmentType.ID))
                 return ReturnResponse($"Success", Status.Succes);
             else
                 return ReturnResponse($"Fail", Status.Fail);

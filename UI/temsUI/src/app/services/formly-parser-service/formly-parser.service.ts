@@ -333,6 +333,14 @@ export class FormlyParserService {
                 description: 'The name that will be displayed'
               },
             },
+            {
+              key: 'description',
+              type: 'input-tooltip',
+              templateOptions: {
+                label: 'Property description',
+                description: 'Description of this property will appear like this',
+              },
+            },
             
             {
               key: 'dataType',

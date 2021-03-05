@@ -52,7 +52,7 @@ namespace temsAPI.Data
 
         private static void SeedDataTypes(ApplicationDbContext dbContext)
         {
-            (new List<string>() { "String", "Integer", "Double", "Boolean" })
+            (new List<string>() { "string", "number", "boolean" })
                 .ForEach(r =>
                  {
                      if (!dbContext.DataTypes.Any(dt => dt.Name == r))

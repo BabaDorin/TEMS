@@ -39,7 +39,7 @@ export class AddTypeComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.subscriptions.push(this.equipmentService.getTypes().subscribe(response=>{
-      this.parentTypeOptions = response.map(r => ({value: r.id, label: r.name}))
+      this.parentTypeOptions = response.map(r => ({value: r.id, label: r.type}))
       if(this.parentTypeOptions.length == 0)
         this.formGroup.controls.parents.disable();
     }));

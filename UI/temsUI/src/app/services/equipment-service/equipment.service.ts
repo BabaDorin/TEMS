@@ -32,8 +32,11 @@ export class EquipmentService {
   }
 
   postType(addType: AddType): Observable<any> {
-    console.log(addType);
     return this.http.post<AddType>(API_EQTYPE_URL + '/insert', JSON.stringify(addType), this.httpOptions);
+  }
+
+  postProperty(addProperty: AddProperty): Observable<any>{
+    return this.http.post<AddProperty>(API_PROP_URL + '/insert', JSON.stringify(addProperty), this.httpOptions);
   }
 
   getTypesAutocomplete(): IOption[]{

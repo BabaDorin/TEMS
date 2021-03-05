@@ -1,10 +1,10 @@
 import { DataType } from '../datatype.model';
 export interface AddProperty{
-    id: string,
+    id?: string,
     name: string,
     required?: boolean;
     displayName: string,
-    description: string,
+    description?: string,
     dataType: DataType,
     
     value?: string

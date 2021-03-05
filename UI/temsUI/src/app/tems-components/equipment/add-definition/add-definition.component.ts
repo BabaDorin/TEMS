@@ -2,7 +2,7 @@ import { EquipmentType } from './../../../models/equipment/view-type.model';
 import { map } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
 import { IOption } from './../../../models/option.model';
-import { Definition } from './../../../models/equipment/add-definition.model';
+import { AddDefinition, Definition } from './../../../models/equipment/add-definition.model';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Component, OnInit, Input, Inject, OnDestroy } from '@angular/core';
 import { EquipmentService } from 'src/app/services/equipment-service/equipment.service';
@@ -28,6 +28,7 @@ export class AddDefinitionComponent extends TEMSComponent implements OnInit {
 
   addDefinition: Definition;
   equipmentTypes: IOption[];
+  eqProperies: string[];
 
   constructor(
     private formlyParserService: FormlyParserService,
@@ -113,6 +114,21 @@ export class AddDefinitionComponent extends TEMSComponent implements OnInit {
   }
 
   onSubmit(model) {
-    console.log(model);
+    let addDefinition = new AddDefinition();
+    addDefinition.typeId = model.typeId;
+    addDefinition.identifier = model.addDefinition.identifier;
+    addDefinition.price = model.addDefinition.price;
+    addDefinition.currency = model.addDefinition.currency;
+
+    var propNames = Object.getOwnPropertyNames(model.addDefinition);
+    propNames.forEach( propName => 
+      {
+        if((this.addDefinition.properties.find(q => q.name == propName))){
+          addDefinition.properties.push({value: propName, label: model.addDefinition[propName]} as IOption)
+        }
+      }
+    );
+
+    console.log(addDefinition);
   }
 }

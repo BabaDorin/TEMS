@@ -31,11 +31,10 @@ namespace temsAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<EquipmentTypeViewModel> GetFullType([FromBody]string typeId)
+        public async Task<JsonResult> GetFullType([FromBody]string typeId)
         {
-            System.Threading.Thread.Sleep(2000);
             if (!await _unitOfWork.EquipmentTypes.isExists(q => q.Id == typeId))
-                return null;
+                return ReturnResponse("There is no equipment type associated with the specified typeId", Status.Fail);
 
             EquipmentType equipmentType = await _unitOfWork.EquipmentTypes.Find(q => q.Id == typeId,
                 includes: new List<string>() { nameof(equipmentType.Properties) }
@@ -52,7 +51,7 @@ namespace temsAPI.Controllers
                 Properties = _mapper.Map<List<PropertyViewModel>>(equipmentType.Properties)
             };
 
-            return viewModel;
+            return Json(viewModel);
         }
 
         public IActionResult Index()

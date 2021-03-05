@@ -376,7 +376,7 @@ export class FormlyParserService {
     let fields: FormlyFieldConfig[] =
       [
         {
-          template: '<h4> Add new ' + addDefinition.equipmentType.value + ' definition</h4>'
+          template: '<h4> Add new ' + addDefinition.equipmentType.label + ' definition</h4>'
         },
         {
           key: 'addDefinition',
@@ -384,7 +384,7 @@ export class FormlyParserService {
           fieldGroup: [
             {
               key: 'identifier',
-              type: 'input',
+              type: 'input-tooltip',
               templateOptions: {
                 description: 'Name associated with this definition',
                 required: true,
@@ -548,13 +548,13 @@ export class FormlyParserService {
     let propertyFieldGroup: FormlyFieldConfig;
 
     switch (addProperty.dataType.name.toLowerCase()) {
-      case 'string':
+      case 'text':
         propertyFieldGroup = {
           key: addProperty.name,
           type: 'input-tooltip',
           defaultValue: "default value",
           templateOptions: {
-            description: 'cf',
+            description: addProperty.description,
             label: addProperty.displayName,
             required: addProperty.required,
           },
@@ -568,11 +568,11 @@ export class FormlyParserService {
           defaultValue: "default value",
           templateOptions: {
             type: 'number',
-            description: 'FrequencyFrequencyFrequencyFrequencyFrequencyFrequencyFrequencyFrequencyFrequencyFrequencyFrequencyFrequencyFrequencyFrequencyFrequencyFrequencyFrequencyFrequencyFrequencyFrequencyFrequencyFrequencyFrequencyFrequencyFrequency',
+            description: addProperty.description,
             label: addProperty.displayName,
             required: addProperty.required,
-            min: addProperty.min,
-            max: addProperty.max,
+            min: (addProperty.min == 0 && addProperty.max == 0) ? undefined : addProperty.min,
+            max: (addProperty.min == 0 && addProperty.max == 0) ? undefined : addProperty.max
           },
         }
         break;
@@ -601,7 +601,7 @@ export class FormlyParserService {
         }
         break;
 
-      case 'checkbox':
+      case 'bool':
         propertyFieldGroup = {
           key: addProperty.name,
           type: 'checkbox',

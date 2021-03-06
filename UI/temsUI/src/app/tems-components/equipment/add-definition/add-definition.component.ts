@@ -118,6 +118,7 @@ export class AddDefinitionComponent extends TEMSComponent implements OnInit {
     addDefinition.typeId = model.typeId;
     addDefinition.identifier = model.addDefinition.identifier;
     addDefinition.price = model.addDefinition.price;
+    addDefinition.description = model.addDefinition.description;
     addDefinition.currency = model.addDefinition.currency;
 
     var propNames = Object.getOwnPropertyNames(model.addDefinition);

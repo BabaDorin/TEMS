@@ -44,6 +44,3 @@ validate data on client
 create insert request =>...
 create addefinition backend viewmodel
 validate data on server
-
-=== issues
-description is null

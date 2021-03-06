@@ -15,6 +15,9 @@ namespace temsAPI.Data.Entities.EquipmentEntities
         public string Id { get; set; }
 
         public string Identifier { get; set; }
+        public double Price { get; set; }
+        public string Currency { get; set; } = "lei";
+
 
 #nullable enable
         [ForeignKey("EquipmentTypeID")]

@@ -376,7 +376,7 @@ export class FormlyParserService {
     let fields: FormlyFieldConfig[] =
       [
         {
-          template: '<h4> Add new ' + addDefinition.equipmentType.label + ' definition</h4>'
+          template: '<h2> Add new ' + addDefinition.equipmentType.label + ' definition</h2><hr><br>'
         },
         {
           key: 'addDefinition',

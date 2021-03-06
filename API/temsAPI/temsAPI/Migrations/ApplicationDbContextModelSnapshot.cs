@@ -486,6 +486,9 @@ namespace temsAPI.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("Currency")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("EquipmentTypeID")
                         .HasColumnType("nvarchar(450)");
 
@@ -497,6 +500,9 @@ namespace temsAPI.Migrations
 
                     b.Property<string>("ParentID")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<double>("Price")
+                        .HasColumnType("float");
 
                     b.HasKey("Id");
 

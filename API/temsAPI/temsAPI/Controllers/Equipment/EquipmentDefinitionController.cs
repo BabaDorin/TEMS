@@ -64,6 +64,8 @@ namespace temsAPI.Controllers.Equipment
                 Id = Guid.NewGuid().ToString(),
                 Identifier = viewModel.Identifier,
                 EquipmentTypeID = viewModel.TypeId,
+                Price = viewModel.Price,
+                Currency = viewModel.Currency,
             };
 
             foreach(var property in viewModel.Properties)

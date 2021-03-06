@@ -2,7 +2,7 @@
 
 namespace temsAPI.Migrations
 {
-    public partial class reset : Migration
+    public partial class EquipmentDefinitionRefactoring : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -13,6 +13,19 @@ namespace temsAPI.Migrations
             migrationBuilder.DropForeignKey(
                 name: "FK_EquipmentSpecifications_Properties_PropertyID",
                 table: "EquipmentSpecifications");
+
+            migrationBuilder.AddColumn<string>(
+                name: "Currency",
+                table: "EquipmentDefinitions",
+                type: "nvarchar(max)",
+                nullable: true);
+
+            migrationBuilder.AddColumn<double>(
+                name: "Price",
+                table: "EquipmentDefinitions",
+                type: "float",
+                nullable: false,
+                defaultValue: 0.0);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_EquipmentSpecifications_EquipmentDefinitions_EquipmentDefinitionID",
@@ -40,6 +53,14 @@ namespace temsAPI.Migrations
             migrationBuilder.DropForeignKey(
                 name: "FK_EquipmentSpecifications_Properties_PropertyID",
                 table: "EquipmentSpecifications");
+
+            migrationBuilder.DropColumn(
+                name: "Currency",
+                table: "EquipmentDefinitions");
+
+            migrationBuilder.DropColumn(
+                name: "Price",
+                table: "EquipmentDefinitions");
 
             migrationBuilder.AddForeignKey(
                 name: "FK_EquipmentSpecifications_EquipmentDefinitions_EquipmentDefinitionID",

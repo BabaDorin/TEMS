@@ -123,12 +123,14 @@ export class AddDefinitionComponent extends TEMSComponent implements OnInit {
     var propNames = Object.getOwnPropertyNames(model.addDefinition);
     propNames.forEach( propName => 
       {
-        if((this.addDefinition.properties.find(q => q.name == propName))){
+        if((this.addDefinition.properties.find(q => q.name == propName)))
           addDefinition.properties.push({value: propName, label: model.addDefinition[propName]} as IOption)
-        }
-      }
-    );
+      });
 
     console.log(addDefinition);
+    this.subscriptions.push(this.equipmentService.createDefinition(addDefinition)
+      .subscribe(response =>{
+        console.log(response);
+      }));
   }
 }

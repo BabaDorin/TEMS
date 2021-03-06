@@ -30,5 +30,10 @@ namespace temsAPI.Data.Entities.EquipmentEntities
         public virtual ICollection<EquipmentSpecifications> EquipmentSpecifications { get; set; }
         public virtual ICollection<EquipmentDefinition> Children { get; set; }
 
+        public EquipmentDefinition()
+        {
+            EquipmentSpecifications = new List<EquipmentSpecifications>();
+            Children = new List<EquipmentDefinition>();
+        }
     }
 }

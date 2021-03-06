@@ -35,7 +35,7 @@ namespace temsAPI.Controllers
 
         protected JsonResult ReturnResponse(string message, Status status)
         {
-            return Json(new { Message = message, Statis = status });
+            return Json(new { Message = message, Status = status });
         }
     }
 }

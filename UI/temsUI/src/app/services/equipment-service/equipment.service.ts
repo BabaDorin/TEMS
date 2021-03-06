@@ -1,7 +1,7 @@
 import { AddType } from './../../models/equipment/add-type.model';
 import { EquipmentType } from './../../models/equipment/view-type.model';
-import { Definition } from './../../models/equipment/add-definition.model';
-import { API_PROP_URL, API_EQTYPE_URL } from './../../models/backend.config';
+import { Definition, AddDefinition } from './../../models/equipment/add-definition.model';
+import { API_PROP_URL, API_EQTYPE_URL, API_EQDEF_URL } from './../../models/backend.config';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { IOption } from './../../models/option.model';
 import { CheckboxItem } from '../../models/checkboxItem.model';
@@ -32,11 +32,24 @@ export class EquipmentService {
   }
 
   postType(addType: AddType): Observable<any> {
-    return this.http.post<AddType>(API_EQTYPE_URL + '/insert', JSON.stringify(addType), this.httpOptions);
+    return this.http.post<AddType>(
+      API_EQTYPE_URL + '/insert', 
+      JSON.stringify(addType), 
+      this.httpOptions);
   }
 
   postProperty(addProperty: AddProperty): Observable<any>{
-    return this.http.post<AddProperty>(API_PROP_URL + '/insert', JSON.stringify(addProperty), this.httpOptions);
+    return this.http.post<AddProperty>(
+      API_PROP_URL + '/insert', 
+      JSON.stringify(addProperty), 
+      this.httpOptions);
+  }
+
+  createDefinition(addDefinition: AddDefinition): Observable<any>{
+    return this.http.post<AddDefinition>(
+      API_EQDEF_URL + '/insert', 
+      JSON.stringify(addDefinition), 
+      this.httpOptions);
   }
 
   getTypesAutocomplete(): IOption[]{
@@ -326,26 +339,6 @@ export class EquipmentService {
 
   getFullType(typeId: string): Observable<any> {
     return this.http.post(API_EQTYPE_URL + '/getfulltype', JSON.stringify(typeId), this.httpOptions);
-    // return new EquipmentType();
-    // let fullType: AddType = {
-    //   id: typeId,
-    //   name: (typeId == "1") ? 'printer' : (typeId == "2") ? 'laptop' : 'scanner',
-    //   properties: this.getPropertiesOfType(typeId),
-    //   children: [
-    //     {
-    //       id: '1',
-    //       name: 'cartrige',
-    //       properties: this.getPropertiesOfType(typeId),
-    //     },
-    //     {
-    //       id: '2',
-    //       name: 'microprocessor',
-    //       properties: this.getPropertiesOfType(typeId),
-    //     },
-    //   ]
-    // }
-    // return fullType;
-    // 
   }
 
   generateAddEquipmentOfDefinition(definition: Definition): AddEquipment {

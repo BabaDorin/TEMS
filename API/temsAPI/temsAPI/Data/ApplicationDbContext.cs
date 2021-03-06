@@ -36,11 +36,16 @@ namespace temsAPI.Data
             //    .WithOne(e => e.Property)
             //    .OnDelete(DeleteBehavior.ClientCascade);
 
-            // OnDeleteCascade EquipmentSpecifications
+            //OnDeleteCascade EquipmentSpecifications
             modelBuilder.Entity<EquipmentDefinition>()
                 .HasMany(e => e.EquipmentSpecifications)
                 .WithOne(e => e.EquipmentDefinition)
-                .OnDelete(DeleteBehavior.ClientCascade);
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Property>()
+                .HasMany(e => e.EquipmentSpecifications)
+                .WithOne(e => e.Property)
+                .OnDelete(DeleteBehavior.Cascade);
 
             // OnDeleteCascade EquipmentDefinition
             modelBuilder.Entity<EquipmentType>()

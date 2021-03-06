@@ -9,5 +9,8 @@ namespace temsAPI.ViewModels
     {
         public string Value { get; set; }
         public string Label { get; set; }
+#nullable enable
+        public string? Additional { get; set; }
+#nullable disable
     }
 }

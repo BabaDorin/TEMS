@@ -49,8 +49,8 @@ namespace temsAPI.Controllers
                 return ReturnResponse("'DisplayName' is required.", Status.Fail);
 
             // dataType should be a valid one
-            if(!(new List<string> { "string", "number", "bool" })
-                .Contains((viewModel.DataType = viewModel.DataType.ToLower())))
+            viewModel.DataType = viewModel.DataType.ToLower().Trim();
+            if(!await _unitOfWork.DataTypes.isExists(q => q.Name == viewModel.DataType))
                 return ReturnResponse("The datatype that has been provided seems invalid.", Status.Fail);
 
             if (!String.IsNullOrEmpty(viewModel.Description))
@@ -69,7 +69,7 @@ namespace temsAPI.Controllers
                 Name = viewModel.Name,
                 DisplayName = viewModel.DisplayName,
                 Required = viewModel.Required,
-                DataType = await _unitOfWork.DataTypes.Find(q => q.Name.ToLower() == viewModel.DataType.ToLower()),
+                DataType = await _unitOfWork.DataTypes.Find(q => q.Name.ToLower() == viewModel.DataType),
             };
 
             await _unitOfWork.Properties.Create(property);

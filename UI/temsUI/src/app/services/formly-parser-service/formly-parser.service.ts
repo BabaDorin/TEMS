@@ -350,7 +350,7 @@ export class FormlyParserService {
                 required: true,
                 label: 'DataType',
                 options: [
-                  { value: 'string', label: 'Text' },
+                  { value: 'text', label: 'Text' },
                   { value: 'number', label: 'Number' },
                   { value: 'bool', label: 'Boolean' }, // Other will appear soon
                 ]
@@ -394,12 +394,14 @@ export class FormlyParserService {
           ]
         }
       ];
-
+    console.log('1');
     // Adding inputs for parent's properties
     addDefinition.properties.forEach(property => {
       fields[fields.length - 1].fieldGroup.push(this.generatePropertyFieldGroup(property))
     });
+    console.log('back');
 
+    console.log('price and description');
     fields[fields.length-1].fieldGroup.push(
       {
         key: 'description',
@@ -411,9 +413,12 @@ export class FormlyParserService {
       this.generatePriceFields(),
     );
 
+    console.log('children');
     if (addDefinition.children.length == 0)
       return fields;
 
+    console.log('continue');
+    
     // Adding children with 'repeat' type
     let tempKey = 0;
     addDefinition.children.forEach(childDefinition => {
@@ -546,9 +551,11 @@ export class FormlyParserService {
 
   generatePropertyFieldGroup(addProperty: Property): FormlyFieldConfig {
     let propertyFieldGroup: FormlyFieldConfig;
+    console.log('generatepropertyfieldgrop');
 
     switch (addProperty.dataType.name.toLowerCase()) {
       case 'text':
+        console.log('add ' + addProperty.name);
         propertyFieldGroup = {
           key: addProperty.name,
           type: 'input-tooltip',
@@ -562,6 +569,8 @@ export class FormlyParserService {
         break;
 
       case 'number':
+        console.log('add ' + addProperty.name);
+
         propertyFieldGroup = {
           key: addProperty.name,
           type: 'input-tooltip',
@@ -602,6 +611,7 @@ export class FormlyParserService {
         break;
 
       case 'bool':
+        console.log('add ' + addProperty.name);
         propertyFieldGroup = {
           key: addProperty.name,
           type: 'checkbox',
@@ -625,6 +635,7 @@ export class FormlyParserService {
         break;
     }
 
+    console.log('return ' + addProperty.name);
     return propertyFieldGroup;
 
   }

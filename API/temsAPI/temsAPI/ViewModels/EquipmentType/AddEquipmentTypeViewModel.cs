@@ -7,8 +7,8 @@ namespace temsAPI.ViewModels.EquipmentType
 {
     public class AddEquipmentTypeViewModel
     {
-        public List<Option>? Parents { get; set; }
+        public virtual ICollection<Option>? Parents { get; set; }
         public string Name { get; set; }
-        public List<Option> Properties{ get; set; }
+        public virtual ICollection<Option> Properties{ get; set; }
     }
 }

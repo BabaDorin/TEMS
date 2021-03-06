@@ -204,19 +204,22 @@ export class EquipmentService {
     return (typeId == '1') ? printerProperties : pcProperties;
   }
 
-  getDefinitionsOfType(typeId: string): IOption[] {
-    let printerDefinitions: IOption[] = [
-      { value: '1', label: 'HP LaserJet' },
-      { value: '2', label: 'Lenovo M7000' }
-    ];
+  getDefinitionsOfType(typeId: string): Observable<any> {
+    console.log(typeId);
+    return this.http.post(API_EQDEF_URL + '/getdefinitionsoftype', JSON.stringify(typeId), this.httpOptions)
 
-    let pcDefinitions: IOption[] = [
-      { value: '3', label: 'Hantol' },
-      { value: '4', label: 'HPC' },
-      { value: '5', label: 'Sohoo' },
-    ];
+    // let printerDefinitions: IOption[] = [
+    //   { value: '1', label: 'HP LaserJet' },
+    //   { value: '2', label: 'Lenovo M7000' }
+    // ];
 
-    return printerDefinitions;
+    // let pcDefinitions: IOption[] = [
+    //   { value: '3', label: 'Hantol' },
+    //   { value: '4', label: 'HPC' },
+    //   { value: '5', label: 'Sohoo' },
+    // ];
+
+    // return printerDefinitions;
   }
 
   getFullDefinition(definitionId: string): Definition {
@@ -338,7 +341,7 @@ export class EquipmentService {
   }
 
   getFullType(typeId: string): Observable<any> {
-    return this.http.post(API_EQTYPE_URL + '/getfulltype', JSON.stringify(typeId), this.httpOptions);
+    return this.http.post(API_EQTYPE_URL + '/fulltype', JSON.stringify(typeId), this.httpOptions);
   }
 
   generateAddEquipmentOfDefinition(definition: Definition): AddEquipment {

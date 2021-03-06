@@ -58,9 +58,16 @@ export class AddEquipmentComponent extends TEMSComponent implements OnInit {
       this.wipeAddEquipmentFormly();
     }
 
-    // here we check if the selected type is valid and user hasn't done any manipulation
+    console.log('event data:');
+    console.log(eventData);
     if (this.types.find(q => q.value == eventData.value) != undefined)
-      this.definitionsOfType = this.equipmentService.getDefinitionsOfType(this.selectedType.value)
+      this.subscriptions.push(this.equipmentService.getDefinitionsOfType(eventData.value)
+        .subscribe(response => {
+          if(response.status == undefined)
+            this.definitionsOfType = response;
+          else
+            console.log(response); // error
+        }))
     else
       this.definitionsOfType = undefined;
   }

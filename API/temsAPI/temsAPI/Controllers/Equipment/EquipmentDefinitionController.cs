@@ -10,6 +10,7 @@ using temsAPI.Contracts;
 using temsAPI.Data.Entities.EquipmentEntities;
 using temsAPI.Data.Entities.UserEntities;
 using temsAPI.Validation;
+using temsAPI.ViewModels;
 using temsAPI.ViewModels.EquipmentDefinition;
 
 namespace temsAPI.Controllers.Equipment
@@ -88,6 +89,28 @@ namespace temsAPI.Controllers.Equipment
                 return ReturnResponse("Fail", Status.Fail);
             else
                 return ReturnResponse("Success", Status.Succes);
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> GetDefinitionsOfType([FromBody] string typeId)
+        {
+            List<Option> options = new List<Option>();
+            try
+            {
+                (await _unitOfWork.EquipmentDefinitions.FindAll(q => q.EquipmentTypeID == typeId))
+                .ToList()
+                .ForEach(q => options.Add(new Option
+                {
+                    Value = q.Id,
+                    Label = q.Identifier
+                }));
+
+                return Json(options);
+            }
+            catch (Exception)
+            {
+                return ReturnResponse("Unknown error occured when fetching definitions", Status.Fail);
+            }
         }
     }
 }

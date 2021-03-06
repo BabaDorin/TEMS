@@ -58,8 +58,9 @@ export class AddDefinitionComponent extends TEMSComponent implements OnInit {
     this.subscriptions.forEach(s => s.unsubscribe);
     this.subscriptions.push(this.equipmentService.getFullType(typeId).subscribe(
       response => {
-        parentFullType = response;
         console.log(response)
+
+        parentFullType = response;
 
         this.addDefinition.equipmentType = { value: parentFullType.id, label: parentFullType.name } as IOption;
 

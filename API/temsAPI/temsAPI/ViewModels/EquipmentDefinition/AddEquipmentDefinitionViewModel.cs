@@ -12,8 +12,8 @@ namespace temsAPI.ViewModels.EquipmentDefinition
         public string Description { get; set; }
         public double Price { get; set; }
         public string Currency { get; set; }
-        public List<Option> Properties { get; set; }
-        public List<AddEquipmentDefinitionViewModel> Children { get; set; }
+        public virtual ICollection<Option> Properties { get; set; }
+        public virtual ICollection<AddEquipmentDefinitionViewModel> Children { get; set; }
 
         public AddEquipmentDefinitionViewModel()
         {

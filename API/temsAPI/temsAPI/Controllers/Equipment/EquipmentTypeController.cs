@@ -31,7 +31,7 @@ namespace temsAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> GetFullType([FromBody]string typeId)
+        public async Task<JsonResult> FullType([FromBody] string typeId)
         {
             if (!await _unitOfWork.EquipmentTypes.isExists(q => q.Id == typeId))
                 return ReturnResponse("There is no equipment type associated with the specified typeId", Status.Fail);
@@ -41,9 +41,11 @@ namespace temsAPI.Controllers
                 );
 
             foreach (var item in equipmentType.Properties)
-                item.DataType = await _unitOfWork.DataTypes.Find(q => q.Id == item.DataTypeID);
+            {
+                item.DataType = new DataType();
+                item.DataType.Name = _unitOfWork.DataTypes.Find(q => q.Id == item.DataTypeID).Result.Name;
+            }
 
-            //equipmentType = _unitOfWork.
             EquipmentTypeViewModel viewModel = new EquipmentTypeViewModel
             {
                 Id = equipmentType.Id,

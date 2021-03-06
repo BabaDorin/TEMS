@@ -52,7 +52,7 @@ namespace temsAPI.Data
 
         private static void SeedDataTypes(ApplicationDbContext dbContext)
         {
-            (new List<string>() { "string", "number", "boolean" })
+            (new List<string>() { "text", "number", "bool" })
                 .ForEach(r =>
                  {
                      if (!dbContext.DataTypes.Any(dt => dt.Name == r))
@@ -70,29 +70,29 @@ namespace temsAPI.Data
 
         private static void SeedProperties(ApplicationDbContext dbContext)
         {
-            var seedProperties = new List<string>() { "Model", "Manufacturer" };
+            //var seedProperties = new List<string>() { "Model", "Manufacturer" };
 
-            seedProperties.ForEach(prop =>
-            {
-                // (Display name) Billing Address => (name) billingAddress
-                string propName = Regex.Replace(
-                    prop[0].ToString().ToLower() + prop.Substring(1, prop.Length-1).Trim(),
-                    @"\s+", "");
+            //seedProperties.ForEach(prop =>
+            //{
+            //    // (Display name) Billing Address => (name) billingAddress
+            //    string propName = Regex.Replace(
+            //        prop[0].ToString().ToLower() + prop.Substring(1, prop.Length-1).Trim(),
+            //        @"\s+", "");
 
-                if (!dbContext.Properties.Any(qu => qu.Name == propName))
-                {
-                    dbContext.Properties.Add(new Property
-                    {
-                        Id = Guid.NewGuid().ToString(),
-                        DataType = dbContext.DataTypes.ToList()[0],
-                        DisplayName = prop,
-                        Name = propName,
-                        DataTypeID = dbContext.DataTypes.ToList()[0].Id,
-                    });
-                }
-            });
+            //    if (!dbContext.Properties.Any(qu => qu.Name == propName))
+            //    {
+            //        dbContext.Properties.Add(new Property
+            //        {
+            //            Id = Guid.NewGuid().ToString(),
+            //            DataType = dbContext.DataTypes.ToList()[0],
+            //            DisplayName = prop,
+            //            Name = propName,
+            //            DataTypeID = dbContext.DataTypes.ToList()[0].Id,
+            //        });
+            //    }
+            //});
 
-            dbContext.SaveChanges();
+            //dbContext.SaveChanges();
         }
     }
 }

@@ -51,46 +51,46 @@ namespace temsAPI.Data
             modelBuilder.Entity<EquipmentType>()
                 .HasMany(e => e.EquipmentDefinitions)
                 .WithOne(e => e.EquipmentType)
-                .OnDelete(DeleteBehavior.ClientCascade);
+                .OnDelete(DeleteBehavior.Cascade);
 
             // OnDeleteCascade Logs
             modelBuilder.Entity<Equipment>()
                 .HasMany(e => e.Logs)
                 .WithOne(e => e.Equipment)
-                .OnDelete(DeleteBehavior.ClientCascade);
+                .OnDelete(DeleteBehavior.Cascade);
 
             // OnDeleteCascade RoomEquipmentAllocations
             modelBuilder.Entity<Equipment>()
                 .HasMany(e => e.RoomEquipmentAllocations)
                 .WithOne(e => e.Equipment)
-                .OnDelete(DeleteBehavior.ClientCascade);
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Room>()
                 .HasMany(e => e.RoomEquipmentAllocations)
                 .WithOne(e => e.Room)
-                .OnDelete(DeleteBehavior.ClientCascade);
+                .OnDelete(DeleteBehavior.Cascade);
 
             // OnDeleteCascade PersonnelRoomSupervisory
             modelBuilder.Entity<Personnel>()
                 .HasMany(e => e.PersonnelRoomSupervisories)
                 .WithOne(e => e.Personnel)
-                .OnDelete(DeleteBehavior.ClientCascade);
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Room>()
                 .HasMany(e => e.PersonnelRoomSupervisories)
                 .WithOne(e => e.Room)
-                .OnDelete(DeleteBehavior.ClientCascade);
+                .OnDelete(DeleteBehavior.Cascade);
 
             // OnDeleteCascade PersonnelEquipmentAllocation
             modelBuilder.Entity<Equipment>()
                 .HasMany(e => e.PersonnelEquipmentAllocations)
                 .WithOne(e => e.Equipment)
-                .OnDelete(DeleteBehavior.ClientCascade);
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Personnel>()
                 .HasMany(e => e.PersonnelEquipmentAllocations)
                 .WithOne(e => e.Personnel)
-                .OnDelete(DeleteBehavior.ClientCascade);
+                .OnDelete(DeleteBehavior.Cascade);
 
             // OnDeleteCascade Equipment
             modelBuilder.Entity<Equipment>()
@@ -107,24 +107,30 @@ namespace temsAPI.Data
             modelBuilder.Entity<EquipmentType>()
                .HasMany(e => e.EquipmentTypeKinships)
                .WithOne(e => e.ParentEquipmentType)
-               .OnDelete(DeleteBehavior.ClientCascade);
+               .OnDelete(DeleteBehavior.Cascade);
 
             // OnDeleteCascade KeyAllocation
             modelBuilder.Entity<Key>()
                 .HasMany(e => e.KeyAllocations)
                 .WithOne(e => e.Key)
-                .OnDelete(DeleteBehavior.ClientCascade);
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Personnel>()
                 .HasMany(e => e.KeyAllocations)
                 .WithOne(e => e.Personnel)
-                .OnDelete(DeleteBehavior.ClientCascade);
+                .OnDelete(DeleteBehavior.Cascade);
 
             // OnDeleteCascade Tickets
             modelBuilder.Entity<Equipment>()
                 .HasMany(e => e.Tickets)
                 .WithOne(e => e.Equipment)
-                .OnDelete(DeleteBehavior.ClientCascade);
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // OnDeleteCascade DataType
+            modelBuilder.Entity<DataType>()
+                .HasMany(e => e.DataTypeProperties)
+                .WithOne(e => e.DataType)
+                .OnDelete(DeleteBehavior.Cascade);
 
             base.OnModelCreating(modelBuilder);
         }

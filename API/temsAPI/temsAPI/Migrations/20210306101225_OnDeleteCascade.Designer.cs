@@ -10,8 +10,8 @@ using temsAPI.Data;
 namespace temsAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210306073036_EquipmentDefinitionRefactoring")]
-    partial class EquipmentDefinitionRefactoring
+    [Migration("20210306101225_OnDeleteCascade")]
+    partial class OnDeleteCascade
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -933,7 +933,7 @@ namespace temsAPI.Migrations
                     b.HasOne("temsAPI.Data.Entities.EquipmentEntities.Equipment", "Equipment")
                         .WithMany("Logs")
                         .HasForeignKey("EquipmentID")
-                        .OnDelete(DeleteBehavior.ClientCascade);
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("temsAPI.Data.Entities.CommunicationEntities.LogType", "LogType")
                         .WithMany("Logs")
@@ -969,7 +969,7 @@ namespace temsAPI.Migrations
                     b.HasOne("temsAPI.Data.Entities.EquipmentEntities.Equipment", "Equipment")
                         .WithMany("Tickets")
                         .HasForeignKey("EquipmentID")
-                        .OnDelete(DeleteBehavior.ClientCascade);
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("temsAPI.Data.Entities.OtherEntities.Room", "Room")
                         .WithMany("Tickets")
@@ -1020,7 +1020,7 @@ namespace temsAPI.Migrations
                     b.HasOne("temsAPI.Data.Entities.EquipmentEntities.EquipmentType", "EquipmentType")
                         .WithMany("EquipmentDefinitions")
                         .HasForeignKey("EquipmentTypeID")
-                        .OnDelete(DeleteBehavior.ClientCascade);
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("temsAPI.Data.Entities.EquipmentEntities.EquipmentDefinition", "Parent")
                         .WithMany("Children")
@@ -1058,7 +1058,7 @@ namespace temsAPI.Migrations
                     b.HasOne("temsAPI.Data.Entities.EquipmentEntities.EquipmentType", "ParentEquipmentType")
                         .WithMany("EquipmentTypeKinships")
                         .HasForeignKey("ParentEquipmentTypeId")
-                        .OnDelete(DeleteBehavior.ClientCascade);
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("ChildEquipmentType");
 
@@ -1068,8 +1068,9 @@ namespace temsAPI.Migrations
             modelBuilder.Entity("temsAPI.Data.Entities.EquipmentEntities.Property", b =>
                 {
                     b.HasOne("temsAPI.Data.Entities.EquipmentEntities.DataType", "DataType")
-                        .WithMany()
-                        .HasForeignKey("DataTypeID");
+                        .WithMany("Properties")
+                        .HasForeignKey("DataTypeID")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("DataType");
                 });
@@ -1094,12 +1095,12 @@ namespace temsAPI.Migrations
                     b.HasOne("temsAPI.Data.Entities.KeyEntities.Key", "Key")
                         .WithMany("KeyAllocations")
                         .HasForeignKey("KeyID")
-                        .OnDelete(DeleteBehavior.ClientCascade);
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("temsAPI.Data.Entities.OtherEntities.Personnel", "Personnel")
                         .WithMany("KeyAllocations")
                         .HasForeignKey("PersonnelID")
-                        .OnDelete(DeleteBehavior.ClientCascade);
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Key");
 
@@ -1111,12 +1112,12 @@ namespace temsAPI.Migrations
                     b.HasOne("temsAPI.Data.Entities.EquipmentEntities.Equipment", "Equipment")
                         .WithMany("PersonnelEquipmentAllocations")
                         .HasForeignKey("EquipmentID")
-                        .OnDelete(DeleteBehavior.ClientCascade);
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("temsAPI.Data.Entities.OtherEntities.Personnel", "Personnel")
                         .WithMany("PersonnelEquipmentAllocations")
                         .HasForeignKey("PersonnelID")
-                        .OnDelete(DeleteBehavior.ClientCascade);
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Equipment");
 
@@ -1128,12 +1129,12 @@ namespace temsAPI.Migrations
                     b.HasOne("temsAPI.Data.Entities.OtherEntities.Personnel", "Personnel")
                         .WithMany("PersonnelRoomSupervisories")
                         .HasForeignKey("PersonnelID")
-                        .OnDelete(DeleteBehavior.ClientCascade);
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("temsAPI.Data.Entities.OtherEntities.Room", "Room")
                         .WithMany("PersonnelRoomSupervisories")
                         .HasForeignKey("RoomID")
-                        .OnDelete(DeleteBehavior.ClientCascade);
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Personnel");
 
@@ -1145,12 +1146,12 @@ namespace temsAPI.Migrations
                     b.HasOne("temsAPI.Data.Entities.EquipmentEntities.Equipment", "Equipment")
                         .WithMany("RoomEquipmentAllocations")
                         .HasForeignKey("EquipmentID")
-                        .OnDelete(DeleteBehavior.ClientCascade);
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("temsAPI.Data.Entities.OtherEntities.Room", "Room")
                         .WithMany("RoomEquipmentAllocations")
                         .HasForeignKey("RoomID")
-                        .OnDelete(DeleteBehavior.ClientCascade);
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Equipment");
 
@@ -1175,6 +1176,11 @@ namespace temsAPI.Migrations
             modelBuilder.Entity("temsAPI.Data.Entities.CommunicationEntities.LogType", b =>
                 {
                     b.Navigation("Logs");
+                });
+
+            modelBuilder.Entity("temsAPI.Data.Entities.EquipmentEntities.DataType", b =>
+                {
+                    b.Navigation("Properties");
                 });
 
             modelBuilder.Entity("temsAPI.Data.Entities.EquipmentEntities.Equipment", b =>

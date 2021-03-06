@@ -22,7 +22,7 @@ namespace temsAPI.Data.Entities.EquipmentEntities
         public int? Max { get; set; }
         public string? Options { get; set; } // Will be integrated soon, i guess
 
-        [ForeignKey("DataTypeID")]
+        //[ForeignKey("DataTypeID")]
         public DataType? DataType { get; set; }
         public string? DataTypeID { get; set; }
 #nullable disable

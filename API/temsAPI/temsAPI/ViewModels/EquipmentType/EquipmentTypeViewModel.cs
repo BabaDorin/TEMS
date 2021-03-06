@@ -10,7 +10,7 @@ namespace temsAPI.ViewModels.EquipmentType
     {
         public string Id { get; set; }
         public string Name { get; set; }
-        public List<PropertyViewModel> Properties { get; set; }
-        public List<EquipmentTypeViewModel> Children { get; set; }
+        public virtual ICollection<PropertyViewModel> Properties { get; set; }
+        public virtual ICollection<EquipmentTypeViewModel> Children { get; set; }
     }
 }

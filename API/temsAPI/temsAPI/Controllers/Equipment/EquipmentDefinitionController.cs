@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +13,7 @@ using temsAPI.Data.Entities.UserEntities;
 using temsAPI.Validation;
 using temsAPI.ViewModels;
 using temsAPI.ViewModels.EquipmentDefinition;
+using temsAPI.ViewModels.Property;
 
 namespace temsAPI.Controllers.Equipment
 {
@@ -110,6 +112,45 @@ namespace temsAPI.Controllers.Equipment
             catch (Exception)
             {
                 return ReturnResponse("Unknown error occured when fetching definitions", Status.Fail);
+            }
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> GetFullDefinition([FromBody] string definitionId)
+        {
+            try
+            {
+                // Invalid definitionId
+                if (!await _unitOfWork.EquipmentDefinitions.isExists(q => q.Id == definitionId))
+                    return ReturnResponse("There is not definition having the specified id", Status.Fail);
+
+                EquipmentDefinitionViewModel viewModel = new EquipmentDefinitionViewModel();
+                EquipmentDefinition model = await _unitOfWork.EquipmentDefinitions.Find(q => q.Id == definitionId,
+                        include: q => q
+                                .Include(q => q.Children)
+                                .Include(q => q.EquipmentSpecifications)
+                                .ThenInclude(q => q.Property)
+                                .Include(q => q.Parent)
+                                .Include(q => q.EquipmentType));
+
+
+                viewModel = _mapper.Map<EquipmentDefinitionViewModel>(model);
+
+                // From list of equipmentSpecifications to list of PropertyViewModel
+                foreach (EquipmentSpecifications eqspec in model.EquipmentSpecifications)
+                {
+                    Property modelProperty = eqspec.Property; // null??
+                }
+
+
+                // Fetch datatype names (find a way to skip this step)
+                
+
+                return ReturnResponse("Success!", Status.Succes);
+            }
+            catch (Exception)
+            {
+                return ReturnResponse("Unknown error occured when fetching the full definition", Status.Fail);
             }
         }
     }

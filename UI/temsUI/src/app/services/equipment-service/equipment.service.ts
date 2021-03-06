@@ -222,9 +222,13 @@ export class EquipmentService {
     // return printerDefinitions;
   }
 
-  getFullDefinition(definitionId: string): Definition {
+  getFullDefinition(definitionId: string): Observable<any> {
 
-    return new Definition();
+    return this.http.post(
+      API_EQDEF_URL + '/getfulldefinition', 
+      JSON.stringify(definitionId),
+      this.httpOptions);
+    // return new Definition();
     // // returns the full definition, including children definitions and so on...
     // let fullDefinitions: Definition[] = [
     //   {

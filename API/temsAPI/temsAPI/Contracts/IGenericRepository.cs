@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore.Query;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -14,12 +15,14 @@ namespace temsAPI.Contracts
         Task<IList<T>> FindAll(
             Expression<Func<T, bool>> expression = null, // q => q.Id == 2
             Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null, // q => q.OrderBy(q => q.Id)
-            List<string> includes = null
+            List<string> includes = null,
+            Func<IQueryable<T>, IIncludableQueryable<T, object>> include = null
             );
 
         Task<T> Find(
            Expression<Func<T, bool>> expression,
-           List<string> includes = null
+           List<string> includes = null,
+           Func<IQueryable<T>, IIncludableQueryable<T, object>> include = null
            );
 
         Task<bool> isExists(Expression<Func<T, bool>> expression = null);

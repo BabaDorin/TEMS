@@ -23,7 +23,6 @@ namespace temsAPI.ViewModels.EquipmentDefinition
             EquipmentType = new EquipmentTypeViewModel();
             Properties = new List<PropertyViewModel>();
             Children = new List<EquipmentDefinitionViewModel>();
-            Parent = new EquipmentDefinitionViewModel();
         }
     }
 }

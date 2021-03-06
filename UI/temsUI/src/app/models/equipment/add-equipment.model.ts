@@ -11,7 +11,7 @@ export interface IAddEquipment{
     purchaseDate: Date,
     isDefect: boolean,
     isUsed: boolean,
-    children: AddEquipment[]
+    children?: AddEquipment[]
 }
 
 
@@ -26,7 +26,7 @@ export class AddEquipment implements IAddEquipment{
     isDefect: boolean;
     isUsed: boolean;
     currency: string;
-    children: AddEquipment[];
+    children?: AddEquipment[];
 
     constructor(definition: Definition, temsid?:string, sn?:string){
         this.temsid = temsid == undefined ? '' : temsid;
@@ -40,9 +40,9 @@ export class AddEquipment implements IAddEquipment{
         this.currency = "LEI";
         this.children = [] as [];
 
-        definition.children.forEach(childDefinition => {
-            this.children.push(new AddEquipment(childDefinition));
-        });
+        // definition.children.forEach(childDefinition => {
+        //     this.children.push(new AddEquipment(childDefinition));
+        // });
     }
 }
 

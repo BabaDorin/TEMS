@@ -1,0 +1,13 @@
+TODO
+
+Find a way to solve infinite cycle problem
+when including properties and then properties'
+datatypes.
+
+You may encounter this problem in the future.
+
+given the ID, we have to fetch the full definition
+and, based on that, to create an object of type AddEquipment and
+to set it's definition to be the definition that we've fetched.
+Also, we have to set the price and currency of the formly model
+

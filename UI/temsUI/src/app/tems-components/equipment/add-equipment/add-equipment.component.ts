@@ -84,8 +84,12 @@ export class AddEquipmentComponent extends TEMSComponent implements OnInit {
     
     if (this.definitionsOfType.find(q => q.value == eventData.value) != undefined)
     {
-      this.selectedFullDefinition = this.equipmentService.getFullDefinition(eventData.value);
-      this.createAddEquipmentFormly();
+      this.subscriptions.push(this.equipmentService.getFullDefinition(eventData.value)
+        .subscribe(response => {
+          console.log(response);
+          this.selectedFullDefinition = response;
+          this.createAddEquipmentFormly();
+        }))
     }
   }
 

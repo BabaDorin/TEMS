@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,7 +31,7 @@ namespace leave_management.Repository
             _db.Remove(entity); 
         }
 
-        public async Task<T> Find(Expression<Func<T, bool>> expression, List<string> includes = null)
+        public async Task<T> Find(Expression<Func<T, bool>> expression, List<string> includes = null, Func<IQueryable<T>, IIncludableQueryable<T, object>> include = null)
         {
             IQueryable<T> query = _db;
             if(includes != null)
@@ -41,10 +42,16 @@ namespace leave_management.Repository
                 }
             }
 
+            if(include != null)
+            {
+                query = include(query);
+            }
+
+
             return await query.FirstOrDefaultAsync(expression);
         }
 
-        public async Task<IList<T>> FindAll(Expression<Func<T, bool>> expression = null, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null, List<string> includes = null)
+        public async Task<IList<T>> FindAll(Expression<Func<T, bool>> expression = null, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null, List<string> includes = null, Func<IQueryable<T>, IIncludableQueryable<T, object>> include = null)
         {
             IQueryable<T> query = _db;
             
@@ -61,7 +68,12 @@ namespace leave_management.Repository
                 }
             }
 
-            if(orderBy != null)
+            if (include != null)
+            {
+                query = include(query);
+            }
+
+            if (orderBy != null)
             {
                 query = orderBy(query);
             }

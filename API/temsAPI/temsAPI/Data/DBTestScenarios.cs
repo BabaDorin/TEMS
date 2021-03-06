@@ -26,7 +26,7 @@ namespace temsAPI.Data
             dbContext.EquipmentTypes.Add(new EquipmentType
             {
                 Id = etID,
-                Type = "Printer"
+                Name = "Printer"
             });
             logs.Add("EquipmentType table += Printer type");
 

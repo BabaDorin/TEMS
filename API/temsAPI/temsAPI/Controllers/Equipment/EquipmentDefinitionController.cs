@@ -133,24 +133,27 @@ namespace temsAPI.Controllers.Equipment
                                 .Include(q => q.Parent)
                                 .Include(q => q.EquipmentType));
 
+                // Get rid of this as soon as possible, solve circular references
+                foreach (var eqspec in model.EquipmentSpecifications)
+                {
+                    eqspec.Property.DataType = new DataType();
+                    eqspec.Property.DataType.Name = _unitOfWork.DataTypes
+                        .Find(q => q.Id == eqspec.Property.DataTypeID)
+                        .Result.Name;
+                }
 
                 viewModel = _mapper.Map<EquipmentDefinitionViewModel>(model);
 
-                // From list of equipmentSpecifications to list of PropertyViewModel
-                foreach (EquipmentSpecifications eqspec in model.EquipmentSpecifications)
+                foreach (var eqspec in model.EquipmentSpecifications)
                 {
-                    Property modelProperty = eqspec.Property; // null??
+                    viewModel.EquipmentType.Properties.Add(_mapper.Map<PropertyViewModel>(eqspec.Property));
                 }
 
-
-                // Fetch datatype names (find a way to skip this step)
-                
-
-                return ReturnResponse("Success!", Status.Succes);
+                return Json(viewModel);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return ReturnResponse("Unknown error occured when fetching the full definition", Status.Fail);
+                return ReturnResponse("Unknown error occured when fetching the full definition, " + ex.Message, Status.Fail);
             }
         }
     }

@@ -11,7 +11,7 @@ namespace temsAPI.Data.Entities.EquipmentEntities
     {
         [Key]
         public string Id { get; set; }
-        public string Type { get; set; }
+        public string Name { get; set; }
         public bool IsArchieved { get; set; }
 
         //public virtual ICollection<PropertyEquipmentTypeAssociation> PropertyEquipmentTypeAssociations { get; set; }

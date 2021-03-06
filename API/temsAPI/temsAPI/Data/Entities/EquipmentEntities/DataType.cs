@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -13,7 +14,7 @@ namespace temsAPI.Data.Entities.EquipmentEntities
         public string Id { get; set; }
         public string Name { get; set; }
 
-        [NotMapped]
+        [JsonIgnore]
         public virtual ICollection<Property> DataTypeProperties { get; set; }
     }
 }

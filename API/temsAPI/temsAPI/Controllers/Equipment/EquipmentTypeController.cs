@@ -49,7 +49,7 @@ namespace temsAPI.Controllers
             EquipmentTypeViewModel viewModel = new EquipmentTypeViewModel
             {
                 Id = equipmentType.Id,
-                Name = equipmentType.Type,
+                Name = equipmentType.Name,
                 Properties = _mapper.Map<List<PropertyViewModel>>(equipmentType.Properties)
             };
 
@@ -70,7 +70,7 @@ namespace temsAPI.Controllers
                 return ReturnResponse($"{viewModel.Name} is not a valid type name", Status.Fail);
 
             // Check if this model has already been inserted
-            if (await _unitOfWork.EquipmentTypes.isExists(q => q.Type.ToLower() == viewModel.Name.ToLower()))
+            if (await _unitOfWork.EquipmentTypes.isExists(q => q.Name.ToLower() == viewModel.Name.ToLower()))
                 return ReturnResponse($"{viewModel.Name} already exists", Status.Fail);
 
             // Invalid parents
@@ -91,7 +91,7 @@ namespace temsAPI.Controllers
             EquipmentType equipmentType = new EquipmentType
             {
                 Id = Guid.NewGuid().ToString(),
-                Type = viewModel.Name,
+                Name = viewModel.Name,
             };
 
             if (viewModel.Properties != null)

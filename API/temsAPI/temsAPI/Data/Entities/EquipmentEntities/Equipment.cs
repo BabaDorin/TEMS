@@ -26,7 +26,7 @@ namespace temsAPI.Data.Entities.EquipmentEntities
         public string? TEMSID { get; set; }
         public string? SerialNumber { get; set; }
         public double? Price { get; set; }
-        public double? Commentary { get; set; }
+        public string? Description { get; set; }
 
         [ForeignKey("EquipmentDefinitionID")]
         public EquipmentDefinition? EquipmentDefinition { get; set; }

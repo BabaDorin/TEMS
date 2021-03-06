@@ -119,7 +119,7 @@ namespace temsAPI.Controllers
             await _unitOfWork.Save();
 
             if (await _unitOfWork.EquipmentTypes.isExists(q => q.Id == equipmentType.Id))
-                return ReturnResponse($"Success", Status.Succes);
+                return ReturnResponse($"Success", Status.Success);
             else
                 return ReturnResponse($"Fail", Status.Fail);
         }

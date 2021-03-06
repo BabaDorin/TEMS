@@ -1,3 +1,4 @@
+import { AddDefinition } from './../../../models/equipment/add-definition.model';
 import { TEMSComponent } from 'src/app/tems/tems.component';
 import { Subscription } from 'rxjs';
 import { IOption } from './../../../models/option.model';
@@ -7,7 +8,7 @@ import { FormlyParserService } from './../../../services/formly-parser-service/f
 import { Definition } from '../../../models/equipment/add-definition.model';
 import { EquipmentService } from './../../../services/equipment-service/equipment.service';
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, ControlValueAccessor } from '@angular/forms';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { AddEquipment } from 'src/app/models/equipment/add-equipment.model';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
@@ -109,7 +110,8 @@ export class AddEquipmentComponent extends TEMSComponent implements OnInit {
     let addEq = this.equipmentService.generateAddEquipmentOfDefinition(this.selectedFullDefinition);
     let formlyFields = this.formlyParserService.parseAddEquipment(addEq);
 
-    this.formlyData.model = new AddEquipment(this.selectedFullDefinition);
+    // this.formlyData.model = new AddEquipment(this.selectedFullDefinition);
+    this.formlyData.model = { equipmentDefinitionID: addEq.definition.id };
     this.formlyData.fields = formlyFields;
     this.formlyData.isVisible = true;
   }
@@ -122,10 +124,27 @@ export class AddEquipmentComponent extends TEMSComponent implements OnInit {
     this.formlyData.model = {};
   }
 
-  // Validate & send data to API
   onSubmit(model) {
-    model.id = this.selectedFullDefinition.id,
-      console.log(model);
+    // Validate & send data to API
+    let submitAddEquipment = new AddEquipment();
+    
+    console.log(model)
+    submitAddEquipment = model;
+    // submitAddEquipment.definitionId = model.definitionId;
+    // submitAddEquipment.description = model.description;
+    // submitAddEquipment.currency = model.currency;
+    // submitAddEquipment.isDefect = model.isDefect;
+    // submitAddEquipment.isUsed = model.isUsed;
+    // submitAddEquipment.price = model.price;
+    // submitAddEquipment.purchaseDate = model.purchaseDate;
+    // submitAddEquipment.serialNumber = model.serialNumber;
+    // submitAddEquipment.temsid = model.temsid;
+    console.log(submitAddEquipment)
+
+    this.subscriptions.push(this.equipmentService.createEquipment(submitAddEquipment)
+      .subscribe(response => {
+        console.log(response);
+      }));
   }
 
   // Angular Material Dialog --------------------------------------------------------------------------------------

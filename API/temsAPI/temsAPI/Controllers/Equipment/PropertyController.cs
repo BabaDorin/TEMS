@@ -76,7 +76,7 @@ namespace temsAPI.Controllers
             await _unitOfWork.Save();
 
             if (await _unitOfWork.Properties.isExists(q => q.Id == property.Id))
-                return ReturnResponse($"Success", Status.Succes);
+                return ReturnResponse($"Success", Status.Success);
             else
                 return ReturnResponse($"Fail", Status.Fail);
         }

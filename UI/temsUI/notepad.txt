@@ -11,3 +11,16 @@ and, based on that, to create an object of type AddEquipment and
 to set it's definition to be the definition that we've fetched.
 Also, we have to set the price and currency of the formly model
 
+AddEquipment model
+    currency: "lei"
+    description: "sss"
+    identifier: "qeeweqewq"
+    isDefect: false
+    isUsed: true
+    price: 4
+    purchaseDate: "2021-03-18"
+    serialNumber: "sss"
+    temsid: "sss"
+
+SubmitAddEquipmentModel:
+definitionId,

@@ -1,7 +1,8 @@
+import { AddEquipment } from 'src/app/models/equipment/add-equipment.model';
 import { AddType } from './../../models/equipment/add-type.model';
 import { EquipmentType } from './../../models/equipment/view-type.model';
 import { Definition, AddDefinition } from './../../models/equipment/add-definition.model';
-import { API_PROP_URL, API_EQTYPE_URL, API_EQDEF_URL } from './../../models/backend.config';
+import { API_PROP_URL, API_EQTYPE_URL, API_EQDEF_URL, API_EQ_URL } from './../../models/backend.config';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { IOption } from './../../models/option.model';
 import { CheckboxItem } from '../../models/checkboxItem.model';
@@ -9,7 +10,6 @@ import { ViewEquipmentAllocation } from './../../models/equipment/view-equipment
 import { ViewEquipment } from './../../models/equipment/view-equipment.model';
 import { ViewEquipmentSimplified } from './../../models/equipment/view-equipment-simplified.model';
 import { AddProperty } from './../../models/equipment/add-property.model';
-import { AddEquipment } from '../../models/equipment/add-equipment.model';
 import { Injectable, Type } from '@angular/core';
 import { Observable, of } from 'rxjs';
 
@@ -50,6 +50,14 @@ export class EquipmentService {
       API_EQDEF_URL + '/insert', 
       JSON.stringify(addDefinition), 
       this.httpOptions);
+  }
+
+  createEquipment(addEquipment: AddEquipment): Observable<any>{
+    return this.http.post(
+      API_EQ_URL + '/create',
+      JSON.stringify(addEquipment),
+      this.httpOptions
+    );
   }
 
   getTypesAutocomplete(): IOption[]{

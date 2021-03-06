@@ -90,7 +90,7 @@ namespace temsAPI.Controllers.Equipment
             if(!await _unitOfWork.EquipmentDefinitions.isExists(q => q.Id == equipmentDefinition.Id))
                 return ReturnResponse("Fail", Status.Fail);
             else
-                return ReturnResponse("Success", Status.Succes);
+                return ReturnResponse("Success", Status.Success);
         }
 
         [HttpPost]

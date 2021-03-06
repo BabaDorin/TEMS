@@ -12,7 +12,7 @@ namespace temsAPI.Controllers
 {
     public enum Status
     {
-        Succes = 1,
+        Success = 1,
         Fail = 0
     }
 

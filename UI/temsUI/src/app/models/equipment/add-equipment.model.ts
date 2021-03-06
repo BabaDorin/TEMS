@@ -7,7 +7,8 @@ export interface IAddEquipment{
     serialNumber: string,
     price: number,
     description: string,
-    definition: Definition,
+    definition?: Definition,
+    equipmentDefinitionID?: string;
     purchaseDate: Date,
     isDefect: boolean,
     isUsed: boolean,
@@ -21,24 +22,25 @@ export class AddEquipment implements IAddEquipment{
     serialNumber: string;
     price: number;
     description: string;
-    definition: Definition;
+    definition?: Definition;
+    equipmentDefinitionID?: string;
     purchaseDate: Date;
     isDefect: boolean;
     isUsed: boolean;
     currency: string;
     children?: AddEquipment[];
 
-    constructor(definition: Definition, temsid?:string, sn?:string){
+    constructor(definition?: Definition, temsid?:string, sn?:string){
         this.temsid = temsid == undefined ? '' : temsid;
         this.serialNumber = sn == undefined ? '' : sn;
-        this.price = 0;
+        this.price = definition == undefined ? 0 : definition.price;
         this.description = '',
-        this.definition = definition;
+        this.definition = definition == undefined ? new Definition() : definition;
         this.purchaseDate = new Date(),
         this.isDefect = false;
         this.isUsed = true;
-        this.currency = "LEI";
-        this.children = [] as [];
+        this.currency = definition == undefined ? 'lei' : definition.currency;
+        this.children = [] as AddEquipment[];
 
         // definition.children.forEach(childDefinition => {
         //     this.children.push(new AddEquipment(childDefinition));

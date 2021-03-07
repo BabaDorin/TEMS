@@ -19,6 +19,7 @@ import { MaterialModule } from 'src/app/modules/material/material.module';
 import { EntitySharedModule } from 'src/app/modules/entity-shared/entity-shared.module';
 import { AnalyticsModule } from 'src/app/modules/analytics/analytics.module';
 import { AddPropertyComponent } from './add-property/add-property.component';
+import { AgGridTooltipComponent } from 'src/app/public/ag-grid/ag-grid-tooltip/ag-grid-tooltip.component';
 
 @NgModule({
   declarations: [
@@ -34,6 +35,7 @@ import { AddPropertyComponent } from './add-property/add-property.component';
     SummaryEquipmentAnalyticsComponent,
     EquipmentDetailsIssuesComponent,
     AddPropertyComponent,
+    AgGridTooltipComponent
   ],
   imports: [
     CommonModule,

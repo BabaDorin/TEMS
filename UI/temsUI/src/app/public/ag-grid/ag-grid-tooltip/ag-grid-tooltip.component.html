@@ -1,0 +1,12 @@
+<div class="custom-tooltip">
+    <div [ngClass]="'panel panel-' + data.type">
+        <div class="panel-heading">
+            <h3 class="panel-title">{{ data.header }}</h3>
+        </div>
+        <div class="panel-body">
+            <app-property-render [properties]="data.generalProperties"></app-property-render>
+            <hr>
+            <app-property-render [properties]="data.specificProperties"></app-property-render>
+        </div>
+    </div>
+</div>

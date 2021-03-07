@@ -7,7 +7,7 @@ export interface IViewEquipmentSimplified{
     type: string,
     isUsed: boolean,
     isDefect: boolean;
-    room: string;
+    assignee: string;
 }
 
 export class ViewEquipmentSimplified implements IViewEquipmentSimplified{
@@ -19,7 +19,7 @@ export class ViewEquipmentSimplified implements IViewEquipmentSimplified{
     type: string;
     isUsed: boolean;
     isDefect: boolean;
-    room: string;
+    assignee: string;
 
     constructor(){
         // this.temsidOrSn = (this.temsId == undefined) ? this.temsId : this.serialNumber;

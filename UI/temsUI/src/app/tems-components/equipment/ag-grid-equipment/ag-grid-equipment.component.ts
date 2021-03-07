@@ -27,7 +27,7 @@ export class AgGridEquipmentComponent extends TEMSComponent implements OnInit {
       { field: 'temsId', sortable: true, filter: true },
       { field: 'serialNumber', sortable: true, filter: true },
       { field: 'definition', sortable: true, filter: true },
-      { field: 'room', sortable: true, filter: true },
+      { field: 'assignee', sortable: true, filter: true },
       { field: 'type', sortable: true, filter: true },
       { field: 'isUsed', sortable: false, filter: true },
       { field: 'isDefect', sortable: false, filter: true },

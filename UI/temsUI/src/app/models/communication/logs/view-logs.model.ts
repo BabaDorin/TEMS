@@ -36,7 +36,7 @@ export class ViewLog implements IViewLog {
             type: 'Laptoc',
             isUsed: true,
             isDefect: true,
-            room: '307'
+            assignee: '307'
         };
         this.logType = { id: '1', type: 'Simple Log Type' };
         this.isImportant = true;

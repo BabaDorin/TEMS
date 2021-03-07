@@ -29,7 +29,7 @@ export class ViewLog implements IViewLog {
         this.text = 'Equipment has been repaired';
         this.equipment = {
             id: '1',
-            temsID: 'LPB001',
+            temsId: 'LPB001',
             serialNumber: '22344',
             temsidOrSn: 'LPB001',
             definition: 'Asus VivoBook',

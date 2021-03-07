@@ -1,3 +1,4 @@
+import { TEMSComponent } from './../../../tems/tems.component';
 import { EquipmentService } from './../../../services/equipment-service/equipment.service';
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
@@ -8,7 +9,7 @@ import { HttpClient } from '@angular/common/http';
   styleUrls: ['./ag-grid-equipment.component.scss']
 })
 
-export class AgGridEquipmentComponent implements OnInit {
+export class AgGridEquipmentComponent extends TEMSComponent implements OnInit {
 
   columnDefs = [
     { field: 'temsID', sortable: true, filter: true, checkboxSelection: true, headerCheckboxSelection: true},
@@ -25,13 +26,14 @@ export class AgGridEquipmentComponent implements OnInit {
   constructor(
     private http: HttpClient,
     private equipmentService: EquipmentService) {
-      console.log('here');
-      this.rowData = equipmentService.getEquipment(); 
+      super();
   }
 
   ngOnInit() {
-    // this.rowData = this.http.get('https://www.ag-grid.com/example-assets/small-row-data.json');
-    // this.rowData = this.equipmentService.getEquipment();
+    this.subscriptions.push(this.equipmentService.getEquipmentSimplified()
+      .subscribe(result => {
+        console.log(result);
+        this.rowData = result;
+      })); 
   }
-
 }

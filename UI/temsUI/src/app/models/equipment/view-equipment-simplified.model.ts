@@ -1,6 +1,6 @@
 export interface IViewEquipmentSimplified{
     id: string,
-    temsID: string,
+    temsId: string,
     serialNumber: string,
     temsidOrSn: string;
     definition: string,
@@ -12,7 +12,7 @@ export interface IViewEquipmentSimplified{
 
 export class ViewEquipmentSimplified implements IViewEquipmentSimplified{
     id: string;
-    temsID: string;
+    temsId: string;
     serialNumber: string;
     temsidOrSn: string;
     definition: string;
@@ -22,14 +22,6 @@ export class ViewEquipmentSimplified implements IViewEquipmentSimplified{
     room: string;
 
     constructor(){
-        this.id = "id";
-        this.temsID = "temsID";
-        this.serialNumber = "serialNumber";
-        this.temsidOrSn = (this.temsID == undefined) ? this.temsID : this.serialNumber;
-        this.definition = "definition";
-        this.type = "type";
-        this.isDefect = false;
-        this.isUsed = true;
-        this.room = "307";
+        this.temsidOrSn = (this.temsId == undefined) ? this.temsId : this.serialNumber;
     }
 }

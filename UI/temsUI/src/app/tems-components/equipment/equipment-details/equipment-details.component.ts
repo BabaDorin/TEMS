@@ -25,7 +25,7 @@ export class EquipmentDetailsComponent implements OnInit {
       this.equipmentId = this.activatedroute.snapshot.paramMap.get("id");
     this.edit=false;
 
-    this.equipmentSimplified = this.equipmentService.getEquipmentSimplified(this.equipmentId);
+    this.equipmentSimplified = this.equipmentService.getEquipmentSimplifiedById(this.equipmentId);
   }
 
   // // To avoid generating multiple components inside mat-tab (https://github.com/angular/components/issues/10938) 

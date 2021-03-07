@@ -112,7 +112,11 @@ export class EquipmentService {
     return equipments;
   }
 
-  getEquipmentSimplified(id: string): ViewEquipmentSimplified{
+  getEquipmentSimplified(): Observable<any>{
+    return this.http.get(API_EQ_URL + '/getsimplified', this.httpOptions);
+  }
+
+  getEquipmentSimplifiedById(id: string): ViewEquipmentSimplified{
     return new ViewEquipmentSimplified();
   }
 

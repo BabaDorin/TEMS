@@ -25,10 +25,6 @@ export class FormlyParserService {
   constructor(private equipmentService: EquipmentService) { }
 
   parseAddRoom(addRoom: AddRoom, roomLabels){
-    // identifier: string,
-    // floor: number,
-    // description: string,
-    // label: string,
     let fields: FormlyFieldConfig[] =
       [
         {
@@ -172,7 +168,6 @@ export class FormlyParserService {
       {
         key: 'identifier',
         type: 'input',
-        defaultValue: addEquipment.definition.identifier,
         templateOptions: {
           label: 'Identifier',
         },
@@ -247,6 +242,7 @@ export class FormlyParserService {
             className: 'col-4',
             type: 'input',
             key: 'purchaseDate',
+            defaultValue: new Date(),
             templateOptions: {
               type: 'date',
               label: 'Purchase Date',
@@ -256,54 +252,6 @@ export class FormlyParserService {
       }
     ]
   }
-
-  // parseAddType(addType: AddType) {
-  //   let parents: IOption[] = [];
-
-  //   addType.parents.forEach(parent => {
-  //     parents.push({
-  //       value: parent.id,
-  //       label: parent.name
-  //     })
-  //   });
-
-  //   let temsProperties = this.equipmentService.getProperties();
-  //   let properties: IOption[] = [];
-
-  //   temsProperties.forEach(property => {
-  //     properties.push({
-  //       value: property.id,
-  //       label: property.name
-  //     })
-  //   });
-
-  //   let formlyFieldsAddType: FormlyFieldConfig[] = [
-  //     {
-  //       template: '<h4>Add Type</h4>'
-  //     },
-  //     {
-  //       key: 'parents',
-  //       type: 'multicheckbox',
-  //       templateOptions: {
-  //         options: parents,
-  //         label: "Select Type's parents"
-  //       },
-  //     },
-  //     {
-  //       key: 'name',
-  //       type: 'input-tooltip',
-  //       defaultValue: addType.name,
-  //       templateOptions: {
-  //         required: true,
-  //         placeholder: 'Printer...',
-  //         label: 'Name',
-  //         description: "Type's name (Like Printer, Scanner, Laptop etc.)"
-  //       },
-  //     },
-  //   ];
-
-  //   return formlyFieldsAddType;
-  // }
 
   parseAddProperty(){
     let fields: FormlyFieldConfig[] =

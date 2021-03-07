@@ -35,7 +35,7 @@ export class EquipmentDetailsLogsComponent implements OnInit {
     dialogRef.componentInstance.equipment = [
       {
         id: this.equipment.id, 
-        value: this.equipment.temsidOrSn
+        value: this.equipment.temsIdOrSerialNumber
       }];
 
     dialogRef.afterClosed().subscribe(result => {

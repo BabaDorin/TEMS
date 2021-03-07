@@ -2,7 +2,7 @@ export interface IViewEquipmentSimplified{
     id: string,
     temsId: string,
     serialNumber: string,
-    temsidOrSn: string;
+    temsIdOrSerialNumber: string;
     definition: string,
     type: string,
     isUsed: boolean,
@@ -14,7 +14,7 @@ export class ViewEquipmentSimplified implements IViewEquipmentSimplified{
     id: string;
     temsId: string;
     serialNumber: string;
-    temsidOrSn: string;
+    temsIdOrSerialNumber: string;
     definition: string;
     type: string;
     isUsed: boolean;

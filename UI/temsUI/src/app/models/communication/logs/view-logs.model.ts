@@ -31,7 +31,7 @@ export class ViewLog implements IViewLog {
             id: '1',
             temsId: 'LPB001',
             serialNumber: '22344',
-            temsidOrSn: 'LPB001',
+            temsIdOrSerialNumber: 'LPB001',
             definition: 'Asus VivoBook',
             type: 'Laptoc',
             isUsed: true,

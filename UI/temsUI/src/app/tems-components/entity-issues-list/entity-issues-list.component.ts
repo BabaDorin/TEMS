@@ -59,7 +59,7 @@ export class EntityIssuesListComponent implements OnInit {
       dialogRef.componentInstance.equipmentAlreadySelected = [
         {
           id: this.equipment.id, 
-          value: this.equipment.temsidOrSn
+          value: this.equipment.temsIdOrSerialNumber
         }];
     }
 

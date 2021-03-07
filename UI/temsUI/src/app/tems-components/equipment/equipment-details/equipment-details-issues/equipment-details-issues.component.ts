@@ -47,7 +47,7 @@ export class EquipmentDetailsIssuesComponent implements OnInit {
     dialogRef = this.dialog.open(CreateIssueComponent); 
     dialogRef.componentInstance.equipmentAlreadySelected = [{
       id: this.equipment.id, 
-      value: this.equipment.temsidOrSn
+      value: this.equipment.temsIdOrSerialNumber
     }];
 
     dialogRef.afterClosed().subscribe(result => {

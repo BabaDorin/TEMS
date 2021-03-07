@@ -11,29 +11,61 @@ import { HttpClient } from '@angular/common/http';
 
 export class AgGridEquipmentComponent extends TEMSComponent implements OnInit {
 
-  columnDefs = [
-    { field: 'temsId', sortable: true, filter: true, checkboxSelection: true, headerCheckboxSelection: true},
-    { field: 'serialNumber', sortable: true, filter: true },
-    { field: 'definition', sortable: true, filter: true },
-    { field: 'room', sortable: true, filter: true },
-    { field: 'type', sortable: true, filter: true },
-    { field: 'isUsed', sortable: false, filter: true },
-    { field: 'isDefect', sortable: false, filter: true },
-  ];
+  private gridApi;
+  private gridColumnApi;
 
-  rowData: any;
+  private columnDefs;
+  private defaultColDef;
+  private rowSelection;
+  private rowData: [];
 
   constructor(
-    private http: HttpClient,
     private equipmentService: EquipmentService) {
-      super();
+    super();
+
+    this.columnDefs = [
+      { field: 'temsId', sortable: true, filter: true },
+      { field: 'serialNumber', sortable: true, filter: true },
+      { field: 'definition', sortable: true, filter: true },
+      { field: 'room', sortable: true, filter: true },
+      { field: 'type', sortable: true, filter: true },
+      { field: 'isUsed', sortable: false, filter: true },
+      { field: 'isDefect', sortable: false, filter: true },
+    ];
+
+    this.defaultColDef = {
+      flex: 1,
+      minWidth: 100,
+      resizable: true,
+      headerCheckboxSelection: this.isFirstColumn,
+      checkboxSelection: this.isFirstColumn,
+    };
+
+    this.rowSelection = 'multiple';
   }
 
   ngOnInit() {
+
+  }
+
+  onGridReady(params) {
+    this.gridApi = params.api;
+    this.gridColumnApi = params.columnApi;
+
     this.subscriptions.push(this.equipmentService.getEquipmentSimplified(20, 20, true)
       .subscribe(result => {
         console.log(result);
         this.rowData = result;
-      })); 
+      }));
+  }
+
+  isFirstColumn(params) {
+    var displayedColumns = params.columnApi.getAllDisplayedColumns();
+    var thisIsFirstColumn = displayedColumns[0] === params.column;
+    return thisIsFirstColumn;
+  }
+
+  getSelectedNodes(){
+    return this.gridApi.getSelectedNodes().map(q => q.data);
   }
 }

@@ -58,7 +58,7 @@ export class EntityLogsListComponent implements OnInit {
       dialogRef.componentInstance.equipment = [
         {
           id: this.equipment.id, 
-          value: this.equipment.temsidOrSn
+          value: this.equipment.temsIdOrSerialNumber
         }];
     }
 

@@ -112,8 +112,13 @@ export class EquipmentService {
     return equipments;
   }
 
-  getEquipmentSimplified(): Observable<any>{
-    return this.http.get(API_EQ_URL + '/getsimplified', this.httpOptions);
+  getEquipmentSimplified(
+    pageNumber: number, 
+    recordsPerPage: number,
+    onlyParent?: boolean): Observable<any>{
+      if(onlyParent == undefined) onlyParent = true;
+      return this.http.get(API_EQ_URL + '/getsimplified/'+pageNumber+'/'+recordsPerPage+'/'+onlyParent,
+      this.httpOptions);      
   }
 
   getEquipmentSimplifiedById(id: string): ViewEquipmentSimplified{

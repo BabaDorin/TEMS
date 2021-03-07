@@ -22,6 +22,6 @@ export class ViewEquipmentSimplified implements IViewEquipmentSimplified{
     room: string;
 
     constructor(){
-        this.temsidOrSn = (this.temsId == undefined) ? this.temsId : this.serialNumber;
+        // this.temsidOrSn = (this.temsId == undefined) ? this.temsId : this.serialNumber;
     }
 }

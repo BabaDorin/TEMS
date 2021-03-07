@@ -12,7 +12,7 @@ import { HttpClient } from '@angular/common/http';
 export class AgGridEquipmentComponent extends TEMSComponent implements OnInit {
 
   columnDefs = [
-    { field: 'temsID', sortable: true, filter: true, checkboxSelection: true, headerCheckboxSelection: true},
+    { field: 'temsId', sortable: true, filter: true, checkboxSelection: true, headerCheckboxSelection: true},
     { field: 'serialNumber', sortable: true, filter: true },
     { field: 'definition', sortable: true, filter: true },
     { field: 'room', sortable: true, filter: true },
@@ -30,7 +30,7 @@ export class AgGridEquipmentComponent extends TEMSComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.subscriptions.push(this.equipmentService.getEquipmentSimplified()
+    this.subscriptions.push(this.equipmentService.getEquipmentSimplified(20, 20, true)
       .subscribe(result => {
         console.log(result);
         this.rowData = result;

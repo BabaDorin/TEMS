@@ -94,5 +94,27 @@ namespace temsAPI.Controllers.CommunicationControllers
         //        return ReturnResponse("An error occured when ")
         //    }
         //}
+
+        [HttpGet]
+        public async Task<JsonResult> GetLogTypes()
+        {
+            try
+            {
+                List<Option> logTypes = (await _unitOfWork.LogTypes
+                    .FindAll<Option>(
+                        select: q => new Option
+                        {
+                            Value = q.Id,
+                            Label = q.Type
+                        }
+                    )).ToList();
+
+                return Json(logTypes);
+            }
+            catch (Exception)
+            {
+                return ReturnResponse("An error occured when fetching log types", Status.Fail);
+            }
+        }
     }
 }

@@ -1,3 +1,4 @@
+import { LogsService } from 'src/app/services/logs-service/logs.service';
 import { Property } from 'src/app/models/equipment/view-property.model';
 import { AddEquipment } from './../../models/equipment/add-equipment.model';
 import { IOption } from 'src/app/models/option.model';
@@ -22,7 +23,9 @@ export class FormlyParserService {
   // This service is used for parsing an object of type AddEquipment to a FormlyFieldCOnfig array.
   // Which is used by formly to render forms.
 
-  constructor(private equipmentService: EquipmentService) { }
+  constructor(
+    private equipmentService: EquipmentService,
+    private logsService: LogsService) { }
 
   parseAddRoom(addRoom: AddRoom, roomLabels){
     let fields: FormlyFieldConfig[] =
@@ -463,7 +466,7 @@ export class FormlyParserService {
     }
   }
 
-  parseAddLog(addLog: ViewLog) {
+  parseAddLog(logTypes: IOption[]) {
     let fields: FormlyFieldConfig[] =
       [
         {
@@ -475,10 +478,7 @@ export class FormlyParserService {
               templateOptions: {
                 required: true,
                 label: 'Log Type',
-                options: [
-                  { value: '1', label: 'Simple' },
-                  { value: '2', label: 'Repair' },
-                ]
+                options: logTypes
               }
             },
             {

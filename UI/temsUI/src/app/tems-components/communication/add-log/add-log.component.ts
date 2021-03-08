@@ -1,3 +1,4 @@
+import { LogsService } from 'src/app/services/logs-service/logs.service';
 import { PersonnelService } from './../../../services/personnel-service/personnel.service';
 import { RoomsService } from './../../../services/rooms-service/rooms.service';
 import { EquipmentService } from './../../../services/equipment-service/equipment.service';
@@ -52,19 +53,19 @@ export class AddLogComponent extends TEMSComponent implements OnInit {
   chipsInputLabel = "";
 
   constructor(
-    formlyParserService: FormlyParserService,
+    private formlyParserService: FormlyParserService,
     private equipmentservice: EquipmentService,
     private roomService: RoomsService,
+    private logsService: LogsService,
     private personnelService: PersonnelService) {
       super();
-      this.formlyData.isVisible = true;
-      this.formlyData.fields = formlyParserService.parseAddLog(new ViewLog());
   }
 
   ngOnInit(): void {
+    console.log('equipment from add-log');
+    console.log(this.equipment);
     this.adresseeChosen = this.equipment != undefined || this.room != undefined || this.personnel != undefined;
 
-    // 
     if(this.adresseeChosen){
       if(this.equipment != undefined)
         this.implicitAddressees = { type: 'equipment', entities: this.equipment }
@@ -76,7 +77,16 @@ export class AddLogComponent extends TEMSComponent implements OnInit {
         this.implicitAddressees = { type: 'personnel', entities: this.personnel }
 
         this.selectedAddresseeType = this.implicitAddressees.type;
-        this.alreadySelectedOptions = [ { value: this.implicitAddressees.entities[0].value } ];
+        this.alreadySelectedOptions = [ { 
+          value: this.implicitAddressees.entities[0].value, 
+          label: this.implicitAddressees.entities[0].label, 
+        } ];
+
+      this.formlyData.isVisible = true;
+      this.subscriptions.push(this.logsService.getLogTypes()
+        .subscribe(response => {
+          this.formlyData.fields = this.formlyParserService.parseAddLog(response);
+        }))
     }
   }
 

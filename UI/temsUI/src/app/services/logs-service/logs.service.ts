@@ -47,4 +47,11 @@ export class LogsService extends TEMSService {
       new ViewLog(),
     ]
   }
+
+  getLogTypes(): Observable<any>{
+    return this.http.get(
+      API_LOG_URL + '/getlogtypes',
+      this.httpOptions
+      );
+  }
 }

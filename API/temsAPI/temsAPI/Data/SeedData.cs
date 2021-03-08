@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using temsAPI.Data.Entities.CommunicationEntities;
 using temsAPI.Data.Entities.EquipmentEntities;
 using temsAPI.Data.Entities.UserEntities;
 
@@ -22,6 +23,7 @@ namespace temsAPI.Data
             SeedUsers(userManager);
             SeedDataTypes(dbContext);
             SeedProperties(dbContext);
+            SeedLogTypes(dbContext);
         }
 
         private static void SeedRoles(RoleManager<IdentityRole> roleManager)
@@ -62,9 +64,9 @@ namespace temsAPI.Data
                              Id = Guid.NewGuid().ToString(),
                              Name = r
                          });
-                         var result = dbContext.SaveChanges();
                      }
                  });
+
             dbContext.SaveChanges();
         }
 
@@ -93,6 +95,24 @@ namespace temsAPI.Data
             //});
 
             //dbContext.SaveChanges();
+        }
+
+        private static void SeedLogTypes(ApplicationDbContext dbContext)
+        {
+            (new List<string>() { "Repair", "Maintenance", "Allocation" })
+                .ForEach(r =>
+                {
+                    if (!dbContext.LogTypes.Any(lt => lt.Type == r))
+                    {
+                        dbContext.LogTypes.Add(new LogType
+                        {
+                            Id = Guid.NewGuid().ToString(),
+                            Type = r
+                        });
+                    }
+                });
+
+            dbContext.SaveChanges();
         }
     }
 }

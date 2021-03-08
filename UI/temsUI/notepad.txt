@@ -6,6 +6,4 @@ datatypes.
 
 You may encounter this problem in the future.
 
-1. Fetching logs properly
 2. Adding logs property
-3. Adding log types in a modal

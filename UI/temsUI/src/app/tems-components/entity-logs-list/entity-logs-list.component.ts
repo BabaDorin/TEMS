@@ -36,12 +36,11 @@ export class EntityLogsListComponent extends TEMSComponent implements OnInit {
     //   console.warn('EntityLogsListComponent requires an entity in order to display logs');
     //   return;
     // }
-
+    
     if(this.equipment)
       this.subscriptions.push(this.logsService.getLogsByEquipmentId(this.equipment.value)
         .subscribe(result => {
           console.log(result);
-          this.logs = result;
         }))
 
         // Uncomment when service is done

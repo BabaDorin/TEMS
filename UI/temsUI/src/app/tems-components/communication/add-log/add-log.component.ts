@@ -8,13 +8,14 @@ import { FormlyFieldConfig } from '@ngx-formly/core';
 import { FormGroup } from '@angular/forms';
 import { ViewLog } from 'src/app/models/communication/logs/view-logs.model';
 import { IOption } from 'src/app/models/option.model';
+import { TEMSComponent } from 'src/app/tems/tems.component';
 
 @Component({
   selector: 'app-add-log',
   templateUrl: './add-log.component.html',
   styleUrls: ['./add-log.component.scss']
 })
-export class AddLogComponent implements OnInit {
+export class AddLogComponent extends TEMSComponent implements OnInit {
 
   // If one of the inputs is not null, it means that 
   // the equipment / personnel / room is alreay defined for the 
@@ -55,9 +56,9 @@ export class AddLogComponent implements OnInit {
     private equipmentservice: EquipmentService,
     private roomService: RoomsService,
     private personnelService: PersonnelService) {
-
-    this.formlyData.isVisible = true;
-    this.formlyData.fields = formlyParserService.parseAddLog(new ViewLog());
+      super();
+      this.formlyData.isVisible = true;
+      this.formlyData.fields = formlyParserService.parseAddLog(new ViewLog());
   }
 
   ngOnInit(): void {
@@ -87,7 +88,10 @@ export class AddLogComponent implements OnInit {
     switch (this.selectedAddresseeType) {
       case 'equipment':
         this.chipsInputLabel = 'TEMSID or Serial Number...';
-        this.autoCompleteOptions = this.equipmentservice.getAllAutocompleteOptions();
+        this.subscriptions.push(this.equipmentservice.getAllAutocompleteOptions()
+          .subscribe(response => {
+            this.autoCompleteOptions = response;
+          }))
         break;
       case 'room':
         this.chipsInputLabel = 'Room identifier...';

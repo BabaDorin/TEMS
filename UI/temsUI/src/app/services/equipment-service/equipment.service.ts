@@ -142,19 +142,12 @@ export class EquipmentService {
     ]
   }
 
-  getAllAutocompleteOptions(): IOption[] {
-    return [
-      {value: '1', label: 'LPB301', },
-      {value: '2', label: 'LPB301', },
-      {value: '3', label: 'LPB301', },
-      {value: '4', label: 'LPB01', },
-      {value: '5', label: 'A2B301', },
-      {value: '6', label: 'WQE2N3II4I4220001', },
-      {value: '7', label: 'L04322', },
-      {value: '8', label: 'PC001', },
-      {value: '9', label: 'PC002', },
-      {value: '10', label: 'OC2332', },
-    ]
+  getAllAutocompleteOptions(onlyParent?: boolean): Observable<any> {
+    if(onlyParent == undefined) 
+      onlyParent = true;
+    return this.http.get(
+      API_EQ_URL + '/getallautocompleteoptions/' + onlyParent, 
+      this.httpOptions);
   }
 
   getFileterdAutocompleteOptions(filter: string){

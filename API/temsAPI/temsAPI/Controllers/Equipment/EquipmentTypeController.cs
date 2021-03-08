@@ -27,7 +27,7 @@ namespace temsAPI.Controllers
         [HttpGet]
         public async Task<IList<EquipmentType>> Get()
         {
-            return await _unitOfWork.EquipmentTypes.FindAll(q => q.IsArchieved == false);
+            return await _unitOfWork.EquipmentTypes.FindAll<EquipmentType>(q => q.IsArchieved == false);
         }
 
         [HttpPost]
@@ -36,14 +36,15 @@ namespace temsAPI.Controllers
             if (!await _unitOfWork.EquipmentTypes.isExists(q => q.Id == typeId))
                 return ReturnResponse("There is no equipment type associated with the specified typeId", Status.Fail);
 
-            EquipmentType equipmentType = await _unitOfWork.EquipmentTypes.Find(q => q.Id == typeId,
+            EquipmentType equipmentType = (await _unitOfWork.EquipmentTypes.Find<EquipmentType>(q => q.Id == typeId,
                 includes: new List<string>() { nameof(equipmentType.Properties) }
-                );
+                )).FirstOrDefault();
 
             foreach (var item in equipmentType.Properties)
             {
                 item.DataType = new DataType();
-                item.DataType.Name = _unitOfWork.DataTypes.Find(q => q.Id == item.DataTypeID).Result.Name;
+                item.DataType.Name = _unitOfWork.DataTypes.Find<DataType>(q => q.Id == item.DataTypeID)
+                    .Result.FirstOrDefault().Name;
             }
 
             EquipmentTypeViewModel viewModel = new EquipmentTypeViewModel
@@ -102,7 +103,8 @@ namespace temsAPI.Controllers
                     //    PropertyID = prop.Value,
                     //    TypeID = equipmentType.Id
                     //});
-                    equipmentType.Properties.Add(await _unitOfWork.Properties.Find(q => q.Id == prop.Value));
+                    equipmentType.Properties.Add((await _unitOfWork.Properties.Find<Property>(q => q.Id == prop.Value))
+                            .FirstOrDefault());
 
             if (viewModel.Parents != null)
                 foreach (Option parent in viewModel.Parents)

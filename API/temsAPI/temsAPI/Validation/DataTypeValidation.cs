@@ -19,8 +19,8 @@ namespace temsAPI.Validation
         /// <returns></returns>
         public static async Task<bool> IsValidAsync(Option vmProperty, IUnitOfWork unitOfWork)
         {
-            Property fullProp = await unitOfWork.Properties.Find(q => q.Name == vmProperty.Value,
-                    includes: new List<string> { nameof(fullProp.DataType) });
+            Property fullProp = (await unitOfWork.Properties.Find<Property>(q => q.Name == vmProperty.Value,
+                    includes: new List<string> { nameof(fullProp.DataType) })).FirstOrDefault();
 
             if (fullProp == null)
                 return false;

@@ -23,18 +23,28 @@ namespace leave_management.Repository
 
         public async Task Create(T entity)
         {
-            await _db.AddAsync(entity);   
+            await _db.AddAsync(entity);
         }
 
         public void Delete(T entity)
         {
-            _db.Remove(entity); 
+            _db.Remove(entity);
         }
 
-        public async Task<T> Find(Expression<Func<T, bool>> expression, List<string> includes = null, Func<IQueryable<T>, IIncludableQueryable<T, object>> include = null)
+        public async Task<IList<TType>> Find<TType>(
+            Expression<Func<T, bool>> where = null,
+            Expression<Func<T, TType>> select = null,
+            Func<IQueryable<T>, IIncludableQueryable<T, object>> include = null,
+            List<string> includes = null)
         {
             IQueryable<T> query = _db;
-            if(includes != null)
+
+            if (where != null)
+            {
+                query = query.Where(where);
+            }
+
+            if (includes != null)
             {
                 foreach (var table in includes)
                 {
@@ -42,25 +52,35 @@ namespace leave_management.Repository
                 }
             }
 
-            if(include != null)
+            if (include != null)
             {
                 query = include(query);
             }
 
-
-            return await query.FirstOrDefaultAsync(expression);
-        }
-
-        public async Task<IList<T>> FindAll(Expression<Func<T, bool>> expression = null, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null, List<string> includes = null, Func<IQueryable<T>, IIncludableQueryable<T, object>> include = null)
-        {
-            IQueryable<T> query = _db;
-            
-            if(expression != null)
+            if (select != null)
             {
-                query = query.Where(expression);
+                query = (IQueryable<T>)query.Select(select);
             }
 
-            if(includes != null)
+            return (IList<TType>)await query.ToListAsync();
+        }
+
+        public async Task<IList<TType>> FindAll<TType>(
+            Expression<Func<T, bool>> where = null,
+            Expression<Func<T, TType>> select = null,
+            Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null, 
+            Func<IQueryable<T>, IIncludableQueryable<T, object>> include = null,
+            List<string> includes = null)
+        {
+
+            IQueryable<T> query = _db;
+
+            if (where != null)
+            {
+                query = query.Where(where);
+            }
+
+            if (includes != null)
             {
                 foreach (var table in includes)
                 {
@@ -78,7 +98,10 @@ namespace leave_management.Repository
                 query = orderBy(query);
             }
 
-            return await query.ToListAsync();
+            return
+                (select != null)
+                ? await query.Select(select).ToListAsync()
+                : (IList<TType>)await query.ToListAsync();
         }
 
         public async Task<bool> isExists(Expression<Func<T, bool>> expression = null)

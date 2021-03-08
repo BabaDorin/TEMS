@@ -77,7 +77,8 @@ namespace temsAPI.Controllers.Equipment
                 {
                     Id = Guid.NewGuid().ToString(),
                     EquipmentDefinitionID = equipmentDefinition.Id,
-                    PropertyID = (await _unitOfWork.Properties.Find(q => q.Name == property.Value)).Id,
+                    PropertyID = (await _unitOfWork.Properties.Find<Property>(q => q.Name == property.Value))
+                        .FirstOrDefault().Id,
                     Value = property.Label,
                 });
             }
@@ -99,7 +100,7 @@ namespace temsAPI.Controllers.Equipment
             List<Option> options = new List<Option>();
             try
             {
-                (await _unitOfWork.EquipmentDefinitions.FindAll(q => q.EquipmentTypeID == typeId))
+                (await _unitOfWork.EquipmentDefinitions.FindAll<EquipmentDefinition>(q => q.EquipmentTypeID == typeId))
                 .ToList()
                 .ForEach(q => options.Add(new Option
                 {
@@ -125,21 +126,22 @@ namespace temsAPI.Controllers.Equipment
                     return ReturnResponse("There is not definition having the specified id", Status.Fail);
 
                 EquipmentDefinitionViewModel viewModel = new EquipmentDefinitionViewModel();
-                EquipmentDefinition model = await _unitOfWork.EquipmentDefinitions.Find(q => q.Id == definitionId,
+                EquipmentDefinition model = (await _unitOfWork.EquipmentDefinitions.Find<EquipmentDefinition>(q => q.Id == definitionId,
                         include: q => q
                                 .Include(q => q.Children)
                                 .Include(q => q.EquipmentSpecifications)
                                 .ThenInclude(q => q.Property)
                                 .Include(q => q.Parent)
-                                .Include(q => q.EquipmentType));
+                                .Include(q => q.EquipmentType)))
+                                .FirstOrDefault();
 
                 // Get rid of this as soon as possible, solve circular references
                 foreach (var eqspec in model.EquipmentSpecifications)
                 {
                     eqspec.Property.DataType = new DataType();
                     eqspec.Property.DataType.Name = _unitOfWork.DataTypes
-                        .Find(q => q.Id == eqspec.Property.DataTypeID)
-                        .Result.Name;
+                        .Find<DataType>(q => q.Id == eqspec.Property.DataTypeID)
+                        .Result.FirstOrDefault().Name;
                 }
 
                 viewModel = _mapper.Map<EquipmentDefinitionViewModel>(model);

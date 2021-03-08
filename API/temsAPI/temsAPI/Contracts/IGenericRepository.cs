@@ -12,17 +12,19 @@ namespace temsAPI.Contracts
         // Interface which defines CRUD
         // Every domain class should offer CRUD operations
 
-        Task<IList<T>> FindAll(
-            Expression<Func<T, bool>> expression = null, // q => q.Id == 2
-            Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null, // q => q.OrderBy(q => q.Id)
-            List<string> includes = null,
-            Func<IQueryable<T>, IIncludableQueryable<T, object>> include = null
+        Task<IList<TType>> FindAll<TType>(
+            Expression<Func<T, bool>> where = null,
+            Expression<Func<T, TType>> select = null,
+            Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
+            Func<IQueryable<T>, IIncludableQueryable<T, object>> include = null,
+            List<string> includes = null
             );
 
-        Task<T> Find(
-           Expression<Func<T, bool>> expression,
-           List<string> includes = null,
-           Func<IQueryable<T>, IIncludableQueryable<T, object>> include = null
+        Task<IList<TType>> Find<TType>(
+           Expression<Func<T, bool>> where = null,
+           Expression<Func<T, TType>> select = null,
+           Func<IQueryable<T>, IIncludableQueryable<T, object>> include = null,
+           List<string> includes = null
            );
 
         Task<bool> isExists(Expression<Func<T, bool>> expression = null);

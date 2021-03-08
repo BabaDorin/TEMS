@@ -27,7 +27,7 @@ namespace temsAPI.Controllers
         [HttpGet]
         public async Task<IEnumerable<Property>> Get()
         {
-            return await _unitOfWork.Properties.FindAll();
+            return await _unitOfWork.Properties.FindAll<Property>();
         }
 
         public async Task<JsonResult> Insert([FromBody] AddPropertyViewModel viewModel)
@@ -69,7 +69,8 @@ namespace temsAPI.Controllers
                 Name = viewModel.Name,
                 DisplayName = viewModel.DisplayName,
                 Required = viewModel.Required,
-                DataType = await _unitOfWork.DataTypes.Find(q => q.Name.ToLower() == viewModel.DataType),
+                DataType = (await _unitOfWork.DataTypes.Find<DataType>(q => q.Name.ToLower() == viewModel.DataType))
+                    .FirstOrDefault(),
             };
 
             await _unitOfWork.Properties.Create(property);

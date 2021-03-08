@@ -37,7 +37,7 @@
     <form *ngIf="formlyData.isVisible" [formGroup]="formlyData.form" (ngSubmit)="onSubmit(formlyData.model)">
       <formly-form [form]="formlyData.form" [fields]="formlyData.fields" [model]="formlyData.model"></formly-form>
       <br>
-      <button type="submit" class="btn btn-gradient-primary mr-2" [disabled]="formyData.form.status == 'INVALID'">
+      <button type="submit" class="btn btn-gradient-primary mr-2" [disabled]="formlyData.form.status == 'INVALID'">
         Submit
       </button>
     </form>

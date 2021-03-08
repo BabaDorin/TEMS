@@ -1,3 +1,4 @@
+import { TEMSComponent } from './../../../tems/tems.component';
 import { ViewPersonnelSimplified } from './../../../models/personnel/view-personnel-simplified.model';
 import { ViewEquipmentSimplified } from './../../../models/equipment/view-equipment-simplified.model';
 import { PersonnelService } from './../../../services/personnel-service/personnel.service';
@@ -13,7 +14,7 @@ import { IOption } from 'src/app/models/option.model';
   templateUrl: './equipment-allocation.component.html',
   styleUrls: ['./equipment-allocation.component.scss']
 })
-export class EquipmentAllocationComponent implements OnInit {
+export class EquipmentAllocationComponent extends TEMSComponent implements OnInit {
 
   // There are 4 ways this component will get displayed.
   // 1) Without any input parameters being sent 
@@ -51,10 +52,14 @@ export class EquipmentAllocationComponent implements OnInit {
     private roomService: RoomsService,
     private personnelService: PersonnelService
   ) { 
+    super();
   }
 
   ngOnInit(): void {
-    this.equipmentAutoCompleteOptions = this.equipmentService.getAllAutocompleteOptions();
+    this.subscriptions.push(this.equipmentService.getAllAutocompleteOptions()
+      .subscribe(response => {
+        this.equipmentAutoCompleteOptions = response;
+      }))
 
     this.selectedAllocateToType="room";
     this.allocatedToChipsInputLabel = 'Room identifier...';

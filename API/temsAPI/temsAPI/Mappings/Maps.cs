@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using System.Collections.Generic;
 using temsAPI.Data.Entities.EquipmentEntities;
 using temsAPI.ViewModels.Equipment;
 using temsAPI.ViewModels.EquipmentDefinition;
@@ -15,6 +16,7 @@ namespace temsAPI.Mappings
             CreateMap<EquipmentType, EquipmentTypeViewModel>().ReverseMap();
             CreateMap<EquipmentDefinition, EquipmentDefinitionViewModel>().ReverseMap();
             CreateMap<Equipment, AddEquipmentViewModel>().ReverseMap();
+            CreateMap<List<Equipment>, List<ViewEquipmentSimplifiedViewModel>>().ReverseMap();
         }
     }
 }

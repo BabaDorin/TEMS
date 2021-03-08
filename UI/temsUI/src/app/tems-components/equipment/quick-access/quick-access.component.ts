@@ -1,3 +1,4 @@
+import { IOption } from './../../../models/option.model';
 import { PersonnelService } from './../../../services/personnel-service/personnel.service';
 import { RoomsService } from './../../../services/rooms-service/rooms.service';
 import { EquipmentService } from 'src/app/services/equipment-service/equipment.service';
@@ -6,17 +7,19 @@ import { FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { ActivatedRoute, Router } from "@angular/router"
+import { TEMSComponent } from 'src/app/tems/tems.component';
 
 @Component({
   selector: 'app-quick-access',
   templateUrl: './quick-access.component.html',
   styleUrls: ['./quick-access.component.scss']
 })
-export class QuickAccessComponent implements OnInit {
+export class QuickAccessComponent extends TEMSComponent implements OnInit {
 
-  myControl = new FormControl();
-  options: string[] = [];
-  filteredOptions: Observable<string[]>;
+  optionInput = new FormControl();
+  options: IOption[] = [];
+  filteredOptions: Observable<IOption[]>;
+  selectedOptionId: string;
   type: string; // equipment, room or personnel
 
   header; label; placeholder;
@@ -28,6 +31,7 @@ export class QuickAccessComponent implements OnInit {
     private roomService: RoomsService,
     private personnelService: PersonnelService
   ) {
+    super();
   }
 
   ngOnInit() {
@@ -35,14 +39,43 @@ export class QuickAccessComponent implements OnInit {
   }
 
   onSubmit() {
-    // TODO: check is myControl.value is a valid identifier
-    this.router.navigate(["/" + this.type + "/details/" + this.myControl.value]);
+    if(this.optionInput.value.length == 0)
+      return;
+
+    let selectedOptionByLabel = this.options
+      .find(q => q.label.toLowerCase() == this.optionInput.value.toLowerCase());
+
+    if(selectedOptionByLabel == undefined)
+      return;
+
+    // 1) The value has not been selected within drowdown options
+    if(this.selectedOptionId == undefined){
+
+      if(selectedOptionByLabel == undefined){
+        console.log('not found');
+        return;
+      }
+      else
+        this.selectedOptionId = selectedOptionByLabel.value;
+    }
+    else
+    {
+      // Option was selected via dropwdown, but we still have to check if the
+      // option from mat-input matches with selectedOptionId
+      let selectedOptionById = this.options
+        .find(q => q.value == this.selectedOptionId);
+      
+      // Does not Match
+      if(selectedOptionById.label != this.optionInput.value)
+        this.selectedOptionId = selectedOptionByLabel.value
+    }
+
+    this.router.navigate(["/" + this.type + "/details/" + this.selectedOptionId]);
   }
 
-
-  private _filter(value: string): string[] {
+  private _filter(value: string): IOption[] {
     const filterValue = value.toLowerCase();
-    return this.options.filter(option => option.toLowerCase().indexOf(filterValue) === 0);
+    return this.options.filter(option => option.label.toLowerCase().indexOf(filterValue) === 0);
   }
 
   // Subscribes to route changes
@@ -57,35 +90,52 @@ export class QuickAccessComponent implements OnInit {
     
         switch (this.type) {
           case 'equipment':
-            this.options = this.equipmentService.getAllAutocompleteOptions()
-              .map(q => q.value);
-            this.header = "Find equipment by TEMSID or Serial Number";
+            this.subscriptions.push(this.equipmentService.getAllAutocompleteOptions()
+              .subscribe(response => {
+                this.options = response;
+              }))
+
+              this.header = "Find equipment by TEMSID or Serial Number";
             this.label = "Indentifier";
             this.placeholder = "LPB021";
             break;
     
           case 'rooms':
-            this.options = this.roomService.getAllAutocompleteOptions()
-              .map(q => q.value);
+            // this.options = this.roomService.getAllAutocompleteOptions()
+            //   .map(q => q.value);
             this.header = "Find room by identifier";
             this.label = "Indentifier";
             this.placeholder = "104";
             break;
     
           case 'personnel':
-            this.options = this.personnelService.getAllAutocompleteOptions()
-              .map(q => q.value);
+            // this.options = this.personnelService.getAllAutocompleteOptions()
+            //   .map(q => q.value);
             this.header = "Find personnel by name";
             this.label = "Indentifier";
             this.placeholder = "104";
             break;
         }
     
-        this.filteredOptions = this.myControl.valueChanges.pipe(
+        this.filteredOptions = this.optionInput.valueChanges.pipe(
           startWith(''),
           map(value => this._filter(value))
         );
       }
     });
+  }
+
+  optionSelected(optionId: string){
+    console.log('Option selected: ' + optionId);
+    this.selectedOptionId = optionId;
+  }
+
+  findIdByLabel(label: string){
+    let option = this.options.find(q => q.label.toLowerCase() == label.toLowerCase());
+
+    if(option != undefined)
+      return option.value;
+
+    return undefined;
   }
 }

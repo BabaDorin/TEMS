@@ -1,23 +1,27 @@
 <div class="card">
     <div class="card-body">
         <div class="card-title">{{ header }}</div>
-        <form class="example-form" (submit)="onSubmit()">
-            <mat-form-field class="example-full-width">
+        <form (submit)="onSubmit()">
+            <mat-form-field>
               <mat-label>{{ label }}</mat-label>
               <input type="text"
                      placeholder="LPB021..."
                      aria-label="Tems ID or Serial Number"
                      matInput
-                     [formControl]="myControl"
-                     [matAutocomplete]="auto">
+                     [formControl]="optionInput"
+                     [matAutocomplete]="auto"
+                     required>
               <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
-                <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
-                  {{option}} <span class="text-muted">   LaptocLaptocLaptocLaptocLaptocLaptoc</span>
+                <mat-option *ngFor="let option of filteredOptions | async" [value]="option.label"
+                (onSelectionChange)="optionSelected(option.value)">
+                  {{option.label}} <span class="text-muted">{{ option.additional }}</span>
                 </mat-option>
               </mat-autocomplete>
             </mat-form-field>
             <br>
-            <button type="submit" class="btn btn-primary">Find</button>
+            <button type="submit" class="btn btn-primary" [disabled]="optionInput.length == 0">
+              Find
+            </button>
           </form>
     </div>
 </div>

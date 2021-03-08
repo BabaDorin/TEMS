@@ -4,16 +4,20 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
+using temsAPI.Data.Entities.EquipmentEntities;
 using temsAPI.Data.Entities.OtherEntities;
 using temsAPI.Data.Entities.UserEntities;
 using temsAPI.ViewModels;
 using temsAPI.ViewModels.Equipment;
+using temsAPI.ViewModels.EquipmentType;
+using temsAPI.ViewModels.Property;
 
-namespace temsAPI.Controllers.Equipment
+namespace temsAPI.Controllers.EquipmentControllers
 {
     public class EquipmentController : TEMSController
     {
@@ -187,6 +191,89 @@ namespace temsAPI.Controllers.Equipment
             catch (Exception)
             {
                 return ReturnResponse("An error occured when fetching autocomplete options", Status.Fail);
+            }
+        }
+
+        [HttpGet("equipment/getbyid/{id}")]
+        public async Task<JsonResult> GetById(string id)
+        {
+            try
+            {
+                // Invalid id provided
+                if (!await _unitOfWork.Equipments.isExists(q => q.Id == id))
+                    return ReturnResponse("Invalid equipment id provided", Status.Fail);
+
+                Equipment model = (await _unitOfWork.Equipments
+                    .Find<Equipment>(
+                        where: q => q.Id == id,
+                        include: q => q.Include(q => q.EquipmentDefinition)
+                        .ThenInclude(q => q.EquipmentType)
+                        .Include(q => q.PersonnelEquipmentAllocations.Where(q => q.DateReturned == null))
+                        .ThenInclude(q => q.Personnel)
+                        .Include(q => q.RoomEquipmentAllocations.Where(q => q.DateReturned == null))
+                        .ThenInclude(q => q.Room)
+                        .Include(q => q.Children)
+                        .ThenInclude(q => q.EquipmentDefinition)
+                        .ThenInclude(q => q.EquipmentType)
+                        .ThenInclude(q => q.Properties)
+                        .Include(q => q.Parent)
+                        .ThenInclude(q => q.EquipmentDefinition)
+                      )).FirstOrDefault();
+
+                ViewEquipmentViewModel viewModel = new ViewEquipmentViewModel
+                {
+                    Id = model.Id,
+                    Identifier = model.EquipmentDefinition.Identifier,
+                    IsDefect = model.IsDefect,
+                    IsUsed = model.IsUsed,
+                    SerialNumber = model.SerialNumber,
+                    TemsId = model.TEMSID,
+                    Type = model.EquipmentDefinition.EquipmentType.Name,
+                    Personnnel = new Option
+                    {
+                        Value = (model.PersonnelEquipmentAllocations.Count > 0)
+                                ? model.PersonnelEquipmentAllocations.FirstOrDefault().PersonnelID
+                                : null,
+                        Label = (model.PersonnelEquipmentAllocations.Count > 0)
+                                ? model.PersonnelEquipmentAllocations.FirstOrDefault().Personnel.Name
+                                : "TEMS",
+                    },
+                    Room = new Option
+                    {
+                        Value = (model.RoomEquipmentAllocations.Count > 0)
+                                ? model.RoomEquipmentAllocations.FirstOrDefault().RoomID
+                                : null,
+                        Label = (model.RoomEquipmentAllocations.Count > 0)
+                                ? model.RoomEquipmentAllocations.FirstOrDefault().Room.Identifier
+                                : "Deposit",
+                    },
+                    Parent = (model.Parent == null)
+                             ? null
+                             : new Option
+                             {
+                                 Value = model.Parent.Id,
+                                 Label = model.Parent.EquipmentDefinition.Identifier,
+                             },
+                    Children = model.Children
+                                    .Select(q => new Option
+                                    {
+                                        Value = q.Id,
+                                        Label = q.EquipmentDefinition.Identifier,
+                                        Additional = q.EquipmentDefinition.EquipmentType.Name
+                                    }).ToList(),
+
+                    SpecificTypeProperties = _mapper.Map<List<PropertyViewModel>>
+                            (model.EquipmentDefinition.EquipmentType.Properties),
+                    
+
+                };
+
+                return Json(viewModel);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured when fetching equipment", Status.Fail);
             }
         }
     }

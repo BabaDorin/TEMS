@@ -125,8 +125,11 @@ export class EquipmentService {
     return new ViewEquipmentSimplified();
   }
 
-  getEquipmentByID(id: string): ViewEquipment{
-    return new ViewEquipment();
+  getEquipmentByID(id: string): Observable<any>{
+    return this.http.get(
+      API_EQ_URL + '/getbyid/' + id,
+      this.httpOptions
+    );
   }
 
   getEquipmentAllocations(id: string): ViewEquipmentAllocation[]{

@@ -15,7 +15,7 @@ using temsAPI.ViewModels;
 using temsAPI.ViewModels.EquipmentDefinition;
 using temsAPI.ViewModels.Property;
 
-namespace temsAPI.Controllers.Equipment
+namespace temsAPI.Controllers.EquipmentControllers
 {
     public class EquipmentDefinitionController : TEMSController
     {

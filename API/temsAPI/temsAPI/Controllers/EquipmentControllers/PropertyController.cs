@@ -8,13 +8,14 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
+using temsAPI.Controllers;
 using temsAPI.Data.Entities.EquipmentEntities;
 using temsAPI.Data.Entities.UserEntities;
 using temsAPI.Validation;
 using temsAPI.ViewModels;
 using temsAPI.ViewModels.Property;
 
-namespace temsAPI.Controllers
+namespace temsAPI.EquipmentControllers
 {
     public class PropertyController : TEMSController
     {

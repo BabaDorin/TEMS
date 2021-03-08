@@ -1,4 +1,4 @@
-﻿namespace temsAPI.Controllers.Equipment
+﻿namespace temsAPI.Controllers.EquipmentControllers
 {
     internal class PersonnelEquipmentAllocations
     {

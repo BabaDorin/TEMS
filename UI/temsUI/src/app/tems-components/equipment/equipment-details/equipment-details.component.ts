@@ -27,13 +27,4 @@ export class EquipmentDetailsComponent implements OnInit {
 
     this.equipmentSimplified = this.equipmentService.getEquipmentSimplifiedById(this.equipmentId);
   }
-
-  // // To avoid generating multiple components inside mat-tab (https://github.com/angular/components/issues/10938) 
-  // public onTabAnimationDone(): void {
-  //   const inactiveTabs = this.elementRef.nativeElement.querySelectorAll(
-  //     '.mat-tab-body-active .mat-tab-body-content > .tab-container:not(:first-child)'
-  //   );
-
-  //   inactiveTabs.forEach(tab => tab.remove());
-  // }
 }

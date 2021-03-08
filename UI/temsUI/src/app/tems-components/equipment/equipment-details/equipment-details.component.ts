@@ -1,3 +1,4 @@
+import { TEMSComponent } from './../../../tems/tems.component';
 import { EquipmentService } from 'src/app/services/equipment-service/equipment.service';
 import { ViewEquipmentSimplified } from './../../../models/equipment/view-equipment-simplified.model';
 import { Component, ElementRef, Input, OnInit } from '@angular/core';
@@ -8,7 +9,7 @@ import { ActivatedRoute } from '@angular/router';
   templateUrl: './equipment-details.component.html',
   styleUrls: ['./equipment-details.component.scss']
 })
-export class EquipmentDetailsComponent implements OnInit {
+export class EquipmentDetailsComponent extends TEMSComponent implements OnInit {
 
   @Input() equipmentId;
   edit: boolean;
@@ -18,6 +19,7 @@ export class EquipmentDetailsComponent implements OnInit {
 
   constructor(private activatedroute: ActivatedRoute, private elementRef: ElementRef,
     private equipmentService: EquipmentService) {
+      super();
   }
 
   ngOnInit(): void {
@@ -25,6 +27,12 @@ export class EquipmentDetailsComponent implements OnInit {
       this.equipmentId = this.activatedroute.snapshot.paramMap.get("id");
     this.edit=false;
 
-    this.equipmentSimplified = this.equipmentService.getEquipmentSimplifiedById(this.equipmentId);
+    this.subscriptions.push(this.equipmentService.getEquipmentSimplifiedById(this.equipmentId)
+      .subscribe(result => {
+        this.equipmentSimplified = result;
+      }));
+
+    console.log('equipmentsimplified:');
+    console.log(this.equipmentSimplified);
   }
 }

@@ -6,13 +6,6 @@ datatypes.
 
 You may encounter this problem in the future.
 
-Fetching equipments for ag-grid
-
-ViewEquipmentSimplified:
-temsId: string;
-serialNumber:s string;
-definition: string;
-room: string;
-type: string;
-isUsed: bool;
-isDefect: bool;
+1. Fetching logs properly
+2. Adding logs property
+3. Adding log types in a modal

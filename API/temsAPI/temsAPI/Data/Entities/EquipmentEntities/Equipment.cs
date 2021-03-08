@@ -44,6 +44,9 @@ namespace temsAPI.Data.Entities.EquipmentEntities
         public bool IsDefect { get; set; }
         public bool IsUsed { get; set; }
 
+        [NotMapped]
+        public string TemsIdOrSerialNumber { get { return TEMSID ?? SerialNumber; } }
+
         public virtual ICollection<Log> Logs { get; set; }
         public virtual ICollection<Ticket> Tickets { get; set; }
         public virtual ICollection<Equipment> Children { get; set; }

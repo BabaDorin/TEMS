@@ -49,7 +49,7 @@ export class AddLogComponent extends TEMSComponent implements OnInit {
   autoCompleteOptions = [];
   alreadySelectedOptions = [];
 
-  chipsInputLabel = "Identifier...";
+  chipsInputLabel = "";
 
   constructor(
     formlyParserService: FormlyParserService,
@@ -110,6 +110,7 @@ export class AddLogComponent extends TEMSComponent implements OnInit {
   onSubmit(model) {
     // Primitive validation, might improve later.
     if(model.log.logType){
+      model.selectedAddresseeType = this.selectedAddresseeType;
 
       // case 1: The Addresse comes from outside
       if(this.implicitAddressees != undefined)
@@ -123,6 +124,8 @@ export class AddLogComponent extends TEMSComponent implements OnInit {
           entities: this.identifierChips.options
         };
       }
+
+      console.log(model);
     }
   }
 }

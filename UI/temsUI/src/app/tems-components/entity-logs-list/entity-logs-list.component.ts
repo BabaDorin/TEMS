@@ -1,3 +1,5 @@
+import { TEMSComponent } from './../../tems/tems.component';
+import { IOption } from 'src/app/models/option.model';
 import { Component, Input, OnInit } from '@angular/core';
 import { ViewLog } from 'src/app/models/communication/logs/view-logs.model';
 import { ViewEquipmentSimplified } from 'src/app/models/equipment/view-equipment-simplified.model';
@@ -12,11 +14,11 @@ import { AddLogComponent } from '../communication/add-log/add-log.component';
   templateUrl: './entity-logs-list.component.html',
   styleUrls: ['./entity-logs-list.component.scss']
 })
-export class EntityLogsListComponent implements OnInit {
+export class EntityLogsListComponent extends TEMSComponent implements OnInit {
 
-  @Input() equipment: ViewEquipmentSimplified;
-  @Input() room: ViewRoomSimplified;
-  @Input() personnel: ViewPersonnelSimplified;
+  @Input() equipment: IOption;
+  @Input() room: IOption;
+  @Input() personnel: IOption;
 
   logs: ViewLog[];
   @Input() addLogEnabled: boolean = true;
@@ -26,7 +28,7 @@ export class EntityLogsListComponent implements OnInit {
     private logsService: LogsService,
     public dialog: MatDialog
   ) { 
-    
+    super();
   }
 
   ngOnInit(): void {
@@ -36,13 +38,18 @@ export class EntityLogsListComponent implements OnInit {
     // }
 
     if(this.equipment)
-      this.logs = this.logsService.getLogsByEquipmentId(this.equipment.id);
+      this.subscriptions.push(this.logsService.getLogsByEquipmentId(this.equipment.value)
+        .subscribe(result => {
+          console.log(result);
+          this.logs = result;
+        }))
 
-    if(this.room)
-      this.logs = this.logsService.getLogsByRoomId(this.room.id);
+        // Uncomment when service is done
+    // if(this.room)
+    //   this.logs = this.logsService.getLogsByRoomId(this.room.value);
 
-    if(this.personnel)
-      this.logs = this.logsService.getLogsByPersonnelId(this.personnel.id);
+    // if(this.personnel)
+    //   this.logs = this.logsService.getLogsByPersonnelId(this.personnel.value);
     
     if(this.logs == undefined)
       this.logs = this.logsService.getLogs();
@@ -57,24 +64,24 @@ export class EntityLogsListComponent implements OnInit {
     if(this.equipment){
       dialogRef.componentInstance.equipment = [
         {
-          id: this.equipment.id, 
-          value: this.equipment.temsIdOrSerialNumber
+          value: this.equipment.value, 
+          label: this.equipment.label
         }];
     }
 
     if(this.room){
       dialogRef.componentInstance.room = [
         {
-          id: this.room.id, 
-          value: this.room.identifier
+          value: this.room.value, 
+          label: this.room.label
         }];
     }
 
     if(this.personnel){
       dialogRef.componentInstance.personnel = [
         {
-          id: this.personnel.id, 
-          value: this.personnel.name
+          value: this.personnel.value, 
+          label: this.personnel.label
         }];
     }
 

@@ -1,3 +1,4 @@
+import { IOption } from 'src/app/models/option.model';
 import { ViewEquipmentSimplified } from './../../../../models/equipment/view-equipment-simplified.model';
 import { EquipmentService } from './../../../../services/equipment-service/equipment.service';
 import { Component, Input, OnInit } from '@angular/core';
@@ -14,15 +15,24 @@ import { AddLogComponent } from 'src/app/tems-components/communication/add-log/a
 export class EquipmentDetailsLogsComponent implements OnInit {
 
   @Input() equipment: ViewEquipmentSimplified;
-  logs: ViewLog[];
+  equipmentOption: IOption;
 
   constructor(
-    private logsService: LogsService,
     public dialog: MatDialog) { 
   }
 
   ngOnInit(): void {
-    this.logs = this.logsService.getLogsByEquipmentId(this.equipment.id);
+    if(this.equipment != undefined)
+      this.equipmentOption = { 
+        value: this.equipment.id,
+        label: this.equipment.temsIdOrSerialNumber,
+      };
+
+    console.log('equipment option:');
+    console.log(this.equipmentOption);
+
+    console.log('equipment:')
+    console.log(this.equipment);
   }
 
   addLog(){
@@ -34,8 +44,8 @@ export class EquipmentDetailsLogsComponent implements OnInit {
     dialogRef = this.dialog.open(AddLogComponent); 
     dialogRef.componentInstance.equipment = [
       {
-        id: this.equipment.id, 
-        value: this.equipment.temsIdOrSerialNumber
+        value: this.equipment.id, 
+        label: this.equipment.temsIdOrSerialNumber
       }];
 
     dialogRef.afterClosed().subscribe(result => {

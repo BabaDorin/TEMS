@@ -1,3 +1,4 @@
+import { TEMSService } from './../tems-service/tems.service';
 import { AddEquipment } from 'src/app/models/equipment/add-equipment.model';
 import { AddType } from './../../models/equipment/add-type.model';
 import { EquipmentType } from './../../models/equipment/view-type.model';
@@ -16,16 +17,14 @@ import { Observable, of } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
-export class EquipmentService {
+export class EquipmentService extends TEMSService {
 
-  httpOptions = {
-    headers: new HttpHeaders({
-      'Content-Type':'application/json; charset=utf-8'
-    })
-  }
+  
   constructor(
     private http: HttpClient
-  ) { }
+  ) { 
+    super();
+  }
 
   getTypes(): Observable<any> {
     return this.http.get(API_EQTYPE_URL + '/get');
@@ -121,8 +120,11 @@ export class EquipmentService {
       this.httpOptions);      
   }
 
-  getEquipmentSimplifiedById(id: string): ViewEquipmentSimplified{
-    return new ViewEquipmentSimplified();
+  getEquipmentSimplifiedById(id: string): Observable<any>{
+    return this.http.get(
+      API_EQ_URL + '/getsimplified/' + id,
+      this.httpOptions
+      );
   }
 
   getEquipmentByID(id: string): Observable<any>{

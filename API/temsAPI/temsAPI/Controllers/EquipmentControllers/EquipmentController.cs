@@ -104,41 +104,7 @@ namespace temsAPI.Controllers.EquipmentControllers
 
                 foreach (Data.Entities.EquipmentEntities.Equipment eq in equipments)
                 {
-                    ViewEquipmentSimplifiedViewModel viewEquipmentSimplified = new ViewEquipmentSimplifiedViewModel
-                    {
-                        Id = eq.Id,
-                        IsDefect = eq.IsDefect,
-                        IsUsed = eq.IsUsed,
-                        TemsId = eq.TEMSID,
-                        SerialNumber = eq.SerialNumber,
-                        Type = eq.EquipmentDefinition.EquipmentType.Name,
-                        Definition = eq.EquipmentDefinition.Identifier,
-                    };
-
-                    var lastRoomAllocation = (await _unitOfWork.RoomEquipmentAllocations
-                        .Find<RoomEquipmentAllocation>(q => q.EquipmentID == eq.Id && q.DateReturned == null,
-                        include: q => q.Include(q => q.Room))).FirstOrDefault();
-
-                    // If lastRoomAllocation is null, we check if it has been allocated to a personnel.
-                    // If the equipment has not been allocated to any personnel or rooms, it belongs to 'Deposit'.
-                    if (lastRoomAllocation == null)
-                    {
-                        var lastPersonnelAllocation = (await _unitOfWork.PersonnelEquipmentAllocations
-                        .Find<PersonnelEquipmentAllocation>(q => q.EquipmentID == eq.Id && q.DateReturned == null,
-                        include: q => q.Include(q => q.Personnel))).FirstOrDefault();
-
-                        if (lastPersonnelAllocation == null)
-                            viewEquipmentSimplified.Assignee = "Deposit";
-                    }
-                    else
-                        viewEquipmentSimplified.Assignee = "Room: " + lastRoomAllocation.Room.Identifier;
-
-                    viewEquipmentSimplified.TemsIdOrSerialNumber =
-                        String.IsNullOrEmpty(viewEquipmentSimplified.TemsId)
-                        ? viewEquipmentSimplified.SerialNumber
-                        : viewEquipmentSimplified.TemsId;
-
-                    viewModel.Add(viewEquipmentSimplified);
+                    viewModel.Add(await EquipmentToEquipmentSimplifiedMapping(eq));
                 }
 
                 return Json(viewModel);
@@ -146,6 +112,32 @@ namespace temsAPI.Controllers.EquipmentControllers
             catch (Exception)
             {
                 return ReturnResponse("Unknown error occured when fetching equipments", Status.Fail);
+            }
+        }
+
+        [HttpGet("equipment/getsimplified/{id}")]
+        public async Task<JsonResult> GetSimplified(string id)
+        {
+            try
+            {
+                // Invalid Id provied
+                if (!await _unitOfWork.Equipments.isExists(q => q.Id == id))
+                    return ReturnResponse("We could not find any equipment having the specified id", Status.Fail);
+
+                Equipment model = (await _unitOfWork.Equipments
+                    .Find<Equipment>(
+                    where: q => q.Id == id,
+                    include: q => q
+                                .Include(q => q.EquipmentDefinition)
+                                .ThenInclude(q => q.EquipmentType)))
+                    .FirstOrDefault();
+
+                return Json(await EquipmentToEquipmentSimplifiedMapping(model));
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An unhandled error occured when fetching equipment", Status.Fail);
             }
         }
 
@@ -275,6 +267,47 @@ namespace temsAPI.Controllers.EquipmentControllers
                 Debug.WriteLine(ex);
                 return ReturnResponse("An error occured when fetching equipment", Status.Fail);
             }
+        }
+
+
+        // -------------------------< Extract then to a separate file >--------------------------------
+        private async Task<ViewEquipmentSimplifiedViewModel> EquipmentToEquipmentSimplifiedMapping(Equipment eq)
+        {
+            ViewEquipmentSimplifiedViewModel viewEquipmentSimplified = new ViewEquipmentSimplifiedViewModel
+            {
+                Id = eq.Id,
+                IsDefect = eq.IsDefect,
+                IsUsed = eq.IsUsed,
+                TemsId = eq.TEMSID,
+                SerialNumber = eq.SerialNumber,
+                Type = eq.EquipmentDefinition.EquipmentType.Name,
+                Definition = eq.EquipmentDefinition.Identifier,
+            };
+
+            var lastRoomAllocation = (await _unitOfWork.RoomEquipmentAllocations
+                .Find<RoomEquipmentAllocation>(q => q.EquipmentID == eq.Id && q.DateReturned == null,
+                include: q => q.Include(q => q.Room))).FirstOrDefault();
+
+            // If lastRoomAllocation is null, we check if it has been allocated to a personnel.
+            // If the equipment has not been allocated to any personnel or rooms, it belongs to 'Deposit'.
+            if (lastRoomAllocation == null)
+            {
+                var lastPersonnelAllocation = (await _unitOfWork.PersonnelEquipmentAllocations
+                .Find<PersonnelEquipmentAllocation>(q => q.EquipmentID == eq.Id && q.DateReturned == null,
+                include: q => q.Include(q => q.Personnel))).FirstOrDefault();
+
+                if (lastPersonnelAllocation == null)
+                    viewEquipmentSimplified.Assignee = "Deposit";
+            }
+            else
+                viewEquipmentSimplified.Assignee = "Room: " + lastRoomAllocation.Room.Identifier;
+
+            viewEquipmentSimplified.TemsIdOrSerialNumber =
+                String.IsNullOrEmpty(viewEquipmentSimplified.TemsId)
+                ? viewEquipmentSimplified.SerialNumber
+                : viewEquipmentSimplified.TemsId;
+
+            return viewEquipmentSimplified;
         }
     }
 }

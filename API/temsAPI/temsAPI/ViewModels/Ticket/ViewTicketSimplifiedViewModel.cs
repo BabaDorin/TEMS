@@ -10,6 +10,7 @@ namespace temsAPI.ViewModels.Ticket
         public string Id { get; set; }
         public string Problem { get; set; }
         public string Status { get; set; }
+        public Option Label { get; set; }
         public string Description { get; set; }
         public List<Option> Personnel { get; set; }
         public List<Option> Equipments { get; set; }

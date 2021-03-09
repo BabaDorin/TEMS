@@ -21,6 +21,13 @@ namespace temsAPI.Data.Entities.CommunicationEntities
 #nullable enable
         public DateTime? DateClosed { get; set; }
 
+        [ForeignKey("StatusId")]
+        public Status? Status { get; set; }
+        public string? StatusId { get; set; }
+
+        [ForeignKey("LabelId")]
+        public Label? Label { get; set; }
+        public string? LabelId { get; set; }
 
         //[ForeignKey("PersonnelId")]
         //public Personnel? Personnel { get; set; }

@@ -121,10 +121,10 @@ namespace temsAPI.Data
                 .OnDelete(DeleteBehavior.Cascade);
 
             // OnDeleteCascade Tickets
-            modelBuilder.Entity<Equipment>()
-                .HasMany(e => e.Tickets)
-                .WithOne(e => e.Equipment)
-                .OnDelete(DeleteBehavior.Cascade);
+            //modelBuilder.Entity<Equipment>()
+            //    .HasMany(e => e.Tickets)
+            //    .WithOne(e => e.Equipment)
+            //    .OnDelete(DeleteBehavior.Cascade);
 
             // OnDeleteCascade DataType
             modelBuilder.Entity<DataType>()

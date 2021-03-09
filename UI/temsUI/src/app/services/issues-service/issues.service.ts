@@ -1,13 +1,20 @@
-import { ViewIssueSimplified } from 'src/app/models/communication/issues/view-issue';
-import { ViewIssue } from './../../models/communication/issues/view-issue';
+import { Observable } from 'rxjs';
+import { API_ISU_URL } from './../../models/backend.config';
+import { TEMSService } from './../tems-service/tems.service';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { ViewIssueSimplified } from 'src/app/models/communication/issues/view-issue-simplified.model';
 
 @Injectable({
   providedIn: 'root'
 })
-export class IssuesService {
+export class IssuesService extends TEMSService {
 
-  constructor() { }
+  constructor(
+    private http: HttpClient
+  ) { 
+    super();
+  }
 
   getIssues(onlyClosed?: boolean, includingClosed?: boolean){
     return [
@@ -26,8 +33,11 @@ export class IssuesService {
     return this.getIssues(onlyClosed, includingClosed);
   }
 
-  getIssuesOfEquipment(equipmentId: string, onlyClosed?: boolean, includingClosed?: boolean){
-    return this.getIssues(onlyClosed, includingClosed);
+  getIssuesOfEquipment(equipmentId: string, includingClosed?: boolean, onlyClosed?: boolean, ): Observable<any>{
+    return this.http.get(
+      API_ISU_URL + '/equipment/' + equipmentId + '/' + includingClosed + '/' + onlyClosed,
+      this.httpOptions
+    );
   }
 
   getIssuesOfPersonnel(personnelId: string, onlyClosed?: boolean, includingClosed?: boolean){

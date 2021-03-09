@@ -3,36 +3,23 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using temsAPI.Data;
 
 namespace temsAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210309173146_RefactorTicketModel")]
+    partial class RefactorTicketModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("ProductVersion", "5.0.3")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-            modelBuilder.Entity("EquipmentTicket", b =>
-                {
-                    b.Property<string>("EquipmentsId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("TicketsId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("EquipmentsId", "TicketsId");
-
-                    b.HasIndex("TicketsId");
-
-                    b.ToTable("EquipmentTicket");
-                });
 
             modelBuilder.Entity("EquipmentTypeProperty", b =>
                 {
@@ -255,36 +242,6 @@ namespace temsAPI.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("PersonnelTicket", b =>
-                {
-                    b.Property<string>("PersonnelId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("TicketsId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("PersonnelId", "TicketsId");
-
-                    b.HasIndex("TicketsId");
-
-                    b.ToTable("PersonnelTicket");
-                });
-
-            modelBuilder.Entity("RoomTicket", b =>
-                {
-                    b.Property<string>("RoomsId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("TicketsId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("RoomsId", "TicketsId");
-
-                    b.HasIndex("TicketsId");
-
-                    b.ToTable("RoomTicket");
-                });
-
             modelBuilder.Entity("temsAPI.Data.Entities.CommunicationEntities.Announcement", b =>
                 {
                     b.Property<string>("Id")
@@ -399,15 +356,30 @@ namespace temsAPI.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("EquipmentId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<bool>("IsArchieved")
                         .HasColumnType("bit");
+
+                    b.Property<string>("PersonnelId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Problem")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("RoomID")
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("ClosedById");
+
+                    b.HasIndex("EquipmentId");
+
+                    b.HasIndex("PersonnelId");
+
+                    b.HasIndex("RoomID");
 
                     b.ToTable("Tickets");
                 });
@@ -878,21 +850,6 @@ namespace temsAPI.Migrations
                     b.HasDiscriminator().HasValue("TEMSUser");
                 });
 
-            modelBuilder.Entity("EquipmentTicket", b =>
-                {
-                    b.HasOne("temsAPI.Data.Entities.EquipmentEntities.Equipment", null)
-                        .WithMany()
-                        .HasForeignKey("EquipmentsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("temsAPI.Data.Entities.CommunicationEntities.Ticket", null)
-                        .WithMany()
-                        .HasForeignKey("TicketsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("EquipmentTypeProperty", b =>
                 {
                     b.HasOne("temsAPI.Data.Entities.EquipmentEntities.EquipmentType", null)
@@ -959,36 +916,6 @@ namespace temsAPI.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("PersonnelTicket", b =>
-                {
-                    b.HasOne("temsAPI.Data.Entities.OtherEntities.Personnel", null)
-                        .WithMany()
-                        .HasForeignKey("PersonnelId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("temsAPI.Data.Entities.CommunicationEntities.Ticket", null)
-                        .WithMany()
-                        .HasForeignKey("TicketsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("RoomTicket", b =>
-                {
-                    b.HasOne("temsAPI.Data.Entities.OtherEntities.Room", null)
-                        .WithMany()
-                        .HasForeignKey("RoomsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("temsAPI.Data.Entities.CommunicationEntities.Ticket", null)
-                        .WithMany()
-                        .HasForeignKey("TicketsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("temsAPI.Data.Entities.CommunicationEntities.Announcement", b =>
                 {
                     b.HasOne("temsAPI.Data.Entities.UserEntities.TEMSUser", "Author")
@@ -1032,7 +959,26 @@ namespace temsAPI.Migrations
                         .WithMany("ClosedTickets")
                         .HasForeignKey("ClosedById");
 
+                    b.HasOne("temsAPI.Data.Entities.EquipmentEntities.Equipment", "Equipment")
+                        .WithMany("Tickets")
+                        .HasForeignKey("EquipmentId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("temsAPI.Data.Entities.OtherEntities.Personnel", "Personnel")
+                        .WithMany("Tickets")
+                        .HasForeignKey("PersonnelId");
+
+                    b.HasOne("temsAPI.Data.Entities.OtherEntities.Room", "Room")
+                        .WithMany("Tickets")
+                        .HasForeignKey("RoomID");
+
                     b.Navigation("ClosedBy");
+
+                    b.Navigation("Equipment");
+
+                    b.Navigation("Personnel");
+
+                    b.Navigation("Room");
                 });
 
             modelBuilder.Entity("temsAPI.Data.Entities.CommunicationEntities.ToDo", b =>
@@ -1243,6 +1189,8 @@ namespace temsAPI.Migrations
                     b.Navigation("PersonnelEquipmentAllocations");
 
                     b.Navigation("RoomEquipmentAllocations");
+
+                    b.Navigation("Tickets");
                 });
 
             modelBuilder.Entity("temsAPI.Data.Entities.EquipmentEntities.EquipmentDefinition", b =>
@@ -1278,6 +1226,8 @@ namespace temsAPI.Migrations
                     b.Navigation("PersonnelEquipmentAllocations");
 
                     b.Navigation("PersonnelRoomSupervisories");
+
+                    b.Navigation("Tickets");
                 });
 
             modelBuilder.Entity("temsAPI.Data.Entities.OtherEntities.Room", b =>
@@ -1287,6 +1237,8 @@ namespace temsAPI.Migrations
                     b.Navigation("PersonnelRoomSupervisories");
 
                     b.Navigation("RoomEquipmentAllocations");
+
+                    b.Navigation("Tickets");
                 });
 
             modelBuilder.Entity("temsAPI.Data.Entities.UserEntities.TEMSUser", b =>

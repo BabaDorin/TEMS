@@ -41,6 +41,7 @@ export class EntityLogsListComponent extends TEMSComponent implements OnInit {
       this.subscriptions.push(this.logsService.getLogsByEquipmentId(this.equipment.value)
         .subscribe(result => {
           console.log(result);
+          this.logs = result;
         }))
 
         // Uncomment when service is done
@@ -50,8 +51,8 @@ export class EntityLogsListComponent extends TEMSComponent implements OnInit {
     // if(this.personnel)
     //   this.logs = this.logsService.getLogsByPersonnelId(this.personnel.value);
     
-    if(this.logs == undefined)
-      this.logs = this.logsService.getLogs();
+    // if(this.logs == undefined)
+    //   this.logs = this.logsService.getLogs();
   }
 
   private addLog(){

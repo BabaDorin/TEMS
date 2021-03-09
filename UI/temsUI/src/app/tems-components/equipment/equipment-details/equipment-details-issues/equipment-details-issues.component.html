@@ -1,31 +1,4 @@
-<app-summary-issues-analytics>
-    Loading...
-</app-summary-issues-analytics>
-<br>
-<!-- <app-create-issue>
-    Loading...
-</app-create-issue> -->
-<button class="btn btn-secondary btn-sm" (click)="addIssue()">+ Create issue</button>
-<br>
-<mat-card *ngFor="let issue of issues" class="mb-2">
-    <mat-card-header>
-        <p>
-            {{ issue.status }} <br>
-            {{ issue.problem }} <span class="text-muted float-right">{{ issue.dateCreated | date:'medium' }}</span>
-        </p>
-    </mat-card-header>
-    <mat-card-content>
-        <p *ngIf="issue.rooms != udefined">
-            rooms: <span *ngFor="let room of issue.rooms"> {{ room.identifier }}</span>
-        </p>
-        <p *ngIf="issue.equipment != udefined">
-            rooms: <span *ngFor="let equipment of issue.equipment"> {{ equipment.identifier }}</span>
-        </p>
-        <p *ngIf="issue.personnel != udefined">
-            rooms: <span *ngFor="let personnel of issue.personnel"> {{ personnel.name }}</span>
-        </p>
-        <p *ngIf="issue.problemDescription != undefined">
-            {{ issue.problemDescription }}
-        </p>
-    </mat-card-content>
-</mat-card>
+<app-summary-issues-analytics></app-summary-issues-analytics>
+<app-entity-issues-list [equipment]="equipment">
+   Loading...
+</app-entity-issues-list>

@@ -17,32 +17,36 @@ namespace temsAPI.Data.Entities.CommunicationEntities
         public string Id { get; set; }
 
         public DateTime DateCreated { get; set; }
-        public DateTime DateClosed { get; set; }
 
 #nullable enable
-        [ForeignKey("AuthorID")]
-        public Personnel? Author { get; set; }
-        public string? AuthorID { get; set; }
-        
-        public string? AuthorName { get; set; }
+        public DateTime? DateClosed { get; set; }
 
 
-        [ForeignKey("ClosedByID")]
+        //[ForeignKey("PersonnelId")]
+        //public Personnel? Personnel { get; set; }
+        //public string? PersonnelId { get; set; }
+
+
+        [ForeignKey("ClosedById")]
         public TEMSUser? ClosedBy { get; set; }
-        public string? ClosedByID { get; set; }
+        public string? ClosedById { get; set; }
 
         public string? Problem { get; set; }
         public string? Description { get; set; }
         
-        [ForeignKey("EquipmentID")]
-        public Equipment? Equipment { get; set; }
-        public string? EquipmentID { get; set; }
+        //[ForeignKey("EquipmentId")]
+        //public Equipment? Equipment { get; set; }
+        //public string? EquipmentId { get; set; }
 
-        [ForeignKey("RoomID")]
-        public  Room?  Room { get; set; }
-        public string? RoomID { get; set; }
+        //[ForeignKey("RoomID")]
+        //public  Room?  Room { get; set; }
+        //public string? RoomID { get; set; }
 #nullable disable
 
         public bool IsArchieved { get; set; }
+
+        public ICollection<Personnel> Personnel { get; set; }
+        public ICollection<Equipment> Equipments { get; set; }
+        public ICollection<Room> Rooms { get; set; }
     }
 }

@@ -4,7 +4,6 @@ export interface IViewPersonnelSimplified{
     allocatedEquipment?: number; // Number of allocated equipment items
     pozition?: string, // professor, auxiliary employee etc...
     issues?: number; // number of opened issues by this personnel
-
 }
 
 export class ViewPersonnelSimplified implements IViewPersonnelSimplified{

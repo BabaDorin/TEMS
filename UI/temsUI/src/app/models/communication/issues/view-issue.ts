@@ -1,4 +1,3 @@
-import { ProgressbarComponent } from './../../../public/basic-ui/progressbar/progressbar.component';
 import { ViewUserSimplified } from './../../user/view-user.model';
 import { ViewPersonnelSimplified } from './../../personnel/view-personnel-simplified.model';
 import { ViewEquipmentSimplified } from './../../equipment/view-equipment-simplified.model';
@@ -17,7 +16,6 @@ export interface IViewIssue {
     closedBy?: ViewUserSimplified,
     dateCreated: Date,
     dateClosed?: Date,
-    // comments: comment[]; ????
 }
 
 export class ViewIssue implements IViewIssue{
@@ -45,34 +43,6 @@ export class ViewIssue implements IViewIssue{
         personnel.name = 'Arnold Schartzneger';
         this.personnel =  [ personnel ];
         this.status = 'urgent';
-        this.dateCreated = new Date();
-    }
-}
-
-export interface IViewIssueSimplified{
-    id: string;
-    problem: string;
-    status: string;
-}
-
-export class ViewIssueSimplified implements IViewIssueSimplified{
-    id: string;
-    problem: string;
-    description?: string;
-    status: string;
-    personnel?: ViewPersonnelSimplified[];
-    dateCreated: Date;
-    dateClosed?: Date;
-    closedBy: ViewUserSimplified;
-
-    constructor(){
-        this.id = '1';
-        this.problem = 'Este nevoie de interventia unui tehnolog';
-        this.description = 'Nu avem conexiune la internet';
-        this.status = 'urgent';
-        let personnel = new ViewPersonnelSimplified();
-        personnel.name = 'Arnold Schartzneger';
-        this.personnel =  [ personnel ];
         this.dateCreated = new Date();
     }
 }

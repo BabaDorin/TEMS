@@ -12,7 +12,10 @@ export class TEMSComponent implements OnDestroy{
   subscriptions: Subscription[] = [];
   
   ngOnDestroy(): void {
+    this.unsubscribeFromAll();
+  }
+
+  unsubscribeFromAll(){
     this.subscriptions.forEach(s => s.unsubscribe());
-    console.log('destroy called');
   }
 }

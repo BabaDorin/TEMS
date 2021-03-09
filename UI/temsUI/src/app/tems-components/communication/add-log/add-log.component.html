@@ -1,35 +1,40 @@
 <div class="card">
     <div class="card-body">
-        <h5 class="card-title">Add Log</h5>
-        <div class="row mt-3">
-            <div class="col-md-6">
-                <br>
-                <!-- Choose type (Equipment, Room, personnel) -->
-                <mat-form-field appearance="fill">
-                    <mat-label>Choose the addressee</mat-label>
-                    <mat-select [(ngModel)]="selectedAddresseeType" (ngModelChange)="onAddresseeSelection()"
-                    [disabled]="implicitAddressees != undefined">
-                        <mat-option *ngFor="let type of addresseeTypes" [value]="type.value">
-                            {{ type.viewValue }}
-                        </mat-option>
-                    </mat-select>
-                </mat-form-field>
-
-                <app-chips-autocomplete *ngIf="adresseeChosen"
-                    #identifierChips
-                    [disabled]="implicitAddressees != undefined"
-                    label="Identifier..."
-                    [availableOptions]="autoCompleteOptions"
-                    [alreadySelected]="alreadySelectedOptions">
-                </app-chips-autocomplete>
-            </div>
-            <div class="col-md-6">
-                <form *ngIf="formlyData.isVisible" [formGroup]="formlyData.form" (ngSubmit)="onSubmit(formlyData.model)">
-                    <formly-form [form]="formlyData.form" [fields]="formlyData.fields" [model]="formlyData.model"></formly-form>
+        <h5 class="card-title">Create new log</h5>
+        <form [formGroup]="formlyData.form" (ngSubmit)="onSubmit()">
+            <div class="row mt-3">
+                <div class="col-md-6">
                     <br>
-                    <button type="submit" class="btn btn-gradient-primary mr-2">Submit</button>
-                </form>
+                    <!-- Choose type (Equipment, Room, personnel) -->
+                    <mat-form-field appearance="fill">
+                        <mat-label>Choose the addressee</mat-label>
+                        <mat-select 
+                            [(ngModel)]="selectedAddresseeType" 
+                            (ngModelChange)="onAddresseeSelection()"
+                            [ngModelOptions]="{standalone: true}"
+                            required>
+                            <mat-option *ngFor="let type of addresseeTypes" [value]="type">
+                                {{ type.label }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+
+                    <app-chips-autocomplete 
+                        *ngIf="adresseeChosen" 
+                        #addresseesChips
+                        label="Identifier..."
+                        [availableOptions]="autoCompleteOptions" 
+                        [alreadySelected]="alreadySelectedOptions"
+                        required>
+                    </app-chips-autocomplete>
+                </div>
+                <div class="col-md-6">
+                    <formly-form [form]="formlyData.form" [fields]="formlyData.fields" [model]="formlyData.model">
+                    </formly-form>
+                </div>
             </div>
-        </div>
+            <br>
+            <button type="submit" class="btn btn-gradient-primary btn-block">Submit</button>
+        </form>
     </div>
 </div>

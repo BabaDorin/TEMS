@@ -489,6 +489,16 @@ export class FormlyParserService {
                 placeholder: '...',
                 rows: 5,
               },
+            },
+            {
+              className: 'mb-0',
+              key: 'isImportant',
+              type: 'checkbox',
+              defaultValue: false,
+              templateOptions: {
+                label: 'Is important',
+                description: 'Unimportant logs will get deleted after a certain period of time',
+              },
             }
           ]
         }

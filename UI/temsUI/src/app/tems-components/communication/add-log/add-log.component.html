@@ -13,8 +13,8 @@
                             (ngModelChange)="onAddresseeSelection()"
                             [ngModelOptions]="{standalone: true}"
                             required>
-                            <mat-option *ngFor="let type of addresseeTypes" [value]="type">
-                                {{ type.label }}
+                            <mat-option *ngFor="let type of addresseeTypes" [value]="type.value">
+                                {{ type.viewValue }}
                             </mat-option>
                         </mat-select>
                     </mat-form-field>
@@ -34,7 +34,10 @@
                 </div>
             </div>
             <br>
-            <button type="submit" class="btn btn-gradient-primary btn-block">Submit</button>
+            <button 
+                type="submit" 
+                class="btn btn-gradient-primary btn-block" 
+                [disabled]="formlyData.form.status=='INVALID'">Submit</button>
         </form>
     </div>
 </div>

@@ -1,3 +1,4 @@
+import { AddLog } from './../../../models/communication/logs/add-log.model';
 import { IOption } from './../../../models/option.model';
 import { LogsService } from 'src/app/services/logs-service/logs.service';
 import { PersonnelService } from './../../../services/personnel-service/personnel.service';
@@ -109,11 +110,18 @@ export class AddLogComponent extends TEMSComponent implements OnInit {
   }
 
   onSubmit() {
-    if(this.addresseesChips.options.length > 0){
+    if(this.addresseesChips.options.length > 0 && 
+      this.formlyData.model.log.logTypeId != undefined){
+        
       this.formlyData.model.log.addresseesType = this.selectedAddresseeType;
       this.formlyData.model.log.addressees = this.addresseesChips.options;
 
-      console.log(this.formlyData.model);
+      let addLog = this.formlyData.model.log as AddLog; // They match perfectly
+
+      this.subscriptions.push(this.logsService.addLog(addLog)
+        .subscribe(response => {
+          console.log(response);
+        }))
     }
     else
     {

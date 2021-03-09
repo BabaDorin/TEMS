@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Any;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -82,18 +83,87 @@ namespace temsAPI.Controllers.CommunicationControllers
             }
         }
 
-        //[HttpPost]
-        //public async Task<JsonResult> CreateLog([FromBody] AddLogViewModel viewModel)
-        //{
-        //    try
-        //    {
+        [HttpPost]
+        public async Task<JsonResult> Create([FromBody] AddLogViewModel viewModel)
+        {
+            try
+            {
+                // Invalid AddresseesType
+                List<string> validAddresseesTypes = new List<string> { "equipment", "room", "personnel" };
+                if(validAddresseesTypes.IndexOf(viewModel.AddresseesType) == -1)
+                    return ReturnResponse("Please, provide a valid Addressee Type", Status.Fail);
 
-        //    }
-        //    catch (Exception)
-        //    {
-        //        return ReturnResponse("An error occured when ")
-        //    }
-        //}
+                // No Addressees provided or the provided ones are invalid
+                if (viewModel.Addressees.Count == 0)
+                    return ReturnResponse("Please, provide at least one Addressee", Status.Fail);
+
+                switch (viewModel.AddresseesType)
+                {
+                    case "equipment":
+                        foreach (Option option in viewModel.Addressees)
+                            if(!await _unitOfWork.Equipments.isExists(eq => eq.Id == option.Value))
+                                return ReturnResponse("One or more addressee are invalid.", Status.Fail);
+                        break;
+
+                    case "room":
+                        foreach (Option option in viewModel.Addressees)
+                            if (!await _unitOfWork.Rooms.isExists(eq => eq.Id == option.Value))
+                                return ReturnResponse("One or more addressee are invalid.", Status.Fail);
+                        break;
+
+                    case "personnel":
+                        foreach (Option option in viewModel.Addressees)
+                            if (!await _unitOfWork.Personnel.isExists(eq => eq.Id == option.Value))
+                                return ReturnResponse("One or more addressee are invalid.", Status.Fail);
+                        break;
+                }
+
+                // No LogTypeId provided or the provided one is invalid
+                if (String.IsNullOrEmpty(viewModel.LogTypeId))
+                    return ReturnResponse("Please, Provide a log type for the log", Status.Fail);
+
+                if(!await _unitOfWork.LogTypes.isExists(q => q.Id == viewModel.LogTypeId))
+                    return ReturnResponse("The provided Log type is invalid", Status.Fail);
+
+                // If we got so far, It might be valid
+                List<string> addresseesWhereFailed = new List<string>();
+                foreach (Option addressee in viewModel.Addressees)
+                {
+                    Log log = new Log
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        DateCreated = DateTime.Now,
+                        IsImportant = viewModel.IsImportant,
+                        LogTypeID = viewModel.LogTypeId,
+                        Text = viewModel.Text,
+                    };
+
+                    switch (viewModel.AddresseesType)
+                    {
+                        case "equipment": log.EquipmentID = addressee.Value; break;
+                        case "room": log.RoomID = addressee.Value; break;
+                        case "personnel": log.PersonnelID = addressee.Value; break;
+                    }
+
+                    await _unitOfWork.Logs.Create(log);
+                    await _unitOfWork.Save();
+
+                    if (!await _unitOfWork.Logs.isExists(q => q.Id == log.Id))
+                        addresseesWhereFailed.Add(addressee.Label);
+                }
+
+                if (addresseesWhereFailed.Count > 0)
+                    return ReturnResponse(
+                        "Could not create log for the following identities:" + string.Join(",", addresseesWhereFailed),
+                        Status.Fail);
+                else
+                    return ReturnResponse("Success!", Status.Success);
+            }
+            catch (Exception)
+            {
+                return ReturnResponse("An error occured when creating the log record. Please try again", Status.Fail);
+            }
+        }
 
         [HttpGet]
         public async Task<JsonResult> GetLogTypes()

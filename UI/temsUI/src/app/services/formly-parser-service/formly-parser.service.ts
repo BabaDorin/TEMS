@@ -473,7 +473,7 @@ export class FormlyParserService {
           key: 'log',
           fieldGroup: [
             {
-              key: 'logType',
+              key: 'logTypeId',
               type: 'select',
               templateOptions: {
                 required: true,

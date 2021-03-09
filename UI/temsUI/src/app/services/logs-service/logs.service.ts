@@ -1,3 +1,4 @@
+import { AddLog } from './../../models/communication/logs/add-log.model';
 import { API_LOG_URL } from './../../models/backend.config';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
@@ -53,5 +54,13 @@ export class LogsService extends TEMSService {
       API_LOG_URL + '/getlogtypes',
       this.httpOptions
       );
+  }
+
+  addLog(addLog: AddLog): Observable<any>{
+    return this.http.post(
+      API_LOG_URL + '/create',
+      addLog,
+      this.httpOptions
+    );
   }
 }

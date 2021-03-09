@@ -30,7 +30,7 @@ namespace temsAPI.Controllers.CommunicationControllers
             {
                 // Invalid eqId
                 if (!await _unitOfWork.Equipments.isExists(q => q.Id == equipmentId))
-                    return ReturnResponse("We could not find any equipment having the specifid Id", Status.Fail);
+                    return ReturnResponse("We could not find any equipment having the specifid Id", ResponseStatus.Fail);
 
                 Expression<Func<Log, bool>> expression = null;
 
@@ -79,7 +79,7 @@ namespace temsAPI.Controllers.CommunicationControllers
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
-                return ReturnResponse("An error occured when fetching equipment logs", Status.Fail);
+                return ReturnResponse("An error occured when fetching equipment logs", ResponseStatus.Fail);
             }
         }
 
@@ -91,39 +91,39 @@ namespace temsAPI.Controllers.CommunicationControllers
                 // Invalid AddresseesType
                 List<string> validAddresseesTypes = new List<string> { "equipment", "room", "personnel" };
                 if(validAddresseesTypes.IndexOf(viewModel.AddresseesType) == -1)
-                    return ReturnResponse("Please, provide a valid Addressee Type", Status.Fail);
+                    return ReturnResponse("Please, provide a valid Addressee Type", ResponseStatus.Fail);
 
                 // No Addressees provided or the provided ones are invalid
                 if (viewModel.Addressees.Count == 0)
-                    return ReturnResponse("Please, provide at least one Addressee", Status.Fail);
+                    return ReturnResponse("Please, provide at least one Addressee", ResponseStatus.Fail);
 
                 switch (viewModel.AddresseesType)
                 {
                     case "equipment":
                         foreach (Option option in viewModel.Addressees)
                             if(!await _unitOfWork.Equipments.isExists(eq => eq.Id == option.Value))
-                                return ReturnResponse("One or more addressee are invalid.", Status.Fail);
+                                return ReturnResponse("One or more addressee are invalid.", ResponseStatus.Fail);
                         break;
 
                     case "room":
                         foreach (Option option in viewModel.Addressees)
                             if (!await _unitOfWork.Rooms.isExists(eq => eq.Id == option.Value))
-                                return ReturnResponse("One or more addressee are invalid.", Status.Fail);
+                                return ReturnResponse("One or more addressee are invalid.", ResponseStatus.Fail);
                         break;
 
                     case "personnel":
                         foreach (Option option in viewModel.Addressees)
                             if (!await _unitOfWork.Personnel.isExists(eq => eq.Id == option.Value))
-                                return ReturnResponse("One or more addressee are invalid.", Status.Fail);
+                                return ReturnResponse("One or more addressee are invalid.", ResponseStatus.Fail);
                         break;
                 }
 
                 // No LogTypeId provided or the provided one is invalid
                 if (String.IsNullOrEmpty(viewModel.LogTypeId))
-                    return ReturnResponse("Please, Provide a log type for the log", Status.Fail);
+                    return ReturnResponse("Please, Provide a log type for the log", ResponseStatus.Fail);
 
                 if(!await _unitOfWork.LogTypes.isExists(q => q.Id == viewModel.LogTypeId))
-                    return ReturnResponse("The provided Log type is invalid", Status.Fail);
+                    return ReturnResponse("The provided Log type is invalid", ResponseStatus.Fail);
 
                 // If we got so far, It might be valid
                 List<string> addresseesWhereFailed = new List<string>();
@@ -155,13 +155,13 @@ namespace temsAPI.Controllers.CommunicationControllers
                 if (addresseesWhereFailed.Count > 0)
                     return ReturnResponse(
                         "Could not create log for the following identities:" + string.Join(",", addresseesWhereFailed),
-                        Status.Fail);
+                        ResponseStatus.Fail);
                 else
-                    return ReturnResponse("Success!", Status.Success);
+                    return ReturnResponse("Success!", ResponseStatus.Success);
             }
             catch (Exception)
             {
-                return ReturnResponse("An error occured when creating the log record. Please try again", Status.Fail);
+                return ReturnResponse("An error occured when creating the log record. Please try again", ResponseStatus.Fail);
             }
         }
 
@@ -183,7 +183,7 @@ namespace temsAPI.Controllers.CommunicationControllers
             }
             catch (Exception)
             {
-                return ReturnResponse("An error occured when fetching log types", Status.Fail);
+                return ReturnResponse("An error occured when fetching log types", ResponseStatus.Fail);
             }
         }
     }

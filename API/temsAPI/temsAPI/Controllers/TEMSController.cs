@@ -10,7 +10,7 @@ using temsAPI.Data.Entities.UserEntities;
 
 namespace temsAPI.Controllers
 {
-    public enum Status
+    public enum ResponseStatus
     {
         Success = 1,
         Fail = 0
@@ -33,7 +33,7 @@ namespace temsAPI.Controllers
             _userManager = userManager;
         }
 
-        protected JsonResult ReturnResponse(string message, Status status)
+        protected JsonResult ReturnResponse(string message, ResponseStatus status)
         {
             return Json(new { Message = message, Status = status });
         }

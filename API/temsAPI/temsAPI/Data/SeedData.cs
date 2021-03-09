@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using temsAPI.Data.Entities.CommunicationEntities;
 using temsAPI.Data.Entities.EquipmentEntities;
+using temsAPI.Data.Entities.OtherEntities;
 using temsAPI.Data.Entities.UserEntities;
 
 namespace temsAPI.Data
@@ -24,6 +25,7 @@ namespace temsAPI.Data
             SeedDataTypes(dbContext);
             SeedProperties(dbContext);
             SeedLogTypes(dbContext);
+            SeedTickedStatuses(dbContext);
         }
 
         private static void SeedRoles(RoleManager<IdentityRole> roleManager)
@@ -108,6 +110,24 @@ namespace temsAPI.Data
                         {
                             Id = Guid.NewGuid().ToString(),
                             Type = r
+                        });
+                    }
+                });
+
+            dbContext.SaveChanges();
+        }
+
+        private static void SeedTickedStatuses(ApplicationDbContext dbContext)
+        {
+            (new List<string>() { "Urgent", "Medium", "Future" })
+                .ForEach(r =>
+                {
+                    if (!dbContext.Statuses.Any(lt => lt.Name== r))
+                    {
+                        dbContext.Statuses.Add(new Status
+                        {
+                            Id = Guid.NewGuid().ToString(),
+                            Name = r
                         });
                     }
                 });

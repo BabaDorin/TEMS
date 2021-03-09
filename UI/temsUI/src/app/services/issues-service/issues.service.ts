@@ -43,4 +43,11 @@ export class IssuesService extends TEMSService {
   getIssuesOfPersonnel(personnelId: string, onlyClosed?: boolean, includingClosed?: boolean){
     return this.getIssues(onlyClosed, includingClosed);
   }
+
+  getStatuses(): Observable<any>{
+    return this.http.get(
+      API_ISU_URL + '/getstatuses',
+      this.httpOptions
+    );
+  }
 }

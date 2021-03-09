@@ -15,6 +15,7 @@ using temsAPI.Data.Entities.EquipmentEntities;
 using temsAPI.Data.Entities.OtherEntities;
 using temsAPI.Data.Entities.UserEntities;
 using temsAPI.ViewModels;
+using temsAPI.ViewModels.Status;
 using temsAPI.ViewModels.Ticket;
 
 namespace temsAPI.Controllers.CommunicationControllers
@@ -39,11 +40,11 @@ namespace temsAPI.Controllers.CommunicationControllers
             {
                 // Invalid IdentityType
                 if ((new List<string> { "equipment", "room", "personnel" }).IndexOf(identityType) == -1)
-                    return ReturnResponse("Invalid identity type.", Status.Fail);
+                    return ReturnResponse("Invalid identity type.", ResponseStatus.Fail);
 
                 // No identityId Provided
                 if (String.IsNullOrEmpty(identityId.Trim()))
-                    return ReturnResponse($"You have to provide a valid {identityType} Id", Status.Fail);
+                    return ReturnResponse($"You have to provide a valid {identityType} Id", ResponseStatus.Fail);
 
                 // Checking if identityId is valid and at the same time we build the expression
 
@@ -64,7 +65,7 @@ namespace temsAPI.Controllers.CommunicationControllers
                 {
                     case "equipment":
                         if (!await _unitOfWork.Equipments.isExists(q => q.Id == identityId))
-                            return ReturnResponse($"There is no {identityType} having the specified Id", Status.Fail);
+                            return ReturnResponse($"There is no {identityType} having the specified Id", ResponseStatus.Fail);
 
                         tickets = (await _unitOfWork.Equipments.Find<Equipment>(
                             where: q => q.Id == identityId,
@@ -78,7 +79,7 @@ namespace temsAPI.Controllers.CommunicationControllers
 
                     case "room":
                         if (!await _unitOfWork.Rooms.isExists(q => q.Id == identityId))
-                            return ReturnResponse($"There is no {identityType} having the specified Id", Status.Fail);
+                            return ReturnResponse($"There is no {identityType} having the specified Id", ResponseStatus.Fail);
 
                         tickets = (await _unitOfWork.Rooms.Find<Room>(
                              where: q => q.Id == identityId,
@@ -89,7 +90,7 @@ namespace temsAPI.Controllers.CommunicationControllers
 
                     case "personnel":
                         if (!await _unitOfWork.Personnel.isExists(q => q.Id == identityId))
-                            return ReturnResponse($"There is no {identityType} having the specified Id", Status.Fail);
+                            return ReturnResponse($"There is no {identityType} having the specified Id", ResponseStatus.Fail);
 
                         tickets = (await _unitOfWork.Personnel.Find<Personnel>(
                              where: q => q.Id == identityId,
@@ -139,7 +140,30 @@ namespace temsAPI.Controllers.CommunicationControllers
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
-                return ReturnResponse("An error occured when fetching issues", Status.Fail);
+                return ReturnResponse("An error occured when fetching issues", ResponseStatus.Fail);
+            }
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> GetStatuses()
+        {
+            try
+            {
+                List<Option> viewModel = (await _unitOfWork
+                    .Statuses
+                    .FindAll<Option>(
+                        select: q => new Option
+                        {
+                            Value = q.Id,
+                            Label = q.Name
+                        })).ToList();
+
+                return Json(viewModel);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured when fetching statuses", ResponseStatus.Fail);
             }
         }
     }

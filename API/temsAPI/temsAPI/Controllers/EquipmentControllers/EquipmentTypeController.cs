@@ -35,7 +35,7 @@ namespace temsAPI.EquipmentControllers
         public async Task<JsonResult> FullType([FromBody] string typeId)
         {
             if (!await _unitOfWork.EquipmentTypes.isExists(q => q.Id == typeId))
-                return ReturnResponse("There is no equipment type associated with the specified typeId", Status.Fail);
+                return ReturnResponse("There is no equipment type associated with the specified typeId", ResponseStatus.Fail);
 
             EquipmentType equipmentType = (await _unitOfWork.EquipmentTypes.Find<EquipmentType>(q => q.Id == typeId,
                 includes: new List<string>() { nameof(equipmentType.Properties) }
@@ -69,24 +69,24 @@ namespace temsAPI.EquipmentControllers
         {
             // Invalid name
             if (String.IsNullOrEmpty((viewModel.Name = viewModel.Name.Trim())))
-                return ReturnResponse($"{viewModel.Name} is not a valid type name", Status.Fail);
+                return ReturnResponse($"{viewModel.Name} is not a valid type name", ResponseStatus.Fail);
 
             // Check if this model has already been inserted
             if (await _unitOfWork.EquipmentTypes.isExists(q => q.Name.ToLower() == viewModel.Name.ToLower()))
-                return ReturnResponse($"{viewModel.Name} already exists", Status.Fail);
+                return ReturnResponse($"{viewModel.Name} already exists", ResponseStatus.Fail);
 
             // Invalid parents
             if (viewModel.Parents != null)
                 foreach (Option parent in viewModel.Parents)
                     if (!await _unitOfWork.EquipmentTypes.isExists(q => q.Id == parent.Value))
-                        return ReturnResponse($"Parent {parent.Label} not found.", Status.Fail);
+                        return ReturnResponse($"Parent {parent.Label} not found.", ResponseStatus.Fail);
 
 
             // Invalid properties
             if (viewModel.Properties != null)
                 foreach (Option property in viewModel.Properties)
                     if (!await _unitOfWork.Properties.isExists(q => q.Id == property.Value))
-                        return ReturnResponse($"Property {property.Label} not found.", Status.Fail);
+                        return ReturnResponse($"Property {property.Label} not found.", ResponseStatus.Fail);
 
 
             // If we got so far, it might be valid
@@ -122,9 +122,9 @@ namespace temsAPI.EquipmentControllers
             await _unitOfWork.Save();
 
             if (await _unitOfWork.EquipmentTypes.isExists(q => q.Id == equipmentType.Id))
-                return ReturnResponse($"Success", Status.Success);
+                return ReturnResponse($"Success", ResponseStatus.Success);
             else
-                return ReturnResponse($"Fail", Status.Fail);
+                return ReturnResponse($"Fail", ResponseStatus.Fail);
         }
     }
 }

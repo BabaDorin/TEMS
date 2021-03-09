@@ -35,22 +35,22 @@ namespace temsAPI.Controllers.EquipmentControllers
         {
             // Identifier is required
             if (String.IsNullOrEmpty((viewModel.Identifier = viewModel.Identifier.Trim())))
-                return ReturnResponse("Please provide a valid identifier", Status.Fail);
+                return ReturnResponse("Please provide a valid identifier", ResponseStatus.Fail);
 
             // Definition with this identifier already exists
             if(await _unitOfWork.EquipmentDefinitions.isExists(q => q.Identifier == viewModel.Identifier))
-                return ReturnResponse("There is already a definition having this identifier", Status.Fail);
+                return ReturnResponse("There is already a definition having this identifier", ResponseStatus.Fail);
 
             // Invalid TypeId
             if(!await _unitOfWork.EquipmentTypes.isExists(q => q.Id == viewModel.TypeId))
-                return ReturnResponse("The Equipment Type specified does not exist.", Status.Fail);
+                return ReturnResponse("The Equipment Type specified does not exist.", ResponseStatus.Fail);
 
             // Invalid data for price or currency
             double price;
             if (!double.TryParse(viewModel.Price.ToString(), out price) ||
                 price < 0 ||
                 (new List<string>() { "lei", "eur", "usd"}).IndexOf(viewModel.Currency) == -1)
-                return ReturnResponse("Invalid data provided for price or currency", Status.Fail);
+                return ReturnResponse("Invalid data provided for price or currency", ResponseStatus.Fail);
 
             // Validating properties
             foreach (var property in viewModel.Properties)
@@ -58,7 +58,7 @@ namespace temsAPI.Controllers.EquipmentControllers
                 property.Label = property.Label.Trim();
 
                 if (!await DataTypeValidation.IsValidAsync(property, _unitOfWork))
-                    return ReturnResponse("One or more properties are invalid. Please review your data", Status.Fail);
+                    return ReturnResponse("One or more properties are invalid. Please review your data", ResponseStatus.Fail);
             }
 
             // If we got so far, it might be valid enough
@@ -89,9 +89,9 @@ namespace temsAPI.Controllers.EquipmentControllers
             await _unitOfWork.Save();
 
             if(!await _unitOfWork.EquipmentDefinitions.isExists(q => q.Id == equipmentDefinition.Id))
-                return ReturnResponse("Fail", Status.Fail);
+                return ReturnResponse("Fail", ResponseStatus.Fail);
             else
-                return ReturnResponse("Success", Status.Success);
+                return ReturnResponse("Success", ResponseStatus.Success);
         }
 
         [HttpPost]
@@ -112,7 +112,7 @@ namespace temsAPI.Controllers.EquipmentControllers
             }
             catch (Exception)
             {
-                return ReturnResponse("Unknown error occured when fetching definitions", Status.Fail);
+                return ReturnResponse("Unknown error occured when fetching definitions", ResponseStatus.Fail);
             }
         }
 
@@ -123,7 +123,7 @@ namespace temsAPI.Controllers.EquipmentControllers
             {
                 // Invalid definitionId
                 if (!await _unitOfWork.EquipmentDefinitions.isExists(q => q.Id == definitionId))
-                    return ReturnResponse("There is not definition having the specified id", Status.Fail);
+                    return ReturnResponse("There is not definition having the specified id", ResponseStatus.Fail);
 
                 EquipmentDefinitionViewModel viewModel = new EquipmentDefinitionViewModel();
                 EquipmentDefinition model = (await _unitOfWork.EquipmentDefinitions.Find<EquipmentDefinition>(q => q.Id == definitionId,
@@ -155,7 +155,7 @@ namespace temsAPI.Controllers.EquipmentControllers
             }
             catch (Exception ex)
             {
-                return ReturnResponse("Unknown error occured when fetching the full definition, " + ex.Message, Status.Fail);
+                return ReturnResponse("Unknown error occured when fetching the full definition, " + ex.Message, ResponseStatus.Fail);
             }
         }
     }

@@ -41,14 +41,14 @@ namespace temsAPI.Controllers.EquipmentControllers
                 String.IsNullOrEmpty(viewModel.Temsid = viewModel.Temsid.Trim())) &&
                 (viewModel.SerialNumber == null ||
                 String.IsNullOrEmpty(viewModel.SerialNumber = viewModel.SerialNumber.Trim())))
-                return ReturnResponse("Please, provide information for TemsID and / or SerialNumber", Status.Fail);
+                return ReturnResponse("Please, provide information for TemsID and / or SerialNumber", ResponseStatus.Fail);
 
             // Equipment is already created
             if (!String.IsNullOrEmpty(viewModel.Temsid) &&
                 await _unitOfWork.Equipments.isExists(q => q.TEMSID == viewModel.Temsid) ||
                 !String.IsNullOrEmpty(viewModel.SerialNumber) &&
                 await _unitOfWork.Equipments.isExists(q => q.SerialNumber == viewModel.SerialNumber))
-                return ReturnResponse("This equipment already exists.", Status.Fail);
+                return ReturnResponse("This equipment already exists.", ResponseStatus.Fail);
 
 
 
@@ -59,11 +59,11 @@ namespace temsAPI.Controllers.EquipmentControllers
             // Invalid price data
             if (viewModel.Price < 0 ||
                 (new List<string> { "lei", "eur", "usd" }).IndexOf(viewModel.Currency) == -1)
-                return ReturnResponse("Invalid price data provided.", Status.Fail);
+                return ReturnResponse("Invalid price data provided.", ResponseStatus.Fail);
 
             // Invalid definition provided
             if (!await _unitOfWork.EquipmentDefinitions.isExists(q => q.Id == viewModel.EquipmentDefinitionID))
-                return ReturnResponse("An equipment definition having the specified id has not been found.", Status.Fail);
+                return ReturnResponse("An equipment definition having the specified id has not been found.", ResponseStatus.Fail);
 
             // If we got so far, it might be valid
             Data.Entities.EquipmentEntities.Equipment model =
@@ -75,9 +75,9 @@ namespace temsAPI.Controllers.EquipmentControllers
             await _unitOfWork.Save();
 
             if (!await _unitOfWork.Equipments.isExists(q => q.Id == model.Id))
-                return ReturnResponse("Fail", Status.Fail);
+                return ReturnResponse("Fail", ResponseStatus.Fail);
 
-            return ReturnResponse("Success", Status.Success);
+            return ReturnResponse("Success", ResponseStatus.Success);
         }
 
         [HttpGet("equipment/getsimplified/{pageNumber}/{equipmentsPerPage}/{onlyParents}")]
@@ -87,7 +87,7 @@ namespace temsAPI.Controllers.EquipmentControllers
             {
                 // Invalid parameters
                 if (pageNumber < 0 || equipmentsPerPage < 1)
-                    return ReturnResponse("Invalid parameters", Status.Fail);
+                    return ReturnResponse("Invalid parameters", ResponseStatus.Fail);
 
 
                 Expression<Func<Data.Entities.EquipmentEntities.Equipment, bool>> expression
@@ -111,7 +111,7 @@ namespace temsAPI.Controllers.EquipmentControllers
             }
             catch (Exception)
             {
-                return ReturnResponse("Unknown error occured when fetching equipments", Status.Fail);
+                return ReturnResponse("Unknown error occured when fetching equipments", ResponseStatus.Fail);
             }
         }
 
@@ -122,7 +122,7 @@ namespace temsAPI.Controllers.EquipmentControllers
             {
                 // Invalid Id provied
                 if (!await _unitOfWork.Equipments.isExists(q => q.Id == id))
-                    return ReturnResponse("We could not find any equipment having the specified id", Status.Fail);
+                    return ReturnResponse("We could not find any equipment having the specified id", ResponseStatus.Fail);
 
                 Equipment model = (await _unitOfWork.Equipments
                     .Find<Equipment>(
@@ -137,7 +137,7 @@ namespace temsAPI.Controllers.EquipmentControllers
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
-                return ReturnResponse("An unhandled error occured when fetching equipment", Status.Fail);
+                return ReturnResponse("An unhandled error occured when fetching equipment", ResponseStatus.Fail);
             }
         }
 
@@ -182,7 +182,7 @@ namespace temsAPI.Controllers.EquipmentControllers
             }
             catch (Exception)
             {
-                return ReturnResponse("An error occured when fetching autocomplete options", Status.Fail);
+                return ReturnResponse("An error occured when fetching autocomplete options", ResponseStatus.Fail);
             }
         }
 
@@ -193,7 +193,7 @@ namespace temsAPI.Controllers.EquipmentControllers
             {
                 // Invalid id provided
                 if (!await _unitOfWork.Equipments.isExists(q => q.Id == id))
-                    return ReturnResponse("Invalid equipment id provided", Status.Fail);
+                    return ReturnResponse("Invalid equipment id provided", ResponseStatus.Fail);
 
                 Equipment model = (await _unitOfWork.Equipments
                     .Find<Equipment>(
@@ -265,7 +265,7 @@ namespace temsAPI.Controllers.EquipmentControllers
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
-                return ReturnResponse("An error occured when fetching equipment", Status.Fail);
+                return ReturnResponse("An error occured when fetching equipment", ResponseStatus.Fail);
             }
         }
 

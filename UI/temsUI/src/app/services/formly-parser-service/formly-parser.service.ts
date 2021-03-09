@@ -1,16 +1,13 @@
+import { IOption } from './../../models/option.model';
 import { LogsService } from 'src/app/services/logs-service/logs.service';
 import { Property } from 'src/app/models/equipment/view-property.model';
 import { AddEquipment } from './../../models/equipment/add-equipment.model';
-import { IOption } from 'src/app/models/option.model';
 import { AddIssue } from './../../models/communication/issues/add-issue';
-import { AddProperty } from './../../models/equipment/add-property.model';
 import { EquipmentService } from './../equipment-service/equipment.service';
 import { Definition } from './../../models/equipment/add-definition.model';
-import { AddType } from './../../models/equipment/add-type.model';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
-import { ViewLog } from 'src/app/models/communication/logs/view-logs.model';
+import { of } from 'rxjs';
 import { AddRoom } from 'src/app/models/room/add-room.model';
 import { AddPersonnel } from 'src/app/models/personnel/add-personnel.model';
 
@@ -78,7 +75,7 @@ export class FormlyParserService {
     return fields;
   }
 
-  parseAddIssue(addIssue: AddIssue, frequentProblems: string[]) {
+  parseAddIssue(addIssue: AddIssue, frequentProblems: string[], statuses: IOption[]) {
     if (addIssue == undefined)
       addIssue = new AddIssue();
 
@@ -110,11 +107,7 @@ export class FormlyParserService {
               templateOptions: {
                 label: 'Radio',
                 required: true,
-                options: [
-                  { value: 1, label: 'Urgent' },
-                  { value: 2, label: 'Mediu' },
-                  { value: 3, label: 'Pe viitor' },
-                ],
+                options: statuses
               },
             }
           ]

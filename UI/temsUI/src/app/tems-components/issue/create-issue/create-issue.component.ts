@@ -1,3 +1,5 @@
+import { IssuesService } from './../../../services/issues-service/issues.service';
+import { TEMSComponent } from './../../../tems/tems.component';
 import { IOption } from './../../../models/option.model';
 import { EquipmentService } from 'src/app/services/equipment-service/equipment.service';
 import { PersonnelService } from './../../../services/personnel-service/personnel.service';
@@ -13,7 +15,7 @@ import { AddIssue } from 'src/app/models/communication/issues/add-issue';
   templateUrl: './create-issue.component.html',
   styleUrls: ['./create-issue.component.scss']
 })
-export class CreateIssueComponent implements OnInit {
+export class CreateIssueComponent extends TEMSComponent implements OnInit {
 
   frequentProblems = ['Echipament Defect', 'Incarcare Cartus', 'Interventia unui tehnician'];
   isRegistered: boolean;
@@ -44,15 +46,26 @@ export class CreateIssueComponent implements OnInit {
     private roomService: RoomsService,
     private personnelService: PersonnelService,
     private equipmentService: EquipmentService,
+    private issueService: IssuesService
   ) {
-
+    super();
   }
 
   ngOnInit(): void {
-    this.formlyData.fields = this.formlyParserService.parseAddIssue(new AddIssue, this.frequentProblems);
+    this.subscriptions.push(this.issueService.getStatuses()
+      .subscribe(result => {
+        console.log(result);
+        this.formlyData.fields = this.formlyParserService.parseAddIssue(new AddIssue, this.frequentProblems, result);
+      }))
+
+    this.subscriptions.push(this.equipmentService.getAllAutocompleteOptions()
+      .subscribe(result => {
+        console.log(result);
+        this.equipmentAutoCompleteOptions = result;
+      }));
+
 
     this.roomsAutoCompleteOptions = this.roomService.getAllAutocompleteOptions();
-    this.equipmentAutoCompleteOptions = this.equipmentService.getAllAutocompleteOptions();
     this.personnelAutocompleteOptions = this.personnelService.getAllAutocompleteOptions();
 
     if(this.roomsAlreadySelected == undefined)
@@ -65,20 +78,14 @@ export class CreateIssueComponent implements OnInit {
       this.personnelAlreadySelected = [];
     
     this.isRegistered = true;
-
-    console.log(this.equipmentAlreadySelected);
   }
 
   onSubmit(model){
-    // What to do next =>
-    // check if registered or not
-    // send data to API
-    // Validate data.
     
-    model.personnel = this.personnel.options;
-    model.rooms = this.rooms.options;
-    model.equipment = this.equipment.options;
-    model.assignees = this.assignees.options;
+    model.issue.personnel = this.personnel.options;
+    model.issue.rooms = this.rooms.options;
+    model.issue.equipment = this.equipment.options;
+    model.issue.assignees = this.assignees.options;
     console.log(model);
   }
 }

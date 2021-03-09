@@ -34,7 +34,12 @@
                 </app-chips-autocomplete>
             </div>
             <!-- 3 chips go here -->
-            <button type="submit" class="btn btn-gradient-primary mr-2">Submit</button>
+            <button 
+                type="submit" 
+                class="btn btn-gradient-primary mr-2"
+                [disabled]="formlyData.form.status=='INVALID'">
+                Submit
+            </button>
         </form>
     </div>
 </div>

@@ -7,3 +7,7 @@ datatypes.
 You may encounter this problem in the future.
 
 2. Adding logs property
+
+
+todo:
+CreateIssueComponent - fetch statuses from (urgent, mediu, pe viitor) from db 

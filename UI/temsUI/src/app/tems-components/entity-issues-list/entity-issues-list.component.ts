@@ -64,24 +64,24 @@ export class EntityIssuesListComponent extends TEMSComponent implements OnInit {
     if(this.equipment){
       dialogRef.componentInstance.equipmentAlreadySelected = [
         {
-          id: this.equipment.id, 
-          value: this.equipment.temsIdOrSerialNumber
+          value: this.equipment.id, 
+          label: this.equipment.temsIdOrSerialNumber
         }];
     }
 
     if(this.room){
       dialogRef.componentInstance.roomsAlreadySelected = [
         {
-          id: this.room.id, 
-          value: this.room.identifier
+          valued: this.room.id, 
+          label: this.room.identifier
         }];
     }
 
     if(this.personnel){
       dialogRef.componentInstance.personnelAlreadySelected = [
         {
-          id: this.personnel.id, 
-          value: this.personnel.name
+          value: this.personnel.id, 
+          label: this.personnel.name
         }];
     }
 

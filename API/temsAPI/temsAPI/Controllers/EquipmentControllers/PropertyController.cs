@@ -35,24 +35,24 @@ namespace temsAPI.EquipmentControllers
         {
             // name is null
             if(String.IsNullOrEmpty(viewModel.Name.Trim()))
-                return ReturnResponse("'Name' is required.", Status.Fail);
+                return ReturnResponse("'Name' is required.", ResponseStatus.Fail);
 
             // name - no spaces or special chars
             if ((viewModel.Name = viewModel.Name.Trim()).Any(Char.IsWhiteSpace))
-                return ReturnResponse("'Name' value can not contain spaces.", Status.Fail);
+                return ReturnResponse("'Name' value can not contain spaces.", ResponseStatus.Fail);
 
             if(!RegexValidation.OnlyAlphaNumeric.IsMatch(viewModel.Name))
                 return ReturnResponse("'Name' value can not contain non-alphanumeric characters," +
-                    " Allowed: only a-z, A-Z, 0-9.", Status.Fail);
+                    " Allowed: only a-z, A-Z, 0-9.", ResponseStatus.Fail);
 
             // displayName is null
             if(string.IsNullOrEmpty(viewModel.DisplayName.Trim()))
-                return ReturnResponse("'DisplayName' is required.", Status.Fail);
+                return ReturnResponse("'DisplayName' is required.", ResponseStatus.Fail);
 
             // dataType should be a valid one
             viewModel.DataType = viewModel.DataType.ToLower().Trim();
             if(!await _unitOfWork.DataTypes.isExists(q => q.Name == viewModel.DataType))
-                return ReturnResponse("The datatype that has been provided seems invalid.", Status.Fail);
+                return ReturnResponse("The datatype that has been provided seems invalid.", ResponseStatus.Fail);
 
             if (!String.IsNullOrEmpty(viewModel.Description))
                 viewModel.Description = viewModel.Description.Trim();
@@ -61,7 +61,7 @@ namespace temsAPI.EquipmentControllers
             if(await _unitOfWork.Properties
                 .isExists(q => q.Name.ToLower() == viewModel.Name.ToLower() ||
                                q.DisplayName.ToLower() == viewModel.DisplayName.ToLower()))
-                return ReturnResponse($"This property already exists", Status.Fail);
+                return ReturnResponse($"This property already exists", ResponseStatus.Fail);
 
             // If we got so far, it might be valid.
             Property property = new Property()
@@ -78,9 +78,9 @@ namespace temsAPI.EquipmentControllers
             await _unitOfWork.Save();
 
             if (await _unitOfWork.Properties.isExists(q => q.Id == property.Id))
-                return ReturnResponse($"Success", Status.Success);
+                return ReturnResponse($"Success", ResponseStatus.Success);
             else
-                return ReturnResponse($"Fail", Status.Fail);
+                return ReturnResponse($"Fail", ResponseStatus.Fail);
         }
     }
 }

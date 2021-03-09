@@ -40,6 +40,8 @@ namespace temsAPI.Repository
         private IGenericRepository<PersonnelRoomSupervisory> _personnelRoomSupervisories;
         private IGenericRepository<Room> _rooms;
         private IGenericRepository<RoomEquipmentAllocation> _roomEquipmentAllocations;
+        private IGenericRepository<Status> _statuses;
+        private IGenericRepository<Label> _labels;
 
         public IGenericRepository<Announcement> Announcements 
             => _announcements ??= new GenericRepository<Announcement>(_context);
@@ -87,6 +89,11 @@ namespace temsAPI.Repository
             => _rooms ??= new GenericRepository<Room>(_context);
         public IGenericRepository<RoomEquipmentAllocation> RoomEquipmentAllocations
             => _roomEquipmentAllocations ??= new GenericRepository<RoomEquipmentAllocation>(_context);
+        public IGenericRepository<Status> Statuses
+            => _statuses ??= new GenericRepository<Status>(_context);
+        public IGenericRepository<Label> Labels
+            => _labels ??= new GenericRepository<Label>(_context);
+
 
         public UnitOfWork(ApplicationDbContext context)
         {

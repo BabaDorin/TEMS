@@ -24,7 +24,7 @@ export class FormlyParserService {
     private equipmentService: EquipmentService,
     private logsService: LogsService) { }
 
-  parseAddRoom(addRoom: AddRoom, roomLabels){
+  parseAddRoom(){
     let fields: FormlyFieldConfig[] =
       [
         {
@@ -57,17 +57,7 @@ export class FormlyParserService {
                 placeholder: '...',
                 rows: 5,
               },
-            },
-            {
-              key: 'label',
-              type: 'autocomplete',
-              templateOptions: {
-                required: true,
-                label: 'Room Label',
-                placeholder: 'Laboratory...',
-                filter: (term) => of(term ? this.filterAutocomplete(term, roomLabels) : roomLabels.slice()),
-              },
-            },
+            }
           ]
         }
       ];

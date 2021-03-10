@@ -47,13 +47,11 @@ export class RoomsService extends TEMSService {
     );
   }
     
-  getRoomLabels(): IOption[]{
-    return[
-      { value: '1', label: 'Laboratory'},
-      { value: '2', label: 'Simple ClassRoom'},
-      { value: '3', label: 'Deposit'},
-      { value: '4', label: 'Idk'},
-    ]
+  getRoomLabels(): Observable<any>{
+    return this.http.get(
+      API_ROOM_URL + '/getlabels',
+      this.httpOptions
+    );
   }
   
   getRoomById(id: string): ViewRoom{

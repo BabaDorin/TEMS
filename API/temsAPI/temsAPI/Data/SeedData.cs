@@ -26,6 +26,7 @@ namespace temsAPI.Data
             SeedProperties(dbContext);
             SeedLogTypes(dbContext);
             SeedTickedStatuses(dbContext);
+            SeedRoomLabels(dbContext);
         }
 
         private static void SeedRoles(RoleManager<IdentityRole> roleManager)

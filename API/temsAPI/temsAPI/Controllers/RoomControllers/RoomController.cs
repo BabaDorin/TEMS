@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.OtherEntities;
 using temsAPI.Data.Entities.UserEntities;
+using temsAPI.ViewModels;
 using temsAPI.ViewModels.Room;
 
 namespace temsAPI.Controllers.RoomControllers
@@ -51,6 +52,28 @@ namespace temsAPI.Controllers.RoomControllers
             {
                 Debug.WriteLine(ex);
                 return ReturnResponse("An error occured when fetching rooms", ResponseStatus.Fail);
+            }
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> GetLabels()
+        {
+            try
+            {
+                List<Option> viewModel = (await _unitOfWork.RoomLabels.FindAll<Option>(
+                    where: q => !q.IsArchieved,
+                    select: q => new Option
+                    {
+                        Value = q.Id,
+                        Label = q.Name
+                    })).ToList();
+
+                return Json(viewModel);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured when fetching room labels", ResponseStatus.Fail);
             }
         }
     }

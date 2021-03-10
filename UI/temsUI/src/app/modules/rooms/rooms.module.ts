@@ -1,3 +1,4 @@
+import { TemsFormsModule } from './../tems-forms/tems-forms.module';
 import { FormlyModule } from '@ngx-formly/core';
 import { ViewRoomsComponent } from '../../tems-components/room/view-rooms/view-rooms.component';
 import { AgGridModule } from 'ag-grid-angular';
@@ -34,8 +35,7 @@ import { RoomDetailsAllocationsComponent } from '../../tems-components/room/room
     RoomsRoutingModule,
     AgGridModule,
     MaterialModule,
-    FormsModule,
-    FormlyModule,
+    TemsFormsModule,
     ReactiveFormsModule,
 
     // Shared modules

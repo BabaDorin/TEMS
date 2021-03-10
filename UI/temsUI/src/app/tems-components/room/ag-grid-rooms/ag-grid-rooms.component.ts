@@ -64,8 +64,4 @@ export class AgGridRoomsComponent extends TEMSComponent implements OnInit {
     var thisIsFirstColumn = displayedColumns[0] === params.column;
     return thisIsFirstColumn;
   }
-
-
-  
-
 }

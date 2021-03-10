@@ -4,8 +4,16 @@
 
         <form [formGroup]="formlyData.form" (ngSubmit)="onSubmit(formlyData.model)">
             <formly-form [form]="formlyData.form" [fields]="formlyData.fields" [model]="formlyData.model"></formly-form>
+            <app-chips-autocomplete
+                #labels
+                label="Room labels"
+                [availableOptions]="roomLabels">
+            </app-chips-autocomplete>
             <br>
-            <button type="submit" class="btn btn-gradient-primary mr-2">Submit</button>
+            <button 
+                type="submit" 
+                class="btn btn-gradient-primary mr-2"
+                [disabled]="formlyData.form.status=='INVALID'">Submit</button>
         </form>
     </div>
 </div>

@@ -11,7 +11,7 @@ namespace temsAPI.ViewModels.Room
         public string Identifier { get; set; }
         public string Description { get; set; }
         public string Label { get; set; }
-        public int OpenedIssues { get; set; }
+        public int ActiveTickets { get; set; }
         public int AllocatedEquipments { get; set; }
     }
 }

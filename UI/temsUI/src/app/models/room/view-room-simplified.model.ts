@@ -1,7 +1,7 @@
 export interface IViewRoomSimplified{
     id: string;
     identifier: string;
-    openedIssues?: number;
+    activeIssues?: number;
     description?: string;
     label?: string;
     allocatedEquipment?: number;
@@ -10,7 +10,7 @@ export interface IViewRoomSimplified{
 export class ViewRoomSimplified implements IViewRoomSimplified{
     id: string;
     identifier: string;
-    openedIssues?: number;
+    activeIssues?: number;
     description?: string;
     label?: string;
     allocatedEquipment?: number;
@@ -18,7 +18,7 @@ export class ViewRoomSimplified implements IViewRoomSimplified{
     constructor(){
         this.id = '1';
         this.identifier = '307';
-        this.openedIssues = 1;
+        this.activeIssues = 1;
         this.description = 'Depozit =)'
         this.label = 'depozit';
         this.allocatedEquipment = 13;

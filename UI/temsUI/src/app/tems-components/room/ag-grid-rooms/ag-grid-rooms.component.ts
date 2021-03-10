@@ -52,11 +52,11 @@ export class AgGridRoomsComponent extends TEMSComponent implements OnInit {
     this.gridApi = params.api;
     this.gridColumnApi = params.columnApi;
 
-    // this.subscriptions.push(this.roomService.getRoomsSimplified(20, 20)
-    //   .subscribe(result => {
-    //     console.log(result);
-    //     this.rowData = result;
-    //   }));
+    this.subscriptions.push(this.roomService.getRoomsSimplified(20, 20)
+      .subscribe(result => {
+        console.log(result);
+        this.rowData = result;
+      }));
   }
 
   isFirstColumn(params) {

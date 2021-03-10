@@ -1,3 +1,4 @@
+import { Observable } from 'rxjs';
 import { API_ROOM_URL } from './../../models/backend.config';
 import { HttpClient } from '@angular/common/http';
 import { TEMSService } from './../tems-service/tems.service';
@@ -39,8 +40,8 @@ export class RoomsService extends TEMSService {
     ];
   }
 
-  getRoomsSimplified(pageNumber: number, recordsPerPage: number){
-    this.http.get(
+  getRoomsSimplified(pageNumber: number, recordsPerPage: number): Observable<any>{
+    return this.http.get(
       API_ROOM_URL + '/getSimplified' + '/' + pageNumber + '/' + recordsPerPage,
       this.httpOptions
     );

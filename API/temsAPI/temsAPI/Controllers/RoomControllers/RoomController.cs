@@ -87,7 +87,7 @@ namespace temsAPI.Controllers.RoomControllers
                         Description = q.Description,
                         AllocatedEquipments = q.RoomEquipmentAllocations.Count,
                         Identifier = q.Identifier,
-                        Label = string.Join(", ", q.Labels),
+                        Label = string.Join(", ", q.Labels.Select(q => q.Name)),
                         ActiveTickets = q.Tickets.Count
                     })).OrderBy(q => q.Identifier).ToList();
 

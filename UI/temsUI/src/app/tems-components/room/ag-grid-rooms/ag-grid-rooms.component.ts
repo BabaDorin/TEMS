@@ -30,8 +30,8 @@ export class AgGridRoomsComponent extends TEMSComponent implements OnInit {
       { field: 'identifier', sortable: true, filter: true, checkboxSelection: true, headerCheckboxSelection: true},
       { field: 'label', sortable: true, filter: true },
       { field: 'description', sortable: true, filter: true },
-      { field: 'openedIssues', sortable: true, filter: true },
-      { field: 'allocatedEquipment', sortable: true, filter: true },
+      { field: 'activeTickets', sortable: true, filter: true },
+      { field: 'allocatedEquipments', sortable: true, filter: true },
     ];
 
     this.defaultColDef = {

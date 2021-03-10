@@ -1,3 +1,4 @@
+import { AddIssue } from 'src/app/models/communication/issues/add-issue.model';
 import { Observable } from 'rxjs';
 import { API_ISU_URL } from './../../models/backend.config';
 import { TEMSService } from './../tems-service/tems.service';
@@ -47,6 +48,14 @@ export class IssuesService extends TEMSService {
   getStatuses(): Observable<any>{
     return this.http.get(
       API_ISU_URL + '/getstatuses',
+      this.httpOptions
+    );
+  }
+
+  createIssue(addIssue: AddIssue): Observable<any>{
+    return this.http.post(
+      API_ISU_URL + '/create',
+      addIssue,
       this.httpOptions
     );
   }

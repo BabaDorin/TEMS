@@ -14,6 +14,8 @@ namespace temsAPI.Data.Entities.UserEntities
 
         public virtual ICollection<Announcement> Announcements { get; set; }
         public virtual ICollection<Ticket> ClosedTickets { get; set; }
+        public virtual ICollection<Ticket> AssignedTickets { get; set; }
+        public virtual ICollection<Ticket> CreatedTickets { get; set; }
         public virtual ICollection<Equipment> RegisteredEquipments { get; set; }
     }
 }

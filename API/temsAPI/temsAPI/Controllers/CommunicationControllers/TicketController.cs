@@ -166,5 +166,77 @@ namespace temsAPI.Controllers.CommunicationControllers
                 return ReturnResponse("An error occured when fetching statuses", ResponseStatus.Fail);
             }
         }
+
+        [HttpPost]
+        public async Task<JsonResult> Create([FromBody] AddTicketViewModel viewModel)
+        {
+            try
+            {
+                // Problem has not been defined
+                if (String.IsNullOrEmpty(viewModel.Problem = viewModel.Problem.Trim()))
+                    return ReturnResponse("Please, indicate the ticket's problem.", ResponseStatus.Fail);
+
+                // No status or invalid
+                if (String.IsNullOrEmpty(viewModel.Status = viewModel.Status.Trim()) ||
+                    !await _unitOfWork.Statuses.isExists(q => q.Id == viewModel.Status))
+                    return ReturnResponse("Invalid status provided.", ResponseStatus.Fail);
+
+                // Validating participants (equipments, rooms, personnel)
+                if (viewModel.Equipments.Count > 0)
+                    foreach (Option op in viewModel.Equipments)
+                        if (!await _unitOfWork.Equipments.isExists(q => q.Id == op.Value))
+                            return ReturnResponse("One or more Equipments are invalid", ResponseStatus.Fail);
+
+                if (viewModel.Personnel.Count > 0)
+                    foreach (Option op in viewModel.Personnel)
+                        if (!await _unitOfWork.Personnel.isExists(q => q.Id == op.Value))
+                            return ReturnResponse("One or more Personnel are invalid", ResponseStatus.Fail);
+
+                if (viewModel.Rooms.Count > 0)
+                    foreach (Option op in viewModel.Rooms)
+                        if (!await _unitOfWork.Rooms.isExists(q => q.Id == op.Value))
+                            return ReturnResponse("One or more Rooms are invalid", ResponseStatus.Fail);
+
+                if (viewModel.Assignees.Count > 0)
+                    foreach (Option op in viewModel.Assignees)
+                        if (!await _unitOfWork.TEMSUsers.isExists(q => q.Id == op.Value))
+                            return ReturnResponse("One or more Assignees are invalid", ResponseStatus.Fail);
+
+                // Seems valid
+                Ticket model = new Ticket
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    StatusId = viewModel.Status,
+                    Problem = viewModel.Problem,
+                    DateCreated = DateTime.Now,
+                    Description = viewModel.ProblemDescription,
+                    Rooms = await _unitOfWork.Rooms.FindAll<Room>(
+                        where: q =>
+                            viewModel.Rooms.Select(q => q.Value).Contains(q.Id)),
+                    Equipments = await _unitOfWork.Equipments.FindAll<Equipment>(
+                        where: q =>
+                            viewModel.Equipments.Select(q => q.Value).Contains(q.Id)),
+                    Personnel = await _unitOfWork.Personnel.FindAll<Personnel>(
+                        where: q =>
+                            viewModel.Personnel.Select(q => q.Value).Contains(q.Id)),
+                    Assignees = await _unitOfWork.TEMSUsers.FindAll<TEMSUser>(
+                        where: q =>
+                            viewModel.Assignees.Select(q => q.Value).Contains(q.Id)),
+                };
+
+                await _unitOfWork.Tickets.Create(model);
+                await _unitOfWork.Save();
+
+                if (await _unitOfWork.Tickets.isExists(q => q.Id == model.Id))
+                    return ReturnResponse("Success!", ResponseStatus.Success);
+                else
+                    return ReturnResponse("Fail", ResponseStatus.Fail);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occurred when creating the ticket", ResponseStatus.Fail);
+            }
+        }
     }
 }

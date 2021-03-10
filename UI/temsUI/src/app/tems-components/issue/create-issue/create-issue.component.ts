@@ -8,7 +8,7 @@ import { FormlyParserService } from 'src/app/services/formly-parser-service/form
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { FormlyFieldConfig } from '@ngx-formly/core';
-import { AddIssue } from 'src/app/models/communication/issues/add-issue';
+import { AddIssue } from 'src/app/models/communication/issues/add-issue.model';
 
 @Component({
   selector: 'app-create-issue',
@@ -84,8 +84,15 @@ export class CreateIssueComponent extends TEMSComponent implements OnInit {
     
     model.issue.personnel = this.personnel.options;
     model.issue.rooms = this.rooms.options;
-    model.issue.equipment = this.equipment.options;
+    model.issue.equipments = this.equipment.options;
     model.issue.assignees = this.assignees.options;
-    console.log(model);
+
+    let addIssue = model.issue as AddIssue;
+    
+    console.log(addIssue);
+    this.subscriptions.push(this.issueService.createIssue(addIssue)
+      .subscribe(response => {
+        console.log(response)
+      }))
   }
 }

@@ -34,13 +34,14 @@ namespace temsAPI.Data.Entities.CommunicationEntities
         //public string? PersonnelId { get; set; }
 
 
+        [InverseProperty("ClosedTickets")]
         [ForeignKey("ClosedById")]
         public TEMSUser? ClosedBy { get; set; }
         public string? ClosedById { get; set; }
 
         public string? Problem { get; set; }
         public string? Description { get; set; }
-        
+
         //[ForeignKey("EquipmentId")]
         //public Equipment? Equipment { get; set; }
         //public string? EquipmentId { get; set; }
@@ -48,6 +49,11 @@ namespace temsAPI.Data.Entities.CommunicationEntities
         //[ForeignKey("RoomID")]
         //public  Room?  Room { get; set; }
         //public string? RoomID { get; set; }
+
+        [InverseProperty("CreatedTickets")]
+        [ForeignKey("CreatedById")]
+        public TEMSUser? CreatedBy { get; set; }
+        public string? CreatedById { get; set; }
 #nullable disable
 
         public bool IsArchieved { get; set; }
@@ -55,5 +61,8 @@ namespace temsAPI.Data.Entities.CommunicationEntities
         public ICollection<Personnel> Personnel { get; set; }
         public ICollection<Equipment> Equipments { get; set; }
         public ICollection<Room> Rooms { get; set; }
+        [InverseProperty("AssignedTickets")]
+        public ICollection<TEMSUser> Assignees  { get; set; }
+
     }
 }

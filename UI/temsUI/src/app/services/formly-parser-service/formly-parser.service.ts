@@ -2,7 +2,7 @@ import { IOption } from './../../models/option.model';
 import { LogsService } from 'src/app/services/logs-service/logs.service';
 import { Property } from 'src/app/models/equipment/view-property.model';
 import { AddEquipment } from './../../models/equipment/add-equipment.model';
-import { AddIssue } from './../../models/communication/issues/add-issue';
+import { AddIssue } from '../../models/communication/issues/add-issue.model';
 import { EquipmentService } from './../equipment-service/equipment.service';
 import { Definition } from './../../models/equipment/add-definition.model';
 import { FormlyFieldConfig } from '@ngx-formly/core';

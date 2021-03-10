@@ -1,3 +1,4 @@
+import { TEMSComponent } from './../../../tems/tems.component';
 import { PersonnelService } from './../../../services/personnel-service/personnel.service';
 import { KeysService } from 'src/app/services/keys-service/keys.service';
 import { IOption } from './../../../models/option.model';
@@ -9,7 +10,7 @@ import { ChipsAutocompleteComponent } from 'src/app/public/formly/chips-autocomp
   templateUrl: './keys-allocations.component.html',
   styleUrls: ['./keys-allocations.component.scss']
 })
-export class KeysAllocationsComponent implements OnInit {
+export class KeysAllocationsComponent extends TEMSComponent implements OnInit {
 
   @Input() keys: IOption[];
 
@@ -25,7 +26,9 @@ export class KeysAllocationsComponent implements OnInit {
   constructor(
     private keysService: KeysService,
     private personnelService: PersonnelService
-  ) { }
+  ) { 
+    super();
+  }
 
   
   ngOnInit(): void {
@@ -34,7 +37,11 @@ export class KeysAllocationsComponent implements OnInit {
     else
       this.keysAutocompleteOptions = this.keysService.getAutocompleteOptions();
       
-    this.personnelAutocompleteOptions = this.personnelService.getAllAutocompleteOptions();
+    this.subscriptions.push(this.personnelService.getAllAutocompleteOptions()
+      .subscribe(result => {
+        console.log(result);
+        this.personnelAutocompleteOptions = result;
+      }))
   }
 
   submit(){

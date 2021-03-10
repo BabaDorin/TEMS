@@ -95,7 +95,10 @@ export class EquipmentAllocationComponent extends TEMSComponent implements OnIni
         break;
       case 'personnel':
         this.allocatedToChipsInputLabel = 'Name...';
-        this.allocatedToAutoCompleteOptions = this.personnelService.getAllAutocompleteOptions();
+        this.subscriptions.push(this.personnelService.getAllAutocompleteOptions()
+          .subscribe(result => {
+            this.allocatedToAutoCompleteOptions = result;
+          }))
         break;
     }
 

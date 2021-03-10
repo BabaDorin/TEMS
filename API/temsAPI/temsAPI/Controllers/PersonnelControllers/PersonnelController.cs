@@ -120,5 +120,30 @@ namespace temsAPI.Controllers.PersonnelControllers
                 return ReturnResponse("An error occured when fetching personnel records", ResponseStatus.Fail);
             }
         }
+
+        [HttpGet]
+        public async Task<JsonResult> GetAllAutocompleteOptions()
+        {
+            try
+            {
+                List<Option> viewModel = (await _unitOfWork.Personnel
+                    .FindAll<Option>(
+                        where: q => !q.IsArchieved,
+                        include: q => q.Include(q => q.Positions),
+                        select: q => new Option
+                        {
+                            Value = q.Id,
+                            Label = q.Name,
+                            Additional = string.Join(", ", q.Positions.Select(q => q.Name))
+                        })).ToList();
+
+                return Json(viewModel);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured when fetching autocomplete options", ResponseStatus.Fail);
+            }
+        }
     }
 }

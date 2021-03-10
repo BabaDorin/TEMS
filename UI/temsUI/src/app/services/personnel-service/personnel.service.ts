@@ -19,13 +19,12 @@ export class PersonnelService extends TEMSService {
     super();
   }
 
-  getAllAutocompleteOptions(): IOption[]{
-    return [
-      {value: '1', label:'Baba Dori'},
-      {value: '2', label:'Vasile Versace'},
-      {value: '3', label:'Ciuta Johnny'},
-    ]
-  }
+  getAllAutocompleteOptions(): Observable<any>{
+    return this.http.get(
+      API_PERS_URL + '/getallautocompleteoptions',
+      this.httpOptions
+    );
+  } 
 
   getPersonnelSimplifiedById(personnelId: string): ViewPersonnelSimplified{
     return new ViewPersonnelSimplified();

@@ -114,11 +114,14 @@ export class QuickAccessComponent extends TEMSComponent implements OnInit {
             break;
     
           case 'personnel':
-            // this.options = this.personnelService.getAllAutocompleteOptions()
-            //   .map(q => q.value);
+            this.subscriptions.push(this.personnelService.getAllAutocompleteOptions()
+              .subscribe(result => {
+                console.log(result),
+                this.options = result;
+              }))
             this.header = "Find personnel by name";
             this.label = "Indentifier";
-            this.placeholder = "104";
+            this.placeholder = "Ciolac";
             break;
         }
     

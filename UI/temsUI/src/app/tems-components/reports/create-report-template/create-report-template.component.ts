@@ -65,7 +65,11 @@ export class CreateReportTemplateComponent extends TEMSComponent implements OnIn
         this.roomsAutocompleteOptions = response;
       }));
     
-      this.personnelAutocompleteOptions = this.personnelService.getAllAutocompleteOptions();
+    this.subscriptions.push(this.personnelService.getAllAutocompleteOptions()
+      .subscribe(result => {
+        this.personnelAutocompleteOptions = result;
+      }));
+
     this.sepparateBy = 'none';
     this.equipmentCommonProperties = this.equipmentService.getCommonProperties();
     this.equipmentCommonProperties.map(q => q.checked = true);

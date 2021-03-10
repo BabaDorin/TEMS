@@ -103,7 +103,10 @@ export class AddLogComponent extends TEMSComponent implements OnInit {
       
       case 'personnel':
         this.chipsInputLabel = 'Name...';
-        this.autoCompleteOptions = this.personnelService.getAllAutocompleteOptions();
+        this.subscriptions.push(this.personnelService.getAllAutocompleteOptions()
+          .subscribe(result => {
+            this.autoCompleteOptions = result;
+          }))
         break;
     }
 

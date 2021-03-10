@@ -119,6 +119,7 @@ namespace temsAPI.Data
 
         private static void SeedTickedStatuses(ApplicationDbContext dbContext)
         {
+            int importanceIndex = 0;
             (new List<string>() { "Urgent", "Medium", "Future" })
                 .ForEach(r =>
                 {
@@ -127,7 +128,8 @@ namespace temsAPI.Data
                         dbContext.Statuses.Add(new Status
                         {
                             Id = Guid.NewGuid().ToString(),
-                            Name = r
+                            Name = r,
+                            ImportanceIndex = importanceIndex++
                         });
                     }
                 });

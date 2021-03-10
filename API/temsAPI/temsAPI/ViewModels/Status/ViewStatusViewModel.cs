@@ -9,5 +9,6 @@ namespace temsAPI.ViewModels.Status
     {
         public string Id { get; set; }
         public string Name { get; set; }
+        public int ImportanceIndex { get; set; }
     }
 }

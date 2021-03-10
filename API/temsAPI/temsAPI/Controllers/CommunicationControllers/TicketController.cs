@@ -101,7 +101,9 @@ namespace temsAPI.Controllers.CommunicationControllers
                 }
 
                 List<ViewTicketSimplifiedViewModel> viewModel =
-                           tickets.AsQueryable().Where(ticketExpression)
+                           tickets.AsQueryable()
+                           .Where(ticketExpression)
+                           .OrderBy(q => q.Status.ImportanceIndex)
                            .ToList()
                            .Select(q => new ViewTicketSimplifiedViewModel
                            {
@@ -154,6 +156,7 @@ namespace temsAPI.Controllers.CommunicationControllers
                 List<Option> viewModel = (await _unitOfWork
                     .Statuses
                     .FindAll<Option>(
+                        where: q => !q.IsArchieved,
                         select: q => new Option
                         {
                             Value = q.Id,

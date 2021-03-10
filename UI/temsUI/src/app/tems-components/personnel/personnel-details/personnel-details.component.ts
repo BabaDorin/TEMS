@@ -26,6 +26,6 @@ export class PersonnelDetailsComponent implements OnInit {
       this.personnelId = this.activatedroute.snapshot.paramMap.get("id");
     this.edit=false;
 
-    this.personnelSimplified = this.personnelService.getPersonnelSimplified(this.personnelId);
+    this.personnelSimplified = this.personnelService.getPersonnelSimplifiedById(this.personnelId);
   }
 }

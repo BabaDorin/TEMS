@@ -10,5 +10,8 @@ You may encounter this problem in the future.
 
 
 todo:
+spelling mistakes:
+1) Equipments => Equipment (Equipment has no plural form)
+
 repair equipmentallocation
 go further with room => details, logs etc etc

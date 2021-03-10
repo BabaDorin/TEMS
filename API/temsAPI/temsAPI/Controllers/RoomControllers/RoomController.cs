@@ -102,8 +102,8 @@ namespace temsAPI.Controllers.RoomControllers
                 List<ViewRoomSimplifiedViewModel> viewModel = (await _unitOfWork.Rooms.FindAll<ViewRoomSimplifiedViewModel>(
                     where: q => !q.IsArchieved,
                     include: q => q.Include(q => q.Labels)
-                                   .Include(q => q.RoomEquipmentAllocations)
-                                   .Include(q => q.Tickets),
+                                   .Include(q => q.RoomEquipmentAllocations.Where(q => q.DateReturned == null))
+                                   .Include(q => q.Tickets.Where(q => q.DateClosed == null)),
                     select: q => new ViewRoomSimplifiedViewModel
                     {
                         Id = q.Id,

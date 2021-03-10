@@ -27,18 +27,15 @@ export class PersonnelService extends TEMSService {
     ]
   }
 
-  getPersonnelSimplified(personnelId: string): ViewPersonnelSimplified{
+  getPersonnelSimplifiedById(personnelId: string): ViewPersonnelSimplified{
     return new ViewPersonnelSimplified();
   }
 
-  getPersonnel(): ViewPersonnelSimplified[]{
-    return [
-      new ViewPersonnelSimplified(),
-      new ViewPersonnelSimplified(),
-      new ViewPersonnelSimplified(),
-      new ViewPersonnelSimplified(),
-      new ViewPersonnelSimplified(),
-    ]
+  getPersonnelSimplified(pageNumber: number, recordsPerPage: number): Observable<any>{
+    return this.http.get(
+      API_PERS_URL + '/getsimplified' + '/' + pageNumber + '/' + recordsPerPage,
+      this.httpOptions
+    );
   }
 
   getPersonnelById(personnelId: string): ViewPersonnel{

@@ -47,10 +47,10 @@ namespace temsAPI.Data.Entities.EquipmentEntities
         [NotMapped]
         public string TemsIdOrSerialNumber { get { return TEMSID ?? SerialNumber; } }
 
-        public virtual ICollection<Log> Logs { get; set; }
-        public virtual ICollection<Ticket> Tickets { get; set; }
-        public virtual ICollection<Equipment> Children { get; set; }
-        public virtual ICollection<RoomEquipmentAllocation> RoomEquipmentAllocations { get; set; }
-        public virtual ICollection<PersonnelEquipmentAllocation> PersonnelEquipmentAllocations { get; set; }
+        public virtual ICollection<Log> Logs { get; set; } = new List<Log>();
+        public virtual ICollection<Ticket> Tickets { get; set; } = new List<Ticket>();
+        public virtual ICollection<Equipment> Children { get; set; } = new List<Equipment>();
+        public virtual ICollection<RoomEquipmentAllocation> RoomEquipmentAllocations { get; set; } = new List<RoomEquipmentAllocation>();
+        public virtual ICollection<PersonnelEquipmentAllocation> PersonnelEquipmentAllocations { get; set; } = new List<PersonnelEquipmentAllocation>();
     }
 }

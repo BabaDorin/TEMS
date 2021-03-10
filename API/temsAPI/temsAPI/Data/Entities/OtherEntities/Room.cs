@@ -20,9 +20,9 @@ namespace temsAPI.Data.Entities.OtherEntities
 
         public bool IsArchieved { get; set; }
 
-        public virtual ICollection<RoomEquipmentAllocation> RoomEquipmentAllocations { get; set; }
-        public virtual ICollection<PersonnelRoomSupervisory> PersonnelRoomSupervisories { get; set; }
-        public virtual ICollection<Log> Logs { get; set; }
-        public virtual ICollection<Ticket> Tickets  { get; set; }
+        public virtual ICollection<RoomEquipmentAllocation> RoomEquipmentAllocations { get; set; } = new List<RoomEquipmentAllocation>();
+        public virtual ICollection<PersonnelRoomSupervisory> PersonnelRoomSupervisories { get; set; } = new List<PersonnelRoomSupervisory>();
+        public virtual ICollection<Log> Logs { get; set; } = new List<Log>();
+        public virtual ICollection<Ticket> Tickets  { get; set; } = new List<Ticket>();
     }
 }

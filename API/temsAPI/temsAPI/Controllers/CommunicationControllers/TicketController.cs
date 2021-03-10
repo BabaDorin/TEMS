@@ -106,33 +106,35 @@ namespace temsAPI.Controllers.CommunicationControllers
                            .Select(q => new ViewTicketSimplifiedViewModel
                            {
                                Id = q.Id,
-                               DateClosed = (DateTime)q.DateClosed,
+                               DateClosed = q.DateClosed,
                                DateCreated = q.DateCreated,
                                Description = q.Description,
                                Problem = q.Problem,
                                Status = q.Status.Name,
-                               Label = new Option { 
-                                   Label = q.Label.Name, 
-                                   Additional = q.Label.ColorHex
-                               },
+                               Label = (q.Label != null) 
+                                    ? new Option { 
+                                           Label = q.Label.Name, 
+                                           Additional = q.Label.ColorHex
+                                      }
+                                    : null,
                                Equipments = q.Equipments
                                                .Select(q => new Option
                                                {
                                                    Label = q.TemsIdOrSerialNumber,
                                                    Value = q.Id
-                                               }).ToList(),
+                                               })?.ToList(),
                                Personnel = q.Personnel
                                                .Select(q => new Option
                                                {
                                                    Label = q.Name,
                                                    Value = q.Id
-                                               }).ToList(),
+                                               })?.ToList(),
                                Rooms = q.Rooms
                                            .Select(q => new Option
                                            {
                                                Label = q.Identifier,
                                                Value = q.Id,
-                                           }).ToList()
+                                           })?.ToList()
                            }).ToList();
 
                 return (Json(viewModel));

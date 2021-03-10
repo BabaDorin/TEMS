@@ -58,11 +58,11 @@ namespace temsAPI.Data.Entities.CommunicationEntities
 
         public bool IsArchieved { get; set; }
 
-        public ICollection<Personnel> Personnel { get; set; }
-        public ICollection<Equipment> Equipments { get; set; }
-        public ICollection<Room> Rooms { get; set; }
+        public ICollection<Personnel> Personnel { get; set; } = new List<Personnel>();
+        public ICollection<Equipment> Equipments { get; set; } = new List<Equipment>();
+        public ICollection<Room> Rooms { get; set; } = new List<Room>();
         [InverseProperty("AssignedTickets")]
-        public ICollection<TEMSUser> Assignees  { get; set; }
+        public ICollection<TEMSUser> Assignees  { get; set; } = new List<TEMSUser>();
 
     }
 }

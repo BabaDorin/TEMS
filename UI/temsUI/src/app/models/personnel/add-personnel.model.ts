@@ -1,20 +1,14 @@
+import { IOption } from './../option.model';
 interface IAddPersonnel {
     name: string,
     phoneNumber?: string,
     email?: string;
-    position?: string;
+    positions?: IOption[];
 }
 
 export class AddPersonnel implements IAddPersonnel{
     name: string;
     phoneNumber?: string;
     email?: string;
-    position?: string;
-
-    constructor(){
-        this.name = 'Baba Doreean';
-        this.phoneNumber = '+373454554';
-        this.email = 'babadorean@gmail.com.md.ru.it';
-        this.position = 'tehnologic';
-    }
+    positions?: IOption[];
 }

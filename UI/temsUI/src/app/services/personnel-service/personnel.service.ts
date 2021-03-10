@@ -52,4 +52,11 @@ export class PersonnelService extends TEMSService {
       this.httpOptions
     )
   }
+
+  getPersonnelPositions(): Observable<any>{
+    return this.http.get(
+      API_PERS_URL + '/getpositions',
+      this.httpOptions
+    );
+  }
 }

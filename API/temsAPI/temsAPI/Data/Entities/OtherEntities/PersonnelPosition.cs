@@ -11,7 +11,7 @@ namespace temsAPI.Data.Entities.OtherEntities
         [Key]
         public string Id { get; set; }
         public string Name { get; set; }
-        public double IsArchieved { get; set; }
+        public bool IsArchieved { get; set; }
 
         public virtual ICollection<Personnel> Personnel { get; set; } = new List<Personnel>();
     }

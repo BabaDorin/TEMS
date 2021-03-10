@@ -17,7 +17,6 @@ namespace temsAPI.Data.Entities.OtherEntities
 #nullable enable
         public string? PhoneNumber { get; set; }
         public string? Email { get; set; }
-        public string? Position { get; set; }
 
         public string? ImagePath { get; set; }
 #nullable disable

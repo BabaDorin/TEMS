@@ -596,15 +596,6 @@ export class FormlyParserService {
               }
             },
             {
-              key: 'position',
-              type: 'input-tooltip',
-              templateOptions: {
-                label: 'Position',
-                placeholder: 'Profesor...',
-                description: 'Profession, For example: ICT Professor'
-              },
-            },
-            {
               key: 'phoneNumber',
               type: 'input-tooltip',
               templateOptions: {

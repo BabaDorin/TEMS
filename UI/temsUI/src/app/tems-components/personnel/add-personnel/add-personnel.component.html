@@ -3,6 +3,11 @@
         <div class="card-title">Add Personnel</div>
         <form [formGroup]="formlyData.form" (ngSubmit)="onSubmit(formlyData.model)">
             <formly-form [form]="formlyData.form" [fields]="formlyData.fields" [model]="formlyData.model"></formly-form>
+            <app-chips-autocomplete
+                #personnelPositionsInput
+                label="Personnel Positions"
+                [availableOptions]="personnelPositions">
+            </app-chips-autocomplete>
             <br><br>
             <button 
                 type="submit" 

@@ -1,3 +1,4 @@
+import { TemsFormsModule } from './../tems-forms/tems-forms.module';
 import { AgGridPersonnelComponent } from './../../tems-components/personnel/ag-grid-personnel/ag-grid-personnel.component';
 import { ViewPersonnelComponent } from 'src/app/tems-components/personnel/view-personnel/view-personnel.component';
 import { AddPersonnelComponent } from './../../tems-components/personnel/add-personnel/add-personnel.component';
@@ -36,8 +37,7 @@ import { AnalyticsModule } from '../analytics/analytics.module';
     PersonnelRoutingModule,
     AgGridModule,
     MaterialModule,
-    FormsModule,
-    FormlyModule,
+    TemsFormsModule,
     ReactiveFormsModule,
 
     // Shared modules

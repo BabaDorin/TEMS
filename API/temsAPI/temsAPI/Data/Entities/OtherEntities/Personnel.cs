@@ -29,6 +29,7 @@ namespace temsAPI.Data.Entities.OtherEntities
         public virtual ICollection<KeyAllocation> KeyAllocations { get; set; } = new List<KeyAllocation>();
         public virtual ICollection<Log> Logs { get; set; } = new List<Log>();
         public virtual ICollection<Ticket> Tickets { get; set; } = new List<Ticket>();
+        public virtual ICollection<PersonnelPosition> Positions { get; set; } = new List<PersonnelPosition>();
 
         // BEFREE: Add multiple Emails and Phone numbers support later if needed.
     }

@@ -161,6 +161,7 @@ namespace temsAPI.Data
 
         // Other entities
         public DbSet<Personnel> Personnel { get; set; }
+        public DbSet<PersonnelPosition> PersonnelPositions { get; set; }
         public DbSet<Room> Rooms { get; set; }
         public DbSet<PersonnelEquipmentAllocation> PersonnelEquipmentAllocations { get; set; }
         public DbSet<PersonnelRoomSupervisory> PersonnelRoomSupervisories { get; set; }

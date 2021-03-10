@@ -47,6 +47,7 @@ namespace temsAPI.Contracts
         IGenericRepository<Status> Statuses { get; }
         IGenericRepository<Label> Labels { get; }
         IGenericRepository<RoomLabel> RoomLabels { get; }
+        IGenericRepository<PersonnelPosition> PersonnelPositions { get; }
 
         Task Save();
     }

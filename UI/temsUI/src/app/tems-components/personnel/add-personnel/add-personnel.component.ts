@@ -1,3 +1,4 @@
+import { TEMSComponent } from './../../../tems/tems.component';
 import { PersonnelService } from 'src/app/services/personnel-service/personnel.service';
 import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
@@ -13,7 +14,7 @@ import { AddPersonnel } from 'src/app/models/personnel/add-personnel.model';
   templateUrl: './add-personnel.component.html',
   styleUrls: ['./add-personnel.component.scss']
 })
-export class AddPersonnelComponent implements OnInit {
+export class AddPersonnelComponent extends TEMSComponent implements OnInit {
 
   private formlyData = {
     isVisible: false,
@@ -24,14 +25,21 @@ export class AddPersonnelComponent implements OnInit {
 
   constructor(
     private formlyParserService: FormlyParserService,
-  ) { }
+    private personnelService: PersonnelService
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
-    this.formlyData.model ={};
+    this.formlyData.model = {};
     this.formlyData.fields = this.formlyParserService.parseAddPersonnel(new AddPersonnel());
   }
 
   onSubmit(model) {
     console.log(model);
+    this.subscriptions.push(this.personnelService.createPersonnel(model.personnel as AddPersonnel)
+      .subscribe(result => {
+        console.log(result);
+      }))
   }
 }

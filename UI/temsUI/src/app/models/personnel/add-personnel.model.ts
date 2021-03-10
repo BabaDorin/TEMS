@@ -3,7 +3,6 @@ interface IAddPersonnel {
     phoneNumber?: string,
     email?: string;
     position?: string;
-    // imagePath: string -- TO BE IMPLEMENTED LATER
 }
 
 export class AddPersonnel implements IAddPersonnel{

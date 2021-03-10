@@ -43,6 +43,7 @@ namespace temsAPI.Repository
         private IGenericRepository<Status> _statuses;
         private IGenericRepository<Label> _labels;
         private IGenericRepository<RoomLabel> _roomLabels;
+        private IGenericRepository<PersonnelPosition> _personnelPosition;
 
         public IGenericRepository<Announcement> Announcements 
             => _announcements ??= new GenericRepository<Announcement>(_context);
@@ -96,6 +97,8 @@ namespace temsAPI.Repository
             => _labels ??= new GenericRepository<Label>(_context);
         public IGenericRepository<RoomLabel> RoomLabels
             => _roomLabels ??= new GenericRepository<RoomLabel>(_context);
+        public IGenericRepository<PersonnelPosition> PersonnelPositions
+            => _personnelPosition ??= new GenericRepository<PersonnelPosition>(_context);
 
 
         public UnitOfWork(ApplicationDbContext context)

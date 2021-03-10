@@ -27,6 +27,7 @@ namespace temsAPI.Data
             SeedLogTypes(dbContext);
             SeedTickedStatuses(dbContext);
             SeedRoomLabels(dbContext);
+            SeedPersonnelPositions(dbContext);
         }
 
         private static void SeedRoles(RoleManager<IdentityRole> roleManager)
@@ -146,6 +147,24 @@ namespace temsAPI.Data
                     if (!dbContext.RoomLabels.Any(lt => lt.Name == r))
                     {
                         dbContext.RoomLabels.Add(new RoomLabel
+                        {
+                            Id = Guid.NewGuid().ToString(),
+                            Name = r,
+                        });
+                    }
+                });
+
+            dbContext.SaveChanges();
+        }
+
+        private static void SeedPersonnelPositions(ApplicationDbContext dbContext)
+        {
+            (new List<string>() { "Professor", "Auxiliary Worker", "Technician", "Management"})
+                .ForEach(r =>
+                {
+                    if (!dbContext.PersonnelPositions.Any(lt => lt.Name == r))
+                    {
+                        dbContext.PersonnelPositions.Add(new PersonnelPosition
                         {
                             Id = Guid.NewGuid().ToString(),
                             Name = r,

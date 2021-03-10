@@ -608,13 +608,13 @@ export class FormlyParserService {
               key: 'phoneNumber',
               type: 'input-tooltip',
               templateOptions: {
-                label: 'Phone Number',
+                label: 'Phone Number (Without the leading 0)',
                 description: 'It will be used to send SMS!'
               },
             },
             {
               key: 'email',
-              type: 'input',
+              type: 'input-tooltip',
               templateOptions: {
                 type: 'email',
                 label: 'Email',

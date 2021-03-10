@@ -1,3 +1,8 @@
+import { TEMSService } from './../tems-service/tems.service';
+import { API_PERS_URL } from './../../models/backend.config';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { AddPersonnel } from 'src/app/models/personnel/add-personnel.model';
 import { IOption } from 'src/app/models/option.model';
 import { ViewPersonnel } from './../../models/personnel/view-personnel.model';
 import { Injectable } from '@angular/core';
@@ -6,9 +11,13 @@ import { ViewPersonnelSimplified } from 'src/app/models/personnel/view-personnel
 @Injectable({
   providedIn: 'root'
 })
-export class PersonnelService {
+export class PersonnelService extends TEMSService {
 
-  constructor() { }
+  constructor(
+    private http: HttpClient
+  ) { 
+    super();
+  }
 
   getAllAutocompleteOptions(): IOption[]{
     return [
@@ -34,5 +43,13 @@ export class PersonnelService {
 
   getPersonnelById(personnelId: string): ViewPersonnel{
     return new ViewPersonnel();
+  }
+
+  createPersonnel(addPersonnel: AddPersonnel): Observable<any>{
+    return this.http.post(
+      API_PERS_URL + '/create',
+      addPersonnel,
+      this.httpOptions
+    )
   }
 }

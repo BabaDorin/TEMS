@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using temsAPI.Data;
 
 namespace temsAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210310192405_addingPersonnelPositionsEntity")]
+    partial class addingPersonnelPositionsEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -253,21 +255,6 @@ namespace temsAPI.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
-                });
-
-            modelBuilder.Entity("PersonnelPersonnelPosition", b =>
-                {
-                    b.Property<string>("PersonnelId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("PositionsId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("PersonnelId", "PositionsId");
-
-                    b.HasIndex("PositionsId");
-
-                    b.ToTable("PersonnelPersonnelPosition");
                 });
 
             modelBuilder.Entity("PersonnelTicket", b =>
@@ -842,7 +829,12 @@ namespace temsAPI.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("PersonnelId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("PersonnelId");
 
                     b.ToTable("PersonnelPositions");
                 });
@@ -1079,21 +1071,6 @@ namespace temsAPI.Migrations
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("PersonnelPersonnelPosition", b =>
-                {
-                    b.HasOne("temsAPI.Data.Entities.OtherEntities.Personnel", null)
-                        .WithMany()
-                        .HasForeignKey("PersonnelId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("temsAPI.Data.Entities.OtherEntities.PersonnelPosition", null)
-                        .WithMany()
-                        .HasForeignKey("PositionsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -1362,6 +1339,13 @@ namespace temsAPI.Migrations
                     b.Navigation("Personnel");
                 });
 
+            modelBuilder.Entity("temsAPI.Data.Entities.OtherEntities.PersonnelPosition", b =>
+                {
+                    b.HasOne("temsAPI.Data.Entities.OtherEntities.Personnel", null)
+                        .WithMany("Positions")
+                        .HasForeignKey("PersonnelId");
+                });
+
             modelBuilder.Entity("temsAPI.Data.Entities.OtherEntities.PersonnelRoomSupervisory", b =>
                 {
                     b.HasOne("temsAPI.Data.Entities.OtherEntities.Personnel", "Personnel")
@@ -1470,6 +1454,8 @@ namespace temsAPI.Migrations
                     b.Navigation("PersonnelEquipmentAllocations");
 
                     b.Navigation("PersonnelRoomSupervisories");
+
+                    b.Navigation("Positions");
                 });
 
             modelBuilder.Entity("temsAPI.Data.Entities.OtherEntities.Room", b =>

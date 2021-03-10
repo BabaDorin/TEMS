@@ -50,24 +50,24 @@ export class EntityAllocationsListComponent implements OnInit {
     if(this.equipment){
       dialogRef.componentInstance.equipment = [
         {
-          id: this.equipment.id, 
-          value: this.equipment.temsIdOrSerialNumber
+          value: this.equipment.id, 
+          label: this.equipment.temsIdOrSerialNumber
         }];
     }
 
     if(this.room){
       dialogRef.componentInstance.room = [
         {
-          id: this.room.id, 
-          value: this.room.identifier
+          value: this.room.id, 
+          label: this.room.identifier
         }];
     }
 
     if(this.personnel){
       dialogRef.componentInstance.personnel = [
         {
-          id: this.personnel.id, 
-          value: this.personnel.name
+          value: this.personnel.id, 
+          label: this.personnel.name
         }];
     }
 

@@ -1,3 +1,4 @@
+import { AddAllocation } from './../../../models/allocation/add-allocation.model';
 import { TEMSComponent } from './../../../tems/tems.component';
 import { ViewPersonnelSimplified } from './../../../models/personnel/view-personnel-simplified.model';
 import { ViewEquipmentSimplified } from './../../../models/equipment/view-equipment-simplified.model';
@@ -8,6 +9,7 @@ import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { ChipsAutocompleteComponent } from 'src/app/public/formly/chips-autocomplete/chips-autocomplete.component';
 import { ViewRoomSimplified } from 'src/app/models/room/view-room-simplified.model';
 import { IOption } from 'src/app/models/option.model';
+import { AllocationService } from 'src/app/services/allocation-service/allocation.service';
 
 @Component({
   selector: 'app-equipment-allocation',
@@ -26,19 +28,17 @@ export class EquipmentAllocationComponent extends TEMSComponent implements OnIni
   @Input() room: IOption[];
   @Input() personnel: IOption[];
 
-  @ViewChild('equipmentIdentifierChips', { static: false }) equipmentIdentifierChips: ChipsAutocompleteComponent;
-  @ViewChild('allocatedTo', { static: false }) allocatedTo: ChipsAutocompleteComponent;
+  @ViewChild('equipmentIdentifierChips') equipmentIdentifierChips: ChipsAutocompleteComponent;
+  @ViewChild('allocatedTo') allocatedTo: ChipsAutocompleteComponent;
 
   // Equipment autocomplete chips:
-  equipmentAutoCompleteOptions = [];
-  equipmentAlreadySelectedOptions = [];
-  equipmentChipsInputLabel = "Choose one or more equipments...";
+  equipmentAutoCompleteOptions = [] as IOption[];
+  equipmentAlreadySelectedOptions = [] as IOption[];
 
   // AllocatedToAutocompleteChips
-  allocatedToAutoCompleteOptions = [];
-  allocatedToAlreadySelectedOptions = [];
+  allocatedToAutoCompleteOptions = [] as IOption[];
+  allocatedToAlreadySelectedOptions = [] as IOption[]
   allocatedToChipsInputLabel = "Choose one...";
-  allodatedToMaxSelections = 1;
 
   // Alocate to [select]
   allocateToTypes = [
@@ -50,7 +50,8 @@ export class EquipmentAllocationComponent extends TEMSComponent implements OnIni
   constructor(
     private equipmentService: EquipmentService,
     private roomService: RoomsService,
-    private personnelService: PersonnelService
+    private personnelService: PersonnelService,
+    private allocationService: AllocationService
   ) { 
     super();
   }
@@ -66,15 +67,15 @@ export class EquipmentAllocationComponent extends TEMSComponent implements OnIni
     this.allocatedToAutoCompleteOptions = this.roomService.getAllAutocompleteOptions();
     
     if(this.equipment != undefined)
-      this.equipmentAlreadySelectedOptions = this.equipment;
+      this.equipmentAlreadySelectedOptions = [this.equipment[0]];
     
     if(this.room != undefined){
-      this.allocatedToAlreadySelectedOptions = this.room;
+      this.allocatedToAlreadySelectedOptions = [this.room[0]];
       this.selectedAllocateToType = 'room';
     }
 
     if(this.personnel != undefined){
-      this.allocatedToAlreadySelectedOptions = this.personnel;
+      this.allocatedToAlreadySelectedOptions = [this.personnel[0]];
       this.selectedAllocateToType = 'personnel';
     }
   }
@@ -98,13 +99,15 @@ export class EquipmentAllocationComponent extends TEMSComponent implements OnIni
     if(this.equipmentIdentifierChips.options.length<1 || this.allocatedTo.options.length != 1)
       return;
 
-    let model = {
-      equipment: this.equipmentIdentifierChips.options,
-      allocateTo: {
-        type: this.selectedAllocateToType,
-        identifier: this.allocatedTo.options
-      }
+    let addAllocation: AddAllocation = {
+      equipments: this.equipmentIdentifierChips.options,
+      allocateToType: this.selectedAllocateToType,
+      allocateToId: this.allocatedTo.options[0].value,
     }
 
+    this.subscriptions.push(this.allocationService.createAllocation(addAllocation)
+      .subscribe(result => {
+        console.log(result);
+      }))
   }
 }

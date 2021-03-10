@@ -9,7 +9,7 @@
                 <h2>Equipment (TEMSID or Serial Number)</h2>
                 <app-chips-autocomplete
                     #equipmentIdentifierChips
-                    [label]="equipmentChipsInputLabel"
+                    label="Choose one or more equipments..."
                     [availableOptions]="equipmentAutoCompleteOptions"
                     [alreadySelected]="equipmentAlreadySelectedOptions">
                 </app-chips-autocomplete>
@@ -30,7 +30,7 @@
                 [label]="allocatedToChipsInputLabel"
                 [availableOptions]="allocatedToAutoCompleteOptions"
                 [alreadySelected]="allocatedToAlreadySelectedOptions"
-                [maxOptionsSelected]="allodatedToMaxSelections">
+                maxOptionsSelected="1">
                 </app-chips-autocomplete>
             </div>
         </div>

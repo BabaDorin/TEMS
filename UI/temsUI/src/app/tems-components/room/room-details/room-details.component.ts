@@ -24,6 +24,7 @@ export class RoomDetailsComponent implements OnInit {
   ngOnInit(): void {
     if(this.roomId == undefined)
       this.roomId = this.activatedroute.snapshot.paramMap.get("id");
+      
     this.edit=false;
 
     this.roomSimplified = this.roomService.getRoomSimplified(this.roomId);

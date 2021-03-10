@@ -20,17 +20,11 @@ export class RoomsService extends TEMSService {
     super();
   }
 
-  getAllAutocompleteOptions(): IOption[]{
-    return [
-      {value: '1', label: '100'},
-      {value: '2', label: '101'},
-      {value: '3', label: '103'},
-      {value: '4', label: '105'},
-      {value: '5', label: '106'},
-      {value: '6', label: '107'},
-      {value: '7', label: '108'},
-      {value: '8', label: '109'},
-    ]
+  getAllAutocompleteOptions(): Observable<any>{
+    return this.http.get(
+      API_ROOM_URL + '/getallautocompleteoptions',
+      this.httpOptions
+    );
   }
 
   getRooms(): ViewRoomSimplified[]{

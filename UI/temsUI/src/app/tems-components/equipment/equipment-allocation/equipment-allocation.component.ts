@@ -64,7 +64,11 @@ export class EquipmentAllocationComponent extends TEMSComponent implements OnIni
 
     this.selectedAllocateToType="room";
     this.allocatedToChipsInputLabel = 'Room identifier...';
-    this.allocatedToAutoCompleteOptions = this.roomService.getAllAutocompleteOptions();
+
+    this.subscriptions.push(this.roomService.getAllAutocompleteOptions()
+      .subscribe(response => {
+        this.allocatedToAutoCompleteOptions = response;
+      }));
     
     if(this.equipment != undefined)
       this.equipmentAlreadySelectedOptions = [this.equipment[0]];
@@ -84,7 +88,10 @@ export class EquipmentAllocationComponent extends TEMSComponent implements OnIni
     switch (this.selectedAllocateToType) {
       case 'room':
         this.allocatedToChipsInputLabel = 'Room identifier...';
-        this.allocatedToAutoCompleteOptions = this.roomService.getAllAutocompleteOptions();
+        this.subscriptions.push(this.roomService.getAllAutocompleteOptions()
+          .subscribe(response => {
+            this.allocatedToAutoCompleteOptions = response;
+          }));
         break;
       case 'personnel':
         this.allocatedToChipsInputLabel = 'Name...';

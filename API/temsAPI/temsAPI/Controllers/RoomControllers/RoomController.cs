@@ -21,6 +21,29 @@ namespace temsAPI.Controllers.RoomControllers
         {
         }
 
+        [HttpGet]
+        public async Task<JsonResult> GetAllAutocompleteOptions()
+        {
+            try
+            {
+                List<Option> viewModel = (await _unitOfWork.Rooms.FindAll<Option>(
+                    where: q => !q.IsArchieved,
+                    select: q => new Option
+                    {
+                        Value = q.Id,
+                        Label = q.Identifier,
+                        Additional = q.Description
+                    })).ToList();
+
+                return Json(viewModel);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured when fetching autocomplete options", ResponseStatus.Fail);
+            }
+        }
+
         [HttpPost]
         public async Task<JsonResult> Create([FromBody] AddRoomViewModel viewModel)
         {

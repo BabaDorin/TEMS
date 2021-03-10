@@ -94,7 +94,11 @@ export class AddLogComponent extends TEMSComponent implements OnInit {
       
       case 'room':
         this.chipsInputLabel = 'Room identifier...';
-        this.autoCompleteOptions = this.roomService.getAllAutocompleteOptions();
+        this.subscriptions.push(this.roomService.getAllAutocompleteOptions()
+          .subscribe(result => {
+            console.log(result);
+            this.autoCompleteOptions = result;
+          }));
         break;
       
       case 'personnel':

@@ -83,6 +83,8 @@ export class QuickAccessComponent extends TEMSComponent implements OnInit {
     this.activatedroute.params.subscribe(params => {
       if (params['type']) {
         this.type = this.activatedroute.snapshot.paramMap.get("type");
+        console.log(this.type);
+
 
         if (['equipment', 'rooms', 'personnel'].indexOf(this.type) == -1) {
           this.router.navigate(['/error-pages/404']);
@@ -101,8 +103,11 @@ export class QuickAccessComponent extends TEMSComponent implements OnInit {
             break;
     
           case 'rooms':
-            // this.options = this.roomService.getAllAutocompleteOptions()
-            //   .map(q => q.value);
+            this.subscriptions.push(this.roomService.getAllAutocompleteOptions()
+              .subscribe(result => {
+                console.log(result);
+                this.options = result;
+              }))
             this.header = "Find room by identifier";
             this.label = "Indentifier";
             this.placeholder = "104";

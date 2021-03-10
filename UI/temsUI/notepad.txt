@@ -10,4 +10,5 @@ You may encounter this problem in the future.
 
 
 todo:
-CreateIssueComponent - fetch statuses from (urgent, mediu, pe viitor) from db 
+repair equipmentallocation
+go further with room => details, logs etc etc

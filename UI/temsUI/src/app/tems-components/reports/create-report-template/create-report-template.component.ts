@@ -1,3 +1,4 @@
+import { TEMSComponent } from './../../../tems/tems.component';
 import { CheckboxItem } from '../../../models/checkboxItem.model';
 import { IOption } from 'src/app/models/option.model';
 import { PersonnelService } from './../../../services/personnel-service/personnel.service';
@@ -11,7 +12,7 @@ import { Component, OnInit } from '@angular/core';
   templateUrl: './create-report-template.component.html',
   styleUrls: ['./create-report-template.component.scss']
 })
-export class CreateReportTemplateComponent implements OnInit {
+export class CreateReportTemplateComponent extends TEMSComponent implements OnInit {
 
   reportFormGroup: FormGroup;
   sepparateBy: string;
@@ -34,7 +35,9 @@ export class CreateReportTemplateComponent implements OnInit {
     private roomService: RoomsService,
     private equipmentService: EquipmentService,
     private personnelService: PersonnelService,
-  ) { }
+  ) { 
+    super();
+  }
 
   ngOnInit(): void {
     this.reportFormGroup = new FormGroup({
@@ -56,8 +59,13 @@ export class CreateReportTemplateComponent implements OnInit {
     this.typesAutocompleteOptions = this.equipmentService.getTypesAutocomplete();
     this.definitionsAutocompleteOptions = this.equipmentService.getDefinitionsAutocomplete(
       this.reportFormGroup.controls.types.value);
-    this.roomsAutocompleteOptions = this.roomService.getAllAutocompleteOptions();
-    this.personnelAutocompleteOptions = this.personnelService.getAllAutocompleteOptions();
+    
+    this.subscriptions.push(this.roomService.getAllAutocompleteOptions()
+      .subscribe(response => {
+        this.roomsAutocompleteOptions = response;
+      }));
+    
+      this.personnelAutocompleteOptions = this.personnelService.getAllAutocompleteOptions();
     this.sepparateBy = 'none';
     this.equipmentCommonProperties = this.equipmentService.getCommonProperties();
     this.equipmentCommonProperties.map(q => q.checked = true);

@@ -7,6 +7,7 @@ import { IOption } from 'src/app/models/option.model';
 import { ViewRoomSimplified } from './../../models/room/view-room-simplified.model';
 import { ViewRoom } from './../../models/room/view-room.model';
 import { Injectable } from '@angular/core';
+import { AddRoom } from 'src/app/models/room/add-room.model';
 
 @Injectable({
   providedIn: 'root'
@@ -60,5 +61,13 @@ export class RoomsService extends TEMSService {
 
   getRoomSimplified(id: string): ViewRoomSimplified{
     return new ViewRoomSimplified();
+  }
+
+  createRoom(addRoom: AddRoom): Observable<any> {
+    return this.http.post(
+      API_ROOM_URL + '/create',
+      addRoom,
+      this.httpOptions
+    );
   }
 }

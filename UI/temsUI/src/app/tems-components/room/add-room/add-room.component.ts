@@ -46,6 +46,9 @@ export class AddRoomComponent extends TEMSComponent implements OnInit {
 
   onSubmit(model) {
     model.room.labels = this.labels.options;
-    console.log(model);
+    this.subscriptions.push(this.roomService.createRoom(model.room as AddRoom)
+      .subscribe(result => {
+        console.log(result);
+      }))
   }
 }

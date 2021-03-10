@@ -21,6 +21,51 @@ namespace temsAPI.Controllers.RoomControllers
         {
         }
 
+        [HttpPost]
+        public async Task<JsonResult> Create([FromBody] AddRoomViewModel viewModel)
+        {
+            try
+            {
+                // Indentifier is not valid
+                if (String.IsNullOrEmpty(viewModel.Identifier = viewModel.Identifier.Trim()))
+                    return ReturnResponse("Please, provide a valid room identifier", ResponseStatus.Fail);
+
+                // This room already exists
+                if (await _unitOfWork.Rooms.isExists(q => q.Identifier == viewModel.Identifier && !q.IsArchieved))
+                    return ReturnResponse($"This {viewModel.Identifier} room already exists", ResponseStatus.Fail);
+
+                // Invalid labels provided
+                foreach (Option label in viewModel.Labels)
+                    if (!await _unitOfWork.RoomLabels.isExists(q => q.Id == label.Value && !q.IsArchieved))
+                        return ReturnResponse("Invalid labels provided", ResponseStatus.Fail);
+
+                // Might be valid
+                List<string> labelIds = viewModel.Labels.Select(q => q.Value).ToList();
+                Room model = new Room
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Description = viewModel.Description,
+                    Floor = viewModel.Floor,
+                    Identifier = viewModel.Identifier,
+                    Labels = await _unitOfWork.RoomLabels.FindAll<RoomLabel>(
+                        where: q => labelIds.Contains(q.Id))
+                };
+
+                await _unitOfWork.Rooms.Create(model);
+                await _unitOfWork.Save();
+
+                if (!await _unitOfWork.Rooms.isExists(q => q.Id == model.Id))
+                    return ReturnResponse("Fail", ResponseStatus.Fail);
+                else
+                    return ReturnResponse("Success!", ResponseStatus.Success);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured when creating the room", ResponseStatus.Fail);
+            }
+        }
+
         [HttpGet("/room/getsimplified/{pageNumber}/{recordsPerPage}")]
         public async Task<JsonResult> GetSimplified(int pageNumber, int recordsPerPage)
         {

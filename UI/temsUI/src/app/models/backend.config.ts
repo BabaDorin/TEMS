@@ -6,3 +6,4 @@ export const API_EQ_URL = API_URL + '/equipment';
 export const API_LOG_URL = API_URL + '/log';
 export const API_ISU_URL = API_URL + '/ticket';
 export const API_ALL_URL = API_URL + '/allocation';
+export const API_ROOM_URL = API_URL + '/room';

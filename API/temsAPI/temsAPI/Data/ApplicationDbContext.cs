@@ -167,6 +167,7 @@ namespace temsAPI.Data
         public DbSet<RoomEquipmentAllocation> RoomEquipmentAllocations { get; set; }
         public DbSet<Label> Labels { get; set; }
         public DbSet<Status> Statuses { get; set; }
+        public DbSet<RoomLabel> RoomLabels { get; set; }
 
 
         // Key entities

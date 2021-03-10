@@ -3,6 +3,7 @@ export interface IViewRoomSimplified{
     identifier: string;
     openedIssues?: number;
     description?: string;
+    label?: string;
     allocatedEquipment?: number;
 }
 

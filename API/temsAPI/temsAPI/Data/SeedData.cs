@@ -136,5 +136,23 @@ namespace temsAPI.Data
 
             dbContext.SaveChanges();
         }
+
+        private static void SeedRoomLabels(ApplicationDbContext dbContext)
+        {
+            (new List<string>() { "Deposit", "Library", "Office", "Meeting Room", "Class Room", "Laboratory" })
+                .ForEach(r =>
+                {
+                    if (!dbContext.RoomLabels.Any(lt => lt.Name == r))
+                    {
+                        dbContext.RoomLabels.Add(new RoomLabel
+                        {
+                            Id = Guid.NewGuid().ToString(),
+                            Name = r,
+                        });
+                    }
+                });
+
+            dbContext.SaveChanges();
+        }
     }
 }

@@ -45,7 +45,6 @@ export class AgGridEquipmentComponent extends TEMSComponent implements OnInit {
   }
 
   ngOnInit() {
-
   }
 
   onGridReady(params) {

@@ -1,11 +1,11 @@
+import { TEMSComponent } from './../../tems/tems.component';
 import { AllocationService } from './../../services/allocation-service/allocation.service';
 import { ViewPersonnelSimplified } from './../../models/personnel/view-personnel-simplified.model';
 import { ViewRoomSimplified } from './../../models/room/view-room-simplified.model';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Component, OnInit, Input } from '@angular/core';
-import { ViewEquipmentAllocation } from 'src/app/models/equipment/view-equipment-allocation.model';
+import { ViewAllocationSimplified,} from 'src/app/models/equipment/view-equipment-allocation.model';
 import { ViewEquipmentSimplified } from 'src/app/models/equipment/view-equipment-simplified.model';
-import { EquipmentService } from 'src/app/services/equipment-service/equipment.service';
 import { EquipmentAllocationComponent } from '../equipment/equipment-allocation/equipment-allocation.component';
 
 @Component({
@@ -13,9 +13,9 @@ import { EquipmentAllocationComponent } from '../equipment/equipment-allocation/
   templateUrl: './entity-allocations-list.component.html',
   styleUrls: ['./entity-allocations-list.component.scss']
 })
-export class EntityAllocationsListComponent implements OnInit {
+export class EntityAllocationsListComponent extends TEMSComponent implements OnInit {
 
-  allocations: ViewEquipmentAllocation[];
+  allocations: ViewAllocationSimplified[];
   @Input() equipment: ViewEquipmentSimplified; 
   @Input() room: ViewRoomSimplified; 
   @Input() personnel: ViewPersonnelSimplified; 
@@ -24,7 +24,7 @@ export class EntityAllocationsListComponent implements OnInit {
     private allocationService: AllocationService,
     public dialog: MatDialog
   ) {
-
+    super();
   }
 
   ngOnInit(): void {
@@ -34,13 +34,17 @@ export class EntityAllocationsListComponent implements OnInit {
     }
 
     if(this.equipment)
-      this.allocations = this.allocationService.getEquipmentAllocations(this.equipment.id);
+      this.subscriptions.push(this.allocationService.getEquipmentAllocations(this.equipment.id)
+        .subscribe(result => {
+          console.log(result);
+          this.allocations = result;
+        }));
 
-    if(this.room)
-      this.allocations = this.allocationService.getEquipmentAllocationsToRoom(this.room.id);
+    // if(this.room)
+      // this.allocations = this.allocationService.getEquipmentAllocationsToRoom(this.room.id);
 
-    if(this.personnel)
-      this.allocations = this.allocationService.getEquipmentAllocationsToPersonnel(this.personnel.id);
+    // if(this.personnel)
+      // this.allocations = this.allocationService.getEquipmentAllocationsToPersonnel(this.personnel.id);
   }
 
   addAllocation(): void {

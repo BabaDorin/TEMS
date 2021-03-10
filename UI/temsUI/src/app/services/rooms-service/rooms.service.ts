@@ -1,3 +1,6 @@
+import { API_ROOM_URL } from './../../models/backend.config';
+import { HttpClient } from '@angular/common/http';
+import { TEMSService } from './../tems-service/tems.service';
 import { viewClassName } from '@angular/compiler';
 import { IOption } from 'src/app/models/option.model';
 import { ViewRoomSimplified } from './../../models/room/view-room-simplified.model';
@@ -7,9 +10,13 @@ import { Injectable } from '@angular/core';
 @Injectable({
   providedIn: 'root'
 })
-export class RoomsService {
+export class RoomsService extends TEMSService {
 
-  constructor() { }
+  constructor(
+    private http: HttpClient
+  ) { 
+    super();
+  }
 
   getAllAutocompleteOptions(): IOption[]{
     return [
@@ -32,6 +39,13 @@ export class RoomsService {
     ];
   }
 
+  getRoomsSimplified(pageNumber: number, recordsPerPage: number){
+    this.http.get(
+      API_ROOM_URL + '/getSimplified' + '/' + pageNumber + '/' + recordsPerPage,
+      this.httpOptions
+    );
+  }
+    
   getRoomLabels(): IOption[]{
     return[
       { value: '1', label: 'Laboratory'},

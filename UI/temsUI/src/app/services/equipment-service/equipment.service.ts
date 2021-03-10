@@ -7,7 +7,7 @@ import { API_PROP_URL, API_EQTYPE_URL, API_EQDEF_URL, API_EQ_URL } from './../..
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { IOption } from './../../models/option.model';
 import { CheckboxItem } from '../../models/checkboxItem.model';
-import { ViewEquipmentAllocation } from './../../models/equipment/view-equipment-allocation.model';
+import { ViewAllocationSimplified } from './../../models/equipment/view-equipment-allocation.model';
 import { ViewEquipment } from './../../models/equipment/view-equipment.model';
 import { ViewEquipmentSimplified } from './../../models/equipment/view-equipment-simplified.model';
 import { AddProperty } from './../../models/equipment/add-property.model';
@@ -133,20 +133,7 @@ export class EquipmentService extends TEMSService {
       this.httpOptions
     );
   }
-
-  getEquipmentAllocations(id: string): ViewEquipmentAllocation[]{
-    return [
-      new ViewEquipmentAllocation(),
-      new ViewEquipmentAllocation(),
-      new ViewEquipmentAllocation(),
-      new ViewEquipmentAllocation(),
-      new ViewEquipmentAllocation(),
-      new ViewEquipmentAllocation(),
-      new ViewEquipmentAllocation(),
-      new ViewEquipmentAllocation(),
-    ]
-  }
-
+  
   getAllAutocompleteOptions(onlyParent?: boolean): Observable<any> {
     if(onlyParent == undefined) 
       onlyParent = true;

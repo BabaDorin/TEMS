@@ -17,32 +17,52 @@ export class IssuesService extends TEMSService {
     super();
   }
 
-  getIssues(onlyClosed?: boolean, includingClosed?: boolean){
-    return [
-      new ViewIssueSimplified(),
-      new ViewIssueSimplified(),
-      new ViewIssueSimplified(),
-      new ViewIssueSimplified(),
-      new ViewIssueSimplified(),
-      new ViewIssueSimplified(),
-      new ViewIssueSimplified(),
-      new ViewIssueSimplified(),
-    ];
-  }
-
-  getIssuesOfRoom(roomId: string, onlyClosed?: boolean, includingClosed?: boolean){
-    return this.getIssues(onlyClosed, includingClosed);
-  }
-
-  getIssuesOfEquipment(equipmentId: string, includingClosed?: boolean, onlyClosed?: boolean, ): Observable<any>{
+  getIssuesOfEntity(
+    entityType: string, 
+    entityId: string, 
+    includingClosed: boolean,
+    onlyClosed: boolean): Observable<any>{
     return this.http.get(
-      API_ISU_URL + '/equipment/' + equipmentId + '/' + includingClosed + '/' + onlyClosed,
+      API_ISU_URL + '/getticketsofentity/' + entityType + '/' + entityId + '/' + includingClosed + '/' + onlyClosed,
       this.httpOptions
     );
   }
 
-  getIssuesOfPersonnel(personnelId: string, onlyClosed?: boolean, includingClosed?: boolean){
-    return this.getIssues(onlyClosed, includingClosed);
+  getIssuesOfRoom(roomId: string, includingClosed?: boolean, onlyClosed?: boolean): Observable<any>{
+    return this.getIssuesOfEntity(
+      'room', 
+      roomId, 
+      onlyClosed ?? false, 
+      includingClosed ?? false
+      );
+  }
+
+  getIssuesOfEquipment(equipmentId: string, includingClosed?: boolean, onlyClosed?: boolean, ): Observable<any>{
+    return this.getIssuesOfEntity(
+      'equipment', 
+      equipmentId, 
+      includingClosed ?? false, 
+      onlyClosed ?? false
+      );
+  }
+
+  getIssuesOfPersonnel(personnelId: string, includingClosed?: boolean, onlyClosed?: boolean){
+    return this.getIssuesOfEntity(
+      'personnel', 
+      personnelId, 
+      includingClosed ?? false, 
+      onlyClosed ?? false
+      );
+  }
+
+  getIssues(includingClosed?: boolean, onlyClosed?: boolean):Observable<any>{
+    // all issues (tickets)
+    return this.getIssuesOfEntity(
+      'any',
+      'any',
+      includingClosed ?? false,
+      onlyClosed ?? false
+    )
   }
 
   getStatuses(): Observable<any>{

@@ -13,5 +13,4 @@ export class RoomDetailsIssuesComponent implements OnInit {
 
   ngOnInit(): void {
   }
-
 }

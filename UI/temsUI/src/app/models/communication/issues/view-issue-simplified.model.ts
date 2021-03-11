@@ -5,7 +5,8 @@ import { ViewUserSimplified } from "../../user/view-user.model";
 export interface IViewIssueSimplified{
     id: string;
     problem: string;
-    status: string;
+    status?: IOption;
+    label?: IOption;
     description?: string;
     personnel?: IOption[];
     equipments?: IOption[];
@@ -19,7 +20,8 @@ export class ViewIssueSimplified implements IViewIssueSimplified{
     id: string;
     problem: string;
     description?: string;
-    status: string;
+    status?: IOption;
+    label?: IOption;
     personnel?: IOption[];
     equipments?: IOption[];
     rooms?: IOption[];

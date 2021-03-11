@@ -33,26 +33,38 @@ export class EntityIssuesListComponent extends TEMSComponent implements OnInit {
   }
 
   ngOnInit(): void {
-
     if(this.equipment)
-      this.subscriptions.push(
-        this.issuesService.getIssuesOfEquipment(
-          this.equipment.id, 
-          this.onlyClosed, 
-          this.includingClosed).subscribe(response => {
-            console.log(response);
-            this.issues = response;
-          }))
+      this.subscriptions.push(this.issuesService.getIssuesOfEquipment(
+        this.equipment.id, this.onlyClosed, this.includingClosed
+      ).subscribe(response => {
+        console.log(response);
+        this.issues = response;
+      }))
 
-    // if(this.room)
-    //   this.issues = this.issuesService.getIssuesOfRoom(this.room.id, this.onlyClosed, this.includingClosed);
+    if(this.room)
+      this.subscriptions.push(this.issuesService.getIssuesOfRoom(
+        this.room.id, this.includingClosed, this.onlyClosed
+      ).subscribe(result => {
+        console.log(result);
+        this.issues = result;
+      }))
 
-    // if(this.personnel)
-    //   this.issues = this.issuesService.getIssuesOfPersonnel(this.personnel.id, this.onlyClosed, this.includingClosed);
+    if(this.personnel)
+      this.subscriptions.push(this.issuesService.getIssuesOfEquipment(
+        this.personnel.id, this.includingClosed, this.onlyClosed
+      ).subscribe(result => {
+        console.log(result);
+        this.issues = result;
+      }))
 
-    // // No entity provied = get all issues
-    // if(this.issues == undefined) 
-    //   this.issues = this.issuesService.getIssues(this.onlyClosed, this.includingClosed); 
+    if(this.personnel == undefined && this.room == undefined && this.equipment == undefined){
+      this.subscriptions.push(this.issuesService.getIssues(
+        this.includingClosed, this.onlyClosed
+      ).subscribe(result => {
+        console.log(result);
+        this.issues = result;
+      }))
+    }
   }
 
   private addIssue(){
@@ -89,5 +101,4 @@ export class EntityIssuesListComponent extends TEMSComponent implements OnInit {
       // Stuff
     });
   }
-
 }

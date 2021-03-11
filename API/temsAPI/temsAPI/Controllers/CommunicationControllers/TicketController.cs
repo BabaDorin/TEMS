@@ -1,8 +1,11 @@
 ﻿using AutoMapper;
+using AutoMapper.Internal;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.EntityFrameworkCore.Query;
+using Microsoft.OpenApi.Any;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -29,115 +32,93 @@ namespace temsAPI.Controllers.CommunicationControllers
         {
         }
 
-        [HttpGet("/ticket/{identityType}/{identityId}/{includingClosed}/{onlyClosed}")]
-        public async Task<JsonResult> Get(
-            string identityType,
-            string identityId,
+        [HttpGet("/ticket/getticketsofentity/{entityType}/{entityId}/{includingClosed}/{onlyClosed}")]
+        public async Task<JsonResult> GetTicketsOfEntity(
+            string entityType,
+            string entityId,
             bool includingClosed,
             bool onlyClosed)
         {
             try
             {
                 // Invalid IdentityType
-                if ((new List<string> { "equipment", "room", "personnel" }).IndexOf(identityType) == -1)
+                if ((new List<string> { "any", "equipment", "room", "personnel" }).IndexOf(entityType) == -1)
                     return ReturnResponse("Invalid identity type.", ResponseStatus.Fail);
 
                 // No identityId Provided
-                if (String.IsNullOrEmpty(identityId.Trim()))
-                    return ReturnResponse($"You have to provide a valid {identityType} Id", ResponseStatus.Fail);
+                if (String.IsNullOrEmpty(entityId.Trim()))
+                    return ReturnResponse($"You have to provide a valid {entityType} Id", ResponseStatus.Fail);
 
                 // Checking if identityId is valid and at the same time we build the expression
 
                 // false false
-                Expression<Func<Ticket, bool>> ticketExpression = qu => qu.DateClosed == null;
+                Expression<Func<Ticket, bool>> expression = q => q.DateClosed == null && !q.IsArchieved;
 
                 // true false
                 if (includingClosed)
-                    ticketExpression = null;
+                    expression = q => !q.IsArchieved;
 
+                // any true
                 if (onlyClosed)
-                    ticketExpression = qu => qu.DateClosed.HasValue;
+                    expression = q => q.DateClosed.HasValue && !q.IsArchieved;
+                
+                Expression<Func<Ticket, bool>> expression2 = null;
 
-                // The tickets that are going to be extracted
-                List<Ticket> tickets = new List<Ticket>();
-
-                switch (identityType)
+                switch (entityType)
                 {
                     case "equipment":
-                        if (!await _unitOfWork.Equipments.isExists(q => q.Id == identityId))
-                            return ReturnResponse($"There is no {identityType} having the specified Id", ResponseStatus.Fail);
-
-                        tickets = (await _unitOfWork.Equipments.Find<Equipment>(
-                            where: q => q.Id == identityId,
-                            include: q => q
-                                .Include(q => q.Tickets).ThenInclude(q => q.Status)
-                                .Include(q => q.Tickets).ThenInclude(q => q.Label)))
-                            .FirstOrDefault()
-                            .Tickets.ToList();
-
+                        expression2 = q =>  q.Equipments.AsEnumerable().Any(q => q.Id == entityId);
                         break;
-
                     case "room":
-                        if (!await _unitOfWork.Rooms.isExists(q => q.Id == identityId))
-                            return ReturnResponse($"There is no {identityType} having the specified Id", ResponseStatus.Fail);
-
-                        tickets = (await _unitOfWork.Rooms.Find<Room>(
-                             where: q => q.Id == identityId,
-                             include: q => q.Include(q => q.Tickets).ThenInclude(q => q.Equipments)))
-                             .FirstOrDefault()
-                             .Tickets.ToList();
+                        expression2 = q => q.Rooms.AsEnumerable().Any(q => q.Id == entityId);
                         break;
-
                     case "personnel":
-                        if (!await _unitOfWork.Personnel.isExists(q => q.Id == identityId))
-                            return ReturnResponse($"There is no {identityType} having the specified Id", ResponseStatus.Fail);
-
-                        tickets = (await _unitOfWork.Personnel.Find<Personnel>(
-                             where: q => q.Id == identityId,
-                             include: q => q.Include(q => q.Tickets).ThenInclude(q => q.Equipments)))
-                             .FirstOrDefault()
-                             .Tickets.ToList();
+                        expression2 = q => q.Personnel.AsEnumerable().Any(q => q.Id == entityId);
                         break;
                 }
 
-                List<ViewTicketSimplifiedViewModel> viewModel =
-                           tickets.AsQueryable()
-                           .Where(ticketExpression)
-                           .OrderBy(q => q.Status.ImportanceIndex)
-                           .ToList()
-                           .Select(q => new ViewTicketSimplifiedViewModel
-                           {
-                               Id = q.Id,
-                               DateClosed = q.DateClosed,
-                               DateCreated = q.DateCreated,
-                               Description = q.Description,
-                               Problem = q.Problem,
-                               Status = q.Status.Name,
-                               Label = (q.Label != null) 
-                                    ? new Option { 
-                                           Label = q.Label.Name, 
-                                           Additional = q.Label.ColorHex
-                                      }
-                                    : null,
-                               Equipments = q.Equipments
-                                               .Select(q => new Option
-                                               {
-                                                   Label = q.TemsIdOrSerialNumber,
-                                                   Value = q.Id
-                                               })?.ToList(),
-                               Personnel = q.Personnel
-                                               .Select(q => new Option
-                                               {
-                                                   Label = q.Name,
-                                                   Value = q.Id
-                                               })?.ToList(),
-                               Rooms = q.Rooms
-                                           .Select(q => new Option
-                                           {
-                                               Label = q.Identifier,
-                                               Value = q.Id,
-                                           })?.ToList()
-                           }).ToList();
+                List<ViewTicketSimplifiedViewModel> viewModel = (await _unitOfWork.Tickets
+                    .FindAll<ViewTicketSimplifiedViewModel>(
+                        where: ExpressionCombiner.And(expression, expression2),
+                        include: q => q.Include(q => q.Assignees)
+                                       .Include(q => q.ClosedBy)
+                                       .Include(q => q.CreatedBy)
+                                       .Include(q => q.Label)
+                                       .Include(q => q.Personnel)
+                                       .Include(q => q.Rooms)
+                                       .Include(q => q.Status)
+                                       .Include(q => q.Equipments),
+                        orderBy: q => q.OrderBy(q => q.Status.ImportanceIndex),
+                        select: q => new ViewTicketSimplifiedViewModel
+                        {
+                            Id = q.Id,
+                            DateClosed = q.DateClosed,
+                            DateCreated = q.DateCreated,
+                            Description = q.Description,
+                            Equipments = q.Equipments.Select(q => new Option
+                            {
+                                Value = q.Id,
+                                Label = q.TemsIdOrSerialNumber
+                            }).ToList(),
+                            Label = new Option
+                            {
+                                Value = q.Label.Id,
+                                Label = q.Label.Name,
+                                Additional = q.Label.ColorHex
+                            },
+                            Personnel = q.Personnel.Select(q => new Option
+                            {
+                                Value = q.Id,
+                                Label = q.Name
+                            }).ToList(),
+                            Problem = q.Problem,
+                            Status = new Option
+                            {
+                                Value = q.Status.Id,
+                                Label = q.Status.Name,
+                            }
+                        }
+                    )).ToList();
 
                 return (Json(viewModel));
             }
@@ -147,7 +128,7 @@ namespace temsAPI.Controllers.CommunicationControllers
                 return ReturnResponse("An error occured when fetching issues", ResponseStatus.Fail);
             }
         }
-
+       
         [HttpGet]
         public async Task<JsonResult> GetStatuses()
         {
@@ -241,6 +222,42 @@ namespace temsAPI.Controllers.CommunicationControllers
             {
                 Debug.WriteLine(ex);
                 return ReturnResponse("An error occurred when creating the ticket", ResponseStatus.Fail);
+            }
+        }
+    }
+
+    public static class ExpressionCombiner
+    {
+        public static Expression<Func<T, bool>> And<T>(this Expression<Func<T, bool>> exp, Expression<Func<T, bool>> newExp)
+        {
+            // get the visitor
+            var visitor = new ParameterUpdateVisitor(newExp.Parameters.First(), exp.Parameters.First());
+            // replace the parameter in the expression just created
+            newExp = visitor.Visit(newExp) as Expression<Func<T, bool>>;
+
+            // now you can and together the two expressions
+            var binExp = Expression.And(exp.Body, newExp.Body);
+            // and return a new lambda, that will do what you want. NOTE that the binExp has reference only to te newExp.Parameters[0] (there is only 1) parameter, and no other
+            return Expression.Lambda<Func<T, bool>>(binExp, newExp.Parameters);
+        }
+
+        class ParameterUpdateVisitor : ExpressionVisitor
+        {
+            private ParameterExpression _oldParameter;
+            private ParameterExpression _newParameter;
+
+            public ParameterUpdateVisitor(ParameterExpression oldParameter, ParameterExpression newParameter)
+            {
+                _oldParameter = oldParameter;
+                _newParameter = newParameter;
+            }
+
+            protected override Expression VisitParameter(ParameterExpression node)
+            {
+                if (object.ReferenceEquals(node, _oldParameter))
+                    return _newParameter;
+
+                return base.VisitParameter(node);
             }
         }
     }

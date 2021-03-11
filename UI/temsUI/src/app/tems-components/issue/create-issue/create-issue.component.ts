@@ -18,7 +18,7 @@ import { AddIssue } from 'src/app/models/communication/issues/add-issue.model';
 export class CreateIssueComponent extends TEMSComponent implements OnInit {
 
   frequentProblems = ['Echipament Defect', 'Incarcare Cartus', 'Interventia unui tehnician'];
-  isRegistered: boolean;
+  isRegistered: boolean; // user, logged in
   
   private formlyData = {
     isVisible: false,
@@ -28,13 +28,13 @@ export class CreateIssueComponent extends TEMSComponent implements OnInit {
   }
 
   roomsAutoCompleteOptions;
-  @Input() roomsAlreadySelected: IOption[];
+  @Input() roomsAlreadySelected: IOption[] = [];
 
   equipmentAutoCompleteOptions;
-  @Input() equipmentAlreadySelected: IOption[];
+  @Input() equipmentAlreadySelected: IOption[] = [];
 
   personnelAutocompleteOptions;
-  @Input() personnelAlreadySelected: IOption[];
+  @Input() personnelAlreadySelected: IOption[] = [];
 
   @ViewChild('assignees') assignees;
   @ViewChild('rooms') rooms;
@@ -64,28 +64,26 @@ export class CreateIssueComponent extends TEMSComponent implements OnInit {
         this.equipmentAutoCompleteOptions = result;
       }));
 
-
-    this.roomsAutoCompleteOptions = this.roomService.getAllAutocompleteOptions();
-    this.personnelAutocompleteOptions = this.personnelService.getAllAutocompleteOptions();
-
-    if(this.roomsAlreadySelected == undefined)
-      this.roomsAlreadySelected = [];
-
-    if(this.equipmentAlreadySelected == undefined)
-      this.equipmentAlreadySelected = [];
-
-    if(this.personnelAlreadySelected == undefined)
-      this.personnelAlreadySelected = [];
+    this.subscriptions.push(this.roomService.getAllAutocompleteOptions()
+      .subscribe(result => {
+        console.log(result);
+        this.roomsAutoCompleteOptions = result;
+      }));
+    
+    this.subscriptions.push(this.personnelService.getAllAutocompleteOptions()
+      .subscribe(result => {
+        console.log(result);
+        this.personnelAutocompleteOptions = result;
+      }));
     
     this.isRegistered = true;
   }
 
   onSubmit(model){
-    
-    model.issue.personnel = this.personnel.options;
-    model.issue.rooms = this.rooms.options;
-    model.issue.equipments = this.equipment.options;
-    model.issue.assignees = this.assignees.options;
+    model.issue.personnel = this.personnel.options as IOption[];
+    model.issue.rooms = this.rooms.options as IOption[];
+    model.issue.equipments = this.equipment.options as IOption[];
+    model.issue.assignees = this.assignees.options as IOption[];
 
     let addIssue = model.issue as AddIssue;
     

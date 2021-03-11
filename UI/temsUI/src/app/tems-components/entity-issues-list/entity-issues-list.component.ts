@@ -84,7 +84,7 @@ export class EntityIssuesListComponent extends TEMSComponent implements OnInit {
     if(this.room){
       dialogRef.componentInstance.roomsAlreadySelected = [
         {
-          valued: this.room.id, 
+          value: this.room.id, 
           label: this.room.identifier
         }];
     }

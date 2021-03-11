@@ -28,15 +28,4 @@ export class ViewIssueSimplified implements IViewIssueSimplified{
     dateCreated: Date;
     dateClosed?: Date;
     closedBy?: ViewUserSimplified;
-
-    // constructor(){
-    //     this.id = '1';
-    //     this.problem = 'Este nevoie de interventia unui tehnolog';
-    //     this.description = 'Nu avem conexiune la internet';
-    //     this.status = 'urgent';
-    //     let personnel = new ViewPersonnelSimplified();
-    //     personnel.name = 'Arnold Schartzneger';
-    //     this.personnel =  [ personnel ];
-    //     this.dateCreated = new Date();
-    // }
 }

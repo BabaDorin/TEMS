@@ -19,16 +19,4 @@ export class AddIssue implements IAddIssue{
     status: string;
     asignees?: IOption[];
     createdBy?: IOption;
-
-    // for testing purposes
-    // constructor(){
-    //     this.problem = '';
-    //     this.problemDescription = '';
-    //     this.roomIdentifier = [] as IOption[];
-    //     this.equipmentIdentifier = [] as IOption[];
-    //     this.personnelIdentifier = [] as IOption[];
-    //     this.status = 'medium';
-    //     this.asignees = [] as IOption[];
-    //     this.createdBy = {} as IOption;
-    // }
 }

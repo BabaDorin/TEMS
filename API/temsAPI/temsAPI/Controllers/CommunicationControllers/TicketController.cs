@@ -17,6 +17,7 @@ using temsAPI.Data.Entities.CommunicationEntities;
 using temsAPI.Data.Entities.EquipmentEntities;
 using temsAPI.Data.Entities.OtherEntities;
 using temsAPI.Data.Entities.UserEntities;
+using temsAPI.Helpers;
 using temsAPI.ViewModels;
 using temsAPI.ViewModels.Status;
 using temsAPI.ViewModels.Ticket;
@@ -67,19 +68,19 @@ namespace temsAPI.Controllers.CommunicationControllers
                 switch (entityType)
                 {
                     case "equipment":
-                        expression2 = q =>  q.Equipments.AsEnumerable().Any(q => q.Id == entityId);
+                        expression2 = q =>  q.Equipments.Any(q => q.Id == entityId);
                         break;
                     case "room":
-                        expression2 = q => q.Rooms.AsEnumerable().Any(q => q.Id == entityId);
+                        expression2 = q => q.Rooms.Any(q => q.Id == entityId);
                         break;
                     case "personnel":
-                        expression2 = q => q.Personnel.AsEnumerable().Any(q => q.Id == entityId);
+                        expression2 = q => q.Personnel.Any(q => q.Id == entityId);
                         break;
                 }
 
                 List<ViewTicketSimplifiedViewModel> viewModel = (await _unitOfWork.Tickets
                     .FindAll<ViewTicketSimplifiedViewModel>(
-                        where: ExpressionCombiner.And(expression, expression2),
+                        where: (expression2 == null) ? expression : ExpressionCombiner.And(expression, expression2),
                         include: q => q.Include(q => q.Assignees)
                                        .Include(q => q.ClosedBy)
                                        .Include(q => q.CreatedBy)
@@ -92,6 +93,7 @@ namespace temsAPI.Controllers.CommunicationControllers
                         select: q => new ViewTicketSimplifiedViewModel
                         {
                             Id = q.Id,
+                            Problem = q.Problem,
                             DateClosed = q.DateClosed,
                             DateCreated = q.DateCreated,
                             Description = q.Description,
@@ -111,7 +113,12 @@ namespace temsAPI.Controllers.CommunicationControllers
                                 Value = q.Id,
                                 Label = q.Name
                             }).ToList(),
-                            Problem = q.Problem,
+                            Rooms = q.Rooms.Select(q => new Option
+                            {
+                                Value = q.Id,
+                                Label = q.Identifier,
+                                Additional = string.Join(", ", q.Labels)
+                            }).ToList(),
                             Status = new Option
                             {
                                 Value = q.Status.Id,
@@ -222,42 +229,6 @@ namespace temsAPI.Controllers.CommunicationControllers
             {
                 Debug.WriteLine(ex);
                 return ReturnResponse("An error occurred when creating the ticket", ResponseStatus.Fail);
-            }
-        }
-    }
-
-    public static class ExpressionCombiner
-    {
-        public static Expression<Func<T, bool>> And<T>(this Expression<Func<T, bool>> exp, Expression<Func<T, bool>> newExp)
-        {
-            // get the visitor
-            var visitor = new ParameterUpdateVisitor(newExp.Parameters.First(), exp.Parameters.First());
-            // replace the parameter in the expression just created
-            newExp = visitor.Visit(newExp) as Expression<Func<T, bool>>;
-
-            // now you can and together the two expressions
-            var binExp = Expression.And(exp.Body, newExp.Body);
-            // and return a new lambda, that will do what you want. NOTE that the binExp has reference only to te newExp.Parameters[0] (there is only 1) parameter, and no other
-            return Expression.Lambda<Func<T, bool>>(binExp, newExp.Parameters);
-        }
-
-        class ParameterUpdateVisitor : ExpressionVisitor
-        {
-            private ParameterExpression _oldParameter;
-            private ParameterExpression _newParameter;
-
-            public ParameterUpdateVisitor(ParameterExpression oldParameter, ParameterExpression newParameter)
-            {
-                _oldParameter = oldParameter;
-                _newParameter = newParameter;
-            }
-
-            protected override Expression VisitParameter(ParameterExpression node)
-            {
-                if (object.ReferenceEquals(node, _oldParameter))
-                    return _newParameter;
-
-                return base.VisitParameter(node);
             }
         }
     }

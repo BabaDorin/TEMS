@@ -14,7 +14,6 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 export class EquipmentDetailsIssuesComponent implements OnInit {
 
   @Input() equipment: ViewEquipmentSimplified;
-
   constructor() { }
 
   ngOnInit(): void {

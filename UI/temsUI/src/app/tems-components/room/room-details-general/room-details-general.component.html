@@ -1,25 +1,30 @@
 <br>
-<h1>{{ room.label }}
-    <b>{{ room.identifier }}</b>
-</h1>
-<hr>
-<br>
-<div *ngIf="edit==false">
-    <div class="row">
-        <div class="col-md-6">
-            <app-property-render [properties]="roomProperties"></app-property-render>
+<ng-container *ngIf="room == undefined">
+    <h2>Loading...</h2>
+</ng-container>
+
+<ng-container *ngIf="room != undefined">
+    <h1>Room: <b>{{ room.identifier }}</b>
+    </h1>
+    <hr>
+    <br>
+    <div *ngIf="edit==false">
+        <div class="row">
+            <div class="col-md-6">
+                <app-property-render [properties]="roomProperties"></app-property-render>
+            </div>
         </div>
     </div>
-</div>
-<br>
-<br>
+    <br>
+    <br>
 
-<div *ngIf="room.photos.length > 0">
-    <h4>Room images</h4>
-    <app-image-carousel></app-image-carousel>
-</div>
-<br>
-<div *ngIf="edit==true">
-    edit = true
-</div>
-<button class="btn btn-primary" (click)="edit=!edit">Edit data</button>
+    <!-- <div *ngIf="room.photos.length > 0">
+        <h4>Room images</h4>
+        <app-image-carousel></app-image-carousel>
+    </div> -->
+    <br>
+    <div *ngIf="edit==true">
+        edit = true
+    </div>
+    <button class="btn btn-primary" (click)="edit=!edit">Edit data</button>
+</ng-container>

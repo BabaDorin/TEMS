@@ -71,15 +71,15 @@ export class EquipmentAllocationComponent extends TEMSComponent implements OnIni
       }));
     
     if(this.equipment != undefined)
-      this.equipmentAlreadySelectedOptions = [this.equipment[0]];
+      this.equipmentAlreadySelectedOptions = this.equipment;
     
     if(this.room != undefined){
-      this.allocatedToAlreadySelectedOptions = [this.room[0]];
+      this.allocatedToAlreadySelectedOptions = this.room;
       this.selectedAllocateToType = 'room';
     }
 
     if(this.personnel != undefined){
-      this.allocatedToAlreadySelectedOptions = [this.personnel[0]];
+      this.allocatedToAlreadySelectedOptions = this.personnel;
       this.selectedAllocateToType = 'personnel';
     }
   }
@@ -114,6 +114,8 @@ export class EquipmentAllocationComponent extends TEMSComponent implements OnIni
       allocateToType: this.selectedAllocateToType,
       allocateToId: this.allocatedTo.options[0].value,
     }
+
+    console.log(addAllocation);
 
     this.subscriptions.push(this.allocationService.createAllocation(addAllocation)
       .subscribe(result => {

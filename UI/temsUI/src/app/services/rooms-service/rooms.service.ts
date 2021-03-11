@@ -49,12 +49,27 @@ export class RoomsService extends TEMSService {
     );
   }
   
-  getRoomById(id: string): ViewRoom{
-    return new ViewRoom();
+  getRoomById(id: string): Observable<any>{
+    return this.http.get(
+      API_ROOM_URL + '/getbyid/' + id,
+      this.httpOptions 
+    );
   }
 
   getRoomSimplified(id: string): ViewRoomSimplified{
     return new ViewRoomSimplified();
+  }
+  
+  getRoomSimplifiedFromRoom(room: ViewRoom): ViewRoomSimplified{
+    let roomSimplified = new ViewRoomSimplified();
+    roomSimplified.id = room.id;
+    roomSimplified.description = room.description;
+    roomSimplified.identifier = room.identifier;
+    roomSimplified.activeIssues =  room.activeTickets;
+    roomSimplified.allocatedEquipment = 999; // room does not have allocatedEquipment
+    roomSimplified.label = room.labels.join(", ");
+
+    return roomSimplified;
   }
 
   createRoom(addRoom: AddRoom): Observable<any> {

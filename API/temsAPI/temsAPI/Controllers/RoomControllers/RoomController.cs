@@ -11,6 +11,7 @@ using temsAPI.Contracts;
 using temsAPI.Data.Entities.OtherEntities;
 using temsAPI.Data.Entities.UserEntities;
 using temsAPI.ViewModels;
+using temsAPI.ViewModels.Personnel;
 using temsAPI.ViewModels.Room;
 
 namespace temsAPI.Controllers.RoomControllers
@@ -102,13 +103,13 @@ namespace temsAPI.Controllers.RoomControllers
                 List<ViewRoomSimplifiedViewModel> viewModel = (await _unitOfWork.Rooms.FindAll<ViewRoomSimplifiedViewModel>(
                     where: q => !q.IsArchieved,
                     include: q => q.Include(q => q.Labels)
-                                   .Include(q => q.RoomEquipmentAllocations.Where(q => q.DateReturned == null))
+                                   .Include(q => q.RoomEquipmentAllocations)
                                    .Include(q => q.Tickets.Where(q => q.DateClosed == null)),
                     select: q => new ViewRoomSimplifiedViewModel
                     {
                         Id = q.Id,
                         Description = q.Description,
-                        AllocatedEquipments = q.RoomEquipmentAllocations.Count,
+                        AllocatedEquipments = q.RoomEquipmentAllocations.Count(q => q.DateReturned == null),
                         Identifier = q.Identifier,
                         Label = string.Join(", ", q.Labels.Select(q => q.Name)),
                         ActiveTickets = q.Tickets.Count
@@ -142,6 +143,53 @@ namespace temsAPI.Controllers.RoomControllers
             {
                 Debug.WriteLine(ex);
                 return ReturnResponse("An error occured when fetching room labels", ResponseStatus.Fail);
+            }
+        }
+
+        [HttpGet("/room/getbyid/{id}")]
+        public async Task<JsonResult> GetById(string id)
+        {
+            try
+            {
+                // Invalid id provided
+                if (String.IsNullOrEmpty(id) || !await _unitOfWork.Rooms.isExists(q => q.Id == id))
+                    return ReturnResponse("Invalid id provided", ResponseStatus.Fail);
+
+                var viewModel = (await _unitOfWork.Rooms
+                    .Find<ViewRoomViewModel>(
+                        where: q => q.Id == id,
+                        include: q => q.Include(q => q.Labels)
+                                       .Include(q => q.PersonnelRoomSupervisories)
+                                            .ThenInclude(q => q.Personnel)
+                                            .ThenInclude(q => q.Positions)
+                                       .Include(q => q.Tickets),
+                        select: q => new ViewRoomViewModel
+                        {
+                            Id = q.Id,
+                            Description = q.Description,
+                            Identifier = q.Identifier,
+                            Floor = q.Floor ?? 0,
+                            ActiveTickets = q.Tickets.Count(q => q.DateClosed == null),
+                            Labels = q.Labels.Select(q => new Option
+                            {
+                                Value = q.Id,
+                                Label = q.Name
+                            }).ToList(),
+                            Supervisory = q.PersonnelRoomSupervisories.Select(q => new ViewPersonnelSimplifiedViewModel
+                            {
+                                Id = q.Id,
+                                Name = q.Personnel.Name,
+                                Positions = string.Join(", ", q.Personnel.Positions)
+                            }).ToList(),
+                        }
+                    )).FirstOrDefault();
+
+                return Json(viewModel);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured when fetching the room", ResponseStatus.Fail);
             }
         }
     }

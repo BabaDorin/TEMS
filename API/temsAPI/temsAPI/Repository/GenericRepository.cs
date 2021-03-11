@@ -57,12 +57,15 @@ namespace leave_management.Repository
                 query = include(query);
             }
 
-            if (select != null)
-            {
-                query = (IQueryable<T>)query.Select(select);
-            }
+            //if (select != null)
+            //{
+            //    query = (IQueryable<T>)query.Select(select);
+            //}
 
-            return (IList<TType>)await query.ToListAsync();
+            return
+                (select != null)
+                ? await query.Select(select).ToListAsync()
+                : (IList<TType>)await query.ToListAsync();
         }
 
         public async Task<IList<TType>> FindAll<TType>(

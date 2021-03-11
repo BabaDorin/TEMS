@@ -38,27 +38,29 @@ namespace temsAPI.Controllers.Allocation
                         return ReturnResponse("One or more equipments are invalid.", ResponseStatus.Fail);
 
                 // No allocation type provided
-                if ((new List<string> { "personnel", "room" }).IndexOf(viewModel.AllocatedToType) == -1)
+                if ((new List<string> { "personnel", "room" }).IndexOf(viewModel.AllocateToType) == -1)
                     return ReturnResponse("Invalid type provided", ResponseStatus.Fail);
 
                 // No allocation id provided or the provided one is invalid
-                if (String.IsNullOrEmpty(viewModel.AllocatedToType))
+                if (String.IsNullOrEmpty(viewModel.AllocateToType))
                     return ReturnResponse("Please, provide a valid allocation object type", ResponseStatus.Fail);
 
                 List<string> equipmentsWhereFailed = new List<string>();
-                if (viewModel.AllocatedToType == "personnel")
+                if (viewModel.AllocateToType == "personnel")
                 {
-                    if (!await _unitOfWork.Personnel.isExists(q => q.Id == viewModel.AllocatedToId))
+                    if (!await _unitOfWork.Personnel.isExists(q => q.Id == viewModel.AllocateToId))
                         return ReturnResponse("Allocatee id seems invalid.", ResponseStatus.Fail);
 
                     foreach (Option equipment in viewModel.Equipments)
                     {
+                        await ClosePreviousAllocations(equipment.Value);
+
                         var model = new PersonnelEquipmentAllocation
                         {
                             Id = Guid.NewGuid().ToString(),
                             DateAllocated = DateTime.Now,
                             EquipmentID = equipment.Value,
-                            PersonnelID = viewModel.AllocatedToId
+                            PersonnelID = viewModel.AllocateToId
                         };
 
                         await _unitOfWork.PersonnelEquipmentAllocations.Create(model);
@@ -66,25 +68,25 @@ namespace temsAPI.Controllers.Allocation
 
                         if (!await _unitOfWork.PersonnelEquipmentAllocations.isExists(q => q.Id == model.Id))
                             equipmentsWhereFailed.Add(equipment.Label);
-                        else
-                            ClosePreviousAllocations(model.EquipmentID);
                     }
                 }
 
 
-                if (viewModel.AllocatedToType == "room")
+                if (viewModel.AllocateToType == "room")
                 {
-                    if (!await _unitOfWork.Rooms.isExists(q => q.Id == viewModel.AllocatedToId))
+                    if (!await _unitOfWork.Rooms.isExists(q => q.Id == viewModel.AllocateToId))
                         return ReturnResponse("Allocatee id seems invalid.", ResponseStatus.Fail);
 
                     foreach (Option equipment in viewModel.Equipments)
                     {
+                        await ClosePreviousAllocations(equipment.Value);
+
                         var model = new RoomEquipmentAllocation
                         {
                             Id = Guid.NewGuid().ToString(),
                             DateAllocated = DateTime.Now,
                             EquipmentID = equipment.Value,
-                            RoomID = viewModel.AllocatedToId
+                            RoomID = viewModel.AllocateToId
                         };
 
                         await _unitOfWork.RoomEquipmentAllocations.Create(model);
@@ -92,8 +94,6 @@ namespace temsAPI.Controllers.Allocation
 
                         if (!await _unitOfWork.RoomEquipmentAllocations.isExists(q => q.Id == model.Id))
                             equipmentsWhereFailed.Add(equipment.Label);
-                        else
-                            ClosePreviousAllocations(model.EquipmentID);
                     }
                 }
 
@@ -113,7 +113,7 @@ namespace temsAPI.Controllers.Allocation
         }
 
         // :(
-        public async void ClosePreviousAllocations(string equipmentId)
+        public async Task ClosePreviousAllocations(string equipmentId)
         {
             if(await _unitOfWork.RoomEquipmentAllocations
                 .isExists(q => q.EquipmentID == equipmentId && q.DateReturned == null))
@@ -128,6 +128,8 @@ namespace temsAPI.Controllers.Allocation
                     .FindAll<PersonnelEquipmentAllocation>(q => q.EquipmentID == equipmentId))
                     .ToList()
                     .ForEach(q => q.DateReturned = DateTime.Now);
+
+            await _unitOfWork.Save();
         }
     }
 }

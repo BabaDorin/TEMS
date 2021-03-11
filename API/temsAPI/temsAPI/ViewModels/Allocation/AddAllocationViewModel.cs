@@ -7,12 +7,8 @@ namespace temsAPI.ViewModels.Allocation
 {
     public class AddAllocationViewModel
     {
-        //    equipment: IOption[];
-        //allocateToType: string;
-        //allocateToId: string;
-
         public List<Option> Equipments { get; set; } = new List<Option>();
-        public string AllocatedToType { get; set; }
-        public string AllocatedToId { get; set; }
+        public string AllocateToType { get; set; }
+        public string AllocateToId { get; set; }
     }
 }

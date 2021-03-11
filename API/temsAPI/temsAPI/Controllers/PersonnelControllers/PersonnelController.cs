@@ -98,15 +98,15 @@ namespace temsAPI.Controllers.PersonnelControllers
                 List<ViewPersonnelSimplifiedViewModel> viewModel = (await _unitOfWork.Personnel
                     .FindAll<ViewPersonnelSimplifiedViewModel>(
                         where: q => !q.IsArchieved,
-                        include: q => q.Include(q => q.PersonnelEquipmentAllocations.Where(q => q.DateReturned == null))
+                        include: q => q.Include(q => q.PersonnelEquipmentAllocations)
                                        .Include(q => q.Positions)
-                                       .Include(q => q.Tickets.Where(q => q.DateClosed == null)),
+                                       .Include(q => q.Tickets),
                         select: q => new ViewPersonnelSimplifiedViewModel
                         {
                             Id = q.Id,
                             Name = q.Name,
-                            ActiveTickets = q.Tickets.Count,
-                            AllocatedEquipments = q.PersonnelEquipmentAllocations.Count,
+                            ActiveTickets = q.Tickets.Count(q => q.DateClosed == null),
+                            AllocatedEquipments = q.PersonnelEquipmentAllocations.Count(q => q.DateReturned == null),
                             Positions = (q.Positions != null)
                                 ? string.Join(", ", q.Positions.Select(q => q.Name))
                                 : ""

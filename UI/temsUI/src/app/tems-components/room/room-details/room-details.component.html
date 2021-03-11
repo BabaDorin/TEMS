@@ -2,11 +2,9 @@
     <div class="card-body">
         <mat-tab-group [@.disabled]="true">
             <mat-tab label="General">
-                <ng-template matTabContent>
-                    <app-room-details-general [roomId]="roomId">
+                    <app-room-details-general [room]="room">
                         Loading...
                     </app-room-details-general>
-                </ng-template>
             </mat-tab>
             <mat-tab label="Logs">
                 <ng-template matTabContent>
@@ -24,7 +22,7 @@
             </mat-tab>
             <mat-tab label="Allocations">
                 <ng-template matTabContent>
-                    <app-room-details-allocations [room]="roomSimpl">
+                    <app-room-details-allocations [room]="roomSimplified">
                         Loading...
                     </app-room-details-allocations>
                 </ng-template>

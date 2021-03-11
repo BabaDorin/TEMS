@@ -50,7 +50,6 @@ namespace temsAPI.Data.Entities.EquipmentEntities
         public virtual ICollection<Log> Logs { get; set; } = new List<Log>();
         public virtual ICollection<Ticket> Tickets { get; set; } = new List<Ticket>();
         public virtual ICollection<Equipment> Children { get; set; } = new List<Equipment>();
-        public virtual ICollection<RoomEquipmentAllocation> RoomEquipmentAllocations { get; set; } = new List<RoomEquipmentAllocation>();
-        public virtual ICollection<PersonnelEquipmentAllocation> PersonnelEquipmentAllocations { get; set; } = new List<PersonnelEquipmentAllocation>();
+        public virtual ICollection<EquipmentAllocation> EquipmentAllocations { get; set; } = new List<EquipmentAllocation>();
     }
 }

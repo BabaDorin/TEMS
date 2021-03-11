@@ -8,23 +8,23 @@ using temsAPI.Data.Entities.EquipmentEntities;
 
 namespace temsAPI.Data.Entities.OtherEntities
 {
-    public class PersonnelEquipmentAllocation
-    {
-        [Key]
-        public string Id { get; set; }
+//    public class PersonnelEquipmentAllocation
+//    {
+//        [Key]
+//        public string Id { get; set; }
 
-        [ForeignKey("EquipmentID")]
-        public Equipment Equipment { get; set; }
-        public string EquipmentID { get; set; }
+//        [ForeignKey("EquipmentID")]
+//        public Equipment Equipment { get; set; }
+//        public string EquipmentID { get; set; }
 
-        [ForeignKey("PersonnelID")]
-        public Personnel Personnel { get; set; }
-        public string PersonnelID { get; set; }
+//        [ForeignKey("PersonnelID")]
+//        public Personnel Personnel { get; set; }
+//        public string PersonnelID { get; set; }
 
-        public DateTime DateAllocated { get; set; }
-#nullable enable
-        public DateTime? DateReturned { get; set; }
-#nullable disable
+//        public DateTime DateAllocated { get; set; }
+//#nullable enable
+//        public DateTime? DateReturned { get; set; }
+//#nullable disable
 
-    }
+//    }
 }

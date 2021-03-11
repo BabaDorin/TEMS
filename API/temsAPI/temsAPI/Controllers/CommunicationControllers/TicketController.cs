@@ -44,7 +44,7 @@ namespace temsAPI.Controllers.CommunicationControllers
             {
                 // Invalid IdentityType
                 if ((new List<string> { "any", "equipment", "room", "personnel" }).IndexOf(entityType) == -1)
-                    return ReturnResponse("Invalid identity type.", ResponseStatus.Fail);
+                    return ReturnResponse("Invalid type or id provided", ResponseStatus.Fail);
 
                 // No identityId Provided
                 if (String.IsNullOrEmpty(entityId.Trim()))
@@ -68,12 +68,21 @@ namespace temsAPI.Controllers.CommunicationControllers
                 switch (entityType)
                 {
                     case "equipment":
+                        if (!await _unitOfWork.Equipments.isExists(q => q.Id == entityId))
+                            return ReturnResponse("Invalid type or id provided", ResponseStatus.Fail);
+
                         expression2 = q =>  q.Equipments.Any(q => q.Id == entityId);
                         break;
                     case "room":
+                        if (!await _unitOfWork.Rooms.isExists(q => q.Id == entityId))
+                            return ReturnResponse("Invalid type or id provided", ResponseStatus.Fail);
+
                         expression2 = q => q.Rooms.Any(q => q.Id == entityId);
                         break;
                     case "personnel":
+                        if (!await _unitOfWork.Personnel.isExists(q => q.Id == entityId))
+                            return ReturnResponse("Invalid type or id provided", ResponseStatus.Fail);
+
                         expression2 = q => q.Personnel.Any(q => q.Id == entityId);
                         break;
                 }

@@ -16,19 +16,23 @@ export class AllocationService extends TEMSService{
     super();
   }
 
-  getEquipmentAllocations(equipmentId: string): Observable<any>{
+  getEntityAllocations(entityType: string, entityId: string): Observable<any>{
     return this.http.get(
-      API_ALL_URL + '/getSimplifiedOfEquipment/' + equipmentId,
+      API_ALL_URL + '/getofentity/' + entityType + '/' + entityId,
       this.httpOptions
     );
   }
 
+  getEquipmentAllocations(equipmentId: string): Observable<any>{
+    return this.getEntityAllocations('equipment', equipmentId);
+  }
+
   getEquipmentAllocationsToRoom(roomId: string){
-    // return this.getEquipmentAllocations('1'); // testing purposes!
+    return this.getEntityAllocations('room', roomId);
   }
 
   getEquipmentAllocationsToPersonnel(personnelId: string){
-    // return this.getEquipmentAllocations('1'); // testing purposes!
+    return this.getEntityAllocations('personnel', personnelId);
   }
 
   createAllocation(addAllocation: AddAllocation): Observable<any>{

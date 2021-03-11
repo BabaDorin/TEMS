@@ -61,12 +61,12 @@ namespace temsAPI.Data
 
             // OnDeleteCascade RoomEquipmentAllocations
             modelBuilder.Entity<Equipment>()
-                .HasMany(e => e.RoomEquipmentAllocations)
+                .HasMany(e => e.EquipmentAllocations)
                 .WithOne(e => e.Equipment)
                 .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Room>()
-                .HasMany(e => e.RoomEquipmentAllocations)
+                .HasMany(e => e.EquipmentAllocations)
                 .WithOne(e => e.Room)
                 .OnDelete(DeleteBehavior.Cascade);
 
@@ -83,12 +83,12 @@ namespace temsAPI.Data
 
             // OnDeleteCascade PersonnelEquipmentAllocation
             modelBuilder.Entity<Equipment>()
-                .HasMany(e => e.PersonnelEquipmentAllocations)
+                .HasMany(e => e.EquipmentAllocations)
                 .WithOne(e => e.Equipment)
                 .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Personnel>()
-                .HasMany(e => e.PersonnelEquipmentAllocations)
+                .HasMany(e => e.EquipmentAllocations)
                 .WithOne(e => e.Personnel)
                 .OnDelete(DeleteBehavior.Cascade);
 
@@ -163,13 +163,11 @@ namespace temsAPI.Data
         public DbSet<Personnel> Personnel { get; set; }
         public DbSet<PersonnelPosition> PersonnelPositions { get; set; }
         public DbSet<Room> Rooms { get; set; }
-        public DbSet<PersonnelEquipmentAllocation> PersonnelEquipmentAllocations { get; set; }
+        public DbSet<EquipmentAllocation> EquipmentAllocations { get; set; }
         public DbSet<PersonnelRoomSupervisory> PersonnelRoomSupervisories { get; set; }
-        public DbSet<RoomEquipmentAllocation> RoomEquipmentAllocations { get; set; }
         public DbSet<Label> Labels { get; set; }
         public DbSet<Status> Statuses { get; set; }
         public DbSet<RoomLabel> RoomLabels { get; set; }
-
 
         // Key entities
         public DbSet<Key> Keys { get; set; }

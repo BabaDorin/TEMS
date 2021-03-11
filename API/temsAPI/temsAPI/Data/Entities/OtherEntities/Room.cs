@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 using temsAPI.Data.Entities.CommunicationEntities;
+using temsAPI.Data.Entities.EquipmentEntities;
 
 namespace temsAPI.Data.Entities.OtherEntities
 {
@@ -22,7 +23,7 @@ namespace temsAPI.Data.Entities.OtherEntities
 
         public bool IsArchieved { get; set; }
 
-        public virtual ICollection<RoomEquipmentAllocation> RoomEquipmentAllocations { get; set; } = new List<RoomEquipmentAllocation>();
+        public virtual ICollection<EquipmentAllocation> EquipmentAllocations { get; set; } = new List<EquipmentAllocation>();
         public virtual ICollection<PersonnelRoomSupervisory> PersonnelRoomSupervisories { get; set; } = new List<PersonnelRoomSupervisory>();
         public virtual ICollection<Log> Logs { get; set; } = new List<Log>();
         public virtual ICollection<Ticket> Tickets  { get; set; } = new List<Ticket>();

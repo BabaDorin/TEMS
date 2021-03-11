@@ -98,7 +98,7 @@ namespace temsAPI.Controllers.PersonnelControllers
                 List<ViewPersonnelSimplifiedViewModel> viewModel = (await _unitOfWork.Personnel
                     .FindAll<ViewPersonnelSimplifiedViewModel>(
                         where: q => !q.IsArchieved,
-                        include: q => q.Include(q => q.PersonnelEquipmentAllocations)
+                        include: q => q.Include(q => q.EquipmentAllocations)
                                        .Include(q => q.Positions)
                                        .Include(q => q.Tickets),
                         select: q => new ViewPersonnelSimplifiedViewModel
@@ -106,7 +106,7 @@ namespace temsAPI.Controllers.PersonnelControllers
                             Id = q.Id,
                             Name = q.Name,
                             ActiveTickets = q.Tickets.Count(q => q.DateClosed == null),
-                            AllocatedEquipments = q.PersonnelEquipmentAllocations.Count(q => q.DateReturned == null),
+                            AllocatedEquipments = q.EquipmentAllocations.Count(q => q.DateReturned == null),
                             Positions = (q.Positions != null)
                                 ? string.Join(", ", q.Positions.Select(q => q.Name))
                                 : ""
@@ -165,7 +165,7 @@ namespace temsAPI.Controllers.PersonnelControllers
                         include: q => q.Include(q => q.Logs)
                                        .Include(q => q.Tickets)
                                        .Include(q => q.Positions)
-                                       .Include(q => q.PersonnelEquipmentAllocations)
+                                       .Include(q => q.EquipmentAllocations)
                                        .Include(q => q.PersonnelRoomSupervisories).ThenInclude(q => q.Room),
                         select: q => new ViewPersonnelViewModel
                         {
@@ -174,7 +174,7 @@ namespace temsAPI.Controllers.PersonnelControllers
                             Email = q.Email,
                             PhoneNumber = q.PhoneNumber,
                             ActiveTickets = q.Tickets.Count(q => q.DateClosed == null),
-                            AllocatedEquipments = q.PersonnelEquipmentAllocations.Count(q => q.DateReturned == null),
+                            AllocatedEquipments = q.EquipmentAllocations.Count(q => q.DateReturned == null),
                             Positions = q.Positions.Select(q => new Option
                             {
                                 Value = q.Id,

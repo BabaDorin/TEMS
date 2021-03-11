@@ -36,10 +36,9 @@ namespace temsAPI.Repository
         private IGenericRepository<Privilege> _privileges;
         private IGenericRepository<RolePrivileges> _rolePrivileges;
         private IGenericRepository<Personnel> _personnel;
-        private IGenericRepository<PersonnelEquipmentAllocation> _personnelEquipmentAllocations;
+        private IGenericRepository<EquipmentAllocation> _equipmentAllocations;
         private IGenericRepository<PersonnelRoomSupervisory> _personnelRoomSupervisories;
         private IGenericRepository<Room> _rooms;
-        private IGenericRepository<RoomEquipmentAllocation> _roomEquipmentAllocations;
         private IGenericRepository<Status> _statuses;
         private IGenericRepository<Label> _labels;
         private IGenericRepository<RoomLabel> _roomLabels;
@@ -83,14 +82,12 @@ namespace temsAPI.Repository
             => _rolePrivileges ??= new GenericRepository<RolePrivileges>(_context);
         public IGenericRepository<Personnel> Personnel
             => _personnel ??= new GenericRepository<Personnel>(_context);
-        public IGenericRepository<PersonnelEquipmentAllocation> PersonnelEquipmentAllocations
-            => _personnelEquipmentAllocations ??= new GenericRepository<PersonnelEquipmentAllocation>(_context);
+        public IGenericRepository<EquipmentAllocation> EquipmentAllocations
+            => _equipmentAllocations ??= new GenericRepository<EquipmentAllocation>(_context);
         public IGenericRepository<PersonnelRoomSupervisory> PersonnelRoomSupervisories
             => _personnelRoomSupervisories ??= new GenericRepository<PersonnelRoomSupervisory>(_context);
         public IGenericRepository<Room> Rooms
             => _rooms ??= new GenericRepository<Room>(_context);
-        public IGenericRepository<RoomEquipmentAllocation> RoomEquipmentAllocations
-            => _roomEquipmentAllocations ??= new GenericRepository<RoomEquipmentAllocation>(_context);
         public IGenericRepository<Status> Statuses
             => _statuses ??= new GenericRepository<Status>(_context);
         public IGenericRepository<Label> Labels

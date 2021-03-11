@@ -103,13 +103,13 @@ namespace temsAPI.Controllers.RoomControllers
                 List<ViewRoomSimplifiedViewModel> viewModel = (await _unitOfWork.Rooms.FindAll<ViewRoomSimplifiedViewModel>(
                     where: q => !q.IsArchieved,
                     include: q => q.Include(q => q.Labels)
-                                   .Include(q => q.RoomEquipmentAllocations)
+                                   .Include(q => q.EquipmentAllocations)
                                    .Include(q => q.Tickets.Where(q => q.DateClosed == null)),
                     select: q => new ViewRoomSimplifiedViewModel
                     {
                         Id = q.Id,
                         Description = q.Description,
-                        AllocatedEquipments = q.RoomEquipmentAllocations.Count(q => q.DateReturned == null),
+                        AllocatedEquipments = q.EquipmentAllocations.Count(q => q.RoomID != null && q.DateReturned == null),
                         Identifier = q.Identifier,
                         Label = string.Join(", ", q.Labels.Select(q => q.Name)),
                         ActiveTickets = q.Tickets.Count

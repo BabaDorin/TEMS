@@ -200,9 +200,9 @@ namespace temsAPI.Controllers.EquipmentControllers
                         where: q => q.Id == id,
                         include: q => q.Include(q => q.EquipmentDefinition)
                         .ThenInclude(q => q.EquipmentType)
-                        .Include(q => q.PersonnelEquipmentAllocations.Where(q => q.DateReturned == null))
+                        .Include(q => q.EquipmentAllocations.Where(q => q.DateReturned == null))
                         .ThenInclude(q => q.Personnel)
-                        .Include(q => q.RoomEquipmentAllocations.Where(q => q.DateReturned == null))
+                        .Include(q => q.EquipmentAllocations.Where(q => q.DateReturned == null))
                         .ThenInclude(q => q.Room)
                         .Include(q => q.Children)
                         .ThenInclude(q => q.EquipmentDefinition)
@@ -223,20 +223,20 @@ namespace temsAPI.Controllers.EquipmentControllers
                     Type = model.EquipmentDefinition.EquipmentType.Name,
                     Personnnel = new Option
                     {
-                        Value = (model.PersonnelEquipmentAllocations.Count > 0)
-                                ? model.PersonnelEquipmentAllocations.FirstOrDefault().PersonnelID
+                        Value = (model.EquipmentAllocations.Count > 0)
+                                ? model.EquipmentAllocations.FirstOrDefault().PersonnelID
                                 : null,
-                        Label = (model.PersonnelEquipmentAllocations.Count > 0)
-                                ? model.PersonnelEquipmentAllocations.FirstOrDefault().Personnel.Name
+                        Label = (model.EquipmentAllocations.Count > 0)
+                                ? model.EquipmentAllocations.FirstOrDefault().Personnel.Name
                                 : "TEMS",
                     },
                     Room = new Option
                     {
-                        Value = (model.RoomEquipmentAllocations.Count > 0)
-                                ? model.RoomEquipmentAllocations.FirstOrDefault().RoomID
+                        Value = (model.EquipmentAllocations.Count > 0)
+                                ? model.EquipmentAllocations.FirstOrDefault().RoomID
                                 : null,
-                        Label = (model.RoomEquipmentAllocations.Count > 0)
-                                ? model.RoomEquipmentAllocations.FirstOrDefault().Room.Identifier
+                        Label = (model.EquipmentAllocations.Count > 0)
+                                ? model.EquipmentAllocations.FirstOrDefault().Room.Identifier
                                 : "Deposit",
                     },
                     Parent = (model.Parent == null)
@@ -284,23 +284,17 @@ namespace temsAPI.Controllers.EquipmentControllers
                 Definition = eq.EquipmentDefinition.Identifier,
             };
 
-            var lastRoomAllocation = (await _unitOfWork.RoomEquipmentAllocations
-                .Find<RoomEquipmentAllocation>(q => q.EquipmentID == eq.Id && q.DateReturned == null,
-                include: q => q.Include(q => q.Room))).FirstOrDefault();
+            var lastAllocation = (await _unitOfWork.EquipmentAllocations
+                .Find<EquipmentAllocation>(q => q.EquipmentID == eq.Id && q.DateReturned == null,
+                include: q => q.Include(q => q.Room).Include(q => q.Personnel))).FirstOrDefault();
 
-            // If lastRoomAllocation is null, we check if it has been allocated to a personnel.
-            // If the equipment has not been allocated to any personnel or rooms, it belongs to 'Deposit'.
-            if (lastRoomAllocation == null)
-            {
-                var lastPersonnelAllocation = (await _unitOfWork.PersonnelEquipmentAllocations
-                .Find<PersonnelEquipmentAllocation>(q => q.EquipmentID == eq.Id && q.DateReturned == null,
-                include: q => q.Include(q => q.Personnel))).FirstOrDefault();
-
-                if (lastPersonnelAllocation == null)
-                    viewEquipmentSimplified.Assignee = "Deposit";
-            }
+            if (lastAllocation == null)
+                viewEquipmentSimplified.Assignee = "Deposit";
             else
-                viewEquipmentSimplified.Assignee = "Room: " + lastRoomAllocation.Room.Identifier;
+                viewEquipmentSimplified.Assignee = 
+                    (lastAllocation.Room != null)
+                    ? "Room: " + lastAllocation.Room.Identifier
+                    : "Personnel: " + lastAllocation.Personnel.Name;
 
             viewEquipmentSimplified.TemsIdOrSerialNumber =
                 String.IsNullOrEmpty(viewEquipmentSimplified.TemsId)

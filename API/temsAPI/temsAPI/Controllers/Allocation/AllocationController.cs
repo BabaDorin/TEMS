@@ -7,8 +7,10 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
+using temsAPI.Data.Entities.EquipmentEntities;
 using temsAPI.Data.Entities.OtherEntities;
 using temsAPI.Data.Entities.UserEntities;
 using temsAPI.ViewModels;
@@ -55,7 +57,7 @@ namespace temsAPI.Controllers.Allocation
                     {
                         await ClosePreviousAllocations(equipment.Value);
 
-                        var model = new PersonnelEquipmentAllocation
+                        var model = new EquipmentAllocation
                         {
                             Id = Guid.NewGuid().ToString(),
                             DateAllocated = DateTime.Now,
@@ -63,10 +65,10 @@ namespace temsAPI.Controllers.Allocation
                             PersonnelID = viewModel.AllocateToId
                         };
 
-                        await _unitOfWork.PersonnelEquipmentAllocations.Create(model);
+                        await _unitOfWork.EquipmentAllocations.Create(model);
                         await _unitOfWork.Save();
 
-                        if (!await _unitOfWork.PersonnelEquipmentAllocations.isExists(q => q.Id == model.Id))
+                        if (!await _unitOfWork.EquipmentAllocations.isExists(q => q.Id == model.Id))
                             equipmentsWhereFailed.Add(equipment.Label);
                     }
                 }
@@ -81,7 +83,7 @@ namespace temsAPI.Controllers.Allocation
                     {
                         await ClosePreviousAllocations(equipment.Value);
 
-                        var model = new RoomEquipmentAllocation
+                        var model = new EquipmentAllocation
                         {
                             Id = Guid.NewGuid().ToString(),
                             DateAllocated = DateTime.Now,
@@ -89,10 +91,10 @@ namespace temsAPI.Controllers.Allocation
                             RoomID = viewModel.AllocateToId
                         };
 
-                        await _unitOfWork.RoomEquipmentAllocations.Create(model);
+                        await _unitOfWork.EquipmentAllocations.Create(model);
                         await _unitOfWork.Save();
 
-                        if (!await _unitOfWork.RoomEquipmentAllocations.isExists(q => q.Id == model.Id))
+                        if (!await _unitOfWork.EquipmentAllocations.isExists(q => q.Id == model.Id))
                             equipmentsWhereFailed.Add(equipment.Label);
                     }
                 }
@@ -112,24 +114,39 @@ namespace temsAPI.Controllers.Allocation
             }
         }
 
-        // :(
         public async Task ClosePreviousAllocations(string equipmentId)
         {
-            if(await _unitOfWork.RoomEquipmentAllocations
+            if(await _unitOfWork.EquipmentAllocations
                 .isExists(q => q.EquipmentID == equipmentId && q.DateReturned == null))
-                    (await _unitOfWork.RoomEquipmentAllocations
-                        .FindAll<RoomEquipmentAllocation>(q => q.EquipmentID == equipmentId))
+                    (await _unitOfWork.EquipmentAllocations
+                        .FindAll<EquipmentAllocation>(q => q.EquipmentID == equipmentId))
                         .ToList()
                         .ForEach(q => q.DateReturned = DateTime.Now);
 
-            if (await _unitOfWork.PersonnelEquipmentAllocations
-                .isExists(q => q.EquipmentID == equipmentId && q.DateReturned == null))
-                (await _unitOfWork.PersonnelEquipmentAllocations
-                    .FindAll<PersonnelEquipmentAllocation>(q => q.EquipmentID == equipmentId))
-                    .ToList()
-                    .ForEach(q => q.DateReturned = DateTime.Now);
-
             await _unitOfWork.Save();
         }
+
+        //[HttpGet("allocation/getofentity/{entityType}/{entityId}")]
+        //public async Task<JsonResult> GetOfEntity(string entityType, string entityId)
+        //{
+        //    try
+        //    {
+        //        // Invalid identityType
+        //        if ((new List<string>() { "any", "equipment", "room", "personnel" }).IndexOf(entityType) == -1)
+        //            return ReturnResponse("Invalid entitytype provided", ResponseStatus.Fail);
+
+        //        // No entity id provided
+        //        if (String.IsNullOrEmpty(entityId.Trim()))
+        //            return ReturnResponse($"You have to provide a valid {entityType} Id", ResponseStatus.Fail);
+
+        //        Expression<Func<Allocation, bool>> expression = q => q.DateClosed == null && !q.IsArchieved;
+
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Debug.WriteLine(ex);
+        //        return ReturnResponse("An error occured when fetching entity's allocations", ResponseStatus.Fail);
+        //    }
+        //}
     }
 }

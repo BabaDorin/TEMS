@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using temsAPI.Data.Entities.CommunicationEntities;
+using temsAPI.Data.Entities.EquipmentEntities;
 using temsAPI.Data.Entities.KeyEntities;
 
 namespace temsAPI.Data.Entities.OtherEntities
@@ -23,7 +24,7 @@ namespace temsAPI.Data.Entities.OtherEntities
 
         public bool IsArchieved { get; set; }
 
-        public virtual ICollection<PersonnelEquipmentAllocation> PersonnelEquipmentAllocations { get; set; } = new List<PersonnelEquipmentAllocation>();
+        public virtual ICollection<EquipmentAllocation> EquipmentAllocations { get; set; } = new List<EquipmentAllocation>();
         public virtual ICollection<PersonnelRoomSupervisory> PersonnelRoomSupervisories { get; set; } = new List<PersonnelRoomSupervisory>();
         public virtual ICollection<KeyAllocation> KeyAllocations { get; set; } = new List<KeyAllocation>();
         public virtual ICollection<Log> Logs { get; set; } = new List<Log>();

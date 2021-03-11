@@ -8,6 +8,7 @@ import { ViewRoomSimplified } from 'src/app/models/room/view-room-simplified.mod
 import { LogsService } from 'src/app/services/logs-service/logs.service';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { AddLogComponent } from '../communication/add-log/add-log.component';
+import { RoomsService } from 'src/app/services/rooms-service/rooms.service';
 
 @Component({
   selector: 'app-entity-logs-list',
@@ -23,7 +24,6 @@ export class EntityLogsListComponent extends TEMSComponent implements OnInit {
   logs: ViewLog[];
   @Input() addLogEnabled: boolean = true;
 
-
   constructor(
     private logsService: LogsService,
     public dialog: MatDialog
@@ -32,11 +32,6 @@ export class EntityLogsListComponent extends TEMSComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // if(this.equipment == undefined && this.room == undefined && this.personnel == undefined){
-    //   console.warn('EntityLogsListComponent requires an entity in order to display logs');
-    //   return;
-    // }
-    
     if(this.equipment)
       this.subscriptions.push(this.logsService.getLogsByEquipmentId(this.equipment.value)
         .subscribe(result => {
@@ -44,15 +39,26 @@ export class EntityLogsListComponent extends TEMSComponent implements OnInit {
           this.logs = result;
         }))
 
-        // Uncomment when service is done
-    // if(this.room)
-    //   this.logs = this.logsService.getLogsByRoomId(this.room.value);
+    if(this.room)
+      this.subscriptions.push(this.logsService.getLogsByRoomId(this.room.value)
+        .subscribe(result => {
+          console.log(result);
+          this.logs = result;
+        }))
 
-    // if(this.personnel)
-    //   this.logs = this.logsService.getLogsByPersonnelId(this.personnel.value);
-    
-    // if(this.logs == undefined)
-    //   this.logs = this.logsService.getLogs();
+    if(this.personnel)
+      this.subscriptions.push(this.logsService.getLogsByPersonnelId(this.personnel.value)
+          .subscribe(result => {
+            console.log(result);
+            this.logs = result;
+          }))
+
+    if(this.equipment == undefined && this.room == undefined && this.personnel == undefined)
+      this.subscriptions.push(this.logsService.getLogs()
+        .subscribe(result => {
+          console.log(result);
+          this.logs = result;
+        }));
   }
 
   private addLog(){

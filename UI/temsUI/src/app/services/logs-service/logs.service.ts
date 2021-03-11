@@ -13,40 +13,31 @@ export class LogsService extends TEMSService {
 
   constructor(
     private http: HttpClient
-  ) { 
+  ) {
     super();
   }
 
-  getLogsByEquipmentId(
-    equipmentId: string, 
-    includeArchieved?: boolean,
-    onlyArchieved?: boolean): Observable<any>{
-      
-      if(includeArchieved == undefined) includeArchieved = false;
-      if(onlyArchieved == undefined) onlyArchieved = false;
-      
-      return this.http.get(
-        API_LOG_URL + '/equipment/' + equipmentId + '/' + includeArchieved + '/' + onlyArchieved,
-        this.httpOptions
-        );
+  getEntityLogs(entityType: string, entityId: string): Observable<any>{
+    return this.http.get(
+      API_LOG_URL + '/getentitylogs/' + entityType + '/' + entityId,
+      this.httpOptions
+    );
   }
 
-  getLogsByRoomId(roomId: string){
-    // return this.getLogsByEquipmentId('1'); // testing purposes
+  getLogsByEquipmentId(equipmentId: string): Observable<any>{
+    return this.getEntityLogs('equipment', equipmentId);
   }
 
-  getLogsByPersonnelId(personnelId: string){
-    // return this.getLogsByEquipmentId('1'); // testing purposes
+  getLogsByRoomId(roomId: string): Observable<any>{
+    return this.getEntityLogs('room', roomId);
   }
 
-  getLogs(){
-    return [
-      new ViewLog(),
-      new ViewLog(),
-      new ViewLog(),
-      new ViewLog(),
-      new ViewLog(),
-    ]
+  getLogsByPersonnelId(personnelId: string): Observable<any>{
+    return this.getEntityLogs('personnel', personnelId);
+  }
+
+  getLogs(): Observable<any>{
+    return this.getEntityLogs('any', 'any');
   }
 
   getLogTypes(): Observable<any>{

@@ -1,13 +1,16 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Any;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO.Pipes;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Security.Permissions;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.CommunicationEntities;
@@ -90,7 +93,7 @@ namespace temsAPI.Controllers.CommunicationControllers
             {
                 // Invalid AddresseesType
                 List<string> validAddresseesTypes = new List<string> { "equipment", "room", "personnel" };
-                if(validAddresseesTypes.IndexOf(viewModel.AddresseesType) == -1)
+                if (validAddresseesTypes.IndexOf(viewModel.AddresseesType) == -1)
                     return ReturnResponse("Please, provide a valid Addressee Type", ResponseStatus.Fail);
 
                 // No Addressees provided or the provided ones are invalid
@@ -101,7 +104,7 @@ namespace temsAPI.Controllers.CommunicationControllers
                 {
                     case "equipment":
                         foreach (Option option in viewModel.Addressees)
-                            if(!await _unitOfWork.Equipments.isExists(eq => eq.Id == option.Value))
+                            if (!await _unitOfWork.Equipments.isExists(eq => eq.Id == option.Value))
                                 return ReturnResponse("One or more addressee are invalid.", ResponseStatus.Fail);
                         break;
 
@@ -122,7 +125,7 @@ namespace temsAPI.Controllers.CommunicationControllers
                 if (String.IsNullOrEmpty(viewModel.LogTypeId))
                     return ReturnResponse("Please, Provide a log type for the log", ResponseStatus.Fail);
 
-                if(!await _unitOfWork.LogTypes.isExists(q => q.Id == viewModel.LogTypeId))
+                if (!await _unitOfWork.LogTypes.isExists(q => q.Id == viewModel.LogTypeId))
                     return ReturnResponse("The provided Log type is invalid", ResponseStatus.Fail);
 
                 // If we got so far, It might be valid
@@ -184,6 +187,85 @@ namespace temsAPI.Controllers.CommunicationControllers
             catch (Exception)
             {
                 return ReturnResponse("An error occured when fetching log types", ResponseStatus.Fail);
+            }
+        }
+
+        [HttpGet("/log/getentitylogs/{entityType}/{entityId}")]
+        public async Task<JsonResult> GetEntityLogs(string entityType, string entityId)
+        {
+            try
+            {
+                // Invalid entitytype
+                if ((new List<string>() { "any", "equipment", "personnel", "room" }).IndexOf(entityType) == -1)
+                    return ReturnResponse(
+                        $"{entityType} is not a valid tems type, valid: any, equipment, personnel, room",
+                        ResponseStatus.Fail);
+
+                Expression<Func<Log, bool>> expression = qu => !qu.IsArchieved;
+
+                switch (entityType)
+                {
+                    case "equipment": 
+                        expression = qu => !qu.IsArchieved && qu.EquipmentID == entityId;
+                        break;
+                    case "room":
+                        expression = qu => !qu.IsArchieved && qu.RoomID == entityId;
+                        break;
+                    case "personnel":
+                        expression = qu => !qu.IsArchieved && qu.PersonnelID == entityId;
+                        break;
+                }
+
+                List<ViewLogViewModel> viewModel = (await _unitOfWork.Logs
+                    .FindAll<ViewLogViewModel>(
+                        where: expression,
+                        include: q => q.Include(q => q.Equipment)
+                                       .Include(q => q.Personnel)
+                                       .Include(q => q.Room)
+                                       .Include(q => q.LogType),
+                        select: q => new ViewLogViewModel
+                        {
+                            Id = q.Id,
+                            DateCreated = q.DateCreated,
+                            Text = q.Text,
+                            LogType = (q.LogType == null)
+                                ? null
+                                : new Option
+                                {
+                                    Value = q.LogType.Id,
+                                    Label = q.LogType.Type
+                                },
+                            Equipment = (q.Equipment == null)
+                                ? null
+                                : new Option
+                                {
+                                    Value = q.Equipment.Id,
+                                    Label = q.Equipment.TemsIdOrSerialNumber
+                                },
+                            Room = (q.Room == null)
+                                ? null
+                                : new Option
+                                {
+                                    Value = q.Room.Id,
+                                    Label = q.Room.Identifier
+                                },
+                            Personnel = (q.Personnel == null)
+                                ? null
+                                : new Option
+                                {
+                                    Value = q.Personnel.Id,
+                                    Label = q.Personnel.Name
+                                },
+                            IsImportant = q.IsImportant
+                        }
+                    )).ToList();
+
+                return Json(viewModel);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured when fetching entity logs", ResponseStatus.Fail);
             }
         }
     }

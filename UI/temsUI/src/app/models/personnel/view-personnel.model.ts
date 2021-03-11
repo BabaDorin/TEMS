@@ -1,9 +1,13 @@
+import { IOption } from './../option.model';
 interface IViewPersonnel {
     id: string,
     name: string,
     phoneNumber?: string,
-    email?: string;
-    position?: string;
+    email?: string,
+    positions?: IOption,
+    roomSupervisories?: IOption[],
+    activeTickets?: number,
+    allocatedEquipments?: number,
     // imagePath: string -- TO BE IMPLEMENTED LATER
 }
 
@@ -12,13 +16,8 @@ export class ViewPersonnel implements IViewPersonnel{
     name: string;
     phoneNumber?: string;
     email?: string;
-    position?: string;
-
-    constructor(){
-        this.id = '1',
-        this.name = 'Baba Doreean';
-        this.phoneNumber = '+373454554';
-        this.email = 'babadorean@gmail.com.md.ru.it';
-        this.position = 'tehnologic';
-    }
+    positions?: IOption;
+    roomSupervisories?: IOption[];
+    activeTickets?: number;
+    allocatedEquipments?: number;
 }

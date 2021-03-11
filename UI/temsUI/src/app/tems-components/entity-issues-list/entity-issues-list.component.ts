@@ -50,7 +50,7 @@ export class EntityIssuesListComponent extends TEMSComponent implements OnInit {
       }))
 
     if(this.personnel)
-      this.subscriptions.push(this.issuesService.getIssuesOfEquipment(
+      this.subscriptions.push(this.issuesService.getIssuesOfPersonnel(
         this.personnel.id, this.includingClosed, this.onlyClosed
       ).subscribe(result => {
         console.log(result);

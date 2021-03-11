@@ -18,7 +18,7 @@ import { AddIssue } from 'src/app/models/communication/issues/add-issue.model';
 export class CreateIssueComponent extends TEMSComponent implements OnInit {
 
   frequentProblems = ['Echipament Defect', 'Incarcare Cartus', 'Interventia unui tehnician'];
-  isRegistered: boolean; // user, logged in
+  isRegistered: boolean = false;
   
   private formlyData = {
     isVisible: false,
@@ -75,15 +75,13 @@ export class CreateIssueComponent extends TEMSComponent implements OnInit {
         console.log(result);
         this.personnelAutocompleteOptions = result;
       }));
-    
-    this.isRegistered = true;
   }
 
   onSubmit(model){
     model.issue.personnel = this.personnel.options as IOption[];
     model.issue.rooms = this.rooms.options as IOption[];
     model.issue.equipments = this.equipment.options as IOption[];
-    model.issue.assignees = this.assignees.options as IOption[];
+    model.issue.assignees = (this.isRegistered) ? this.assignees.options : [];
 
     let addIssue = model.issue as AddIssue;
     

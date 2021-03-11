@@ -17,9 +17,6 @@ export class RoomDetailsLogsComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    console.log('room from room-details-logs')
-    console.log(this.room);
-
     if(this.room != undefined)
       this.roomOption = {
         value: this.room.id,

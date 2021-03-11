@@ -37,8 +37,11 @@ export class PersonnelService extends TEMSService {
     );
   }
 
-  getPersonnelById(personnelId: string): ViewPersonnel{
-    return new ViewPersonnel();
+  getPersonnelById(personnelId: string): Observable<any> {
+    return this.http.get(
+      API_PERS_URL + '/getbyid/' + personnelId,
+      this.httpOptions
+    );
   }
 
   createPersonnel(addPersonnel: AddPersonnel): Observable<any>{
@@ -54,5 +57,12 @@ export class PersonnelService extends TEMSService {
       API_PERS_URL + '/getpositions',
       this.httpOptions
     );
+  }
+
+  getPersonnelSimplifiedFromPersonnel(personnel: ViewPersonnel): ViewPersonnelSimplified{
+    return {
+      id: personnel.id,
+      name: personnel.name
+    }
   }
 }

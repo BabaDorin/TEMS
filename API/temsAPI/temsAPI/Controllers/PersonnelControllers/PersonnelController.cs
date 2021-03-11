@@ -145,5 +145,57 @@ namespace temsAPI.Controllers.PersonnelControllers
                 return ReturnResponse("An error occured when fetching autocomplete options", ResponseStatus.Fail);
             }
         }
+
+        [HttpGet("personnel/getbyid/{id}")]
+        public async Task<JsonResult> GetById(string id)
+        {
+            try
+            {
+                // Invalid id
+                if (String.IsNullOrEmpty(id = id.Trim()))
+                    return ReturnResponse("Please, provide a valid Id", ResponseStatus.Fail);
+
+                // No match
+                if (!await _unitOfWork.Personnel.isExists(q => q.Id == id))
+                    return ReturnResponse("No personnel found", ResponseStatus.Fail);
+
+                ViewPersonnelViewModel viewModel = (await _unitOfWork.Personnel
+                    .Find<ViewPersonnelViewModel>(
+                        where: q => q.Id == id,
+                        include: q => q.Include(q => q.Logs)
+                                       .Include(q => q.Tickets)
+                                       .Include(q => q.Positions)
+                                       .Include(q => q.PersonnelEquipmentAllocations)
+                                       .Include(q => q.PersonnelRoomSupervisories).ThenInclude(q => q.Room),
+                        select: q => new ViewPersonnelViewModel
+                        {
+                            Id = q.Id,
+                            Name = q.Name,
+                            Email = q.Email,
+                            PhoneNumber = q.PhoneNumber,
+                            ActiveTickets = q.Tickets.Count(q => q.DateClosed == null),
+                            AllocatedEquipments = q.PersonnelEquipmentAllocations.Count(q => q.DateReturned == null),
+                            Positions = q.Positions.Select(q => new Option
+                            {
+                                Value = q.Id,
+                                Label = q.Name
+                            }).ToList(),
+                            RoomSupervisories = q.PersonnelRoomSupervisories.Select(q => new Option
+                            {
+                                Value = q.RoomID,
+                                Label = q.Room.Identifier
+                            }).ToList(),
+                        }
+                    )).FirstOrDefault();
+
+                return Json(viewModel);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured when fetching personnel information", ResponseStatus.Fail);
+                throw;
+            }
+        }
     }
 }

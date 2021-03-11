@@ -1,31 +1,40 @@
+import { TEMSComponent } from './../../../tems/tems.component';
 import { PersonnelService } from './../../../services/personnel-service/personnel.service';
 import { ViewPersonnelSimplified } from './../../../models/personnel/view-personnel-simplified.model';
 import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { extend } from 'chartist';
+import { ViewPersonnel } from 'src/app/models/personnel/view-personnel.model';
 
 @Component({
   selector: 'app-personnel-details',
   templateUrl: './personnel-details.component.html',
   styleUrls: ['./personnel-details.component.scss']
 })
-export class PersonnelDetailsComponent implements OnInit {
+export class PersonnelDetailsComponent extends TEMSComponent implements OnInit {
 
   @Input() personnelId;
   edit: boolean = false;
   personnelSimplified: ViewPersonnelSimplified;
+  personnel: ViewPersonnel;
 
   constructor(
     private activatedroute: ActivatedRoute,
     private personnelService: PersonnelService
   ) { 
-
+    super();
   }
 
   ngOnInit(): void {
     if(this.personnelId == undefined)
       this.personnelId = this.activatedroute.snapshot.paramMap.get("id");
-    this.edit=false;
+      
+    this.subscriptions.push(this.personnelService.getPersonnelById(this.personnelId)
+      .subscribe(result => {
+        console.log(result)
+        this.personnel = result;
 
-    this.personnelSimplified = this.personnelService.getPersonnelSimplifiedById(this.personnelId);
+        this.personnelSimplified = this.personnelService.getPersonnelSimplifiedFromPersonnel(this.personnel);
+      }));
   }
 }

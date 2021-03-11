@@ -23,12 +23,12 @@ export class RoomDetailsGeneralComponent implements OnInit, OnChanges{
 
   ngOnChanges(){
     if(this.room != undefined)
-    this.roomProperties = [
-      { displayName: 'Identifier', value: this.room.identifier },
-      { displayName: 'Description', value: this.room.description },
-      { displayName: 'Floor', value: this.room.floor },
-      { displayName: 'Active issues', value: this.room.activeTickets },
-      { displayName: 'Labels', value: "display them in a fancy way" },
-    ]
+      this.roomProperties = [
+        { displayName: 'Identifier', value: this.room.identifier },
+        { displayName: 'Description', value: this.room.description },
+        { displayName: 'Floor', value: this.room.floor },
+        { displayName: 'Active issues', value: this.room.activeTickets },
+        { displayName: 'Labels', value: "display them in a fancy way" },
+      ]
   }
 }

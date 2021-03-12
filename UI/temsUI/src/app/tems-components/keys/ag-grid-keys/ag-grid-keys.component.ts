@@ -31,7 +31,7 @@ export class AgGridKeysComponent extends TEMSComponent implements OnInit {
       { field: 'identifier', sortable: true, filter: true, checkboxSelection: true, headerCheckboxSelection: true},
       { field: 'numberOfCopies', sortable: true, filter: true },
       { field: 'allocatedTo', sortable: true, filter: true },
-      { field: 'TimePassed', sortable: true, filter: true },
+      { field: 'timePassed', sortable: true, filter: true },
     ];
 
     this.defaultColDef = {
@@ -63,5 +63,9 @@ export class AgGridKeysComponent extends TEMSComponent implements OnInit {
     var displayedColumns = params.columnApi.getAllDisplayedColumns();
     var thisIsFirstColumn = displayedColumns[0] === params.column;
     return thisIsFirstColumn;
+  }
+
+  getSelectedNodes(){
+    return this.gridApi.getSelectedNodes().map(q => q.data);
   }
 }

@@ -9,6 +9,7 @@ import { KeysRoutingModule } from './keys-routing.module';
 import { ViewKeysComponent } from 'src/app/tems-components/keys/view-keys/view-keys.component';
 import { AgGridKeysComponent } from 'src/app/tems-components/keys/ag-grid-keys/ag-grid-keys.component';
 import { KeysAllocationsListComponent } from 'src/app/tems-components/keys/keys-allocations-list/keys-allocations-list.component';
+import { AddKeyComponent } from 'src/app/tems-components/keys/add-key/add-key.component';
 
 
 @NgModule({
@@ -18,6 +19,7 @@ import { KeysAllocationsListComponent } from 'src/app/tems-components/keys/keys-
     ViewKeysComponent,
     AgGridKeysComponent,
     KeysAllocationsListComponent,
+    AddKeyComponent
   ],
   imports: [
     CommonModule,

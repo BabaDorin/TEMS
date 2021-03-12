@@ -1,4 +1,4 @@
-import { IOption } from './../../models/option.model';
+import { IOption } from 'src/app/models/option.model';
 import { LogsService } from 'src/app/services/logs-service/logs.service';
 import { Property } from 'src/app/models/equipment/view-property.model';
 import { AddEquipment } from './../../models/equipment/add-equipment.model';
@@ -297,6 +297,54 @@ export class FormlyParserService {
               templateOptions: {
                 label: 'Required',
               },
+            },
+          ]
+        }
+      ];
+
+    return fields;
+  }
+
+  parseAddKey(roomOptions: IOption[]){
+    let fields: FormlyFieldConfig[] =
+      [
+        {
+          key: 'key',
+          fieldGroup: [
+            {
+              key: 'identifier',
+              type: 'input-tooltip',
+              templateOptions: {
+                required: true,
+                label: 'Indetifier',
+                description: 'A short name for this key, like "214"'
+              }
+            },
+            {
+              key: 'numberOfCopies',
+              type: 'input-tooltip',
+              templateOptions: {
+                type: 'number',
+                min: 0,
+                label: 'Number of copies',
+                description: "Number of available options"
+              },
+            },
+            {
+              key: 'roomId',
+              type: 'select',
+              templateOptions: {
+                required: true,
+                label: 'Room',
+                options: roomOptions
+              }
+            },
+            {
+              key: 'description',
+              type: 'input',
+              templateOptions: {
+                label: 'Description',
+              }
             },
           ]
         }

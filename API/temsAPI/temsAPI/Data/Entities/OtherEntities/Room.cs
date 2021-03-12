@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using temsAPI.Data.Entities.CommunicationEntities;
 using temsAPI.Data.Entities.EquipmentEntities;
+using temsAPI.Data.Entities.KeyEntities;
 
 namespace temsAPI.Data.Entities.OtherEntities
 {
@@ -28,5 +29,6 @@ namespace temsAPI.Data.Entities.OtherEntities
         public virtual ICollection<Log> Logs { get; set; } = new List<Log>();
         public virtual ICollection<Ticket> Tickets  { get; set; } = new List<Ticket>();
         public virtual ICollection<RoomLabel> Labels { get; set; } = new List<RoomLabel>();
+        public virtual ICollection<Key> Keys { get; set; } = new List<Key>();
     }
 }

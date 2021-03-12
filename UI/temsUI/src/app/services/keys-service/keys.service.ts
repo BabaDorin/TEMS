@@ -1,3 +1,4 @@
+import { AddKey } from './../../models/key/add-key.model';
 import { API_KEY_URL } from './../../models/backend.config';
 import { HttpClient } from '@angular/common/http';
 import { TEMSService } from './../tems-service/tems.service';
@@ -23,6 +24,14 @@ export class KeysService extends TEMSService {
       API_KEY_URL + '/get',
       this.httpOptions
     )
+  }
+
+  createKey(addKey: AddKey): Observable<any>{
+    return this.http.post(
+      API_KEY_URL + '/create',
+      JSON.stringify(addKey),
+      this.httpOptions
+    );
   }
 
   getAllocationsOfKey(keyId: string): ViewKeyAllocation[]{

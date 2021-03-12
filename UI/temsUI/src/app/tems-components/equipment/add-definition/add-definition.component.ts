@@ -1,6 +1,4 @@
 import { EquipmentType } from './../../../models/equipment/view-type.model';
-import { map } from 'rxjs/operators';
-import { Subscription } from 'rxjs';
 import { IOption } from './../../../models/option.model';
 import { AddDefinition, Definition } from './../../../models/equipment/add-definition.model';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';

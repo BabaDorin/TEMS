@@ -40,11 +40,19 @@ export class EntityAllocationsListComponent extends TEMSComponent implements OnI
           this.allocations = result;
         }));
 
-    // if(this.room)
-      // this.allocations = this.allocationService.getEquipmentAllocationsToRoom(this.room.id);
+    if(this.room)
+      this.subscriptions.push(this.allocationService.getEquipmentAllocationsToRoom(this.room.id)
+        .subscribe(result => {
+          console.log(result);
+          this.allocations = result;
+        }));
 
-    // if(this.personnel)
-      // this.allocations = this.allocationService.getEquipmentAllocationsToPersonnel(this.personnel.id);
+    if(this.personnel)
+      this.subscriptions.push(this.allocationService.getEquipmentAllocationsToPersonnel(this.personnel.id)
+        .subscribe(result => {
+          console.log(result);
+          this.allocations = result;
+        }));
   }
 
   addAllocation(): void {

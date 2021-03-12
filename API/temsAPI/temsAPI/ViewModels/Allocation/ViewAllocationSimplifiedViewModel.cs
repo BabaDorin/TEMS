@@ -8,13 +8,11 @@ namespace temsAPI.ViewModels.Allocation
 {
     public class ViewAllocationSimplifiedViewModel
     {
-        //    id: string;
-        //equipment: ViewEquipmentSimplified;
-        //room?: ViewRoomSimplified;
-        //personnel?: ViewPersonnelSimplified;
-        //dateAllocated: Date;
-        //dateReturned?: Date;
-        //public string Id { get; set; }
-        //public ViewEquipmentSimplifiedViewModel Equipment { get; set; }
+        public string Id { get; set; }
+        public Option Equipment { get; set; }
+        public Option Personnel { get; set; }
+        public Option Room { get; set; }
+        public DateTime DateAllocated { get; set; }
+        public DateTime? DateReturned { get; set; }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.OpenApi.Any;
 using System;
@@ -126,27 +127,81 @@ namespace temsAPI.Controllers.Allocation
             await _unitOfWork.Save();
         }
 
-        //[HttpGet("allocation/getofentity/{entityType}/{entityId}")]
-        //public async Task<JsonResult> GetOfEntity(string entityType, string entityId)
-        //{
-        //    try
-        //    {
-        //        // Invalid identityType
-        //        if ((new List<string>() { "any", "equipment", "room", "personnel" }).IndexOf(entityType) == -1)
-        //            return ReturnResponse("Invalid entitytype provided", ResponseStatus.Fail);
+        [HttpGet("allocation/getofentity/{entityType}/{entityId}")]
+        public async Task<JsonResult> GetOfEntity(string entityType, string entityId)
+        {
+            try
+            {
+                // Invalid identityType
+                if ((new List<string>() { "any", "equipment", "room", "personnel" }).IndexOf(entityType) == -1)
+                    return ReturnResponse("Invalid entity type or id provided", ResponseStatus.Fail);
 
-        //        // No entity id provided
-        //        if (String.IsNullOrEmpty(entityId.Trim()))
-        //            return ReturnResponse($"You have to provide a valid {entityType} Id", ResponseStatus.Fail);
+                // No entity id provided
+                if (String.IsNullOrEmpty(entityId.Trim()))
+                    return ReturnResponse($"You have to provide a valid {entityType} Id", ResponseStatus.Fail);
 
-        //        Expression<Func<Allocation, bool>> expression = q => q.DateClosed == null && !q.IsArchieved;
+                Expression<Func<EquipmentAllocation, bool>> expression = null;
 
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Debug.WriteLine(ex);
-        //        return ReturnResponse("An error occured when fetching entity's allocations", ResponseStatus.Fail);
-        //    }
-        //}
+                switch (entityType)
+                {
+                    case "equipment":
+                        if (!await _unitOfWork.Equipments.isExists(q => q.Id == entityId))
+                            return ReturnResponse("Invalid entity type or id provided", ResponseStatus.Fail);
+
+                        expression = q => q.EquipmentID == entityId;
+                        break;
+
+                    case "room":
+                        if (!await _unitOfWork.Rooms.isExists(q => q.Id == entityId))
+                            return ReturnResponse("Invalid entity type or id provided", ResponseStatus.Fail);
+
+                        expression = q => q.RoomID == entityId;
+                        break;
+
+                    case "personnel":
+                        if (!await _unitOfWork.Personnel.isExists(q => q.Id == entityId))
+                            return ReturnResponse("Invalid entity type or id provided", ResponseStatus.Fail);
+
+                        expression = q => q.PersonnelID == entityId;
+                        break;
+                }
+
+                List<ViewAllocationSimplifiedViewModel> viewModel = (await _unitOfWork.EquipmentAllocations
+                    .FindAll<ViewAllocationSimplifiedViewModel>(
+                        where: expression,
+                        include: q => q.Include(q => q.Room)
+                                       .Include(q => q.Personnel)
+                                       .Include(q => q.Equipment).ThenInclude(q => q.EquipmentDefinition),
+                        select: q => new ViewAllocationSimplifiedViewModel
+                        {
+                            Id = q.Id,
+                            DateAllocated = q.DateAllocated,
+                            DateReturned = q.DateReturned,
+                            Equipment = new Option
+                            {
+                                Value = q.Equipment.Id,
+                                Label = q.Equipment.TemsIdOrSerialNumber,
+                                Additional = q.Equipment.EquipmentDefinition.Identifier
+                            },
+                            Personnel = new Option
+                            {
+                                Value = q.Personnel.Id,
+                                Label = q.Personnel.Name,
+                            },
+                            Room = new Option
+                            {
+                                Value = q.Room.Id,
+                                Label = q.Room.Identifier,
+                            },
+                        })).ToList();
+
+                return Json(viewModel);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured when fetching entity's allocations", ResponseStatus.Fail);
+            }
+        }
     }
 }

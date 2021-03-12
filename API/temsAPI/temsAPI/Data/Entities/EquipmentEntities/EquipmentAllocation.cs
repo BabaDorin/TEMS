@@ -17,6 +17,7 @@ namespace temsAPI.Data.Entities.EquipmentEntities
         public Equipment Equipment { get; set; }
         public string EquipmentID { get; set; }
         public DateTime DateAllocated { get; set; }
+        public bool IsArchieved { get; set; }
 
 #nullable enable
         [ForeignKey("PersonnelID")]

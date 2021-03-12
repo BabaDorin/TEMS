@@ -200,10 +200,8 @@ namespace temsAPI.Controllers.EquipmentControllers
                         where: q => q.Id == id,
                         include: q => q.Include(q => q.EquipmentDefinition)
                         .ThenInclude(q => q.EquipmentType)
-                        .Include(q => q.EquipmentAllocations.Where(q => q.DateReturned == null))
-                        .ThenInclude(q => q.Personnel)
-                        .Include(q => q.EquipmentAllocations.Where(q => q.DateReturned == null))
-                        .ThenInclude(q => q.Room)
+                        .Include(q => q.EquipmentAllocations).ThenInclude(q => q.Room)
+                        .Include(q => q.EquipmentAllocations).ThenInclude(q => q.Personnel)
                         .Include(q => q.Children)
                         .ThenInclude(q => q.EquipmentDefinition)
                         .ThenInclude(q => q.EquipmentType)
@@ -212,6 +210,7 @@ namespace temsAPI.Controllers.EquipmentControllers
                         .ThenInclude(q => q.EquipmentDefinition)
                       )).FirstOrDefault();
 
+                
                 ViewEquipmentViewModel viewModel = new ViewEquipmentViewModel
                 {
                     Id = model.Id,
@@ -223,19 +222,19 @@ namespace temsAPI.Controllers.EquipmentControllers
                     Type = model.EquipmentDefinition.EquipmentType.Name,
                     Personnnel = new Option
                     {
-                        Value = (model.EquipmentAllocations.Count > 0)
+                        Value = (model.EquipmentAllocations.Count(q => q.DateReturned == null && q.PersonnelID != null) > 0)
                                 ? model.EquipmentAllocations.FirstOrDefault().PersonnelID
                                 : null,
-                        Label = (model.EquipmentAllocations.Count > 0)
+                        Label = (model.EquipmentAllocations.Count(q => q.DateReturned == null && q.PersonnelID != null) > 0)
                                 ? model.EquipmentAllocations.FirstOrDefault().Personnel.Name
                                 : "TEMS",
                     },
                     Room = new Option
                     {
-                        Value = (model.EquipmentAllocations.Count > 0)
+                        Value = (model.EquipmentAllocations.Count(q => q.DateReturned == null && q.RoomID != null) > 0)
                                 ? model.EquipmentAllocations.FirstOrDefault().RoomID
                                 : null,
-                        Label = (model.EquipmentAllocations.Count > 0)
+                        Label = (model.EquipmentAllocations.Count(q => q.DateReturned == null && q.RoomID != null) > 0)
                                 ? model.EquipmentAllocations.FirstOrDefault().Room.Identifier
                                 : "Deposit",
                     },

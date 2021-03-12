@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.KeyEntities;
@@ -51,7 +52,7 @@ namespace temsAPI.Controllers.KeyController
                                     Label = "--"
                                 },
                              TimePassed = (q.KeyAllocations.Count > 0) 
-                                ? (DateTime.Now - q.KeyAllocations.First().DateAllocated).TotalMinutes + " minutes ago"
+                                ? $"{(DateTime.Now - q.KeyAllocations.First().DateAllocated).TotalMinutes:f0} minutes ago"
                                 : "--"
                          }
                          )).ToList();
@@ -95,6 +96,69 @@ namespace temsAPI.Controllers.KeyController
             {
                 Debug.WriteLine(ex);
                 return ReturnResponse("An error occured when creating the key record.", ResponseStatus.Fail);
+            }
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> CreateAllocation([FromBody] AddKeyAllocation viewModel)
+        {
+            try
+            {
+                // No keys or personnel provided
+                if (viewModel.KeyIds.Count == 0 || String.IsNullOrEmpty(viewModel.PersonnelId))
+                    return ReturnResponse("At least one key and one personnel is needed in order to create an allocation", ResponseStatus.Fail);
+
+                // PersonnelId validity
+                if (!await _unitOfWork.Personnel.isExists(q => q.Id == viewModel.PersonnelId))
+                    return ReturnResponse("Invalid personnel provided", ResponseStatus.Fail);
+
+                // For each key, last allocation is closed and a new one is created
+                List<string> keysWhereFailed = new List<string>();
+                foreach (string keyId in viewModel.KeyIds)
+                {
+                    Key key = (await _unitOfWork.Keys
+                        .Find<Key>(
+                            where: q => q.Id == keyId,
+                            include: q => q.Include(q => q.KeyAllocations))
+                        ).FirstOrDefault();
+
+                    if (key == null)
+                    {
+                        keysWhereFailed.Add(keyId);
+                        continue;
+                    }
+
+                    // Close previous opened allocation
+                    key.KeyAllocations
+                        .Where(q => q.DateReturned == null)
+                        .ToList()
+                        .ForEach(q => q.DateReturned = DateTime.Now);
+
+                    // New allocation is created
+                    KeyAllocation allocation = new KeyAllocation
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        KeyID = keyId,
+                        PersonnelID = viewModel.PersonnelId,
+                        DateAllocated = DateTime.Now,
+                    };
+
+                    await _unitOfWork.KeyAllocations.Create(allocation);
+                    await _unitOfWork.Save();
+
+                    if (!await _unitOfWork.KeyAllocations.isExists(q => q.Id == allocation.Id))
+                        keysWhereFailed.Add(keyId);
+                }
+
+                if (keysWhereFailed.Count > 0)
+                    return ReturnResponse($"{keysWhereFailed.Count} keys could not be allocated", ResponseStatus.Fail);
+
+                return ReturnResponse("Success", ResponseStatus.Success);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured when creating the allocation", ResponseStatus.Fail);
             }
         }
     }

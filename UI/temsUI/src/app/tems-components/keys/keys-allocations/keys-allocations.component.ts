@@ -1,3 +1,4 @@
+import { AddKeyAllocation } from './../../../models/key/add-key-allocation.model';
 import { TEMSComponent } from './../../../tems/tems.component';
 import { PersonnelService } from './../../../services/personnel-service/personnel.service';
 import { KeysService } from 'src/app/services/keys-service/keys.service';
@@ -28,7 +29,7 @@ export class KeysAllocationsComponent extends TEMSComponent implements OnInit {
     private personnelService: PersonnelService
   ) { 
     super();
-  }
+  }7
 
   
   ngOnInit(): void {
@@ -53,53 +54,14 @@ export class KeysAllocationsComponent extends TEMSComponent implements OnInit {
       personnel: this.allocatedTo.options
     }
 
-    console.log(allocation);
+    let addKeyAllocation: AddKeyAllocation = {
+      keyIds: this.keysIdentifierChips.options.map(q => q.value),
+      personnelId: this.allocatedTo.options.map(q => q.value)[0],
+    }
+
+    this.subscriptions.push(this.keysService.createAllocation(addKeyAllocation)
+      .subscribe(result => {
+        console.log(result);
+      }));
   }
 }
-
-
-
-// private formlyData = {
-//   isVisible: false,
-//   form: new FormGroup({}),
-//   model: {} as any,
-//   fields: [] as FormlyFieldConfig[],
-// }
-// let fields: FormlyFieldConfig[] =
-//   [
-//     {
-//       key: 'issue',
-//       fieldGroup: [
-//         {
-//           key: 'problem',
-//           type: 'autocomplete',
-//           templateOptions: {
-//             required: true,
-//             label: 'What is the problem?',
-//             placeholder: 'Incarcare cartus...',
-//             filter: (term) => of(term ? this.filterAutocomplete(term, frequentProblems) : frequentProblems.slice()),
-//           },
-//         },
-//         {
-//           key: 'problemDescription',
-//           type: 'textarea',
-//           templateOptions: {
-//             label: 'Problem description - Helps a lot!',
-//           },
-//         },
-//         {
-//           key: 'status',
-//           type: 'radio',
-//           templateOptions: {
-//             label: 'Radio',
-//             required: true,
-//             options: [
-//               { value: 1, label: 'Urgent' },
-//               { value: 2, label: 'Mediu' },
-//               { value: 3, label: 'Pe viitor' },
-//             ],
-//           },
-//         }
-//       ]
-//     }
-//   ];

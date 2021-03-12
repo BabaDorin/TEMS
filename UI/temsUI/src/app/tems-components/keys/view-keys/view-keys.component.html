@@ -1,14 +1,25 @@
-<!-- <div class="card">
-    <div class="card-body">
-        <app-summary-rooms-analytics></app-summary-rooms-analytics>
-    </div>
-</div> -->
 <br>
 <div class="card">
     <div class="card-body">
-    <button class="btn btn-primay" (click)="allocateSelectedKeys()">Allocate selected keys</button>
-    <button class="btn btn-primay" (click)="addKey()">+ Add new</button>
-    <app-ag-grid-keys #agGridKeys>
-    </app-ag-grid-keys>
+        <mat-tab-group>
+            <mat-tab label="Unallocated">
+                <br>
+                <br>
+                <button class="btn btn-primay" (click)="allocateSelectedKeys()">Allocate selected keys</button>
+                <button class="btn btn-primay" (click)="addKey()">+ Add new</button>
+                <app-ag-grid-keys #agGridKeys [keys]="unallocatedKeys">
+                </app-ag-grid-keys>
+            </mat-tab>
+            <mat-tab label="Allocated">
+                <br>
+                <br>
+                <button class="btn btn-primay" (click)="allocateSelectedKeys()">Allocate selected keys</button>
+                <button class="btn btn-primay" (click)="addKey()">+ Add new</button>
+                <app-ag-grid-keys #agGridKeys [keys]="allocatedKeys">
+                </app-ag-grid-keys>
+            </mat-tab>
+        </mat-tab-group>
+   
+   
     </div>
 </div>

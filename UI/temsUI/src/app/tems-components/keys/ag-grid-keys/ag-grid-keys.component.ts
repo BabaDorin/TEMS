@@ -1,6 +1,7 @@
+import { ViewKeySimplified } from 'src/app/models/key/view-key.model';
 import { TEMSComponent } from './../../../tems/tems.component';
 import { KeysService } from './../../../services/keys-service/keys.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit, OnChanges, SimpleChanges } from '@angular/core';
 import { ViewRoomSimplified } from 'src/app/models/room/view-room-simplified.model';
 
 @Component({
@@ -8,8 +9,9 @@ import { ViewRoomSimplified } from 'src/app/models/room/view-room-simplified.mod
   templateUrl: './ag-grid-keys.component.html',
   styleUrls: ['./ag-grid-keys.component.scss']
 })
-export class AgGridKeysComponent extends TEMSComponent implements OnInit {
+export class AgGridKeysComponent extends TEMSComponent implements OnInit, OnChanges {
 
+  @Input() keys;
   private gridApi;
   private gridColumnApi;
 
@@ -17,8 +19,6 @@ export class AgGridKeysComponent extends TEMSComponent implements OnInit {
   private defaultColDef;
   private rowSelection;
   private rowData: [];
-
-  keys: ViewRoomSimplified[];
 
   constructor(
     private keysService: KeysService
@@ -42,20 +42,32 @@ export class AgGridKeysComponent extends TEMSComponent implements OnInit {
 
     this.rowSelection = 'multiple';
   }
+  ngOnChanges(): void {
+    console.log(this.keys);
+
+    if(this.keys != undefined)
+      this.rowData = this.keys;
+  }
 
   ngOnInit(): void {
+    console.log(this.keys);
   }
 
   onGridReady(params) {
     this.gridApi = params.api;
     this.gridColumnApi = params.columnApi;
 
-    this.subscriptions.push(this.keysService.getKeys()
-      .subscribe(result => {
-        console.log(result);
-        this.rowData = result;
-      }));
+    if(this.keys == undefined)
+      this.subscriptions.push(this.keysService.getKeys()
+        .subscribe(result => {
+          console.log(result);
+          this.rowData = result;
+        }));
+    else
+      this.rowData = this.keys;
   }
+
+  
 
   isFirstColumn(params) {
     var displayedColumns = params.columnApi.getAllDisplayedColumns();

@@ -17,15 +17,30 @@ import { AddKeyComponent } from '../add-key/add-key.component';
 export class ViewKeysComponent extends TEMSComponent implements OnInit {
 
   @ViewChild('agGridKeys') agGridKeys: AgGridKeysComponent;
+  unallocatedKeys: ViewKeySimplified[] = [];
+  allocatedKeys: ViewKeySimplified[] = [];
 
   constructor(
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    private keysService: KeysService,
   ) { 
     super();
   }
 
   ngOnInit(): void {
+    this.getKeys();
+  }
 
+  getKeys(){
+    let keys = [] as ViewKeySimplified[];
+    
+    this.subscriptions.push(this.keysService.getKeys()
+      .subscribe(result => {
+        keys = result;
+
+        this.unallocatedKeys = keys.filter(key => key.allocatedTo.value == "--");
+        this.allocatedKeys = keys.filter(key => key.allocatedTo.value != "--");
+      }));
   }
 
   allocateSelectedKeys(){
@@ -42,6 +57,7 @@ export class ViewKeysComponent extends TEMSComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       console.log('The dialog was closed');
+      this.getKeys();
     });
   }
 
@@ -51,6 +67,7 @@ export class ViewKeysComponent extends TEMSComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       console.log('The dialog was closed');
+      this.getKeys();
     });
   }
 }

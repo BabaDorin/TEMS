@@ -1,8 +1,8 @@
-import { IOption } from './../option.model';
+import { IOption } from 'src/app/models/option.model';
 export interface IViewKeySimplified{
     id: string;
     identifier: string;
-    numberOfCopies: number;
+    room: IOption;
     allocatedTo: IOption;
     timePassed?: string;
     description?: string;
@@ -11,7 +11,7 @@ export interface IViewKeySimplified{
 export class ViewKeySimplified implements IViewKeySimplified{
     id: string;
     identifier: string;
-    numberOfCopies: number;
+    room: IOption;
     allocatedTo: IOption;
     timePassed?: string;
     description?: string;

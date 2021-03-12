@@ -9,7 +9,7 @@ namespace temsAPI.ViewModels.Key
     {
         public string Id { get; set; }
         public string Identifier { get; set; }
-        public int NumberOfCopies { get; set; }
+        public Option Room { get; set; }
         public Option AllocatedTo { get; set; }
         public string TimePassed { get; set; }
         public string Description { get; set; }

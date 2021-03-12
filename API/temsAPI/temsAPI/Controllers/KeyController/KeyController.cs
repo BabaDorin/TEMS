@@ -32,13 +32,25 @@ namespace temsAPI.Controllers.KeyController
                         where: q => !q.IsArchieved,
                         include: q => q.Include(qu => qu.KeyAllocations
                             .Where(q => q.DateReturned == null).OrderByDescending(q => q.DateAllocated))
-                        .ThenInclude(q => q.Personnel),
+                        .ThenInclude(q => q.Personnel)
+                        .Include(q => q.Room),
                          select: q => new ViewKeySimplifiedViewModel
                          {
                              Id = q.Id,
                              Identifier = q.Identifier,
                              Description = q.Description,
-                             NumberOfCopies = q.Copies,
+                             Room = 
+                                (q.Room != null)
+                                ? new Option
+                                {
+                                    Value = q.RoomId,
+                                    Label = q.Room.Identifier
+                                }
+                                : new Option
+                                {
+                                    Value = "--",
+                                    Label = "--"
+                                },
                              AllocatedTo =
                                 (q.KeyAllocations.Count > 0)
                                 ? new Option
@@ -80,17 +92,24 @@ namespace temsAPI.Controllers.KeyController
                     if (!await _unitOfWork.Rooms.isExists(q => q.Id == viewModel.RoomId))
                         ReturnResponse("Invalid room provided", ResponseStatus.Fail);
 
-                Key model = _mapper.Map<Key>(viewModel);
-                model.RoomId = viewModel.RoomId;
-                model.Id = Guid.NewGuid().ToString();
+                int keysFailed = 0;
+                for(int i = 0; i < viewModel.NumberOfCopies; i++)
+                {
+                    Key model = _mapper.Map<Key>(viewModel);
+                    model.RoomId = viewModel.RoomId;
+                    model.Id = Guid.NewGuid().ToString();
 
-                await _unitOfWork.Keys.Create(model);
-                await _unitOfWork.Save();
+                    await _unitOfWork.Keys.Create(model);
+                    await _unitOfWork.Save();
 
-                if (!await _unitOfWork.Keys.isExists(q => q.Id == model.Id))
-                    return ReturnResponse("Fail", ResponseStatus.Fail);
-                else
+                    if (!await _unitOfWork.Keys.isExists(q => q.Id == model.Id))
+                        keysFailed++;
+                }
+
+                if (keysFailed == 0)
                     return ReturnResponse("Success", ResponseStatus.Success);
+                else
+                    return ReturnResponse($"{keysFailed} keys have not been created.", ResponseStatus.Fail);
             }
             catch (Exception ex)
             {

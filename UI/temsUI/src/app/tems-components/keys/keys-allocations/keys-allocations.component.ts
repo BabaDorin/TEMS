@@ -29,7 +29,7 @@ export class KeysAllocationsComponent extends TEMSComponent implements OnInit {
     private personnelService: PersonnelService
   ) { 
     super();
-  }7
+  }
 
   
   ngOnInit(): void {

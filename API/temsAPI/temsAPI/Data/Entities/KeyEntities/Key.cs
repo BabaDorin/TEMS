@@ -15,7 +15,7 @@ namespace temsAPI.Data.Entities.KeyEntities
         public string Id { get; set; }
 
         public string Identifier { get; set; }
-        public int Copies { get; set; } = 0;
+        //public int Copies { get; set; } = 0;
         public bool IsArchieved { get; set; }
 
 #nullable enable

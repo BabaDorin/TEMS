@@ -21,9 +21,9 @@ namespace temsAPI.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Key>()
-                .Property(b => b.Copies)
-                .HasDefaultValueSql("1");
+            //modelBuilder.Entity<Key>()
+            //    .Property(b => b.Copies)
+            //    .HasDefaultValueSql("1");
 
             // OnDeleteCascade PropertyEquipmentTypeAssociations
             //modelBuilder.Entity<EquipmentType>()

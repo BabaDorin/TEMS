@@ -13,13 +13,15 @@ namespace temsAPI.Data.Entities.KeyEntities
         public string Id { get; set; }
 
         public string Identifier { get; set; }
+        public int Copies { get; set; } = 0;
+
 
 #nullable enable
-        public int? Copies { get; set; }
+        public string? Description { get; set; }
 #nullable disable
 
         public bool IsArchieved { get; set; }
 
-        public virtual ICollection<KeyAllocation> KeyAllocations { get; set; }
+        public virtual ICollection<KeyAllocation> KeyAllocations { get; set; } = new List<KeyAllocation>();
     }
 }

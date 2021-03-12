@@ -1,3 +1,7 @@
+import { API_KEY_URL } from './../../models/backend.config';
+import { HttpClient } from '@angular/common/http';
+import { TEMSService } from './../tems-service/tems.service';
+import { Observable } from 'rxjs';
 import { IOption } from 'src/app/models/option.model';
 import { ViewKeyAllocation } from './../../models/key/view-key-allocation.model';
 import { Injectable } from '@angular/core';
@@ -6,18 +10,19 @@ import { ViewKeySimplified } from 'src/app/models/key/view-key.model';
 @Injectable({
   providedIn: 'root'
 })
-export class KeysService {
+export class KeysService extends TEMSService {
 
-  getKeys(): ViewKeySimplified[]{
-    return [
-      new ViewKeySimplified(),
-      new ViewKeySimplified(),
-      new ViewKeySimplified(),
-      new ViewKeySimplified(),
-      new ViewKeySimplified(),
-      new ViewKeySimplified(),
-      new ViewKeySimplified(),
-    ]
+  constructor(
+    private http: HttpClient
+  ){
+    super();
+  }
+
+  getKeys(): Observable<any> {
+    return this.http.get(
+      API_KEY_URL + '/get',
+      this.httpOptions
+    )
   }
 
   getAllocationsOfKey(keyId: string): ViewKeyAllocation[]{

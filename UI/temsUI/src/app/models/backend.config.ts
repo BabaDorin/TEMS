@@ -8,3 +8,4 @@ export const API_ISU_URL = API_URL + '/ticket';
 export const API_ALL_URL = API_URL + '/allocation';
 export const API_ROOM_URL = API_URL + '/room';
 export const API_PERS_URL = API_URL + '/personnel';
+export const API_KEY_URL = API_URL + '/key';

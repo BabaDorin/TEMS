@@ -4,7 +4,7 @@ export interface IViewKeySimplified{
     identifier: string;
     numberOfCopies: number;
     allocatedTo: IOption;
-    timePassed: Date;
+    timePassed?: string;
     description?: string;
 }
 
@@ -13,6 +13,6 @@ export class ViewKeySimplified implements IViewKeySimplified{
     identifier: string;
     numberOfCopies: number;
     allocatedTo: IOption;
-    timePassed: Date;
+    timePassed?: string;
     description?: string;
 }

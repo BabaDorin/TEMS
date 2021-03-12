@@ -1,9 +1,7 @@
 import { TEMSComponent } from './../../../tems/tems.component';
 import { KeysService } from './../../../services/keys-service/keys.service';
-import { Component, OnInit, OnChanges } from '@angular/core';
-import { ViewKeySimplified } from 'src/app/models/key/view-key.model';
+import { Component, OnInit } from '@angular/core';
 import { ViewRoomSimplified } from 'src/app/models/room/view-room-simplified.model';
-import { RoomsService } from 'src/app/services/rooms-service/rooms.service';
 
 @Component({
   selector: 'app-ag-grid-keys',
@@ -28,10 +26,10 @@ export class AgGridKeysComponent extends TEMSComponent implements OnInit {
     super();
 
     this.columnDefs = [
-      { field: 'identifier', sortable: true, filter: true, checkboxSelection: true, headerCheckboxSelection: true},
-      { field: 'numberOfCopies', sortable: true, filter: true },
-      { field: 'allocatedTo', sortable: true, filter: true },
-      { field: 'timePassed', sortable: true, filter: true },
+      { headerName: 'Indentifier',  field: 'identifier', sortable: true, filter: true, checkboxSelection: true, headerCheckboxSelection: true},
+      { headerName: 'Number of Copies', field: 'numberOfCopies', sortable: true, filter: true },
+      { headerName: 'Allocated to', field: 'allocatedTo.label', sortable: true, filter: true },
+      { headerName: 'Time', field: 'timePassed', sortable: true, filter: true },
     ];
 
     this.defaultColDef = {

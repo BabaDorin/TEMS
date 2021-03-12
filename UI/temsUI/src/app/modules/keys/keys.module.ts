@@ -1,3 +1,4 @@
+import { MaterialModule } from 'src/app/modules/material/material.module';
 import { TemsFormsModule } from './../tems-forms/tems-forms.module';
 import { KeysService } from 'src/app/services/keys-service/keys.service';
 import { ViewKeysAllocationsComponent } from './../../tems-components/keys/view-keys-allocations/view-keys-allocations.component';
@@ -25,6 +26,7 @@ import { AddKeyComponent } from 'src/app/tems-components/keys/add-key/add-key.co
     CommonModule,
     KeysRoutingModule,
     TemsFormsModule,
+    MaterialModule
   ],
   providers: [
       KeysService,

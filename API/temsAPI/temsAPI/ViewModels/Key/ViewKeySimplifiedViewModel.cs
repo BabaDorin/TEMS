@@ -11,7 +11,7 @@ namespace temsAPI.ViewModels.Key
         public string Identifier { get; set; }
         public int NumberOfCopies { get; set; }
         public Option AllocatedTo { get; set; }
-        public TimeSpan TimePassed { get; set; }
+        public string TimePassed { get; set; }
         public string Description { get; set; }
     }
 }

@@ -47,12 +47,12 @@ namespace temsAPI.Controllers.KeyController
                                 }
                                 : new Option
                                 {
-                                    Value = "none",
-                                    Label = "None"
+                                    Value = "--",
+                                    Label = "--"
                                 },
                              TimePassed = (q.KeyAllocations.Count > 0) 
-                                ? DateTime.Now - q.KeyAllocations.First().DateAllocated
-                                : TimeSpan.FromSeconds(0)
+                                ? (DateTime.Now - q.KeyAllocations.First().DateAllocated).TotalMinutes + " minutes ago"
+                                : "--"
                          }
                          )).ToList();
 

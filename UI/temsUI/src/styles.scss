@@ -92,6 +92,9 @@ $demo1-theme: mat-light-theme((
 @import "./assets/scss/components/portfolio";
 @import "./assets/scss/components/todo-list";
 
+// @import "../node_modules/ag-grid-community/dist/styles/ag-grid.css";
+// @import "../node_modules/ag-grid-community/dist/styles/ag-theme-material.css";
+
 @import "./assets/scss/components/landing-screens/auth";
 
 /* === Layout === */
@@ -116,4 +119,4 @@ formly-field-mat-radio {
 }
 
 // @import "../node_modules/ag-grid-community/dist/styles/ag-grid.css";
-// @import "../node_modules/ag-grid-community/dist/styles/ag-theme-alpine.css";
+// @import "../node_modules/ag-grid-community/dist/styles/ag-theme-material.css";

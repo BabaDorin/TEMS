@@ -1,7 +1,6 @@
 import { EntityIssuesListComponent } from './../../tems-components/entity-issues-list/entity-issues-list.component';
 import { TemsFormsModule } from './../tems-forms/tems-forms.module';
 import { MaterialModule } from 'src/app/modules/material/material.module';
-import { MatSelectModule } from '@angular/material/select';
 import { EquipmentAllocationComponent } from './../../tems-components/equipment/equipment-allocation/equipment-allocation.component';
 import { PropertyRenderComponent } from './../../public/property-render/property-render.component';
 import { NgModule } from '@angular/core';

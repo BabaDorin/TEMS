@@ -8,7 +8,22 @@ namespace temsAPI.Helpers
 {
     public static class ExpressionCombiner
     {
-        public static Expression<Func<T, bool>> And<T>(this Expression<Func<T, bool>> exp, Expression<Func<T, bool>> newExp)
+        public static Expression<Func<T, bool>> And<T>(params Expression<Func<T, bool>>[] expressions)
+        {
+            Expression<Func<T, bool>> finalExpression = expressions[0];
+
+            if (expressions.Count() == 1)
+                return expressions[0];
+            else
+                for(int i = 1; i < expressions.Count(); i++)
+                {
+                    finalExpression = CombineTwo(finalExpression, expressions[i]);
+                }
+
+            return finalExpression;
+        }
+
+        public static Expression<Func<T, bool>> CombineTwo<T>(this Expression<Func<T, bool>> exp, Expression<Func<T, bool>> newExp)
         {
             if (exp == null && newExp == null)
                 return null;

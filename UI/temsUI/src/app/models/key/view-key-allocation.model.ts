@@ -7,6 +7,7 @@ export interface IViewKeyAllocation{
     id: string,
     key: IOption,
     personnel: IOption,
+    room?: IOption,
     dateAllocated: Date,
     allocatedBy?: IOption,
     dateReturned?: Date,
@@ -16,6 +17,7 @@ export class ViewKeyAllocation implements IViewKeyAllocation{
     id: string;
     key: IOption;
     personnel: IOption;
+    room?: IOption;
     dateAllocated: Date;
     allocatedBy?: IOption;
     dateReturned?: Date;

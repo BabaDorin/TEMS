@@ -89,7 +89,7 @@ namespace temsAPI.Controllers.CommunicationControllers
 
                 List<ViewTicketSimplifiedViewModel> viewModel = (await _unitOfWork.Tickets
                     .FindAll<ViewTicketSimplifiedViewModel>(
-                        where: (expression2 == null) ? expression : ExpressionCombiner.And(expression, expression2),
+                        where: (expression2 == null) ? expression : ExpressionCombiner.CombineTwo(expression, expression2),
                         include: q => q.Include(q => q.Assignees)
                                        .Include(q => q.ClosedBy)
                                        .Include(q => q.CreatedBy)
@@ -98,7 +98,8 @@ namespace temsAPI.Controllers.CommunicationControllers
                                        .Include(q => q.Rooms)
                                        .Include(q => q.Status)
                                        .Include(q => q.Equipments),
-                        orderBy: q => q.OrderBy(q => q.Status.ImportanceIndex),
+                        orderBy: q => q.OrderBy(q => q.Status.ImportanceIndex)
+                                       .ThenByDescending(q => q.DateCreated),
                         select: q => new ViewTicketSimplifiedViewModel
                         {
                             Id = q.Id,
@@ -132,9 +133,12 @@ namespace temsAPI.Controllers.CommunicationControllers
                             {
                                 Value = q.Status.Id,
                                 Label = q.Status.Name,
+                                Additional = q.Status.ImportanceIndex.ToString()
                             }
                         }
-                    )).ToList();
+                    )).OrderBy(q => int.Parse(q.Status.Additional))
+                      .ThenByDescending(q => q.DateCreated)
+                      .ToList();
 
                 return (Json(viewModel));
             }
@@ -238,6 +242,113 @@ namespace temsAPI.Controllers.CommunicationControllers
             {
                 Debug.WriteLine(ex);
                 return ReturnResponse("An error occurred when creating the ticket", ResponseStatus.Fail);
+            }
+        }
+
+        [HttpGet("/ticket/gettickets/{equipmentId}/{roomId}/{personnelId}/{includingClosed}/{onlyClosed}")]
+        public async Task<JsonResult> GetTickets(
+            string equipmentId,
+            string roomId,
+            string personnelId,
+            bool includingClosed,
+            bool onlyClosed)
+        {
+            try
+            {
+                // Invalid equipmentId
+                if (equipmentId != "any" && !await _unitOfWork.Equipments.isExists(q => q.Id == equipmentId))
+                    return ReturnResponse("Invalid equipment provided", ResponseStatus.Fail);
+
+                // Invalid roomId provided
+                if (roomId != "any" && !await _unitOfWork.Rooms.isExists(q => q.Id == roomId))
+                    return ReturnResponse("Invalid room provided", ResponseStatus.Fail);
+
+                // Invalid personnelId provided
+                if (personnelId != "any" && !await _unitOfWork.Personnel.isExists(q => q.Id == personnelId))
+                    return ReturnResponse("Invalid personnel provied", ResponseStatus.Fail);
+
+                // false false
+                Expression<Func<Ticket, bool>> closedExpression = q => q.DateClosed == null && !q.IsArchieved;
+
+                // true false
+                if (includingClosed)
+                    closedExpression = q => !q.IsArchieved;
+
+                // any true
+                if (onlyClosed)
+                    closedExpression = q => q.DateClosed.HasValue && !q.IsArchieved;
+
+                Expression<Func<Ticket, bool>> equipmentExpression = (equipmentId == "any")
+                   ? null
+                   : q => q.Equipments.Any(q => q.Id == equipmentId);
+
+                Expression<Func<Ticket, bool>> roomExpression = (roomId == "any")
+                   ? null
+                   : q => q.Rooms.Any(q => q.Id == roomId);
+
+                Expression<Func<Ticket, bool>> personnelExpression = (personnelId == "any")
+                   ? null
+                   : q => q.Personnel.Any(q => q.Id == personnelId);
+
+                var finalExpression = ExpressionCombiner.And(closedExpression, equipmentExpression, roomExpression, personnelExpression);
+
+                List<ViewTicketSimplifiedViewModel> viewModel = (await _unitOfWork.Tickets
+                    .FindAll<ViewTicketSimplifiedViewModel>(
+                        where: finalExpression,
+                        include: q => q.Include(q => q.Assignees)
+                                       .Include(q => q.ClosedBy)
+                                       .Include(q => q.CreatedBy)
+                                       .Include(q => q.Label)
+                                       .Include(q => q.Personnel)
+                                       .Include(q => q.Rooms)
+                                       .Include(q => q.Status)
+                                       .Include(q => q.Equipments),
+                        orderBy: q => q.OrderBy(q => q.Status.ImportanceIndex)
+                                       .ThenByDescending(q => q.DateCreated),
+                        select: q => new ViewTicketSimplifiedViewModel
+                        {
+                            Id = q.Id,
+                            Problem = q.Problem,
+                            DateClosed = q.DateClosed,
+                            DateCreated = q.DateCreated,
+                            Description = q.Description,
+                            Equipments = q.Equipments.Select(q => new Option
+                            {
+                                Value = q.Id,
+                                Label = q.TemsIdOrSerialNumber
+                            }).ToList(),
+                            Label = new Option
+                            {
+                                Value = q.Label.Id,
+                                Label = q.Label.Name,
+                                Additional = q.Label.ColorHex
+                            },
+                            Personnel = q.Personnel.Select(q => new Option
+                            {
+                                Value = q.Id,
+                                Label = q.Name
+                            }).ToList(),
+                            Rooms = q.Rooms.Select(q => new Option
+                            {
+                                Value = q.Id,
+                                Label = q.Identifier,
+                                Additional = string.Join(", ", q.Labels)
+                            }).ToList(),
+                            Status = new Option
+                            {
+                                Value = q.Status.Id,
+                                Label = q.Status.Name,
+                                Additional = q.Status.ImportanceIndex.ToString()
+                            }
+                        }
+                    )).ToList();
+
+                return Json(viewModel);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured when fetching tickets", ResponseStatus.Fail);
             }
         }
     }

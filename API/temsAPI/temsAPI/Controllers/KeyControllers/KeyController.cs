@@ -240,8 +240,8 @@ namespace temsAPI.Controllers.KeyControllers
                    ? null
                    : q => q.PersonnelID == personnelId;
 
-                var finalExpression = ExpressionCombiner.And(keyExpression,
-                                ExpressionCombiner.And(roomExpression, personnelExpression));
+                var finalExpression = ExpressionCombiner.CombineTwo(keyExpression,
+                                ExpressionCombiner.CombineTwo(roomExpression, personnelExpression));
 
                 List<ViewKeyAllocationViewModel> viewModel = (await _unitOfWork.KeyAllocations
                     .FindAll<ViewKeyAllocationViewModel>(

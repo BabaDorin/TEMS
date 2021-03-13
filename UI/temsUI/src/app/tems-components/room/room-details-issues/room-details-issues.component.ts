@@ -1,3 +1,4 @@
+import { IOption } from 'src/app/models/option.model';
 import { ViewRoomSimplified } from './../../../models/room/view-room-simplified.model';
 import { Component, Input, OnInit } from '@angular/core';
 
@@ -9,8 +10,14 @@ import { Component, Input, OnInit } from '@angular/core';
 export class RoomDetailsIssuesComponent implements OnInit {
 
   @Input() room: ViewRoomSimplified;
+  roomAlreadySelected: IOption;
+
   constructor() { }
 
   ngOnInit(): void {
+    this.roomAlreadySelected = {
+      value: this.room.id,
+      label: this.room.identifier,
+    }
   }
 }

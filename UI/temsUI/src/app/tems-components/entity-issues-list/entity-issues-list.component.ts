@@ -1,11 +1,9 @@
+import { IOption } from 'src/app/models/option.model';
 import { TEMSComponent } from 'src/app/tems/tems.component';
 import { CreateIssueComponent } from './../issue/create-issue/create-issue.component';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { IssuesService } from './../../services/issues-service/issues.service';
-import { Component, Input, OnInit } from '@angular/core';
-import { ViewEquipmentSimplified } from 'src/app/models/equipment/view-equipment-simplified.model';
-import { ViewPersonnelSimplified } from 'src/app/models/personnel/view-personnel-simplified.model';
-import { ViewRoomSimplified } from 'src/app/models/room/view-room-simplified.model';
+import { Component, Input, OnInit, OnChanges } from '@angular/core';
 import { ViewIssueSimplified } from 'src/app/models/communication/issues/view-issue-simplified.model';
 
 @Component({
@@ -13,17 +11,23 @@ import { ViewIssueSimplified } from 'src/app/models/communication/issues/view-is
   templateUrl: './entity-issues-list.component.html',
   styleUrls: ['./entity-issues-list.component.scss']
 })
-export class EntityIssuesListComponent extends TEMSComponent implements OnInit {
+export class EntityIssuesListComponent extends TEMSComponent implements OnInit, OnChanges {
 
-  @Input() equipment: ViewEquipmentSimplified;
-  @Input() room: ViewRoomSimplified;
-  @Input() personnel: ViewPersonnelSimplified;
+  // for ticket fetching
+  @Input() equipmentId: string = "any";
+  @Input() roomId: string = "any";
+  @Input() personnelId: string = "any";
+
+  // for AddIssueComponent
+  @Input() equipment: IOption[] = [];
+  @Input() rooms: IOption[] = [];
+  @Input() personnel: IOption[] =[];
 
   @Input() onlyClosed: boolean = false;
   @Input() includingClosed: boolean = false;
 
   issues: ViewIssueSimplified[];
-  @Input() addLogEnabled: boolean = true;
+  @Input() addIssueEnabled: boolean = true;
   
   constructor(
     private issuesService: IssuesService,
@@ -31,74 +35,37 @@ export class EntityIssuesListComponent extends TEMSComponent implements OnInit {
   ) { 
     super();
   }
-
+ 
   ngOnInit(): void {
-    if(this.equipment)
-      this.subscriptions.push(this.issuesService.getIssuesOfEquipment(
-        this.equipment.id, this.onlyClosed, this.includingClosed
-      ).subscribe(response => {
-        console.log(response);
-        this.issues = response;
-      }))
+    this.getIssues();
+  }
 
-    if(this.room)
-      this.subscriptions.push(this.issuesService.getIssuesOfRoom(
-        this.room.id, this.includingClosed, this.onlyClosed
-      ).subscribe(result => {
+  ngOnChanges(): void {
+    this.getIssues();
+  }
+
+  getIssues(){
+    this.subscriptions.push(this.issuesService.getIssues(
+      this.equipmentId, this.roomId, this.personnelId, this.includingClosed, this.onlyClosed)
+      .subscribe(result => {
         console.log(result);
         this.issues = result;
       }))
-
-    if(this.personnel)
-      this.subscriptions.push(this.issuesService.getIssuesOfPersonnel(
-        this.personnel.id, this.includingClosed, this.onlyClosed
-      ).subscribe(result => {
-        console.log(result);
-        this.issues = result;
-      }))
-
-    if(this.personnel == undefined && this.room == undefined && this.equipment == undefined){
-      this.subscriptions.push(this.issuesService.getIssues(
-        this.includingClosed, this.onlyClosed
-      ).subscribe(result => {
-        console.log(result);
-        this.issues = result;
-      }))
-    }
   }
 
   private addIssue(){
     // Opens a dialog containing an instance of CreateIssueComponent
     
     let dialogRef: MatDialogRef<any>;
-    dialogRef = this.dialog.open(CreateIssueComponent); 
+    dialogRef = this.dialog.open(CreateIssueComponent);
     
-    if(this.equipment){
-      dialogRef.componentInstance.equipmentAlreadySelected = [
-        {
-          value: this.equipment.id, 
-          label: this.equipment.temsIdOrSerialNumber
-        }];
-    }
-
-    if(this.room){
-      dialogRef.componentInstance.roomsAlreadySelected = [
-        {
-          value: this.room.id, 
-          label: this.room.identifier
-        }];
-    }
-
-    if(this.personnel){
-      dialogRef.componentInstance.personnelAlreadySelected = [
-        {
-          value: this.personnel.id, 
-          label: this.personnel.name
-        }];
-    }
-
+    dialogRef.componentInstance.equipmentAlreadySelected = this.equipment;
+    dialogRef.componentInstance.roomsAlreadySelected = this.rooms;
+    dialogRef.componentInstance.personnelAlreadySelected = this.personnel;
+    
     dialogRef.afterClosed().subscribe(result => {
       // Stuff
     });
   }
 }
+

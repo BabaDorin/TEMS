@@ -17,6 +17,20 @@ export class IssuesService extends TEMSService {
     super();
   }
 
+  getIssues(
+    equipmentId: string,
+    roomId: string,
+    personnelId: string,
+    includingClosed: boolean,
+    onlyClosed: boolean): Observable<ViewIssueSimplified[]>
+  {
+    return this.http.get<ViewIssueSimplified[]>(
+      API_ISU_URL + '/gettickets/' + equipmentId + '/' + roomId + '/' + personnelId + '/' 
+      + includingClosed + '/' + onlyClosed,
+      this.httpOptions
+    );
+  }
+
   getIssuesOfEntity(
     entityType: string, 
     entityId: string, 
@@ -55,15 +69,15 @@ export class IssuesService extends TEMSService {
       );
   }
 
-  getIssues(includingClosed?: boolean, onlyClosed?: boolean):Observable<any>{
-    // all issues (tickets)
-    return this.getIssuesOfEntity(
-      'any',
-      'any',
-      includingClosed ?? false,
-      onlyClosed ?? false
-    )
-  }
+  // getIssues(includingClosed?: boolean, onlyClosed?: boolean):Observable<any>{
+  //   // all issues (tickets)
+  //   return this.getIssuesOfEntity(
+  //     'any',
+  //     'any',
+  //     includingClosed ?? false,
+  //     onlyClosed ?? false
+  //   )
+  // }
 
   getStatuses(): Observable<any>{
     return this.http.get(

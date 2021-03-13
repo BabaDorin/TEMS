@@ -1,3 +1,4 @@
+import { TEMSComponent } from 'src/app/tems/tems.component';
 import { Component, Input, OnInit, SimpleChanges } from '@angular/core';
 import { ViewKeyAllocation } from 'src/app/models/key/view-key-allocation.model';
 import { KeysService } from 'src/app/services/keys-service/keys.service';
@@ -7,25 +8,32 @@ import { KeysService } from 'src/app/services/keys-service/keys.service';
   templateUrl: './keys-allocations-list.component.html',
   styleUrls: ['./keys-allocations-list.component.scss']
 })
-export class KeysAllocationsListComponent implements OnInit {
+export class KeysAllocationsListComponent extends TEMSComponent implements OnInit {
 
   @Input() keyId;
+  @Input() roomId;
+  @Input() personnelId;
   allocations: ViewKeyAllocation[];
 
   constructor(
     private keyService: KeysService
   ) { 
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    if(this.keyId)
-      this.allocations = this.keyService.getAllocationsOfKey(this.keyId);
+    super();
   }
 
   ngOnInit(): void {
-    if(this.keyId)
-      this.allocations = this.keyService.getAllocationsOfKey(this.keyId);
-    else
-      this.allocations = this.keyService.getAllocations();
+    this.getAllocations();
+  }
+
+  ngOnChanges(): void {
+    this.getAllocations();
+  }
+
+  getAllocations(){
+    this.subscriptions.push(this.keyService.getAllocations(this.keyId, this.roomId, this.personnelId)
+      .subscribe(result => {
+        console.log(result);
+        this.allocations = result;
+      }));
   }
 }

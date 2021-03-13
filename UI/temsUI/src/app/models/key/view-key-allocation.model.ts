@@ -1,27 +1,22 @@
+import { IOption } from 'src/app/models/option.model';
 import { ViewUserSimplified } from '../user/view-user.model';
 import { ViewPersonnelSimplified } from '../personnel/view-personnel-simplified.model';
 import { ViewKeySimplified } from "./view-key.model";
 
 export interface IViewKeyAllocation{
-    key: ViewKeySimplified,
-    personnel: ViewPersonnelSimplified,
+    id: string,
+    key: IOption,
+    personnel: IOption,
     dateAllocated: Date,
-    allocatedBy?: ViewUserSimplified,
-    returnedDate?: Date,
+    allocatedBy?: IOption,
+    dateReturned?: Date,
 }
 
 export class ViewKeyAllocation implements IViewKeyAllocation{
-    key: ViewKeySimplified;
-    personnel: ViewPersonnelSimplified;
+    id: string;
+    key: IOption;
+    personnel: IOption;
     dateAllocated: Date;
-    allocatedBy?: ViewUserSimplified;
-    returnedDate?: Date;
-
-    constructor(){
-        this.key = new ViewKeySimplified();
-        this.personnel = new ViewPersonnelSimplified();
-        this.dateAllocated = new Date();
-        this.allocatedBy = new ViewUserSimplified();
-        this.returnedDate = new Date(); 
-    }
+    allocatedBy?: IOption;
+    dateReturned?: Date;
 }

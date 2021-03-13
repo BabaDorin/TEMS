@@ -43,34 +43,17 @@ export class KeysService extends TEMSService {
     );
   }
 
-  getAllocationsOfKey(keyId: string): ViewKeyAllocation[]{
-    return [
-      new ViewKeyAllocation(),
-      new ViewKeyAllocation(),
-      new ViewKeyAllocation(),
-      new ViewKeyAllocation(),
-      new ViewKeyAllocation(),
-    ];
+  getAllocations(keyId: string, roomId: string, personnelId: string): Observable<ViewKeyAllocation[]>{
+    return this.http.get<ViewKeyAllocation[]>(
+      API_KEY_URL + '/getallocations/' + keyId + '/' + roomId + '/' +personnelId,
+      this.httpOptions
+    );
   }
 
-  getAllocations(): ViewKeyAllocation[]{
-    return [
-      new ViewKeyAllocation(),
-      new ViewKeyAllocation(),
-      new ViewKeyAllocation(),
-      new ViewKeyAllocation(),
-      new ViewKeyAllocation(),
-    ];
-  }
-
-  getAutocompleteOptions(): IOption[]{
-    return [
-      {value: '1', label: '101'},      
-      {value: '2', label: '102'},      
-      {value: '3', label: '103'},      
-      {value: '4', label: '104'},      
-      {value: '5', label: '105'},      
-      {value: '6', label: '106'},      
-    ]
+  getAutocompleteOptions(): Observable<IOption[]>{
+    return this.http.get<IOption[]>(
+      API_KEY_URL + '/getautocompleteoptions',
+      this.httpOptions
+    );
   }
 }

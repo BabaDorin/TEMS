@@ -6,15 +6,17 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.KeyEntities;
 using temsAPI.Data.Entities.UserEntities;
+using temsAPI.Helpers;
 using temsAPI.ViewModels;
 using temsAPI.ViewModels.Key;
 
-namespace temsAPI.Controllers.KeyController
+namespace temsAPI.Controllers.KeyControllers
 {
     public class KeyController : TEMSController
     {
@@ -39,7 +41,7 @@ namespace temsAPI.Controllers.KeyController
                              Id = q.Id,
                              Identifier = q.Identifier,
                              Description = q.Description,
-                             Room = 
+                             Room =
                                 (q.Room != null)
                                 ? new Option
                                 {
@@ -63,7 +65,7 @@ namespace temsAPI.Controllers.KeyController
                                     Value = "--",
                                     Label = "--"
                                 },
-                             TimePassed = (q.KeyAllocations.Count > 0) 
+                             TimePassed = (q.KeyAllocations.Count > 0)
                                 ? $"{(DateTime.Now - q.KeyAllocations.First().DateAllocated).TotalMinutes:f0} minutes ago"
                                 : "--"
                          }
@@ -75,6 +77,31 @@ namespace temsAPI.Controllers.KeyController
             {
                 Debug.WriteLine(ex);
                 return ReturnResponse("An error occured when fetching keys", ResponseStatus.Fail);
+            }
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> GetAutocompleteOptions()
+        {
+            try
+            {
+                List<Option> viewModel = (await _unitOfWork.Keys
+                    .FindAll<Option>(
+                        where: q => !q.IsArchieved,
+                        include: q => q.Include(q => q.Room),
+                        select: q => new Option
+                        {
+                            Value = q.Id,
+                            Label = q.Identifier,
+                            Additional = (q.RoomId != null) ? q.RoomId : "--"
+                        })).ToList();
+
+                return Json(viewModel);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured when fetching keys autocomplete options", ResponseStatus.Fail);
             }
         }
 
@@ -92,8 +119,11 @@ namespace temsAPI.Controllers.KeyController
                     if (!await _unitOfWork.Rooms.isExists(q => q.Id == viewModel.RoomId))
                         ReturnResponse("Invalid room provided", ResponseStatus.Fail);
 
+                if (viewModel.NumberOfCopies > 5)
+                    return ReturnResponse("Maximum 5 copies at a time.", ResponseStatus.Fail);
+
                 int keysFailed = 0;
-                for(int i = 0; i < viewModel.NumberOfCopies; i++)
+                for (int i = 0; i < viewModel.NumberOfCopies; i++)
                 {
                     Key model = _mapper.Map<Key>(viewModel);
                     model.RoomId = viewModel.RoomId;
@@ -178,6 +208,80 @@ namespace temsAPI.Controllers.KeyController
             {
                 Debug.WriteLine(ex);
                 return ReturnResponse("An error occured when creating the allocation", ResponseStatus.Fail);
+            }
+        }
+
+        [HttpGet("key/getallocations/{keyId}/{roomId}/{personnelId}")]
+        public async Task<JsonResult> GetAllocations(string keyId, string roomId, string personnelId)
+        {
+            try
+            {
+                // Invalid keyId provided
+                if (keyId != "any" && !await _unitOfWork.Keys.isExists(q => q.Id == keyId))
+                    return ReturnResponse("Invalid key provided", ResponseStatus.Fail);
+
+                // Invalid roomId provided
+                if(roomId != "any" && !await _unitOfWork.Rooms.isExists(q => q.Id == roomId))
+                    return ReturnResponse("Invalid room provided", ResponseStatus.Fail);
+
+                // Invalid personnelId provided
+                if (personnelId != "any" && !await _unitOfWork.Personnel.isExists(q => q.Id == personnelId))
+                    return ReturnResponse("Invalid personnel provied", ResponseStatus.Fail);
+
+                Expression<Func<KeyAllocation, bool>> keyExpression = (keyId == "any")
+                    ? null
+                    : q => q.KeyID == keyId;
+
+                Expression<Func<KeyAllocation, bool>> roomExpression = (roomId == "any")
+                   ? null
+                   : q => q.Key.RoomId == roomId;
+
+                Expression<Func<KeyAllocation, bool>> personnelExpression = (personnelId == "any")
+                   ? null
+                   : q => q.PersonnelID == personnelId;
+
+                var finalExpression = ExpressionCombiner.And(keyExpression,
+                                ExpressionCombiner.And(roomExpression, personnelExpression));
+
+                List<ViewKeyAllocationViewModel> viewModel = (await _unitOfWork.KeyAllocations
+                    .FindAll<ViewKeyAllocationViewModel>(
+                        where: finalExpression,
+                        include: q => q.Include(q => q.Personnel)
+                                       .Include(q => q.Key).ThenInclude(q => q.Room),
+                        select: q => new ViewKeyAllocationViewModel
+                        {
+                            Id = q.Id,
+                            DateAllocated = q.DateAllocated,
+                            DateReturned = q.DateReturned,
+                            Personnel = new Option
+                            {
+                                Value = q.PersonnelID,
+                                Label = q.Personnel.Name,
+                                Additional = string.Join(", ", q.Personnel.Positions.Select(q => q.Name))
+                            },
+                            Key = new Option
+                            {
+                                Value = q.KeyID,
+                                Label = q.Key.Identifier,
+                            },
+                            Room = new Option
+                            {
+                                Value = (q.Key.RoomId != null)
+                                    ? q.Key.RoomId
+                                    : "--",
+                                Label = (q.Key.RoomId != null)
+                                    ? q.Key.Room.Identifier
+                                    : "--",
+                            }
+                        }
+                        )).ToList();
+
+                return Json(viewModel);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured when fetching key allocations", ResponseStatus.Fail);
             }
         }
     }

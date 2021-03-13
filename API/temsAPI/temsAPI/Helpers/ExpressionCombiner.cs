@@ -10,6 +10,15 @@ namespace temsAPI.Helpers
     {
         public static Expression<Func<T, bool>> And<T>(this Expression<Func<T, bool>> exp, Expression<Func<T, bool>> newExp)
         {
+            if (exp == null && newExp == null)
+                return null;
+
+            if (exp == null)
+                return newExp;
+
+            if (newExp == null)
+                return exp;
+            
             // get the visitor
             var visitor = new ParameterUpdateVisitor(newExp.Parameters.First(), exp.Parameters.First());
             // replace the parameter in the expression just created

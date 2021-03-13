@@ -6,16 +6,48 @@
     <hr>
     <br>
     <form class="example-form">
-      <mat-form-field appearance="fill">
-        <mat-label>Choose a key to see it's allocations</mat-label>
-        <mat-select (selectionChange)="keySelected($event.value)">
-          <mat-option *ngFor="let key of keys"
-           [value]="key">{{ key.value }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
+      <div class="row">
+        <div class="col-4">
+          <mat-form-field appearance="fill">
+            <mat-label>Key</mat-label>
+            <mat-select (selectionChange)="keySelected($event.value)">
+              <mat-option value="any">Any</mat-option>
+              <mat-option *ngFor="let key of filteredKeys"
+               [value]="key.value">{{ key.label }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-4">
+          <mat-form-field appearance="fill">
+            <mat-label>Room</mat-label>
+            <mat-select (selectionChange)="roomSelected($event.value)">
+              <mat-option value="any">Any</mat-option>
+              <mat-option *ngFor="let room of rooms"
+               [value]="room.value">{{ room.label }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-4">
+          <mat-form-field appearance="fill">
+            <mat-label>Personnel</mat-label>
+            <mat-select (selectionChange)="personnelSelected($event.value)">
+              <mat-option value="any">Any</mat-option>
+              <mat-option *ngFor="let pers of personnel"
+               [value]="pers.value">{{ pers.label }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
     </form>
     <br>
-    <app-keys-allocations-list #viewKeysAllocationsList [keyId]="keyId"></app-keys-allocations-list>
+    <app-keys-allocations-list 
+      #viewKeysAllocationsList 
+      [keyId]="keyId" 
+      [roomId]="roomId" 
+      [personnelId]="personnelId">
+    </app-keys-allocations-list>
   </div>
 </div>

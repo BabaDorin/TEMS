@@ -36,7 +36,11 @@ export class KeysAllocationsComponent extends TEMSComponent implements OnInit {
     if(this.keys)
       this.keysAutocompleteOptions = this.keys;
     else
-      this.keysAutocompleteOptions = this.keysService.getAutocompleteOptions();
+      this.subscriptions.push(this.keysService.getAutocompleteOptions()
+        .subscribe(result => {
+          console.log(result);
+          this.keysAutocompleteOptions = result;
+        }))
       
     this.subscriptions.push(this.personnelService.getAllAutocompleteOptions()
       .subscribe(result => {

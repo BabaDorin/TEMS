@@ -17,8 +17,8 @@ namespace temsAPI.Data.Entities.CommunicationEntities
         public string Id { get; set; }
 
         public DateTime DateCreated { get; set; }
-        public DateTime DateClosed { get; set; }
 
+        public string Title { get; set; }
         public string Message { get; set; }
 
 #nullable enable

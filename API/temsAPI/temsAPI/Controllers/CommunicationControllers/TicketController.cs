@@ -252,7 +252,7 @@ namespace temsAPI.Controllers.CommunicationControllers
             string personnelId,
             bool includingClosed,
             bool onlyClosed)
-        {
+        {                                                           // Announcements
             try
             {
                 // Invalid equipmentId

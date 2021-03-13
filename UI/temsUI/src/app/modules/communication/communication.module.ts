@@ -1,3 +1,4 @@
+import { TemsFormsModule } from './../tems-forms/tems-forms.module';
 import { AddAnnouncementComponent } from './../../add-announcement/add-announcement.component';
 import { CommunicationService } from './../../services/communication-service/communication.service';
 import { MaterialModule } from 'src/app/modules/material/material.module';
@@ -22,6 +23,7 @@ import { ViewLogsComponent } from 'src/app/tems-components/communication/view-lo
     CommunicationRoutingModule,
     MaterialModule,
     EntitySharedModule,
+    TemsFormsModule,
   ],
   providers: [
     CommunicationService,

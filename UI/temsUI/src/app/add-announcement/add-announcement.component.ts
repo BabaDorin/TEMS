@@ -1,15 +1,44 @@
+import { AddAnnouncement } from './../models/communication/announcement/add-announcement.model';
+import { CommunicationService } from './../services/communication-service/communication.service';
+import { TEMSComponent } from 'src/app/tems/tems.component';
+import { FormlyParserService } from 'src/app/services/formly-parser-service/formly-parser.service';
 import { Component, OnInit } from '@angular/core';
+import { FormGroup } from '@angular/forms';
+import { FormlyFieldConfig } from '@ngx-formly/core';
 
 @Component({
   selector: 'app-add-announcement',
   templateUrl: './add-announcement.component.html',
   styleUrls: ['./add-announcement.component.scss']
 })
-export class AddAnnouncementComponent implements OnInit {
+export class AddAnnouncementComponent extends TEMSComponent implements OnInit {
 
-  constructor() { }
+  private formlyData = {
+    form: new FormGroup({}),
+    model: {} as any,
+    fields: [] as FormlyFieldConfig[],
+  }
+
+  constructor(
+    private formlyParserService: FormlyParserService,
+    private communicationService: CommunicationService
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
+    this.formlyData.fields = this.formlyParserService.parseAddAnnouncement();
+  }
+
+  onSubmit(){
+
+    let addAnnouncement: AddAnnouncement = this.formlyData.model.announcement;
+    console.log(this.formlyData.model)
+    
+    this.subscriptions.push(this.communicationService.createAnnouncement(addAnnouncement)
+      .subscribe(result => {
+        console.log(result);
+      }))
   }
 
 }

@@ -353,6 +353,35 @@ export class FormlyParserService {
     return fields;
   }
 
+  parseAddAnnouncement(){
+    let fields: FormlyFieldConfig[] =
+    [
+      {
+        key: 'announcement',
+        fieldGroup: [
+          {
+            key: 'title',
+            type: 'input',
+            templateOptions: {
+              required: true,
+              label: 'Title',
+            }
+          },
+          {
+            key: 'text',
+            type: 'input-tooltip',
+            templateOptions: {
+              required: true,
+              label: 'Message',
+            },
+          },
+        ]
+      }
+    ];
+
+    return fields;
+  }
+
   parseAddDefinition(addDefinition: Definition, formlyFields?: FormlyFieldConfig[]) {
 
     let fields: FormlyFieldConfig[] =

@@ -12,7 +12,7 @@
             <mat-label>Key</mat-label>
             <mat-select (selectionChange)="keySelected($event.value)">
               <mat-option value="any">Any</mat-option>
-              <mat-option *ngFor="let key of filteredKeys"
+              <mat-option *ngFor="let key of filteredKeys | async"
                [value]="key.value">{{ key.label }}
               </mat-option>
             </mat-select>
@@ -23,7 +23,7 @@
             <mat-label>Room</mat-label>
             <mat-select (selectionChange)="roomSelected($event.value)">
               <mat-option value="any">Any</mat-option>
-              <mat-option *ngFor="let room of rooms"
+              <mat-option *ngFor="let room of rooms | async"
                [value]="room.value">{{ room.label }}
               </mat-option>
             </mat-select>
@@ -34,7 +34,7 @@
             <mat-label>Personnel</mat-label>
             <mat-select (selectionChange)="personnelSelected($event.value)">
               <mat-option value="any">Any</mat-option>
-              <mat-option *ngFor="let pers of personnel"
+              <mat-option *ngFor="let pers of personnel | async"
                [value]="pers.value">{{ pers.label }}
               </mat-option>
             </mat-select>

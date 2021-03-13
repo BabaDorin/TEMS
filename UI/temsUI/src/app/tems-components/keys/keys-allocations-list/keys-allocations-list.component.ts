@@ -2,6 +2,7 @@ import { TEMSComponent } from 'src/app/tems/tems.component';
 import { Component, Input, OnInit, SimpleChanges } from '@angular/core';
 import { ViewKeyAllocation } from 'src/app/models/key/view-key-allocation.model';
 import { KeysService } from 'src/app/services/keys-service/keys.service';
+import { Observable, of } from 'rxjs';
 
 @Component({
   selector: 'app-keys-allocations-list',
@@ -13,7 +14,7 @@ export class KeysAllocationsListComponent extends TEMSComponent implements OnIni
   @Input() keyId;
   @Input() roomId;
   @Input() personnelId;
-  allocations: ViewKeyAllocation[];
+  allocations: Observable<ViewKeyAllocation[]>;
 
   constructor(
     private keyService: KeysService
@@ -33,7 +34,7 @@ export class KeysAllocationsListComponent extends TEMSComponent implements OnIni
     this.subscriptions.push(this.keyService.getAllocations(this.keyId, this.roomId, this.personnelId)
       .subscribe(result => {
         console.log(result);
-        this.allocations = result;
+        this.allocations = of(result);
       }));
   }
 }

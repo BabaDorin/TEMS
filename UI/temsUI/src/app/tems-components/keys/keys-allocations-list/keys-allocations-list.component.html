@@ -2,7 +2,7 @@
     <div class="card-body">
         <!-- <button class="btn btn-secondary btn-sm" (click)="addAllocation()">+ Create allocation</button> -->
         <br>
-        <mat-card *ngFor="let allocation of allocations" class="mb-2">
+        <mat-card *ngFor="let allocation of allocations | async" class="mb-2">
             <mat-card-header>
                 <p>
                     <b>{{ allocation.key.identifier }}</b> => <b>{{ allocation.personnel.name }}</b>

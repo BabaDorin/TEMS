@@ -4,6 +4,9 @@ import { Component, OnInit, ViewChild} from '@angular/core';
 import { KeysService } from 'src/app/services/keys-service/keys.service';
 import { IOption } from 'src/app/models/option.model';
 import { RoomsService } from 'src/app/services/rooms-service/rooms.service';
+import { Observable } from 'rxjs';
+import { of } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-view-keys-allocations',
@@ -13,12 +16,12 @@ import { RoomsService } from 'src/app/services/rooms-service/rooms.service';
 export class ViewKeysAllocationsComponent extends TEMSComponent implements OnInit {
   
   @ViewChild('viewKeysAllocationsList') viewKeysAllocationsList;
-  keys: IOption[];
-  filteredKeys: IOption[];
+  keys: Observable<IOption[]>;
+  filteredKeys: Observable<IOption[]>;
   keyId: string = "any";
-  rooms: IOption[];
+  rooms: Observable<IOption[]>;
   roomId: string = "any";
-  personnel: IOption[];
+  personnel: Observable<IOption[]>;
   personnelId: string = "any";
 
   constructor(
@@ -36,7 +39,7 @@ export class ViewKeysAllocationsComponent extends TEMSComponent implements OnIni
       .subscribe(result => {
         console.log('keysAutocomplete')
         console.log(result);
-        this.keys = result;
+        this.keys = of(result);
         this.filteredKeys = this.keys;
       }));
 
@@ -44,14 +47,14 @@ export class ViewKeysAllocationsComponent extends TEMSComponent implements OnIni
       .subscribe(result => {
         console.log('rooms autocomplete')
         console.log(result);
-        this.rooms = result;
+        this.rooms = of(result);
       }));
 
     this.subscriptions.push(this.personnelService.getAllAutocompleteOptions()
       .subscribe(result => {
         console.log('personnel')
         console.log(result);
-        this.personnel = result;
+        this.personnel = of(result);
       }));
   }
 
@@ -65,8 +68,10 @@ export class ViewKeysAllocationsComponent extends TEMSComponent implements OnIni
     if(room == "any")
       this.filteredKeys = this.keys;
     else if(this.keys != undefined){
-      this.filteredKeys = this.keys.filter(q => q.additional == this.roomId);
-      if(this.filteredKeys.map(q => q.value).indexOf(this.keyId) == -1)
+      this.filteredKeys = this.keys.pipe(
+        map(q => q.filter(q => q.additional == this.roomId))
+      )
+
       this.keyId = "any";
     }
   }

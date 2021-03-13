@@ -274,7 +274,7 @@ namespace temsAPI.Controllers.KeyControllers
                                     : "--",
                             }
                         }
-                        )).ToList();
+                        )).OrderByDescending(q => q.DateAllocated).ToList();
 
                 return Json(viewModel);
             }

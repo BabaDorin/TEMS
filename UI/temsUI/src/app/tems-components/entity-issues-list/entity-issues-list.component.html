@@ -1,6 +1,6 @@
-<button class="btn btn-secondary btn-sm" (click)="addIssue()">+ Create issue</button>
+<button *ngIf="addIssueEnabled == true" class="btn btn-secondary btn-sm" (click)="addIssue()">+ Create issue</button>
 <br>
-<mat-card *ngFor="let issue of issues" class="mb-2">
+<mat-card *ngFor="let issue of issues | async" class="mb-2">
     <mat-card-header>
         <p>
             {{ issue.status }} <br>

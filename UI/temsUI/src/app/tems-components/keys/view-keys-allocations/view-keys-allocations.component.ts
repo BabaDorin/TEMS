@@ -33,8 +33,6 @@ export class ViewKeysAllocationsComponent extends TEMSComponent implements OnIni
   }
 
   ngOnInit(): void {
-    console.log('ngoninit');
-
     this.subscriptions.push(this.keysService.getAutocompleteOptions()
       .subscribe(result => {
         console.log('keysAutocomplete')

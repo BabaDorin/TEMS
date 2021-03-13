@@ -5,11 +5,12 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { IssuesService } from './../../services/issues-service/issues.service';
 import { Component, Input, OnInit, OnChanges } from '@angular/core';
 import { ViewIssueSimplified } from 'src/app/models/communication/issues/view-issue-simplified.model';
+import { Observable, of } from 'rxjs';
 
 @Component({
   selector: 'app-entity-issues-list',
   templateUrl: './entity-issues-list.component.html',
-  styleUrls: ['./entity-issues-list.component.scss']
+  styleUrls: ['./entity-issues-list.component.scss'],
 })
 export class EntityIssuesListComponent extends TEMSComponent implements OnInit, OnChanges {
 
@@ -26,7 +27,7 @@ export class EntityIssuesListComponent extends TEMSComponent implements OnInit, 
   @Input() onlyClosed: boolean = false;
   @Input() includingClosed: boolean = false;
 
-  issues: ViewIssueSimplified[];
+  issues: Observable<ViewIssueSimplified[]>;
   @Input() addIssueEnabled: boolean = true;
   
   constructor(
@@ -48,8 +49,7 @@ export class EntityIssuesListComponent extends TEMSComponent implements OnInit, 
     this.subscriptions.push(this.issuesService.getIssues(
       this.equipmentId, this.roomId, this.personnelId, this.includingClosed, this.onlyClosed)
       .subscribe(result => {
-        console.log(result);
-        this.issues = result;
+        this.issues = of(result);
       }))
   }
 

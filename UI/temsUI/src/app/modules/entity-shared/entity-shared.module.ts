@@ -11,6 +11,7 @@ import { CreateIssueComponent } from 'src/app/tems-components/issue/create-issue
 import { EntityLogsListComponent } from 'src/app/tems-components/entity-logs-list/entity-logs-list.component';
 import { SummaryIssuesAnalyticsComponent } from 'src/app/tems-components/analytics/summary-issues-analytics/summary-issues-analytics.component';
 import { EntityAllocationsListComponent } from 'src/app/tems-components/entity-allocations-list/entity-allocations-list.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [

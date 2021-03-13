@@ -5,10 +5,10 @@
             <div class="row">
                 <div class="col-4">
                     <mat-form-field appearance="fill">
-                        <mat-label>Key</mat-label>
-                        <mat-select (selectionChange)="keySelected($event.value)">
+                        <mat-label>Equipment</mat-label>
+                        <mat-select (selectionChange)="equipmentSelected($event.value)">
                             <mat-option value="any">Any</mat-option>
-                            <mat-option *ngFor="let key of filteredKeys | async" [value]="key.value">{{ key.label }}
+                            <mat-option *ngFor="let eq of equipment | async" [value]="eq.value">{{ eq.label }}
                             </mat-option>
                         </mat-select>
                     </mat-form-field>
@@ -40,12 +40,20 @@
                 <app-summary-issues-analytics>
                     Loading...
                 </app-summary-issues-analytics>
-                <app-entity-issues-list>
+                <app-entity-issues-list
+                    [equipmentId]="equipmentId"
+                    [roomId]="roomId"
+                    [personnelId]="personnelId">
                     Loading...
                 </app-entity-issues-list>
             </mat-tab>
             <mat-tab label="Closed">
-                <app-entity-issues-list onlyClosed="true">
+                <app-entity-issues-list 
+                    [equipmentId]="equipmentId"
+                    [roomId]="roomId"
+                    [personnelId]="personnelId"
+                    onlyClosed="true"
+                    addIssueEnabled="false">
                     Loading...
                 </app-entity-issues-list>
             </mat-tab>

@@ -23,7 +23,7 @@ export class KeysAllocationsListComponent extends TEMSComponent implements OnIni
   }
 
   ngOnInit(): void {
-    this.getAllocations();
+    // this.getAllocations();
   }
 
   ngOnChanges(): void {
@@ -33,7 +33,7 @@ export class KeysAllocationsListComponent extends TEMSComponent implements OnIni
   getAllocations(){
     this.subscriptions.push(this.keyService.getAllocations(this.keyId, this.roomId, this.personnelId)
       .subscribe(result => {
-        console.log(result);
+        // console.log(result);
         this.allocations = of(result);
       }));
   }

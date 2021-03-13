@@ -1,75 +1,73 @@
+import { LibraryService } from './../../../services/library-service/library.service';
+import { API_LBR_URL } from './../../../models/backend.config';
+import { TEMSComponent } from 'src/app/tems/tems.component';
 import { Component, OnInit } from '@angular/core';
+import { HttpClient, HttpEventType, HttpRequest } from '@angular/common/http';
+import { AddLibraryItem } from 'src/app/models/library/add-library-item.model';
 
 @Component({
   selector: 'app-upload-library-item',
   templateUrl: './upload-library-item.component.html',
   styleUrls: ['./upload-library-item.component.scss']
 })
-export class UploadLibraryItemComponent implements OnInit {
+export class UploadLibraryItemComponent extends TEMSComponent implements OnInit {
 
   files: any[] = [];
 
-  /**
-   * on file drop handler
-   */
-  onFileDropped($event) {
-    this.prepareFilesList($event);
+  constructor(
+    private http: HttpClient,
+    private libraryService: LibraryService,
+  ) {
+    super();
+  }  
+
+  ngOnInit(): void {
   }
 
-  /**
-   * handle file from browsing
-   */
-  fileBrowseHandler(files) {
-    this.prepareFilesList(files);
-  }
+  upload() {  
+    if (this.files.length === 0)
+      return;
+      
+    let fileToUpload = <File>this.files[0];
+    
+    const formData = new FormData();
+    formData.append('file', fileToUpload, fileToUpload.name);
+    
+    this.http.post(API_LBR_URL + '/uploadfile', formData, {reportProgress: true, observe: 'events'})
+      .subscribe(event => {
+        if (event.type === HttpEventType.UploadProgress)
+          this.files[0].progress = Math.round(100 * event.loaded / event.total);
+        else if (event.type === HttpEventType.Response) {
+          this.files[0].message = 'Upload success.';
+          // this.files[0].onUploadFinished.emit(event.body);
+        }
+      });
+  }  
 
-  /**
-   * Delete file from files list
-   * @param index (File index)
-   */
-  deleteFile(index: number) {
-    this.files.splice(index, 1);
-  }
-
-  /**
-   * Simulate the upload process
-   */
-  uploadFiles(index: number) {
-    // Send files to API and get feedback (progress).
-    setTimeout(() => {
-      if (index === this.files.length) {
-        return;
-      } else {
-        const progressInterval = setInterval(() => {
-          if (this.files[index].progress === 100) {
-            clearInterval(progressInterval);
-            this.uploadFiles(index + 1);
-          } else {
-            this.files[index].progress += 5;
-          }
-        }, 200);
-      }
-    }, 1000);
-  }
-
-  /**
-   * Convert Files list to normal array list
-   * @param files (Files List)
-   */
+  //  Convert Files list to normal array list
   prepareFilesList(files: Array<any>) {
     for (const item of files) {
       item.progress = 0;
       item.myName = '';
       item.myDescription = '';
+      item.message = '';
       this.files.push(item);
     }
   }
 
-  /**
-   * format bytes
-   * @param bytes (File size in bytes)
-   * @param decimals (Decimals point)
-   */
+  onFileDropped($event) {
+    this.prepareFilesList($event);
+  }
+
+  fileBrowseHandler(files) {
+    this.prepareFilesList(files);
+  }
+
+  deleteFile(index: number) {
+    this.libraryService.cancelThread(0).subscribe(result => console.log(result));
+    this.files.splice(index, 1);
+  }
+
   formatBytes(bytes, decimals) {
     if (bytes === 0) {
       return '0 Bytes';
@@ -80,14 +78,4 @@ export class UploadLibraryItemComponent implements OnInit {
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
   }
-
-  startUpload(){
-    this.uploadFiles(0);
-  }
-
-  constructor() { }
-
-  ngOnInit(): void {
-  }
-
 }

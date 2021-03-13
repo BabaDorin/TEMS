@@ -1,12 +1,20 @@
+import { API_LBR_URL } from './../../models/backend.config';
+import { HttpClient } from '@angular/common/http';
+import { TEMSService } from './../tems-service/tems.service';
+import { Observable } from 'rxjs';
 import { ViewLibraryItem } from './../../models/library/view-library-item.model';
 import { Injectable } from '@angular/core';
 
 @Injectable({
   providedIn: 'root'
 })
-export class LibraryService {
+export class LibraryService extends TEMSService {
 
-  constructor() { }
+  constructor(
+    private http: HttpClient
+  ) {
+    super();
+  }
 
   getItems(){
     return [
@@ -16,5 +24,23 @@ export class LibraryService {
       new ViewLibraryItem(),
       new ViewLibraryItem(),
     ]
+  }
+
+  uploadFile(fileToUpload): Observable<any>{
+    return this.http.post(
+      API_LBR_URL + '/uploadFile',
+      fileToUpload,
+      {  
+        reportProgress: true,  
+      }
+    )
+    // const uploadReq = new HttpRequest('POST', API_LBR_URL + '/uploadfile', formData, );  
+  }
+
+  cancelThread(index):Observable<any>{
+    return this.http.get(
+      API_LBR_URL + '/cancel',
+      this.httpOptions
+    );
   }
 }

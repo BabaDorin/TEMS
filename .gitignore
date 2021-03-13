@@ -10,6 +10,9 @@ app/**/*.js.map
 node_modules/
 bower_components/
 
+#library uploads
+LibraryUploads/
+
 # IDEs and editors
 .idea/
 

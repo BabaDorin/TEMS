@@ -66,15 +66,17 @@
                     <form class="fileInfoForm">
                         <mat-form-field class="full-width">
                             <mat-label>File name (Optional)</mat-label>
-                            <input matInput placeholder="SIMC"  [disabled]="file?.progress > 0" [value]="file?.myName"  class="full-width">
+                            <input matInput placeholder="SIMC" [disabled]="file?.progress > 0" [value]="file?.myName"
+                                class="full-width">
                         </mat-form-field>
-                      <br>
+                        <br>
                         <mat-form-field class="full-width">
-                          <mat-label>Description (Optional)</mat-label>
-                          <textarea matInput placeholder="..." [disabled]="file?.progress > 0" [value]="file?.myDescription" class="full-width">
+                            <mat-label>Description (Optional)</mat-label>
+                            <textarea matInput placeholder="..." [disabled]="file?.progress > 0"
+                                [value]="file?.myDescription" class="full-width">
                           </textarea>
                         </mat-form-field>
-                      </form>
+                    </form>
                     <ngb-progressbar *ngIf="file?.progress < 100" type="primary" [value]="file?.progress" striped="true"
                         animated="true"></ngb-progressbar>
                     <h3 class="text-success" *ngIf="file?.progress == 100">File has been uploaded</h3>
@@ -87,7 +89,15 @@
                     </svg>
                 </div>
             </div>
-            <button class="btn btn-primary" *ngIf="files.length > 0" (click)="startUpload()">Start uploading</button>
+            <button class="btn btn-primary" *ngIf="files.length > 0" (click)="upload()">Start uploading</button>
         </div>
     </div>
 </div>
+
+<span style="font-weight:bold;color:green;" *ngIf="progress > 0 && progress < 100">
+    {{progress}}%
+</span>
+
+<span style="font-weight:bold;color:green;" *ngIf="message">
+    {{message.status}}
+</span>

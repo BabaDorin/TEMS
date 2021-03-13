@@ -369,8 +369,9 @@ export class FormlyParserService {
           },
           {
             key: 'text',
-            type: 'input-tooltip',
+            type: 'textarea',
             templateOptions: {
+              rows: 3,
               required: true,
               label: 'Message',
             },

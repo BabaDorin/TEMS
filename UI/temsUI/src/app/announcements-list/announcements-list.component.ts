@@ -1,3 +1,4 @@
+import { TEMSComponent } from 'src/app/tems/tems.component';
 import { AddAnnouncementComponent } from './../add-announcement/add-announcement.component';
 import { Component, OnInit } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
@@ -9,18 +10,21 @@ import { CommunicationService } from '../services/communication-service/communic
   templateUrl: './announcements-list.component.html',
   styleUrls: ['./announcements-list.component.scss']
 })
-export class AnnouncementsListComponent implements OnInit {
+export class AnnouncementsListComponent extends TEMSComponent implements OnInit {
 
   announcements: ViewAnnouncement[];
   constructor(
     private communicationService: CommunicationService,
     public dialog: MatDialog
   ) { 
-
+    super();
   }
 
   ngOnInit(): void {
-    this.announcements = this.communicationService.getAnnouncements();
+    this.subscriptions.push(this.communicationService.getAnnouncements()
+      .subscribe(result => {
+        this.announcements = result;
+      }));
   }
 
   addAnnouncement(){

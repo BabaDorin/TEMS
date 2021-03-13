@@ -17,14 +17,11 @@ export class CommunicationService extends TEMSService {
     super();
   }
 
-  getAnnouncements(){
-    return [
-      new ViewAnnouncement(),
-      new ViewAnnouncement(),
-      new ViewAnnouncement(),
-      new ViewAnnouncement(),
-      new ViewAnnouncement(),
-    ];
+  getAnnouncements(): Observable<ViewAnnouncement[]>{
+    return this.http.get<ViewAnnouncement[]>(
+      API_ANN_URL + '/get',
+      this.httpOptions
+    );
   }
 
   createAnnouncement(addAnnouncement: AddAnnouncement): Observable<any>{

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -8,7 +9,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.Http.Headers;
-using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.UserEntities;
@@ -31,42 +31,54 @@ namespace temsAPI.Controllers.LibraryControllers
         private Task upload = null;
 
         [HttpPost, DisableRequestSizeLimit]
-        public async Task<JsonResult> UploadFile()
+        public void UploadFile()
         {
             try
             {
-                var formCollection = await Request.ReadFormAsync();
-                var file = formCollection.Files.First();
+                IFormFile file = null;
 
-                if (file.Length == 0)
-                    return ReturnResponse($"No file provided,", ResponseStatus.Fail);
+                    file = Request.Form.Files[0];
 
-                var folderName = Path.Combine("StaticFiles", "LibraryUploads");
-                var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
-                var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
-                var fullPath = Path.Combine(pathToSave, fileName);
-                var dbPath = Path.Combine(folderName, fileName);
+                    if (file == null)
+                    {
+                        Debug.WriteLine("file null");
+                        throw new Exception();
+                    }
 
-                using (var stream = new FileStream(fullPath, FileMode.Create))
-                    file.CopyTo(stream);
+                    var folderName = Path.Combine("StaticFiles", "LibraryUploads");
+                    var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
+                    if (file.Length > 0)
+                    {
+                        var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
+                        var fullPath = Path.Combine(pathToSave, fileName);
+                        var dbPath = Path.Combine(folderName, fileName);
+                        using (var stream = new FileStream(fullPath, FileMode.Create))
+                        {
+                            file.CopyTo(stream);
+                        }
 
-                return ReturnResponse($"{fileName} has been successfuly uploaded", ResponseStatus.Success);
+                    }
             }
-            catch (COMException ex)
+            catch (Exception ex)
             {
-                Console.WriteLine("-------------------------File upload canceled----------------------");
                 Debug.WriteLine(ex);
-                Console.WriteLine("--------------------------------------------------------------");
-                return ReturnResponse($"Upload canceled", ResponseStatus.Fail);
-            }
-            catch(Exception ex)
-            {
-                Console.WriteLine("-------------------------File upload failed----------------------");
-                Debug.WriteLine(ex);
-                Console.WriteLine("--------------------------------------------------------------");
-
-                return ReturnResponse($"Upload failed", ResponseStatus.Fail);
+                //return StatusCode(500, $"Internal server error: {ex}");
             }
         }
+
+        [HttpGet]
+        public async Task<IActionResult> Cancel()
+        {
+            try
+            {
+                return StatusCode(200, $"nice");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return StatusCode(500, $"Internal server error: {ex}");
+            }
+        }
+
     }
 }

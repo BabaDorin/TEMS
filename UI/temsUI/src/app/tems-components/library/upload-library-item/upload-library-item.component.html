@@ -78,8 +78,9 @@
                         </mat-form-field>
                     </form>
                     <ngb-progressbar *ngIf="file?.progress < 100" type="primary" [value]="file?.progress" striped="true"
-                        animated="true"></ngb-progressbar>
-                    <h3 class="text-success" *ngIf="file?.progress == 100">File has been uploaded</h3>
+                        animated="true">
+                    </ngb-progressbar>
+                    <h3 class="text-success" *ngIf="file?.message != undefined">{{ file?.message }}</h3>
                 </div>
 
                 <div class="delete" (click)="deleteFile(i)">

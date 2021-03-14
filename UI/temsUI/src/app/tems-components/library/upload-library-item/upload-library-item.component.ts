@@ -19,30 +19,39 @@ export class UploadLibraryItemComponent extends TEMSComponent implements OnInit 
     private libraryService: LibraryService,
   ) {
     super();
-  }  
+  }
 
   ngOnInit(): void {
   }
 
-  upload() {  
+  private formDatas: FormData[] = [];
+
+  upload() {
     if (this.files.length === 0)
       return;
-      
-    let fileToUpload = <File>this.files[0];
-    
-    const formData = new FormData();
-    formData.append('file', fileToUpload, fileToUpload.name);
-    
-    this.http.post(API_LBR_URL + '/uploadfile', formData, {reportProgress: true, observe: 'events'})
-      .subscribe(event => {
-        if (event.type === HttpEventType.UploadProgress)
-          this.files[0].progress = Math.round(100 * event.loaded / event.total);
-        else if (event.type === HttpEventType.Response) {
-          this.files[0].message = 'Upload success.';
-          // this.files[0].onUploadFinished.emit(event.body);
-        }
-      });
-  }  
+
+    for (let index = 0; index < this.files.length; index++) {
+
+      let fileToUpload = <File>this.files[index];
+
+      const formData = new FormData();
+      formData.append('file', fileToUpload, fileToUpload.name);
+      this.formDatas.push(formData);
+
+      this.http.post(API_LBR_URL + '/uploadfile', this.formDatas[index], { reportProgress: true, observe: 'events' })
+        .subscribe(event => {
+          console.log(event);
+
+          if (event.type === HttpEventType.UploadProgress)
+            this.files[index].progress = Math.round(100 * event.loaded / event.total);
+          else if (event.type === HttpEventType.Response) {
+            this.files[index].message = 'Upload success.';
+            // this.files[0].onUploadFinished.emit(event.body);
+          }
+        });
+    }
+
+  }
 
   //  Convert Files list to normal array list
   prepareFilesList(files: Array<any>) {
@@ -65,7 +74,10 @@ export class UploadLibraryItemComponent extends TEMSComponent implements OnInit 
 
   deleteFile(index: number) {
     this.libraryService.cancelThread(0).subscribe(result => console.log(result));
-    this.files.splice(index, 1);
+    // this.formDatas.splice(index, 1);
+    // this.files.splice(index, 1);
+    this.formDatas[index] = null;
+    this.files[index] = { message: "canceled" };
   }
 
   formatBytes(bytes, decimals) {

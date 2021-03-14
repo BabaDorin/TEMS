@@ -38,7 +38,7 @@
                     <div class="file-icon" style="width: 50px">
                         <app-file-icon></app-file-icon>
                     </div>
-                    <div class="info">
+                    <div *ngIf="file?.status != 'uploaded'" class="info">
                         <h4 class="name">
                             {{ file?.name }}
                         </h4>
@@ -77,6 +77,11 @@
                         </form>
                         
                         <h3 class="text-success" *ngIf="file?.message != undefined">{{ file?.message }}</h3>
+                    </div>
+
+                    <div *ngIf="file?.status == 'uploaded'">
+                            <p class="text-center"><b>{{ file?.name }}</b></p>
+                            <p class="text-success text-center">Has been successfuly uploaded!</p>
                     </div>
     
                     <div class="delete" (click)="deleteFile(i)">

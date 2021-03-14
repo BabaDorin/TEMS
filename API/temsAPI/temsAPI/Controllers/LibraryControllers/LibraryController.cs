@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Connections;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -12,57 +13,79 @@ using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.UserEntities;
+using temsAPI.ViewModels.Library;
 
 namespace temsAPI.Controllers.LibraryControllers
 {
     public class LibraryController : TEMSController
     {
-        private IWebHostEnvironment _hostingEnvironment;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private ISession _session => _httpContextAccessor.HttpContext.Session;
 
         public LibraryController(
             IMapper mapper,
             IUnitOfWork unitOfWork,
             UserManager<TEMSUser> userManager,
-            IWebHostEnvironment hostingEnvironment) : base(mapper, unitOfWork, userManager)
+            IHttpContextAccessor httpContextAccessor) : base(mapper, unitOfWork, userManager)
         {
-            _hostingEnvironment = hostingEnvironment;
+            _httpContextAccessor = httpContextAccessor;
         }
 
-        private Task upload = null;
-
         [HttpPost, DisableRequestSizeLimit]
-        public void UploadFile()
+        public async Task<IActionResult> UploadFile()
         {
             try
             {
-                IFormFile file = null;
+                var formCollection = await Request.ReadFormAsync();
+                var file = formCollection.Files.First();
 
-                    file = Request.Form.Files[0];
+                if (file == null)
+                {
+                    Debug.WriteLine("file null");
+                    throw new Exception("Null file ??");
+                }
 
-                    if (file == null)
+                AddLibraryItemViewModel viewModel = new AddLibraryItemViewModel();
+                viewModel.Name= Request.Form["myName"];
+                viewModel.Description = Request.Form["myDescription"];
+                viewModel.ActualName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
+                
+
+                var folderName = Path.Combine("StaticFiles", "LibraryUploads");
+                var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
+                if (file.Length > 0)
+                {
+                    var fullPath = Path.Combine(pathToSave, viewModel.ActualName);
+                    var dbPath = Path.Combine(folderName, viewModel.ActualName);
+                    using (var stream = new FileStream(fullPath, FileMode.Create))
                     {
-                        Debug.WriteLine("file null");
-                        throw new Exception();
+                        file.CopyTo(stream);
                     }
+                }
 
-                    var folderName = Path.Combine("StaticFiles", "LibraryUploads");
-                    var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
-                    if (file.Length > 0)
-                    {
-                        var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
-                        var fullPath = Path.Combine(pathToSave, fileName);
-                        var dbPath = Path.Combine(folderName, fileName);
-                        using (var stream = new FileStream(fullPath, FileMode.Create))
-                        {
-                            file.CopyTo(stream);
-                        }
-
-                    }
+                // Save view model!!!
+                
+                return Ok();
+            }
+            catch (ConnectionResetException ex)
+            {
+                // When the Client - Server connection has been "closed" (Where closed means that
+                // the client stopped sending requests aka When TEMS Tab is closed or user canceled the upload,
+                // this Exeption will be trown.
+                
+                // This behaviour helps us to easily implement the "cancel upload" feature (kind of), without
+                // Third party Upload Controllers that cost money ;(
+                Debug.WriteLine("----------------------------");
+                Debug.WriteLine(ex);
+                Debug.WriteLine("----------------------------");
+                return Ok();
             }
             catch (Exception ex)
             {
+                Debug.WriteLine("----------------------------");
                 Debug.WriteLine(ex);
-                //return StatusCode(500, $"Internal server error: {ex}");
+                Debug.WriteLine("----------------------------");
+                return StatusCode(500, $"Internal server error: {ex}");
             }
         }
 
@@ -71,7 +94,8 @@ namespace temsAPI.Controllers.LibraryControllers
         {
             try
             {
-                return StatusCode(200, $"nice");
+                // stuff
+                return ReturnResponse("Canceled", ResponseStatus.Fail);
             }
             catch (Exception ex)
             {

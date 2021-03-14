@@ -18,6 +18,9 @@ namespace temsAPI.Controllers
 
     public class TEMSController : Controller
     {
+        protected static int maxConcurrentUploads = 2;
+        protected static int concurrentUploads = 0;
+
         protected readonly IUnitOfWork _unitOfWork;
         protected readonly UserManager<TEMSUser> _userManager;
         protected IMapper _mapper;

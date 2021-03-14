@@ -36,6 +36,8 @@ namespace temsAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDistributedMemoryCache();
+            services.AddSession();
 
             services.AddDbContextPool<ApplicationDbContext>(options =>
                 options.UseSqlServer(
@@ -95,7 +97,7 @@ namespace temsAPI
             }
 
             app.UseHttpsRedirection();
-
+            app.UseSession();
             app.UseRouting();
             app.UseCors(MyAllowSpecificOrigins);
             app.UseAuthorization();

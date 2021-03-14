@@ -26,15 +26,14 @@ export class LibraryService extends TEMSService {
     ]
   }
 
-  uploadFile(fileToUpload): Observable<any>{
+  uploadFile(formData): Observable<any>{
     return this.http.post(
-      API_LBR_URL + '/uploadFile',
-      fileToUpload,
-      {  
-        reportProgress: true,  
-      }
-    )
-    // const uploadReq = new HttpRequest('POST', API_LBR_URL + '/uploadfile', formData, );  
+      API_LBR_URL + '/uploadfile', 
+      formData, 
+      { 
+        reportProgress: true, 
+        observe: 'events', 
+      });
   }
 
   cancelThread(index):Observable<any>{

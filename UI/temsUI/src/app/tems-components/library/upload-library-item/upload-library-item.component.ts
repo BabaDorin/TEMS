@@ -27,30 +27,48 @@ export class UploadLibraryItemComponent extends TEMSComponent implements OnInit 
   private formDatas: FormData[] = [];
 
   upload() {
+    // console.log(this.files[0]);
+    // console.log(this.files[1]);
     if (this.files.length === 0)
       return;
 
-    for (let index = 0; index < this.files.length; index++) {
+    this.uploadFile(0);
 
-      let fileToUpload = <File>this.files[index];
+    // for (let index = 0; index < this.files.length; index++) {
+    //   if(this.files[index] == null)
+    //     continue;
+    // }
+  }
 
-      const formData = new FormData();
-      formData.append('file', fileToUpload, fileToUpload.name);
-      this.formDatas.push(formData);
+  uploadFile(index) {
+    // If current null - pick next
+    if(this.files[index] == null)
+      if(index < this.files.length)
+        this.uploadFile(++index);
+      else
+        return;
 
-      this.http.post(API_LBR_URL + '/uploadfile', this.formDatas[index], { reportProgress: true, observe: 'events' })
-        .subscribe(event => {
-          console.log(event);
+    let fileToUpload = this.files[index];
 
-          if (event.type === HttpEventType.UploadProgress)
-            this.files[index].progress = Math.round(100 * event.loaded / event.total);
-          else if (event.type === HttpEventType.Response) {
-            this.files[index].message = 'Upload success.';
-            // this.files[0].onUploadFinished.emit(event.body);
-          }
-        });
-    }
+    const formData = new FormData();
+    formData.append('file', fileToUpload, fileToUpload.name);
+    formData.append('myName', fileToUpload.myName)
+    formData.append('myDescription', fileToUpload.myDescription)
+    this.formDatas.push(formData);
 
+    this.subscriptions.push(this.libraryService.uploadFile(this.formDatas[index])
+      .subscribe(event => {
+        console.log(event);
+
+        if (event.type === HttpEventType.UploadProgress)
+          this.files[index].progress = Math.round(100 * event.loaded / event.total);
+        else if (event.type === HttpEventType.Response) {
+          this.files[index].message = 'Upload success.';
+  
+          if(index < this.files.length)
+            this.uploadFile(++index);
+        }
+      }));
   }
 
   //  Convert Files list to normal array list
@@ -74,10 +92,8 @@ export class UploadLibraryItemComponent extends TEMSComponent implements OnInit 
 
   deleteFile(index: number) {
     this.libraryService.cancelThread(0).subscribe(result => console.log(result));
-    // this.formDatas.splice(index, 1);
-    // this.files.splice(index, 1);
     this.formDatas[index] = null;
-    this.files[index] = { message: "canceled" };
+    this.files[index] = null;
   }
 
   formatBytes(bytes, decimals) {

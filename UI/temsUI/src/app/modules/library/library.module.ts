@@ -1,3 +1,4 @@
+import { TemsFormsModule } from './../tems-forms/tems-forms.module';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { DndDirective } from './../../tems-components/library/upload-library-item/dnd.directive';
 import { MaterialModule } from '../material/material.module';
@@ -8,6 +9,7 @@ import { CommonModule } from '@angular/common';
 import { LibraryRoutingModule } from './library-routing.module';
 import { UploadLibraryItemComponent } from 'src/app/tems-components/library/upload-library-item/upload-library-item.component';
 import { AngularFileUploaderModule } from 'angular-file-uploader';
+import { FileIconComponent } from 'src/app/tems-components/tems-icons/file-icon/file-icon.component';
 
 
 @NgModule({
@@ -15,12 +17,14 @@ import { AngularFileUploaderModule } from 'angular-file-uploader';
     ViewLibraryComponent,
     UploadLibraryItemComponent,
     DndDirective,
+    FileIconComponent
   ],
   imports: [
     CommonModule,
     MaterialModule,
     LibraryRoutingModule,
     AngularFileUploaderModule,
+    TemsFormsModule,
     NgbModule,
   ]
 })

@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
@@ -52,29 +53,20 @@ namespace temsAPI.Controllers.LibraryControllers
                 viewModel.Name = Request.Form["myName"];
                 viewModel.Description = Request.Form["myDescription"];
                 viewModel.ActualName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
-
-
                 var folderName = Path.Combine("StaticFiles", "LibraryUploads");
                 var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
+
                 if (file.Length > 0)
                 {
-                    viewModel.ActualName += "_" + EncryptionService.Md5(DateTime.Now.ToString()) + ".zip";
+                    viewModel.ActualName += "_" + EncryptionService.Md5(DateTime.Now.ToString());
                     var fullPath = Path.Combine(pathToSave, viewModel.ActualName);
                     var dbPath = Path.Combine(folderName, viewModel.ActualName);
-                    //using (var stream = new FileStream(fullPath, FileMode.Create))
-                    //{
-                    //    file.CopyTo(stream);
-                    //}
 
-                    using (FileStream zipFile = System.IO.File.Open(dbPath, FileMode.Create))
+                    using (var zipArchive = new ZipArchive(System.IO.File.OpenWrite(dbPath + ".zip"), ZipArchiveMode.Create))
                     {
-                        // File to be added to archive
-                        using (var archive = new Archive(new ArchiveEntrySettings()))
+                        using (var entry = zipArchive.CreateEntry(file.FileName).Open())
                         {
-                            // Add file to the archive
-                            archive.CreateEntry(file.FileName, file.OpenReadStream());
-                            // ZIP file
-                            archive.Save(zipFile);
+                            file.CopyTo(entry);
                         }
                     }
                 }

@@ -1,4 +1,6 @@
-﻿using AutoMapper;
+﻿using Aspose.Zip;
+using Aspose.Zip.Saving;
+using AutoMapper;
 using Microsoft.AspNetCore.Connections;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -13,6 +15,7 @@ using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.UserEntities;
+using temsAPI.Helpers;
 using temsAPI.ViewModels.Library;
 
 namespace temsAPI.Controllers.LibraryControllers
@@ -46,25 +49,37 @@ namespace temsAPI.Controllers.LibraryControllers
                 }
 
                 AddLibraryItemViewModel viewModel = new AddLibraryItemViewModel();
-                viewModel.Name= Request.Form["myName"];
+                viewModel.Name = Request.Form["myName"];
                 viewModel.Description = Request.Form["myDescription"];
                 viewModel.ActualName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
-                
+
 
                 var folderName = Path.Combine("StaticFiles", "LibraryUploads");
                 var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
                 if (file.Length > 0)
                 {
+                    viewModel.ActualName += "_" + EncryptionService.Md5(DateTime.Now.ToString()) + ".zip";
                     var fullPath = Path.Combine(pathToSave, viewModel.ActualName);
                     var dbPath = Path.Combine(folderName, viewModel.ActualName);
-                    using (var stream = new FileStream(fullPath, FileMode.Create))
+                    //using (var stream = new FileStream(fullPath, FileMode.Create))
+                    //{
+                    //    file.CopyTo(stream);
+                    //}
+
+                    using (FileStream zipFile = System.IO.File.Open(dbPath, FileMode.Create))
                     {
-                        file.CopyTo(stream);
+                        // File to be added to archive
+                        using (var archive = new Archive(new ArchiveEntrySettings()))
+                        {
+                            // Add file to the archive
+                            archive.CreateEntry(file.FileName, file.OpenReadStream());
+                            // ZIP file
+                            archive.Save(zipFile);
+                        }
                     }
                 }
 
                 // Save view model!!!
-                
                 return Ok();
             }
             catch (ConnectionResetException ex)
@@ -72,7 +87,7 @@ namespace temsAPI.Controllers.LibraryControllers
                 // When the Client - Server connection has been "closed" (Where closed means that
                 // the client stopped sending requests aka When TEMS Tab is closed or user canceled the upload,
                 // this Exeption will be trown.
-                
+
                 // This behaviour helps us to easily implement the "cancel upload" feature (kind of), without
                 // Third party Upload Controllers that cost money ;(
                 Debug.WriteLine("----------------------------");

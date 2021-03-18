@@ -1,12 +1,12 @@
+DOCS
+https://blog.aspose.com/2020/04/22/create-zip-archives-add-files-or-folders-to-zip-in-csharp-asp.net/
+
+
 TODO
 
-Find a way to solve infinite cycle problem
-when including properties and then properties'
-datatypes.
-
-You may encounter this problem in the future.
 
 2. Adding logs property
+
 
 
 todo:

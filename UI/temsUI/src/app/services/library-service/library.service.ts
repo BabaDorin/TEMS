@@ -49,4 +49,11 @@ export class LibraryService extends TEMSService {
       }
     );
   }
+
+  removeItem(itemId: string): Observable<any>{
+    return this.http.get(
+      API_LBR_URL + '/remove/' + itemId,
+      this.httpOptions
+    );
+  }
 }

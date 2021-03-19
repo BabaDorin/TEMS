@@ -30,10 +30,7 @@ export class ViewLibraryComponent extends TEMSComponent implements OnInit {
   downloadItem(itemId: string, fileName: string) {
     this.subscriptions.push(this.libraryService.downloadItem(itemId)
       .subscribe((event) => {
-        console.log(event);
-
         this.downloadFile(event, fileName);
-
         // if (event.type === HttpEventType.Response) {
         //   this.downloadFile(event);
         // }
@@ -44,8 +41,15 @@ export class ViewLibraryComponent extends TEMSComponent implements OnInit {
     const downloadedFile = new Blob([data], { type: data.type.toString() });
     var url = window.URL.createObjectURL(downloadedFile);
     var anchor = document.createElement("a");
-    anchor.download = "C:\\Users\\Dorin\\Desktop\\repos\\TEMS\\fe-be-integration\\tems\\API\\temsAPI\\temsAPI\\StaticFiles\\LibraryUploads\\Program_86CE3D50277621A8BC5B3D2104196C7A.zip";
+    anchor.download = fileName;
     anchor.href = url;
     anchor.click();
+  }
+
+  removeItem(itemId: string){
+    this.subscriptions.push(this.libraryService.removeItem(itemId)
+      .subscribe(result => {
+        console.log(result);
+      }))
   }
 }

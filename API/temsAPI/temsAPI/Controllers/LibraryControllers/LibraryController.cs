@@ -52,24 +52,13 @@ namespace temsAPI.Controllers.LibraryControllers
                 AddLibraryItemViewModel viewModel = new AddLibraryItemViewModel();
                 viewModel.Name = Request.Form["myName"];
                 viewModel.Description = Request.Form["myDescription"];
-                viewModel.ActualName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
-                var folderName = Path.Combine("StaticFiles", "LibraryUploads");
-                var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
+                viewModel.ActualName = ContentDispositionHeaderValue
+                    .Parse(file.ContentDisposition)
+                    .FileName
+                    .Trim('"');
 
-                if (file.Length > 0)
-                {
-                    viewModel.ActualName += "_" + EncryptionService.Md5(DateTime.Now.ToString());
-                    var fullPath = Path.Combine(pathToSave, viewModel.ActualName);
-                    var dbPath = Path.Combine(folderName, viewModel.ActualName);
-
-                    using (var zipArchive = new ZipArchive(System.IO.File.OpenWrite(dbPath + ".zip"), ZipArchiveMode.Create))
-                    {
-                        using (var entry = zipArchive.CreateEntry(file.FileName).Open())
-                        {
-                            file.CopyTo(entry);
-                        }
-                    }
-                }
+                viewModel.ActualName = FileUploadService.AddMd5Suffix(viewModel.ActualName);
+                FileUploadService.CompressAndSave(file, viewModel.ActualName);
 
                 // Save view model!!!
                 return Ok();

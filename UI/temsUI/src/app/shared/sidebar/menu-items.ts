@@ -333,7 +333,7 @@ export class menuItems {
       showSubmenu: false,
       submenu: [
         {
-          path: '/administration/equipment-management',
+          path: '/administration/equipment',
           title: 'Equipment',
           icon: 'mdi mdi-database-plus menu-icon',
           isActive: false,
@@ -342,7 +342,7 @@ export class menuItems {
           submenu: []
         },
         {
-          path: '/administration/user-management',
+          path: '/administration/users',
           title: 'Users',
           icon: 'mdi mdi-account-multiple-outline menu-icon',
           isShown: this.role.hasAdminRights,
@@ -351,7 +351,7 @@ export class menuItems {
           submenu: []
         },
         {
-          path: '/administration/role-management',
+          path: '/administration/roles',
           title: 'Roles',
           icon: 'mdi mdi-account-convert menu-icon',
           isActive: false,

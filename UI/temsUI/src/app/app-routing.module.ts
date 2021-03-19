@@ -23,6 +23,7 @@ const routes: Routes = [
   { path: 'communication', loadChildren: () => import('./modules/communication/communication.module').then(m => m.CommunicationModule) },
   { path: 'library', loadChildren: () => import('./modules/library/library.module').then(m => m.LibraryModule) },
   { path: 'reports', loadChildren: () => import('./modules/reports/reports.module').then(m => m.ReportsModule) },
+  { path: 'administration', loadChildren: () => import('./administration/administration.module').then(m => m.AdministrationModule) },
 
 ];
 

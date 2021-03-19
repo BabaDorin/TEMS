@@ -4,20 +4,22 @@
         <hr>
         <br>
         <br>
-        <mat-card *ngFor="let item of libraryItems" class="mb-2">
-            <mat-card-header>
-                <p>
-                    {{ item.name }} 
-                    <span class="text-muted float-right">
-                        {{ item.dateUploaded | date:'medium' }}
-                    </span>
-                </p>
-            </mat-card-header>
-            <mat-card-content>
-                <p>
-                    {{ item.description }}
-                </p>
-            </mat-card-content>
-        </mat-card>
+        <div class="row">
+            <div *ngFor="let item of libraryItems" class="col-3 mb-1" >
+                <mat-card >
+                    <mat-card-header>
+                        <p><b>{{ item.displayName }}</b></p>
+                    </mat-card-header>
+                    <mat-card-content>
+                        <p>{{ item.description }}</p>
+                        <p class="text-muted">Size: {{ item.fileSize }}</p>
+                        <p class="text-muted">Downloads: {{ item.downloads }}</p>
+                        <p class="text-muted float-right">{{ item.dateUploaded | date:'medium' }}</p>
+                        <button (click)="downloadItem(item.id)" class="btn btn-primary">Download</button>
+                        <button (click)="removeItem(item.id)" class="btn btn-info">Remove</button>
+                    </mat-card-content>
+                </mat-card>
+            </div>
+        </div>
     </div>
 </div>

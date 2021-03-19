@@ -16,14 +16,11 @@ export class LibraryService extends TEMSService {
     super();
   }
 
-  getItems(){
-    return [
-      new ViewLibraryItem(),
-      new ViewLibraryItem(),
-      new ViewLibraryItem(),
-      new ViewLibraryItem(),
-      new ViewLibraryItem(),
-    ]
+  getItems(): Observable<ViewLibraryItem[]>{
+    return this.http.get<ViewLibraryItem[]>(
+      API_LBR_URL + '/getlibraryitems',
+      this.httpOptions
+    );
   }
 
   uploadFile(formData): Observable<any>{

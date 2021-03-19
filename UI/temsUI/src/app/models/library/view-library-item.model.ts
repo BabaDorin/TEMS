@@ -1,31 +1,25 @@
+import { IOption } from './../option.model';
 import { ViewUserSimplified } from './../user/view-user.model';
 export interface IViewLibraryItem {
     id?: string,
-    name: string;
-    description?: string;
+    actualName: string,
+    displayName: string,
+    description?: string,
     dateUploaded: Date,
-    dateRemoved?: Date
-    uploadedBy: ViewUserSimplified,
-    removedBy?: ViewUserSimplified,
-    imagePath?: string,
-    downloadLink?: string,
+    uploadedBy?: IOption,
+    dbPath: string,
+    fileSize: number,
+    downloads: number,
 }
 
 export class ViewLibraryItem implements IViewLibraryItem{
     id?: string;
-    name: string;
+    actualName: string;
+    displayName: string;
     description?: string;
     dateUploaded: Date;
-    dateRemoved?: Date;
-    uploadedBy: ViewUserSimplified;
-    removedBy?: ViewUserSimplified;
-    imagePath?: string;
-    
-    constructor(){
-        this.id = '1';
-        this.name = 'Team Viewer',
-        this.description = 'TV Description',
-        this.dateUploaded = new Date();
-        this.uploadedBy = new ViewUserSimplified();
-    }
+    uploadedBy?: IOption;
+    dbPath: string;
+    fileSize: number;
+    downloads: number;
 }

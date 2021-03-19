@@ -1,8 +1,10 @@
+import { UploadLibraryItemComponent } from 'src/app/tems-components/library/upload-library-item/upload-library-item.component';
 import { TEMSComponent } from './../../../tems/tems.component';
 import { ViewLibraryItem } from './../../../models/library/view-library-item.model';
 import { LibraryService } from './../../../services/library-service/library.service';
 import { Component, OnInit } from '@angular/core';
 import { HttpEventType, HttpResponse } from '@angular/common/http';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-view-library',
@@ -14,7 +16,8 @@ export class ViewLibraryComponent extends TEMSComponent implements OnInit {
   libraryItems: ViewLibraryItem[];
 
   constructor(
-    private libraryService: LibraryService
+    private libraryService: LibraryService,
+    public dialog: MatDialog
   ) {
     super();
   }
@@ -57,5 +60,19 @@ export class ViewLibraryComponent extends TEMSComponent implements OnInit {
           this.libraryItems.splice(this.libraryItems.indexOf(item), 1);
         console.log(result);
       }))
+  }
+
+  openUploadItems(){
+      let dialogRef: MatDialogRef<any>;
+      dialogRef = this.dialog.open(UploadLibraryItemComponent);
+  
+      dialogRef.afterClosed().subscribe(result => {
+        console.log('The dialog was closed');
+        this.unsubscribeFromAll();
+        this.subscriptions.push(this.libraryService.getItems()
+          .subscribe(response => {
+            this.libraryItems = response;
+          }));
+      });
   }
 }

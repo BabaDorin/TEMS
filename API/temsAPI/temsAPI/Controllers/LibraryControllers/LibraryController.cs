@@ -15,6 +15,7 @@ using System.Linq;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
+using temsAPI.Data.Entities.LibraryEntities;
 using temsAPI.Data.Entities.UserEntities;
 using temsAPI.Helpers;
 using temsAPI.ViewModels.Library;
@@ -49,19 +50,44 @@ namespace temsAPI.Controllers.LibraryControllers
                     throw new Exception("Null file ??");
                 }
 
-                AddLibraryItemViewModel viewModel = new AddLibraryItemViewModel();
-                viewModel.Name = Request.Form["myName"];
-                viewModel.Description = Request.Form["myDescription"];
-                viewModel.ActualName = ContentDispositionHeaderValue
-                    .Parse(file.ContentDisposition)
-                    .FileName
-                    .Trim('"');
 
-                viewModel.ActualName = FileUploadService.AddMd5Suffix(viewModel.ActualName);
-                FileUploadService.CompressAndSave(file, viewModel.ActualName);
-                
-                // Save view model!!!
-                return Ok();
+                AddLibraryItemViewModel viewModel = new AddLibraryItemViewModel
+                {
+                    DisplayName = Request.Form["myName"],
+                    Description = Request.Form["myDescription"],
+                    ActualName = FileUploadService.GetSanitarizedUniqueActualName(file),
+                };
+
+                string dbPath = FileUploadService.CompressAndSave(file, viewModel.ActualName);
+
+                if(dbPath == null)
+                    return StatusCode(500, $"File could not be uploaded");
+
+                LibraryItem model = new LibraryItem
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    ActualName = viewModel.ActualName,
+                    DateUploaded = DateTime.Now,
+                    DbPath = dbPath,
+                    Description = viewModel.Description,
+                    DisplayName = viewModel.DisplayName,
+                    FileSize = file.Length,
+                };
+
+                await _unitOfWork.LibraryItems.Create(model);
+                await _unitOfWork.Save();
+
+                if (await _unitOfWork.LibraryItems.isExists(q => q.Id == model.Id))
+                    return Ok();
+
+                // File has been saved to disk, but without any reference in db. Let's
+                // delete the file since we ca'nt access it.
+                await Task.Run(() =>
+                {
+                    FileUploadService.DeleteFile(model.DbPath);
+                }).ConfigureAwait(false);
+                return StatusCode(500, $"An error occured when saving the file in database." +
+                    $" Consider uploading again.");
             }
             catch (ConnectionResetException ex)
             {

@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Net.Http.Headers;
+using System.Security.AccessControl;
 using System.Threading.Tasks;
 
 namespace temsAPI.Helpers
@@ -41,34 +43,48 @@ namespace temsAPI.Helpers
 
         public static string AddMd5Suffix(string fileName)
         {
-            string sanitarizedFileName = SanitarizeFileNameAndRemoveExtension(fileName);
-            return sanitarizedFileName += "_" + EncryptionService.Md5(DateTime.Now.ToString());
+            string finalFileName = 
+                fileName + 
+                "_" + 
+                EncryptionService.Md5(DateTime.Now.ToString());
+            return finalFileName;
         }
 
-        public static bool CompressAndSave(IFormFile file, string actualName)
+        public static string CompressAndSave(IFormFile file, string actualName)
         {
             try
             {
+                string dbPath = null;
                 if (file.Length > 0)
                 {
-                    var fullPath = Path.Combine(FileUploadService.PathToSave, actualName);
-                    var dbPath = Path.Combine(FileUploadService.LibraryFolderName, actualName);
+                    dbPath = Path.Combine(FileUploadService.LibraryFolderName, actualName);
 
                     using (var zipArchive = new ZipArchive(System.IO.File.OpenWrite(dbPath + ".zip"), ZipArchiveMode.Create))
-                    {
                         using (var entry = zipArchive.CreateEntry(file.FileName).Open())
-                        {
                             file.CopyTo(entry);
-                        }
-                    }
                 }
 
-                return true;
+                return dbPath;
             }
             catch (Exception)
             {
-                return false;
+                return null;
             }
+        }
+
+        public static string GetSanitarizedUniqueActualName(IFormFile file)
+        {
+            string actualName = ContentDispositionHeaderValue
+                        .Parse(file.ContentDisposition)
+                        .FileName
+                        .Trim('"');
+            actualName = SanitarizeFileNameAndRemoveExtension(actualName);
+            return FileUploadService.AddMd5Suffix(actualName);
+        }
+
+        public static void DeleteFile(string filePath)
+        {
+            File.Delete(filePath);
         }
     }
 }

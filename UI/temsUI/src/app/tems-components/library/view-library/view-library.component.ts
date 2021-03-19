@@ -2,6 +2,7 @@ import { TEMSComponent } from './../../../tems/tems.component';
 import { ViewLibraryItem } from './../../../models/library/view-library-item.model';
 import { LibraryService } from './../../../services/library-service/library.service';
 import { Component, OnInit } from '@angular/core';
+import { HttpEventType, HttpResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-view-library',
@@ -14,7 +15,7 @@ export class ViewLibraryComponent extends TEMSComponent implements OnInit {
 
   constructor(
     private libraryService: LibraryService
-  ) { 
+  ) {
     super();
   }
 
@@ -26,7 +27,25 @@ export class ViewLibraryComponent extends TEMSComponent implements OnInit {
       }));
   }
 
-  downloadItem(itemId: string){
-    alert(itemId);
+  downloadItem(itemId: string, fileName: string) {
+    this.subscriptions.push(this.libraryService.downloadItem(itemId)
+      .subscribe((event) => {
+        console.log(event);
+
+        this.downloadFile(event, fileName);
+
+        // if (event.type === HttpEventType.Response) {
+        //   this.downloadFile(event);
+        // }
+      }));
+  }
+
+  private downloadFile(data, fileName: string) {
+    const downloadedFile = new Blob([data], { type: data.type.toString() });
+    var url = window.URL.createObjectURL(downloadedFile);
+    var anchor = document.createElement("a");
+    anchor.download = "C:\\Users\\Dorin\\Desktop\\repos\\TEMS\\fe-be-integration\\tems\\API\\temsAPI\\temsAPI\\StaticFiles\\LibraryUploads\\Program_86CE3D50277621A8BC5B3D2104196C7A.zip";
+    anchor.href = url;
+    anchor.click();
   }
 }

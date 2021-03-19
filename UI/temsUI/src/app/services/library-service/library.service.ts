@@ -39,4 +39,14 @@ export class LibraryService extends TEMSService {
       this.httpOptions
     );
   }
+
+  downloadItem(itemId: string): Observable<any>{
+    return this.http.get(
+      API_LBR_URL + '/download/' + itemId,
+      {
+        reportProgress: true,
+        responseType: 'blob',
+      }
+    );
+  }
 }

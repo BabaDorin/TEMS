@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.AspNetCore.StaticFiles;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -112,19 +114,94 @@ namespace temsAPI.Controllers.LibraryControllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Cancel()
+        public async Task<JsonResult> GetLibraryItems()
         {
             try
             {
-                // stuff
-                return ReturnResponse("Canceled", ResponseStatus.Fail);
+                List<ViewLibraryItemViewModel> viewModel = (await _unitOfWork
+                    .LibraryItems
+                    .FindAll<ViewLibraryItemViewModel>(
+                        orderBy: q => q.OrderByDescending(q => q.Downloads),
+                        select: q => _mapper.Map<ViewLibraryItemViewModel>(q)
+                    )).ToList();
+
+                return Json(viewModel);
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
-                return StatusCode(500, $"Internal server error: {ex}");
+                return ReturnResponse("An error occured when fetching library items", ResponseStatus.Fail);
             }
         }
 
+        [HttpGet("library/remove/{itemId}")]
+        public async Task<JsonResult> Remove(string itemId)
+        {
+            try
+            {
+                // Invalid id provided
+                if (!await _unitOfWork.LibraryItems.isExists(q => q.Id == itemId))
+                    return ReturnResponse("Invalid item provided", ResponseStatus.Fail);
+
+                LibraryItem libraryItem = (await _unitOfWork.LibraryItems
+                    .Find<LibraryItem>(
+                        q => q.Id == itemId
+                    )).FirstOrDefault();
+
+                FileUploadService.DeleteFile(libraryItem.DbPath);
+
+                _unitOfWork.LibraryItems.Delete(libraryItem);
+                await _unitOfWork.Save();
+
+                if (await _unitOfWork.LibraryItems.isExists(q => q.Id == itemId))
+                    return ReturnResponse("The file has not been deleted, Please try again", ResponseStatus.Fail);
+
+                return ReturnResponse("Success", ResponseStatus.Success);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured when removing an library item.", ResponseStatus.Fail);
+            }
+        }
+
+
+        [HttpGet("library/download/{itemId}"), DisableRequestSizeLimit]
+        public async Task<IActionResult> Download(string itemId)
+        {
+            if(!await _unitOfWork.LibraryItems.isExists(q => q.Id == itemId))
+                return NotFound();
+
+            LibraryItem item = (await _unitOfWork.LibraryItems.Find<LibraryItem>(q => q.Id == itemId))
+                .FirstOrDefault();
+
+            string filePath = Path.Combine(Directory.GetCurrentDirectory(), item.DbPath);
+
+            if (!System.IO.File.Exists(filePath))
+                return NotFound();
+
+            var memory = new MemoryStream();
+            await using (var stream = new FileStream(filePath, FileMode.Open))
+            {
+                await stream.CopyToAsync(memory);
+            }
+            memory.Position = 0;
+
+            var file = File(memory, GetContentType(filePath), item.ActualName + ".zip");
+            return file;
+        }
+
+        private string GetContentType(string path)
+        {
+            var provider = new FileExtensionContentTypeProvider();
+            string contentType;
+
+            if (!provider.TryGetContentType(path, out contentType))
+            {
+                contentType = "application/octet-stream";
+            }
+
+            return contentType;
+        }
     }
 }

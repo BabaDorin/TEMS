@@ -57,9 +57,11 @@ namespace temsAPI.Helpers
                 string dbPath = null;
                 if (file.Length > 0)
                 {
-                    dbPath = Path.Combine(FileUploadService.LibraryFolderName, actualName);
+                    dbPath = String.Concat(
+                        Path.Combine(FileUploadService.LibraryFolderName, actualName),
+                        ".zip");
 
-                    using (var zipArchive = new ZipArchive(System.IO.File.OpenWrite(dbPath + ".zip"), ZipArchiveMode.Create))
+                    using (var zipArchive = new ZipArchive(System.IO.File.OpenWrite(dbPath), ZipArchiveMode.Create))
                         using (var entry = zipArchive.CreateEntry(file.FileName).Open())
                             file.CopyTo(entry);
                 }

@@ -103,6 +103,7 @@ namespace temsAPI
             app.UseAuthorization();
             app.UseAuthentication();
             SeedData.Seed(userManager, roleManager, dbContext);
+            TemsStarter.Start();
 
             //app.UseEndpoints(endpoints =>
             //{

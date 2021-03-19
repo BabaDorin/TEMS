@@ -17,6 +17,7 @@ namespace temsAPI.Data.Entities.LibraryEntities
         public string DisplayName { get; set; }
         public string DbPath { get; set; }
         public double FileSize { get; set; }
+        public int Downloads { get; set; }
 
         public DateTime DateUploaded { get; set; }
 

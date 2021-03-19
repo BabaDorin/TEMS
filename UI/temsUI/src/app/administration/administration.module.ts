@@ -10,6 +10,7 @@ import { CommonModule } from '@angular/common';
 import { AdministrationRoutingModule } from './administration-routing.module';
 import { AdministrationComponent } from './administration.component';
 import { UserManagementComponent } from '../tems-components/admin/user-management/user-management.component';
+import { AddUserComponent } from './add-user/add-user.component';
 
 
 @NgModule({
@@ -18,6 +19,7 @@ import { UserManagementComponent } from '../tems-components/admin/user-managemen
     EquipmentManagementComponent,
     RoleManagementComponent,
     UserManagementComponent,
+    AddUserComponent
   ],
   imports: [
     CommonModule,

@@ -1,3 +1,4 @@
+import { IOption } from 'src/app/models/option.model';
 import { Role } from '../../models/role.model';
 import { Injectable } from '@angular/core';
 
@@ -116,5 +117,14 @@ export class UserService {
 
   constructor() {
     this.role = this.admin;
+  }
+
+  getRoles(): IOption[]{
+    return [
+      { value: '1', label: 'Utilizator'},
+      { value: '2', label: 'Personal'},
+      { value: '3', label: 'Tehnician'},
+      { value: '4', label: 'Administrator'},
+    ]
   }
 }

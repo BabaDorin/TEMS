@@ -187,21 +187,17 @@ namespace temsAPI.Controllers.LibraryControllers
             }
             memory.Position = 0;
 
-            var file = File(memory, GetContentType(filePath), item.ActualName + ".zip");
-            return file;
-        }
+            var file = File(memory, FileUploadService.GetContentType(filePath), item.ActualName + ".zip");
 
-        private string GetContentType(string path)
-        {
-            var provider = new FileExtensionContentTypeProvider();
-            string contentType;
-
-            if (!provider.TryGetContentType(path, out contentType))
+            // Update downloads counter
+            await Task.Run(async () =>
             {
-                contentType = "application/octet-stream";
-            }
+                ++item.Downloads;
+                _unitOfWork.LibraryItems.Update(item);
+                await _unitOfWork.Save();
+            }).ConfigureAwait(false);
 
-            return contentType;
+            return file;
         }
     }
 }

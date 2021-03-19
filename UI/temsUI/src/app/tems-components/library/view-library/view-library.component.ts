@@ -27,13 +27,17 @@ export class ViewLibraryComponent extends TEMSComponent implements OnInit {
       }));
   }
 
-  downloadItem(itemId: string, fileName: string) {
-    this.subscriptions.push(this.libraryService.downloadItem(itemId)
+  downloadItem(eventData, item) {
+    let button = eventData.target;
+    button.innerHTML = "Preparing... Please wait";
+    button.disabled = true;
+
+    this.subscriptions.push(this.libraryService.downloadItem(item.id)
       .subscribe((event) => {
-        this.downloadFile(event, fileName);
-        // if (event.type === HttpEventType.Response) {
-        //   this.downloadFile(event);
-        // }
+        this.downloadFile(event, item.actualName);
+        button.disabled = false;
+        button.innerHTML = "Download";
+        item.downloads++;
       }));
   }
 
@@ -46,9 +50,11 @@ export class ViewLibraryComponent extends TEMSComponent implements OnInit {
     anchor.click();
   }
 
-  removeItem(itemId: string){
-    this.subscriptions.push(this.libraryService.removeItem(itemId)
+  removeItem(item: ViewLibraryItem){
+    this.subscriptions.push(this.libraryService.removeItem(item.id)
       .subscribe(result => {
+        if(result.status == 1)
+          this.libraryItems.splice(this.libraryItems.indexOf(item), 1);
         console.log(result);
       }))
   }

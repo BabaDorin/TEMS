@@ -1,7 +1,7 @@
 import { LibraryService } from './../../../services/library-service/library.service';
 import { API_LBR_URL } from './../../../models/backend.config';
 import { TEMSComponent } from 'src/app/tems/tems.component';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { HttpClient, HttpEventType, HttpRequest } from '@angular/common/http';
 import { AddLibraryItem } from 'src/app/models/library/add-library-item.model';
 
@@ -13,9 +13,11 @@ import { AddLibraryItem } from 'src/app/models/library/add-library-item.model';
 export class UploadLibraryItemComponent extends TEMSComponent implements OnInit {
 
   files: any[] = [];
+  formDatas: FormData[] = [];
+
+  uploadEnabled = true;
 
   constructor(
-    private http: HttpClient,
     private libraryService: LibraryService,
   ) {
     super();
@@ -24,19 +26,17 @@ export class UploadLibraryItemComponent extends TEMSComponent implements OnInit 
   ngOnInit(): void {
   }
 
-  private formDatas: FormData[] = [];
-
   upload() {
     if (this.files.length === 0)
       return;
 
+    this.uploadEnabled = false;
     this.uploadFile(0);
   }
 
   uploadFile(index) {
-    console.log(index);
-    // If current null - pick next
-    if(this.files[index] == null)
+    // If current file has been deleted or already uploaded, we go to the next one
+    if(this.files[index] == null || this.files[index].status == 'uploaded')
       if(++index < this.files.length)
         return this.uploadFile(index);
       else
@@ -45,23 +45,38 @@ export class UploadLibraryItemComponent extends TEMSComponent implements OnInit 
     let fileToUpload = this.files[index];
     fileToUpload.status = "uploading";
 
+    // A formdata object is created. It will contain data about the 
+    // currently uploading file.
     const formData = new FormData();
     formData.append('file', fileToUpload, fileToUpload.name);
     formData.append('myName', fileToUpload.myName)
     formData.append('myDescription', fileToUpload.myDescription)
     this.formDatas[index]=formData;
     
-    console.log(this.formDatas[index]);
-    this.subscriptions.push(this.libraryService.uploadFile(this.formDatas[index])
+    let timer = null;
+
+    this.subscriptions.push(
+      this.libraryService.uploadFile(this.formDatas[index])
       .subscribe(event => {
-        // console.log(event);
-
-        if (event.type === HttpEventType.UploadProgress)
-          this.files[index].progress = Math.round(100 * event.loaded / event.total);
+        if (event.type === HttpEventType.UploadProgress){
+          
+          if(fileToUpload)
+            fileToUpload.progress = Math.round(100 * event.loaded / event.total);
+          
+          // If we haven't got any response for 1 second or so, it might mean
+          // that the file has been uploaded and now it is being compressed on the server
+          if(timer) clearTimeout(timer);
+          timer = setTimeout(() => {
+            fileToUpload.message = "Compressing... Please wait, It might take a while."
+          }, 1000);
+        }
         else if (event.type === HttpEventType.Response) {
-          this.files[index].message = 'Upload success.';
-
+          // The file has been uploaded
+          clearTimeout(timer);
+          fileToUpload.message = 'Success';
           fileToUpload.status = "uploaded";
+
+          // Go to the next file, if it exists
           if(++index < this.files.length)
             return this.uploadFile(index);
         }
@@ -80,6 +95,7 @@ export class UploadLibraryItemComponent extends TEMSComponent implements OnInit 
       this.files.push(item);
       this.formDatas.push(new FormData());
     }
+    this.uploadEnabled = true;
   }
 
   onFileDropped($event) {
@@ -91,19 +107,7 @@ export class UploadLibraryItemComponent extends TEMSComponent implements OnInit 
   }
 
   deleteFile(index: number) {
-    // this.libraryService.cancelThread(0).subscribe(result => console.log(result));
     this.formDatas[index] = null;
     this.files[index] = null;
-  }
-
-  formatBytes(bytes, decimals) {
-    if (bytes === 0) {
-      return '0 Bytes';
-    }
-    const k = 1024;
-    const dm = decimals <= 0 ? 0 : decimals || 2;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
   }
 }

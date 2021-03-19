@@ -6,6 +6,7 @@ using System.Text;
 using temsAPI.Data.Entities.CommunicationEntities;
 using temsAPI.Data.Entities.EquipmentEntities;
 using temsAPI.Data.Entities.KeyEntities;
+using temsAPI.Data.Entities.LibraryEntities;
 using temsAPI.Data.Entities.OtherEntities;
 using temsAPI.Data.Entities.UserEntities;
 
@@ -168,6 +169,10 @@ namespace temsAPI.Data
         public DbSet<Label> Labels { get; set; }
         public DbSet<Status> Statuses { get; set; }
         public DbSet<RoomLabel> RoomLabels { get; set; }
+
+        // Library entities
+        public DbSet<LibraryFolder> LibraryFolders { get; set; }
+        public DbSet<LibraryItem> LibraryItems { get; set; }
 
         // Key entities
         public DbSet<Key> Keys { get; set; }

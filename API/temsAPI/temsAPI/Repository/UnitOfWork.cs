@@ -8,6 +8,7 @@ using temsAPI.Data;
 using temsAPI.Data.Entities.CommunicationEntities;
 using temsAPI.Data.Entities.EquipmentEntities;
 using temsAPI.Data.Entities.KeyEntities;
+using temsAPI.Data.Entities.LibraryEntities;
 using temsAPI.Data.Entities.OtherEntities;
 using temsAPI.Data.Entities.UserEntities;
 
@@ -43,6 +44,8 @@ namespace temsAPI.Repository
         private IGenericRepository<Label> _labels;
         private IGenericRepository<RoomLabel> _roomLabels;
         private IGenericRepository<PersonnelPosition> _personnelPosition;
+        private IGenericRepository<LibraryFolder> _libraryFolders;
+        private IGenericRepository<LibraryItem> _libraryItems;
 
         public IGenericRepository<Announcement> Announcements 
             => _announcements ??= new GenericRepository<Announcement>(_context);
@@ -96,7 +99,10 @@ namespace temsAPI.Repository
             => _roomLabels ??= new GenericRepository<RoomLabel>(_context);
         public IGenericRepository<PersonnelPosition> PersonnelPositions
             => _personnelPosition ??= new GenericRepository<PersonnelPosition>(_context);
-
+        public IGenericRepository<LibraryFolder> LibraryFolders
+            => _libraryFolders ??= new GenericRepository<LibraryFolder>(_context);
+        public IGenericRepository<LibraryItem> LibraryItems
+            => _libraryItems ??= new GenericRepository<LibraryItem>(_context);
 
         public UnitOfWork(ApplicationDbContext context)
         {

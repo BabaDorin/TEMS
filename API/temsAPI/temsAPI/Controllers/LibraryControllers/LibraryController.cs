@@ -59,7 +59,7 @@ namespace temsAPI.Controllers.LibraryControllers
 
                 viewModel.ActualName = FileUploadService.AddMd5Suffix(viewModel.ActualName);
                 FileUploadService.CompressAndSave(file, viewModel.ActualName);
-
+                
                 // Save view model!!!
                 return Ok();
             }

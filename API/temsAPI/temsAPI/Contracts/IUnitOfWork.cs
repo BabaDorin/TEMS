@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using temsAPI.Data.Entities.CommunicationEntities;
 using temsAPI.Data.Entities.EquipmentEntities;
 using temsAPI.Data.Entities.KeyEntities;
+using temsAPI.Data.Entities.LibraryEntities;
 using temsAPI.Data.Entities.OtherEntities;
 using temsAPI.Data.Entities.UserEntities;
 
@@ -37,7 +38,12 @@ namespace temsAPI.Contracts
         IGenericRepository<TEMSUser> TEMSUsers { get; }
         IGenericRepository<Privilege> Privileges { get; }
         IGenericRepository<RolePrivileges> RolePrivileges { get; }
-        
+
+        // Library entities
+        IGenericRepository<LibraryItem> LibraryItems { get; }
+        IGenericRepository<LibraryFolder> LibraryFolders { get; }
+
+
         // Other entities
         IGenericRepository<Personnel> Personnel { get; }
         IGenericRepository<EquipmentAllocation> EquipmentAllocations { get; }

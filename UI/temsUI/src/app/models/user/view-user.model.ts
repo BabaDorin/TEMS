@@ -1,14 +1,38 @@
+import { IOption } from './../option.model';
 export interface IViewUserSimplified{
-    id: string;
-    name: string;
+    id: string,
+    username: string,
+    fullName: string,
+    email: string,
+    roles: string
 }
 
 export class ViewUserSimplified implements IViewUserSimplified{
     id: string;
-    name: string;
+    username: string;
+    fullName: string;
+    email: string;
+    roles: string;
+}
 
-    constructor(){
-        this.id = '1';
-        this.name = '2';
-    }
+export interface IViewUser{
+    id: string,
+    username: string,
+    email: string,
+    phoneNumber: string,
+    fullName: string,
+    personnel: IOption,
+    roles: string[],
+    claims: string[];
+}
+
+export class ViewUser implements IViewUser{
+    id: string;
+    username: string;
+    email: string;
+    phoneNumber: string;
+    fullName: string;
+    personnel: IOption;
+    roles: string[];
+    claims: string[];
 }

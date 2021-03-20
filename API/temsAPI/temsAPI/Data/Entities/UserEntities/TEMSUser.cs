@@ -14,6 +14,7 @@ namespace temsAPI.Data.Entities.UserEntities
     public class TEMSUser : IdentityUser
     {
         public bool IsArchieved { get; set; }
+        public string FullName { get; set; }
 
 #nullable enable
         [ForeignKey("PersonnelId")]

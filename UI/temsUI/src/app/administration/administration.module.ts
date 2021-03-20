@@ -11,6 +11,7 @@ import { AdministrationRoutingModule } from './administration-routing.module';
 import { AdministrationComponent } from './administration.component';
 import { UserManagementComponent } from '../tems-components/admin/user-management/user-management.component';
 import { AddUserComponent } from './add-user/add-user.component';
+import { ViewUsersComponent } from '../tems-components/admin/user-management/view-users/view-users.component';
 
 
 @NgModule({
@@ -19,7 +20,8 @@ import { AddUserComponent } from './add-user/add-user.component';
     EquipmentManagementComponent,
     RoleManagementComponent,
     UserManagementComponent,
-    AddUserComponent
+    AddUserComponent,
+    ViewUsersComponent
   ],
   imports: [
     CommonModule,

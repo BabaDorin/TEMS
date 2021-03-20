@@ -17,6 +17,8 @@ import { FormlyFieldConfig } from '@ngx-formly/core';
 })
 export class AddUserComponent extends TEMSComponent implements OnInit {
 
+  userIdToUpdate: string;
+
   // It will get merged with formlyData soon.
   @ViewChild('rolesChips') roles;
   @ViewChild('personnelChips') personnel;
@@ -39,7 +41,7 @@ export class AddUserComponent extends TEMSComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.formlyData.fields = this.formlyParserService.parseAddUser();
+    this.formlyData.fields = this.formlyParserService.parseAddUser(this.userIdToUpdate != undefined);
 
     this.subscriptions.push(
       this.roleService.getAllAutocompleteOptions()
@@ -55,13 +57,33 @@ export class AddUserComponent extends TEMSComponent implements OnInit {
         this.personnelOptions = result;
       })
     );
+
+    if(this.userIdToUpdate != undefined){
+      this.subscriptions.push(
+        this.userService.getUser(this.userIdToUpdate)
+        .subscribe(result => {
+          console.log('resss');
+          console.log(result);
+          console.log(this.formlyData.model);
+          this.formlyData.model = {
+            username: result.username,
+            fullname: result.fullName,
+            email: result.email,
+            phoneNumber: result.phoneNumber,
+          }
+
+          this.personnel.options = result.personnel != undefined ?  [ result.personnel ] : [];
+          this.roles.options = result.roles != undefined ? result.roles.map(q => ({value: '0', label: q})) : [];
+        })
+      )
+    }
   }
 
   onSubmit(){
-    let userModel = this.formlyData.model.addUser;
+    let userModel = this.formlyData.model;
     let addUser: AddUser = {
       username: userModel.username,
-      password: userModel.password,
+      password: (this.userIdToUpdate == undefined) ? userModel.password : undefined,
       fullName: userModel.fullName,
       email: userModel.email,
       phoneNumber: userModel.phoneNumber,
@@ -71,15 +93,31 @@ export class AddUserComponent extends TEMSComponent implements OnInit {
       roles: this.roles.options,
     }
 
-    this.subscriptions.push(
-      this.userService.addUser(addUser)
-      .subscribe(result => {
-        console.log(result);
-        if(result.status == 1)
-          this.formlyData.form.reset();
-          this.roles.options = [];
-          this.personnel.options = [];
-      })
-    )
+    if(this.userIdToUpdate == undefined){
+      this.subscriptions.push(
+        this.userService.addUser(addUser)
+        .subscribe(result => {
+          console.log(result);
+          if(result.status == 1)
+            this.formlyData.form.reset();
+            this.roles.options = [];
+            this.personnel.options = [];
+        })
+      )
+    }
+    else
+    {
+      alert('upate user');
+      // this.subscriptions.push(
+      //   this.userService.updateUser(addUser)
+      //   .subscribe(result => {
+      //     console.log(result);
+      //     if(result.status == 1)
+      //       this.formlyData.form.reset();
+      //       this.roles.options = [];
+      //       this.personnel.options = [];
+      //   })
+      // )
+    }
   }
 }

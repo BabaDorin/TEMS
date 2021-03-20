@@ -1,3 +1,4 @@
+import { ViewUser, ViewUserSimplified } from './../../models/user/view-user.model';
 import { LoginModel } from './../../models/identity/login.model';
 import { API_USER_URL, API_AUTH_URL } from './../../models/backend.config';
 import { TEMSService } from './../tems-service/tems.service';
@@ -54,10 +55,19 @@ export class UserService extends TEMSService {
     );
   }
 
+  getUsers(): Observable<ViewUserSimplified[]>{
+    return this.http.get<ViewUserSimplified[]>(
+      API_USER_URL + '/getusers',
+      this.httpOptions
+    );
+  }
 
-
-
-
+  getUser(userId: string): Observable<ViewUser>{
+    return this.http.get<ViewUser>(
+      API_USER_URL + '/getuser/' + userId,
+      this.httpOptions
+    );
+  }
 
   private admin = {
     canManageEquipment: true,

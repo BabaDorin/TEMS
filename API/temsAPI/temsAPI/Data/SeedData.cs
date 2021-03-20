@@ -23,11 +23,11 @@ namespace temsAPI.Data
             SeedRoles(roleManager);
             SeedUsers(userManager);
             SeedDataTypes(dbContext);
-            SeedProperties(dbContext);
             SeedLogTypes(dbContext);
             SeedTickedStatuses(dbContext);
             SeedRoomLabels(dbContext);
             SeedPersonnelPositions(dbContext);
+            SeedPrivileges(dbContext);
         }
 
         private static void SeedRoles(RoleManager<IdentityRole> roleManager)
@@ -74,33 +74,7 @@ namespace temsAPI.Data
             dbContext.SaveChanges();
         }
 
-        private static void SeedProperties(ApplicationDbContext dbContext)
-        {
-            //var seedProperties = new List<string>() { "Model", "Manufacturer" };
-
-            //seedProperties.ForEach(prop =>
-            //{
-            //    // (Display name) Billing Address => (name) billingAddress
-            //    string propName = Regex.Replace(
-            //        prop[0].ToString().ToLower() + prop.Substring(1, prop.Length-1).Trim(),
-            //        @"\s+", "");
-
-            //    if (!dbContext.Properties.Any(qu => qu.Name == propName))
-            //    {
-            //        dbContext.Properties.Add(new Property
-            //        {
-            //            Id = Guid.NewGuid().ToString(),
-            //            DataType = dbContext.DataTypes.ToList()[0],
-            //            DisplayName = prop,
-            //            Name = propName,
-            //            DataTypeID = dbContext.DataTypes.ToList()[0].Id,
-            //        });
-            //    }
-            //});
-
-            //dbContext.SaveChanges();
-        }
-
+        
         private static void SeedLogTypes(ApplicationDbContext dbContext)
         {
             (new List<string>() { "Repair", "Maintenance", "Allocation" })
@@ -171,6 +145,59 @@ namespace temsAPI.Data
                         });
                     }
                 });
+
+            dbContext.SaveChanges();
+        }
+
+        private static void SeedPrivileges(ApplicationDbContext dbContext)
+        {
+            List<Privilege> privileges = new List<Privilege>
+            {
+                new Privilege
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Identifier = "Can manage Entities",
+                    Description = "Can create, update or remove equipments, rooms, personnel and much more."
+                },
+                new Privilege
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Identifier = "Can view Entities",
+                    Description = "Can view equipments, rooms, personnel and much more."
+                },
+                new Privilege
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Identifier = "Can manage announcements",
+                    Description = "Can create, update or delete global announcements"
+                },
+                new Privilege
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Identifier = "Can manage system configuration",
+                    Description = "Can create, update or delete types, definitions, properties etc."
+                },
+                new Privilege
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Identifier = "Can send emails",
+                    Description = "Can send email to all of registered personnel"
+                },
+                new Privilege
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Identifier = "Can allocate keys",
+                    Description = "Can allocate keys to personnel"
+                },
+            };
+
+            privileges.ForEach(q =>
+            {
+                if (!dbContext.Privileges.Any(p => p.Identifier == q.Identifier))
+                {
+                    dbContext.Privileges.Add(q);
+                }
+            });
 
             dbContext.SaveChanges();
         }

@@ -24,7 +24,7 @@ export class FormlyParserService {
     private equipmentService: EquipmentService,
     private logsService: LogsService) { }
 
-  parseAddRoom(){
+  parseAddRoom() {
     let fields: FormlyFieldConfig[] =
       [
         {
@@ -145,7 +145,7 @@ export class FormlyParserService {
     return formlyFieldsAddEquipment;
   }
 
-  generateAddEquipmentFields(addEquipment: AddEquipment){
+  generateAddEquipmentFields(addEquipment: AddEquipment) {
     return [
       {
         className: 'section-label',
@@ -172,7 +172,7 @@ export class FormlyParserService {
         key: 'serialNumber',
         type: 'input',
         templateOptions: {
-          label: 'Serial Number',              
+          label: 'Serial Number',
         }
       },
       {
@@ -239,7 +239,7 @@ export class FormlyParserService {
     ]
   }
 
-  parseAddProperty(){
+  parseAddProperty() {
     let fields: FormlyFieldConfig[] =
       [
         {
@@ -276,7 +276,7 @@ export class FormlyParserService {
                 description: 'Description of this property will appear like this',
               },
             },
-            
+
             {
               key: 'dataType',
               type: 'select',
@@ -305,7 +305,7 @@ export class FormlyParserService {
     return fields;
   }
 
-  parseAddKey(roomOptions: IOption[]){
+  parseAddKey(roomOptions: IOption[]) {
     let fields: FormlyFieldConfig[] =
       [
         {
@@ -353,32 +353,32 @@ export class FormlyParserService {
     return fields;
   }
 
-  parseAddAnnouncement(){
+  parseAddAnnouncement() {
     let fields: FormlyFieldConfig[] =
-    [
-      {
-        key: 'announcement',
-        fieldGroup: [
-          {
-            key: 'title',
-            type: 'input',
-            templateOptions: {
-              required: true,
-              label: 'Title',
-            }
-          },
-          {
-            key: 'text',
-            type: 'textarea',
-            templateOptions: {
-              rows: 3,
-              required: true,
-              label: 'Message',
+      [
+        {
+          key: 'announcement',
+          fieldGroup: [
+            {
+              key: 'title',
+              type: 'input',
+              templateOptions: {
+                required: true,
+                label: 'Title',
+              }
             },
-          },
-        ]
-      }
-    ];
+            {
+              key: 'text',
+              type: 'textarea',
+              templateOptions: {
+                rows: 3,
+                required: true,
+                label: 'Message',
+              },
+            },
+          ]
+        }
+      ];
 
     return fields;
   }
@@ -414,7 +414,7 @@ export class FormlyParserService {
     console.log('back');
 
     console.log('price and description');
-    fields[fields.length-1].fieldGroup.push(
+    fields[fields.length - 1].fieldGroup.push(
       {
         key: 'description',
         type: 'textarea',
@@ -430,7 +430,7 @@ export class FormlyParserService {
       return fields;
 
     console.log('continue');
-    
+
     // Adding children with 'repeat' type
     let tempKey = 0;
     addDefinition.children.forEach(childDefinition => {
@@ -440,7 +440,7 @@ export class FormlyParserService {
           template: '<h4>' + childDefinition.equipmentType.value + ' definitions</h4>',
         },
         {
-          key: ''+tempKey++, // in realilty - this will be the child definition ID
+          key: '' + tempKey++, // in realilty - this will be the child definition ID
           type: 'repeat',
           wrappers: ['formly-wrapper'],
           fieldArray: {
@@ -493,7 +493,7 @@ export class FormlyParserService {
     return fields;
   }
 
-  generatePriceFields(){
+  generatePriceFields() {
     return {
       fieldGroupClassName: 'row',
       fieldGroup: [
@@ -659,7 +659,7 @@ export class FormlyParserService {
 
   }
 
-  parseAddPersonnel(addPersonnel: AddPersonnel){
+  parseAddPersonnel(addPersonnel: AddPersonnel) {
     let fields: FormlyFieldConfig[] =
       [
         {
@@ -697,7 +697,7 @@ export class FormlyParserService {
     return fields;
   }
 
-  parseLogin(){
+  parseLogin() {
     let fields: FormlyFieldConfig[] =
       [
         {
@@ -729,68 +729,64 @@ export class FormlyParserService {
     return fields;
   }
 
-  parseAddUser(){
+  parseAddUser(update?: boolean) {
+    if(update == undefined) update = false;
     let fields: FormlyFieldConfig[] =
       [
         {
-          key: 'addUser',
-          fieldGroup: [
-            {
-              key: 'username',
-              type: 'input-tooltip',
-              templateOptions: {
-                minLength: 4,
-                required: true,
-                label: 'Username',
-                description: 'Minimum 4 alphanumerics or ".", "_"'
-              },
-              validators: {
-                validation: ['usernameValidator']
-              }
-            },
-            {
-              key: 'password',
-              type: 'input-tooltip',
-              templateOptions: {
-                type: "password",
-                minLength: 5,
-                required: true,
-                label: 'Password',
-                description: "At least 5 characters long"
-              },
-            },
-            {
-              key: 'fullName',
-              type: 'input',
-              templateOptions: {
-                label: 'Full Name',
-              },
-            },
-            {
-              key: 'phoneNumber',
-              type: 'input-tooltip',
-              templateOptions: {
-                label: 'Phone Number (Without the leading 0)',
-                description: 'It will be used to send SMS!'
-              },
-            },
-            {
-              key: 'email',
-              type: 'input-tooltip',
-              templateOptions: {
-                type: 'email',
-                label: 'Email',
-                description: 'It will be used to send mails!'
-              },
-            },
-            {
-              key: 'roles',
-            },
-            {
-              key: 'personnel',
-            },
-          ]
-        }
+          key: 'username',
+          type: 'input-tooltip',
+          templateOptions: {
+            minLength: 4,
+            required: true,
+            label: 'Username',
+            description: 'Minimum 4 alphanumerics or ".", "_"'
+          },
+          validators: {
+            validation: ['usernameValidator']
+          }
+        },
+        {
+          key: 'password',
+          type: 'input-tooltip',
+          templateOptions: {
+            type: "password",
+            minLength: 5,
+            required: update ? false : true,
+            label: update ? 'Set new password' : 'Password',
+            description: "At least 5 characters long"
+          },
+        },
+        {
+          key: 'fullName',
+          type: 'input',
+          templateOptions: {
+            label: 'Full Name',
+          },
+        },
+        {
+          key: 'phoneNumber',
+          type: 'input-tooltip',
+          templateOptions: {
+            label: 'Phone Number (Without the leading 0)',
+            description: 'It will be used to send SMS!'
+          },
+        },
+        {
+          key: 'email',
+          type: 'input-tooltip',
+          templateOptions: {
+            type: 'email',
+            label: 'Email',
+            description: 'It will be used to send mails!'
+          },
+        },
+        {
+          key: 'roles',
+        },
+        {
+          key: 'personnel',
+        },
       ];
 
     return fields;

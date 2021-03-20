@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -15,6 +16,7 @@ using temsAPI.Contracts;
 using temsAPI.Data.Entities.OtherEntities;
 using temsAPI.Data.Entities.UserEntities;
 using temsAPI.System_Files;
+using temsAPI.ViewModels;
 using temsAPI.ViewModels.IdentityViewModels;
 
 namespace temsAPI.Controllers.IdentityControllers
@@ -48,6 +50,10 @@ namespace temsAPI.Controllers.IdentityControllers
                 TEMSUser model = new TEMSUser()
                 {
                     UserName = viewModel.Username,
+                    FullName = 
+                        String.IsNullOrEmpty(viewModel.FullName) 
+                        ? viewModel.Username
+                        : viewModel.FullName,
                     PhoneNumber = viewModel.PhoneNumber,
                     Email = viewModel.Email,
                 };
@@ -159,6 +165,75 @@ namespace temsAPI.Controllers.IdentityControllers
             var securityToken = tokenHandler.CreateToken(tokenDescriptor);
             var token = tokenHandler.WriteToken(securityToken);
             return Ok(new { token });
+        }
+
+        [HttpGet]
+        public JsonResult GetUsers()
+        {
+            try
+            {
+                List<ViewUserSimplifiedViewModel> viewModel = _userManager
+                    .Users
+                    .Where(q => !q.IsArchieved)
+                    .Select(q => new ViewUserSimplifiedViewModel
+                    {
+                        Username = q.UserName,
+                        Email = q.Email,
+                        FullName = q.FullName,
+                        Id = q.Id,
+                        //Roles = _userManager.GetRolesAsync(q).Result.Count().ToString(),
+                    }).ToList();
+
+                return Json(viewModel);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured when fetching users", ResponseStatus.Fail);
+            }
+        }
+
+        [HttpGet("temsuser/getuser/{userId}")]
+        public async Task<JsonResult> GetUser(string userId)
+        {
+            try
+            {
+                var user = (await _unitOfWork.TEMSUsers
+                    .Find<TEMSUser>(
+                        where: q => q.Id == userId,
+                        include: q => q.Include(q => q.Personnel)
+                    )).FirstOrDefault();
+
+                var viewModel = new ViewUserViewModel
+                {
+                    Id = user.Id,
+                    Claims = _userManager.GetClaimsAsync(user)
+                    .Result
+                    .Select(q => q.Type)
+                    .ToList(),
+                    Email = user.Email,
+                    FullName = user.FullName,
+                    Personnel = user.Personnel == null 
+                        ? null
+                        : new Option
+                        {
+                            Value = user.PersonnelId,
+                            Label = user.Personnel.Name
+                        },
+                    PhoneNumber = user.PhoneNumber,
+                    Username = user.UserName
+                    //Roles = _userManager.GetRolesAsync(user)
+                    //.Result
+                    //.ToList(),
+                };
+
+                return Json(viewModel);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured when fetching user", ResponseStatus.Fail);
+            }
         }
     }
 }

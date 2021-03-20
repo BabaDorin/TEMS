@@ -708,6 +708,7 @@ export class FormlyParserService {
               className: "my-2",
               type: 'input',
               templateOptions: {
+                required: true,
                 label: 'Username',
               }
             },
@@ -716,6 +717,7 @@ export class FormlyParserService {
               className: "my-2",
               type: 'input',
               templateOptions: {
+                required: true,
                 type: 'password',
                 label: 'Password',
               },

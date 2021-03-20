@@ -1,6 +1,9 @@
+import { ScrollingModule } from '@angular/cdk/scrolling';
+import { TEMSComponent } from './../../tems/tems.component';
 import { UserService } from './../../services/user-service/user.service';
 import { Component, OnInit } from '@angular/core';
 import { NgbDropdownConfig } from '@ng-bootstrap/ng-bootstrap';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-navbar',
@@ -8,19 +11,42 @@ import { NgbDropdownConfig } from '@ng-bootstrap/ng-bootstrap';
   styleUrls: ['./navbar.component.scss'],
   providers: [NgbDropdownConfig]
 })
-export class NavbarComponent implements OnInit {
+export class NavbarComponent extends TEMSComponent implements OnInit {
   public iconOnlyToggled = false;
   public sidebarToggled = false;
-  private loggedIn;
+  private loggedIn: boolean;
   
   constructor(
     config: NgbDropdownConfig,
+    private route: Router,
     private userService: UserService) {
-    config.placement = 'bottom-right';
+      super();
+      config.placement = 'bottom-right';
+  }
+
+  isLoggedIn(): boolean{
+    return localStorage.getItem('token') != null
+  }
+
+  signOut(){
+    localStorage.removeItem('token');
+    // this.route.navigateByUrl('');
+    window.location.reload()
   }
 
   ngOnInit() {
-    this.loggedIn = this.userService.isLoggedIn();
+    this.loggedIn = localStorage.getItem('token') != null;
+    // this.subscriptions.push(
+    //   this.userService.isLoggedIn()
+    //   .subscribe(result => {
+    //     console.log(result);
+
+    //     if(result.status == 1)
+    //       this.loggedIn = true;
+    //     else
+    //       this.loggedIn = false;
+    //   })
+    // );
   }
 
   // toggle sidebar in small devices

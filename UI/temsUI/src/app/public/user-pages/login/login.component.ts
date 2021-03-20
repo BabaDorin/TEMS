@@ -1,3 +1,4 @@
+import { Router } from '@angular/router';
 import { UserService } from 'src/app/services/user-service/user.service';
 import { LoginModel } from './../../../models/identity/login.model';
 import { TEMSComponent } from './../../../tems/tems.component';
@@ -22,7 +23,8 @@ export class LoginComponent extends TEMSComponent implements OnInit {
   
   constructor(
     private formlyParserService: FormlyParserService,
-    private userService: UserService
+    private userService: UserService,
+    private router: Router
   ) { 
     super();
   }
@@ -38,6 +40,11 @@ export class LoginComponent extends TEMSComponent implements OnInit {
       this.userService.logIn(loginModel)
       .subscribe(result => {
         console.log(result);
+
+        if(result.token != undefined){
+          localStorage.setItem('token', result.token);
+          this.router.navigateByUrl('');
+        }
       })
     )
   }

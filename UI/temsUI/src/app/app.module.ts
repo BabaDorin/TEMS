@@ -1,3 +1,4 @@
+import { AuthInterceptor } from './auth.interceptor';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { EquipmentService } from './services/equipment-service/equipment.service';
 import { MatInputModule } from '@angular/material/input';
@@ -6,7 +7,7 @@ import { RoomsService } from './services/rooms-service/rooms.service';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { QuickAccessComponent } from './tems-components/equipment/quick-access/quick-access.component';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
@@ -64,10 +65,15 @@ import { TEMSComponent } from './tems/tems.component';
     MatAutocompleteModule,
   ],
   providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true
+    },
     ThemeService,
     RoomsService,
     PersonnelService,
-    EquipmentService
+    EquipmentService,
   ],
   bootstrap: [AppComponent],
 })

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -80,6 +81,7 @@ namespace temsAPI.Controllers.EquipmentControllers
             return ReturnResponse("Success", ResponseStatus.Success);
         }
 
+        [Authorize]
         [HttpGet("equipment/getsimplified/{pageNumber}/{equipmentsPerPage}/{onlyParents}")]
         public async Task<JsonResult> GetSimplified(int pageNumber, int equipmentsPerPage, bool onlyParents)
         {

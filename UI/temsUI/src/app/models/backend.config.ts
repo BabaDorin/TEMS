@@ -13,3 +13,4 @@ export const API_ANN_URL = API_URL + '/announcement';
 export const API_LBR_URL = API_URL + '/library';
 export const API_USER_URL = API_URL + '/temsuser';
 export const API_ROLE_URL = API_URL + '/userrole';
+export const API_AUTH_URL = API_URL + '/authentication';

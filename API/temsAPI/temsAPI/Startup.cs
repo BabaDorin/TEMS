@@ -67,42 +67,23 @@ namespace temsAPI
                 x.MultipartBodyLengthLimit = int.MaxValue; // In case of multipart
             });
 
-            services.AddCors(options =>
-            {
-                options.AddPolicy(name: MyAllowSpecificOrigins,
-                                  builder =>
-                                  {
-                                      builder.WithOrigins(Configuration["AppSettings:Client_Url"].ToString())
-                                      .AllowAnyOrigin()
-                                      .AllowAnyHeader()
-                                      .AllowAnyMethod();
-                                  });
-            });
+            services.AddCors();
+            //services.AddCors(options =>
+            //{
+            //    options.AddPolicy(name: MyAllowSpecificOrigins,
+            //                      builder =>
+            //                      {
+            //                          builder.WithOrigins(Configuration["AppSettings:Client_Url"].ToString())
+            //                          .AllowAnyHeader()
+            //                          .AllowCredentials()
+            //                          .AllowAnyMethod();
+            //                      });
+            //});
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "temsAPI", Version = "v1" });
-            });
-
-            var key = Encoding.UTF8.GetBytes(Configuration["AppSettings:JWT_Secret"].ToString());
-            services.AddAuthentication(q =>
-            {
-                q.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                q.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                q.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-            }).AddJwtBearer(q =>
-            {
-                q.RequireHttpsMetadata = false;
-                q.SaveToken = false;
-                q.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
-                {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(key),
-                    ValidateIssuer = false,
-                    ValidateAudience = false,
-                    ClockSkew = TimeSpan.Zero,
-                };
             });
 
             services.Configure<IdentityOptions>(q =>
@@ -113,6 +94,29 @@ namespace temsAPI
                 q.Password.RequireLowercase = false;
                 q.Password.RequireUppercase = false;
             });
+
+            var key = Encoding.UTF8.GetBytes(Configuration["AppSettings:JWT_Secret"].ToString());
+
+            services.AddAuthentication(x =>
+            {
+                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(x =>
+            {
+                x.RequireHttpsMetadata = false;
+                x.SaveToken = false;
+                x.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    ClockSkew = TimeSpan.Zero
+                };
+            });
+
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -123,6 +127,7 @@ namespace temsAPI
             RoleManager<IdentityRole> roleManager,
             ApplicationDbContext dbContext)
         {
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -130,21 +135,24 @@ namespace temsAPI
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "temsAPI v1"));
             }
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
             app.UseSession();
             app.UseRouting();
-            app.UseCors(MyAllowSpecificOrigins);
-            app.UseAuthorization();
-            app.UseAuthentication();
+            //app.UseCors(MyAllowSpecificOrigins);
+            
             SeedData.Seed(userManager, roleManager, dbContext);
             TemsStarter.Start();
 
-            //app.UseEndpoints(endpoints =>
-            //{
-            //    endpoints.MapControllers();
-            //});
-            app.UseCors(MyAllowSpecificOrigins);
+            app.UseCors(builder =>
+            builder.WithOrigins(Configuration["AppSettings:Client_URL"].ToString())
+            .AllowAnyHeader()
+            .AllowAnyMethod()
 
+            );
+
+            app.UseAuthentication();
+            app.UseRouting();
+            app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(

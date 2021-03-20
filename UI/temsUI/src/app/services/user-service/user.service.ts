@@ -1,5 +1,5 @@
 import { LoginModel } from './../../models/identity/login.model';
-import { API_USER_URL } from './../../models/backend.config';
+import { API_USER_URL, API_AUTH_URL } from './../../models/backend.config';
 import { TEMSService } from './../tems-service/tems.service';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -39,8 +39,11 @@ export class UserService extends TEMSService {
     );
   }
 
-  isLoggedIn(): boolean{
-    return false;
+  isLoggedIn(): Observable<any>{
+    return this.http.get(
+      API_AUTH_URL + '/isauthenticated',
+      this.httpOptions
+    );
   }
 
   logIn(loginModel): Observable<any>{

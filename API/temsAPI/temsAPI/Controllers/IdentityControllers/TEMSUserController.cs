@@ -149,16 +149,12 @@ namespace temsAPI.Controllers.IdentityControllers
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new Claim[]
-                {
-                    new Claim("UserId", user.Id.ToString())
-                }),
-                Expires = DateTime.Now.AddDays(10),
-                SigningCredentials = new SigningCredentials(
-                    new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_appSettings.JWT_Secret)),
-                    SecurityAlgorithms.HmacSha256Signature
-                    )
+                    {
+                        new Claim("UserID",user.Id.ToString())
+                    }),
+                Expires = DateTime.UtcNow.AddDays(10),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_appSettings.JWT_Secret)), SecurityAlgorithms.HmacSha256Signature)
             };
-
             var tokenHandler = new JwtSecurityTokenHandler();
             var securityToken = tokenHandler.CreateToken(tokenDescriptor);
             var token = tokenHandler.WriteToken(securityToken);

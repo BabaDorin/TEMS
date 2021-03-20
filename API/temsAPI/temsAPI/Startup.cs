@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http.Features;
@@ -9,11 +10,13 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data;
@@ -67,7 +70,7 @@ namespace temsAPI
                 options.AddPolicy(name: MyAllowSpecificOrigins,
                                   builder =>
                                   {
-                                      builder.WithOrigins("http://localhost:4200")
+                                      builder.WithOrigins(Configuration["AppSettings:Client_Url"].ToString())
                                       .AllowAnyOrigin()
                                       .AllowAnyHeader()
                                       .AllowAnyMethod();
@@ -78,6 +81,35 @@ namespace temsAPI
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "temsAPI", Version = "v1" });
+            });
+
+            var key = Encoding.UTF8.GetBytes(Configuration["AppSettings:JWT_Secret"].ToString());
+            services.AddAuthentication(q =>
+            {
+                q.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                q.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                q.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(q =>
+            {
+                q.RequireHttpsMetadata = false;
+                q.SaveToken = false;
+                q.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    ClockSkew = TimeSpan.Zero,
+                };
+            });
+
+            services.Configure<IdentityOptions>(q =>
+            {
+                q.Password.RequireDigit = false;
+                q.Password.RequiredLength = 5;
+                q.Password.RequireNonAlphanumeric = false;
+                q.Password.RequireLowercase = false;
+                q.Password.RequireUppercase = false;
             });
         }
 

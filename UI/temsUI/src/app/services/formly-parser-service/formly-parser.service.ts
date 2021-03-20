@@ -696,4 +696,70 @@ export class FormlyParserService {
 
     return fields;
   }
+
+  parseAddUser(){
+    let fields: FormlyFieldConfig[] =
+      [
+        {
+          key: 'addUser',
+          fieldGroup: [
+            {
+              key: 'username',
+              type: 'input-tooltip',
+              templateOptions: {
+                required: true,
+                label: 'Username',
+                description: 'Aphanumerics and characters ".", "_"'
+              },
+              validators: {
+                validation: ['usernameValidator']
+              }
+            },
+            {
+              key: 'password',
+              type: 'input-tooltip',
+              templateOptions: {
+                type: "password",
+                minLength: 5,
+                required: true,
+                label: 'Password',
+                description: "At least 5 characters long"
+              },
+            },
+            {
+              key: 'fullName',
+              type: 'input',
+              templateOptions: {
+                label: 'Full Name',
+              },
+            },
+            {
+              key: 'phoneNumber',
+              type: 'input-tooltip',
+              templateOptions: {
+                label: 'Phone Number (Without the leading 0)',
+                description: 'It will be used to send SMS!'
+              },
+            },
+            {
+              key: 'email',
+              type: 'input-tooltip',
+              templateOptions: {
+                type: 'email',
+                label: 'Email',
+                description: 'It will be used to send mails!'
+              },
+            },
+            {
+              key: 'roles',
+            },
+            {
+              key: 'personnel',
+            },
+          ]
+        }
+      ];
+
+    return fields;
+  }
 }

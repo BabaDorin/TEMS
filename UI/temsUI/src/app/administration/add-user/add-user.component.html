@@ -1,43 +1,22 @@
-<h4>Add User</h4>
-<form [formGroup]="this.formGroup">
-    <mat-form-field class="example-full-width">
-        <mat-label>UserName</mat-label>
-        <input matInput formControlName="username">
-    </mat-form-field>
-    <br>
+<h3>Add User</h3>
+<form [formGroup]="formlyData.form" (ngSubmit)="onSubmit()">
+    <formly-form [form]="formlyData.form" [fields]="formlyData.fields" [model]="formlyData.model"></formly-form>
     
-    <mat-form-field class="example-full-width">
-        <mat-label>Password</mat-label>
-        <input type="password" matInput formControlName="password">
-    </mat-form-field>
-    <br>
-
-    <mat-form-field class="example-full-width">
-        <mat-label>Full Name</mat-label>
-        <input matInput formControlName="fullName">
-    </mat-form-field>
-    <br>
-
-    <mat-form-field class="example-full-width">
-        <mat-label>Email</mat-label>
-        <input matInput formControlName="email">
-    </mat-form-field>
-    <br>
-
-    <mat-form-field class="example-full-width">
-        <mat-label>Phone Number</mat-label>
-        <input matInput formControlName="phoneNumber">
-    </mat-form-field>
-    <br>
-
-    <app-chips-autocomplete label="Assign roles" formControlName="roles" [availableOptions]="rolesOptions">
+    <app-chips-autocomplete
+        #rolesChips
+        label="Assign roles" 
+        [availableOptions]="rolesOptions">
     </app-chips-autocomplete>
     <br>
 
-    <app-chips-autocomplete label="Personnel record assigned" formControlName="personnel"
-        [availableOptions]="personnelOptions" maxSelectedOptions="1"></app-chips-autocomplete>
+    <app-chips-autocomplete
+        #personnelChips 
+        label="Assign personnel record to this user" 
+        [availableOptions]="personnelOptions" 
+        maxSelectedOptions="1">
+    </app-chips-autocomplete>
     <br>
-    
-    <button type="submit" class="btn btn-gradient-primary mr-2" (click)="onSubmit()"
-        [disabled]="formGroup.status=='INVALID'">Save User</button>
+    <br>
+    <button type="submit" class="btn btn-gradient-primary mr-2"
+    [disabled]="formlyData.form.status=='INVALID'">Submit</button>
 </form>

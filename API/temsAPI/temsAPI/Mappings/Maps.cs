@@ -5,9 +5,11 @@ using temsAPI.Data.Entities.EquipmentEntities;
 using temsAPI.Data.Entities.KeyEntities;
 using temsAPI.Data.Entities.LibraryEntities;
 using temsAPI.Data.Entities.OtherEntities;
+using temsAPI.Data.Entities.UserEntities;
 using temsAPI.ViewModels.Equipment;
 using temsAPI.ViewModels.EquipmentDefinition;
 using temsAPI.ViewModels.EquipmentType;
+using temsAPI.ViewModels.IdentityViewModels;
 using temsAPI.ViewModels.Key;
 using temsAPI.ViewModels.Library;
 using temsAPI.ViewModels.Log;
@@ -29,6 +31,7 @@ namespace temsAPI.Mappings
             CreateMap<List<Status>, List<ViewStatusViewModel>>().ReverseMap();
             CreateMap<Key, AddKeyViewModel>().ReverseMap();
             CreateMap<LibraryItem, ViewLibraryItemViewModel>().ReverseMap();
+            CreateMap<TEMSUser, RegisterViewModel>().ReverseMap();
         }
     }
 }

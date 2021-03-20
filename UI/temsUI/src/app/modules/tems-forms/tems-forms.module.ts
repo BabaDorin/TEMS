@@ -16,6 +16,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormlyModule } from '@ngx-formly/core';
 import { MaterialModule } from '../material/material.module';
 import { specCharValidator } from 'src/app/models/validators';
+import { usernameValidator } from 'src/app/models/validators';
 
 @NgModule({
   declarations: [
@@ -68,7 +69,8 @@ import { specCharValidator } from 'src/app/models/validators';
       ],
       validators: [
         { name: 'specCharValidator', validation: specCharValidator },
-      ],
+        { name: 'usernameValidator', validation: usernameValidator },
+      ],  
       validationMessages: [
         { name: 'specCharValidator', message: 'No special characters or spaces allowed!' },
       ]

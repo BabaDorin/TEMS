@@ -1,10 +1,13 @@
+import { AddUser } from './../../models/identity/add-user.model';
+import { FormlyParserService } from 'src/app/services/formly-parser-service/formly-parser.service';
 import { specCharValidator } from 'src/app/models/validators';
 import { UserService } from 'src/app/services/user-service/user.service';
 import { PersonnelService } from 'src/app/services/personnel-service/personnel.service';
 import { IOption } from 'src/app/models/option.model';
 import { TEMSComponent } from 'src/app/tems/tems.component';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormlyFieldConfig } from '@ngx-formly/core';
 
 @Component({
   selector: 'app-add-user',
@@ -13,27 +16,28 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 })
 export class AddUserComponent extends TEMSComponent implements OnInit {
 
-  formGroup = new FormGroup({
-    fullName: new FormControl(),
-    email: new FormControl(),
-    phoneNumber: new FormControl(),
-    roles: new FormControl(),
-    personnel: new FormControl(),
-    username: new FormControl('', [ Validators.required, specCharValidator ]),
-    password: new FormControl('', [ Validators.required]),
-  });
+  // It will get merged with formlyData soon.
+  @ViewChild('rolesChips') roles;
+  @ViewChild('personnelChips') personnel;
 
+  private formlyData = {
+    form: new FormGroup({}),
+    model: {} as any,
+    fields: [] as FormlyFieldConfig[],
+  }
   rolesOptions: IOption[];
   personnelOptions: IOption[];
 
   constructor(
     private personnelService: PersonnelService,
-    private userService: UserService
+    private userService: UserService,
+    private formlyParserService: FormlyParserService
   ) { 
     super();
   }
 
   ngOnInit(): void {
+    this.formlyData.fields = this.formlyParserService.parseAddUser();
     this.rolesOptions = this.userService.getRoles();
     this.subscriptions.push(this.personnelService.getAllAutocompleteOptions()
       .subscribe(result => {
@@ -42,6 +46,17 @@ export class AddUserComponent extends TEMSComponent implements OnInit {
   }
 
   onSubmit(){
-    console.log(this.formGroup);
+    let userModel = this.formlyData.model.addUser;
+    let addUser: AddUser = {
+      username: userModel.username,
+      password: userModel.password,
+      fullName: userModel.fullName,
+      email: userModel.email,
+      phoneNumber: userModel.phoneNumber,
+      personnel: this.personnel.options,
+      roles: this.roles.options,
+    }
+
+    console.log(addUser);
   }
 }

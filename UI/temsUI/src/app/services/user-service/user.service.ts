@@ -40,6 +40,14 @@ export class UserService extends TEMSService {
     );
   }
 
+  updateUser(user: AddUser): Observable<any>{
+    return this.http.post(
+      API_USER_URL+ '/updateuser',
+      JSON.stringify(user),
+      this.httpOptions
+    );
+  }
+
   isLoggedIn(): Observable<any>{
     return this.http.get(
       API_AUTH_URL + '/isauthenticated',

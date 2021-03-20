@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -15,6 +16,7 @@ using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.OtherEntities;
 using temsAPI.Data.Entities.UserEntities;
+using temsAPI.Helpers;
 using temsAPI.System_Files;
 using temsAPI.ViewModels;
 using temsAPI.ViewModels.IdentityViewModels;
@@ -25,6 +27,7 @@ namespace temsAPI.Controllers.IdentityControllers
     {
         private RoleManager<IdentityRole> _roleManager;
         private readonly AppSettings _appSettings;
+        private UserHelper _userHelper;
 
         public TEMSUserController(
             IMapper mapper,
@@ -35,6 +38,8 @@ namespace temsAPI.Controllers.IdentityControllers
         {
             _roleManager = roleManager;
             _appSettings = appSettings.Value;
+
+            _userHelper = new UserHelper(unitOfWork, userManager, roleManager);
         }
 
         [HttpPost]
@@ -50,8 +55,8 @@ namespace temsAPI.Controllers.IdentityControllers
                 TEMSUser model = new TEMSUser()
                 {
                     UserName = viewModel.Username,
-                    FullName = 
-                        String.IsNullOrEmpty(viewModel.FullName) 
+                    FullName =
+                        String.IsNullOrEmpty(viewModel.FullName)
                         ? viewModel.Username
                         : viewModel.FullName,
                     PhoneNumber = viewModel.PhoneNumber,
@@ -59,80 +64,20 @@ namespace temsAPI.Controllers.IdentityControllers
                 };
 
                 // Creating the user
-                var result = await _userManager.CreateAsync(model, viewModel.Password);
-
-                // Errors when creating the user
-                if (result.Errors.Count() > 0)
-                {
-                    StringBuilder stringBuilder = new StringBuilder();
-                    foreach (var error in result.Errors)
-                    {
-                        stringBuilder.Append(error.Description + "\n");
-                    }
-                    return ReturnResponse(stringBuilder.ToString(), ResponseStatus.Fail);
-                }
+                string result = await _userHelper.CreateUser(model, viewModel.Password);
+                if (result != null)
+                    return ReturnResponse(result, ResponseStatus.Fail);
 
                 // Assigning roles
-                result = await _userManager.AddToRoleAsync(model, "User");
+                result = await _userHelper.AssignRoles(model, viewModel.Roles);
+                if (result != null)
+                    return ReturnResponse(result, ResponseStatus.Fail);
 
-                if (viewModel.Roles.Count > 0)
-                {
-                    List<string> roleIds = viewModel
-                        .Roles
-                        .Select(q => q.Value)
-                        .ToList();
-
-                    List<string> roles = _roleManager
-                        .Roles
-                        .Where(q => roleIds.Contains(q.Id) && q.Name != "User")
-                        .Select(q => q.Name)
-                        .ToList();
-
-                    result = await _userManager.AddToRolesAsync(model, roles);
-                }
-
-                // Errors when assigning roles
-                if (result.Errors.Count() > 0)
-                {
-                    StringBuilder stringBuilder = new StringBuilder();
-                    foreach (var error in result.Errors)
-                    {
-                        stringBuilder.Append(error.Description + "\n");
-                    }
-                    return ReturnResponse(stringBuilder.ToString(), ResponseStatus.Fail);
-                }
-
-                // Creating User-Personnel Association
-                if (viewModel.Personnel != null)
-                {
-                    if (!await _unitOfWork.Personnel
-                        .isExists(q => q.Id == viewModel.Personnel.Value))
-                    {
-                        return ReturnResponse(
-                            "The specified personnel record seems invalid",
-                             ResponseStatus.Fail
-                             );
-                    }
-
-                    model.Personnel = (await _unitOfWork
-                        .Personnel
-                        .Find<Personnel>(
-                            q => q.Id == viewModel.Personnel.Value
-                        )).FirstOrDefault();
-
-                    result = await _userManager.UpdateAsync(model);
-
-                    if (result.Errors.Count() > 0)
-                    {
-                        StringBuilder stringBuilder = new StringBuilder();
-                        foreach (var error in result.Errors)
-                        {
-                            stringBuilder.Append(error.Description + "\n");
-                        }
-                        return ReturnResponse(stringBuilder.ToString(), ResponseStatus.Fail);
-                    }
-                }
-
+                // Creating Personnel-User Association
+                result = await _userHelper.UserPersonnelAssociation(model, viewModel.Personnel);
+                if (result != null)
+                    return ReturnResponse(result, ResponseStatus.Fail);
+                
                 return ReturnResponse("The user has been saved", ResponseStatus.Success);
             }
             catch (Exception ex)
@@ -141,6 +86,61 @@ namespace temsAPI.Controllers.IdentityControllers
                 return ReturnResponse(
                     "An error occured when saving the user, consider trying again",
                     ResponseStatus.Fail);
+            }
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> UpdateUser([FromBody] AddUserViewModel viewModel)
+        {
+            try
+            {
+                string result = null;
+
+                // Invalid id
+                if (!await _unitOfWork.TEMSUsers.isExists(q => q.Id == viewModel.Id))
+                    return ReturnResponse("Invalid Id provided", ResponseStatus.Fail);
+
+                // Invalid username
+                viewModel.Username = viewModel.Username?.Trim();
+                if (String.IsNullOrEmpty(viewModel.Username))
+                    return ReturnResponse("Invalid username provided", ResponseStatus.Fail);
+
+                var model = await _userManager.FindByIdAsync(viewModel.Id);
+
+                // Password reset (If needed)
+                if(viewModel.Password != null)
+                {
+                    result = await _userHelper.ResetPassword(model, viewModel.Password);
+                    if (result != null)
+                        return ReturnResponse(result, ResponseStatus.Fail);
+                }
+
+                model.UserName = viewModel.Username;
+                model.PhoneNumber = viewModel.PhoneNumber;
+                model.Email = viewModel.Email;
+                model.FullName = viewModel.FullName;
+
+                // Updating properties
+                result = await _userHelper.UpdateUserData(model);
+                if (result != null)
+                    return ReturnResponse(result, ResponseStatus.Fail);
+
+                // Assigning roles
+                result = await _userHelper.AssignRoles(model, viewModel.Roles);
+                if(result != null)
+                    return ReturnResponse(result, ResponseStatus.Fail);
+
+                // Creating Personnel-Personnel Association
+                result = await _userHelper.UserPersonnelAssociation(model, viewModel.Personnel);
+                if (result != null)
+                    return ReturnResponse(result, ResponseStatus.Fail);
+
+                return ReturnResponse("The user has been saved", ResponseStatus.Success);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured when updating the record", ResponseStatus.Fail);
             }
         }
 
@@ -201,19 +201,20 @@ namespace temsAPI.Controllers.IdentityControllers
                 var user = (await _unitOfWork.TEMSUsers
                     .Find<TEMSUser>(
                         where: q => q.Id == userId,
-                        include: q => q.Include(q => q.Personnel)
+                        include: q => q
+                        .Include(q => q.Personnel)
                     )).FirstOrDefault();
 
                 var viewModel = new ViewUserViewModel
                 {
                     Id = user.Id,
                     Claims = _userManager.GetClaimsAsync(user)
-                    .Result
+                    .Result?
                     .Select(q => q.Type)
                     .ToList(),
                     Email = user.Email,
                     FullName = user.FullName,
-                    Personnel = user.Personnel == null 
+                    Personnel = user.Personnel == null
                         ? null
                         : new Option
                         {
@@ -221,10 +222,8 @@ namespace temsAPI.Controllers.IdentityControllers
                             Label = user.Personnel.Name
                         },
                     PhoneNumber = user.PhoneNumber,
-                    Username = user.UserName
-                    //Roles = _userManager.GetRolesAsync(user)
-                    //.Result
-                    //.ToList(),
+                    Username = user.UserName,
+                    Roles = _userManager.GetRolesAsync(user).Result?.ToList(),
                 };
 
                 return Json(viewModel);

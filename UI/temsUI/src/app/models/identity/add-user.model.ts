@@ -1,5 +1,6 @@
 import { IOption } from 'src/app/models/option.model';
 export interface IAddUser{
+    id?: string;
     username: string,
     password: string,
     fullName?: string,
@@ -10,6 +11,7 @@ export interface IAddUser{
 }
 
 export class AddUser implements IAddUser{
+    id?: string;
     username: string;
     password: string;
     fullName?: string;

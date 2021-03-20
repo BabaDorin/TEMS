@@ -67,7 +67,7 @@ export class AddUserComponent extends TEMSComponent implements OnInit {
           console.log(this.formlyData.model);
           this.formlyData.model = {
             username: result.username,
-            fullname: result.fullName,
+            fullName: result.fullName,
             email: result.email,
             phoneNumber: result.phoneNumber,
           }
@@ -82,6 +82,7 @@ export class AddUserComponent extends TEMSComponent implements OnInit {
   onSubmit(){
     let userModel = this.formlyData.model;
     let addUser: AddUser = {
+      id: this.userIdToUpdate,
       username: userModel.username,
       password: (this.userIdToUpdate == undefined) ? userModel.password : undefined,
       fullName: userModel.fullName,
@@ -93,31 +94,31 @@ export class AddUserComponent extends TEMSComponent implements OnInit {
       roles: this.roles.options,
     }
 
+    let apiResponse;
+
     if(this.userIdToUpdate == undefined){
       this.subscriptions.push(
         this.userService.addUser(addUser)
         .subscribe(result => {
           console.log(result);
-          if(result.status == 1)
-            this.formlyData.form.reset();
-            this.roles.options = [];
-            this.personnel.options = [];
+          apiResponse = result;
         })
       )
     }
     else
     {
-      alert('upate user');
-      // this.subscriptions.push(
-      //   this.userService.updateUser(addUser)
-      //   .subscribe(result => {
-      //     console.log(result);
-      //     if(result.status == 1)
-      //       this.formlyData.form.reset();
-      //       this.roles.options = [];
-      //       this.personnel.options = [];
-      //   })
-      // )
+      this.subscriptions.push(
+        this.userService.updateUser(addUser)
+        .subscribe(result => {
+          console.log(result);
+          apiResponse = result;
+        })
+      )
+    }
+    if(apiResponse.status == 1){
+      this.formlyData.form.reset();
+      this.roles.options = [];
+      this.personnel.options = [];
     }
   }
 }

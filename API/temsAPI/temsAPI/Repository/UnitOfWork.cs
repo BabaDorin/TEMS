@@ -1,4 +1,5 @@
 ﻿using leave_management.Repository;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,6 +35,7 @@ namespace temsAPI.Repository
         private IGenericRepository<Key> _keys;
         private IGenericRepository<KeyAllocation> _keyAllocations;
         private IGenericRepository<TEMSUser> _temsUsers;
+        private IGenericRepository<IdentityRole> _roles;
         private IGenericRepository<Privilege> _privileges;
         private IGenericRepository<RolePrivileges> _rolePrivileges;
         private IGenericRepository<Personnel> _personnel;
@@ -79,6 +81,8 @@ namespace temsAPI.Repository
             => _keyAllocations ??= new GenericRepository<KeyAllocation>(_context);
         public IGenericRepository<TEMSUser> TEMSUsers
             => _temsUsers ??= new GenericRepository<TEMSUser>(_context);
+        public IGenericRepository<IdentityRole> Roles
+            => _roles ??= new GenericRepository<IdentityRole>(_context);
         public IGenericRepository<Privilege> Privileges
             => _privileges ??= new GenericRepository<Privilege>(_context);
         public IGenericRepository<RolePrivileges> RolePrivileges

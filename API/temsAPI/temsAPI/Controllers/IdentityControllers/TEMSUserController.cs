@@ -1,15 +1,20 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.OtherEntities;
 using temsAPI.Data.Entities.UserEntities;
+using temsAPI.System_Files;
 using temsAPI.ViewModels.IdentityViewModels;
 
 namespace temsAPI.Controllers.IdentityControllers
@@ -17,13 +22,17 @@ namespace temsAPI.Controllers.IdentityControllers
     public class TEMSUserController : TEMSController
     {
         private RoleManager<IdentityRole> _roleManager;
+        private readonly AppSettings _appSettings;
+
         public TEMSUserController(
             IMapper mapper,
             IUnitOfWork unitOfWork,
             UserManager<TEMSUser> userManager,
-            RoleManager<IdentityRole> roleManager) : base(mapper, unitOfWork, userManager)
+            RoleManager<IdentityRole> roleManager,
+            IOptions<AppSettings> appSettings) : base(mapper, unitOfWork, userManager)
         {
             _roleManager = roleManager;
+            _appSettings = appSettings.Value;
         }
 
         [HttpPost]
@@ -132,9 +141,28 @@ namespace temsAPI.Controllers.IdentityControllers
         [HttpPost]
         public async Task<IActionResult> LogIn([FromBody] LogInViewModel viewModel)
         {
-            throw new NotImplementedException();
+            var user = await _userManager.FindByNameAsync(viewModel.Username);
+
+            if (user == null || !await _userManager.CheckPasswordAsync(user, viewModel.Password))
+                return ReturnResponse("Username or password is incorrect", ResponseStatus.Fail);
+
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new Claim[]
+                {
+                    new Claim("UserId", user.Id.ToString())
+                }),
+                Expires = DateTime.Now.AddDays(10),
+                SigningCredentials = new SigningCredentials(
+                    new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_appSettings.JWT_Secret)),
+                    SecurityAlgorithms.HmacSha256Signature
+                    )
+            };
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var securityToken = tokenHandler.CreateToken(tokenDescriptor);
+            var token = tokenHandler.WriteToken(securityToken);
+            return Ok(new { token });
         }
-
-
     }
 }

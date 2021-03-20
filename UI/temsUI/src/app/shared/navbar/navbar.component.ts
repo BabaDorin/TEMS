@@ -1,3 +1,4 @@
+import { UserService } from './../../services/user-service/user.service';
 import { Component, OnInit } from '@angular/core';
 import { NgbDropdownConfig } from '@ng-bootstrap/ng-bootstrap';
 
@@ -10,12 +11,16 @@ import { NgbDropdownConfig } from '@ng-bootstrap/ng-bootstrap';
 export class NavbarComponent implements OnInit {
   public iconOnlyToggled = false;
   public sidebarToggled = false;
+  private loggedIn;
   
-  constructor(config: NgbDropdownConfig) {
+  constructor(
+    config: NgbDropdownConfig,
+    private userService: UserService) {
     config.placement = 'bottom-right';
   }
 
   ngOnInit() {
+    this.loggedIn = this.userService.isLoggedIn();
   }
 
   // toggle sidebar in small devices
@@ -44,8 +49,8 @@ export class NavbarComponent implements OnInit {
   }
 
   // toggle right sidebar
-  // toggleRightSidebar() {
-  //   document.querySelector('#right-sidebar').classList.toggle('open');
-  // }
+  toggleRightSidebar() {
+    document.querySelector('#right-sidebar').classList.toggle('open');
+  }
 
 }

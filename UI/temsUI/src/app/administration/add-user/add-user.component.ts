@@ -75,6 +75,10 @@ export class AddUserComponent extends TEMSComponent implements OnInit {
       this.userService.addUser(addUser)
       .subscribe(result => {
         console.log(result);
+        if(result.status == 1)
+          this.formlyData.form.reset();
+          this.roles.options = [];
+          this.personnel.options = [];
       })
     )
   }

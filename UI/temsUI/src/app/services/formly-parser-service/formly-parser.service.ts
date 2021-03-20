@@ -697,6 +697,36 @@ export class FormlyParserService {
     return fields;
   }
 
+  parseLogin(){
+    let fields: FormlyFieldConfig[] =
+      [
+        {
+          key: 'login',
+          fieldGroup: [
+            {
+              key: 'username',
+              className: "my-2",
+              type: 'input',
+              templateOptions: {
+                label: 'Username',
+              }
+            },
+            {
+              key: 'password',
+              className: "my-2",
+              type: 'input',
+              templateOptions: {
+                type: 'password',
+                label: 'Password',
+              },
+            },
+          ]
+        }
+      ];
+
+    return fields;
+  }
+
   parseAddUser(){
     let fields: FormlyFieldConfig[] =
       [

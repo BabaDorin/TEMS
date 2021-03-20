@@ -23,6 +23,7 @@ using temsAPI.Data;
 using temsAPI.Data.Entities.UserEntities;
 using temsAPI.Mappings;
 using temsAPI.Repository;
+using temsAPI.System_Files;
 
 namespace temsAPI
 {
@@ -39,6 +40,7 @@ namespace temsAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
             services.AddDistributedMemoryCache();
             services.AddSession();
 

@@ -1,3 +1,4 @@
+import { LoginModel } from './../../models/identity/login.model';
 import { API_USER_URL } from './../../models/backend.config';
 import { TEMSService } from './../tems-service/tems.service';
 import { HttpClient } from '@angular/common/http';
@@ -11,7 +12,49 @@ import { Injectable } from '@angular/core';
   providedIn: 'root'
 })
 export class UserService extends TEMSService {
+
   role: Role;
+
+  constructor(
+    private http: HttpClient
+  ) {
+    super();
+    this.role = this.admin;
+  }
+
+  getRoles(): IOption[]{
+    return [
+      { value: '1', label: 'Utilizator'},
+      { value: '2', label: 'Personal'},
+      { value: '3', label: 'Tehnician'},
+      { value: '4', label: 'Administrator'},
+    ]
+  }
+
+  addUser(user: AddUser): Observable<any>{
+    return this.http.post(
+      API_USER_URL+ '/adduser',
+      JSON.stringify(user),
+      this.httpOptions
+    );
+  }
+
+  isLoggedIn(): boolean{
+    return false;
+  }
+
+  logIn(loginModel): Observable<any>{
+    return this.http.post(
+      API_USER_URL + '/login',
+      JSON.stringify(loginModel),
+      this.httpOptions
+    );
+  }
+
+
+
+
+
 
   private admin = {
     canManageEquipment: true,
@@ -115,29 +158,5 @@ export class UserService extends TEMSService {
     canCreateIssues: true,
     canAllocateEquipment: false,
     canAllocateKeys: false,
-  }
-
-  constructor(
-    private http: HttpClient
-  ) {
-    super();
-    this.role = this.admin;
-  }
-
-  getRoles(): IOption[]{
-    return [
-      { value: '1', label: 'Utilizator'},
-      { value: '2', label: 'Personal'},
-      { value: '3', label: 'Tehnician'},
-      { value: '4', label: 'Administrator'},
-    ]
-  }
-
-  addUser(user: AddUser): Observable<any>{
-    return this.http.post(
-      API_USER_URL+ '/adduser',
-      JSON.stringify(user),
-      this.httpOptions
-    );
   }
 }

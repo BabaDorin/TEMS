@@ -707,9 +707,10 @@ export class FormlyParserService {
               key: 'username',
               type: 'input-tooltip',
               templateOptions: {
+                minLength: 4,
                 required: true,
                 label: 'Username',
-                description: 'Aphanumerics and characters ".", "_"'
+                description: 'Minimum 4 alphanumerics or ".", "_"'
               },
               validators: {
                 validation: ['usernameValidator']

@@ -31,7 +31,7 @@ export class AddUserComponent extends TEMSComponent implements OnInit {
   constructor(
     private personnelService: PersonnelService,
     private userService: UserService,
-    private formlyParserService: FormlyParserService
+    private formlyParserService: FormlyParserService,
   ) { 
     super();
   }
@@ -53,10 +53,17 @@ export class AddUserComponent extends TEMSComponent implements OnInit {
       fullName: userModel.fullName,
       email: userModel.email,
       phoneNumber: userModel.phoneNumber,
-      personnel: this.personnel.options,
+      personnel: (this.personnel.options.length > 0) 
+        ? this.personnel.options[0] 
+        : undefined,
       roles: this.roles.options,
     }
 
-    console.log(addUser);
+    this.subscriptions.push(
+      this.userService.addUser(addUser)
+      .subscribe(result => {
+        console.log(result);
+      })
+    )
   }
 }

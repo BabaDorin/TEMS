@@ -1,3 +1,8 @@
+import { API_USER_URL } from './../../models/backend.config';
+import { TEMSService } from './../tems-service/tems.service';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { AddUser } from './../../models/identity/add-user.model';
 import { IOption } from 'src/app/models/option.model';
 import { Role } from '../../models/role.model';
 import { Injectable } from '@angular/core';
@@ -5,10 +10,7 @@ import { Injectable } from '@angular/core';
 @Injectable({
   providedIn: 'root'
 })
-export class UserService {
-  // Fake service.
-  // Roles will be provided by the API
-
+export class UserService extends TEMSService {
   role: Role;
 
   private admin = {
@@ -115,7 +117,10 @@ export class UserService {
     canAllocateKeys: false,
   }
 
-  constructor() {
+  constructor(
+    private http: HttpClient
+  ) {
+    super();
     this.role = this.admin;
   }
 
@@ -126,5 +131,13 @@ export class UserService {
       { value: '3', label: 'Tehnician'},
       { value: '4', label: 'Administrator'},
     ]
+  }
+
+  addUser(user: AddUser): Observable<any>{
+    return this.http.post(
+      API_USER_URL+ '/adduser',
+      JSON.stringify(user),
+      this.httpOptions
+    );
   }
 }

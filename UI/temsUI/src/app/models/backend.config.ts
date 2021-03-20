@@ -11,3 +11,4 @@ export const API_PERS_URL = API_URL + '/personnel';
 export const API_KEY_URL = API_URL + '/key';
 export const API_ANN_URL = API_URL + '/announcement';
 export const API_LBR_URL = API_URL + '/library';
+export const API_USER_URL = API_URL + '/temsuser';

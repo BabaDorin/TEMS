@@ -32,7 +32,7 @@ namespace temsAPI.Data
 
         private static void SeedRoles(RoleManager<IdentityRole> roleManager)
         {
-            (new List<string>() { "Administrator", "Technician", "Personnel" })
+            (new List<string>() { "Administrator", "Technician", "Personnel", "User", "Guest" })
                 .ForEach(r =>
                 {
                     if (!roleManager.RoleExistsAsync(r).Result)

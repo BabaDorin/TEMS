@@ -18,7 +18,11 @@ namespace temsAPI.Controllers.RoomControllers
 {
     public class RoomController : TEMSController
     {
-        public RoomController(IMapper mapper, IUnitOfWork unitOfWork, UserManager<TEMSUser> userManager) : base(mapper, unitOfWork, userManager)
+        public RoomController(
+            IMapper mapper, 
+            IUnitOfWork unitOfWork, 
+            UserManager<TEMSUser> userManager
+            ) : base(mapper, unitOfWork, userManager)
         {
         }
 

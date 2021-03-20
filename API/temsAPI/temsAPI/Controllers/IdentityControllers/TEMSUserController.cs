@@ -15,8 +15,14 @@ namespace temsAPI.Controllers.IdentityControllers
 {
     public class TEMSUserController : TEMSController
     {
-        public TEMSUserController(IMapper mapper, IUnitOfWork unitOfWork, UserManager<TEMSUser> userManager) : base(mapper, unitOfWork, userManager)
+        private RoleManager<IdentityRole> _roleManager;
+        public TEMSUserController(
+            IMapper mapper, 
+            IUnitOfWork unitOfWork, 
+            UserManager<TEMSUser> userManager,
+            RoleManager<IdentityRole> roleManager) : base(mapper, unitOfWork, userManager)
         {
+            _roleManager = roleManager;
         }
 
         [HttpPost]
@@ -35,19 +41,52 @@ namespace temsAPI.Controllers.IdentityControllers
                     PhoneNumber = viewModel.PhoneNumber,
                     Email = viewModel.Email,
                 };
+                
+                // Creating the user
                 var result = await _userManager.CreateAsync(model, viewModel.Password);
                 
-                if(result.Errors.Count() == 0)
-                    return ReturnResponse("The user has been saved", ResponseStatus.Success);
-
-                StringBuilder stringBuilder = new StringBuilder();
-                foreach (var error in result.Errors)
+                // Errors when creating the user
+                if(result.Errors.Count() > 0)
                 {
-                    stringBuilder.Append(error.Description + "\n");
+                    StringBuilder stringBuilder = new StringBuilder();
+                    foreach (var error in result.Errors)
+                    {
+                        stringBuilder.Append(error.Description + "\n");
+                    }
+                    return ReturnResponse(stringBuilder.ToString(), ResponseStatus.Fail);
                 }
 
-                return ReturnResponse(stringBuilder.ToString(), ResponseStatus.Fail);
-                // Roles assignation later
+                // Assigning roles
+                result = await _userManager.AddToRoleAsync(model, "User");
+
+                if(viewModel.Roles.Count > 0)
+                {
+                    List<string> roleIds = viewModel
+                        .Roles
+                        .Select(q => q.Value)
+                        .ToList();
+
+                    List<string> roles = _roleManager
+                        .Roles
+                        .Where(q => roleIds.Contains(q.Id))
+                        .Select(q => q.Name)
+                        .ToList();
+
+                    result = await _userManager.AddToRolesAsync(model, roles);
+                }
+
+                // Errors when assigning roles
+                if (result.Errors.Count() > 0)
+                {
+                    StringBuilder stringBuilder = new StringBuilder();
+                    foreach (var error in result.Errors)
+                    {
+                        stringBuilder.Append(error.Description + "\n");
+                    }
+                    return ReturnResponse(stringBuilder.ToString(), ResponseStatus.Fail);
+                }
+                
+                return ReturnResponse("The user has been saved", ResponseStatus.Success);
             }
             catch (Exception ex)
             {
@@ -63,5 +102,7 @@ namespace temsAPI.Controllers.IdentityControllers
         {
             throw new NotImplementedException();
         }
+
+
     }
 }

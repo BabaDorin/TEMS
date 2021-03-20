@@ -1,3 +1,4 @@
+import { RoleService } from './../../services/role-service/role.service';
 import { AddUser } from './../../models/identity/add-user.model';
 import { FormlyParserService } from 'src/app/services/formly-parser-service/formly-parser.service';
 import { specCharValidator } from 'src/app/models/validators';
@@ -31,6 +32,7 @@ export class AddUserComponent extends TEMSComponent implements OnInit {
   constructor(
     private personnelService: PersonnelService,
     private userService: UserService,
+    private roleService: RoleService,
     private formlyParserService: FormlyParserService,
   ) { 
     super();
@@ -38,11 +40,21 @@ export class AddUserComponent extends TEMSComponent implements OnInit {
 
   ngOnInit(): void {
     this.formlyData.fields = this.formlyParserService.parseAddUser();
-    this.rolesOptions = this.userService.getRoles();
-    this.subscriptions.push(this.personnelService.getAllAutocompleteOptions()
+
+    this.subscriptions.push(
+      this.roleService.getAllAutocompleteOptions()
+      .subscribe(result => {
+        console.log(result);
+        this.rolesOptions = result;
+      })
+    )
+
+    this.subscriptions.push(
+      this.personnelService.getAllAutocompleteOptions()
       .subscribe(result => {
         this.personnelOptions = result;
-      }));
+      })
+    );
   }
 
   onSubmit(){

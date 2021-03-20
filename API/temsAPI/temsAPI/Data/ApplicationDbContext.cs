@@ -133,6 +133,17 @@ namespace temsAPI.Data
                 .WithOne(e => e.DataType)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            // Delete behaviour between user <-> personnel
+            //modelBuilder.Entity<Personnel>()
+            //    .HasOne(e => e.User)
+            //    .WithOne(e => e.Personnel)
+            //    .OnDelete(DeleteBehavior.SetNull);
+
+            //modelBuilder.Entity<TEMSUser>()
+            //    .HasOne(e => e.Personnel)
+            //    .WithOne(e => e.User)
+            //    .OnDelete(DeleteBehavior.SetNull);
+
             base.OnModelCreating(modelBuilder);
         }
 

@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using temsAPI.Data;
 
 namespace temsAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210320082434_personnelUserAssociation")]
+    partial class personnelUserAssociation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -891,12 +893,12 @@ namespace temsAPI.Migrations
                     b.Property<string>("PhoneNumber")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("TEMSUserId")
+                    b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("TEMSUserId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Personnel");
                 });
@@ -1444,11 +1446,11 @@ namespace temsAPI.Migrations
 
             modelBuilder.Entity("temsAPI.Data.Entities.OtherEntities.Personnel", b =>
                 {
-                    b.HasOne("temsAPI.Data.Entities.UserEntities.TEMSUser", "TEMSUser")
+                    b.HasOne("temsAPI.Data.Entities.UserEntities.TEMSUser", "User")
                         .WithMany()
-                        .HasForeignKey("TEMSUserId");
+                        .HasForeignKey("UserId");
 
-                    b.Navigation("TEMSUser");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("temsAPI.Data.Entities.OtherEntities.PersonnelRoomSupervisory", b =>

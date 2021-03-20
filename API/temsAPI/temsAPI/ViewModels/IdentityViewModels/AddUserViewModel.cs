@@ -12,7 +12,7 @@ namespace temsAPI.ViewModels.IdentityViewModels
         public string FullName { get; set; }
         public string Email { get; set; }
         public string PhoneNumber { get; set; }
-        public IOption Personnel { get; set; }
+        public Option Personnel { get; set; }
         public List<Option> Roles { get; set; }
     }
 }

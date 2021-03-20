@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 using temsAPI.Data.Entities.CommunicationEntities;
 using temsAPI.Data.Entities.EquipmentEntities;
 using temsAPI.Data.Entities.KeyEntities;
+using temsAPI.Data.Entities.UserEntities;
 
 namespace temsAPI.Data.Entities.OtherEntities
 {
@@ -20,6 +22,10 @@ namespace temsAPI.Data.Entities.OtherEntities
         public string? Email { get; set; }
 
         public string? ImagePath { get; set; }
+
+        [ForeignKey("TEMSUserId")]
+        public TEMSUser? TEMSUser { get; set; }
+        public string? TEMSUserId { get; set; }
 #nullable disable
 
         public bool IsArchieved { get; set; }

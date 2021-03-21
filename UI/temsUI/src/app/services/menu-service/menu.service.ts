@@ -1,56 +1,16 @@
-import { CAN_VIEW_ENTITIES, CAN_MANAGE_ANNOUNCEMENTS, CAN_MANAGE_ENTITIES, CAN_ALLOCATE_KEYS, CAN_MANAGE_SYSTEM_CONFIGURATION } from './../../models/claims';
-import { TokenService } from './../../services/token-service/token.service';
-import { Role } from '../../models/role.model';
-import { RouteInfo } from './sidebar.metadata';
+import { TokenService } from './../token-service/token.service';
+import { Injectable } from '@angular/core';
+import { CAN_VIEW_ENTITIES, CAN_MANAGE_ENTITIES, CAN_ALLOCATE_KEYS, CAN_MANAGE_SYSTEM_CONFIGURATION } from 'src/app/models/claims';
+import { RouteInfo } from 'src/app/shared/sidebar/sidebar.metadata';
 
-// Sidebar Menu Items State
-
-//       Items
-//         > View Items
-//         > Add Items
-//         > Quick Access
-//         > Allocate
-
-//       Rooms
-//         > View Rooms
-//         > College map
-//         > Allocate
-
-//       Personnnel
-//         > View Personnnel
-//         > Add Personnnel
-//         > Allocate
-
-//       Keys
-//         > View Keys
-//         > View Allocations
-//         > Allocate
-
-//       Issues
-//         > View Issues
-//         > Create Issues
-
-//       Communication
-//         > Announcements
-//         > Logs
-
-//       Libary
-
-//       Report Printing
-
-//       Administration
-//         > Equipment Manager
-//         > User Manager
-//         > Role Manager
-//         > System Configuration
-
-export class menuItems {
+@Injectable({
+  providedIn: 'root'
+})
+export class MenuService {
 
   constructor(
     private tokenService: TokenService
-  ) {
-
-  }
+  ) { }
 
   hasClaim(claim: string): boolean{
     return this.tokenService.hasClaim(claim);

@@ -1,3 +1,5 @@
+import { MenuService } from './services/menu-service/menu.service';
+import { TokenService } from './services/token-service/token.service';
 import { AuthInterceptor } from './auth.interceptor';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { EquipmentService } from './services/equipment-service/equipment.service';
@@ -28,7 +30,6 @@ import { TodoListComponent } from './public/apps/todo-list/todo-list.component';
 import { TagInputModule } from 'ngx-chips';
 import { MatDialogModule } from '@angular/material/dialog';
 import { TEMSComponent } from './tems/tems.component';
-import { EditUserComponent } from './tems-components/admin/user-management/edit-user/edit-user.component';
 
 @NgModule({
   declarations: [
@@ -43,7 +44,6 @@ import { EditUserComponent } from './tems-components/admin/user-management/edit-
     ContentAnimateDirective,
     QuickAccessComponent,
     TEMSComponent,
-    EditUserComponent,
     ],
   imports: [
     BrowserModule,
@@ -76,6 +76,8 @@ import { EditUserComponent } from './tems-components/admin/user-management/edit-
     RoomsService,
     PersonnelService,
     EquipmentService,
+    TokenService,
+    MenuService
   ],
   bootstrap: [AppComponent],
 })

@@ -169,6 +169,17 @@ namespace temsAPI.Controllers.IdentityControllers
             claims.Add(new Claim("Username", user.UserName.ToString()));
             
             var userClaims = await _userManager.GetClaimsAsync(user);
+
+
+            List<string> userRoles = (await _userManager.GetRolesAsync(user)).ToList();
+            foreach (string role in userRoles)
+            {
+                userClaims = userClaims.Union(await _roleManager
+                    .GetClaimsAsync(await _roleManager.FindByNameAsync(role)))
+                    .Select(q => new Claim(q.Type, q.Value))
+                    .ToList();
+            }
+
             foreach (var claim in userClaims)
             {
                 claims.Add(new Claim(claim.Type, claim.Value));
@@ -178,7 +189,10 @@ namespace temsAPI.Controllers.IdentityControllers
             {
                 Subject = new ClaimsIdentity(claims),
                 Expires = DateTime.UtcNow.AddDays(10),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_appSettings.JWT_Secret)), SecurityAlgorithms.HmacSha256Signature)
+                SigningCredentials = new SigningCredentials(
+                    new SymmetricSecurityKey(
+                        Encoding.UTF8.GetBytes(
+                            _appSettings.JWT_Secret + user.PasswordHash)), SecurityAlgorithms.HmacSha256Signature)
             };
             var tokenHandler = new JwtSecurityTokenHandler();
             var securityToken = tokenHandler.CreateToken(tokenDescriptor);

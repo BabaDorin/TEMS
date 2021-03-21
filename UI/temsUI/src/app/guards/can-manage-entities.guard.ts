@@ -1,21 +1,23 @@
+import { CAN_MANAGE_ENTITIES } from './../models/claims';
 import { Injectable } from '@angular/core';
 import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree } from '@angular/router';
 import { Observable } from 'rxjs';
-import { UserService } from 'src/app/services/user-service/user.service';
+import { TokenService } from '../services/token-service/token.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class AllocateEquipmentGuard implements CanActivate {
-
-  constructor(private userService: UserService){
+export class CanManageEntitiesGuard implements CanActivate {
+  constructor(
+    private tokenService: TokenService
+  ){
 
   }
 
   canActivate(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-    let userRole = this.userService.role;
-    return userRole.canAllocateEquipment || userRole.canManageEquipment;
+    return this.tokenService.hasClaim(CAN_MANAGE_ENTITIES); 
   }
+  
 }

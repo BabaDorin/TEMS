@@ -150,7 +150,7 @@ namespace temsAPI.Data
             dbContext.SaveChanges();
         }
 
-        private static async Task SeedPrivileges(
+        private static void SeedPrivileges(
             ApplicationDbContext dbContext, 
             RoleManager<IdentityRole> roleManager,
             UserManager<TEMSUser> userManager)

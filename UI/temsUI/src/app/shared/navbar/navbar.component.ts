@@ -29,7 +29,7 @@ export class NavbarComponent extends TEMSComponent implements OnInit {
   signOut(){
     localStorage.removeItem('token');
     this.route.navigateByUrl('');
-    // window.location.reload()
+    window.location.reload()
   }
 
   ngOnInit() {

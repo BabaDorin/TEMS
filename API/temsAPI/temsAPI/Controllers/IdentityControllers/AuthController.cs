@@ -17,7 +17,6 @@ namespace temsAPI.Controllers.IdentityControllers
         {
         }
 
-        [Authorize]
         [HttpGet]
         public JsonResult IsAuthenticated()
         {

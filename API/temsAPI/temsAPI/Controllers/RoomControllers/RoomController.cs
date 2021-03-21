@@ -28,7 +28,6 @@ namespace temsAPI.Controllers.RoomControllers
         }
 
         [HttpGet]
-        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
         public async Task<JsonResult> GetAllAutocompleteOptions()
         {
             try

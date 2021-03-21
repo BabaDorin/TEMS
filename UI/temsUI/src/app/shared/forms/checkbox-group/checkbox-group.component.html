@@ -5,6 +5,9 @@
         <mat-checkbox  [(ngModel)]="item.checked" (change)="onToggle()">
             {{ item.label }}
         </mat-checkbox>
+        <ng-container *ngIf="item.description != undefined">
+            <p class="text-muted">{{ item.description }}</p>
+        </ng-container>
         <br>
     </div>
 </section>

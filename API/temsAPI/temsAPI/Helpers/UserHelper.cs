@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
@@ -123,10 +124,48 @@ namespace temsAPI.Helpers
         /// <returns></returns>
         public async Task<string> ResetPassword(TEMSUser model, string password)
         {
-            //await _userManager.RemovePasswordAsync(model);
-            //var result = await _userManager.AddPasswordAsync(model, password);
             var token = await _userManager.GeneratePasswordResetTokenAsync(model);
             var result = await _userManager.ResetPasswordAsync(model, token, password);
+            return CheckResultForErrors(result);
+        }
+
+        /// <summary>
+        /// Sets user's roles' claims to user and appends new claims (if specified)
+        /// </summary>
+        /// <param name="model"></param>
+        /// <param name="claims">mark as null if there aren't any additional claims</param>
+        /// <returns></returns>
+        public async Task<string> SetClaims(TEMSUser model, List<string> claims)
+        {
+            // Getting all of the claims (Claims that come from model's role + 
+            // claims indicated here)
+
+            List<string> allClaims = claims ?? new List<string>();
+
+            List<string> userRoles = (await _userManager.GetRolesAsync(model)).ToList();
+            foreach (string role  in userRoles)
+            {
+                List<string> roleClaims = (await _roleManager
+                    .GetClaimsAsync(await _roleManager.FindByNameAsync(role)))
+                    .Select(q => q.Type)
+                    .ToList();
+                allClaims.Union(roleClaims ?? new List<string>());
+            }
+
+            // Validating claims
+            foreach (string claim in allClaims)
+                if (!await _unitOfWork.Privileges.isExists(q => q.Identifier == claim))
+                    return "One or more invalid claims provided";
+
+            // Removing old user claims
+            List<Claim> oldClaims = (List<Claim>)await _userManager.GetClaimsAsync(model);
+            if(oldClaims != null)
+                await _userManager.RemoveClaimsAsync(model, oldClaims);
+
+            // Setting new claims
+            List<Claim> userClaims = allClaims.Select(q => new Claim(q, "ye")).ToList();
+            var result = await _userManager.AddClaimsAsync(model, userClaims);
+
             return CheckResultForErrors(result);
         }
 

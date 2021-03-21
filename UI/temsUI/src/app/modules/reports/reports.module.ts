@@ -17,7 +17,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     ReportsComponent,
     ReportContainerComponent,
     CreateReportTemplateComponent,
-    CheckboxGroupComponent
   ],
   imports: [
     CommonModule,

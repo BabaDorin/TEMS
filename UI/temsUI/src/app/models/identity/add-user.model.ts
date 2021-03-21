@@ -1,4 +1,4 @@
-import { IOption } from 'src/app/models/option.model';
+import { IOption } from './../option.model';
 export interface IAddUser{
     id?: string;
     username: string,
@@ -7,7 +7,8 @@ export interface IAddUser{
     email?: string,
     phoneNumber?: string,
     personnel?: IOption,
-    roles?: IOption[]
+    roles?: IOption[],
+    claims?: IOption[],
 }
 
 export class AddUser implements IAddUser{
@@ -19,4 +20,5 @@ export class AddUser implements IAddUser{
     phoneNumber?: string;
     personnel?: IOption;
     roles?: IOption[];
+    claims?: IOption[];
 }

@@ -15,5 +15,6 @@ namespace temsAPI.ViewModels.IdentityViewModels
         public string PhoneNumber { get; set; }
         public Option Personnel { get; set; }
         public List<Option> Roles { get; set; }
+        public List<string> Claims { get; set; }
     }
 }

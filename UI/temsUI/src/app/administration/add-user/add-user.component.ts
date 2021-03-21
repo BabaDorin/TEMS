@@ -1,3 +1,4 @@
+import { CheckboxItem } from './../../models/checkboxItem.model';
 import { Observable } from 'rxjs';
 import { RoleService } from './../../services/role-service/role.service';
 import { AddUser } from './../../models/identity/add-user.model';
@@ -21,6 +22,8 @@ export class AddUserComponent extends TEMSComponent implements OnInit {
 
   userIdToUpdate: string;
   dialogRef: MatDialogRef<any>;
+  claims: CheckboxItem[];
+  rolesClaims: CheckboxItem[];
 
   // It will get merged with formlyData soon.
   @ViewChild('rolesChips') roles;
@@ -74,6 +77,7 @@ export class AddUserComponent extends TEMSComponent implements OnInit {
             fullName: result.fullName,
             email: result.email,
             phoneNumber: result.phoneNumber,
+            claims: result.claims
           }
 
           this.personnel.options = result.personnel != undefined ?  [ result.personnel ] : [];
@@ -81,6 +85,25 @@ export class AddUserComponent extends TEMSComponent implements OnInit {
         })
       )
     }
+
+    this.fetchClaims();
+  }
+
+  fetchClaims(){
+    if(this.claims != undefined)
+      return;
+    
+    this.subscriptions.push(
+      this.userService.fetchClaims()
+      .subscribe(result => {
+        console.log(result);
+        this.claims = result.map(q => ({value: q.value, label: q.label, description: q.additional } as CheckboxItem));
+      })
+    )
+  }
+
+  onClaimsChange($event){
+    this.formlyData.model.claims = $event;
   }
 
   onSubmit(){
@@ -96,6 +119,7 @@ export class AddUserComponent extends TEMSComponent implements OnInit {
         ? this.personnel.options[0] 
         : undefined,
       roles: this.roles.options,
+      claims: userModel.claims
     }
 
     let apiResponse;

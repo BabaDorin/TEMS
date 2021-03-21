@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Security.Claims;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using temsAPI.Data.Entities.CommunicationEntities;
@@ -27,7 +28,7 @@ namespace temsAPI.Data
             SeedTickedStatuses(dbContext);
             SeedRoomLabels(dbContext);
             SeedPersonnelPositions(dbContext);
-            SeedPrivileges(dbContext);
+            SeedPrivileges(dbContext, roleManager, userManager);
         }
 
         private static void SeedRoles(RoleManager<IdentityRole> roleManager)
@@ -149,7 +150,10 @@ namespace temsAPI.Data
             dbContext.SaveChanges();
         }
 
-        private static void SeedPrivileges(ApplicationDbContext dbContext)
+        private static async Task SeedPrivileges(
+            ApplicationDbContext dbContext, 
+            RoleManager<IdentityRole> roleManager,
+            UserManager<TEMSUser> userManager)
         {
             List<Privilege> privileges = new List<Privilege>
             {
@@ -191,6 +195,8 @@ namespace temsAPI.Data
                 },
             };
 
+           
+            
             privileges.ForEach(q =>
             {
                 if (!dbContext.Privileges.Any(p => p.Identifier == q.Identifier))
@@ -198,8 +204,24 @@ namespace temsAPI.Data
                     dbContext.Privileges.Add(q);
                 }
             });
-
+            
             dbContext.SaveChanges();
+
+
+            var admin = roleManager.FindByNameAsync("Administrator").Result;
+            List<string> adminClaims = roleManager.GetClaimsAsync(admin).Result
+                .Select(q => q.Type).ToList();
+
+            List<string> claimsToAdd = privileges.Select(q => q.Identifier)
+                .Except(adminClaims)
+                .ToList();
+
+            IdentityResult result = null;
+            foreach (var item in claimsToAdd)
+            {
+                result = roleManager.AddClaimAsync(admin, new Claim(item, "ye")).Result;
+            }
+            Debug.WriteLine(result);
         }
     }
 }

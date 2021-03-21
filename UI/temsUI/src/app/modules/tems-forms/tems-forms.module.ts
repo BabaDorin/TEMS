@@ -17,6 +17,7 @@ import { FormlyModule } from '@ngx-formly/core';
 import { MaterialModule } from '../material/material.module';
 import { specCharValidator } from 'src/app/models/validators';
 import { usernameValidator } from 'src/app/models/validators';
+import { CheckboxGroupComponent } from 'src/app/shared/forms/checkbox-group/checkbox-group.component';
 
 @NgModule({
   declarations: [
@@ -28,6 +29,7 @@ import { usernameValidator } from 'src/app/models/validators';
     RepeatTypeComponent,
     AddEquipmentRepeatComponent,
     ChipsAutocompleteComponent,
+    CheckboxGroupComponent
   ],
   imports: [
     MatInputModule,
@@ -90,7 +92,8 @@ import { usernameValidator } from 'src/app/models/validators';
     // Other
     MaterialModule,
     TagInputModule,
-    ChipsAutocompleteComponent
+    ChipsAutocompleteComponent,
+    CheckboxGroupComponent
   ]
 })
 export class TemsFormsModule { }

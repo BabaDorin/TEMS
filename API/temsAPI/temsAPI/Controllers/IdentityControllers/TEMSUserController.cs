@@ -73,6 +73,11 @@ namespace temsAPI.Controllers.IdentityControllers
                 if (result != null)
                     return ReturnResponse(result, ResponseStatus.Fail);
 
+                // Setting claims
+                result = await _userHelper.SetClaims(model, viewModel.Claims);
+                if (result != null)
+                    return ReturnResponse(result, ResponseStatus.Fail);
+
                 // Creating Personnel-User Association
                 result = await _userHelper.UserPersonnelAssociation(model, viewModel.Personnel);
                 if (result != null)
@@ -128,6 +133,11 @@ namespace temsAPI.Controllers.IdentityControllers
                 // Assigning roles
                 result = await _userHelper.AssignRoles(model, viewModel.Roles);
                 if(result != null)
+                    return ReturnResponse(result, ResponseStatus.Fail);
+
+                // Setting claims
+                result = await _userHelper.SetClaims(model, viewModel.Claims);
+                if (result != null)
                     return ReturnResponse(result, ResponseStatus.Fail);
 
                 // Creating Personnel-Personnel Association
@@ -191,6 +201,41 @@ namespace temsAPI.Controllers.IdentityControllers
             {
                 Debug.WriteLine(ex);
                 return ReturnResponse("An error occured when fetching users", ResponseStatus.Fail);
+            }
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> GetClaims()
+        {
+            try
+            {
+                //// Invalid id provided
+                //if(userId != null)
+                //{
+                //    if (!await _unitOfWork.TEMSUsers.isExists(q => q.Id == userId))
+                //        return ReturnResponse("Invalid user id provided", ResponseStatus.Fail);
+
+                //    List<string> claims = (List<string>)await _userManager
+                //        .GetClaimsAsync(await _userManager.FindByIdAsync(userId));
+
+                //    return Json(claims);
+                //}
+
+                List<Option> claims = (await _unitOfWork.Privileges.FindAll<Option>(
+                    select: q => new Option
+                    {
+                        Value = q.Identifier,
+                        Label = q.Identifier,
+                        Additional = q.Description
+                    }
+                    )).ToList();
+
+                return Json(claims);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured when fetching claims", ResponseStatus.Fail);
             }
         }
 

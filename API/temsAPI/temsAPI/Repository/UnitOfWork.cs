@@ -48,6 +48,7 @@ namespace temsAPI.Repository
         private IGenericRepository<PersonnelPosition> _personnelPosition;
         private IGenericRepository<LibraryFolder> _libraryFolders;
         private IGenericRepository<LibraryItem> _libraryItems;
+        private IGenericRepository<TemsJWT> _jwtBlacklist;
 
         public IGenericRepository<Announcement> Announcements 
             => _announcements ??= new GenericRepository<Announcement>(_context);
@@ -107,6 +108,8 @@ namespace temsAPI.Repository
             => _libraryFolders ??= new GenericRepository<LibraryFolder>(_context);
         public IGenericRepository<LibraryItem> LibraryItems
             => _libraryItems ??= new GenericRepository<LibraryItem>(_context);
+        public IGenericRepository<TemsJWT> JWTBlacklist
+            => _jwtBlacklist ??= new GenericRepository<TemsJWT>(_context);
 
         public UnitOfWork(ApplicationDbContext context)
         {

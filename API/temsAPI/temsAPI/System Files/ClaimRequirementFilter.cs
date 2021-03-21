@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Net.Http.Headers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +13,7 @@ using System.Threading.Tasks;
 using System.Web.Http.Controllers;
 using System.Web.Http.Filters;
 using temsAPI.Data.Entities.UserEntities;
+using temsAPI.Repository;
 using IAuthorizationFilter = Microsoft.AspNetCore.Mvc.Filters.IAuthorizationFilter;
 
 namespace temsAPI.System_Files
@@ -20,7 +22,7 @@ namespace temsAPI.System_Files
     {
         readonly Claim _claim;
         UserManager<TEMSUser> _userManager;
-
+        
         public ClaimRequirementFilter(Claim claim, UserManager<TEMSUser> userManager)
         {
             _claim = claim;
@@ -34,6 +36,14 @@ namespace temsAPI.System_Files
                 context.Result = new UnauthorizedResult();
                 return;
             }
+
+            //// Validating token
+            //string token = context.HttpContext.Request.Headers[HeaderNames.Authorization].ToString().Split(' ')[1];
+            //if(_unitOfWork.JWTBlacklist.isExists(q => q.Content == token).Result)
+            //{
+            //    context.Result = new UnauthorizedResult();
+            //    return;
+            //}
 
             var hasClaim = context.HttpContext.User.Claims.Any(c => c.Type == _claim.Type);
             if (!hasClaim)

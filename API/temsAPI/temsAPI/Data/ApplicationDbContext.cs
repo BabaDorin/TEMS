@@ -180,6 +180,7 @@ namespace temsAPI.Data
         public DbSet<Label> Labels { get; set; }
         public DbSet<Status> Statuses { get; set; }
         public DbSet<RoomLabel> RoomLabels { get; set; }
+        public DbSet<TemsJWT> JWTBlacklist { get; set; }
 
         // Library entities
         public DbSet<LibraryFolder> LibraryFolders { get; set; }

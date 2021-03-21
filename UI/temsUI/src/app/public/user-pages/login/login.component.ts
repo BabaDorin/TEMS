@@ -43,8 +43,8 @@ export class LoginComponent extends TEMSComponent implements OnInit {
 
         if(result.token != undefined){
           localStorage.setItem('token', result.token);
-          // this.router.navigateByUrl('');
           window.location.reload();
+          this.router.navigateByUrl('');
         }
       })
     )

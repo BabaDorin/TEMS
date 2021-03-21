@@ -1,7 +1,7 @@
 import { IOption } from 'src/app/models/option.model';
 import { ViewUser, ViewUserSimplified } from './../../models/user/view-user.model';
 import { LoginModel } from './../../models/identity/login.model';
-import { API_USER_URL, API_AUTH_URL } from './../../models/backend.config';
+import { API_USER_URL, API_AUTH_URL, API_URL } from './../../models/backend.config';
 import { TEMSService } from './../tems-service/tems.service';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
@@ -85,6 +85,15 @@ export class UserService extends TEMSService {
     return this.http.post(
       API_USER_URL + '/login',
       JSON.stringify(loginModel),
+      this.httpOptions
+    );
+  }
+
+  signOut(): Observable<any>{
+    let token = localStorage.getItem('token');
+    return this.http.post(
+      API_URL + "/auth/signout/",
+      JSON.stringify(token),
       this.httpOptions
     );
   }

@@ -192,7 +192,7 @@ namespace temsAPI.Controllers.IdentityControllers
                 SigningCredentials = new SigningCredentials(
                     new SymmetricSecurityKey(
                         Encoding.UTF8.GetBytes(
-                            _appSettings.JWT_Secret + user.PasswordHash)), SecurityAlgorithms.HmacSha256Signature)
+                            _appSettings.JWT_Secret)), SecurityAlgorithms.HmacSha256Signature)
             };
             var tokenHandler = new JwtSecurityTokenHandler();
             var securityToken = tokenHandler.CreateToken(tokenDescriptor);

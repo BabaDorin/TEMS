@@ -27,9 +27,13 @@ export class NavbarComponent extends TEMSComponent implements OnInit {
   }
 
   signOut(){
+    this.subscriptions.push(
+      this.userService.signOut()
+      .subscribe())
+
     localStorage.removeItem('token');
-    this.route.navigateByUrl('');
     window.location.reload()
+    this.route.navigateByUrl('');
   }
 
   ngOnInit() {

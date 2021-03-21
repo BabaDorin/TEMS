@@ -1,10 +1,10 @@
-import { IOption } from './../../models/option.model';
+import { IOption } from 'src/app/models/option.model';
 import { ViewUser, ViewUserSimplified } from './../../models/user/view-user.model';
 import { LoginModel } from './../../models/identity/login.model';
 import { API_USER_URL, API_AUTH_URL } from './../../models/backend.config';
 import { TEMSService } from './../tems-service/tems.service';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { AddUser } from './../../models/identity/add-user.model';
 import { Role } from '../../models/role.model';
 import { Injectable } from '@angular/core';
@@ -32,6 +32,15 @@ export class UserService extends TEMSService {
     ]
   }
 
+  getRoleClaims(roles: string[]): Observable<string[]>{
+    if(roles == undefined || roles.length == 0) return of([]);
+    
+    return this.http.get<string[]>(
+      API_USER_URL + '/getroleclaims/' + roles,
+      this.httpOptions
+    );
+  }
+  
   fetchClaims(): Observable<IOption[]>{
     return this.http.get<IOption[]>(
       API_USER_URL + '/getclaims',

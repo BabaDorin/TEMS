@@ -33,7 +33,11 @@ export class ViewUsersComponent extends TEMSComponent implements OnInit {
 
   edit(userId: string){
     let dialogRef: MatDialogRef<any>;
-    dialogRef = this.dialog.open(AddUserComponent);
+    dialogRef = this.dialog.open(AddUserComponent,
+      {
+        maxHeight: '80vh',
+        autoFocus: false
+      });
 
     dialogRef.componentInstance.userIdToUpdate = userId;
     dialogRef.componentInstance.dialogRef = dialogRef;

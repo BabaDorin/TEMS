@@ -89,6 +89,21 @@ export class AddUserComponent extends TEMSComponent implements OnInit {
     this.fetchClaims();
   }
 
+  markRoleClaims(){
+    let selectedRoles = this.roles.options.map(q => q.label) as string[];
+    this.unsubscribeFromAll();
+    this.subscriptions.push(
+      this.userService.getRoleClaims(selectedRoles)
+      .subscribe(result => {
+        console.log(result);
+        this.formlyData.model.claims = result;
+        this.claims.forEach(q => {
+            q.checked = (this.formlyData.model.claims as string[]).includes(q.value);
+        })
+      })
+    )
+  }
+
   fetchClaims(){
     if(this.claims != undefined)
       return;
@@ -97,7 +112,7 @@ export class AddUserComponent extends TEMSComponent implements OnInit {
       this.userService.fetchClaims()
       .subscribe(result => {
         console.log(result);
-        this.claims = result.map(q => ({value: q.value, label: q.label, description: q.additional } as CheckboxItem));
+        this.claims = result.map(q => ({value: q.label, label: q.label, description: q.additional } as CheckboxItem));
       })
     )
   }

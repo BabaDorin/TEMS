@@ -34,9 +34,18 @@ export class UserService extends TEMSService {
 
   getRoleClaims(roles: string[]): Observable<string[]>{
     if(roles == undefined || roles.length == 0) return of([]);
-    
+
     return this.http.get<string[]>(
       API_USER_URL + '/getroleclaims/' + roles,
+      this.httpOptions
+    );
+  }
+
+  getUserClaims(userId: string): Observable<string[]>{
+    if(userId == undefined) return of([]);
+
+    return this.http.get<string[]>(
+      API_USER_URL + '/getuserclaims/' + userId,
       this.httpOptions
     );
   }

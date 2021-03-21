@@ -47,8 +47,8 @@ export class AddUserComponent extends TEMSComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log(this.dialogRef);
     this.formlyData.fields = this.formlyParserService.parseAddUser(this.userIdToUpdate != undefined);
+    this.fetchClaims();
 
     this.subscriptions.push(
       this.roleService.getAllAutocompleteOptions()
@@ -65,28 +65,26 @@ export class AddUserComponent extends TEMSComponent implements OnInit {
       })
     );
 
-    if(this.userIdToUpdate != undefined){
-      this.subscriptions.push(
-        this.userService.getUser(this.userIdToUpdate)
-        .subscribe(result => {
-          console.log('resss');
-          console.log(result);
-          console.log(this.formlyData.model);
-          this.formlyData.model = {
-            username: result.username,
-            fullName: result.fullName,
-            email: result.email,
-            phoneNumber: result.phoneNumber,
-            claims: result.claims
-          }
+    if(this.userIdToUpdate == undefined)
+      return;
 
-          this.personnel.options = result.personnel != undefined ?  [ result.personnel ] : [];
-          this.roles.options = result.roles != undefined ? result.roles.map(q => ({value: '0', label: q})) : [];
-        })
-      )
-    }
+    this.subscriptions.push(
+      this.userService.getUser(this.userIdToUpdate)
+      .subscribe(result => {
+        this.formlyData.model = {
+          username: result.username,
+          fullName: result.fullName,
+          email: result.email,
+          phoneNumber: result.phoneNumber,
+          claims: result.claims
+        }
 
-    this.fetchClaims();
+        this.personnel.options = result.personnel != undefined ?  [ result.personnel ] : [];
+        this.roles.options = result.roles != undefined ? result.roles.map(q => ({value: '0', label: q})) : [];
+      })
+    );
+
+    this.markUserClaims();
   }
 
   markRoleClaims(){
@@ -95,7 +93,18 @@ export class AddUserComponent extends TEMSComponent implements OnInit {
     this.subscriptions.push(
       this.userService.getRoleClaims(selectedRoles)
       .subscribe(result => {
-        console.log(result);
+        this.formlyData.model.claims = result;
+        this.claims.forEach(q => {
+            q.checked = (this.formlyData.model.claims as string[]).includes(q.value);
+        })
+      })
+    )
+  }
+
+  markUserClaims(){
+    this.subscriptions.push(
+      this.userService.getUserClaims(this.userIdToUpdate)
+      .subscribe(result =>{
         this.formlyData.model.claims = result;
         this.claims.forEach(q => {
             q.checked = (this.formlyData.model.claims as string[]).includes(q.value);

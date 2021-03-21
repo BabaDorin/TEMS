@@ -228,7 +228,7 @@ namespace temsAPI.Controllers.IdentityControllers
         }
 
         [HttpGet("temsuser/getroleclaims/{roles}")]
-        public async Task<JsonResult> GetRoleClaims(string? roles)
+        public async Task<JsonResult> GetRoleClaims(string roles)
         {
             try
             {
@@ -252,6 +252,30 @@ namespace temsAPI.Controllers.IdentityControllers
             {
                 Debug.WriteLine(ex);
                 return ReturnResponse("An error occured when fetching role claims", ResponseStatus.Fail);
+            }
+        }
+
+        [HttpGet("temsuser/getuserclaims/{userId}")]
+        public async Task<JsonResult> GetUserClaims(string userId)
+        {
+            try
+            {
+                // Invalid id provided
+                if (!await _unitOfWork.TEMSUsers.isExists(q => q.Id == userId))
+                    return ReturnResponse("Invalid id provided", ResponseStatus.Fail);
+
+                List<string> claims = (await _userManager
+                    .GetClaimsAsync(await _userManager.FindByIdAsync(userId)))
+                    .Select(q => q.Type)
+                    .ToList();
+
+                if (claims == null) claims = new List<string>();
+                return Json(claims);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured when fetching user claims", ResponseStatus.Fail);
             }
         }
 

@@ -20,6 +20,7 @@ using temsAPI.Contracts;
 using temsAPI.Data.Entities.LibraryEntities;
 using temsAPI.Data.Entities.UserEntities;
 using temsAPI.Helpers;
+using temsAPI.System_Files;
 using temsAPI.ViewModels.Library;
 
 namespace temsAPI.Controllers.LibraryControllers
@@ -39,6 +40,7 @@ namespace temsAPI.Controllers.LibraryControllers
         }
 
         [HttpPost, DisableRequestSizeLimit]
+        [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<IActionResult> UploadFile()
         {
             try
@@ -135,6 +137,7 @@ namespace temsAPI.Controllers.LibraryControllers
         }
 
         [HttpGet("library/remove/{itemId}")]
+        [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> Remove(string itemId)
         {
             try
@@ -164,7 +167,6 @@ namespace temsAPI.Controllers.LibraryControllers
                 return ReturnResponse("An error occured when removing an library item.", ResponseStatus.Fail);
             }
         }
-
 
         [HttpGet("library/download/{itemId}"), DisableRequestSizeLimit]
         public async Task<IActionResult> Download(string itemId)

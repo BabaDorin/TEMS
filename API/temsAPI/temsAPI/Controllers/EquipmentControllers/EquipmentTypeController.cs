@@ -11,6 +11,7 @@ using temsAPI.Contracts;
 using temsAPI.Controllers;
 using temsAPI.Data.Entities.EquipmentEntities;
 using temsAPI.Data.Entities.UserEntities;
+using temsAPI.System_Files;
 using temsAPI.ViewModels;
 using temsAPI.ViewModels.EquipmentType;
 using temsAPI.ViewModels.Property;
@@ -26,12 +27,14 @@ namespace temsAPI.EquipmentControllers
         }
 
         [HttpGet]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
         public async Task<IList<EquipmentType>> Get()
         {
             return await _unitOfWork.EquipmentTypes.FindAll<EquipmentType>(q => q.IsArchieved == false);
         }
 
         [HttpPost]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
         public async Task<JsonResult> FullType([FromBody] string typeId)
         {
             if (!await _unitOfWork.EquipmentTypes.isExists(q => q.Id == typeId))
@@ -58,13 +61,8 @@ namespace temsAPI.EquipmentControllers
             return Json(viewModel);
         }
 
-        public IActionResult Index()
-        {
-            return View();
-        }
-
-        //[ValidateAntiForgeryToken]
         [HttpPost]
+        [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> Insert([FromBody] AddEquipmentTypeViewModel viewModel)
         {
             // Invalid name

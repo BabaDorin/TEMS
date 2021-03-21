@@ -9,6 +9,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.UserEntities;
+using temsAPI.System_Files;
 using temsAPI.ViewModels;
 
 namespace temsAPI.Controllers.IdentityControllers
@@ -26,6 +27,7 @@ namespace temsAPI.Controllers.IdentityControllers
         }
 
         [HttpGet]
+        [ClaimRequirement(TEMSClaims.CAN_MANAGE_SYSTEM_CONFIGURATION)]
         public async Task<JsonResult> GetAllAutocompleteOptions()
         {
             try

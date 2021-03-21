@@ -13,6 +13,7 @@ using temsAPI.Contracts;
 using temsAPI.Data.Entities.KeyEntities;
 using temsAPI.Data.Entities.UserEntities;
 using temsAPI.Helpers;
+using temsAPI.System_Files;
 using temsAPI.ViewModels;
 using temsAPI.ViewModels.Key;
 
@@ -25,6 +26,7 @@ namespace temsAPI.Controllers.KeyControllers
         }
 
         [HttpGet]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
         public async Task<JsonResult> Get()
         {
             try
@@ -81,6 +83,7 @@ namespace temsAPI.Controllers.KeyControllers
         }
 
         [HttpGet]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
         public async Task<JsonResult> GetAutocompleteOptions()
         {
             try
@@ -106,6 +109,7 @@ namespace temsAPI.Controllers.KeyControllers
         }
 
         [HttpPost]
+        [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> Create([FromBody] AddKeyViewModel viewModel)
         {
             try
@@ -149,6 +153,7 @@ namespace temsAPI.Controllers.KeyControllers
         }
 
         [HttpPost]
+        [ClaimRequirement(TEMSClaims.CAN_ALLOCATE_KEYS)]
         public async Task<JsonResult> CreateAllocation([FromBody] AddKeyAllocation viewModel)
         {
             try
@@ -212,6 +217,7 @@ namespace temsAPI.Controllers.KeyControllers
         }
 
         [HttpGet("key/getallocations/{keyId}/{roomId}/{personnelId}")]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
         public async Task<JsonResult> GetAllocations(string keyId, string roomId, string personnelId)
         {
             try

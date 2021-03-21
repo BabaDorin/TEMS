@@ -30,12 +30,8 @@ namespace temsAPI.Controllers.EquipmentControllers
 
         }
 
-        public IActionResult Index()
-        {
-            return View();
-        }
-
         [HttpPost]
+        [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> Create([FromBody] AddEquipmentViewModel viewModel)
         {
             // one or both of TEMSID and SerialNumber properties should be given values
@@ -82,8 +78,8 @@ namespace temsAPI.Controllers.EquipmentControllers
             return ReturnResponse("Success", ResponseStatus.Success);
         }
 
-        [ClaimRequirement("Can send emails")]
         [HttpGet("equipment/getsimplified/{pageNumber}/{equipmentsPerPage}/{onlyParents}")]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
         public async Task<JsonResult> GetSimplified(int pageNumber, int equipmentsPerPage, bool onlyParents)
         {
             try
@@ -119,6 +115,7 @@ namespace temsAPI.Controllers.EquipmentControllers
         }
 
         [HttpGet("equipment/getsimplified/{id}")]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
         public async Task<JsonResult> GetSimplified(string id)
         {
             try
@@ -190,6 +187,7 @@ namespace temsAPI.Controllers.EquipmentControllers
         }
 
         [HttpGet("equipment/getbyid/{id}")]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
         public async Task<JsonResult> GetById(string id)
         {
             try
@@ -270,7 +268,6 @@ namespace temsAPI.Controllers.EquipmentControllers
                 return ReturnResponse("An error occured when fetching equipment", ResponseStatus.Fail);
             }
         }
-
 
         // -------------------------< Extract then to a separate file >--------------------------------
         private async Task<ViewEquipmentSimplifiedViewModel> EquipmentToEquipmentSimplifiedMapping(Equipment eq)

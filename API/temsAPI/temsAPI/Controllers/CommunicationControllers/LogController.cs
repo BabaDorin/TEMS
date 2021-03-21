@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.CommunicationEntities;
 using temsAPI.Data.Entities.UserEntities;
+using temsAPI.System_Files;
 using temsAPI.ViewModels;
 using temsAPI.ViewModels.Log;
 
@@ -27,6 +28,7 @@ namespace temsAPI.Controllers.CommunicationControllers
         }
 
         [HttpGet("/log/equipment/{equipmentId}/{includeArchieved}/{onlyArchieved}")]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
         public async Task<JsonResult> GetEquipmentLogs(string equipmentId, bool? includeArchieved, bool? onlyArchieved)
         {
             try
@@ -87,6 +89,7 @@ namespace temsAPI.Controllers.CommunicationControllers
         }
 
         [HttpPost]
+        [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> Create([FromBody] AddLogViewModel viewModel)
         {
             try
@@ -169,6 +172,7 @@ namespace temsAPI.Controllers.CommunicationControllers
         }
 
         [HttpGet]
+        [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> GetLogTypes()
         {
             try
@@ -191,6 +195,7 @@ namespace temsAPI.Controllers.CommunicationControllers
         }
 
         [HttpGet("/log/getentitylogs/{entityType}/{entityId}")]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
         public async Task<JsonResult> GetEntityLogs(string entityType, string entityId)
         {
             try

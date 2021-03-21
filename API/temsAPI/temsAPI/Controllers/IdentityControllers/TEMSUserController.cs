@@ -43,6 +43,7 @@ namespace temsAPI.Controllers.IdentityControllers
         }
 
         [HttpPost]
+        [ClaimRequirement(TEMSClaims.CAN_MANAGE_SYSTEM_CONFIGURATION)]
         public async Task<JsonResult> AddUser([FromBody] AddUserViewModel viewModel)
         {
             try
@@ -95,6 +96,7 @@ namespace temsAPI.Controllers.IdentityControllers
         }
 
         [HttpPost]
+        [ClaimRequirement(TEMSClaims.CAN_MANAGE_SYSTEM_CONFIGURATION)]
         public async Task<JsonResult> UpdateUser([FromBody] AddUserViewModel viewModel)
         {
             try
@@ -185,6 +187,7 @@ namespace temsAPI.Controllers.IdentityControllers
         }
 
         [HttpGet]
+        [ClaimRequirement(TEMSClaims.CAN_MANAGE_SYSTEM_CONFIGURATION)]
         public JsonResult GetUsers()
         {
             try
@@ -211,6 +214,7 @@ namespace temsAPI.Controllers.IdentityControllers
         }
 
         [HttpGet]
+        [ClaimRequirement(TEMSClaims.CAN_MANAGE_SYSTEM_CONFIGURATION)]
         public async Task<JsonResult> GetClaims()
         {
             try
@@ -234,6 +238,7 @@ namespace temsAPI.Controllers.IdentityControllers
         }
 
         [HttpGet("temsuser/getroleclaims/{roles}")]
+        [ClaimRequirement(TEMSClaims.CAN_MANAGE_SYSTEM_CONFIGURATION)]
         public async Task<JsonResult> GetRoleClaims(string roles)
         {
             try
@@ -262,6 +267,7 @@ namespace temsAPI.Controllers.IdentityControllers
         }
 
         [HttpGet("temsuser/getuserclaims/{userId}")]
+        [ClaimRequirement(TEMSClaims.CAN_MANAGE_SYSTEM_CONFIGURATION)]
         public async Task<JsonResult> GetUserClaims(string userId)
         {
             try
@@ -286,6 +292,7 @@ namespace temsAPI.Controllers.IdentityControllers
         }
 
         [HttpGet("temsuser/getuser/{userId}")]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
         public async Task<JsonResult> GetUser(string userId)
         {
             try

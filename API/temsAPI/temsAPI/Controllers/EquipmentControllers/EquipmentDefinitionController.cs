@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.EquipmentEntities;
 using temsAPI.Data.Entities.UserEntities;
+using temsAPI.System_Files;
 using temsAPI.Validation;
 using temsAPI.ViewModels;
 using temsAPI.ViewModels.EquipmentDefinition;
@@ -31,6 +32,7 @@ namespace temsAPI.Controllers.EquipmentControllers
         }
 
         [HttpPost]
+        [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> Insert([FromBody] AddEquipmentDefinitionViewModel viewModel)
         {
             // Identifier is required
@@ -95,6 +97,7 @@ namespace temsAPI.Controllers.EquipmentControllers
         }
 
         [HttpPost]
+        [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> GetDefinitionsOfType([FromBody] string typeId)
         {
             List<Option> options = new List<Option>();
@@ -117,6 +120,7 @@ namespace temsAPI.Controllers.EquipmentControllers
         }
 
         [HttpPost]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
         public async Task<JsonResult> GetFullDefinition([FromBody] string definitionId)
         {
             try

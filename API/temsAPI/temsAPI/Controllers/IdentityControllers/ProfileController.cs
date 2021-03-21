@@ -17,11 +17,5 @@ namespace temsAPI.Controllers.IdentityControllers
         public ProfileController(IMapper mapper, IUnitOfWork unitOfWork, UserManager<TEMSUser> userManager) : base(mapper, unitOfWork, userManager)
         {
         }
-
-        //[HttpGet]
-        //public async Task<JsonResult> GetUsername()
-        //{
-
-        //}
     }
 }

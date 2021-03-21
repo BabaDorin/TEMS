@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.OtherEntities;
 using temsAPI.Data.Entities.UserEntities;
+using temsAPI.System_Files;
 using temsAPI.ViewModels;
 using temsAPI.ViewModels.Personnel;
 using temsAPI.ViewModels.Room;
@@ -27,6 +28,7 @@ namespace temsAPI.Controllers.RoomControllers
         }
 
         [HttpGet]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
         public async Task<JsonResult> GetAllAutocompleteOptions()
         {
             try
@@ -50,6 +52,7 @@ namespace temsAPI.Controllers.RoomControllers
         }
 
         [HttpPost]
+        [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> Create([FromBody] AddRoomViewModel viewModel)
         {
             try
@@ -95,6 +98,7 @@ namespace temsAPI.Controllers.RoomControllers
         }
 
         [HttpGet("/room/getsimplified/{pageNumber}/{recordsPerPage}")]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
         public async Task<JsonResult> GetSimplified(int pageNumber, int recordsPerPage)
         {
             try
@@ -129,6 +133,7 @@ namespace temsAPI.Controllers.RoomControllers
         }
 
         [HttpGet]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
         public async Task<JsonResult> GetLabels()
         {
             try
@@ -151,6 +156,7 @@ namespace temsAPI.Controllers.RoomControllers
         }
 
         [HttpGet("/room/getbyid/{id}")]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
         public async Task<JsonResult> GetById(string id)
         {
             try

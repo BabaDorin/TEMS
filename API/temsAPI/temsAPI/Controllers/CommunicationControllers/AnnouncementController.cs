@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.CommunicationEntities;
 using temsAPI.Data.Entities.UserEntities;
+using temsAPI.System_Files;
 using temsAPI.ViewModels;
 using temsAPI.ViewModels.Announcement;
 
@@ -23,6 +24,7 @@ namespace temsAPI.Controllers.CommunicationControllers
         }
 
         [HttpPost]
+        [ClaimRequirement(TEMSClaims.CAN_MANAGE_ANNOUNCEMENTS)]
         public async Task<JsonResult> Create([FromBody] AddAnnouncementViewModel viewModel)
         {
 

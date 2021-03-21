@@ -14,6 +14,7 @@ using temsAPI.Contracts;
 using temsAPI.Data.Entities.EquipmentEntities;
 using temsAPI.Data.Entities.OtherEntities;
 using temsAPI.Data.Entities.UserEntities;
+using temsAPI.System_Files;
 using temsAPI.ViewModels;
 using temsAPI.ViewModels.Allocation;
 
@@ -31,6 +32,7 @@ namespace temsAPI.Controllers.Allocation
         }
 
         [HttpPost]
+        [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> Create([FromBody] AddAllocationViewModel viewModel)
         {
             try
@@ -115,19 +117,8 @@ namespace temsAPI.Controllers.Allocation
             }
         }
 
-        public async Task ClosePreviousAllocations(string equipmentId)
-        {
-            if(await _unitOfWork.EquipmentAllocations
-                .isExists(q => q.EquipmentID == equipmentId && q.DateReturned == null))
-                    (await _unitOfWork.EquipmentAllocations
-                        .FindAll<EquipmentAllocation>(q => q.EquipmentID == equipmentId))
-                        .ToList()
-                        .ForEach(q => q.DateReturned = DateTime.Now);
-
-            await _unitOfWork.Save();
-        }
-
         [HttpGet("allocation/getofentity/{entityType}/{entityId}")]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
         public async Task<JsonResult> GetOfEntity(string entityType, string entityId)
         {
             try
@@ -202,6 +193,19 @@ namespace temsAPI.Controllers.Allocation
                 Debug.WriteLine(ex);
                 return ReturnResponse("An error occured when fetching entity's allocations", ResponseStatus.Fail);
             }
+        }
+
+        // -----------------------------------------------------------------------------
+        private async Task ClosePreviousAllocations(string equipmentId)
+        {
+            if (await _unitOfWork.EquipmentAllocations
+                .isExists(q => q.EquipmentID == equipmentId && q.DateReturned == null))
+                (await _unitOfWork.EquipmentAllocations
+                    .FindAll<EquipmentAllocation>(q => q.EquipmentID == equipmentId))
+                    .ToList()
+                    .ForEach(q => q.DateReturned = DateTime.Now);
+
+            await _unitOfWork.Save();
         }
     }
 }

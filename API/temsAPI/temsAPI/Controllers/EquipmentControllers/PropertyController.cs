@@ -11,6 +11,7 @@ using temsAPI.Contracts;
 using temsAPI.Controllers;
 using temsAPI.Data.Entities.EquipmentEntities;
 using temsAPI.Data.Entities.UserEntities;
+using temsAPI.System_Files;
 using temsAPI.Validation;
 using temsAPI.ViewModels;
 using temsAPI.ViewModels.Property;
@@ -26,11 +27,14 @@ namespace temsAPI.EquipmentControllers
         }
 
         [HttpGet]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
         public async Task<IEnumerable<Property>> Get()
         {
             return await _unitOfWork.Properties.FindAll<Property>();
         }
 
+        [HttpPost]
+        [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> Insert([FromBody] AddPropertyViewModel viewModel)
         {
             // name is null

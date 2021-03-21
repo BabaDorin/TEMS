@@ -1,11 +1,7 @@
 ﻿using AutoMapper;
-using AutoMapper.Internal;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
-using Microsoft.EntityFrameworkCore.Query;
-using Microsoft.OpenApi.Any;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -18,8 +14,8 @@ using temsAPI.Data.Entities.EquipmentEntities;
 using temsAPI.Data.Entities.OtherEntities;
 using temsAPI.Data.Entities.UserEntities;
 using temsAPI.Helpers;
+using temsAPI.System_Files;
 using temsAPI.ViewModels;
-using temsAPI.ViewModels.Status;
 using temsAPI.ViewModels.Ticket;
 
 namespace temsAPI.Controllers.CommunicationControllers
@@ -34,6 +30,7 @@ namespace temsAPI.Controllers.CommunicationControllers
         }
 
         [HttpGet("/ticket/getticketsofentity/{entityType}/{entityId}/{includingClosed}/{onlyClosed}")]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
         public async Task<JsonResult> GetTicketsOfEntity(
             string entityType,
             string entityId,
@@ -246,6 +243,7 @@ namespace temsAPI.Controllers.CommunicationControllers
         }
 
         [HttpGet("/ticket/gettickets/{equipmentId}/{roomId}/{personnelId}/{includingClosed}/{onlyClosed}")]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
         public async Task<JsonResult> GetTickets(
             string equipmentId,
             string roomId,

@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.OtherEntities;
 using temsAPI.Data.Entities.UserEntities;
+using temsAPI.System_Files;
 using temsAPI.ViewModels;
 using temsAPI.ViewModels.Personnel;
 
@@ -22,6 +23,7 @@ namespace temsAPI.Controllers.PersonnelControllers
         }
 
         [HttpGet]
+        [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> GetPositions()
         {
             try
@@ -45,6 +47,7 @@ namespace temsAPI.Controllers.PersonnelControllers
         }
 
         [HttpPost]
+        [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> Create([FromBody] AddPersonnelViewModel viewModel)
         {
             try
@@ -86,6 +89,7 @@ namespace temsAPI.Controllers.PersonnelControllers
         }
 
         [HttpGet("/personnel/getsimplified/{pageNumber}/{recordsPerPage}")]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
         public async Task<JsonResult> GetSimplified(int pageNumber, int recordsPerPage)
         {
             try
@@ -122,6 +126,7 @@ namespace temsAPI.Controllers.PersonnelControllers
         }
 
         [HttpGet]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
         public async Task<JsonResult> GetAllAutocompleteOptions()
         {
             try
@@ -147,6 +152,7 @@ namespace temsAPI.Controllers.PersonnelControllers
         }
 
         [HttpGet("personnel/getbyid/{id}")]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
         public async Task<JsonResult> GetById(string id)
         {
             try

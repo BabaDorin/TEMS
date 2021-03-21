@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System;
@@ -28,12 +29,15 @@ namespace temsAPI.System_Files
 
         public void OnAuthorization(AuthorizationFilterContext context)
         {
-            var hasClaim = context.HttpContext.User.Claims.Any(c => c.Type == _claim.Type);
-            //var hasClaim = await _userManager.
-            if (!hasClaim)
+            if (!context.HttpContext.User.Identity.IsAuthenticated)
             {
-                context.Result = new ForbidResult();
+                context.Result = new UnauthorizedResult();
+                return;
             }
+
+            var hasClaim = context.HttpContext.User.Claims.Any(c => c.Type == _claim.Type);
+            if (!hasClaim)
+                context.Result = new ForbidResult();
         }
     }
 

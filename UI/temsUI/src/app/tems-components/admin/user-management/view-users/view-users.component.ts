@@ -36,6 +36,7 @@ export class ViewUsersComponent extends TEMSComponent implements OnInit {
     dialogRef = this.dialog.open(AddUserComponent);
 
     dialogRef.componentInstance.userIdToUpdate = userId;
+    dialogRef.componentInstance.dialogRef = dialogRef;
 
     dialogRef.afterClosed().subscribe(result => {
 

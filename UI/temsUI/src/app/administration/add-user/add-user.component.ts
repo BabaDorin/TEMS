@@ -1,3 +1,4 @@
+import { Observable } from 'rxjs';
 import { RoleService } from './../../services/role-service/role.service';
 import { AddUser } from './../../models/identity/add-user.model';
 import { FormlyParserService } from 'src/app/services/formly-parser-service/formly-parser.service';
@@ -9,6 +10,7 @@ import { TEMSComponent } from 'src/app/tems/tems.component';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { FormlyFieldConfig } from '@ngx-formly/core';
+import { MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-add-user',
@@ -18,6 +20,7 @@ import { FormlyFieldConfig } from '@ngx-formly/core';
 export class AddUserComponent extends TEMSComponent implements OnInit {
 
   userIdToUpdate: string;
+  dialogRef: MatDialogRef<any>;
 
   // It will get merged with formlyData soon.
   @ViewChild('rolesChips') roles;
@@ -41,6 +44,7 @@ export class AddUserComponent extends TEMSComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    console.log(this.dialogRef);
     this.formlyData.fields = this.formlyParserService.parseAddUser(this.userIdToUpdate != undefined);
 
     this.subscriptions.push(
@@ -84,7 +88,7 @@ export class AddUserComponent extends TEMSComponent implements OnInit {
     let addUser: AddUser = {
       id: this.userIdToUpdate,
       username: userModel.username,
-      password: (this.userIdToUpdate == undefined) ? userModel.password : undefined,
+      password: userModel.password,
       fullName: userModel.fullName,
       email: userModel.email,
       phoneNumber: userModel.phoneNumber,
@@ -96,29 +100,33 @@ export class AddUserComponent extends TEMSComponent implements OnInit {
 
     let apiResponse;
 
-    if(this.userIdToUpdate == undefined){
-      this.subscriptions.push(
-        this.userService.addUser(addUser)
-        .subscribe(result => {
-          console.log(result);
+    let subscribeTo: Observable<any> = this.userIdToUpdate == undefined 
+      ? this.userService.addUser(addUser)
+      : this.userService.updateUser(addUser)
+
+    this.subscriptions.push(
+      subscribeTo
+      .subscribe(result => {
+        console.log(result);
           apiResponse = result;
-        })
-      )
-    }
-    else
+          if(apiResponse.status == 1){
+            this.clearForm();
+          }
+      })
+    )
+  }
+
+  clearForm(){
+    this.formlyData.form.reset();
+    this.roles.options = [];
+    this.personnel.options = [];
+    this.closeDialog();
+  }
+
+  closeDialog(){
+    if(this.dialogRef != undefined)
     {
-      this.subscriptions.push(
-        this.userService.updateUser(addUser)
-        .subscribe(result => {
-          console.log(result);
-          apiResponse = result;
-        })
-      )
-    }
-    if(apiResponse.status == 1){
-      this.formlyData.form.reset();
-      this.roles.options = [];
-      this.personnel.options = [];
+      this.dialogRef.close();
     }
   }
 }

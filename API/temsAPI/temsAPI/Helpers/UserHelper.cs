@@ -123,6 +123,8 @@ namespace temsAPI.Helpers
         /// <returns></returns>
         public async Task<string> ResetPassword(TEMSUser model, string password)
         {
+            //await _userManager.RemovePasswordAsync(model);
+            //var result = await _userManager.AddPasswordAsync(model, password);
             var token = await _userManager.GeneratePasswordResetTokenAsync(model);
             var result = await _userManager.ResetPasswordAsync(model, token, password);
             return CheckResultForErrors(result);

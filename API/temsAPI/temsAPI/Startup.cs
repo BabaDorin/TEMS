@@ -68,17 +68,6 @@ namespace temsAPI
             });
 
             services.AddCors();
-            //services.AddCors(options =>
-            //{
-            //    options.AddPolicy(name: MyAllowSpecificOrigins,
-            //                      builder =>
-            //                      {
-            //                          builder.WithOrigins(Configuration["AppSettings:Client_Url"].ToString())
-            //                          .AllowAnyHeader()
-            //                          .AllowCredentials()
-            //                          .AllowAnyMethod();
-            //                      });
-            //});
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
@@ -114,6 +103,11 @@ namespace temsAPI
                     ValidateAudience = false,
                     ClockSkew = TimeSpan.Zero
                 };
+            });
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("CanSendEmails", policy => policy.RequireClaim("Can send emails"));
             });
         }
 

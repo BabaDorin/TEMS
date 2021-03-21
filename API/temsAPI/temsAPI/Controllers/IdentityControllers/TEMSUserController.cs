@@ -162,13 +162,19 @@ namespace temsAPI.Controllers.IdentityControllers
             if (user == null || !await _userManager.CheckPasswordAsync(user, viewModel.Password))
                 return ReturnResponse("Username or password is incorrect", ResponseStatus.Fail);
 
+            List<Claim> claims = new List<Claim>();
+            claims.Add(new Claim("UserID", user.Id.ToString()));
+            claims.Add(new Claim("Username", user.UserName.ToString()));
+            
+            var userClaims = await _userManager.GetClaimsAsync(user);
+            foreach (var claim in userClaims)
+            {
+                claims.Add(new Claim(claim.Type, claim.Value));
+            }
+
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(new Claim[]
-                    {
-                        new Claim("UserID", user.Id.ToString()),
-                        new Claim("Username", user.UserName.ToString()),
-                    }),
+                Subject = new ClaimsIdentity(claims),
                 Expires = DateTime.UtcNow.AddDays(10),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_appSettings.JWT_Secret)), SecurityAlgorithms.HmacSha256Signature)
             };

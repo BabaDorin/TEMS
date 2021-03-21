@@ -1,0 +1,6 @@
+﻿Can manage Entities
+Can view Entities
+Can manage announcements
+Can manage system configuration
+Can send emails
+Can allocate keys

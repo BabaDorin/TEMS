@@ -13,6 +13,7 @@ using temsAPI.Contracts;
 using temsAPI.Data.Entities.EquipmentEntities;
 using temsAPI.Data.Entities.OtherEntities;
 using temsAPI.Data.Entities.UserEntities;
+using temsAPI.System_Files;
 using temsAPI.ViewModels;
 using temsAPI.ViewModels.Equipment;
 using temsAPI.ViewModels.EquipmentType;
@@ -81,7 +82,7 @@ namespace temsAPI.Controllers.EquipmentControllers
             return ReturnResponse("Success", ResponseStatus.Success);
         }
 
-        [Authorize]
+        [ClaimRequirement("Can send emails")]
         [HttpGet("equipment/getsimplified/{pageNumber}/{equipmentsPerPage}/{onlyParents}")]
         public async Task<JsonResult> GetSimplified(int pageNumber, int equipmentsPerPage, bool onlyParents)
         {

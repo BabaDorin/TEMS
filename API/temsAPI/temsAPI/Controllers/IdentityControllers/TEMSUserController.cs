@@ -156,7 +156,8 @@ namespace temsAPI.Controllers.IdentityControllers
             {
                 Subject = new ClaimsIdentity(new Claim[]
                     {
-                        new Claim("UserID",user.Id.ToString())
+                        new Claim("UserID", user.Id.ToString()),
+                        new Claim("Username", user.UserName.ToString()),
                     }),
                 Expires = DateTime.UtcNow.AddDays(10),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_appSettings.JWT_Secret)), SecurityAlgorithms.HmacSha256Signature)

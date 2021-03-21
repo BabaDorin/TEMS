@@ -4,6 +4,7 @@ import { UserService } from './../../services/user-service/user.service';
 import { Component, OnInit } from '@angular/core';
 import { NgbDropdownConfig } from '@ng-bootstrap/ng-bootstrap';
 import { Router } from '@angular/router';
+import { I } from '@angular/cdk/keycodes';
 
 @Component({
   selector: 'app-navbar',
@@ -14,6 +15,7 @@ import { Router } from '@angular/router';
 export class NavbarComponent extends TEMSComponent implements OnInit {
   public iconOnlyToggled = false;
   public sidebarToggled = false;
+  public username: string;
   private loggedIn: boolean;
   
   constructor(
@@ -24,29 +26,27 @@ export class NavbarComponent extends TEMSComponent implements OnInit {
       config.placement = 'bottom-right';
   }
 
-  isLoggedIn(): boolean{
-    return localStorage.getItem('token') != null
-  }
-
   signOut(){
     localStorage.removeItem('token');
-    // this.route.navigateByUrl('');
-    window.location.reload()
+    this.route.navigateByUrl('');
+    // window.location.reload()
   }
 
   ngOnInit() {
-    this.loggedIn = localStorage.getItem('token') != null;
-    // this.subscriptions.push(
-    //   this.userService.isLoggedIn()
-    //   .subscribe(result => {
-    //     console.log(result);
+    let token = localStorage.getItem('token');
+    if(token == undefined)
+    {
+      this.loggedIn = false;
+      return;
+    }
 
-    //     if(result.status == 1)
-    //       this.loggedIn = true;
-    //     else
-    //       this.loggedIn = false;
-    //   })
-    // );
+    this.loggedIn = true;
+    let jwtData = token.split('.')[1]
+    let decodedJwtJsonData = window.atob(jwtData)
+    let decodedJwtData = JSON.parse(decodedJwtJsonData)
+    console.log(decodedJwtData);
+    this.username = decodedJwtData.Username;
+    console.log(this.username);
   }
 
   // toggle sidebar in small devices

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection.Metadata.Ecma335;
 using System.Threading.Tasks;
@@ -118,6 +119,42 @@ namespace temsAPI.Controllers.EquipmentControllers
                 return ReturnResponse("Unknown error occured when fetching definitions", ResponseStatus.Fail);
             }
         }
+
+        [HttpGet]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
+        public async Task<JsonResult> GetSimplified()
+        {
+            try
+            {
+                List<ViewEquipmentDefinitionSimplifiedViewModel> viewModel =
+                    (await _unitOfWork.EquipmentDefinitions
+                    .FindAll<ViewEquipmentDefinitionSimplifiedViewModel>(
+                        include: q => q
+                        .Include(q => q.Parent)
+                        .Include(q => q.Children)
+                        .Include(q => q.EquipmentType),
+                        select: q => new ViewEquipmentDefinitionSimplifiedViewModel
+                        {
+                            Id = q.Id,
+                            Identifier = q.Identifier,
+                            Parent = q.Parent != null
+                                ? q.Parent.Identifier
+                                : null,
+                            Children = String.Join(", ", q.Children.Select(q => q.Identifier)),
+                            EquipmentType = q.EquipmentType.Name
+                        }
+                    )).ToList();
+
+                return Json(viewModel);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("Unknown error occured when fetching definitions", ResponseStatus.Fail);
+            }
+        }
+
+
 
         [HttpPost]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]

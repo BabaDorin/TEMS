@@ -22,6 +22,12 @@
 </ul>
 <pagination-controls (pageChange)="p1 = $event" id="types"></pagination-controls>
 
+<br>
+<H1>Equipment Properties:</H1>
+<hr>
+<br>
+
+
 <ul type="none" class="row">
     <li *ngFor="let item of properties | paginate: { itemsPerPage: 10, currentPage: p2, id: 'properties' }" class="col-3">
         <mat-card>

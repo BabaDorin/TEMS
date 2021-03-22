@@ -30,13 +30,7 @@ namespace temsAPI.Data.Entities.EquipmentEntities
 #nullable disable
 
         public bool IsArchieved { get; set; }
-        public virtual ICollection<EquipmentSpecifications> EquipmentSpecifications { get; set; }
-        public virtual ICollection<EquipmentDefinition> Children { get; set; }
-
-        public EquipmentDefinition()
-        {
-            EquipmentSpecifications = new List<EquipmentSpecifications>();
-            Children = new List<EquipmentDefinition>();
-        }
+        public virtual ICollection<EquipmentSpecifications> EquipmentSpecifications { get; set; } = new List<EquipmentSpecifications>();
+        public virtual ICollection<EquipmentDefinition> Children { get; set; } = new List<EquipmentDefinition>();
     }
 }

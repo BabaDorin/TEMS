@@ -15,6 +15,7 @@ import { ViewEquipmentSimplified } from './../../models/equipment/view-equipment
 import { AddProperty } from './../../models/equipment/add-property.model';
 import { Injectable, Type } from '@angular/core';
 import { Observable, of } from 'rxjs';
+import { ViewDefinitionSimplified } from 'src/app/models/equipment/view-definition-simplified.model';
 
 @Injectable({
   providedIn: 'root'
@@ -42,6 +43,13 @@ export class EquipmentService extends TEMSService {
   getPropertiesSimplified(): Observable<ViewPropertySimplified[]>{
     return this.http.get<ViewPropertySimplified[]>(
       API_PROP_URL + '/getsimplified',
+      this.httpOptions
+    );
+  }
+
+  getDefinitionsSimplified(): Observable<ViewDefinitionSimplified[]>{
+    return this.http.get<ViewDefinitionSimplified[]>(
+      API_EQDEF_URL + '/getsimplified',
       this.httpOptions
     );
   }

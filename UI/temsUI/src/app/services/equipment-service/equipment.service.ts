@@ -1,3 +1,4 @@
+import { ViewPropertySimplified } from './../../models/equipment/view-property-simplified.model';
 import { ViewTypeSiplified } from './../../models/equipment/view-type-simplified.model';
 import { TEMSService } from './../tems-service/tems.service';
 import { AddEquipment } from 'src/app/models/equipment/add-equipment.model';
@@ -34,6 +35,13 @@ export class EquipmentService extends TEMSService {
   getTypesSimplified(): Observable<ViewTypeSiplified[]>{
     return this.http.get<ViewTypeSiplified[]>(
       API_EQTYPE_URL + '/getsimplified',
+      this.httpOptions
+    );
+  }
+
+  getPropertiesSimplified(): Observable<ViewPropertySimplified[]>{
+    return this.http.get<ViewPropertySimplified[]>(
+      API_PROP_URL + '/getsimplified',
       this.httpOptions
     );
   }

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -28,9 +29,42 @@ namespace temsAPI.EquipmentControllers
 
         [HttpGet]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
-        public async Task<IEnumerable<Property>> Get()
+        public async Task<JsonResult> Get()
         {
-            return await _unitOfWork.Properties.FindAll<Property>();
+            try
+            {
+                return Json(await _unitOfWork.Properties.FindAll<Property>());
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured when fetching properties", ResponseStatus.Fail);
+            }
+        }
+
+        [HttpGet]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
+        public async Task<JsonResult> GetSimplified()
+        {
+            try
+            {
+                List<ViewPropertySimplifiedViewModel> viewModel =
+                    (await _unitOfWork.Properties
+                    .FindAll(
+                        select: q => new ViewPropertySimplifiedViewModel
+                        {
+                            Id = q.Id,
+                            Description = q.Description,
+                            DisplayName = q.DisplayName
+                        }
+                    )).ToList();
+                return Json(viewModel);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured when fetching properties", ResponseStatus.Fail);
+            }
         }
 
         [HttpPost]

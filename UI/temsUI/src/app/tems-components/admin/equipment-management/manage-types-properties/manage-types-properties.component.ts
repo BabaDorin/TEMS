@@ -1,3 +1,4 @@
+import { ViewPropertySimplified } from './../../../../models/equipment/view-property-simplified.model';
 import { EquipmentService } from 'src/app/services/equipment-service/equipment.service';
 import { ViewTypeSiplified } from './../../../../models/equipment/view-type-simplified.model';
 import { TEMSComponent } from './../../../../tems/tems.component';
@@ -11,7 +12,7 @@ import { Component, OnInit } from '@angular/core';
 export class ManageTypesPropertiesComponent extends TEMSComponent implements OnInit {
 
   types: ViewTypeSiplified[];
-  properties = ['Model', 'Manufacturer', 'Pret','Model', 'Manufacturer', 'Pret','Model', 'Manufacturer', 'Pret','Model', 'Manufacturer', 'Pret', ]
+  properties: ViewPropertySimplified[];
   constructor(
     private equipmentService: EquipmentService
   ) {
@@ -23,6 +24,14 @@ export class ManageTypesPropertiesComponent extends TEMSComponent implements OnI
       this.equipmentService.getTypesSimplified()
       .subscribe(result => {
         this.types = result;
+      })
+    );
+
+    this.subscriptions.push(
+      this.equipmentService.getPropertiesSimplified()
+      .subscribe(result => {
+        console.log(result);
+        this.properties = result;
       })
     )
   }

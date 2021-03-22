@@ -15,3 +15,8 @@ spelling mistakes:
 
 repair equipmentallocation
 go further with room => details, logs etc etc
+
+
+Now when one signs out, token is marked as invalid by being saved into jwtblacklist..
+
+===> VALIADATE ONE'S TOKEN on backend <=====

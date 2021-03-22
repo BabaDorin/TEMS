@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Net.Http.Headers;
 using System;
 using System.Collections.Generic;
@@ -12,6 +13,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Http.Controllers;
 using System.Web.Http.Filters;
+using temsAPI.Contracts;
 using temsAPI.Data.Entities.UserEntities;
 using temsAPI.Repository;
 using IAuthorizationFilter = Microsoft.AspNetCore.Mvc.Filters.IAuthorizationFilter;
@@ -22,11 +24,13 @@ namespace temsAPI.System_Files
     {
         readonly Claim _claim;
         UserManager<TEMSUser> _userManager;
-        
-        public ClaimRequirementFilter(Claim claim, UserManager<TEMSUser> userManager)
+        IUnitOfWork _unitOfWork;
+
+        public ClaimRequirementFilter(Claim claim, UserManager<TEMSUser> userManager, IUnitOfWork unitOfWork)
         {
             _claim = claim;
             _userManager = userManager;
+            _unitOfWork = unitOfWork;
         }
 
         public void OnAuthorization(AuthorizationFilterContext context)
@@ -37,13 +41,13 @@ namespace temsAPI.System_Files
                 return;
             }
 
-            //// Validating token
-            //string token = context.HttpContext.Request.Headers[HeaderNames.Authorization].ToString().Split(' ')[1];
-            //if(_unitOfWork.JWTBlacklist.isExists(q => q.Content == token).Result)
-            //{
-            //    context.Result = new UnauthorizedResult();
-            //    return;
-            //}
+            //// Validating token (If it has not been blacklisted)
+            string token = context.HttpContext.Request.Headers[HeaderNames.Authorization].ToString().Split(' ')[1];
+            if (_unitOfWork.JWTBlacklist.isExists(q => q.Content == token).Result)
+            {
+                context.Result = new UnauthorizedResult();
+                return;
+            }
 
             var hasClaim = context.HttpContext.User.Claims.Any(c => c.Type == _claim.Type);
             if (!hasClaim)

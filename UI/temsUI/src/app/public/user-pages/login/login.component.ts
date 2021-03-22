@@ -3,9 +3,11 @@ import { UserService } from 'src/app/services/user-service/user.service';
 import { LoginModel } from './../../../models/identity/login.model';
 import { TEMSComponent } from './../../../tems/tems.component';
 import { FormlyParserService } from 'src/app/services/formly-parser-service/formly-parser.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { FormlyFieldConfig } from '@ngx-formly/core';
+import * as EventEmitter from 'events';
+import { emit } from 'process';
 
 @Component({
   selector: 'app-login',
@@ -43,8 +45,7 @@ export class LoginComponent extends TEMSComponent implements OnInit {
 
         if(result.token != undefined){
           localStorage.setItem('token', result.token);
-          window.location.reload();
-          this.router.navigateByUrl('');
+          this.router.navigateByUrl('').then(() => {window.location.reload()});
         }
       })
     )

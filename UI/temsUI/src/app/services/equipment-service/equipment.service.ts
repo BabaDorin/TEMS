@@ -1,3 +1,4 @@
+import { ViewTypeSiplified } from './../../models/equipment/view-type-simplified.model';
 import { TEMSService } from './../tems-service/tems.service';
 import { AddEquipment } from 'src/app/models/equipment/add-equipment.model';
 import { AddType } from './../../models/equipment/add-type.model';
@@ -28,6 +29,13 @@ export class EquipmentService extends TEMSService {
 
   getTypes(): Observable<any> {
     return this.http.get(API_EQTYPE_URL + '/get');
+  }
+
+  getTypesSimplified(): Observable<ViewTypeSiplified[]>{
+    return this.http.get<ViewTypeSiplified[]>(
+      API_EQTYPE_URL + '/getsimplified',
+      this.httpOptions
+    );
   }
 
   postType(addType: AddType): Observable<any> {

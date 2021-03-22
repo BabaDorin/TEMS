@@ -105,11 +105,6 @@ namespace temsAPI.Data
                 .WithOne(e => e.Parent)
                 .OnDelete(DeleteBehavior.ClientCascade);
 
-            modelBuilder.Entity<EquipmentType>()
-               .HasMany(e => e.EquipmentTypeKinships)
-               .WithOne(e => e.ParentEquipmentType)
-               .OnDelete(DeleteBehavior.Cascade);
-
             // OnDeleteCascade KeyAllocation
             modelBuilder.Entity<Key>()
                 .HasMany(e => e.KeyAllocations)
@@ -152,7 +147,6 @@ namespace temsAPI.Data
         public DbSet<DataType> DataTypes { get; set; }
         public DbSet<Property> Properties { get; set; }
         public DbSet<EquipmentType> EquipmentTypes { get; set; }
-        public DbSet<EquipmentTypeKinship> EquipmentTypeKinships { get; set; }
         public DbSet<PropertyEquipmentTypeAssociation> PropertyEquipmentTypeAssociations { get; set; }
         public DbSet<EquipmentSpecifications> EquipmentSpecifications { get; set; }
         public DbSet<EquipmentDefinition> EquipmentDefinitions { get; set; }

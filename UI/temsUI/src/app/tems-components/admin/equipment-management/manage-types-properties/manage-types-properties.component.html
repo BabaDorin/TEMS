@@ -1,1 +1,29 @@
-<p>manage-types-properties works!</p>
+<br>
+<H1>Equipment Types:</H1>
+<hr>
+<br>
+
+<ul type="none" class="row">
+    <li *ngFor="let item of types | paginate: { itemsPerPage: 10, currentPage: p1, id: 'first' }" class="col-3">
+        <mat-card>
+            <mat-card-header>
+                <mat-card-title>{{ item.name }}</mat-card-title>
+            </mat-card-header>
+            <mat-card-content>
+                <p *ngIf="item.parent != null">{{ item.parent }}</p>
+                <p *ngIf="item.children != null">{{ item.children }}</p>
+            </mat-card-content>
+            <mat-card-actions>
+                <button mat-button (click)="view(item.id)">View</button>
+                <button mat-button (click)="edit(item.id)">Edit</button>
+            </mat-card-actions>
+        </mat-card>
+    </li>
+</ul>
+<pagination-controls (pageChange)="p1 = $event" id="first"></pagination-controls>
+
+<ul>
+    <li *ngFor="let item of properties | paginate: { itemsPerPage: 10, currentPage: p2, id: 'second' }"> {{ item }}
+    </li>
+</ul>
+<pagination-controls (pageChange)="p2 = $event" id="second"></pagination-controls>

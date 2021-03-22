@@ -23,7 +23,7 @@ namespace temsAPI.Mappings
         public Maps()
         {
             CreateMap<Property, PropertyViewModel>().ReverseMap();
-            CreateMap<EquipmentType, EquipmentTypeViewModel>().ReverseMap();
+            CreateMap<EquipmentType, ViewEquipmentTypeViewModel>().ReverseMap();
             CreateMap<EquipmentDefinition, EquipmentDefinitionViewModel>().ReverseMap();
             CreateMap<Equipment, AddEquipmentViewModel>().ReverseMap();
             CreateMap<List<Equipment>, List<ViewEquipmentSimplifiedViewModel>>().ReverseMap();

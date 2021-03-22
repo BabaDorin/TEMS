@@ -6,11 +6,11 @@ using temsAPI.ViewModels.Property;
 
 namespace temsAPI.ViewModels.EquipmentType
 {
-    public class EquipmentTypeViewModel
+    public class ViewEquipmentTypeViewModel
     {
         public string Id { get; set; }
         public string Name { get; set; }
         public virtual ICollection<PropertyViewModel> Properties { get; set; }
-        public virtual ICollection<EquipmentTypeViewModel> Children { get; set; }
+        public virtual ICollection<ViewEquipmentTypeViewModel> Children { get; set; }
     }
 }

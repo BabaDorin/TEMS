@@ -14,17 +14,14 @@ namespace temsAPI.Data.Entities.EquipmentEntities
         public string Name { get; set; }
         public bool IsArchieved { get; set; }
 
-        //public virtual ICollection<PropertyEquipmentTypeAssociation> PropertyEquipmentTypeAssociations { get; set; }
-        public virtual ICollection<Property> Properties { get; set; }
-        public virtual ICollection<EquipmentDefinition> EquipmentDefinitions { get; set; }
-        public virtual ICollection<EquipmentTypeKinship> EquipmentTypeKinships { get; set; }
+        public virtual ICollection<Property> Properties { get; set; } = new List<Property>();
+        public virtual ICollection<EquipmentDefinition> EquipmentDefinitions { get; set; } = new List<EquipmentDefinition>();
+        public virtual ICollection<EquipmentType> Children { get; set; } = new List<EquipmentType>();
 
-        public EquipmentType()
-        {
-            //PropertyEquipmentTypeAssociations = new List<PropertyEquipmentTypeAssociation>();
-            Properties = new List<Property>();
-            EquipmentDefinitions = new List<EquipmentDefinition>();
-            EquipmentTypeKinships = new List<EquipmentTypeKinship>();
-        }
+#nullable enable
+        [ForeignKey("ParentId")]
+        public EquipmentType? Parent { get; set; }
+        public string? ParentId { get; set; }
+#nullable disable
     }
 }

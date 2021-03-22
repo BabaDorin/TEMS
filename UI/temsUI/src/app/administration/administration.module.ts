@@ -14,6 +14,7 @@ import { AddUserComponent } from './add-user/add-user.component';
 import { ViewUsersComponent } from '../tems-components/admin/user-management/view-users/view-users.component';
 import { ManageTypesPropertiesComponent } from '../tems-components/admin/equipment-management/manage-types-properties/manage-types-properties.component';
 import { ManageDefinitionsComponent } from '../tems-components/admin/equipment-management/manage-definitions/manage-definitions.component';
+import { NgxPaginationModule } from 'ngx-pagination';
 
 
 @NgModule({
@@ -34,6 +35,7 @@ import { ManageDefinitionsComponent } from '../tems-components/admin/equipment-m
     MaterialModule,
     EquipmentModule,
     PersonnelModule,
+    NgxPaginationModule
   ]
 })
 export class AdministrationModule { }

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -33,6 +34,37 @@ namespace temsAPI.EquipmentControllers
             return await _unitOfWork.EquipmentTypes.FindAll<EquipmentType>(q => q.IsArchieved == false);
         }
 
+        [HttpGet]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
+        public async Task<JsonResult> GetSimplified()
+        {
+            try
+            {
+                List<ViewEquipmentTypeSimplifiedViewModel> viewModel =
+                    (await _unitOfWork.EquipmentTypes
+                    .FindAll<ViewEquipmentTypeSimplifiedViewModel>(
+                        where: q => q.IsArchieved == false,
+                        include: q => q.Include(q => q.Children).Include(q => q.Parent),
+                        select: q => new ViewEquipmentTypeSimplifiedViewModel
+                        {
+                            Id = q.Id,
+                            Name = q.Name,
+                            Children = String.Join(", ", q.Children.Select(q => q.Name)),
+                            Parent = (q.ParentId != null)
+                                ? q.Parent.Name
+                                : null
+                        }
+                        )).ToList();
+
+                return Json(viewModel);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured when fetching types", ResponseStatus.Fail);
+            }
+        }
+
         [HttpPost]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
         public async Task<JsonResult> FullType([FromBody] string typeId)
@@ -51,7 +83,7 @@ namespace temsAPI.EquipmentControllers
                     .Result.FirstOrDefault().Name;
             }
 
-            EquipmentTypeViewModel viewModel = new EquipmentTypeViewModel
+            ViewEquipmentTypeViewModel viewModel = new ViewEquipmentTypeViewModel
             {
                 Id = equipmentType.Id,
                 Name = equipmentType.Name,
@@ -96,33 +128,30 @@ namespace temsAPI.EquipmentControllers
 
             if (viewModel.Properties != null)
                 foreach (Option prop in viewModel.Properties)
-                    //equipmentType.PropertyEquipmentTypeAssociations.Add(new PropertyEquipmentTypeAssociation
-                    //{
-                    //    Id = Guid.NewGuid().ToString(),
-                    //    PropertyID = prop.Value,
-                    //    TypeID = equipmentType.Id
-                    //});
                     equipmentType.Properties.Add((await _unitOfWork.Properties.Find<Property>(q => q.Id == prop.Value))
                             .FirstOrDefault());
-
-            if (viewModel.Parents != null)
-                foreach (Option parent in viewModel.Parents)
-                {
-                    equipmentType.EquipmentTypeKinships.Add(new EquipmentTypeKinship
-                    {
-                        Id = Guid.NewGuid().ToString(),
-                        ParentEquipmentTypeId = parent.Value,
-                        ChildEquipmentTypeId = equipmentType.Id
-                    });
-                }
 
             await _unitOfWork.EquipmentTypes.Create(equipmentType);
             await _unitOfWork.Save();
 
-            if (await _unitOfWork.EquipmentTypes.isExists(q => q.Id == equipmentType.Id))
-                return ReturnResponse($"Success", ResponseStatus.Success);
-            else
-                return ReturnResponse($"Fail", ResponseStatus.Fail);
+            if (!await _unitOfWork.EquipmentTypes.isExists(q => q.Id == equipmentType.Id))
+                return ReturnResponse($"Equipment type has not been saved", ResponseStatus.Fail);
+
+            if (viewModel.Parents != null)
+                foreach (Option parent in viewModel.Parents)
+                {
+                    var parentType = (await _unitOfWork.EquipmentTypes
+                        .Find<EquipmentType>(q => q.Id == parent.Value))
+                        .FirstOrDefault();
+
+                    if(parentType == null)
+                        return ReturnResponse("One or more parents are invalid", ResponseStatus.Fail);
+
+                    parentType.Children.Add(equipmentType);
+                    await _unitOfWork.Save();
+                }
+
+            return ReturnResponse($"Success", ResponseStatus.Success);
         }
     }
 }

@@ -12,6 +12,8 @@ import { AdministrationComponent } from './administration.component';
 import { UserManagementComponent } from '../tems-components/admin/user-management/user-management.component';
 import { AddUserComponent } from './add-user/add-user.component';
 import { ViewUsersComponent } from '../tems-components/admin/user-management/view-users/view-users.component';
+import { ManageTypesPropertiesComponent } from '../tems-components/admin/equipment-management/manage-types-properties/manage-types-properties.component';
+import { ManageDefinitionsComponent } from '../tems-components/admin/equipment-management/manage-definitions/manage-definitions.component';
 
 
 @NgModule({
@@ -21,7 +23,9 @@ import { ViewUsersComponent } from '../tems-components/admin/user-management/vie
     RoleManagementComponent,
     UserManagementComponent,
     AddUserComponent,
-    ViewUsersComponent
+    ViewUsersComponent,
+    ManageTypesPropertiesComponent,
+    ManageDefinitionsComponent
   ],
   imports: [
     CommonModule,

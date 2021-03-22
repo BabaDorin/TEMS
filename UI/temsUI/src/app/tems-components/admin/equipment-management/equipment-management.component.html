@@ -1,1 +1,14 @@
-<p>equipment-management works!</p>
+<div class="card">
+    <div class="card-body">
+        <mat-tab-group [@.disabled]="true">
+            <mat-tab label="Equipment Types & Properties">
+                <app-manage-types-properties></app-manage-types-properties>
+            </mat-tab>
+            <mat-tab label="Equipment definitions">
+                <ng-template matTabContent>
+                    <app-manage-definitions></app-manage-definitions>
+                </ng-template>
+            </mat-tab>
+        </mat-tab-group>
+    </div>
+</div>

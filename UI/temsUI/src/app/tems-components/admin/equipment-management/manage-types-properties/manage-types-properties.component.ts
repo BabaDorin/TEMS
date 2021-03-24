@@ -44,6 +44,40 @@ export class ManageTypesPropertiesComponent extends TEMSComponent implements OnI
     )
   }
 
+  addType(){
+    this.dialogService.openDialog(
+      AddTypeComponent,
+      undefined,
+      () => {
+        this.unsubscribeFromAll();
+        this.subscriptions.push(
+          this.equipmentService.getTypesSimplified()
+          .subscribe(result => {
+            if(result.length > this.types.length)
+              this.types = result;
+          })
+        )
+      }
+    );
+  }
+
+  addProperty(){
+    this.dialogService.openDialog(
+      AddPropertyComponent,
+      undefined,
+      () => {
+        this.unsubscribeFromAll();
+        this.subscriptions.push(
+          this.equipmentService.getPropertiesSimplified()
+          .subscribe(result => {
+            if(result.length > this.types.length)
+              this.properties = result;
+          })
+        )
+      }
+    );
+  }
+
   viewType(typeId: string){
     this.dialogService.openDialog(
       ViewTypeComponent,
@@ -58,25 +92,56 @@ export class ManageTypesPropertiesComponent extends TEMSComponent implements OnI
     );
   }
 
-  editType(typeId: string){
+  editType(typeId: string, index: number){
     this.dialogService.openDialog(
       AddTypeComponent,
       [{value: typeId, label: "updateTypeId"}],
+      () => {
+        this.unsubscribeFromAll();
+        this.subscriptions.push(
+          this.equipmentService.getTypeSimplifiedById(typeId)
+          .subscribe(result => {
+            this.types[index] = result;
+          })
+        )
+      }
     );
   }
 
-  editProperty(propertyId: string){
+  editProperty(propertyId: string, index: number){
     this.dialogService.openDialog(
       AddPropertyComponent,
       [{value: propertyId, label: "propertyId"}],
+      () => {
+        this.unsubscribeFromAll();
+        this.subscriptions.push(
+          this.equipmentService.getPropertySimplifiedById(propertyId)
+          .subscribe(result => {
+            this.properties[index] = result;
+          })
+        )
+      }
     );
   }
 
-  removeType(typeId: string){
+  removeType(typeId: string, index: number){
     if(confirm("Do you realy want to remove that type?")){
       this.equipmentService.removeType(typeId)
       .subscribe(result => {
         console.log(result);
+        if(result.status == 1)
+          this.types.splice(index, 1);
+      })
+    }
+  }
+
+  removeProperty(propertyId: string, index: number){
+    if(confirm("Do you realy want to remove that property?")){
+      this.equipmentService.removeProperty(propertyId)
+      .subscribe(result => {
+        console.log(result);
+        if(result.status == 1)
+          this.properties.splice(index, 1);
       })
     }
   }

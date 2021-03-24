@@ -1,10 +1,11 @@
 <br>
 <H1>Equipment Types:</H1>
+<button mat-button (click)="addType()">+ Add new type</button>
 <hr>
 <br>
 
 <ul type="none" class="row">
-    <li *ngFor="let item of types | paginate: { itemsPerPage: 10, currentPage: p1, id: 'types' }" class="col-3">
+    <li *ngFor="let item of types | paginate: { itemsPerPage: 10, currentPage: p1, id: 'types' }; let i = index" class="col-3">
         <mat-card>
             <mat-card-header>
                 <mat-card-title>{{ item.name }}</mat-card-title>
@@ -15,8 +16,8 @@
             </mat-card-content>
             <mat-card-actions>
                 <button mat-button (click)="viewType(item.id)">View</button>
-                <button mat-button (click)="editType(item.id)">Edit</button>
-                <button mat-button (click)="removeType(item.id)">Remove</button>
+                <button mat-button (click)="editType(item.id, i)">Edit</button>
+                <button mat-button (click)="removeType(item.id, i)">Remove</button>
             </mat-card-actions>
         </mat-card>
     </li>
@@ -25,12 +26,13 @@
 
 <br>
 <H1>Equipment Properties:</H1>
+<button mat-button (click)="addProperty()">+ Add new property</button>
 <hr>
 <br>
 
 
 <ul type="none" class="row">
-    <li *ngFor="let item of properties | paginate: { itemsPerPage: 10, currentPage: p2, id: 'properties' }" class="col-3">
+    <li *ngFor="let item of properties | paginate: { itemsPerPage: 10, currentPage: p2, id: 'properties' }; let i = index" class="col-3">
         <mat-card>
             <mat-card-header>
                 <mat-card-title>{{ item.displayName }}</mat-card-title>
@@ -40,8 +42,8 @@
             </mat-card-content>
             <mat-card-actions>
                 <button mat-button (click)="viewProperty(item.id)">View</button>
-                <button mat-button (click)="editProperty(item.id)">Edit</button>
-                <button mat-button (click)="removeProperty(item.id)">Remove</button>
+                <button mat-button (click)="editProperty(item.id, i)">Edit</button>
+                <button mat-button (click)="removeProperty(item.id, i)">Remove</button>
             </mat-card-actions>
         </mat-card>
     </li>

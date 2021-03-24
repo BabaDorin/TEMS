@@ -13,6 +13,7 @@ namespace temsAPI.Data.Entities.EquipmentEntities
         public string Id { get; set; }
         public string Name { get; set; }
         public bool Required { get; set; } = false;
+        public bool IsArchieved { get; set; }
 
 #nullable enable
         public string? Description { get; set; }

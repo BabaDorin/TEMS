@@ -36,6 +36,7 @@ namespace temsAPI.EquipmentControllers
             {
                 List<Option> viewModel = (await _unitOfWork.Properties
                     .FindAll<Option>(
+                        where: q => !q.IsArchieved,
                         select: q => new Option
                         {
                             Value = q.Id,
@@ -61,6 +62,7 @@ namespace temsAPI.EquipmentControllers
                 List<ViewPropertySimplifiedViewModel> viewModel =
                     (await _unitOfWork.Properties
                     .FindAll(
+                        where: q => !q.IsArchieved,
                         select: q => new ViewPropertySimplifiedViewModel
                         {
                             Id = q.Id,
@@ -74,6 +76,33 @@ namespace temsAPI.EquipmentControllers
             {
                 Debug.WriteLine(ex);
                 return ReturnResponse("An error occured when fetching properties", ResponseStatus.Fail);
+            }
+        }
+
+        [HttpGet("property/getsimplifiedbyid/{propertyId}")]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
+        public async Task<JsonResult> GetSimplifiedById(string propertyId)
+        {
+            try
+            {
+                ViewPropertySimplifiedViewModel viewModel =
+                    (await _unitOfWork.Properties
+                    .Find(
+                        where: q => q.Id == propertyId,
+                        select: q => new ViewPropertySimplifiedViewModel
+                        {
+                            Id = q.Id,
+                            Description = q.Description,
+                            DisplayName = q.DisplayName
+                        }
+                    )).FirstOrDefault();
+
+                return Json(viewModel);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured when fetching the property", ResponseStatus.Fail);
             }
         }
 
@@ -161,6 +190,31 @@ namespace temsAPI.EquipmentControllers
             {
                 Debug.WriteLine(ex);
                 return ReturnResponse("An error occured when saving the property", ResponseStatus.Fail);
+            }
+        }
+
+        [HttpGet("property/remove/{propertyId}")]
+        [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
+        public async Task<JsonResult> Remove(string propertyId)
+        {
+            try
+            {
+                var property = (await _unitOfWork.Properties
+                    .Find<Property>(q => q.Id == propertyId))
+                    .FirstOrDefault();
+
+                if (property == null)
+                    return ReturnResponse("Invalid id provided", ResponseStatus.Fail);
+
+                property.IsArchieved = true;
+                await _unitOfWork.Save();
+
+                return ReturnResponse("Success", ResponseStatus.Success);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured while removing the property", ResponseStatus.Fail);
             }
         }
 

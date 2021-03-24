@@ -69,7 +69,9 @@ namespace temsAPI.EquipmentControllers
                         {
                             Id = q.Id,
                             Name = q.Name,
-                            Children = String.Join(", ", q.Children.Select(q => q.Name))
+                            Children = String.Join(", ", q.Children
+                            .Where(q => !q.IsArchieved)
+                            .Select(q => q.Name))
                         }
                         )).ToList();
 
@@ -79,6 +81,34 @@ namespace temsAPI.EquipmentControllers
             {
                 Debug.WriteLine(ex);
                 return ReturnResponse("An error occured when fetching types", ResponseStatus.Fail);
+            }
+        }
+
+        [HttpGet("equipmenttype/getsimplifiedbyid/{typeId}")]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
+        public async Task<JsonResult> GetSimplifiedById(string typeId)
+        {
+            try
+            {
+                ViewEquipmentTypeSimplifiedViewModel viewModel =
+                    (await _unitOfWork.EquipmentTypes
+                    .Find<ViewEquipmentTypeSimplifiedViewModel>(
+                        where: q => q.Id == typeId,
+                        include: q => q.Include(q => q.Children.Where(q => !q.IsArchieved)),
+                        select: q => new ViewEquipmentTypeSimplifiedViewModel
+                        {
+                            Id = q.Id,
+                            Name = q.Name,
+                            Children = String.Join(", ", q.Children.Select(q => q.Name))
+                        }
+                        )).FirstOrDefault();
+
+                return Json(viewModel);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured while fetching type", ResponseStatus.Fail);
             }
         }
 
@@ -94,7 +124,7 @@ namespace temsAPI.EquipmentControllers
                     where: q => q.Id == typeId,
                     include: q => q
                     .Include(q => q.Parents.Where(q => !q.IsArchieved))
-                    .Include(q => q.Properties)
+                    .Include(q => q.Properties.Where(q => !q.IsArchieved))
                 )).FirstOrDefault();
 
             foreach (var item in equipmentType.Properties)
@@ -168,7 +198,7 @@ namespace temsAPI.EquipmentControllers
                     .Find<EquipmentType>(
                         where: q => q.Id == viewModel.Id,
                         include: q => q
-                        .Include(q => q.Properties)
+                        .Include(q => q.Properties.Where(q => !q.IsArchieved))
                         .Include(q => q.Parents)
                     )).FirstOrDefault();
 
@@ -254,7 +284,7 @@ namespace temsAPI.EquipmentControllers
             // Invalid properties
             if (viewModel.Properties != null)
                 foreach (Option property in viewModel.Properties)
-                    if (!await _unitOfWork.Properties.isExists(q => q.Id == property.Value))
+                    if (!await _unitOfWork.Properties.isExists(q => q.Id == property.Value && !q.IsArchieved))
                         return $"Property {property.Label} not found.";
 
             return null;
@@ -281,7 +311,7 @@ namespace temsAPI.EquipmentControllers
             if (viewModel.Properties != null)
                 foreach (Option prop in viewModel.Properties)
                 {
-                    model.Properties.Add((await _unitOfWork.Properties.Find<Property>(q => q.Id == prop.Value))
+                    model.Properties.Add((await _unitOfWork.Properties.Find<Property>(q => q.Id == prop.Value && !q.IsArchieved))
                             .FirstOrDefault());
 
                     await _unitOfWork.Save();
@@ -297,6 +327,9 @@ namespace temsAPI.EquipmentControllers
         /// <returns></returns>
         private async Task<string> SetParents(EquipmentType model, AddEquipmentTypeViewModel viewModel)
         {
+            if (viewModel.Parents == null || viewModel.Parents.Count == 0)
+                return null;
+
             if (model.Parents.Select(q => q.Id).SequenceEqual(viewModel.Parents.Select(q => q.Value)))
                 return null;
 

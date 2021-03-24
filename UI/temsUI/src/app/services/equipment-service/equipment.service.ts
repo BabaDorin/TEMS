@@ -44,9 +44,23 @@ export class EquipmentService extends TEMSService {
     );
   }
 
+  getTypeSimplifiedById(typeId: string): Observable<ViewTypeSiplified>{
+    return this.http.get<ViewTypeSiplified>(
+      API_EQTYPE_URL + '/getsimplifiedbyid/' + typeId,
+      this.httpOptions
+    );
+  }
+
   getPropertiesSimplified(): Observable<ViewPropertySimplified[]>{
     return this.http.get<ViewPropertySimplified[]>(
       API_PROP_URL + '/getsimplified',
+      this.httpOptions
+    );
+  }
+
+  getPropertySimplifiedById(propertyId: string): Observable<ViewPropertySimplified>{
+    return this.http.get<ViewPropertySimplified>(
+      API_PROP_URL + '/getsimplifiedbyid/' + propertyId,
       this.httpOptions
     );
   }
@@ -84,6 +98,13 @@ export class EquipmentService extends TEMSService {
       API_PROP_URL + '/add', 
       JSON.stringify(addProperty), 
       this.httpOptions);
+  }
+
+  removeProperty(propertyId): Observable<any>{
+    return this.http.get(
+      API_PROP_URL + '/remove/' + propertyId,
+      this.httpOptions
+    );
   }
 
   updateProperty(addProperty: AddProperty): Observable<any>{
@@ -137,6 +158,7 @@ export class EquipmentService extends TEMSService {
       this.httpOptions
     );
   }
+
 
   getCommonProperties(): CheckboxItem[]{
     return [

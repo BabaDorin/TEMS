@@ -7,13 +7,13 @@ using temsAPI.Data.Entities.EquipmentEntities;
 
 namespace temsAPI.ViewModels.Property
 {
-    public class PropertyViewModel
+    public class ViewPropertyViewModel
     {
         public string Id { get; set; }
         public string Name { get; set; }
         public string DisplayName { get; set; }
         public string Description { get; set; }
-        public DataType DataType { get; set; }
+        public string DataType { get; set; }
         public dynamic Value { get; set; }
         public bool Required { get; set; }
         public int Min { get; set; }

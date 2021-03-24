@@ -1,6 +1,6 @@
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { ChipsAutocompleteComponent } from 'src/app/public/formly/chips-autocomplete/chips-autocomplete.component';
-import { MatInput, MatInputModule } from '@angular/material/input';
+import { MatInputModule } from '@angular/material/input';
 import { SelectTooltipComponent } from './../../public/formly/select-tooltip/select-tooltip.component';
 import { TagInputModule } from 'ngx-chips';
 import { AddEquipmentRepeatComponent } from './../../public/formly/add-equipment-repeat/add-equipment-repeat.component';

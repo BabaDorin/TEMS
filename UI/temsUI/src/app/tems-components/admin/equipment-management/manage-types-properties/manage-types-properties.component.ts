@@ -1,6 +1,7 @@
+import { AddPropertyComponent } from './../../../equipment/add-property/add-property.component';
+import { DialogService } from './../../../../services/dialog-service/dialog.service';
 import { AddTypeComponent } from './../../../equipment/add-type/add-type.component';
 import { ViewTypeComponent } from './../../../equipment/view-type/view-type.component';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ViewPropertySimplified } from './../../../../models/equipment/view-property-simplified.model';
 import { EquipmentService } from 'src/app/services/equipment-service/equipment.service';
 import { ViewTypeSiplified } from './../../../../models/equipment/view-type-simplified.model';
@@ -20,7 +21,7 @@ export class ManageTypesPropertiesComponent extends TEMSComponent implements OnI
 
   constructor(
     private equipmentService: EquipmentService,
-    private dialog: MatDialog
+    private dialogService: DialogService,
   ) {
     super();
   }
@@ -44,43 +45,31 @@ export class ManageTypesPropertiesComponent extends TEMSComponent implements OnI
   }
 
   viewType(typeId: string){
-    let dialogRef: MatDialogRef<any>;
-    dialogRef = this.dialog.open(ViewTypeComponent,
-      {
-        maxHeight: '80vh',
-        width: '40vh',
-        autoFocus: false
-      });
-
-    dialogRef.componentInstance.typeId = typeId;
-    dialogRef.afterClosed().subscribe(result => {
-    })
+    this.dialogService.openDialog(
+      ViewTypeComponent,
+      [{value: typeId, label: "typeId"}],
+    );
   }
 
   viewProperty(propertyId: string){
-    let dialogRef: MatDialogRef<any>;
-    dialogRef = this.dialog.open(ViewPropertyComponent,
-      {
-        maxHeight: '80vh',
-        autoFocus: false
-      });
-
-    dialogRef.componentInstance.propertyId = propertyId;
-    dialogRef.afterClosed().subscribe(result => {
-    })
+    this.dialogService.openDialog(
+      ViewPropertyComponent,
+      [{value: propertyId, label: "propertyId"}],
+    );
   }
 
   editType(typeId: string){
-    let dialogRef: MatDialogRef<any>;
-    dialogRef = this.dialog.open(AddTypeComponent,
-      {
-        maxHeight: '80vh',
-        autoFocus: false
-      });
+    this.dialogService.openDialog(
+      AddTypeComponent,
+      [{value: typeId, label: "updateTypeId"}],
+    );
+  }
 
-    dialogRef.componentInstance.updateTypeId = typeId;
-    dialogRef.afterClosed().subscribe(result => {
-    })
+  editProperty(propertyId: string){
+    this.dialogService.openDialog(
+      AddPropertyComponent,
+      [{value: propertyId, label: "propertyId"}],
+    );
   }
 
   removeType(typeId: string){

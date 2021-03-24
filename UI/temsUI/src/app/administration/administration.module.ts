@@ -15,6 +15,7 @@ import { ViewUsersComponent } from '../tems-components/admin/user-management/vie
 import { ManageTypesPropertiesComponent } from '../tems-components/admin/equipment-management/manage-types-properties/manage-types-properties.component';
 import { ManageDefinitionsComponent } from '../tems-components/admin/equipment-management/manage-definitions/manage-definitions.component';
 import { NgxPaginationModule } from 'ngx-pagination';
+import { DialogModule } from '../modules/dialog/dialog.module';
 
 
 @NgModule({
@@ -34,6 +35,7 @@ declarations: [
     TemsFormsModule,
     MaterialModule,
     EquipmentModule,
+    DialogModule,
     PersonnelModule,
     NgxPaginationModule
   ]

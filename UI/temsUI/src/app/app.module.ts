@@ -6,7 +6,6 @@ import { EquipmentService } from './services/equipment-service/equipment.service
 import { MatInputModule } from '@angular/material/input';
 import { PersonnelService } from './services/personnel-service/personnel.service';
 import { RoomsService } from './services/rooms-service/rooms.service';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { QuickAccessComponent } from './tems-components/equipment/quick-access/quick-access.component';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -30,6 +29,7 @@ import { TodoListComponent } from './public/apps/todo-list/todo-list.component';
 import { TagInputModule } from 'ngx-chips';
 import { MatDialogModule } from '@angular/material/dialog';
 import { TEMSComponent } from './tems/tems.component';
+import { TemsFormsModule } from './modules/tems-forms/tems-forms.module';
 
 @NgModule({
   declarations: [
@@ -59,8 +59,7 @@ import { TEMSComponent } from './tems/tems.component';
     HttpClientModule,
     MatInputModule,
     MatFormFieldModule,
-    ReactiveFormsModule,
-    FormsModule,
+    TemsFormsModule,
   ],
   exports:[
     MatAutocompleteModule,
@@ -76,7 +75,7 @@ import { TEMSComponent } from './tems/tems.component';
     PersonnelService,
     EquipmentService,
     TokenService,
-    MenuService
+    MenuService,
   ],
   bootstrap: [AppComponent],
 })

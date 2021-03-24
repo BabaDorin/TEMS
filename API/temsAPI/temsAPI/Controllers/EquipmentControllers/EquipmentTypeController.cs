@@ -113,7 +113,7 @@ namespace temsAPI.EquipmentControllers
             {
                 Id = equipmentType.Id,
                 Name = equipmentType.Name,
-                Properties = _mapper.Map<List<PropertyViewModel>>(equipmentType.Properties),
+                Properties = _mapper.Map<List<ViewPropertyViewModel>>(equipmentType.Properties),
                 Parents = equipmentType.Parents.Select(q => new Option
                 {
                     Value = q.Id,

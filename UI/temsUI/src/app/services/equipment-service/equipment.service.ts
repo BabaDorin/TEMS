@@ -16,6 +16,7 @@ import { AddProperty } from './../../models/equipment/add-property.model';
 import { Injectable, Type } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { ViewDefinitionSimplified } from 'src/app/models/equipment/view-definition-simplified.model';
+import { Property } from 'src/app/models/equipment/view-property.model';
 
 @Injectable({
   providedIn: 'root'
@@ -78,9 +79,16 @@ export class EquipmentService extends TEMSService {
     );
   }
 
-  postProperty(addProperty: AddProperty): Observable<any>{
+  addProperty(addProperty: AddProperty): Observable<any>{
     return this.http.post<AddProperty>(
-      API_PROP_URL + '/insert', 
+      API_PROP_URL + '/add', 
+      JSON.stringify(addProperty), 
+      this.httpOptions);
+  }
+
+  updateProperty(addProperty: AddProperty): Observable<any>{
+    return this.http.post<AddProperty>(
+      API_PROP_URL + '/update', 
       JSON.stringify(addProperty), 
       this.httpOptions);
   }
@@ -116,8 +124,18 @@ export class EquipmentService extends TEMSService {
     ]
   }
 
-  getProperties(): Observable<any>{
-    return this.http.get(API_PROP_URL + '/get');
+  getProperties(): Observable<IOption[]>{
+    return this.http.get<IOption[]>(
+      API_PROP_URL + '/get',
+      this.httpOptions
+      );
+  }
+
+  getPropertyById(propertyId: string): Observable<Property>{
+    return this.http.get<Property>(
+      API_PROP_URL + '/getbyid/' + propertyId,
+      this.httpOptions
+    );
   }
 
   getCommonProperties(): CheckboxItem[]{
@@ -183,86 +201,9 @@ export class EquipmentService extends TEMSService {
       this.httpOptions);
   }
 
-  getFileterdAutocompleteOptions(filter: string){
-    // might be unusable..
-  }
-
-  getPropertiesOfType(typeId: string): AddProperty[] {
-    let pcProperties: AddProperty[] = [
-      {
-        id: '1',
-        name: 'model',
-        displayName: 'Model',
-        description: 'Model name',
-        dataType: { id: '1', name: 'string' },
-        required: true,
-      },
-      {
-        id: '2',
-        name: 'Frequency',
-        displayName: 'Frequency',
-        description: 'Frequency in GHz',
-        dataType: { id: '2', name: 'number' },
-        required: true,
-      },
-      {
-        id: '3',
-        name: 'color',
-        displayName: 'Color',
-        description: 'Black and White or Color',
-        dataType: { id: '3', name: 'radiobutton' },
-        options: [{ value: 'color', label: 'color' }, { value: 'bw', label: 'black and white' }],
-        required: true,
-      },
-    ];
-
-    let printerProperties: AddProperty[] = [
-      {
-        id: '1',
-        name: 'model',
-        displayName: 'Model',
-        description: 'Model name',
-        dataType: { id: '1', name: 'string' },
-        required: true,
-      },
-      {
-        id: '2',
-        name: 'Frequency',
-        displayName: 'Frequency',
-        description: 'Frequency in GHz',
-        dataType: { id: '2', name: 'number' },
-        required: true,
-      },
-      {
-        id: '3',
-        name: 'color',
-        displayName: 'Color',
-        description: 'Black and White or Color',
-        dataType: { id: '3', name: 'radiobutton' },
-        options: [{ value: 'color', label: 'color' }, { value: 'bw', label: 'black and white' }],
-        required: true,
-      },
-    ];
-
-    return (typeId == '1') ? printerProperties : pcProperties;
-  }
-
   getDefinitionsOfType(typeId: string): Observable<any> {
     console.log(typeId);
     return this.http.post(API_EQDEF_URL + '/getdefinitionsoftype', JSON.stringify(typeId), this.httpOptions)
-
-    // let printerDefinitions: IOption[] = [
-    //   { value: '1', label: 'HP LaserJet' },
-    //   { value: '2', label: 'Lenovo M7000' }
-    // ];
-
-    // let pcDefinitions: IOption[] = [
-    //   { value: '3', label: 'Hantol' },
-    //   { value: '4', label: 'HPC' },
-    //   { value: '5', label: 'Sohoo' },
-    // ];
-
-    // return printerDefinitions;
   }
 
   getFullDefinition(definitionId: string): Observable<any> {
@@ -271,120 +212,6 @@ export class EquipmentService extends TEMSService {
       API_EQDEF_URL + '/getfulldefinition', 
       JSON.stringify(definitionId),
       this.httpOptions);
-    // return new Definition();
-    // // returns the full definition, including children definitions and so on...
-    // let fullDefinitions: Definition[] = [
-    //   {
-    //     type: new Type(),
-    //     id: '1',
-    //     identifier: 'HP LaserJet',
-    //     equipmentType: { value: '1', label: 'printer'},
-    //     properties: [
-    //       {
-    //         id: '1',
-    //         name: 'Model',
-    //         displayName: 'Model',
-    //         description: 'the model',
-    //         dataType: { id: '1', name: 'string' },
-    //         value: 'HP LaserJet',
-    //         required: true
-    //       },
-    //       {
-    //         id: '2',
-    //         name: 'color',
-    //         displayName: 'Color',
-    //         description: 'Color = true, B&W = false',
-    //         dataType: { id: '2', name: 'radiobutton' },
-    //         options: [{ value: 'color', label: 'color' }, { value: 'black and white', label: 'b&w' }],
-    //         required: true
-    //       },
-    //     ],
-    //     children: [
-    //     ],
-    //   },
-    //   {
-    //     type: new Type(),
-    //     id: '2',
-    //     identifier: 'Lenovo M700',
-    //     equipmentType: { value: '1', label: 'printer'},
-    //     properties: [
-    //       {
-    //         id: '1',
-    //         name: 'Model',
-    //         displayName: 'Model',
-    //         description: 'the model',
-    //         dataType: { id: '1', name: 'string' },
-    //         value: 'HP LaserJet',
-    //         required: true
-    //       },
-    //       {
-    //         id: '2',
-    //         name: 'Color',
-    //         displayName: 'Color',
-    //         description: 'Color = true, B&W = false',
-    //         dataType: { id: '2', name: 'bool' },
-    //         value: 'false',
-    //         required: true
-    //       },
-    //     ],
-    //     children: [{
-    //       type: new Type(),
-    //       id: '2',
-    //       identifier: 'Lenovo M700',
-    //       equipmentType: { value: '1', label: 'printer'},
-    //       properties: [
-    //         {
-    //           id: '1',
-    //           name: 'Model',
-    //           displayName: 'Model',
-    //           description: 'the model',
-    //           dataType: { id: '1', name: 'string' },
-    //           value: 'HP LaserJet',
-    //           required: true
-    //         },
-    //         {
-    //           id: '2',
-    //           name: 'Color',
-    //           displayName: 'Color',
-    //           description: 'Color = true, B&W = false',
-    //           dataType: { id: '2', name: 'bool' },
-    //           value: 'false',
-    //           required: true
-    //         },
-    //       ],
-    //       children: []
-    //     },
-    //     {
-    //       type: new Type(),
-    //       id: '2',
-    //       identifier: 'not lenovo M700',
-    //       equipmentType: { value: '1', label: 'printer'},
-    //       properties: [
-    //         {
-    //           id: '1',
-    //           name: 'Model',
-    //           displayName: 'Model',
-    //           description: 'the model',
-    //           dataType: { id: '1', name: 'string' },
-    //           value: 'HP LaserJet',
-    //           required: true
-    //         },
-    //         {
-    //           id: '2',
-    //           name: 'Color',
-    //           displayName: 'Color',
-    //           description: 'Color = true, B&W = false',
-    //           dataType: { id: '2', name: 'bool' },
-    //           value: 'false',
-    //           required: true
-    //         },
-    //       ],
-    //       children: []
-    //     }
-    //   ],
-    //   }
-    // ];
-    // return fullDefinitions.find(q => q.id == definitionId);
   }
 
   getFullType(typeId: string): Observable<any> {

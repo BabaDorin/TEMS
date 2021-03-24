@@ -15,7 +15,7 @@ namespace temsAPI.ViewModels.Equipment
         public IOption Room { get; set; }
         public IOption Personnnel { get; set; }
         public string Type { get; set; }
-        public List<PropertyViewModel> SpecificTypeProperties { get; set; }
+        public List<ViewPropertyViewModel> SpecificTypeProperties { get; set; }
         public List<Option> Children { get; set; }
         public IOption Parent { get; set; }
         public bool IsUsed { get; set; }
@@ -24,7 +24,7 @@ namespace temsAPI.ViewModels.Equipment
 
         public ViewEquipmentViewModel()
         {
-            SpecificTypeProperties = new List<PropertyViewModel>();
+            SpecificTypeProperties = new List<ViewPropertyViewModel>();
             Children = new List<Option>();
             Photos = new List<string>();
         }

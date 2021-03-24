@@ -1,11 +1,12 @@
+import { IOption } from './../option.model';
 import { DataType } from '../datatype.model';
-export interface AddProperty{
+export interface IAddProperty{
     id?: string,
     name: string,
     required?: boolean;
     displayName: string,
     description?: string,
-    dataType: DataType,
+    dataType: IOption,
     
     value?: string
     
@@ -14,10 +15,18 @@ export interface AddProperty{
     max?: number;
 
     // Checkbox, radiobutton & select specific
-    options?: PropertyOption[];
+    options?: IOption[];
 }
 
-export interface PropertyOption{
-    value,
-    label
+export class AddProperty implements IAddProperty{
+    id?: string;
+    name: string;
+    required?: boolean;
+    displayName: string;
+    description?: string;
+    dataType: IOption;
+    value?: string;
+    min?: number;
+    max?: number;
+    options?: IOption[];
 }

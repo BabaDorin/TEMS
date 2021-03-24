@@ -1,15 +1,13 @@
+import { DialogService } from './../../../services/dialog-service/dialog.service';
 import { TEMSComponent } from 'src/app/tems/tems.component';
 import { EquipmentType } from './../../../models/equipment/view-type.model';
 import { AddType } from './../../../models/equipment/add-type.model';
-import { map } from 'rxjs/operators';
 import { IOption } from './../../../models/option.model';
 import { EquipmentService } from './../../../services/equipment-service/equipment.service';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { ComponentType } from '@angular/cdk/portal';
 import { AddPropertyComponent } from '../add-property/add-property.component';
-import { Subscription, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 
 
 @Component({
@@ -29,13 +27,8 @@ export class AddTypeComponent extends TEMSComponent implements OnInit {
     properties: new FormControl('', Validators.required),
   });
 
-  get parents(){
-    return this.formGroup.controls.parents;
-  }
-
-  get properties(){
-    return this.formGroup.controls.properties;
-  }
+  get parents() { return this.formGroup.controls.parents; }
+  get properties(){ return this.formGroup.controls.properties; }
 
   parentTypeOptions: IOption[]; 
   propertyOptions: IOption[];
@@ -44,24 +37,14 @@ export class AddTypeComponent extends TEMSComponent implements OnInit {
 
   constructor(
     private equipmentService: EquipmentService,
-    public dialog: MatDialog,
-    public dialogRef?: MatDialogRef<AddTypeComponent>
+    private dialogService: DialogService
     ) {
     super();
   }
 
   ngOnInit(): void {
-    this.subscriptions.push(this.equipmentService.getTypes().subscribe(response=>{
-      this.parentTypeOptions = response;
-      if(this.parentTypeOptions.length == 0)
-        this.formGroup.controls.parents.disable();
-    }));
-
-    this.subscriptions.push(this.equipmentService.getProperties().subscribe(response => {
-      this.propertyOptions = response.map(r => ({value: r.id, label: r.displayName}));
-      if(this.propertyOptions.length == 0)
-        this.formGroup.controls.properties.disable();
-    }));
+    this.fetchTypes();
+    this.fetchProperties();
 
     if(this.updateTypeId != undefined)
       this.update();
@@ -71,16 +54,13 @@ export class AddTypeComponent extends TEMSComponent implements OnInit {
     this.subscriptions.push(
       this.equipmentService.getFullType(this.updateTypeId)
       .subscribe(result =>{
-        console.log(result);
         let resultType: EquipmentType = result;
         let updateType = new AddType();
 
         updateType.name = resultType.name;
-        
         updateType.parents = resultType.parents != undefined
           ? resultType.parents
           : [];
-        
         updateType.properties = resultType.properties != undefined
           ? resultType.properties.map(q => ({ value: q.id, label: q.displayName}))
           : [];
@@ -122,11 +102,28 @@ export class AddTypeComponent extends TEMSComponent implements OnInit {
   }
 
   addProperty(){
-    let dialogRef: MatDialogRef<any>;
-        dialogRef = this.dialog.open(AddPropertyComponent);
-
-    dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed');
+    this.dialogService.openDialog(
+      AddPropertyComponent, 
+      undefined,
+      () => {
+        this.unsubscribeFromAll();
+        this.fetchProperties();
     });
+  }
+
+  fetchTypes(){
+    this.subscriptions.push(this.equipmentService.getTypes().subscribe(response=>{
+      this.parentTypeOptions = response;
+      if(this.parentTypeOptions.length == 0)
+        this.formGroup.controls.parents.disable();
+    }));
+  }
+
+  fetchProperties(){
+    this.subscriptions.push(this.equipmentService.getProperties().subscribe(response => {
+      this.propertyOptions = response;
+      if(this.propertyOptions.length == 0)
+        this.formGroup.controls.properties.disable();
+    }));
   }
 }

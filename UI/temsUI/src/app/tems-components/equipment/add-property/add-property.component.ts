@@ -5,6 +5,7 @@ import { EquipmentService } from 'src/app/services/equipment-service/equipment.s
 import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { FormlyFieldConfig } from '@ngx-formly/core';
+import { Property } from 'src/app/models/equipment/view-property.model';
 
 @Component({
   selector: 'app-add-property',
@@ -12,6 +13,8 @@ import { FormlyFieldConfig } from '@ngx-formly/core';
   styleUrls: ['./add-property.component.scss']
 })
 export class AddPropertyComponent extends TEMSComponent implements OnInit {
+
+  propertyId: string;
 
   private formlyData = {
     form: new FormGroup({}),
@@ -22,22 +25,62 @@ export class AddPropertyComponent extends TEMSComponent implements OnInit {
   constructor(
     private equipmentService: EquipmentService,
     private formlyParser: FormlyParserService
-  ) { super(); }
+  ) { 
+    super(); 
+  }
 
   ngOnInit(): void {
     this.formlyData.fields = this.formlyParser.parseAddProperty();
+
+    if(this.propertyId == undefined)
+      return;
+
+    this.subscriptions.push(
+      this.equipmentService.getPropertyById(this.propertyId)
+      .subscribe(result => {
+        let model = this.formlyData.model; 
+
+        console.log('model');
+        console.log(model);
+        console.log(this.formlyData.model)
+        console.log(result);
+        
+        this.formlyData.model = {
+          name: result.name,
+        }
+        this.formlyData.model.name = result.name;
+        this.formlyData.model.displayName = result.displayName;
+        this.formlyData.model.dataType = result.dataType;
+        this.formlyData.model.description = result.description;
+        this.formlyData.model.required = result.required;
+
+        console.log(model);
+        console.log(this.formlyData.model)
+      })
+    )
   }
 
   onSubmit(){
+    let model = this.formlyData.model; 
+    
     let addProperty: AddProperty = {
-      name: this.formlyData.model.addProperty.name,
-      displayName: this.formlyData.model.addProperty.displayName,
-      dataType: this.formlyData.model.addProperty.dataType,
-      description: this.formlyData.model.addProperty.description,
-      required: this.formlyData.model.addProperty.required
+      id: this.propertyId,
+      name: model.name,
+      displayName: model.displayName,
+      dataType: model.dataType,
+      description: model.description,
+      required: model.required
     }
-    console.log(addProperty);
-    this.subscriptions.push(this.equipmentService.postProperty(addProperty)
-      .subscribe(response => console.log(response)));
+    
+    let endPoint = this.equipmentService.addProperty(addProperty);
+    if(addProperty.id != undefined)
+      endPoint = this.equipmentService.updateProperty(addProperty);
+
+    this.subscriptions.push(
+      endPoint
+      .subscribe(result => {
+        console.log(result);
+      })
+    )
   }
 }

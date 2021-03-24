@@ -254,7 +254,7 @@ namespace temsAPI.Controllers.EquipmentControllers
                                         Additional = q.EquipmentDefinition.EquipmentType.Name
                                     }).ToList(),
 
-                    SpecificTypeProperties = _mapper.Map<List<PropertyViewModel>>
+                    SpecificTypeProperties = _mapper.Map<List<ViewPropertyViewModel>>
                             (model.EquipmentDefinition.EquipmentType.Properties),
                     
 

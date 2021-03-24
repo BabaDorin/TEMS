@@ -242,64 +242,60 @@ export class FormlyParserService {
   parseAddProperty() {
     let fields: FormlyFieldConfig[] =
       [
-        {
-          key: 'addProperty',
-          fieldGroup: [
-            {
-              key: 'name',
-              type: 'input-tooltip',
-              templateOptions: {
-                label: 'Name',
-                placeholder: 'model',
-                description: 'The name that will be used by the system for building objects. No spaces or other special charaters allowed!',
-                required: true
-              },
-              validators: {
-                validation: ['specCharValidator']
-              }
-            },
-            {
-              key: 'displayName',
-              type: 'input-tooltip',
-              templateOptions: {
-                label: 'Display Name',
-                placeholder: 'Model',
-                required: true,
-                description: 'The name that will be displayed'
-              },
-            },
-            {
-              key: 'description',
-              type: 'input-tooltip',
-              templateOptions: {
-                label: 'Property description',
-                description: 'Description of this property will appear like this',
-              },
-            },
 
-            {
-              key: 'dataType',
-              type: 'select',
-              templateOptions: {
-                required: true,
-                label: 'DataType',
-                options: [
-                  { value: 'text', label: 'Text' },
-                  { value: 'number', label: 'Number' },
-                  { value: 'bool', label: 'Boolean' }, // Other will appear soon
-                ]
-              }
-            },
-            {
-              key: 'required',
-              type: 'checkbox',
-              defaultValue: false,
-              templateOptions: {
-                label: 'Required',
-              },
-            },
-          ]
-        }
+        {
+          key: 'name',
+          type: 'input-tooltip',
+          templateOptions: {
+            label: 'Name',
+            placeholder: 'model',
+            description: 'The name that will be used by the system for building objects. No spaces or other special charaters allowed!',
+            required: true
+          },
+          validators: {
+            validation: ['specCharValidator']
+          }
+        },
+        {
+          key: 'displayName',
+          type: 'input-tooltip',
+          templateOptions: {
+            label: 'Display Name',
+            placeholder: 'Model',
+            required: true,
+            description: 'The name that will be displayed'
+          },
+        },
+        {
+          key: 'description',
+          type: 'input-tooltip',
+          templateOptions: {
+            label: 'Property description',
+            description: 'Description of this property will appear like this',
+          },
+        },
+
+        {
+          key: 'dataType',
+          type: 'select',
+          templateOptions: {
+            required: true,
+            label: 'DataType',
+            options: [
+              { value: 'text', label: 'Text' },
+              { value: 'number', label: 'Number' },
+              { value: 'bool', label: 'Boolean' }, // Other will appear soon
+            ]
+          }
+        },
+        {
+          key: 'required',
+          type: 'checkbox',
+          defaultValue: false,
+          templateOptions: {
+            label: 'Required',
+          },
+        },
       ];
 
     return fields;
@@ -730,7 +726,7 @@ export class FormlyParserService {
   }
 
   parseAddUser(update?: boolean) {
-    if(update == undefined) update = false;
+    if (update == undefined) update = false;
     let fields: FormlyFieldConfig[] =
       [
         {

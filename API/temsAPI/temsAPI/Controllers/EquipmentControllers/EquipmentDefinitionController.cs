@@ -189,7 +189,7 @@ namespace temsAPI.Controllers.EquipmentControllers
 
                 foreach (var eqspec in model.EquipmentSpecifications)
                 {
-                    viewModel.EquipmentType.Properties.Add(_mapper.Map<PropertyViewModel>(eqspec.Property));
+                    viewModel.EquipmentType.Properties.Add(_mapper.Map<ViewPropertyViewModel>(eqspec.Property));
                 }
 
                 return Json(viewModel);

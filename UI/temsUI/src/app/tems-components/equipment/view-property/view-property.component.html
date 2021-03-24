@@ -1,1 +1,9 @@
-<p>view-property works!</p>
+<div class="card">
+    <div class="card-body">
+        <div class="card-title">{{ property.displayName }}</div>
+        <h3 *ngIf="property.name != undefined">Name: {{ property.name }}</h3>
+        <h3 *ngIf="property.description != undefined">Description: {{ property.description }}</h3>
+        <h3>Data type: {{ property.dataType }}</h3>
+        <h3>required: {{ property.required }}</h3>
+    </div>
+</div>

@@ -71,6 +71,13 @@ export class EquipmentService extends TEMSService {
       this.httpOptions);
   }
 
+  removeType(typeId: string): Observable<any>{
+    return this.http.get(
+      API_EQTYPE_URL + '/remove/'+typeId,
+      this.httpOptions
+    );
+  }
+
   postProperty(addProperty: AddProperty): Observable<any>{
     return this.http.post<AddProperty>(
       API_PROP_URL + '/insert', 

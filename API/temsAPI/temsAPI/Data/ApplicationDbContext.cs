@@ -53,6 +53,7 @@ namespace temsAPI.Data
             modelBuilder.Entity<EquipmentType>()
                 .HasMany(e => e.Children)
                 .WithMany(q => q.Parents);
+                
 
             // OnDeleteCascade EquipmentDefinition
             modelBuilder.Entity<EquipmentType>()

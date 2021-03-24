@@ -64,7 +64,7 @@ namespace temsAPI.EquipmentControllers
                     (await _unitOfWork.EquipmentTypes
                     .FindAll<ViewEquipmentTypeSimplifiedViewModel>(
                         where: q => q.IsArchieved == false,
-                        include: q => q.Include(q => q.Children),
+                        include: q => q.Include(q => q.Children.Where(q => !q.IsArchieved)),
                         select: q => new ViewEquipmentTypeSimplifiedViewModel
                         {
                             Id = q.Id,
@@ -93,7 +93,7 @@ namespace temsAPI.EquipmentControllers
                 .Find<EquipmentType>(
                     where: q => q.Id == typeId,
                     include: q => q
-                    .Include(q => q.Parents)
+                    .Include(q => q.Parents.Where(q => !q.IsArchieved))
                     .Include(q => q.Properties)
                 )).FirstOrDefault();
 
@@ -189,6 +189,34 @@ namespace temsAPI.EquipmentControllers
             {
                 Debug.WriteLine(ex);
                 return ReturnResponse("An error occured when saving the type", ResponseStatus.Fail);
+            }
+        }
+
+        [HttpGet("equipmenttype/remove/{typeId}")]
+        [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
+        public async Task<JsonResult> Remove(string typeId)
+        {
+            try
+            {
+                // check if type exists
+                var type = (await _unitOfWork.EquipmentTypes
+                    .Find<EquipmentType>
+                    (
+                        where: q => q.Id == typeId
+                    )).FirstOrDefault();
+
+                if (type == null)
+                    return ReturnResponse("The specified type does not exist", ResponseStatus.Fail);
+
+                type.IsArchieved = true;
+                await _unitOfWork.Save();
+
+                return ReturnResponse("Success!", ResponseStatus.Success);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured when removing the type", ResponseStatus.Fail);
             }
         }
 

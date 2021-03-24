@@ -82,4 +82,13 @@ export class ManageTypesPropertiesComponent extends TEMSComponent implements OnI
     dialogRef.afterClosed().subscribe(result => {
     })
   }
+
+  removeType(typeId: string){
+    if(confirm("Do you realy want to remove that type?")){
+      this.equipmentService.removeType(typeId)
+      .subscribe(result => {
+        console.log(result);
+      })
+    }
+  }
 }

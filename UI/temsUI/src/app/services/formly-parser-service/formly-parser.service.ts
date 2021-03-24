@@ -402,9 +402,10 @@ export class FormlyParserService {
           ]
         }
       ];
-    console.log('1');
     // Adding inputs for parent's properties
     addDefinition.properties.forEach(property => {
+      console.log('property')
+      console.log(property);
       fields[fields.length - 1].fieldGroup.push(this.generatePropertyFieldGroup(property))
     });
     console.log('back');
@@ -566,9 +567,7 @@ export class FormlyParserService {
 
   generatePropertyFieldGroup(addProperty: Property): FormlyFieldConfig {
     let propertyFieldGroup: FormlyFieldConfig;
-    console.log('generatepropertyfieldgrop');
-
-    switch (addProperty.dataType.name.toLowerCase()) {
+    switch (addProperty.dataType.toLowerCase()) {
       case 'text':
         console.log('add ' + addProperty.name);
         propertyFieldGroup = {

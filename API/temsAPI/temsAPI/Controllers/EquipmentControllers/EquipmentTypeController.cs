@@ -125,16 +125,8 @@ namespace temsAPI.EquipmentControllers
                     include: q => q
                     .Include(q => q.Parents.Where(q => !q.IsArchieved))
                     .Include(q => q.Properties.Where(q => !q.IsArchieved))
-                )).FirstOrDefault();
-
-            foreach (var item in equipmentType.Properties)
-            {
-                item.DataType = new DataType();
-                item.DataType.Name = _unitOfWork.DataTypes
-                    .Find<DataType>(
-                        q => q.Id == item.DataTypeID
-                     ).Result.FirstOrDefault().Name;
-            }
+                    .ThenInclude(q => q.DataType)))
+                .FirstOrDefault();
 
             var test = (await _unitOfWork.EquipmentTypes
                 .FindAll<EquipmentType>()).ToList();
@@ -143,7 +135,19 @@ namespace temsAPI.EquipmentControllers
             {
                 Id = equipmentType.Id,
                 Name = equipmentType.Name,
-                Properties = _mapper.Map<List<ViewPropertyViewModel>>(equipmentType.Properties),
+                Properties = equipmentType.Properties
+                .Where(q => !q.IsArchieved)
+                .Select(q => new ViewPropertyViewModel
+                {
+                    Description = q.Description,
+                    DataType = q.DataType.Name,
+                    DisplayName = q.DisplayName,
+                    Id = q.Id,
+                    Max = q.Max == null ? 0 : (int)q.Max,
+                    Min = q.Min == null ? 0 : (int)q.Min,
+                    Name = q.Name,
+                    Required = q.Required,
+                }).ToList(),
                 Parents = equipmentType.Parents.Select(q => new Option
                 {
                     Value = q.Id,

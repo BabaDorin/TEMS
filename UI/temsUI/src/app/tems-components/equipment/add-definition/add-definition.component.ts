@@ -48,6 +48,11 @@ export class AddDefinitionComponent extends TEMSComponent implements OnInit {
       }));
   }
 
+  onSelectionChanged(eventData){
+    this.setDefinitionType(eventData.value);
+    this.data = '1';
+  }
+
   setDefinitionType(typeId: string) {
     this.addDefinition = new Definition();
     let parentFullType: EquipmentType;

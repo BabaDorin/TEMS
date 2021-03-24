@@ -171,19 +171,10 @@ namespace temsAPI.Controllers.EquipmentControllers
                         include: q => q
                                 .Include(q => q.Children)
                                 .Include(q => q.EquipmentSpecifications)
-                                .ThenInclude(q => q.Property)
+                                .ThenInclude(q => q.Property).ThenInclude(q => q.DataType)
                                 .Include(q => q.Parent)
                                 .Include(q => q.EquipmentType)))
                                 .FirstOrDefault();
-
-                // Get rid of this as soon as possible, solve circular references
-                foreach (var eqspec in model.EquipmentSpecifications)
-                {
-                    eqspec.Property.DataType = new DataType();
-                    eqspec.Property.DataType.Name = _unitOfWork.DataTypes
-                        .Find<DataType>(q => q.Id == eqspec.Property.DataTypeID)
-                        .Result.FirstOrDefault().Name;
-                }
 
                 viewModel = _mapper.Map<EquipmentDefinitionViewModel>(model);
 

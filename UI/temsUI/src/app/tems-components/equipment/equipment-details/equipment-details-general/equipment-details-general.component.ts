@@ -41,8 +41,8 @@ export class EquipmentDetailsGeneralComponent extends TEMSComponent implements O
           { displayName: 'Type', value: this.equipment.type.name},
           { displayName: 'TemsID', value: this.equipment.temsId },
           { displayName: 'Serial Number', value: this.equipment.serialNumber},
-          { displayName: 'Is Used', dataType: {id: '0', name: 'boolean'}, value: this.equipment.isUsed},
-          { displayName: 'Is Defect', dataType: {id: '0', name: 'boolean'}, value: this.equipment.isUsed},
+          { displayName: 'Is Used', dataType: 'boolean', value: this.equipment.isUsed},
+          { displayName: 'Is Defect', dataType: 'boolean', value: this.equipment.isUsed},
         ];
     
         this.specificProperties = this.equipment.specificTypeProperties;

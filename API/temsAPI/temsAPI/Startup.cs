@@ -21,6 +21,7 @@ using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data;
 using temsAPI.Data.Entities.UserEntities;
+using temsAPI.Helpers;
 using temsAPI.Mappings;
 using temsAPI.Repository;
 using temsAPI.System_Files;
@@ -151,6 +152,8 @@ namespace temsAPI
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
             });
+
+            (new Scheduler()).Start();
         }
     }
 }

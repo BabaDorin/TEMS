@@ -29,8 +29,11 @@ export class EquipmentService extends TEMSService {
     super();
   }
 
-  getTypes(): Observable<any> {
-    return this.http.get(API_EQTYPE_URL + '/get');
+  getTypes(): Observable<IOption[]> {
+    return this.http.get<IOption[]>(
+      API_EQTYPE_URL + '/get',
+      this.httpOptions
+      );
   }
 
   getTypesSimplified(): Observable<ViewTypeSiplified[]>{

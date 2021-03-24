@@ -1,3 +1,4 @@
+import { AddTypeComponent } from './../../../equipment/add-type/add-type.component';
 import { ViewTypeComponent } from './../../../equipment/view-type/view-type.component';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ViewPropertySimplified } from './../../../../models/equipment/view-property-simplified.model';
@@ -52,10 +53,7 @@ export class ManageTypesPropertiesComponent extends TEMSComponent implements OnI
       });
 
     dialogRef.componentInstance.typeId = typeId;
-    dialogRef.componentInstance.dialogRef = dialogRef;
-
     dialogRef.afterClosed().subscribe(result => {
-
     })
   }
 
@@ -68,9 +66,20 @@ export class ManageTypesPropertiesComponent extends TEMSComponent implements OnI
       });
 
     dialogRef.componentInstance.propertyId = propertyId;
-
     dialogRef.afterClosed().subscribe(result => {
+    })
+  }
 
+  editType(typeId: string){
+    let dialogRef: MatDialogRef<any>;
+    dialogRef = this.dialog.open(AddTypeComponent,
+      {
+        maxHeight: '80vh',
+        autoFocus: false
+      });
+
+    dialogRef.componentInstance.updateTypeId = typeId;
+    dialogRef.afterClosed().subscribe(result => {
     })
   }
 }

@@ -38,7 +38,7 @@ export class AddEquipmentComponent extends TEMSComponent implements OnInit {
   types: IOption[] = [];
   ngOnInit(): void {
     this.subscriptions.push(this.equipmentService.getTypes().subscribe(response => {
-      this.types = response.map(r => ({value: r.id, label: r.name} as IOption));
+      this.types = response;
     }));
   }
 

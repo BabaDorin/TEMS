@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 using temsAPI.Data.Entities.CommunicationEntities;
 using temsAPI.Data.Entities.EquipmentEntities;
@@ -47,6 +48,11 @@ namespace temsAPI.Data
                 .HasMany(e => e.EquipmentSpecifications)
                 .WithOne(e => e.Property)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            // Many to Many EquipmentTypes 
+            modelBuilder.Entity<EquipmentType>()
+                .HasMany(e => e.Children)
+                .WithMany(q => q.Parents);
 
             // OnDeleteCascade EquipmentDefinition
             modelBuilder.Entity<EquipmentType>()

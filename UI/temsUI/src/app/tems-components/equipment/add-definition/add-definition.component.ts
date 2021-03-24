@@ -44,7 +44,7 @@ export class AddDefinitionComponent extends TEMSComponent implements OnInit {
       this.setDefinitionType(this.data.selectedType);
     else
       this.subscriptions.push(this.equipmentService.getTypes().subscribe(response => {
-        this.equipmentTypes = response.map(r => ({ value: r.id, label: r.name } as IOption));
+        this.equipmentTypes = response;
       }));
   }
 

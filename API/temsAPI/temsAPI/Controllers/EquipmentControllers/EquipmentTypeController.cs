@@ -29,9 +29,28 @@ namespace temsAPI.EquipmentControllers
 
         [HttpGet]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
-        public async Task<IList<EquipmentType>> Get()
+        public async Task<JsonResult> Get()
         {
-            return await _unitOfWork.EquipmentTypes.FindAll<EquipmentType>(q => q.IsArchieved == false);
+            try
+            {
+                List<Option> viewModel = new List<Option>();
+                viewModel = (await _unitOfWork.EquipmentTypes
+                    .FindAll<Option>(
+                        where: q => !q.IsArchieved,
+                        select: q => new Option
+                        {
+                            Value = q.Id,
+                            Label = q.Name,
+                        }
+                    )).ToList();
+
+                return Json(viewModel);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured when fetching types", ResponseStatus.Fail);
+            }
         }
 
         [HttpGet]
@@ -44,15 +63,12 @@ namespace temsAPI.EquipmentControllers
                     (await _unitOfWork.EquipmentTypes
                     .FindAll<ViewEquipmentTypeSimplifiedViewModel>(
                         where: q => q.IsArchieved == false,
-                        include: q => q.Include(q => q.Children).Include(q => q.Parent),
+                        include: q => q.Include(q => q.Children),
                         select: q => new ViewEquipmentTypeSimplifiedViewModel
                         {
                             Id = q.Id,
                             Name = q.Name,
-                            Children = String.Join(", ", q.Children.Select(q => q.Name)),
-                            Parent = (q.ParentId != null)
-                                ? q.Parent.Name
-                                : null
+                            Children = String.Join(", ", q.Children.Select(q => q.Name))
                         }
                         )).ToList();
 
@@ -83,11 +99,23 @@ namespace temsAPI.EquipmentControllers
                     .Result.FirstOrDefault().Name;
             }
 
+            var test = (await _unitOfWork.EquipmentTypes
+                .FindAll<EquipmentType>()).ToList();
+
             ViewEquipmentTypeViewModel viewModel = new ViewEquipmentTypeViewModel
             {
                 Id = equipmentType.Id,
                 Name = equipmentType.Name,
-                Properties = _mapper.Map<List<PropertyViewModel>>(equipmentType.Properties)
+                Properties = _mapper.Map<List<PropertyViewModel>>(equipmentType.Properties),
+                Parents = (await _unitOfWork.EquipmentTypes
+                    .FindAll<Option>(
+                        include: q => q.Include(q => q.Parents),
+                        select: q => new Option
+                        {
+                            Value = q.Id,
+                            Label = q.Name
+                        }
+                   )).ToList(),
             };
 
             return Json(viewModel);

@@ -1,11 +1,12 @@
 <h4>Add Type</h4>
 <form [formGroup]="this.formGroup">
   <app-chips-autocomplete label="Select parent type / types" formControlName="parents"
-    [availableOptions]="parentTypeOptions" [alreadySelected]="parentTypeAlreadySelected"></app-chips-autocomplete>
+    [availableOptions]="parentTypeOptions" [alreadySelected]="parentTypeAlreadySelected">
+  </app-chips-autocomplete>
 
   <mat-form-field class="example-full-width">
     <mat-label>Type Name</mat-label>
-    <input matInput placeholder="Printer" formControlName="typeName">
+    <input matInput placeholder="Printer" formControlName="name">
   </mat-form-field>
 
   <app-chips-autocomplete label="Select type's properties" formControlName="properties"

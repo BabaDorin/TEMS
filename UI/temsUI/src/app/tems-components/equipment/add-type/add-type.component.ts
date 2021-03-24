@@ -1,3 +1,5 @@
+import { TEMSComponent } from 'src/app/tems/tems.component';
+import { EquipmentType } from './../../../models/equipment/view-type.model';
 import { AddType } from './../../../models/equipment/add-type.model';
 import { map } from 'rxjs/operators';
 import { IOption } from './../../../models/option.model';
@@ -16,20 +18,23 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./add-type.component.scss']
 })
 
-export class AddTypeComponent implements OnInit, OnDestroy {
+export class AddTypeComponent extends TEMSComponent implements OnInit {
   
-  subscriptions: Subscription[] = [];
+  // Provide a value for this field and it will update the record
+  updateTypeId: string;
 
   formGroup = new FormGroup({
     parents: new FormControl(),
-    typeName: new FormControl('', Validators.required),
+    name: new FormControl('', Validators.required),
     properties: new FormControl('', Validators.required),
   });
 
-  constructor(
-    private equipmentService: EquipmentService,
-    public dialog: MatDialog,
-    public dialogRef?: MatDialogRef<AddTypeComponent>) {
+  get parents(){
+    return this.formGroup.controls.parents;
+  }
+
+  get properties(){
+    return this.formGroup.controls.properties;
   }
 
   parentTypeOptions: IOption[]; 
@@ -37,9 +42,17 @@ export class AddTypeComponent implements OnInit, OnDestroy {
   parentTypeAlreadySelected: IOption[] = [];
   propertyAlreadySelected: IOption[] = [];
 
+  constructor(
+    private equipmentService: EquipmentService,
+    public dialog: MatDialog,
+    public dialogRef?: MatDialogRef<AddTypeComponent>
+    ) {
+    super();
+  }
+
   ngOnInit(): void {
     this.subscriptions.push(this.equipmentService.getTypes().subscribe(response=>{
-      this.parentTypeOptions = response.map(r => ({value: r.id, label: r.type}))
+      this.parentTypeOptions = response;
       if(this.parentTypeOptions.length == 0)
         this.formGroup.controls.parents.disable();
     }));
@@ -49,28 +62,35 @@ export class AddTypeComponent implements OnInit, OnDestroy {
       if(this.propertyOptions.length == 0)
         this.formGroup.controls.properties.disable();
     }));
+
+    if(this.updateTypeId != undefined)
+      this.update();
   }
 
-  // To be implemented
   update(){
-    let objectFromServer = {
-      parents: [
-        {value: '1', label: 'parent from server 1'},
-        {value: '2', label: 'parent from server 2'},
-        {value: '3', label: 'parent from server 3'}
-      ],
-      typeName: 'TypeFromServer',
-      properties: [
-        {value: '1', label: 'prop from server 1'},
-        {value: '2', label: 'prop from server 2'},
-        {value: '3', label: 'prop from server 3'}
-      ],
-    }
+    this.subscriptions.push(
+      this.equipmentService.getFullType(this.updateTypeId)
+      .subscribe(result =>{
+        console.log(result);
+        let resultType: EquipmentType = result;
+        let updateType = new AddType();
 
-    this.parentTypeAlreadySelected = objectFromServer.parents;
-    this.propertyAlreadySelected = objectFromServer.properties;
+        updateType.name = resultType.name;
+        
+        updateType.parents = resultType.parents != undefined
+          ? resultType.parents
+          : [];
+        
+        updateType.properties = resultType.properties != undefined
+          ? resultType.properties.map(q => ({ value: q.id, label: q.displayName}))
+          : [];
 
-    this.formGroup.setValue(objectFromServer);
+        if(updateType.parents != undefined) this.parentTypeAlreadySelected = updateType.parents;
+        if(updateType.properties != undefined) this.propertyAlreadySelected = updateType.properties;
+
+        this.formGroup.setValue(updateType);
+      })
+    )
   }
 
   onSubmit(){
@@ -83,7 +103,7 @@ export class AddTypeComponent implements OnInit, OnDestroy {
     {
       let model: AddType = {
         parents: this.parents == undefined ? [] as IOption[] : this.parents.value as IOption[],
-        name: this.formGroup.controls.typeName.value,
+        name: this.formGroup.controls.name.value,
         properties: this.properties == undefined ? [] as IOption[] : this.properties.value as IOption[],
       }
 
@@ -93,28 +113,12 @@ export class AddTypeComponent implements OnInit, OnDestroy {
     }
   }
 
-  get parents(){
-    return this.formGroup.controls.parents;
-  }
-
-  get properties(){
-    return this.formGroup.controls.properties;
-  }
-
   addProperty(){
-    this.openDialog();
-  }
-
-  openDialog(): void {
     let dialogRef: MatDialogRef<any>;
         dialogRef = this.dialog.open(AddPropertyComponent);
 
     dialogRef.afterClosed().subscribe(result => {
       console.log('The dialog was closed');
     });
-  }
-
-  ngOnDestroy(): void {
-    this.subscriptions.forEach(s => s.unsubscribe());
   }
 }

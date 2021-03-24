@@ -17,11 +17,6 @@ namespace temsAPI.Data.Entities.EquipmentEntities
         public virtual ICollection<Property> Properties { get; set; } = new List<Property>();
         public virtual ICollection<EquipmentDefinition> EquipmentDefinitions { get; set; } = new List<EquipmentDefinition>();
         public virtual ICollection<EquipmentType> Children { get; set; } = new List<EquipmentType>();
-
-#nullable enable
-        [ForeignKey("ParentId")]
-        public EquipmentType? Parent { get; set; }
-        public string? ParentId { get; set; }
-#nullable disable
+        public virtual ICollection<EquipmentType> Parents { get; set; } = new List<EquipmentType>();
     }
 }

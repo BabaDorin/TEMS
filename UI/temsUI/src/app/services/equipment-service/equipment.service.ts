@@ -93,6 +93,13 @@ export class EquipmentService extends TEMSService {
     );
   }
 
+  removeDefinition(definitionId: string): Observable<any>{
+    return this.http.get(
+      API_EQDEF_URL + '/remove/' + definitionId,
+      this.httpOptions
+    );
+  }
+
   addProperty(addProperty: AddProperty): Observable<any>{
     return this.http.post<AddProperty>(
       API_PROP_URL + '/add', 

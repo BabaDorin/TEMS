@@ -46,4 +46,18 @@ export class ManageDefinitionsComponent extends TEMSComponent implements OnInit 
       }
     )
   }
+
+  remove(definitionId: string, index: number){
+    if(!confirm("Are you sure you want to remove that defintion?"))
+    return;
+
+    this.unsubscribeFromAll();
+    this.subscriptions.push(
+      this.equipmentService.removeDefinition(definitionId)
+      .subscribe(result => {
+        if(result.status == 1)
+          this.definitions.splice(index, 1);
+      })
+    )
+  }
 }

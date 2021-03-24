@@ -26,6 +26,11 @@ namespace leave_management.Repository
             await _db.AddAsync(entity);
         }
 
+        public void DeleteRange(List<T> range)
+        {
+            _db.RemoveRange(range);
+        }
+
         public void Delete(T entity)
         {
             _db.Remove(entity);

@@ -9,7 +9,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ComponentType } from '@angular/cdk/portal';
 import { AddPropertyComponent } from '../add-property/add-property.component';
-import { Subscription } from 'rxjs';
+import { Subscription, Observable } from 'rxjs';
 
 
 @Component({
@@ -101,15 +101,23 @@ export class AddTypeComponent extends TEMSComponent implements OnInit {
     }
     else
     {
-      let model: AddType = {
+      let addType: AddType = {
+        id: this.updateTypeId,
         parents: this.parents == undefined ? [] as IOption[] : this.parents.value as IOption[],
         name: this.formGroup.controls.name.value,
         properties: this.properties == undefined ? [] as IOption[] : this.properties.value as IOption[],
       }
 
-      this.equipmentService.postType(model).subscribe(response => {
-        console.log(response);
-      })
+      let endPoint: Observable<any> = this.equipmentService.addType(addType);
+      if(addType.id != undefined)
+        endPoint = this.equipmentService.updateType(addType);
+
+      this.subscriptions.push(
+        endPoint
+        .subscribe(result => {
+          console.log(result);
+        })
+      )
     }
   }
 

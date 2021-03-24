@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json.Schema;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -88,15 +89,21 @@ namespace temsAPI.EquipmentControllers
             if (!await _unitOfWork.EquipmentTypes.isExists(q => q.Id == typeId))
                 return ReturnResponse("There is no equipment type associated with the specified typeId", ResponseStatus.Fail);
 
-            EquipmentType equipmentType = (await _unitOfWork.EquipmentTypes.Find<EquipmentType>(q => q.Id == typeId,
-                includes: new List<string>() { nameof(equipmentType.Properties) }
+            EquipmentType equipmentType = (await _unitOfWork.EquipmentTypes
+                .Find<EquipmentType>(
+                    where: q => q.Id == typeId,
+                    include: q => q
+                    .Include(q => q.Parents)
+                    .Include(q => q.Properties)
                 )).FirstOrDefault();
 
             foreach (var item in equipmentType.Properties)
             {
                 item.DataType = new DataType();
-                item.DataType.Name = _unitOfWork.DataTypes.Find<DataType>(q => q.Id == item.DataTypeID)
-                    .Result.FirstOrDefault().Name;
+                item.DataType.Name = _unitOfWork.DataTypes
+                    .Find<DataType>(
+                        q => q.Id == item.DataTypeID
+                     ).Result.FirstOrDefault().Name;
             }
 
             var test = (await _unitOfWork.EquipmentTypes
@@ -107,15 +114,11 @@ namespace temsAPI.EquipmentControllers
                 Id = equipmentType.Id,
                 Name = equipmentType.Name,
                 Properties = _mapper.Map<List<PropertyViewModel>>(equipmentType.Properties),
-                Parents = (await _unitOfWork.EquipmentTypes
-                    .FindAll<Option>(
-                        include: q => q.Include(q => q.Parents),
-                        select: q => new Option
-                        {
-                            Value = q.Id,
-                            Label = q.Name
-                        }
-                   )).ToList(),
+                Parents = equipmentType.Parents.Select(q => new Option
+                {
+                    Value = q.Id,
+                    Label = q.Name
+                }).ToList()
             };
 
             return Json(viewModel);
@@ -123,29 +126,11 @@ namespace temsAPI.EquipmentControllers
 
         [HttpPost]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
-        public async Task<JsonResult> Insert([FromBody] AddEquipmentTypeViewModel viewModel)
+        public async Task<JsonResult> Add([FromBody] AddEquipmentTypeViewModel viewModel)
         {
-            // Invalid name
-            if (String.IsNullOrEmpty((viewModel.Name = viewModel.Name.Trim())))
-                return ReturnResponse($"{viewModel.Name} is not a valid type name", ResponseStatus.Fail);
-
-            // Check if this model has already been inserted
-            if (await _unitOfWork.EquipmentTypes.isExists(q => q.Name.ToLower() == viewModel.Name.ToLower()))
-                return ReturnResponse($"{viewModel.Name} already exists", ResponseStatus.Fail);
-
-            // Invalid parents
-            if (viewModel.Parents != null)
-                foreach (Option parent in viewModel.Parents)
-                    if (!await _unitOfWork.EquipmentTypes.isExists(q => q.Id == parent.Value))
-                        return ReturnResponse($"Parent {parent.Label} not found.", ResponseStatus.Fail);
-
-
-            // Invalid properties
-            if (viewModel.Properties != null)
-                foreach (Option property in viewModel.Properties)
-                    if (!await _unitOfWork.Properties.isExists(q => q.Id == property.Value))
-                        return ReturnResponse($"Property {property.Label} not found.", ResponseStatus.Fail);
-
+            string validationResult = await ValidateEquipmentTypeViewModel(viewModel);
+            if (validationResult != null)
+                return ReturnResponse(validationResult, ResponseStatus.Fail);
 
             // If we got so far, it might be valid
             EquipmentType equipmentType = new EquipmentType
@@ -154,16 +139,145 @@ namespace temsAPI.EquipmentControllers
                 Name = viewModel.Name,
             };
 
-            if (viewModel.Properties != null)
-                foreach (Option prop in viewModel.Properties)
-                    equipmentType.Properties.Add((await _unitOfWork.Properties.Find<Property>(q => q.Id == prop.Value))
-                            .FirstOrDefault());
+            await SetProperties(equipmentType, viewModel);
 
             await _unitOfWork.EquipmentTypes.Create(equipmentType);
             await _unitOfWork.Save();
 
             if (!await _unitOfWork.EquipmentTypes.isExists(q => q.Id == equipmentType.Id))
                 return ReturnResponse($"Equipment type has not been saved", ResponseStatus.Fail);
+
+            string setParentsResult = await SetParents(equipmentType, viewModel);
+            if (setParentsResult != null)
+                return ReturnResponse(setParentsResult, ResponseStatus.Fail);
+
+            return ReturnResponse($"Success", ResponseStatus.Success);
+        }
+
+        [HttpPost]
+        [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
+        public async Task<JsonResult> Update([FromBody] AddEquipmentTypeViewModel viewModel)
+        {
+            try
+            {
+                string validationResult = await ValidateEquipmentTypeViewModel(viewModel);
+                if (validationResult != null)
+                    return ReturnResponse(validationResult, ResponseStatus.Fail);
+
+                var equipmentTypeToUpdate = (await _unitOfWork.EquipmentTypes
+                    .Find<EquipmentType>(
+                        where: q => q.Id == viewModel.Id,
+                        include: q => q
+                        .Include(q => q.Properties)
+                        .Include(q => q.Parents)
+                    )).FirstOrDefault();
+
+                if (equipmentTypeToUpdate == null)
+                    return ReturnResponse("An error occured, the type has not been found", ResponseStatus.Fail);
+
+                await SetProperties(equipmentTypeToUpdate, viewModel);
+
+                string setParentsResponse = await SetParents(equipmentTypeToUpdate, viewModel);
+                if (setParentsResponse != null)
+                    return ReturnResponse(setParentsResponse, ResponseStatus.Fail);
+
+                equipmentTypeToUpdate.Name = viewModel.Name;
+                await _unitOfWork.Save();
+                return ReturnResponse($"Success", ResponseStatus.Success);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured when saving the type", ResponseStatus.Fail);
+            }
+        }
+
+        // -----------------------------------------------------------------
+
+        /// <summary>
+        /// Validates the view model. Returns null if everything is allright, otherwise - 
+        /// returns the issue.
+        /// </summary>
+        /// <param name="viewModel"></param>
+        /// <returns></returns>
+        private async Task<string> ValidateEquipmentTypeViewModel(AddEquipmentTypeViewModel viewModel)
+        {
+            // Invalid name
+            if (String.IsNullOrEmpty((viewModel.Name = viewModel.Name.Trim())))
+                return $"{viewModel.Name} is not a valid type name";
+
+            // If it's the update case, check if the record exists
+            if (viewModel.Id != null)
+                if (!await _unitOfWork.EquipmentTypes.isExists(q => q.Id == viewModel.Id))
+                    return "The type which is being updated does exist";
+
+            // Check if this model has already been inserted (And it's not the update case)
+            if(viewModel.Id == null)
+                if (await _unitOfWork.EquipmentTypes.isExists(q => q.Name.ToLower() == viewModel.Name.ToLower()))
+                    return $"{viewModel.Name} already exists";
+
+            // Invalid parents
+            if (viewModel.Parents != null)
+                foreach (Option parent in viewModel.Parents)
+                    if (!await _unitOfWork.EquipmentTypes.isExists(q => q.Id == parent.Value))
+                        return $"Parent {parent.Label} not found.";
+
+
+            // Invalid properties
+            if (viewModel.Properties != null)
+                foreach (Option property in viewModel.Properties)
+                    if (!await _unitOfWork.Properties.isExists(q => q.Id == property.Value))
+                        return $"Property {property.Label} not found.";
+
+            return null;
+        }
+
+        /// <summary>
+        /// Sets properties from view model to the model
+        /// </summary>
+        /// <param name="model"></param>
+        /// <param name="viewModel"></param>
+        /// <returns></returns>
+        private async Task SetProperties(EquipmentType model, AddEquipmentTypeViewModel viewModel)
+        {
+            if (model.Properties.Select(q => q.Id).SequenceEqual(viewModel.Properties.Select(q => q.Value)))
+                return;
+
+            var modelProperties = model.Properties.ToList();
+            foreach (var item in modelProperties)
+            {
+                model.Properties.Remove(item);
+            }
+            await _unitOfWork.Save();
+
+            if (viewModel.Properties != null)
+                foreach (Option prop in viewModel.Properties)
+                {
+                    model.Properties.Add((await _unitOfWork.Properties.Find<Property>(q => q.Id == prop.Value))
+                            .FirstOrDefault());
+
+                    await _unitOfWork.Save();
+                }
+        }
+
+        /// <summary>
+        /// Sets the parents from view model to the model. Returns null if success, otherwise - 
+        /// returns the issue.
+        /// </summary>
+        /// <param name="model"></param>
+        /// <param name="viewModel"></param>
+        /// <returns></returns>
+        private async Task<string> SetParents(EquipmentType model, AddEquipmentTypeViewModel viewModel)
+        {
+            if (model.Parents.Select(q => q.Id).SequenceEqual(viewModel.Parents.Select(q => q.Value)))
+                return null;
+
+            var modelParents = model.Parents.ToList();
+            foreach (var item in modelParents)
+            {
+                model.Parents.Remove(item);
+            }
+            await _unitOfWork.Save();
 
             if (viewModel.Parents != null)
                 foreach (Option parent in viewModel.Parents)
@@ -172,14 +286,15 @@ namespace temsAPI.EquipmentControllers
                         .Find<EquipmentType>(q => q.Id == parent.Value))
                         .FirstOrDefault();
 
-                    if(parentType == null)
-                        return ReturnResponse("One or more parents are invalid", ResponseStatus.Fail);
+                    if (parentType == null || parentType.Id == model.Id)
+                        return "One or more parents are invalid";
 
-                    parentType.Children.Add(equipmentType);
+                    model.Parents.Add(parentType);
+                    //parentType.Children.Add(model);
                     await _unitOfWork.Save();
                 }
 
-            return ReturnResponse($"Success", ResponseStatus.Success);
+            return null;
         }
     }
 }

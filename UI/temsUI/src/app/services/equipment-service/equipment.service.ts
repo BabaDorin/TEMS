@@ -57,9 +57,16 @@ export class EquipmentService extends TEMSService {
     );
   }
 
-  postType(addType: AddType): Observable<any> {
-    return this.http.post<AddType>(
-      API_EQTYPE_URL + '/insert', 
+  addType(addType: AddType): Observable<any> {
+    return this.http.post(
+      API_EQTYPE_URL + '/add', 
+      JSON.stringify(addType), 
+      this.httpOptions);
+  }
+
+  updateType(addType: AddType): Observable<any>{
+    return this.http.post(
+      API_EQTYPE_URL + '/update', 
       JSON.stringify(addType), 
       this.httpOptions);
   }

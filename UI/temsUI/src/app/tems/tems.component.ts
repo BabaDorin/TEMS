@@ -1,3 +1,4 @@
+import { MatDialog } from '@angular/material/dialog';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 
@@ -11,6 +12,10 @@ export class TEMSComponent implements OnDestroy{
   
   subscriptions: Subscription[] = [];
   
+  constructor(){
+
+  }
+
   ngOnDestroy(): void {
     this.unsubscribeFromAll();
   }

@@ -1,3 +1,4 @@
+import { ViewTypeComponent } from './view-type/view-type.component';
 import { TemsFormsModule } from './../../modules/tems-forms/tems-forms.module';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { AddDefinitionComponent } from './add-definition/add-definition.component';
@@ -20,6 +21,7 @@ import { EntitySharedModule } from 'src/app/modules/entity-shared/entity-shared.
 import { AnalyticsModule } from 'src/app/modules/analytics/analytics.module';
 import { AddPropertyComponent } from './add-property/add-property.component';
 import { AgGridTooltipComponent } from 'src/app/public/ag-grid/ag-grid-tooltip/ag-grid-tooltip.component';
+import { ViewPropertyComponent } from './view-property/view-property.component';
 
 @NgModule({
   declarations: [
@@ -35,7 +37,9 @@ import { AgGridTooltipComponent } from 'src/app/public/ag-grid/ag-grid-tooltip/a
     SummaryEquipmentAnalyticsComponent,
     EquipmentDetailsIssuesComponent,
     AddPropertyComponent,
-    AgGridTooltipComponent
+    AgGridTooltipComponent,
+    ViewTypeComponent,
+    ViewPropertyComponent,
   ],
   imports: [
     CommonModule,

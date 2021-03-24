@@ -1,7 +1,8 @@
+import { IOption } from './../option.model';
 import { Property } from './view-property.model';
 export interface IEquipmentType{
     id?: string;
-    parents?: IEquipmentType[],
+    parent: IEquipmentType,
     name: string,
     properties: Property[],
     children: EquipmentType[];
@@ -9,15 +10,24 @@ export interface IEquipmentType{
 
 export class EquipmentType implements IEquipmentType{
     id?: string;
-    parents?: IEquipmentType[];
+    parent: IEquipmentType;
     name: string;
     properties: Property[];
     children: EquipmentType[];
+}
 
-    constructor(){
-        this.parents = [];
-        this.name = '';
-        this.properties = [];
-        this.children = [];
-    }
+export interface IViewType{
+    id: string,
+    name: string,
+    parent: IOption,
+    children: IOption[],
+    properties: IOption[]
+}
+
+export class ViewType implements IViewType{
+    id: string;
+    name: string;
+    parent: IOption;
+    children: IOption[];
+    properties: IOption[];
 }

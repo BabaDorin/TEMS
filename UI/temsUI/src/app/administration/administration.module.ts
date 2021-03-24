@@ -18,7 +18,7 @@ import { NgxPaginationModule } from 'ngx-pagination';
 
 
 @NgModule({
-  declarations: [
+declarations: [
     AdministrationComponent,
     EquipmentManagementComponent,
     RoleManagementComponent,

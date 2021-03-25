@@ -60,4 +60,11 @@ export class ManageDefinitionsComponent extends TEMSComponent implements OnInit 
       })
     )
   }
+
+  edit(definitionId: string, index: number){
+    this.dialogService.openDialog(
+      AddDefinitionComponent,
+      [{value: definitionId, label: "updateDefinitionId"}]
+    )
+  }
 }

@@ -73,6 +73,7 @@ namespace temsAPI.Controllers.EquipmentControllers
                 EquipmentTypeID = viewModel.TypeId,
                 Price = viewModel.Price,
                 Currency = viewModel.Currency,
+                Description = viewModel.Description,
             };
 
             foreach(var property in viewModel.Properties)
@@ -158,6 +159,36 @@ namespace temsAPI.Controllers.EquipmentControllers
             }
         }
 
+        [HttpGet("equipmentdefinition/getdefinitiontoupdate/{definitionId}")]
+        [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
+        public async Task<JsonResult> GetDefinitionToUpdate(string definitionId)
+        {
+            try
+            {
+                var definition = (await _unitOfWork.EquipmentDefinitions
+                    .Find<EquipmentDefinition>(
+                        where: q => q.Id == definitionId,
+                        include: q => q
+                        .Include(q => q.Children.Where(q => !q.IsArchieved))
+                        .Include(q => q.Parent)
+                        .Include(q => q.EquipmentType)
+                        .Include(q => q.EquipmentSpecifications).ThenInclude(q => q.Property)))
+                    .FirstOrDefault();
+
+                if (definition == null)
+                    return ReturnResponse("Invalid definition id provided", ResponseStatus.Fail);
+
+                var viewModel = DefinitionToAddDefinition(definition);
+
+                return Json(viewModel);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured while fetching the definition", ResponseStatus.Fail);
+            }
+        }
+
         [HttpPost]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
         public async Task<JsonResult> GetFullDefinition([FromBody] string definitionId)
@@ -218,5 +249,32 @@ namespace temsAPI.Controllers.EquipmentControllers
             }
         }
 
+        // --------------------------------------------------------------
+
+        private AddEquipmentDefinitionViewModel DefinitionToAddDefinition(EquipmentDefinition definition)
+        {
+            var viewModel = new AddEquipmentDefinitionViewModel
+            {
+                Id = definition.Id,
+                Currency = definition.Currency,
+                Description = definition.Description,
+                Identifier = definition.Identifier,
+                Price = definition.Price,
+                TypeId = definition.EquipmentTypeID,
+                Properties = definition.EquipmentSpecifications
+                .Select(q => new Option
+                {
+                    Label = q.Property.Name,
+                    Value = q.Value,
+                }).ToList()
+            };
+
+            foreach (var item in definition.Children)
+            {
+                viewModel.Children.Add(DefinitionToAddDefinition(item));
+            }
+
+            return viewModel;
+        }
     }
 }

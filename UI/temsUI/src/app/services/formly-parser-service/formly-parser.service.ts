@@ -384,34 +384,25 @@ export class FormlyParserService {
     let fields: FormlyFieldConfig[] =
       [
         {
-          template: '<h2> Add new ' + addDefinition.equipmentType.label + ' definition</h2><hr><br>'
+          key: 'identifier',
+          type: 'input-tooltip',
+          templateOptions: {
+            description: 'Name associated with this definition',
+            required: true,
+            label: 'Identifier'
+          }
         },
-        {
-          key: 'addDefinition',
-          wrappers: ['formly-wrapper'],
-          fieldGroup: [
-            {
-              key: 'identifier',
-              type: 'input-tooltip',
-              templateOptions: {
-                description: 'Name associated with this definition',
-                required: true,
-                label: 'Identifier'
-              }
-            },
-          ]
-        }
       ];
     // Adding inputs for parent's properties
     addDefinition.properties.forEach(property => {
       console.log('property')
       console.log(property);
-      fields[fields.length - 1].fieldGroup.push(this.generatePropertyFieldGroup(property))
+      fields.push(this.generatePropertyFieldGroup(property))
     });
     console.log('back');
 
     console.log('price and description');
-    fields[fields.length - 1].fieldGroup.push(
+    fields.push(
       {
         key: 'description',
         type: 'textarea',
@@ -432,7 +423,7 @@ export class FormlyParserService {
     let tempKey = 0;
     addDefinition.children.forEach(childDefinition => {
 
-      fields[fields.length - 1].fieldGroup.push(
+      fields.push(
         {
           template: '<h4>' + childDefinition.equipmentType.value + ' definitions</h4>',
         },
@@ -569,11 +560,11 @@ export class FormlyParserService {
     let propertyFieldGroup: FormlyFieldConfig;
     switch (addProperty.dataType.toLowerCase()) {
       case 'text':
-        console.log('add ' + addProperty.name);
+        console.log('add ');
+        console.log(addProperty);
         propertyFieldGroup = {
           key: addProperty.name,
           type: 'input-tooltip',
-          defaultValue: "default value",
           templateOptions: {
             description: addProperty.description,
             label: addProperty.displayName,
@@ -588,7 +579,6 @@ export class FormlyParserService {
         propertyFieldGroup = {
           key: addProperty.name,
           type: 'input-tooltip',
-          defaultValue: "default value",
           templateOptions: {
             type: 'number',
             description: addProperty.description,

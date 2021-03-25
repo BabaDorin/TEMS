@@ -7,6 +7,7 @@ namespace temsAPI.ViewModels.EquipmentDefinition
 {
     public class AddEquipmentDefinitionViewModel
     {
+        public string Id { get; set; }
         public string TypeId { get; set; }
         public string Identifier { get; set; }
         public string Description { get; set; }

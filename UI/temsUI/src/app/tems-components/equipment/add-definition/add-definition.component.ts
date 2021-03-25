@@ -1,3 +1,4 @@
+import { Observable } from 'rxjs';
 import { EquipmentType } from './../../../models/equipment/view-type.model';
 import { IOption } from './../../../models/option.model';
 import { AddDefinition, Definition } from './../../../models/equipment/add-definition.model';
@@ -8,6 +9,7 @@ import { FormlyParserService } from 'src/app/services/formly-parser-service/form
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { FormGroup } from '@angular/forms';
 import { TEMSComponent } from 'src/app/tems/tems.component';
+import { Z } from '@angular/cdk/keycodes';
 
 @Component({
   selector: 'app-add-definition',
@@ -16,6 +18,10 @@ import { TEMSComponent } from 'src/app/tems/tems.component';
 })
 
 export class AddDefinitionComponent extends TEMSComponent implements OnInit {
+
+  // Provide a value for this in order to edit a definition instead of adding one.
+  updateDefinitionId: string;
+  typeId: string;
 
   private formlyData = {
     isVisible: false,
@@ -40,6 +46,13 @@ export class AddDefinitionComponent extends TEMSComponent implements OnInit {
     // There are two ways of getting the type:
     // 1) The type was sent via matDialog data
     // 2) User chooses the type via select input
+
+    if (this.updateDefinitionId != undefined) {
+      this.update();
+      return;
+    }
+
+
     if (this.data != undefined)
       this.setDefinitionType(this.data.selectedType);
     else
@@ -48,12 +61,14 @@ export class AddDefinitionComponent extends TEMSComponent implements OnInit {
       }));
   }
 
-  onSelectionChanged(eventData){
+  onSelectionChanged(eventData) {
     this.setDefinitionType(eventData.value);
     this.data = '1';
   }
 
   setDefinitionType(typeId: string) {
+    this.typeId = typeId;
+
     this.addDefinition = new Definition();
     let parentFullType: EquipmentType;
 
@@ -61,10 +76,7 @@ export class AddDefinitionComponent extends TEMSComponent implements OnInit {
     this.subscriptions.forEach(s => s.unsubscribe);
     this.subscriptions.push(this.equipmentService.getFullType(typeId).subscribe(
       response => {
-        console.log(response)
-
         parentFullType = response;
-
         this.addDefinition.equipmentType = { value: parentFullType.id, label: parentFullType.name } as IOption;
 
         // Properties are copied from the definition types because we don't want
@@ -81,60 +93,97 @@ export class AddDefinitionComponent extends TEMSComponent implements OnInit {
             this.addDefinition.children.push(childDefinition);
           });
 
-        this.formlyData.model = {
-          typeId: typeId
-        };
         this.formlyData.fields = this.formlyParserService.parseAddDefinition(this.addDefinition);
         this.formlyData.isVisible = true;
       }
     ))
-    // this.edit();
   }
 
-  edit() {
-    let objectFromServer = {
-      typeId: 'typeid from server',
-      identifier: 'identifier from server',
-      description: 'description from server',
-      price: "40",
-      currency: 'eur',
-      color: 'bw',
-      model: 'model from server',
-      frequency: '20',
-      0: [
-        {
-          identifier: 'identifier from server',
-          description: 'description from server',
-          price: "40",
-          currency: 'eur',
-          color: 'bw',
-          model: 'model from server',
-          frequency: '20',
-        }
-      ]
-    }
+  update() {
+    this.data = '1';
 
-    this.formlyData.model.addDefinition = objectFromServer;
+    console.log(this.formlyData.model);
+    this.subscriptions.push(
+      this.equipmentService.getDefinitionToUpdate(this.updateDefinitionId)
+        .subscribe(result => {
+          let resultDefinition: AddDefinition = result;
+          this.setDefinitionType(resultDefinition.typeId);
+
+          let updateDefinition = {
+            typeId: result.typeId,
+            identifier: result.identifier,
+            description: result.description,
+            price: result.price,
+            currency: result.currency,
+          };
+
+          resultDefinition.properties.forEach(property => {
+            updateDefinition[property.label] = property.value;
+          });
+
+          resultDefinition.children.forEach(child => {
+            updateDefinition[child.typeId].push({
+              typeId: child.typeId,
+              identifier: child.identifier,
+              description: child.description,
+              price: child.price,
+              currency: child.currency,
+            })
+
+            child.properties.forEach(property => {
+              updateDefinition[child.typeId][updateDefinition[child.typeId].length][property.label] = property.value;
+            });
+          })
+
+          this.formlyData.model = {};
+          this.formlyData.model = updateDefinition;
+          console.log(this.formlyData.model);
+        }));
+
+    // let objectFromServer = {
+    //   typeId: 'typeid from server',
+    //   identifier: 'identifier from server',
+    //   description: 'description from server',
+    //   price: "40",
+    //   currency: 'eur',
+    //   color: 'bw',
+    //   model: 'model from server',
+    //   frequency: '20',
+    //   0: [
+    //     {
+    //       identifier: 'identifier from server',
+    //       description: 'description from server',
+    //       price: "40",
+    //       currency: 'eur',
+    //       color: 'bw',
+    //       model: 'model from server',
+    //       frequency: '20',
+    //     }
+    //   ]
+    // }
   }
 
   onSubmit(model) {
-    let addDefinition = new AddDefinition();
-    addDefinition.typeId = model.typeId;
-    addDefinition.identifier = model.addDefinition.identifier;
-    addDefinition.price = model.addDefinition.price;
-    addDefinition.description = model.addDefinition.description;
-    addDefinition.currency = model.addDefinition.currency;
+    console.log('this on submit');
+    console.log(this.formlyData.model);
 
-    var propNames = Object.getOwnPropertyNames(model.addDefinition);
-    propNames.forEach( propName => 
-      {
-        if((this.addDefinition.properties.find(q => q.name == propName)))
-          addDefinition.properties.push({value: propName, label: model.addDefinition[propName]} as IOption)
-      });
+    let addDefinition = new AddDefinition();
+    addDefinition.typeId =this.typeId;
+    addDefinition.identifier = model.identifier;
+    addDefinition.price = model.price;
+    addDefinition.description = model.description;
+    addDefinition.currency = model.currency;
+
+    var propNames = Object.getOwnPropertyNames(model);
+    propNames.forEach(propName => {
+      if ((this.addDefinition.properties.find(q => q.name == propName)))
+        addDefinition.properties.push({ value: propName, label: model[propName] } as IOption)
+    });
 
     console.log(addDefinition);
+    console.log(this.formlyData);
     this.subscriptions.push(this.equipmentService.createDefinition(addDefinition)
-      .subscribe(response =>{
+      .subscribe(response => {
         console.log(response);
       }));
   }

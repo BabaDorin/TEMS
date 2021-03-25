@@ -100,6 +100,13 @@ export class EquipmentService extends TEMSService {
     );
   }
 
+  getDefinitionToUpdate(definitionId: string): Observable<AddDefinition>{
+    return this.http.get<AddDefinition>(
+      API_EQDEF_URL + '/getdefinitiontoupdate/' + definitionId,
+      this.httpOptions
+    );
+  }
+
   addProperty(addProperty: AddProperty): Observable<any>{
     return this.http.post<AddProperty>(
       API_PROP_URL + '/add', 

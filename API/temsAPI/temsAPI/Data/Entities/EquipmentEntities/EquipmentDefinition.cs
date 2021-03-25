@@ -27,6 +27,8 @@ namespace temsAPI.Data.Entities.EquipmentEntities
         [ForeignKey("ParentID")]
         public EquipmentDefinition? Parent { get; set; }
         public string? ParentID { get; set; }
+        public string? Description { get; set; }
+
 #nullable disable
 
         public bool IsArchieved { get; set; }

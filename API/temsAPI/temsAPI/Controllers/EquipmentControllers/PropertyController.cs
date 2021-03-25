@@ -145,6 +145,7 @@ namespace temsAPI.EquipmentControllers
                 Id = Guid.NewGuid().ToString(),
                 Name = viewModel.Name,
                 DisplayName = viewModel.DisplayName,
+                Description = viewModel.Description,
                 Required = viewModel.Required,
                 DataType = (await _unitOfWork.DataTypes.Find<DataType>(q => q.Name.ToLower() == viewModel.DataType))
                     .FirstOrDefault(),

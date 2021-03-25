@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection.Metadata.Ecma335;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
@@ -135,7 +136,44 @@ namespace temsAPI.Controllers.EquipmentControllers
             }
         }
 
-        [HttpGet]
+        [HttpPost]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
+        public async Task<JsonResult> GetDefinitionsOfTypes([FromBody] List<string> typeIds)
+        {
+            try
+            {
+                Expression<Func<EquipmentDefinition, bool>> expression = null;
+                if (typeIds != null)
+                    expression = q => !q.IsArchieved && typeIds.Contains(q.EquipmentTypeID);
+                else
+                    expression = q => !q.IsArchieved;
+
+                List<Option> viewModel = (await _unitOfWork.EquipmentDefinitions
+                    .FindAll<Option>(
+                        where: expression,
+                        select: q => new Option
+                        {
+                            Value = q.Id,
+                            Label = q.Identifier,
+                            Additional = q.Description
+                        }
+                    )).ToList();
+
+                return Json(viewModel);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured while fetching definitions", ResponseStatus.Fail);
+            }
+        }
+
+
+
+        [HttpGet("equipmentdefinition/getdefinitionsautocompleteoptions")]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
+
+        [HttpGet("equipmentdefinition/getsimplified")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
         public async Task<JsonResult> GetSimplified()
         {

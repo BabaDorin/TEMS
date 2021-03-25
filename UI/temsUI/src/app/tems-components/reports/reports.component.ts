@@ -28,10 +28,6 @@ export class ReportsComponent implements OnInit {
   ngOnInit(): void {
     this.defaultTemplates = this.reportService.getDefaultTemplates();
     this.customTemplates = this.reportService.getCustomTemplates();
-    console.log('gonna fetch some data')
-    this.http.get('https://localhost:44358/WeatherForecast/get')
-    .subscribe((data) => alert(data));
-    console.log('data is gonna be displayed in an alert');
   }
 
   createTemplate(){

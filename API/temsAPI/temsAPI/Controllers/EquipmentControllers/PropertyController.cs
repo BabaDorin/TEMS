@@ -79,6 +79,8 @@ namespace temsAPI.EquipmentControllers
             }
         }
 
+
+
         [HttpGet("property/getsimplifiedbyid/{propertyId}")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
         public async Task<JsonResult> GetSimplifiedById(string propertyId)
@@ -158,6 +160,33 @@ namespace temsAPI.EquipmentControllers
                 return ReturnResponse($"Success", ResponseStatus.Success);
             else
                 return ReturnResponse($"Fail", ResponseStatus.Fail);
+        }
+
+        [HttpGet("property/getpropertiesoftype/{typeId}")]
+        [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
+        public async Task<JsonResult> GetPropertiesOfType(string typeId)
+        {
+            try
+            {
+                List<Option> viewModel = (await _unitOfWork.EquipmentTypes
+                    .Find<List<Option>>(
+                        include: q => q.Include(q => q.Properties),
+                        where: q => q.Id == typeId,
+                        select: q => q.Properties.Select(q => new Option
+                        {
+                            Value = q.Id,
+                            Label = q.DisplayName,
+                            Additional = q.Name
+                        }).ToList()
+                    )).FirstOrDefault();
+
+                return Json(viewModel);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured while fetching properties.", ResponseStatus.Fail);
+            }
         }
 
         [HttpPost]

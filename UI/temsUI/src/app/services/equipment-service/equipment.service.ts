@@ -193,11 +193,11 @@ export class EquipmentService extends TEMSService {
     ]
   }
 
-  getTypeSpecificProperties(type: IOption): CheckboxItem[]{
-    return [
-      new CheckboxItem('temsid', 'Tems ID'),
-      new CheckboxItem('serialNumber', 'Serial Number'),
-    ]
+  getPropertiesOfType(typeId: string): Observable<IOption[]>{
+    return this.http.get<IOption[]>(
+      API_PROP_URL + '/getpropertiesoftype/' + typeId,
+      this.httpOptions
+    );
   }
 
   getEquipment(): ViewEquipmentSimplified[]{
@@ -252,6 +252,14 @@ export class EquipmentService extends TEMSService {
   getDefinitionsOfType(typeId: string): Observable<any> {
     console.log(typeId);
     return this.http.post(API_EQDEF_URL + '/getdefinitionsoftype', JSON.stringify(typeId), this.httpOptions)
+  }
+
+  getDefinitionsOfTypes(typeIds: string[]): Observable<IOption[]>{
+    return this.http.post<IOption[]>(
+      API_EQDEF_URL + '/getdefinitionsoftypes',
+      JSON.stringify(typeIds),
+      this.httpOptions
+    );
   }
 
   getFullDefinition(definitionId: string): Observable<Definition> {

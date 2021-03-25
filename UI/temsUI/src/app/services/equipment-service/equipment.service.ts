@@ -254,12 +254,11 @@ export class EquipmentService extends TEMSService {
     return this.http.post(API_EQDEF_URL + '/getdefinitionsoftype', JSON.stringify(typeId), this.httpOptions)
   }
 
-  getFullDefinition(definitionId: string): Observable<any> {
-
-    return this.http.post(
-      API_EQDEF_URL + '/getfulldefinition', 
-      JSON.stringify(definitionId),
-      this.httpOptions);
+  getFullDefinition(definitionId: string): Observable<Definition> {
+    return this.http.get<Definition>(
+      API_EQDEF_URL + '/getfulldefinition/' + definitionId, 
+      this.httpOptions
+      );
   }
 
   getFullType(typeId: string): Observable<any> {

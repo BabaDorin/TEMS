@@ -16,6 +16,7 @@ using temsAPI.System_Files;
 using temsAPI.Validation;
 using temsAPI.ViewModels;
 using temsAPI.ViewModels.EquipmentDefinition;
+using temsAPI.ViewModels.EquipmentType;
 using temsAPI.ViewModels.Property;
 
 namespace temsAPI.Controllers.EquipmentControllers
@@ -236,37 +237,52 @@ namespace temsAPI.Controllers.EquipmentControllers
             }
         }
 
-        [HttpPost]
+        [HttpGet("equipmentdefinition/getfulldefinition/{definitionId}")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
-        public async Task<JsonResult> GetFullDefinition([FromBody] string definitionId)
+        public async Task<JsonResult> GetFullDefinition(string definitionId)
         {
             try
             {
                 // Invalid definitionId
                 if (!await _unitOfWork.EquipmentDefinitions.isExists(q => q.Id == definitionId))
-                    return ReturnResponse("There is not definition having the specified id", ResponseStatus.Fail);
+                    return ReturnResponse("There is no definition having the specified id", ResponseStatus.Fail);
 
-                EquipmentDefinitionViewModel viewModel = new EquipmentDefinitionViewModel();
-                EquipmentDefinition model = (await _unitOfWork.EquipmentDefinitions.Find<EquipmentDefinition>(q => q.Id == definitionId,
+                EquipmentDefinitionViewModel viewModel = (await _unitOfWork.EquipmentDefinitions
+                    .Find<EquipmentDefinitionViewModel>(
+                        where: q => q.Id == definitionId,
                         include: q => q
-                                .Include(q => q.Children.Where(q => !q.IsArchieved))
-                                .Include(q => q.EquipmentSpecifications)
-                                .ThenInclude(q => q.Property).ThenInclude(q => q.DataType)
-                                .Include(q => q.Parent)
-                                .Include(q => q.EquipmentType)))
-                                .FirstOrDefault();
-
-                viewModel = _mapper.Map<EquipmentDefinitionViewModel>(model);
-
-                foreach (var eqspec in model.EquipmentSpecifications)
-                {
-                    viewModel.EquipmentType.Properties.Add(_mapper.Map<ViewPropertyViewModel>(eqspec.Property));
-                }
+                        .Include(q => q.Children.Where(q => !q.IsArchieved))
+                        .Include(q => q.EquipmentSpecifications)
+                        .ThenInclude(q => q.Property).ThenInclude(q => q.DataType)
+                        .Include(q => q.Parent)
+                        .Include(q => q.EquipmentType),
+                        select: q => new EquipmentDefinitionViewModel
+                        {
+                            Id = q.Id,
+                            Identifier = q.Identifier,
+                            Currency = q.Currency,
+                            Price = q.Price,
+                            EquipmentType = new ViewEquipmentTypeViewModel
+                            {
+                                Id = q.EquipmentType.Id,
+                                Name = q.EquipmentType.Name
+                            },
+                            Properties = q.EquipmentSpecifications
+                            .Select(q => new ViewPropertyViewModel
+                            {
+                                Id = q.Property.Id,
+                                DisplayName = q.Property.DisplayName,
+                                Value = q.Value,
+                            })
+                            .ToList()
+                        }))
+                        .FirstOrDefault();
 
                 return Json(viewModel);
             }
             catch (Exception ex)
             {
+                Debug.WriteLine(ex);
                 return ReturnResponse("Unknown error occured when fetching the full definition, " + ex.Message, ResponseStatus.Fail);
             }
         }
@@ -297,6 +313,15 @@ namespace temsAPI.Controllers.EquipmentControllers
         }
 
         // --------------------------------------------------------------
+
+        private static ViewEquipmentTypeViewModel EquipmentTypeToEquipmentViewModel(EquipmentType type)
+        {
+            return new ViewEquipmentTypeViewModel
+            {
+                Id = type.Id,
+                Name = type.Name,
+            };
+        }
 
         /// <summary>
         /// Converts an instance of EquipmentDefinition to an instance of AddDefinitionViewModel.

@@ -4,6 +4,7 @@ import { ViewDefinitionSimplified } from './../../../../models/equipment/view-de
 import { EquipmentService } from 'src/app/services/equipment-service/equipment.service';
 import { Component, OnInit } from '@angular/core';
 import { TEMSComponent } from 'src/app/tems/tems.component';
+import { ViewDefinitionComponent } from 'src/app/tems-components/equipment/view-definition/view-definition.component';
 
 @Component({
   selector: 'app-manage-definitions',
@@ -27,6 +28,13 @@ export class ManageDefinitionsComponent extends TEMSComponent implements OnInit 
         console.log(result);
         this.definitions = result;
       })
+    )
+  }
+
+  view(definitionId: string){
+    this.dialogService.openDialog(
+      ViewDefinitionComponent,
+      [{label: "definitionId", value: definitionId}],
     )
   }
 

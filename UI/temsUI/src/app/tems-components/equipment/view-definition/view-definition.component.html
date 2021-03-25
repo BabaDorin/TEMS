@@ -1,0 +1,31 @@
+<div class="card">
+    <div class="card-body">
+        <div class="card-title">{{ definition.identifier }}</div>
+        <h3 *ngIf="definition.equipmentType != undefined">
+            Type: <button mat-button (click)="viewType(definition.equipmentType.id)">{{ definition.equipmentType.name }}</button></h3>
+        
+        <ng-container *ngIf = "definition.properties.length > 0">
+            <h3>Properties:</h3>
+            <ng-container *ngFor="let prop of definition.properties">
+                <button 
+                mat-button 
+                (click)="viewProperty(prop.id)">
+                {{ prop.displayName }}
+            </button> {{ prop.value }}
+            <br>
+            </ng-container> 
+        </ng-container>
+            
+        <ng-container *ngIf="definition.children.length > 0">
+            <h3>Children:</h3>
+            <button 
+                mat-button 
+                *ngFor="let child of definition.children" 
+                (click)="viewDefinition(child.id)">
+                {{ child.identifier }}
+            </button>
+        </ng-container>
+        
+        <h3>Price: {{ definition.price }} {{ definition.currency }}</h3>
+    </div>
+</div>

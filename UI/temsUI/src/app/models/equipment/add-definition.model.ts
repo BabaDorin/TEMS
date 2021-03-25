@@ -44,18 +44,13 @@ export class Definition implements IDefinition{
     properties: Property[];
     children: Definition[];
     price?: number;
-    currency?: string
+    currency?: string;
 
     constructor(){
-        this.type = new EquipmentType()
-        this.id = "";
-        this.identifier = "";
-        // this.equipmentType = new AddType();
         this.properties = [] as Property[];
         this.children = [] as Definition[];
     }
 }
-
 
 
 

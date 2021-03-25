@@ -104,7 +104,7 @@ namespace temsAPI.Controllers.IdentityControllers
                 var user = (await _unitOfWork.TEMSUsers.Find<TEMSUser>(q => q.Id == userId))
                     .FirstOrDefault();
 
-                if (user == null)
+                if (user == null || user.UserName == "tems@dmin")
                     return ReturnResponse("Invalid user id provided", ResponseStatus.Fail);
 
                 user.IsArchieved = true;
@@ -232,7 +232,7 @@ namespace temsAPI.Controllers.IdentityControllers
             {
                 List<ViewUserSimplifiedViewModel> viewModel = _userManager
                     .Users
-                    .Where(q => !q.IsArchieved)
+                    .Where(q => !q.IsArchieved && q.UserName != "tems@dmin")
                     .Select(q => new ViewUserSimplifiedViewModel
                     {
                         Username = q.UserName,

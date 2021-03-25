@@ -30,6 +30,7 @@ import { TagInputModule } from 'ngx-chips';
 import { MatDialogModule } from '@angular/material/dialog';
 import { TEMSComponent } from './tems/tems.component';
 import { TemsFormsModule } from './modules/tems-forms/tems-forms.module';
+import { ViewDefinitionComponent } from './tems-components/equipment/view-definition/view-definition.component';
 
 @NgModule({
   declarations: [
@@ -44,6 +45,7 @@ import { TemsFormsModule } from './modules/tems-forms/tems-forms.module';
     ContentAnimateDirective,
     QuickAccessComponent,
     TEMSComponent,
+    ViewDefinitionComponent,
     ],
   imports: [
     BrowserModule,

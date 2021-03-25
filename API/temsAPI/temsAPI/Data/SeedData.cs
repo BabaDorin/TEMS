@@ -46,10 +46,10 @@ namespace temsAPI.Data
 
         private static void SeedUsers(UserManager<TEMSUser> userManager)
         {
-            if (userManager.FindByNameAsync("Administrator").Result == null)
+            if (userManager.FindByNameAsync("tems@dmin").Result == null)
             {
-                var user = new TEMSUser { UserName = "admin@localhost", Email = "admin@localhost" };
-                var result = userManager.CreateAsync(user, "Passw0rd!!").Result;
+                var user = new TEMSUser { UserName = "tems@dmin", Email = "tems@dmin" };
+                var result = userManager.CreateAsync(user, "ef2e0d52ca46923e48697b12d565a222").Result; // https://ro.wikisource.org/wiki/Luceafărul_(Eminescu) I x2
                 if (result.Succeeded)
                 {
                     userManager.AddToRoleAsync(user, "Administrator").Wait();

@@ -371,5 +371,32 @@ namespace temsAPI.Controllers.IdentityControllers
                 return ReturnResponse("An error occured when fetching user", ResponseStatus.Fail);
             }
         }
+
+        [HttpGet("temsuser/getsimplifiedbyid/{userId}")]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
+        public async Task<JsonResult> GetSimplifiedById(string userId)
+        {
+            try
+            {
+                ViewUserSimplifiedViewModel viewModel = await _userManager
+                    .Users
+                    .Where(q => q.Id == userId)
+                    .Select(q => new ViewUserSimplifiedViewModel
+                    {
+                        Username = q.UserName,
+                        Email = q.Email,
+                        FullName = q.FullName,
+                        Id = q.Id,
+                        //Roles = string.Join(", ", _userManager.GetRolesAsync(q).Result.ToList()),
+                    }).FirstOrDefaultAsync();
+
+                return Json(viewModel);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured when fetching users", ResponseStatus.Fail);
+            }
+        }
     }
 }

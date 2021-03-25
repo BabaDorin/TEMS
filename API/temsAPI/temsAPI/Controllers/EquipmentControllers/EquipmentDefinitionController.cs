@@ -179,7 +179,7 @@ namespace temsAPI.Controllers.EquipmentControllers
                 ViewEquipmentDefinitionSimplifiedViewModel viewModel =
                     (await _unitOfWork.EquipmentDefinitions
                     .Find<ViewEquipmentDefinitionSimplifiedViewModel>(
-                        where: q => !q.IsArchieved,
+                        where: q => q.Id == definitionId,
                         include: q => q
                         .Include(q => q.Parent)
                         .Include(q => q.Children.Where(q => !q.IsArchieved))

@@ -1,17 +1,11 @@
 <div class="card">
     <div class="card-body">
         <div class="card-title">User management</div>
+        <button mat-button (click)="addUser()">+ Add new user</button>
         <hr>
         <br>
-        <hr>
-        <h1>Add User</h1>
-        <app-add-user>
-            Loading...
-        </app-add-user>
-        <br>
-        <hr>
-        <h1>Registered Users</h1>
-        <app-view-users>
+        <h3>Registered Users</h3>
+        <app-view-users #viewUsers>
             Loading...
         </app-view-users>
     </div>

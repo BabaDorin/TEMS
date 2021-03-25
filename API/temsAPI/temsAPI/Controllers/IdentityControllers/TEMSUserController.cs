@@ -95,6 +95,30 @@ namespace temsAPI.Controllers.IdentityControllers
             }
         }
 
+        [HttpGet("temsuser/removeUser/{userId}")]
+        [ClaimRequirement(TEMSClaims.CAN_MANAGE_SYSTEM_CONFIGURATION)]
+        public async Task<JsonResult> RemoveUser(string userId)
+        {
+            try
+            {
+                var user = (await _unitOfWork.TEMSUsers.Find<TEMSUser>(q => q.Id == userId))
+                    .FirstOrDefault();
+
+                if (user == null)
+                    return ReturnResponse("Invalid user id provided", ResponseStatus.Fail);
+
+                user.IsArchieved = true;
+                await _unitOfWork.Save();
+
+                return ReturnResponse("Success", ResponseStatus.Success);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured while removing the user", ResponseStatus.Fail);
+            }
+        }
+
         [HttpPost]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_SYSTEM_CONFIGURATION)]
         public async Task<JsonResult> UpdateUser([FromBody] AddUserViewModel viewModel)

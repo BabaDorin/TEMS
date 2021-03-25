@@ -1,3 +1,4 @@
+import { DialogService } from './../../../../services/dialog-service/dialog.service';
 import { AddUserComponent } from './../../../../administration/add-user/add-user.component';
 import { ViewUserSimplified } from './../../../../models/user/view-user.model';
 import { TEMSComponent } from './../../../../tems/tems.component';
@@ -16,12 +17,45 @@ export class ViewUsersComponent extends TEMSComponent implements OnInit {
 
   constructor(
     private userService: UserService,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    private dialogService: DialogService
   ) {
     super();
   }
 
   ngOnInit(): void {
+    this.fetchUsers();
+  }
+
+  edit(userId: string, index: number){
+    this.dialogService.openDialog(
+      AddUserComponent,
+      [{value: userId, label: "userIdToUpdate"}],
+      () => {
+        this.userService.getUserSimplifiedById(userId)
+        .subscribe(result => {
+          this.users[index] = result;
+        })
+      }
+    )
+  }
+
+  remove(userId: string, index: number){
+    if(!confirm("Are you sure you want to remove that user?"))
+      return;
+
+    console.log(index);
+    this.subscriptions.push(
+      this.userService.removeUser(userId)
+      .subscribe(result => {
+        if(result.status == 1)
+          this.users.splice(index, 1);
+      })
+    )
+  }
+
+  fetchUsers(){
+    this.unsubscribeFromAll();
     this.subscriptions.push(
       this.userService.getUsers()
       .subscribe(result => {
@@ -29,21 +63,5 @@ export class ViewUsersComponent extends TEMSComponent implements OnInit {
         this.users = result;
       })
     )
-  }
-
-  edit(userId: string){
-    let dialogRef: MatDialogRef<any>;
-    dialogRef = this.dialog.open(AddUserComponent,
-      {
-        maxHeight: '80vh',
-        autoFocus: false
-      });
-
-    dialogRef.componentInstance.userIdToUpdate = userId;
-    dialogRef.componentInstance.dialogRef = dialogRef;
-
-    dialogRef.afterClosed().subscribe(result => {
-
-    })
   }
 }

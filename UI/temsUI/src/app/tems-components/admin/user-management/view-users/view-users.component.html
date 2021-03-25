@@ -1,4 +1,4 @@
-<ng-container *ngFor="let user of users">
+<ng-container *ngFor="let user of users; let i = index">
     <mat-card>
         <mat-card-header>
             <mat-card-title>{{ user.fullName }} {{ user.username }}</mat-card-title>
@@ -6,11 +6,11 @@
         </mat-card-header>
         <mat-card-content>
             <p>{{ user.email }}</p>
-            <button mat-button (click)="edit(user.id)">Edit</button>
+            <button mat-button >Edit</button>
         </mat-card-content>
         <mat-card-actions>
-            <button mat-button>LIKE</button>
-            <button mat-button>SHARE</button>
+            <button mat-button (click)="edit(user.id, i)" class="btn-info">Edit</button>
+            <button mat-button (click)="remove(user.id, i)" class="btn-danger">Remove</button>
         </mat-card-actions>
     </mat-card>
 </ng-container>

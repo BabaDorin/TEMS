@@ -105,6 +105,20 @@ export class UserService extends TEMSService {
     );
   }
 
+  getUserSimplifiedById(userId: string): Observable<ViewUserSimplified>{
+    return this.http.get<ViewUserSimplified>(
+      API_USER_URL + '/getsimplifiedbyid/' + userId,
+      this.httpOptions 
+    );
+  }
+
+  removeUser(userId: string): Observable<any>{
+    return this.http.get(
+      API_USER_URL + '/removeUser/' + userId,
+      this.httpOptions 
+    );
+  }
+
   getUser(userId: string): Observable<ViewUser>{
     return this.http.get<ViewUser>(
       API_USER_URL + '/getuser/' + userId,

@@ -110,93 +110,6 @@ namespace temsAPI.Controllers.EquipmentControllers
             }
         }
 
-
-        // -------------------------------------------------------------------------
-
-        /// <summary>
-        /// Validates an instance of DefinitionViewModel. If everythink is ok, it returns null, otherwise - 
-        /// the error message.
-        /// </summary>
-        /// <param name="viewModel"></param>
-        /// <returns></returns>
-        private async Task<string> ValidateAddDefinitionViewModel(AddEquipmentDefinitionViewModel viewModel)
-        {
-            // If it's the update case, we make sure the specified id exists
-            // And also, the equipment type should match
-            if (viewModel.Id != null)
-            {
-                var definition = (await _unitOfWork.EquipmentDefinitions
-                    .Find<EquipmentDefinition>(q => q.Id == viewModel.Id))
-                    .FirstOrDefault();
-
-                if (definition == null)
-                    return "Invalid id provided";
-
-                if (definition.EquipmentTypeID != viewModel.TypeId)
-                    return "You can't just modify the definition type";
-            }
-
-            // Identifier is required
-            if (String.IsNullOrEmpty((viewModel.Identifier = viewModel.Identifier.Trim())))
-                return "Please provide a valid identifier";
-
-            // Definition with this identifier already exists and it's not the update case
-            if (viewModel.Id == null)
-                if (await _unitOfWork.EquipmentDefinitions
-                    .isExists(q => q.Identifier == viewModel.Identifier && !q.IsArchieved))
-                    return "There is already a definition having this identifier";
-
-            // Invalid TypeId
-            if (!await _unitOfWork.EquipmentTypes.isExists(q => q.Id == viewModel.TypeId))
-                return "The Equipment Type specified does not exist.";
-
-            // Invalid data for price or currency
-            double price;
-            if (!double.TryParse(viewModel.Price.ToString(), out price) ||
-                price < 0 ||
-                (new List<string>() { "lei", "eur", "usd" }).IndexOf(viewModel.Currency) == -1)
-                return "Invalid data provided for price or currency";
-
-            // Validating properties
-            foreach (var property in viewModel.Properties)
-            {
-                property.Label = property.Label.Trim();
-
-                if (!await DataTypeValidation.IsValidAsync(property, _unitOfWork))
-                    return "One or more properties are invalid. Please review your data";
-            }
-
-            return null;
-        }
-
-        /// <summary>
-        /// Assigns values for definition's properties according to the data being provided by the
-        /// DefinitionViewModel.
-        /// </summary>
-        /// <param name="model"></param>
-        /// <param name="viewModel"></param>
-        /// <returns></returns>
-        private async Task AssignSpecifications(EquipmentDefinition model, AddEquipmentDefinitionViewModel viewModel)
-        {
-            var specifications = model.EquipmentSpecifications?.ToList();
-            foreach (var item in specifications)
-            {
-                model.EquipmentSpecifications.Remove(item);
-            }
-
-            foreach (var property in viewModel.Properties)
-            {
-                model.EquipmentSpecifications.Add(new EquipmentSpecifications
-                {
-                    Id = Guid.NewGuid().ToString(),
-                    EquipmentDefinitionID = model.Id,
-                    PropertyID = (await _unitOfWork.Properties.Find<Property>(q => q.Name == property.Value))
-                        .FirstOrDefault().Id,
-                    Value = property.Label,
-                });
-            }
-        }
-
         [HttpPost]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> GetDefinitionsOfType([FromBody] string typeId)
@@ -254,6 +167,42 @@ namespace temsAPI.Controllers.EquipmentControllers
             {
                 Debug.WriteLine(ex);
                 return ReturnResponse("Unknown error occured when fetching definitions", ResponseStatus.Fail);
+            }
+        }
+
+        [HttpGet("equipmentdefinition/getsimplifiedbyid/{definitionId}")]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
+        public async Task<JsonResult> GetSimplifiedById(string definitionId)
+        {
+            try
+            {
+                ViewEquipmentDefinitionSimplifiedViewModel viewModel =
+                    (await _unitOfWork.EquipmentDefinitions
+                    .Find<ViewEquipmentDefinitionSimplifiedViewModel>(
+                        where: q => !q.IsArchieved,
+                        include: q => q
+                        .Include(q => q.Parent)
+                        .Include(q => q.Children.Where(q => !q.IsArchieved))
+                        .Include(q => q.EquipmentType),
+                        select: q => new ViewEquipmentDefinitionSimplifiedViewModel
+                        {
+                            Id = q.Id,
+                            Identifier = q.Identifier,
+                            Parent = q.Parent != null
+                                ? q.Parent.Identifier
+                                : null,
+                            Children = String.Join(", ", q.Children
+                                .Where(q => !q.IsArchieved).Select(q => q.Identifier)),
+                            EquipmentType = q.EquipmentType.Name
+                        }
+                    )).FirstOrDefault();
+
+                return Json(viewModel);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured while fetching the definition", ResponseStatus.Fail);
             }
         }
 
@@ -349,6 +298,11 @@ namespace temsAPI.Controllers.EquipmentControllers
 
         // --------------------------------------------------------------
 
+        /// <summary>
+        /// Converts an instance of EquipmentDefinition to an instance of AddDefinitionViewModel.
+        /// </summary>
+        /// <param name="definition"></param>
+        /// <returns></returns>
         private AddEquipmentDefinitionViewModel DefinitionToAddDefinition(EquipmentDefinition definition)
         {
             var viewModel = new AddEquipmentDefinitionViewModel
@@ -373,6 +327,90 @@ namespace temsAPI.Controllers.EquipmentControllers
             }
 
             return viewModel;
+        }
+
+        /// <summary>
+        /// Validates an instance of DefinitionViewModel. If everythink is ok, it returns null, otherwise - 
+        /// the error message.
+        /// </summary>
+        /// <param name="viewModel"></param>
+        /// <returns></returns>
+        private async Task<string> ValidateAddDefinitionViewModel(AddEquipmentDefinitionViewModel viewModel)
+        {
+            // If it's the update case, we make sure the specified id exists
+            // And also, the equipment type should match
+            if (viewModel.Id != null)
+            {
+                var definition = (await _unitOfWork.EquipmentDefinitions
+                    .Find<EquipmentDefinition>(q => q.Id == viewModel.Id))
+                    .FirstOrDefault();
+
+                if (definition == null)
+                    return "Invalid id provided";
+
+                if (definition.EquipmentTypeID != viewModel.TypeId)
+                    return "You can't just modify the definition type";
+            }
+
+            // Identifier is required
+            if (String.IsNullOrEmpty((viewModel.Identifier = viewModel.Identifier.Trim())))
+                return "Please provide a valid identifier";
+
+            // Definition with this identifier already exists and it's not the update case
+            if (viewModel.Id == null)
+                if (await _unitOfWork.EquipmentDefinitions
+                    .isExists(q => q.Identifier == viewModel.Identifier && !q.IsArchieved))
+                    return "There is already a definition having this identifier";
+
+            // Invalid TypeId
+            if (!await _unitOfWork.EquipmentTypes.isExists(q => q.Id == viewModel.TypeId))
+                return "The Equipment Type specified does not exist.";
+
+            // Invalid data for price or currency
+            double price;
+            if (!double.TryParse(viewModel.Price.ToString(), out price) ||
+                price < 0 ||
+                (new List<string>() { "lei", "eur", "usd" }).IndexOf(viewModel.Currency) == -1)
+                return "Invalid data provided for price or currency";
+
+            // Validating properties
+            foreach (var property in viewModel.Properties)
+            {
+                property.Label = property.Label.Trim();
+
+                if (!await DataTypeValidation.IsValidAsync(property, _unitOfWork))
+                    return "One or more properties are invalid. Please review your data";
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Assigns values for definition's properties according to the data being provided by the
+        /// DefinitionViewModel.
+        /// </summary>
+        /// <param name="model"></param>
+        /// <param name="viewModel"></param>
+        /// <returns></returns>
+        private async Task AssignSpecifications(EquipmentDefinition model, AddEquipmentDefinitionViewModel viewModel)
+        {
+            var specifications = model.EquipmentSpecifications?.ToList();
+            foreach (var item in specifications)
+            {
+                model.EquipmentSpecifications.Remove(item);
+            }
+
+            foreach (var property in viewModel.Properties)
+            {
+                model.EquipmentSpecifications.Add(new EquipmentSpecifications
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    EquipmentDefinitionID = model.Id,
+                    PropertyID = (await _unitOfWork.Properties.Find<Property>(q => q.Name == property.Value))
+                        .FirstOrDefault().Id,
+                    Value = property.Label,
+                });
+            }
         }
     }
 }

@@ -3,18 +3,15 @@ import { ViewTypeSiplified } from './../../models/equipment/view-type-simplified
 import { TEMSService } from './../tems-service/tems.service';
 import { AddEquipment } from 'src/app/models/equipment/add-equipment.model';
 import { AddType } from './../../models/equipment/add-type.model';
-import { EquipmentType } from './../../models/equipment/view-type.model';
 import { Definition, AddDefinition } from './../../models/equipment/add-definition.model';
 import { API_PROP_URL, API_EQTYPE_URL, API_EQDEF_URL, API_EQ_URL } from './../../models/backend.config';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { IOption } from './../../models/option.model';
 import { CheckboxItem } from '../../models/checkboxItem.model';
-import { ViewAllocationSimplified } from './../../models/equipment/view-equipment-allocation.model';
-import { ViewEquipment } from './../../models/equipment/view-equipment.model';
 import { ViewEquipmentSimplified } from './../../models/equipment/view-equipment-simplified.model';
 import { AddProperty } from './../../models/equipment/add-property.model';
-import { Injectable, Type } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
 import { ViewDefinitionSimplified } from 'src/app/models/equipment/view-definition-simplified.model';
 import { Property } from 'src/app/models/equipment/view-property.model';
 
@@ -68,6 +65,13 @@ export class EquipmentService extends TEMSService {
   getDefinitionsSimplified(): Observable<ViewDefinitionSimplified[]>{
     return this.http.get<ViewDefinitionSimplified[]>(
       API_EQDEF_URL + '/getsimplified',
+      this.httpOptions
+    );
+  }
+
+  getDefinitionSimplifiedById(definitionId: string): Observable<ViewDefinitionSimplified>{
+    return this.http.get<ViewDefinitionSimplified>(
+      API_EQDEF_URL + '/getsimplifiedbyid/' + definitionId,
       this.httpOptions
     );
   }

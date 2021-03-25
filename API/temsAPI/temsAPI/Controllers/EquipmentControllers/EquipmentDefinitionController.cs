@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -34,36 +35,11 @@ namespace temsAPI.Controllers.EquipmentControllers
 
         [HttpPost]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
-        public async Task<JsonResult> Insert([FromBody] AddEquipmentDefinitionViewModel viewModel)
+        public async Task<JsonResult> Add([FromBody] AddEquipmentDefinitionViewModel viewModel)
         {
-            // Identifier is required
-            if (String.IsNullOrEmpty((viewModel.Identifier = viewModel.Identifier.Trim())))
-                return ReturnResponse("Please provide a valid identifier", ResponseStatus.Fail);
-
-            // Definition with this identifier already exists
-            if(await _unitOfWork.EquipmentDefinitions
-                .isExists(q => q.Identifier == viewModel.Identifier && !q.IsArchieved))
-                return ReturnResponse("There is already a definition having this identifier", ResponseStatus.Fail);
-
-            // Invalid TypeId
-            if(!await _unitOfWork.EquipmentTypes.isExists(q => q.Id == viewModel.TypeId))
-                return ReturnResponse("The Equipment Type specified does not exist.", ResponseStatus.Fail);
-
-            // Invalid data for price or currency
-            double price;
-            if (!double.TryParse(viewModel.Price.ToString(), out price) ||
-                price < 0 ||
-                (new List<string>() { "lei", "eur", "usd"}).IndexOf(viewModel.Currency) == -1)
-                return ReturnResponse("Invalid data provided for price or currency", ResponseStatus.Fail);
-
-            // Validating properties
-            foreach (var property in viewModel.Properties)
-            {
-                property.Label = property.Label.Trim();
-
-                if (!await DataTypeValidation.IsValidAsync(property, _unitOfWork))
-                    return ReturnResponse("One or more properties are invalid. Please review your data", ResponseStatus.Fail);
-            }
+            string validationResult = await ValidateAddDefinitionViewModel(viewModel);
+            if (validationResult != null)
+                return ReturnResponse(validationResult, ResponseStatus.Fail);
 
             // If we got so far, it might be valid enough
             EquipmentDefinition equipmentDefinition = new EquipmentDefinition
@@ -76,7 +52,7 @@ namespace temsAPI.Controllers.EquipmentControllers
                 Description = viewModel.Description,
             };
 
-            foreach(var property in viewModel.Properties)
+            foreach (var property in viewModel.Properties)
             {
                 equipmentDefinition.EquipmentSpecifications.Add(new EquipmentSpecifications
                 {
@@ -93,10 +69,132 @@ namespace temsAPI.Controllers.EquipmentControllers
             await _unitOfWork.EquipmentDefinitions.Create(equipmentDefinition);
             await _unitOfWork.Save();
 
-            if(!await _unitOfWork.EquipmentDefinitions.isExists(q => q.Id == equipmentDefinition.Id))
+            if (!await _unitOfWork.EquipmentDefinitions.isExists(q => q.Id == equipmentDefinition.Id))
                 return ReturnResponse("Fail", ResponseStatus.Fail);
             else
                 return ReturnResponse("Success", ResponseStatus.Success);
+        }
+
+        [HttpPost]
+        [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
+        public async Task<JsonResult> Update([FromBody] AddEquipmentDefinitionViewModel viewModel)
+        {
+            try
+            {
+                string validationResult = await ValidateAddDefinitionViewModel(viewModel);
+                if (validationResult != null)
+                    return ReturnResponse(validationResult, ResponseStatus.Fail);
+
+                EquipmentDefinition definition = (await _unitOfWork.EquipmentDefinitions
+                    .Find<EquipmentDefinition>(
+                        where: q => q.Id == viewModel.Id,
+                        include: q => q.Include(q => q.EquipmentSpecifications)
+                    )).FirstOrDefault();
+
+                definition.Identifier = viewModel.Identifier;
+                definition.EquipmentTypeID = viewModel.TypeId;
+                definition.EquipmentTypeID = viewModel.TypeId;
+                definition.Price = viewModel.Price;
+                definition.Currency = viewModel.Currency;
+                definition.Description = viewModel.Description;
+
+                await AssignSpecifications(definition, viewModel);
+                await _unitOfWork.Save();
+
+                return ReturnResponse("Success!", ResponseStatus.Success);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured while updating the definition", ResponseStatus.Fail);
+            }
+        }
+
+
+        // -------------------------------------------------------------------------
+
+        /// <summary>
+        /// Validates an instance of DefinitionViewModel. If everythink is ok, it returns null, otherwise - 
+        /// the error message.
+        /// </summary>
+        /// <param name="viewModel"></param>
+        /// <returns></returns>
+        private async Task<string> ValidateAddDefinitionViewModel(AddEquipmentDefinitionViewModel viewModel)
+        {
+            // If it's the update case, we make sure the specified id exists
+            // And also, the equipment type should match
+            if (viewModel.Id != null)
+            {
+                var definition = (await _unitOfWork.EquipmentDefinitions
+                    .Find<EquipmentDefinition>(q => q.Id == viewModel.Id))
+                    .FirstOrDefault();
+
+                if (definition == null)
+                    return "Invalid id provided";
+
+                if (definition.EquipmentTypeID != viewModel.TypeId)
+                    return "You can't just modify the definition type";
+            }
+
+            // Identifier is required
+            if (String.IsNullOrEmpty((viewModel.Identifier = viewModel.Identifier.Trim())))
+                return "Please provide a valid identifier";
+
+            // Definition with this identifier already exists and it's not the update case
+            if (viewModel.Id == null)
+                if (await _unitOfWork.EquipmentDefinitions
+                    .isExists(q => q.Identifier == viewModel.Identifier && !q.IsArchieved))
+                    return "There is already a definition having this identifier";
+
+            // Invalid TypeId
+            if (!await _unitOfWork.EquipmentTypes.isExists(q => q.Id == viewModel.TypeId))
+                return "The Equipment Type specified does not exist.";
+
+            // Invalid data for price or currency
+            double price;
+            if (!double.TryParse(viewModel.Price.ToString(), out price) ||
+                price < 0 ||
+                (new List<string>() { "lei", "eur", "usd" }).IndexOf(viewModel.Currency) == -1)
+                return "Invalid data provided for price or currency";
+
+            // Validating properties
+            foreach (var property in viewModel.Properties)
+            {
+                property.Label = property.Label.Trim();
+
+                if (!await DataTypeValidation.IsValidAsync(property, _unitOfWork))
+                    return "One or more properties are invalid. Please review your data";
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Assigns values for definition's properties according to the data being provided by the
+        /// DefinitionViewModel.
+        /// </summary>
+        /// <param name="model"></param>
+        /// <param name="viewModel"></param>
+        /// <returns></returns>
+        private async Task AssignSpecifications(EquipmentDefinition model, AddEquipmentDefinitionViewModel viewModel)
+        {
+            var specifications = model.EquipmentSpecifications?.ToList();
+            foreach (var item in specifications)
+            {
+                model.EquipmentSpecifications.Remove(item);
+            }
+
+            foreach (var property in viewModel.Properties)
+            {
+                model.EquipmentSpecifications.Add(new EquipmentSpecifications
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    EquipmentDefinitionID = model.Id,
+                    PropertyID = (await _unitOfWork.Properties.Find<Property>(q => q.Name == property.Value))
+                        .FirstOrDefault().Id,
+                    Value = property.Label,
+                });
+            }
         }
 
         [HttpPost]

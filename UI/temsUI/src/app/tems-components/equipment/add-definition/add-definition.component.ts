@@ -168,7 +168,8 @@ export class AddDefinitionComponent extends TEMSComponent implements OnInit {
     console.log(this.formlyData.model);
 
     let addDefinition = new AddDefinition();
-    addDefinition.typeId =this.typeId;
+    addDefinition.id = this.updateDefinitionId,
+    addDefinition.typeId = this.typeId;
     addDefinition.identifier = model.identifier;
     addDefinition.price = model.price;
     addDefinition.description = model.description;
@@ -180,9 +181,12 @@ export class AddDefinitionComponent extends TEMSComponent implements OnInit {
         addDefinition.properties.push({ value: propName, label: model[propName] } as IOption)
     });
 
-    console.log(addDefinition);
-    console.log(this.formlyData);
-    this.subscriptions.push(this.equipmentService.createDefinition(addDefinition)
+    let endPoint = this.equipmentService.addDefinition(addDefinition);
+    if(addDefinition.id != undefined)
+      endPoint = this.equipmentService.updateDefinition(addDefinition);
+
+    this.subscriptions.push(
+      endPoint
       .subscribe(response => {
         console.log(response);
       }));

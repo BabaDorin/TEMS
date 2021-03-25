@@ -4,6 +4,7 @@ import { AddProperty } from './add-property.model';
 import { Property } from './view-property.model';
 
 export interface IAddDefinition{
+    id: string,
     typeId: string;
     identifier: string;
     description?: string;
@@ -14,6 +15,7 @@ export interface IAddDefinition{
 }
 
 export class AddDefinition implements IAddDefinition{
+    id: string;
     typeId: string;
     identifier: string;
     description?: string;

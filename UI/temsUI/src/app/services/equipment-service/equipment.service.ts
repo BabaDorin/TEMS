@@ -128,11 +128,19 @@ export class EquipmentService extends TEMSService {
       this.httpOptions);
   }
 
-  createDefinition(addDefinition: AddDefinition): Observable<any>{
-    return this.http.post<AddDefinition>(
-      API_EQDEF_URL + '/insert', 
+  addDefinition(addDefinition: AddDefinition): Observable<any>{
+    return this.http.post(
+      API_EQDEF_URL + '/add', 
       JSON.stringify(addDefinition), 
       this.httpOptions);
+  }
+
+  updateDefinition(addDefinition: AddDefinition): Observable<any>{
+    return this.http.post(
+      API_EQDEF_URL + '/update',
+      JSON.stringify(addDefinition),
+      this.httpOptions
+    );
   }
 
   createEquipment(addEquipment: AddEquipment): Observable<any>{

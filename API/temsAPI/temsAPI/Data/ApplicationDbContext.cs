@@ -9,6 +9,7 @@ using temsAPI.Data.Entities.EquipmentEntities;
 using temsAPI.Data.Entities.KeyEntities;
 using temsAPI.Data.Entities.LibraryEntities;
 using temsAPI.Data.Entities.OtherEntities;
+using temsAPI.Data.Entities.Report;
 using temsAPI.Data.Entities.UserEntities;
 
 namespace temsAPI.Data
@@ -186,6 +187,9 @@ namespace temsAPI.Data
         // Library entities
         public DbSet<LibraryFolder> LibraryFolders { get; set; }
         public DbSet<LibraryItem> LibraryItems { get; set; }
+
+        // Report entities
+        public DbSet<ReportTemplate> ReportTemplates { get; set; }
 
         // Key entities
         public DbSet<Key> Keys { get; set; }

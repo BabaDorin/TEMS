@@ -143,7 +143,7 @@ namespace temsAPI.Controllers.EquipmentControllers
             try
             {
                 Expression<Func<EquipmentDefinition, bool>> expression = null;
-                if (typeIds != null)
+                if (typeIds != null && typeIds.Count > 0)
                     expression = q => !q.IsArchieved && typeIds.Contains(q.EquipmentTypeID);
                 else
                     expression = q => !q.IsArchieved;

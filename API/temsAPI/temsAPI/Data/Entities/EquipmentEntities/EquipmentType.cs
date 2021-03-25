@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
+using temsAPI.Data.Entities.Report;
 
 namespace temsAPI.Data.Entities.EquipmentEntities
 {
@@ -18,5 +19,6 @@ namespace temsAPI.Data.Entities.EquipmentEntities
         public virtual ICollection<EquipmentDefinition> EquipmentDefinitions { get; set; } = new List<EquipmentDefinition>();
         public virtual ICollection<EquipmentType> Children { get; set; } = new List<EquipmentType>();
         public virtual ICollection<EquipmentType> Parents { get; set; } = new List<EquipmentType>();
+        public virtual ICollection<ReportTemplate> ReportTemplatesMemberOf { get; set; } = new List<ReportTemplate>();
     }
 }

@@ -1,13 +1,21 @@
-import { Report } from './../../models/report/report.model';
+import { API_REP_URL } from './../../models/backend.config';
+import { TEMSService } from './../tems-service/tems.service';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { AddReportTemplate } from './../../models/report/add-report.model';
 import { ViewReportSimplified } from './../../models/report/view-report-simplified.model';
 import { Injectable } from '@angular/core';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ReportService {
+export class ReportService extends TEMSService {
 
-  constructor() { }
+  constructor(
+    private http: HttpClient
+  ) { 
+    super();
+  }
 
   getCustomTemplates(){
     let custom = [
@@ -35,5 +43,13 @@ export class ReportService {
     });
 
     return def;
+  }
+
+  addReportTemplate(addReportTemplate: AddReportTemplate): Observable<any>{
+    return this.http.post(
+      API_REP_URL + '/addTemplate',
+      JSON.stringify(addReportTemplate),
+      this.httpOptions
+    );
   }
 }

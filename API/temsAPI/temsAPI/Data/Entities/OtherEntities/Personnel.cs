@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using temsAPI.Data.Entities.CommunicationEntities;
 using temsAPI.Data.Entities.EquipmentEntities;
 using temsAPI.Data.Entities.KeyEntities;
+using temsAPI.Data.Entities.Report;
 using temsAPI.Data.Entities.UserEntities;
 
 namespace temsAPI.Data.Entities.OtherEntities
@@ -36,6 +37,12 @@ namespace temsAPI.Data.Entities.OtherEntities
         public virtual ICollection<Log> Logs { get; set; } = new List<Log>();
         public virtual ICollection<Ticket> Tickets { get; set; } = new List<Ticket>();
         public virtual ICollection<PersonnelPosition> Positions { get; set; } = new List<PersonnelPosition>();
+
+        [InverseProperty("Signatories")]
+        public virtual ICollection<ReportTemplate> ReportTemplatesAssigned { get; set; } = new List<ReportTemplate>();
+        [InverseProperty("Personnel")]
+        public virtual ICollection<ReportTemplate> ReportTemplatesMember { get; set; } = new List<ReportTemplate>();
+
 
         // BEFREE: Add multiple Emails and Phone numbers support later if needed.
     }

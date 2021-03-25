@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
+using temsAPI.Data.Entities.Report;
 
 namespace temsAPI.Data.Entities.EquipmentEntities
 {
@@ -29,7 +30,9 @@ namespace temsAPI.Data.Entities.EquipmentEntities
 #nullable disable
 
         //public virtual ICollection<PropertyEquipmentTypeAssociation> PropertyEquipmentTypeAssociations { get; set; }
-        public virtual ICollection<EquipmentType> EquipmentTypes { get; set; }
-        public virtual ICollection<EquipmentSpecifications> EquipmentSpecifications { get; set; }
+        public virtual ICollection<EquipmentType> EquipmentTypes { get; set; } = new List<EquipmentType>();
+        public virtual ICollection<EquipmentSpecifications> EquipmentSpecifications { get; set; } = new List<EquipmentSpecifications>();
+        public virtual ICollection<ReportTemplate> ReportTemplatesMemberOf { get; set; } = new List<ReportTemplate>();
+
     }
 }

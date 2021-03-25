@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
+using temsAPI.Data.Entities.Report;
 
 namespace temsAPI.Data.Entities.EquipmentEntities
 {
@@ -34,5 +35,6 @@ namespace temsAPI.Data.Entities.EquipmentEntities
         public bool IsArchieved { get; set; }
         public virtual ICollection<EquipmentSpecifications> EquipmentSpecifications { get; set; } = new List<EquipmentSpecifications>();
         public virtual ICollection<EquipmentDefinition> Children { get; set; } = new List<EquipmentDefinition>();
+        public virtual ICollection<ReportTemplate> ReportTemplatesMemberOf { get; set; } = new List<ReportTemplate>();
     }
 }

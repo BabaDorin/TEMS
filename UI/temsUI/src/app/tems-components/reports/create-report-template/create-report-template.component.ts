@@ -1,3 +1,5 @@
+import { ReportService } from './../../../services/report-service/report.service';
+import { AddReportTemplate } from './../../../models/report/add-report.model';
 import { Observable, of } from 'rxjs';
 import { TEMSComponent } from './../../../tems/tems.component';
 import { CheckboxItem } from '../../../models/checkboxItem.model';
@@ -6,7 +8,7 @@ import { PersonnelService } from './../../../services/personnel-service/personne
 import { EquipmentService } from './../../../services/equipment-service/equipment.service';
 import { RoomsService } from './../../../services/rooms-service/rooms.service';
 import { FormGroup, FormControl } from '@angular/forms';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Type } from '@angular/core';
 
 @Component({
   selector: 'app-create-report-template',
@@ -14,6 +16,8 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./create-report-template.component.scss']
 })
 export class CreateReportTemplateComponent extends TEMSComponent implements OnInit {
+
+  updateReportId: string;
 
   reportFormGroup: FormGroup;
   sepparateBy: string;
@@ -37,6 +41,7 @@ export class CreateReportTemplateComponent extends TEMSComponent implements OnIn
     private roomService: RoomsService,
     private equipmentService: EquipmentService,
     private personnelService: PersonnelService,
+    private reportService: ReportService
   ) {
     super();
   }
@@ -73,6 +78,7 @@ export class CreateReportTemplateComponent extends TEMSComponent implements OnIn
     ];
     this.equipmentCommonProperties = this.universalProperties;
     this.equipmentCommonProperties.map(q => q.checked = true);
+    this.reportFormGroup.controls.commonProperties.setValue(this.equipmentCommonProperties.map(q => q.value));
   }
 
   fetchTypes() {
@@ -139,7 +145,7 @@ export class CreateReportTemplateComponent extends TEMSComponent implements OnIn
     this.reportFormGroup.controls.commonProperties.setValue(eventData);
   }
 
-  findCommonAndSpecificPropertied(){
+  findCommonAndSpecificPropertied() {
     // 1. Put all common props back to where they belong
     // 2. Add or remove type specific properties
     // 3. Find common properties
@@ -148,18 +154,18 @@ export class CreateReportTemplateComponent extends TEMSComponent implements OnIn
 
     // Getting specific properties of selected types
     let length = this.reportFormGroup.controls.types.value.length;
-    for(let i = 0; i < length; i++){
+    for (let i = 0; i < length; i++) {
       let element = this.reportFormGroup.controls.types.value[i];
-      if (this.typeSpecificProperties.find(q => q.type == element) == undefined){
+      if (this.typeSpecificProperties.find(q => q.type == element) == undefined) {
         this.subscriptions.push(
           this.equipmentService.getPropertiesOfType(element.value)
             .subscribe(result => {
               this.typeSpecificProperties.push(
-              {
-                type: element,
-                properties: result.map(q => new CheckboxItem(q.additional, q.label))
-              });
-  
+                {
+                  type: element,
+                  properties: result.map(q => new CheckboxItem(q.additional, q.label))
+                });
+
               this.findCommonProps();
             }
           )
@@ -168,9 +174,9 @@ export class CreateReportTemplateComponent extends TEMSComponent implements OnIn
     }
   }
 
-  putBackCommonProps(){
+  putBackCommonProps() {
     this.equipmentCommonProperties = this.equipmentCommonProperties
-    .filter((el) => !this.universalProperties.map(q => q.label).includes(el.label));
+      .filter((el) => !this.universalProperties.map(q => q.label).includes(el.label));
 
     this.typeSpecificProperties.forEach(specific => {
       this.equipmentCommonProperties.forEach(common => {
@@ -179,7 +185,7 @@ export class CreateReportTemplateComponent extends TEMSComponent implements OnIn
     });
   }
 
-  findCommonProps(){
+  findCommonProps() {
     this.equipmentCommonProperties = this.universalProperties;
     if (this.typeSpecificProperties.length < 2)
       return;
@@ -213,17 +219,46 @@ export class CreateReportTemplateComponent extends TEMSComponent implements OnIn
   onSpecificPropChange(eventData, type) {
     let typeSpecific = this.specificProperties.find(q => q.type == type);
 
-    if (typeSpecific != undefined) {
+    if (typeSpecific != undefined)
       typeSpecific.properties = eventData;
-    }
-    else {
+    else
       this.specificProperties.push({ type: type, properties: eventData });
-    }
 
     this.reportFormGroup.controls.specificProperties.setValue(this.specificProperties);
   }
 
+  get controls(){
+    return this.reportFormGroup.controls;
+  }
+
   submit() {
     console.log(this.reportFormGroup);
+    let addReportTemplate: AddReportTemplate = {
+      id: this.updateReportId,
+      name: this.controls.name.value,
+      description: this.controls.description.value,
+      subject: this.controls.subject.value,
+      types: this.controls.types.value,
+      definitions: this.controls.definitions.value,
+      rooms: this.controls.rooms.value,
+      personnel: this.controls.personnel.value,
+      sepparateBy: this.controls.sepparateBy.value,
+      commonProperties: this.controls.commonProperties.value,
+      specificProperties: this.controls.specificProperties.value,
+      header: this.controls.header.value,
+      footer: this.controls.footer.value,
+      signatories: this.controls.signatories.value
+    }
+
+    this.subscriptions.push(
+      this.reportService.addReportTemplate(addReportTemplate)
+      .subscribe(result => {
+        console.log(result);
+      })
+    )
+    console.log(addReportTemplate);
+
+    // update like this
+    this.reportFormGroup.controls.footer.setValue('nu mai trebu');
   }
 }

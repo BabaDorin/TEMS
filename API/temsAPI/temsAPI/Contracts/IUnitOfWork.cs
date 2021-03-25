@@ -8,6 +8,7 @@ using temsAPI.Data.Entities.EquipmentEntities;
 using temsAPI.Data.Entities.KeyEntities;
 using temsAPI.Data.Entities.LibraryEntities;
 using temsAPI.Data.Entities.OtherEntities;
+using temsAPI.Data.Entities.Report;
 using temsAPI.Data.Entities.UserEntities;
 
 namespace temsAPI.Contracts
@@ -45,6 +46,8 @@ namespace temsAPI.Contracts
         IGenericRepository<LibraryItem> LibraryItems { get; }
         IGenericRepository<LibraryFolder> LibraryFolders { get; }
 
+        // Report templates
+        IGenericRepository<ReportTemplate> ReportTemplates { get; }
 
         // Other entities
         IGenericRepository<Personnel> Personnel { get; }

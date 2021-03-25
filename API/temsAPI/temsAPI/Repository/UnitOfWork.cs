@@ -11,6 +11,7 @@ using temsAPI.Data.Entities.EquipmentEntities;
 using temsAPI.Data.Entities.KeyEntities;
 using temsAPI.Data.Entities.LibraryEntities;
 using temsAPI.Data.Entities.OtherEntities;
+using temsAPI.Data.Entities.Report;
 using temsAPI.Data.Entities.UserEntities;
 
 namespace temsAPI.Repository
@@ -48,6 +49,7 @@ namespace temsAPI.Repository
         private IGenericRepository<PersonnelPosition> _personnelPosition;
         private IGenericRepository<LibraryFolder> _libraryFolders;
         private IGenericRepository<LibraryItem> _libraryItems;
+        private IGenericRepository<ReportTemplate> _reportTemplates;
         private IGenericRepository<TemsJWT> _jwtBlacklist;
 
         public IGenericRepository<Announcement> Announcements 
@@ -108,6 +110,8 @@ namespace temsAPI.Repository
             => _libraryFolders ??= new GenericRepository<LibraryFolder>(_context);
         public IGenericRepository<LibraryItem> LibraryItems
             => _libraryItems ??= new GenericRepository<LibraryItem>(_context);
+        public IGenericRepository<ReportTemplate> ReportTemplates
+            => _reportTemplates ??= new GenericRepository<ReportTemplate>(_context);
         public IGenericRepository<TemsJWT> JWTBlacklist
             => _jwtBlacklist ??= new GenericRepository<TemsJWT>(_context);
 

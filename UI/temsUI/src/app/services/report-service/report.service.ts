@@ -45,6 +45,13 @@ export class ReportService extends TEMSService {
     return def;
   }
 
+  getTemplates(): Observable<ViewReportSimplified[]>{
+    return this.http.get<ViewReportSimplified[]>(
+      API_REP_URL + '/gettemplates',
+      this.httpOptions
+    );
+  }
+
   addReportTemplate(addReportTemplate: AddReportTemplate): Observable<any>{
     return this.http.post(
       API_REP_URL + '/addTemplate',

@@ -10,6 +10,7 @@ import { EquipmentService } from './../../../services/equipment-service/equipmen
 import { RoomsService } from './../../../services/rooms-service/rooms.service';
 import { FormGroup, FormControl } from '@angular/forms';
 import { Component, OnInit, Type } from '@angular/core';
+import { element } from 'protractor';
 
 @Component({
   selector: 'app-create-report-template',
@@ -19,10 +20,12 @@ import { Component, OnInit, Type } from '@angular/core';
 export class CreateReportTemplateComponent extends TEMSComponent implements OnInit {
 
   updateReportId: string;
+  reportTemplateToUpdate: AddReportTemplate;
 
   reportFormGroup: FormGroup;
   sepparateBy: string;
   equipmentCommonProperties: CheckboxItem[];
+  specificProperties: { type: IOption, properties: CheckboxItem[] }[] = [];
   universalProperties: CheckboxItem[];
   typeSpecificProperties: { type: IOption, properties: CheckboxItem[] }[] = [];
 
@@ -34,9 +37,15 @@ export class CreateReportTemplateComponent extends TEMSComponent implements OnIn
   ];
 
   typesAutocompleteOptions: IOption[];
+  typesAlreadySelected: IOption[] = [];
   definitionsAutocompleteOptions: IOption[];
+  definitionsAlreadySelected: IOption[] = [];
   roomsAutocompleteOptions: IOption[];
+  roomsAlreadySelected: IOption[] = [];
   personnelAutocompleteOptions: IOption[];
+  personnelAlreadySelected: IOption[] = [];
+  signatoriesAutocompleteOptions: IOption[];
+  signatoriesAlreadySelected: IOption[] = [];
 
   constructor(
     private roomService: RoomsService,
@@ -90,34 +99,46 @@ export class CreateReportTemplateComponent extends TEMSComponent implements OnIn
   }
 
   edit(){
-    let reportTemplateToUpdate = new AddReportTemplate(); 
-
     this.subscriptions.push(
       this.reportService.getReportTemplateToUpdate(this.updateReportId)
       .subscribe(result => {
-        reportTemplateToUpdate = result;
+        this.reportTemplateToUpdate = result;
 
-        if(reportTemplateToUpdate == null)
+        if(this.reportTemplateToUpdate == null)
           return;
 
         console.log('got this from server to update');
-        console.log(reportTemplateToUpdate);
-        
+        console.log(this.reportTemplateToUpdate);
+
         let controls = this.reportFormGroup.controls;
-        controls.name.setValue(reportTemplateToUpdate.name),
-        controls.description.setValue(reportTemplateToUpdate.description),
-        controls.subject.setValue(reportTemplateToUpdate.subject),
-        controls.types.setValue(reportTemplateToUpdate.types),
-        controls.definitions.setValue(reportTemplateToUpdate.definitions),
-        controls.rooms.setValue(reportTemplateToUpdate.rooms),
-        controls.personnel.setValue(reportTemplateToUpdate.personnel),
-        controls.sepparateBy.setValue(reportTemplateToUpdate.sepparateBy),
-        controls.header.setValue(reportTemplateToUpdate.header),
-        controls.footer.setValue(reportTemplateToUpdate.footer),
-        controls.signatories.setValue(reportTemplateToUpdate.signatories),
-        controls.name.setValue(reportTemplateToUpdate.name);
+        controls.name.setValue(this.reportTemplateToUpdate.name),
+        controls.description.setValue(this.reportTemplateToUpdate.description),
+        controls.subject.setValue(this.reportTemplateToUpdate.subject),
+        controls.types.setValue(this.reportTemplateToUpdate.types),
+        controls.definitions.setValue(this.reportTemplateToUpdate.definitions),
+        controls.rooms.setValue(this.reportTemplateToUpdate.rooms),
+        controls.personnel.setValue(this.reportTemplateToUpdate.personnel),
+        controls.sepparateBy.setValue(this.reportTemplateToUpdate.sepparateBy),
+        controls.header.setValue(this.reportTemplateToUpdate.header),
+        controls.footer.setValue(this.reportTemplateToUpdate.footer),
+        controls.signatories.setValue(this.reportTemplateToUpdate.signatories),
+        controls.name.setValue(this.reportTemplateToUpdate.name);
+
+        if(this.reportTemplateToUpdate.types != undefined)
+          this.typesAlreadySelected = this.reportTemplateToUpdate.types;
+        if(this.reportTemplateToUpdate.definitions != undefined)
+          this.definitionsAlreadySelected = this.reportTemplateToUpdate.definitions;
+        if(this.reportTemplateToUpdate.rooms != undefined)
+          this.roomsAlreadySelected = this.reportTemplateToUpdate.rooms;
+        if(this.reportTemplateToUpdate.personnel != undefined)
+          this.personnelAlreadySelected = this.reportTemplateToUpdate.personnel;
+        if(this.reportTemplateToUpdate.signatories != undefined)
+          this.signatoriesAlreadySelected = this.reportTemplateToUpdate.signatories;
 
         this.findCommonAndSpecificProperties();
+        console.log('val1');
+        console.log()
+        
       })
     )
   }
@@ -161,6 +182,7 @@ export class CreateReportTemplateComponent extends TEMSComponent implements OnIn
         .subscribe(result => {
           console.log(result);
           this.personnelAutocompleteOptions = result;
+          this.signatoriesAutocompleteOptions = [...this.personnelAutocompleteOptions];
         }));
   }
 
@@ -192,7 +214,7 @@ export class CreateReportTemplateComponent extends TEMSComponent implements OnIn
     // 3. Find common properties
 
     this.putBackCommonProps();
-
+    this.unsubscribeFromAll();
     // Getting specific properties of selected types
     let length = this.reportFormGroup.controls.types.value.length;
     for (let i = 0; i < length; i++) {
@@ -234,17 +256,11 @@ export class CreateReportTemplateComponent extends TEMSComponent implements OnIn
     let localCommonProperties = this.typeSpecificProperties[0].properties;
 
     for (let i = 1; i < this.typeSpecificProperties.length; i++) {
-      console.log(localCommonProperties);
-      console.log('and')
-      console.log(this.typeSpecificProperties[i].properties);
-
       localCommonProperties = localCommonProperties
         .filter(value => this.typeSpecificProperties[i].properties
           .map(q => q.label)
           .includes(value.label));
     }
-
-    console.log('found ' + localCommonProperties.length + ' common properties');
 
     this.typeSpecificProperties.forEach(element => {
       element.properties = element.properties
@@ -254,9 +270,29 @@ export class CreateReportTemplateComponent extends TEMSComponent implements OnIn
     });
 
     this.equipmentCommonProperties = this.equipmentCommonProperties.concat(localCommonProperties);
+
+    if(this.reportTemplateToUpdate == undefined)
+      return;
+  
+    this.equipmentCommonProperties.forEach(element => {
+      element.checked = false;
+      if(this.reportTemplateToUpdate.properties.indexOf(element.value) > -1)
+        element.checked = true;
+      
+      console.log(element.value + ' ' + element.checked)
+    })
+
+    this.typeSpecificProperties.forEach(element => {
+      element.properties.forEach(specificProp => {
+        specificProp.checked = false;
+        if(this.reportTemplateToUpdate.properties.indexOf(specificProp.value) > -1)
+          specificProp.checked = true;
+
+        console.log(specificProp.value + ' ' + specificProp.checked)
+      })
+    })
   }
 
-  specificProperties: { type: IOption, properties: CheckboxItem[] }[] = [];
   onSpecificPropChange(eventData, type) {
     let typeSpecific = this.specificProperties.find(q => q.type == type);
 
@@ -285,10 +321,11 @@ export class CreateReportTemplateComponent extends TEMSComponent implements OnIn
       personnel: this.controls.personnel.value,
       sepparateBy: this.controls.sepparateBy.value,
       commonProperties: this.controls.commonProperties.value,
-      specificProperties: this.controls.specificProperties.value,
+      specificProperties: this.controls.specificProperties.value.map(q => ({properties: q.properties, type: q.type.type.value})),
       header: this.controls.header.value,
       footer: this.controls.footer.value,
-      signatories: this.controls.signatories.value
+      signatories: this.controls.signatories.value,
+      properties: undefined
     }
 
     this.subscriptions.push(
@@ -298,8 +335,5 @@ export class CreateReportTemplateComponent extends TEMSComponent implements OnIn
       })
     )
     console.log(addReportTemplate);
-
-    // update like this
-    this.reportFormGroup.controls.footer.setValue('nu mai trebu');
   }
 }

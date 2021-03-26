@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using temsAPI.Data;
 
 namespace temsAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210326062355_AddingCreatedByAndDateCreatedToReportTemplate")]
+    partial class AddingCreatedByAndDateCreatedToReportTemplate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1111,9 +1113,6 @@ namespace temsAPI.Migrations
                     b.Property<string>("Header")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("IsArchieved")
-                        .HasColumnType("bit");
-
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
@@ -1121,9 +1120,6 @@ namespace temsAPI.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Subject")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UniversalProperties")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");

@@ -1,3 +1,4 @@
+import { TEMSComponent } from 'src/app/tems/tems.component';
 import { ViewReportSimplified } from './../../models/report/view-report-simplified.model';
 import { ReportService } from './../../services/report-service/report.service';
 import { Report } from './../../models/report/report.model';
@@ -10,31 +11,35 @@ import { HttpClient } from '@angular/common/http';
   templateUrl: './reports.component.html',
   styleUrls: ['./reports.component.scss']
 })
-export class ReportsComponent implements OnInit {
+export class ReportsComponent extends TEMSComponent implements OnInit {
 
 
   defaultTemplates: ViewReportSimplified[];
   customTemplates: ViewReportSimplified[];
+  templates: ViewReportSimplified[];
 
   constructor(
     private reportService: ReportService,
     private router: Router,
-    private activatedroute: ActivatedRoute,
-    private http: HttpClient
   ) {
-
+    super();
   }
 
   ngOnInit(): void {
-    this.defaultTemplates = this.reportService.getDefaultTemplates();
-    this.customTemplates = this.reportService.getCustomTemplates();
+    this.subscriptions.push(
+      this.reportService.getTemplates()
+      .subscribe(result => {
+        this.defaultTemplates = result.filter(q => q.isDefault == true);
+        this.customTemplates = result.filter(q => q.isDefault == false);
+      })
+    )
   }
 
   edit(templateId: string){
-    this.router.navigate(["/reports/updatereport/" + templateId]);
+    this.router.navigate(["/reports/updatetemplate/" + templateId]);
   }
 
-  remove(templateId: string){
+  remove(templateId: string, index){
     // stuff
   }
 

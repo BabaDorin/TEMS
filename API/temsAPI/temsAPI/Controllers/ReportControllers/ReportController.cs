@@ -13,6 +13,7 @@ using temsAPI.Data.Entities.EquipmentEntities;
 using temsAPI.Data.Entities.OtherEntities;
 using temsAPI.Data.Entities.Report;
 using temsAPI.Data.Entities.UserEntities;
+using temsAPI.Helpers;
 using temsAPI.System_Files;
 using temsAPI.ViewModels;
 using temsAPI.ViewModels.Report;
@@ -82,6 +83,11 @@ namespace temsAPI.Controllers.ReportControllers
                     }).ToList(),
                 };
 
+                if (model.UniversalProperties != null)
+                    viewModel.Properties = viewModel.Properties
+                        .Concat(model.UniversalProperties.Split(' '))
+                        .ToList();
+
                 return Json(viewModel); // update it    
             }
             catch (Exception ex)
@@ -109,6 +115,7 @@ namespace temsAPI.Controllers.ReportControllers
                 List<string> propertyIds = viewModel.CommonProperties?
                     .Concat(specificProperties == null ? new List<string>() : specificProperties)
                     .ToList();
+                List<string> universalProperties = viewModel.CommonProperties.Where(q => ReportHelper.UniversalProperties.Contains(q)).ToList();
                 List<string> signatoriesIds = viewModel.Signatories?.Select(q => q.Value).ToList();
 
                 ReportTemplate model = new ReportTemplate
@@ -140,7 +147,7 @@ namespace temsAPI.Controllers.ReportControllers
                     SepparateBy = viewModel.SepparateBy,
                     Properties = (propertyIds != null)
                         ? (await _unitOfWork.Properties
-                        .FindAll<Property>(q => propertyIds.Contains(q.Id)))
+                        .FindAll<Property>(q => propertyIds.Contains(q.Name)))
                         .ToList()
                         : new List<Property>(),
                     Header = viewModel.Header,
@@ -149,8 +156,22 @@ namespace temsAPI.Controllers.ReportControllers
                         ? (await _unitOfWork.Personnel
                         .FindAll<Personnel>(q => signatoriesIds.Contains(q.Id)))
                         .ToList()
-                        : new List<Personnel>()
+                        : new List<Personnel>(),
+                    CreatedBy = (await _unitOfWork.TEMSUsers
+                        .Find<TEMSUser>(
+                            where: q => q.UserName == User.Identity.Name
+                        )).FirstOrDefault(),
+                    DateCreated = DateTime.Now,
+                    UniversalProperties = (universalProperties.Count > 0)
+                        ? String.Join(" ", universalProperties)
+                        : null
                 };
+
+                if (User.Identity.Name == "tems@admin")
+                {
+                    model.CreatedBy = null;
+                    model.CreatedById = null;
+                }
 
                 await _unitOfWork.ReportTemplates.Create(model);
                 await _unitOfWork.Save();
@@ -167,7 +188,40 @@ namespace temsAPI.Controllers.ReportControllers
             }
         }
 
+        [HttpGet]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
+        public async Task<JsonResult> GetTemplates()
+        {
+            try
+            {
+                var viewModel = (await _unitOfWork.ReportTemplates
+                    .FindAll<ViewReportTemplateSimplifiedViewModel>(
+                        where: q => !q.IsArchieved,
+                        include: q => q
+                        .Include(q => q.CreatedBy),
+                        select: q => new ViewReportTemplateSimplifiedViewModel
+                        {
+                            Id = q.Id,
+                            CreatedBy = new Option
+                            {
+                                Value = q.CreatedById,
+                                Label = q.CreatedBy.UserName,
+                            },
+                            DateCreated = q.DateCreated,
+                            Description = q.Description,
+                            IsDefault = q.CreatedById == null,
+                            Name = q.Name
+                        }
+                    )).ToList();
 
+                return Json(viewModel);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured while fetching report templates", ResponseStatus.Fail);
+            }
+        }
 
 
         // -----------------------------------------------------------------------
@@ -226,10 +280,9 @@ namespace temsAPI.Controllers.ReportControllers
                 return "Invalid SepparateBy";
 
             // Invalid properties
-            List<string> commonTemsProps = new List<string>() { "temsid", "serialNumber", "price", "currency", "description", "identifier" };
             if(viewModel.CommonProperties != null)
                 foreach (var item in viewModel.CommonProperties)
-                    if (!commonTemsProps.Contains(item) && !await _unitOfWork.Properties.isExists(q => q.Name == item))
+                    if (!ReportHelper.UniversalProperties.Contains(item) && !await _unitOfWork.Properties.isExists(q => q.Name == item))
                         return $"{item} is not a valid property";
 
             var specificProperties = viewModel.SpecificProperties?.SelectMany(q => q.Properties).ToList();

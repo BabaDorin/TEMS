@@ -18,7 +18,7 @@ namespace temsAPI.ViewModels.Report
         public string SepparateBy { get; set; }
         public List<string> CommonProperties { get; set; } = new List<string>();
         public List<SpecificPropertyWrapper> SpecificProperties { get; set; } = new List<SpecificPropertyWrapper>();
-        public List<string> Properties { get; set; }
+        public List<string> Properties { get; set; } = new List<string>();
         public string Header { get; set; }
         public string Footer { get; set; }
         public List<Option> Signatories { get; set; } = new List<Option>();

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'app-report-container',
@@ -8,9 +8,20 @@ import { Component, Input, OnInit } from '@angular/core';
 export class ReportContainerComponent implements OnInit {
 
   @Input() template;  
+  @Output() editTemplate = new EventEmitter();
+  @Output() removeTemplate = new EventEmitter();
+
   constructor() { }
 
   ngOnInit(): void {
   }
 
+  edit(templateId: string){
+    this.editTemplate.emit(templateId);
+  }
+
+  remove(templateId: string)
+  {
+    this.removeTemplate.emit(templateId);
+  }
 }

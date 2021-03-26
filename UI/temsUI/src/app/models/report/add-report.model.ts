@@ -32,7 +32,7 @@ export class AddReportTemplate implements IAddReportTemplate{
     sepparateBy: string;
     commonProperties: string[];
     specificProperties: { type: string; properties: string[]; }[] = [];
-    properties?: string[] =[];
+    properties?: string[] = [];
     header: string;
     footer: string;
     signatories: IOption[] = [];

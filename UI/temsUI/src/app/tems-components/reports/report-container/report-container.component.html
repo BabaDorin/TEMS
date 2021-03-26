@@ -31,7 +31,9 @@
         </svg>
         </div>
         <br>
-        <button mat-button class="float-right" *ngIf="template.isDefault==false">Remove</button>
+        <!-- <button mat-button class="float-right" *ngIf="template.isDefault==false">Remove</button> -->
+        <button mat-button (click)="edit(template.id)">Edit</button>
+        <button mat-button (click)="remove(template.it)">Remove</button>
         <br>
     </mat-card-content>
 </mat-card>

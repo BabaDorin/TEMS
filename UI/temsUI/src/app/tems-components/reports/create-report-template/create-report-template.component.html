@@ -39,14 +39,18 @@
             <div class="row">
               <div class="col-md-5">
                 <app-chips-autocomplete label="Equipment types" formControlName="types"
-                  placeholder="No selection = all types" [availableOptions]="typesAutocompleteOptions"
+                  placeholder="No selection = all types" 
+                  [alreadySelected]="typesAlreadySelected"
+                  [availableOptions]="typesAutocompleteOptions"
                   (dataCollected)="typeAdded($event)"
                   (dataRemoved)="typeRemoved($event)">
                 </app-chips-autocomplete>
               </div>
               <div class="col-md-5">
                 <app-chips-autocomplete label="Definitions for selected types" formControlName="definitions"
-                  placeholder="No selection = all definitions" [availableOptions]="definitionsAutocompleteOptions">
+                  placeholder="No selection = all definitions" 
+                  [alreadySelected]="definitionsAlreadySelected"
+                  [availableOptions]="definitionsAutocompleteOptions">
                 </app-chips-autocomplete>
               </div>
             </div>
@@ -54,12 +58,15 @@
             <div class="row">
               <div class="col-md-5">
                 <app-chips-autocomplete label="Include only equipment from these rooms" formControlName="rooms"
-                  placeholder="No selection = all of the rooms" [availableOptions]="roomsAutocompleteOptions">
+                  placeholder="No selection = all of the rooms"
+                  [alreadySelected]="roomsAlreadySelected" 
+                  [availableOptions]="roomsAutocompleteOptions">
                 </app-chips-autocomplete>
               </div>
               <div class="col-md-5">
                 <app-chips-autocomplete label="Include only equipment allocated to these people"
                   formControlName="personnel" placeholder="No selection = all personnel"
+                  [alreadySelected]="personnelAlreadySelected"
                   [availableOptions]="personnelAutocompleteOptions">
                 </app-chips-autocomplete>
               </div>
@@ -110,7 +117,8 @@
           </mat-form-field>
           <!-- signatories   -->
           <app-chips-autocomplete label="Signatories" formControlName="signatories"
-          [availableOptions]="personnelAutocompleteOptions"
+          [alreadySelected]="signatoriesAlreadySelected"
+          [availableOptions]="signatoriesAutocompleteOptions"
           onlyValuesFromAutocomplete="false">
           </app-chips-autocomplete>
         </mat-step>

@@ -25,6 +25,8 @@ namespace temsAPI.Data.Entities.EquipmentEntities
         public Property Property { get; set; }
         public string PropertyID { get; set; }
 
+        public bool IsArchieved { get; set; }
+
 #nullable enable
         public string? Value { get; set; }
 #nullable disable

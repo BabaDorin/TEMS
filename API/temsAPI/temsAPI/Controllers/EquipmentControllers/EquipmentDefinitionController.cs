@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.EquipmentEntities;
 using temsAPI.Data.Entities.UserEntities;
+using temsAPI.Helpers;
 using temsAPI.System_Files;
 using temsAPI.Validation;
 using temsAPI.ViewModels;
@@ -331,15 +332,11 @@ namespace temsAPI.Controllers.EquipmentControllers
         {
             try
             {
-                var definition = (await _unitOfWork.EquipmentDefinitions
-                    .Find<EquipmentDefinition>(q => q.Id == definitionId))
-                    .FirstOrDefault();
+                var archievingResult = await (new ArchieveHelper(_userManager, _unitOfWork))
+                    .ArchieveDefinition(definitionId);
 
-                if (definition == null)
-                    return ReturnResponse("Invalid definition id provided", ResponseStatus.Fail);
-
-                definition.IsArchieved = true;
-                await _unitOfWork.Save();
+                if (archievingResult != null)
+                    return ReturnResponse(archievingResult, ResponseStatus.Fail);
 
                 return ReturnResponse("Success", ResponseStatus.Success);
             }

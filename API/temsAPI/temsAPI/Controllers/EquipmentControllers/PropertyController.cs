@@ -13,6 +13,7 @@ using temsAPI.Contracts;
 using temsAPI.Controllers;
 using temsAPI.Data.Entities.EquipmentEntities;
 using temsAPI.Data.Entities.UserEntities;
+using temsAPI.Helpers;
 using temsAPI.System_Files;
 using temsAPI.Validation;
 using temsAPI.ViewModels;
@@ -229,15 +230,11 @@ namespace temsAPI.EquipmentControllers
         {
             try
             {
-                var property = (await _unitOfWork.Properties
-                    .Find<Property>(q => q.Id == propertyId))
-                    .FirstOrDefault();
+                var archievingResult = await (new ArchieveHelper(_userManager, _unitOfWork))
+                     .ArchieveProperty(propertyId);
 
-                if (property == null)
-                    return ReturnResponse("Invalid id provided", ResponseStatus.Fail);
-
-                property.IsArchieved = true;
-                await _unitOfWork.Save();
+                if (archievingResult != null)
+                    return ReturnResponse(archievingResult, ResponseStatus.Fail);
 
                 return ReturnResponse("Success", ResponseStatus.Success);
             }

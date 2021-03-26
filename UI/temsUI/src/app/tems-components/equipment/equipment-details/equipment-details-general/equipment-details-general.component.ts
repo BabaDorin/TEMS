@@ -50,4 +50,13 @@ export class EquipmentDetailsGeneralComponent extends TEMSComponent implements O
   edit(){
     this.editing = true;    
   }
+
+  archieve(){
+    this.subscriptions.push(
+      this.equipmentService.archieveEquipment(this.equipmentId)
+      .subscribe(result => {
+        console.log(result);
+      })
+    )
+  }
 }

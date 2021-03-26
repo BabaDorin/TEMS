@@ -155,6 +155,13 @@ export class EquipmentService extends TEMSService {
     );
   }
 
+  archieveEquipment(equipmentId: string): Observable<any>{
+    return this.http.get(
+      API_EQ_URL + '/archieve/' + equipmentId,
+      this.httpOptions
+    );
+  }
+
   updateEquipment(addEquipment: AddEquipment): Observable<any>{
     return this.http.post(
       API_EQ_URL + '/update',

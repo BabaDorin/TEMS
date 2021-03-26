@@ -13,6 +13,7 @@ using temsAPI.Contracts;
 using temsAPI.Data.Entities.EquipmentEntities;
 using temsAPI.Data.Entities.OtherEntities;
 using temsAPI.Data.Entities.UserEntities;
+using temsAPI.Helpers;
 using temsAPI.System_Files;
 using temsAPI.ViewModels;
 using temsAPI.ViewModels.Equipment;
@@ -50,7 +51,7 @@ namespace temsAPI.Controllers.EquipmentControllers
                 return ReturnResponse("Fail", ResponseStatus.Fail);
 
             return ReturnResponse("Success", ResponseStatus.Success);
-        }    
+        }
 
         [HttpPost]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
@@ -97,8 +98,8 @@ namespace temsAPI.Controllers.EquipmentControllers
                     return ReturnResponse("Invalid parameters", ResponseStatus.Fail);
 
 
-                Expression<Func<Data.Entities.EquipmentEntities.Equipment, bool>> expression
-                    = (onlyParents) ? qu => qu.ParentID == null : null;
+                Expression<Func<Equipment, bool>> expression
+                    = (onlyParents) ? qu => qu.ParentID == null && !qu.IsArchieved : qu => !qu.IsArchieved;
 
                 IList<Data.Entities.EquipmentEntities.Equipment> equipments =
                     equipments = await _unitOfWork.Equipments.FindAll<Data.Entities.EquipmentEntities.Equipment>
@@ -156,13 +157,13 @@ namespace temsAPI.Controllers.EquipmentControllers
             {
                 Expression<Func<Data.Entities.EquipmentEntities.Equipment, bool>> expression =
                    (onlyParents)
-                   ? qu => qu.ParentID == null
-                   : null;
+                   ? qu => qu.ParentID == null && !qu.IsArchieved
+                   : qu => !qu.IsArchieved;
 
                 List<Option> autocompleteOptions = new List<Option>();
 
                 (await _unitOfWork.Equipments
-                    .FindAll<Data.Entities.EquipmentEntities.Equipment>(
+                    .FindAll<Equipment>(
                         where: expression,
                         include: q => q.Include(q => q.EquipmentDefinition)
                      ))
@@ -303,6 +304,27 @@ namespace temsAPI.Controllers.EquipmentControllers
             {
                 Debug.WriteLine(ex);
                 return ReturnResponse("An error occured while fetching equipment data.", ResponseStatus.Fail);
+            }
+        }
+
+        [HttpGet("equipment/archieve/{equipmentId}")]
+        [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
+        public async Task<JsonResult> Archieve(string equipmentId)
+        {
+            try
+            {
+                string archievingResult = await (new ArchieveHelper(_userManager, _unitOfWork))
+                    .ArchieveEquipment(equipmentId);
+
+                if (archievingResult != null)
+                    return ReturnResponse(archievingResult, ResponseStatus.Fail);
+
+                return ReturnResponse("Success", ResponseStatus.Success);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured while archieving the equipment", ResponseStatus.Fail);
             }
         }
 

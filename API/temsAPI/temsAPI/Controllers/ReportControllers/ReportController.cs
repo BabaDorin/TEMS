@@ -188,6 +188,93 @@ namespace temsAPI.Controllers.ReportControllers
             }
         }
 
+        [HttpPost]
+        [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
+        public async Task<JsonResult> UpdateTemplate([FromBody] AddReportTemplateViewModel viewModel)
+        {
+            try
+            {
+                string validationMessage = await ValidateTemplate(viewModel);
+                if (validationMessage != null)
+                    return ReturnResponse(validationMessage, ResponseStatus.Fail);
+
+                List<string> typeIds = viewModel.Types?.Select(q => q.Value).ToList();
+                List<string> definitionIds = viewModel.Definitions?.Select(q => q.Value).ToList();
+                List<string> roomIds = viewModel.Rooms?.Select(q => q.Value).ToList();
+                List<string> personnelIds = viewModel.Personnel?.Select(q => q.Value).ToList();
+                List<string> specificProperties = viewModel.SpecificProperties?.SelectMany(q => q.Properties).ToList();
+                List<string> propertyIds = viewModel.CommonProperties?
+                    .Concat(specificProperties == null ? new List<string>() : specificProperties)
+                    .ToList();
+                List<string> universalProperties = viewModel.CommonProperties.Where(q => ReportHelper.UniversalProperties.Contains(q)).ToList();
+                List<string> signatoriesIds = viewModel.Signatories?.Select(q => q.Value).ToList();
+
+                var model = (await _unitOfWork.ReportTemplates
+                    .Find<ReportTemplate>(
+                        where: q => q.Id == viewModel.Id,
+                        include: q => q
+                        .Include(q => q.EquipmentTypes)
+                        .Include(q => q.EquipmentDefinitions)
+                        .Include(q => q.Rooms)
+                        .Include(q => q.Personnel)
+                        .Include(q => q.Properties)
+                        .Include(q => q.Signatories)
+                    )).FirstOrDefault();
+
+                model.Name = viewModel.Name;
+                model.Description = viewModel.Description;
+                model.Subject = viewModel.Subject;
+                model.EquipmentTypes = (typeIds != null)
+                        ? (await _unitOfWork.EquipmentTypes
+                        .FindAll<EquipmentType>(q => typeIds.Contains(q.Id)))
+                        .ToList()
+                        : new List<EquipmentType>();
+                model.EquipmentDefinitions = (definitionIds != null)
+                        ? (await _unitOfWork.EquipmentDefinitions
+                        .FindAll<EquipmentDefinition>(q => definitionIds.Contains(q.Id)))
+                        .ToList()
+                        : new List<EquipmentDefinition>();
+                model.Rooms = (roomIds != null)
+                        ? (await _unitOfWork.Rooms
+                        .FindAll<Room>(q => roomIds.Contains(q.Id)))
+                        .ToList()
+                        : new List<Room>();
+                model.Personnel = (personnelIds != null)
+                        ? (await _unitOfWork.Personnel
+                        .FindAll<Personnel>(q => personnelIds.Contains(q.Id)))
+                        .ToList()
+                        : new List<Personnel>();
+                model.SepparateBy = viewModel.SepparateBy;
+                model.Properties = (propertyIds != null)
+                        ? (await _unitOfWork.Properties
+                        .FindAll<Property>(q => propertyIds.Contains(q.Name)))
+                        .ToList()
+                        : new List<Property>();
+                model.Header = viewModel.Header;
+                model.Footer = viewModel.Footer;
+                model.Signatories = (signatoriesIds != null)
+                        ? (await _unitOfWork.Personnel
+                        .FindAll<Personnel>(q => signatoriesIds.Contains(q.Id)))
+                        .ToList()
+                        : new List<Personnel>();
+                model.CreatedBy = (await _unitOfWork.TEMSUsers
+                        .Find<TEMSUser>(
+                            where: q => q.UserName == User.Identity.Name
+                        )).FirstOrDefault();
+                model.UniversalProperties = (universalProperties.Count > 0)
+                        ? String.Join(" ", universalProperties)
+                        : null;
+
+                await _unitOfWork.Save();
+                return ReturnResponse("Success!", ResponseStatus.Success);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured while saving the template", ResponseStatus.Fail);
+            }
+        }
+
         [HttpGet]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
         public async Task<JsonResult> GetTemplates()

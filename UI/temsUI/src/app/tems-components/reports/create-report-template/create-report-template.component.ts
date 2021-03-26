@@ -11,6 +11,7 @@ import { RoomsService } from './../../../services/rooms-service/rooms.service';
 import { FormGroup, FormControl } from '@angular/forms';
 import { Component, OnInit, Type } from '@angular/core';
 import { element } from 'protractor';
+import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 
 @Component({
   selector: 'app-create-report-template',
@@ -135,10 +136,7 @@ export class CreateReportTemplateComponent extends TEMSComponent implements OnIn
         if(this.reportTemplateToUpdate.signatories != undefined)
           this.signatoriesAlreadySelected = this.reportTemplateToUpdate.signatories;
 
-        this.findCommonAndSpecificProperties();
-        console.log('val1');
-        console.log()
-        
+        this.findCommonAndSpecificProperties();      
       })
     )
   }
@@ -195,9 +193,19 @@ export class CreateReportTemplateComponent extends TEMSComponent implements OnIn
   typeRemoved(eventData) {
     this.fetchDefinitionsOfTypes();
 
-    const index = this.typeSpecificProperties.findIndex(q => q.type == eventData);
+    console.log('event data:');
+    let index = this.typeSpecificProperties.findIndex(q => q.type == eventData);
     if (index > -1) {
+      console.log('typespecific removed');
       this.typeSpecificProperties.splice(index, 1);
+    }
+
+    index = this.specificProperties.findIndex(q => q.type == eventData);
+    if(index > -1){
+      console.log('specific property removed');
+      this.specificProperties.splice(index, 1);
+  
+      this.reportFormGroup.controls.specificProperties.setValue(this.specificProperties);
     }
 
     this.putBackCommonProps();
@@ -250,27 +258,28 @@ export class CreateReportTemplateComponent extends TEMSComponent implements OnIn
 
   findCommonProps() {
     this.equipmentCommonProperties = this.universalProperties;
-    if (this.typeSpecificProperties.length < 2)
-      return;
+    
+    if (this.typeSpecificProperties.length >= 2){
+      let localCommonProperties = this.typeSpecificProperties[0].properties;
 
-    let localCommonProperties = this.typeSpecificProperties[0].properties;
-
-    for (let i = 1; i < this.typeSpecificProperties.length; i++) {
-      localCommonProperties = localCommonProperties
-        .filter(value => this.typeSpecificProperties[i].properties
-          .map(q => q.label)
-          .includes(value.label));
+      for (let i = 1; i < this.typeSpecificProperties.length; i++) {
+        localCommonProperties = localCommonProperties
+          .filter(value => this.typeSpecificProperties[i].properties
+            .map(q => q.label)
+            .includes(value.label));
+      }
+  
+      this.typeSpecificProperties.forEach(element => {
+        element.properties = element.properties
+          .filter((value) => !localCommonProperties
+            .map(q => q.label)
+            .includes(value.label));
+      });
+  
+      this.equipmentCommonProperties = this.equipmentCommonProperties.concat(localCommonProperties);
     }
 
-    this.typeSpecificProperties.forEach(element => {
-      element.properties = element.properties
-        .filter((value) => !localCommonProperties
-          .map(q => q.label)
-          .includes(value.label));
-    });
-
-    this.equipmentCommonProperties = this.equipmentCommonProperties.concat(localCommonProperties);
-
+    // Marking necessary properties as checked
     if(this.reportTemplateToUpdate == undefined)
       return;
   
@@ -280,27 +289,29 @@ export class CreateReportTemplateComponent extends TEMSComponent implements OnIn
         element.checked = true;
       
       console.log(element.value + ' ' + element.checked)
-    })
+    });
 
-    this.typeSpecificProperties.forEach(element => {
-      element.properties.forEach(specificProp => {
-        specificProp.checked = false;
-        if(this.reportTemplateToUpdate.properties.indexOf(specificProp.value) > -1)
-          specificProp.checked = true;
-
-        console.log(specificProp.value + ' ' + specificProp.checked)
+    this.typeSpecificProperties.forEach(element =>{
+      element.properties.forEach(elementProperty =>{
+        if(this.reportTemplateToUpdate.properties.indexOf(elementProperty.value) > -1){
+          elementProperty.checked = true;
+        }
       })
+
+      console.log('adding');
+      console.log(element.properties.filter(q => q.checked));
+      console.log('to')
+      console.log(element.type);
+      this.onSpecificPropChange(element.properties.filter(q => q.checked).map(q => q.value), element.type);
     })
   }
 
   onSpecificPropChange(eventData, type) {
     let typeSpecific = this.specificProperties.find(q => q.type == type);
-
     if (typeSpecific != undefined)
       typeSpecific.properties = eventData;
     else
       this.specificProperties.push({ type: type, properties: eventData });
-
     this.reportFormGroup.controls.specificProperties.setValue(this.specificProperties);
   }
 
@@ -309,7 +320,10 @@ export class CreateReportTemplateComponent extends TEMSComponent implements OnIn
   }
 
   submit() {
-    console.log(this.reportFormGroup);
+
+    console.log('controls');
+    console.log(this.controls);
+
     let addReportTemplate: AddReportTemplate = {
       id: this.updateReportId,
       name: this.controls.name.value,
@@ -321,19 +335,29 @@ export class CreateReportTemplateComponent extends TEMSComponent implements OnIn
       personnel: this.controls.personnel.value,
       sepparateBy: this.controls.sepparateBy.value,
       commonProperties: this.controls.commonProperties.value,
-      specificProperties: this.controls.specificProperties.value.map(q => ({properties: q.properties, type: q.type.type.value})),
+      specificProperties: (this.controls.specificProperties.value != null)
+        ? this.controls.specificProperties.value.map(q => ({properties: q.properties, type: q.type.value}))
+        : null,
       header: this.controls.header.value,
       footer: this.controls.footer.value,
       signatories: this.controls.signatories.value,
       properties: undefined
     }
 
+    console.log('this is it');
+    console.log(addReportTemplate);
+
+
+    let endPoint = this.reportService.addReportTemplate(addReportTemplate);
+    
+    if(addReportTemplate.id != undefined)
+      endPoint = this.reportService.updateReportTemplate(addReportTemplate); 
+
     this.subscriptions.push(
-      this.reportService.addReportTemplate(addReportTemplate)
+      endPoint
       .subscribe(result => {
         console.log(result);
       })
     )
-    console.log(addReportTemplate);
   }
 }

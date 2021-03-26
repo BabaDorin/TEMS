@@ -97,7 +97,7 @@
              this with the actual value of typespecificproperties -->
           <ng-container *ngFor="let type of typeSpecificProperties">
             <app-checkbox-group [options]="type.properties" label="Specific properties of {{ type.type.value }}"
-              (toggle)="onSpecificPropChange($event, type)">
+              (toggle)="onSpecificPropChange($event, type.type)">
             </app-checkbox-group>
           </ng-container>
           <div>

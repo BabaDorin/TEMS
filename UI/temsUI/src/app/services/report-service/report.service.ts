@@ -52,9 +52,17 @@ export class ReportService extends TEMSService {
     );
   }
 
+  updateReportTemplate(addReportTemplate: AddReportTemplate): Observable<any>{
+    return this.http.post(
+      API_REP_URL + '/updatetemplate',
+      JSON.stringify(addReportTemplate),
+      this.httpOptions
+    );
+  }
+
   addReportTemplate(addReportTemplate: AddReportTemplate): Observable<any>{
     return this.http.post(
-      API_REP_URL + '/addTemplate',
+      API_REP_URL + '/addtemplate',
       JSON.stringify(addReportTemplate),
       this.httpOptions
     );

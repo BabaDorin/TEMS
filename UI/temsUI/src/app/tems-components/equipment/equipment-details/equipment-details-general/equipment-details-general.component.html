@@ -53,14 +53,8 @@
 
     <app-add-equipment *ngIf="editing==true"
     [updateEquipmentId]="equipment.id"
+    (goBack)="ngOnInit(); editing = false;"
     [updateEquipmentDefinitionId]="equipment.definition.value">
         Loading...
     </app-add-equipment>
-
-    <!-- <ng-container *ngIf="editing==true">
-        <p>here</p>
-        <ng-template matTabContent>
-           
-        </ng-template>
-    </ng-container> -->
 </ng-container>

@@ -26,6 +26,7 @@ export class AddEquipmentComponent extends TEMSComponent implements OnInit {
   updateEquipment: AddEquipment;
 
   @Output() done = new EventEmitter();
+  @Output() goBack = new EventEmitter();
 
   formGroup = new FormGroup({
     equipmentType: new FormControl(),
@@ -207,5 +208,9 @@ export class AddEquipmentComponent extends TEMSComponent implements OnInit {
         this.dialogService.openDialog(AddDefinitionComponent);
         break;
     }
+  }
+
+  back(){
+    this.goBack.emit();
   }
 }

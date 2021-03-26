@@ -30,7 +30,15 @@ export class ReportsComponent implements OnInit {
     this.customTemplates = this.reportService.getCustomTemplates();
   }
 
+  edit(templateId: string){
+    this.router.navigate(["/reports/updatereport/" + templateId]);
+  }
+
+  remove(templateId: string){
+    // stuff
+  }
+
   createTemplate(){
-    this.router.navigate(["/reports/createTemplate"]);
+    this.router.navigate(["/reports/createtemplate"]);
   }
 }

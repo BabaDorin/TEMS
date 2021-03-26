@@ -52,4 +52,11 @@ export class ReportService extends TEMSService {
       this.httpOptions
     );
   }
+
+  getReportTemplateToUpdate(reportTemplateId: string): Observable<AddReportTemplate>{
+    return this.http.get<AddReportTemplate>(
+      API_REP_URL + '/gettemplatetoupdate/' + reportTemplateId,
+      this.httpOptions
+    );
+  }
 }

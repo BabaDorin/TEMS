@@ -12,8 +12,9 @@ export interface IAddReportTemplate{
     commonProperties: string[],
     specificProperties: {
         type: string,
-        properties: IOption[]
+        properties: string[]
     }[],
+    properties?: string[],
     header: string,
     footer: string,
     signatories: IOption[],
@@ -30,7 +31,8 @@ export class AddReportTemplate implements IAddReportTemplate{
     rooms: IOption[] = [];
     sepparateBy: string;
     commonProperties: string[];
-    specificProperties: { type: string; properties: IOption[]; }[] = [];
+    specificProperties: { type: string; properties: string[]; }[] = [];
+    properties?: string[] =[];
     header: string;
     footer: string;
     signatories: IOption[] = [];

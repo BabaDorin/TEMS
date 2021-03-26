@@ -1,3 +1,4 @@
+import { ActivatedRoute } from '@angular/router';
 import { ReportService } from './../../../services/report-service/report.service';
 import { AddReportTemplate } from './../../../models/report/add-report.model';
 import { Observable, of } from 'rxjs';
@@ -41,7 +42,8 @@ export class CreateReportTemplateComponent extends TEMSComponent implements OnIn
     private roomService: RoomsService,
     private equipmentService: EquipmentService,
     private personnelService: PersonnelService,
-    private reportService: ReportService
+    private reportService: ReportService,
+    private activatedroute: ActivatedRoute
   ) {
     super();
   }
@@ -79,6 +81,45 @@ export class CreateReportTemplateComponent extends TEMSComponent implements OnIn
     this.equipmentCommonProperties = this.universalProperties;
     this.equipmentCommonProperties.map(q => q.checked = true);
     this.reportFormGroup.controls.commonProperties.setValue(this.equipmentCommonProperties.map(q => q.value));
+
+    if(this.updateReportId == undefined)
+      this.updateReportId = this.activatedroute.snapshot.paramMap.get("id");
+    
+    if(this.updateReportId != undefined)
+      this.edit();
+  }
+
+  edit(){
+    let reportTemplateToUpdate = new AddReportTemplate(); 
+
+    this.subscriptions.push(
+      this.reportService.getReportTemplateToUpdate(this.updateReportId)
+      .subscribe(result => {
+        reportTemplateToUpdate = result;
+
+        if(reportTemplateToUpdate == null)
+          return;
+
+        console.log('got this from server to update');
+        console.log(reportTemplateToUpdate);
+        
+        let controls = this.reportFormGroup.controls;
+        controls.name.setValue(reportTemplateToUpdate.name),
+        controls.description.setValue(reportTemplateToUpdate.description),
+        controls.subject.setValue(reportTemplateToUpdate.subject),
+        controls.types.setValue(reportTemplateToUpdate.types),
+        controls.definitions.setValue(reportTemplateToUpdate.definitions),
+        controls.rooms.setValue(reportTemplateToUpdate.rooms),
+        controls.personnel.setValue(reportTemplateToUpdate.personnel),
+        controls.sepparateBy.setValue(reportTemplateToUpdate.sepparateBy),
+        controls.header.setValue(reportTemplateToUpdate.header),
+        controls.footer.setValue(reportTemplateToUpdate.footer),
+        controls.signatories.setValue(reportTemplateToUpdate.signatories),
+        controls.name.setValue(reportTemplateToUpdate.name);
+
+        this.findCommonAndSpecificProperties();
+      })
+    )
   }
 
   fetchTypes() {
@@ -126,7 +167,7 @@ export class CreateReportTemplateComponent extends TEMSComponent implements OnIn
   typeAdded(eventData) {
     // getting definitions for selected types
     this.fetchDefinitionsOfTypes();
-    this.findCommonAndSpecificPropertied();
+    this.findCommonAndSpecificProperties();
   }
 
   typeRemoved(eventData) {
@@ -145,7 +186,7 @@ export class CreateReportTemplateComponent extends TEMSComponent implements OnIn
     this.reportFormGroup.controls.commonProperties.setValue(eventData);
   }
 
-  findCommonAndSpecificPropertied() {
+  findCommonAndSpecificProperties() {
     // 1. Put all common props back to where they belong
     // 2. Add or remove type specific properties
     // 3. Find common properties

@@ -29,6 +29,9 @@
                                         d="M5,10.75V6.5H.75A.75.75,0,0,1,.75,5H5V.75a.75.75,0,0,1,1.5,0V5h4.25a.75.75,0,1,1,0,1.5H6.5v4.25a.75.75,0,1,1-1.5,0Z"
                                         transform="translate(6 6)" fill="#141124" />
                                 </svg>
+                                
+                                <button mat-button (click)="edit(template.id)">Edit</button>
+                                <button mat-button (click)="remove(template.it)">Remove</button>
                             </div>
                             <p class="text-center">Add custom template</p>
                         </mat-card-content>

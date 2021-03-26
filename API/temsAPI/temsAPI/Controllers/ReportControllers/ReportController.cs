@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -22,6 +23,72 @@ namespace temsAPI.Controllers.ReportControllers
     {
         public ReportController(IMapper mapper, IUnitOfWork unitOfWork, UserManager<TEMSUser> userManager) : base(mapper, unitOfWork, userManager)
         {
+        }
+
+        [HttpGet("report/gettemplatetoupdate/{templateId}")]
+        public async Task<JsonResult> GetTemplateToUpdate(string templateId)
+        {
+            try
+            {
+                ReportTemplate model = (await _unitOfWork.ReportTemplates
+                    .FindAll<ReportTemplate>(
+                        where: q => q.Id == templateId,
+                        include: q => q
+                        .Include(q => q.EquipmentTypes)
+                        .Include(q => q.EquipmentDefinitions)
+                        .Include(q => q.Rooms)
+                        .Include(q => q.Personnel)
+                        .Include(q => q.Properties)
+                        .Include(q => q.Signatories)
+                    )).FirstOrDefault();
+
+                if (model == null)
+                    return ReturnResponse("Invalid id provided", ResponseStatus.Fail);
+
+                var viewModel = new AddReportTemplateViewModel
+                {
+                    Id = model.Id,
+                    Name = model.Name,
+                    Description = model.Description,
+                    Subject = model.Subject,
+                    Types = model.EquipmentTypes.Select(q => new Option
+                    {
+                        Value = q.Id,
+                        Label = q.Name
+                    }).ToList(),
+                    Definitions = model.EquipmentDefinitions.Select(q => new Option
+                    {
+                        Value = q.Id,
+                        Label = q.Identifier
+                    }).ToList(),
+                    Rooms = model.Rooms.Select(q => new Option
+                    {
+                        Value = q.Id,
+                        Label = q.Identifier
+                    }).ToList(),
+                    Personnel = model.Personnel.Select(q => new Option
+                    {
+                        Value = q.Id,
+                        Label = q.Name
+                    }).ToList(),
+                    Properties = model.Properties.Select(q => q.Name).ToList(),
+                    SepparateBy = model.SepparateBy,
+                    Header = model.Header,
+                    Footer = model.Footer,
+                    Signatories = model.Signatories.Select(q => new Option
+                    {
+                        Value = q.Id,
+                        Label = q.Name
+                    }).ToList(),
+                };
+
+                return Json(viewModel); // update it    
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured while fetching the template", ResponseStatus.Fail);
+            }
         }
 
         [HttpPost]

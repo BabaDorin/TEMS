@@ -17,7 +17,9 @@ export class EquipmentDetailsComponent extends TEMSComponent implements OnInit {
   // equipment: ViewEquipment;
   
 
-  constructor(private activatedroute: ActivatedRoute, private elementRef: ElementRef,
+  constructor(
+    private activatedroute: ActivatedRoute, 
+    private elementRef: ElementRef,
     private equipmentService: EquipmentService) {
       super();
   }

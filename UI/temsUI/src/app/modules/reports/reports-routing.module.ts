@@ -7,7 +7,8 @@ import { CanViewEntitiesGuard } from 'src/app/guards/can-view-entities.guard';
 
 const routes: Routes = [
   { path: '', component: ReportsComponent, canActivate: [CanViewEntitiesGuard] },
-  { path: 'createTemplate', component: CreateReportTemplateComponent, canActivate: [CanManageEntitiesGuard] }
+  { path: 'createtemplate', component: CreateReportTemplateComponent, canActivate: [CanManageEntitiesGuard] },
+  { path: 'updatetemplate/:id', component: CreateReportTemplateComponent, canActivate: [CanManageEntitiesGuard] }
 ];
 
 @NgModule({

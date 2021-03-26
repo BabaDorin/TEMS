@@ -328,6 +328,35 @@ namespace temsAPI.Controllers.EquipmentControllers
             }
         }
 
+        [HttpGet("equipment/changeworkingstate/{attribute}/{equipmentId}")]
+        [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
+        public async Task<JsonResult> ChangeWorkingState(string attribute, string equipmentId)
+        {
+            try
+            {
+                var model = (await _unitOfWork.Equipments
+                    .Find<Equipment>(q => q.Id == equipmentId))
+                    .FirstOrDefault();
+
+                if (model == null)
+                    return ReturnResponse("Invalid id provided", ResponseStatus.Fail);
+
+                if(attribute.ToLower() == "isdefect")
+                    model.IsDefect = !model.IsDefect;
+
+                if (attribute.ToLower() == "isused")
+                    model.IsUsed = !model.IsUsed;
+
+                await _unitOfWork.Save();
+                return ReturnResponse("Success", ResponseStatus.Success);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured while change the equipment's work state", ResponseStatus.Fail);
+            }
+        }
+
         // -------------------------< Extract then to a separate file >--------------------------------
         private async Task<ViewEquipmentSimplifiedViewModel> EquipmentToEquipmentSimplifiedMapping(Equipment eq)
         {

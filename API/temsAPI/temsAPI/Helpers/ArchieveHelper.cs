@@ -31,7 +31,8 @@ namespace temsAPI.Helpers
                         where: q => q.Id == equipmentId,
                         include: q => q
                         .Include(q => q.Children)
-                        .Include(q => q.EquipmentAllocations)))
+                        .Include(q => q.EquipmentAllocations)
+                        .Include(q => q.Logs)))
                     .FirstOrDefault();
 
                 if (model == null)
@@ -47,6 +48,11 @@ namespace temsAPI.Helpers
                 foreach (var allocation in model.EquipmentAllocations)
                 {
                     allocation.IsArchieved = true;
+                }
+
+                foreach (var log in model.Logs)
+                {
+                    log.IsArchieved = true;
                 }
 
                 await _unitOfWork.Save();

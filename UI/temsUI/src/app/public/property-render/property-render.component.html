@@ -3,8 +3,9 @@
         <b>{{ prop.displayName }}: </b> {{ prop.value }}
     </span>
 
-    <span *ngIf="prop.dataType != undefined && prop.dataType.name == 'boolean'">
-        <b>{{ prop.displayName }}: </b> <i *ngIf="prop.value == true" class="dot true"></i>
-                                        <i *ngIf="prop.value == false" class="dot false"></i>
+    <span *ngIf="prop.dataType != undefined && prop.dataType == 'boolean'">
+        <!-- <mat-slide-toggle [checked]="prop.value" (change)="change('prop.')">
+        </mat-slide-toggle> -->
+        <b>{{ prop.displayName }}: </b> {{ prop.value }}
     </span>
 </p>

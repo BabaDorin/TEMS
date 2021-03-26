@@ -39,8 +39,8 @@ export class EquipmentDetailsGeneralComponent extends TEMSComponent implements O
           { displayName: 'Type', value: this.equipment.type.name},
           { displayName: 'TemsID', value: this.equipment.temsId },
           { displayName: 'Serial Number', value: this.equipment.serialNumber},
-          { displayName: 'Is Used', dataType: 'boolean', value: this.equipment.isUsed},
-          { displayName: 'Is Defect', dataType: 'boolean', value: this.equipment.isUsed},
+          { displayName: 'Is Used', dataType: 'boolean', name: 'isUsed', value: this.equipment.isUsed},
+          { displayName: 'Is Defect', dataType: 'boolean', name: 'isUsed', value: this.equipment.isDefect},
         ];
     
         this.specificProperties = this.equipment.specificTypeProperties;
@@ -52,10 +52,32 @@ export class EquipmentDetailsGeneralComponent extends TEMSComponent implements O
   }
 
   archieve(){
+    if(!confirm("Are you sure you want to archive this item? It will result in archieving all of it's logs and allocations"))
+      return;
+
     this.subscriptions.push(
       this.equipmentService.archieveEquipment(this.equipmentId)
       .subscribe(result => {
         console.log(result);
+      })
+    )
+  }
+
+  changeState(attribute: string){
+    this.subscriptions.push(
+      this.equipmentService.changeState(attribute, this.equipmentId)
+      .subscribe(result => {
+        console.log(result);
+
+        if(result.status == 1){
+          if(attribute == 'isDefect'){
+            this.equipment.isDefect = !this.equipment.isDefect;
+            this.generalProperties[this.generalProperties.length-1].value = this.equipment.isDefect;
+          }
+          else
+          this.equipment.isUsed = !this.equipment.isUsed;
+          this.generalProperties[this.generalProperties.length-2].value = this.equipment.isUsed;
+        }
       })
     )
   }

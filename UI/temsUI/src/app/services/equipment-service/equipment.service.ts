@@ -162,6 +162,13 @@ export class EquipmentService extends TEMSService {
     );
   }
 
+  changeState(attribute: string, equipmentId: string): Observable<any>{
+    return this.http.get(
+      API_EQ_URL + '/changeworkingstate/' + attribute + '/' + equipmentId,
+      this.httpOptions
+    );
+  }
+
   updateEquipment(addEquipment: AddEquipment): Observable<any>{
     return this.http.post(
       API_EQ_URL + '/update',

@@ -9,8 +9,15 @@
         <b *ngIf="equipment.temsID == undefined && equipment.serialNumber != undefined">{{ equipment.serialNumber}}</b>
     </h1>
     <button mat-button (click)="edit()">Edit</button>
-    <button mat-button (click)="archieve()">Archieve</button>
-    <button mat-button (click)="markDefect()">Mark as defect</button>
+    <button mat-button (click)="archieve()" [disabled]="editing">Archieve</button>
+    <button mat-button (click)="changeState('isDefect')" [disabled]="editing">
+        <p *ngIf="equipment.isDefect == true">Mark as working</p>
+        <p *ngIf="equipment.isDefect == false">Mark as defect</p>
+    </button>
+    <button mat-button (click)="changeState('isUsed')" [disabled]="editing">
+        <p *ngIf="equipment.isUsed == true">Mark as unused</p>
+        <p *ngIf="equipment.isUsed == false">Mark as used</p>
+    </button>
     <hr>
     <br>
     <ng-container *ngIf="editing == false">

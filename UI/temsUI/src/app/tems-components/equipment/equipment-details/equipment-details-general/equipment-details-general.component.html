@@ -1,12 +1,19 @@
+<ng-container *ngIf="equipment==undefined">
+    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+</ng-container>
+
 <ng-container *ngIf="equipment!=undefined">
     <br>
     <h1>{{ equipment.identifier }}
         <b *ngIf="equipment.temsID != undefined"> {{ equipment.temsID }}</b>
         <b *ngIf="equipment.temsID == undefined && equipment.serialNumber != undefined">{{ equipment.serialNumber}}</b>
     </h1>
+    <button mat-button (click)="edit()">Edit</button>
+    <button mat-button (click)="archieve()">Archieve</button>
+    <button mat-button (click)="markDefect()">Mark as defect</button>
     <hr>
     <br>
-    <div *ngIf="edit==false">
+    <ng-container *ngIf="editing == false">
         <div class="container m-0 p-0">
             <div class="row">
                 <div class="col-6">
@@ -19,36 +26,41 @@
                 </div>
             </div>
         </div>
-    </div>
-    <br>
-    <br>
-    <ng-container *ngIf="equipment.children != undefined && equipment.children.length > 0">
-        <h2>Equipment's Children</h2>
-        <hr> -->
-        <div *ngFor="let child of equipment.children">
-            <mat-expansion-panel>
-                <mat-expansion-panel-header>
-                    <b>{{ child.type }}: </b>  {{ child.identifier }}
-                </mat-expansion-panel-header>
-        
-                <ng-template matExpansionPanelContent class="mat-exp-panel-content">
-                   <app-equipment-details [equipmentId]="child.id"></app-equipment-details>
-                </ng-template>
-            </mat-expansion-panel>
-            <br>
-        </div>
-    </ng-container>
-    <div class="container" *ngIf="equipment.photos.length > 0">
-        <h4>Equipment Images</h4>
-        <app-image-carousel></app-image-carousel>
-    </div>
-    <br>
-    <div *ngIf="edit==true">
-        edit = true
-    </div>
-    <button class="btn btn-primary" (click)="edit=!edit">Edit data</button>
-</ng-container>
+        <br>
+        <br>
+        <ng-container *ngIf="equipment.children != undefined && equipment.children.length > 0">
+            <h2>Equipment's Children</h2>
+            <hr> -->
+            <div *ngFor="let child of equipment.children">
+                <mat-expansion-panel>
+                    <mat-expansion-panel-header>
+                        <b>{{ child.type }}: </b> {{ child.identifier }}
+                    </mat-expansion-panel-header>
 
-<ng-container *ngIf="equipment==undefined">
-    <H1>Loading...</H1>
+                    <ng-template matExpansionPanelContent class="mat-exp-panel-content">
+                        <app-equipment-details [equipmentId]="child.id"></app-equipment-details>
+                    </ng-template>
+                </mat-expansion-panel>
+                <br>
+            </div>
+        </ng-container>
+        <div class="container" *ngIf="equipment.photos.length > 0">
+            <h4>Equipment Images</h4>
+            <app-image-carousel></app-image-carousel>
+        </div>
+        <br>
+    </ng-container>
+
+    <app-add-equipment *ngIf="editing==true"
+    [updateEquipmentId]="equipment.id"
+    [updateEquipmentDefinitionId]="equipment.definition.value">
+        Loading...
+    </app-add-equipment>
+
+    <!-- <ng-container *ngIf="editing==true">
+        <p>here</p>
+        <ng-template matTabContent>
+           
+        </ng-template>
+    </ng-container> -->
 </ng-container>

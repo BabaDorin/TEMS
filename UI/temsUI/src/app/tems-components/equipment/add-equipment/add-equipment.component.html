@@ -1,43 +1,46 @@
 <div class="card">
   <div class="card-body">
-    <h4 class="card-title">Add Equipment</h4>
-    <p class="card-description">Please, provide all of the necessary data in order to register the equipment.</p>
-    <hr>
-    <br>
-
-    <form class="forms-sample" [formGroup]="formGroup">
-
-    <!-- Choose Equipment Type -->
-    <div class="form-group">
-      <mat-form-field>
-        <mat-label>Equipment Type</mat-label>
-        <mat-select formControlName="equipmentType" 
-        [(ngModel)]="selectedType" (selectionChange)="onTypeChanged($event)">
-          <mat-option (click)="openDialog('add-type')">+ Add New</mat-option>
-          <mat-option *ngFor="let type of types" [value]="type.value">{{ type.label }}</mat-option>
-        </mat-select>
-      </mat-form-field>
-    </div>
+    <h4 class="card-title">{{ header }}</h4>
     
-    <!-- Choose Equipment Definition -->
-    <ng-container *ngIf="selectedType != undefined">
+    <ng-container *ngIf="updateEquipmentId == undefined">
+      <p class="card-description">Please, provide all of the necessary data in order to register the equipment.</p>
+      <hr>
+      <br>
+      <form class="forms-sample" [formGroup]="formGroup">
+      <!-- Choose Equipment Type -->
       <div class="form-group">
         <mat-form-field>
-          <mat-label>Equipment Definition</mat-label>
-          <mat-select formControlName="equipmentDefinition" 
-          [(ngModel)]="selectedDefinition" (selectionChange)="onDefinitionChanged($event)">
-            <mat-option (click)="openDialog('add-definition')">+ Add New</mat-option>
-            <mat-option *ngFor="let definition of definitionsOfType" [value]="definition.value">{{ definition.label }}</mat-option>
+          <mat-label>Equipment Type</mat-label>
+          <mat-select formControlName="equipmentType" 
+          [(ngModel)]="selectedType" (selectionChange)="onTypeChanged($event)">
+            <mat-option (click)="openDialog('add-type')">+ Add New</mat-option>
+            <mat-option *ngFor="let type of types" [value]="type.value">{{ type.label }}</mat-option>
           </mat-select>
         </mat-form-field>
       </div>
+      <!-- Choose Equipment Definition -->
+      <ng-container *ngIf="selectedType != undefined">
+        <div class="form-group">
+          <mat-form-field>
+            <mat-label>Equipment Definition</mat-label>
+            <mat-select formControlName="equipmentDefinition" 
+            [(ngModel)]="selectedDefinition" (selectionChange)="onDefinitionChanged($event)">
+              <mat-option (click)="openDialog('add-definition')">+ Add New</mat-option>
+              <mat-option *ngFor="let definition of definitionsOfType" [value]="definition.value">{{ definition.label }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </ng-container>
+      </form>
     </ng-container>
-    </form>
 
+    <ng-container *ngIf="updateEquipmentId != undefined && formlyData.isVisible == false">
+      <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+    </ng-container>
     <form *ngIf="formlyData.isVisible" [formGroup]="formlyData.form" (ngSubmit)="onSubmit(formlyData.model)">
       <formly-form [form]="formlyData.form" [fields]="formlyData.fields" [model]="formlyData.model"></formly-form>
       <br>
-      <button type="submit" class="btn btn-gradient-primary mr-2" [disabled]="formlyData.form.status == 'INVALID'">
+      <button mat-button type="submit" class="btn-primary" [disabled]="formlyData.form.status == 'INVALID'">
         Submit
       </button>
     </form>

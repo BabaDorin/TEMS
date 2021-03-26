@@ -9,7 +9,7 @@ namespace temsAPI.ViewModels.Equipment
     public class ViewEquipmentViewModel
     {
         public string Id { get; set; }
-        public string Identifier { get; set; }
+        public Option Definition { get; set; }
         public string TemsId { get; set; }
         public string SerialNumber { get; set; }
         public IOption Room { get; set; }

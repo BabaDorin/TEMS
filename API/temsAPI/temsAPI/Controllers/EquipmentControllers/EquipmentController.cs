@@ -34,38 +34,12 @@ namespace temsAPI.Controllers.EquipmentControllers
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> Create([FromBody] AddEquipmentViewModel viewModel)
         {
-            // one or both of TEMSID and SerialNumber properties should be given values
-            if ((viewModel.Temsid == null ||
-                String.IsNullOrEmpty(viewModel.Temsid = viewModel.Temsid.Trim())) &&
-                (viewModel.SerialNumber == null ||
-                String.IsNullOrEmpty(viewModel.SerialNumber = viewModel.SerialNumber.Trim())))
-                return ReturnResponse("Please, provide information for TemsID and / or SerialNumber", ResponseStatus.Fail);
-
-            // Equipment is already created
-            if (!String.IsNullOrEmpty(viewModel.Temsid) &&
-                await _unitOfWork.Equipments.isExists(q => q.TEMSID == viewModel.Temsid) ||
-                !String.IsNullOrEmpty(viewModel.SerialNumber) &&
-                await _unitOfWork.Equipments.isExists(q => q.SerialNumber == viewModel.SerialNumber))
-                return ReturnResponse("This equipment already exists.", ResponseStatus.Fail);
-
-
-
-            // Value for purchase date wasn't provided
-            if (viewModel.PurchaseDate == new DateTime())
-                viewModel.PurchaseDate = DateTime.Now;
-
-            // Invalid price data
-            if (viewModel.Price < 0 ||
-                (new List<string> { "lei", "eur", "usd" }).IndexOf(viewModel.Currency) == -1)
-                return ReturnResponse("Invalid price data provided.", ResponseStatus.Fail);
-
-            // Invalid definition provided
-            if (!await _unitOfWork.EquipmentDefinitions.isExists(q => q.Id == viewModel.EquipmentDefinitionID))
-                return ReturnResponse("An equipment definition having the specified id has not been found.", ResponseStatus.Fail);
+            string validationResult = await ValidateAddEquipmentViewModel(viewModel);
+            if (validationResult != null)
+                return ReturnResponse(validationResult, ResponseStatus.Fail);
 
             // If we got so far, it might be valid
-            Data.Entities.EquipmentEntities.Equipment model =
-                _mapper.Map<Data.Entities.EquipmentEntities.Equipment>(viewModel);
+            Equipment model = _mapper.Map<Equipment>(viewModel);
 
             model.Id = Guid.NewGuid().ToString();
 
@@ -76,6 +50,40 @@ namespace temsAPI.Controllers.EquipmentControllers
                 return ReturnResponse("Fail", ResponseStatus.Fail);
 
             return ReturnResponse("Success", ResponseStatus.Success);
+        }    
+
+        [HttpPost]
+        [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
+        public async Task<JsonResult> Update([FromBody] AddEquipmentViewModel viewModel)
+        {
+            try
+            {
+                string validationResult = await ValidateAddEquipmentViewModel(viewModel);
+                if (validationResult != null)
+                    return ReturnResponse(validationResult, ResponseStatus.Fail);
+
+                var model = (await _unitOfWork.Equipments
+                    .Find<Equipment>(q => q.Id == viewModel.Id))
+                    .FirstOrDefault();
+
+                model.Currency = viewModel.Currency;
+                model.Description = viewModel.Description;
+                model.IsDefect = viewModel.IsDefect;
+                model.IsUsed = viewModel.IsUsed;
+                model.Price = viewModel.Price;
+                model.PurchaseDate = viewModel.PurchaseDate;
+                model.SerialNumber = viewModel.SerialNumber;
+                model.TEMSID = viewModel.Temsid;
+
+                await _unitOfWork.Save();
+
+                return ReturnResponse("Success!", ResponseStatus.Success);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured while updating equipment data.", ResponseStatus.Fail);
+            }
         }
 
         [HttpGet("equipment/getsimplified/{pageNumber}/{equipmentsPerPage}/{onlyParents}")]
@@ -206,58 +214,63 @@ namespace temsAPI.Controllers.EquipmentControllers
                         .Include(q => q.Children)
                         .ThenInclude(q => q.EquipmentDefinition)
                         .ThenInclude(q => q.EquipmentType)
-                        .ThenInclude(q => q.Properties)
+                        .ThenInclude(q => q.Properties.Where(q => !q.IsArchieved))
                         .Include(q => q.Parent)
                         .ThenInclude(q => q.EquipmentDefinition)
                       )).FirstOrDefault();
 
-                
+                var activeRoomAllocation = model.EquipmentAllocations
+                    .Where(q => q.DateReturned == null && q.RoomID != null)
+                    ?.FirstOrDefault();
+
+                var activePersonnelAllocation = model.EquipmentAllocations
+                    .Where(q => q.DateReturned == null && q.PersonnelID != null)
+                    ?.FirstOrDefault();
+
                 ViewEquipmentViewModel viewModel = new ViewEquipmentViewModel
                 {
                     Id = model.Id,
-                    Identifier = model.EquipmentDefinition.Identifier,
+                    Definition = new Option
+                    {
+                        Value = model.EquipmentDefinition.Id,
+                        Label = model.EquipmentDefinition.Identifier,
+                        Additional = model.EquipmentDefinition.Description
+                    },
                     IsDefect = model.IsDefect,
                     IsUsed = model.IsUsed,
                     SerialNumber = model.SerialNumber,
                     TemsId = model.TEMSID,
                     Type = model.EquipmentDefinition.EquipmentType.Name,
-                    Personnnel = new Option
-                    {
-                        Value = (model.EquipmentAllocations.Count(q => q.DateReturned == null && q.PersonnelID != null) > 0)
-                                ? model.EquipmentAllocations.FirstOrDefault().PersonnelID
-                                : null,
-                        Label = (model.EquipmentAllocations.Count(q => q.DateReturned == null && q.PersonnelID != null) > 0)
-                                ? model.EquipmentAllocations.FirstOrDefault().Personnel.Name
-                                : "TEMS",
-                    },
-                    Room = new Option
-                    {
-                        Value = (model.EquipmentAllocations.Count(q => q.DateReturned == null && q.RoomID != null) > 0)
-                                ? model.EquipmentAllocations.FirstOrDefault().RoomID
-                                : null,
-                        Label = (model.EquipmentAllocations.Count(q => q.DateReturned == null && q.RoomID != null) > 0)
-                                ? model.EquipmentAllocations.FirstOrDefault().Room.Identifier
-                                : "Deposit",
-                    },
+                    Personnnel = (activePersonnelAllocation == null)
+                        ? null
+                        : new Option
+                        {
+                            Value = activePersonnelAllocation.PersonnelID,
+                            Label = activePersonnelAllocation.Personnel.Name
+                        },
+                    Room = (activeRoomAllocation == null)
+                        ? new Option { Value = "Deposit", Label = "Deposit" }
+                        : new Option
+                        {
+                            Value = activeRoomAllocation.RoomID,
+                            Label = activeRoomAllocation.Room.Identifier
+                        },
                     Parent = (model.Parent == null)
-                             ? null
-                             : new Option
-                             {
-                                 Value = model.Parent.Id,
-                                 Label = model.Parent.EquipmentDefinition.Identifier,
-                             },
+                        ? null
+                        : new Option
+                        {
+                            Value = model.Parent.Id,
+                            Label = model.Parent.EquipmentDefinition.Identifier,
+                        },
                     Children = model.Children
-                                    .Select(q => new Option
-                                    {
-                                        Value = q.Id,
-                                        Label = q.EquipmentDefinition.Identifier,
-                                        Additional = q.EquipmentDefinition.EquipmentType.Name
-                                    }).ToList(),
-
+                        .Select(q => new Option
+                        {
+                            Value = q.Id,
+                            Label = q.EquipmentDefinition.Identifier,
+                            Additional = q.EquipmentDefinition.EquipmentType.Name
+                        }).ToList(),
                     SpecificTypeProperties = _mapper.Map<List<ViewPropertyViewModel>>
                             (model.EquipmentDefinition.EquipmentType.Properties),
-                    
-
                 };
 
                 return Json(viewModel);
@@ -266,6 +279,30 @@ namespace temsAPI.Controllers.EquipmentControllers
             {
                 Debug.WriteLine(ex);
                 return ReturnResponse("An error occured when fetching equipment", ResponseStatus.Fail);
+            }
+        }
+
+        [HttpGet("equipment/getequipmenttoupdate/{equipmentId}")]
+        [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
+        public async Task<JsonResult> GetEquipmentToUpdate(string equipmentId)
+        {
+            try
+            {
+                var viewModel = (await _unitOfWork.Equipments
+                    .Find<AddEquipmentViewModel>(
+                        where: q => q.Id == equipmentId,
+                        include: q => q
+                        .Include(q => q.EquipmentDefinition)
+                        .ThenInclude(q => q.EquipmentType),
+                        select: q => _mapper.Map<AddEquipmentViewModel>(q)
+                      )).FirstOrDefault();
+
+                return Json(viewModel);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured while fetching equipment data.", ResponseStatus.Fail);
             }
         }
 
@@ -290,7 +327,7 @@ namespace temsAPI.Controllers.EquipmentControllers
             if (lastAllocation == null)
                 viewEquipmentSimplified.Assignee = "Deposit";
             else
-                viewEquipmentSimplified.Assignee = 
+                viewEquipmentSimplified.Assignee =
                     (lastAllocation.Room != null)
                     ? "Room: " + lastAllocation.Room.Identifier
                     : "Personnel: " + lastAllocation.Personnel.Name;
@@ -301,6 +338,73 @@ namespace temsAPI.Controllers.EquipmentControllers
                 : viewEquipmentSimplified.TemsId;
 
             return viewEquipmentSimplified;
+        }
+
+        /// <summary>
+        /// Validates an instance of AddEquipmentViewModel. Returns null if everything is ok, otherwise - returns
+        /// an error message.
+        /// </summary>
+        /// <param name="viewModel"></param>
+        /// <returns></returns>
+        private async Task<string> ValidateAddEquipmentViewModel(AddEquipmentViewModel viewModel)
+        {
+            Equipment updateModel = null;
+
+            // It's the update case and the provided id is invalid
+            if (viewModel.Id != null)
+            {
+                updateModel = (await _unitOfWork.Equipments
+                    .Find<Equipment>(q => q.Id == viewModel.Id)).FirstOrDefault();
+
+                if (updateModel == null)
+                    return "Invalid id provided";
+            }
+
+            // at least one (TEMSID or SerialNumber) should be provided
+            viewModel.Temsid = viewModel.Temsid?.Trim();
+            viewModel.SerialNumber = viewModel.SerialNumber?.Trim();
+            if (String.IsNullOrEmpty(viewModel.Temsid) && String.IsNullOrEmpty(viewModel.SerialNumber))
+                return "Please, provide information for TemsID and / or SerialNumber";
+
+            // Equipment already exists and it's not the update case
+            if(updateModel == null)
+            {
+                if (!String.IsNullOrEmpty(viewModel.Temsid) &&
+                    await _unitOfWork.Equipments.isExists(q => q.TEMSID == viewModel.Temsid) ||
+                    !String.IsNullOrEmpty(viewModel.SerialNumber) &&
+                    await _unitOfWork.Equipments.isExists(q => q.SerialNumber == viewModel.SerialNumber))
+                    return "An equipment with the same TEMSID or Serial number already exists.";
+            }
+            else
+            {
+                if (viewModel.Temsid != updateModel.TEMSID
+                    && await _unitOfWork.Equipments.isExists(q => q.TEMSID == viewModel.Temsid))
+                    return "An equipment with the specified TEMSID already exists";
+
+                if (viewModel.SerialNumber!= updateModel.SerialNumber
+                    && await _unitOfWork.Equipments.isExists(q => q.SerialNumber== viewModel.SerialNumber))
+                    return "An equipment with the specified Serial number already exists";
+            }
+
+            // No value provided for purchase date
+            if (viewModel.PurchaseDate == new DateTime())
+                viewModel.PurchaseDate = DateTime.Now;
+
+            // Invalid price data
+            if (viewModel.Price < 0 ||
+                (new List<string> { "lei", "eur", "usd" }).IndexOf(viewModel.Currency) == -1)
+                return "Invalid price data provided.";
+
+            // Invalid definition provided
+            // Case 1: Invalid id
+            if (!await _unitOfWork.EquipmentDefinitions.isExists(q => q.Id == viewModel.EquipmentDefinitionID))
+                return "An equipment definition having the specified id has not been found.";
+
+            // Case 2: It's the update case and the new definition is different from the old one
+            if (updateModel != null && viewModel.EquipmentDefinitionID != updateModel.EquipmentDefinitionID)
+                return "The new equipment definition should match the old one.";
+
+            return null;
         }
     }
 }

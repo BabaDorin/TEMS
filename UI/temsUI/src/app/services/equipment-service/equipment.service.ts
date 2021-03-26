@@ -147,9 +147,17 @@ export class EquipmentService extends TEMSService {
     );
   }
 
-  createEquipment(addEquipment: AddEquipment): Observable<any>{
+  addEquipment(addEquipment: AddEquipment): Observable<any>{
     return this.http.post(
-      API_EQ_URL + '/create',
+      API_EQ_URL + '/add',
+      JSON.stringify(addEquipment),
+      this.httpOptions
+    );
+  }
+
+  updateEquipment(addEquipment: AddEquipment): Observable<any>{
+    return this.http.post(
+      API_EQ_URL + '/update',
       JSON.stringify(addEquipment),
       this.httpOptions
     );
@@ -186,6 +194,7 @@ export class EquipmentService extends TEMSService {
   }
 
 
+
   getCommonProperties(): CheckboxItem[]{
     return [
       new CheckboxItem('temsid', 'Tems ID'),
@@ -217,6 +226,13 @@ export class EquipmentService extends TEMSService {
 
     return equipments;
   }
+
+  getEquipmentToUpdate(equipmentId: string): Observable<AddEquipment>{
+    return this.http.get<AddEquipment>(
+      API_EQ_URL + '/getequipmenttoupdate/' + equipmentId,
+      this.httpOptions
+    );
+  } 
 
   getEquipmentSimplified(
     pageNumber: number, 

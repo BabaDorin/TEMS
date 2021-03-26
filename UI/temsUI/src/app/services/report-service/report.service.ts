@@ -74,4 +74,18 @@ export class ReportService extends TEMSService {
       this.httpOptions
     );
   }
+
+  removeTemplate(reportTemplateId: string): Observable<any>{
+    return this.http.get(
+      API_REP_URL + '/removetemplate/' + reportTemplateId,
+      this.httpOptions
+    );
+  }
+
+  generateReport(reportTemplateId: string): Observable<any>{
+    return this.http.get(
+      API_REP_URL + '/generatereport/' + reportTemplateId,
+      this.httpOptions
+    );
+  }
 }

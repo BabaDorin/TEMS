@@ -40,7 +40,27 @@ export class ReportsComponent extends TEMSComponent implements OnInit {
   }
 
   remove(templateId: string, index){
-    // stuff
+    if(!confirm("Are you sure that you want to remove that report template?"))
+      return;
+    
+    this.subscriptions.push(
+      this.reportService.removeTemplate(templateId)
+      .subscribe(result => {
+        if(result.status == 1)
+          this.defaultTemplates.splice(index, 1);
+
+        console.log(result);
+      })
+    )
+  }
+
+  generateReport(templateId: string){
+    this.subscriptions.push(
+      this.reportService.generateReport(templateId)
+      .subscribe(result => {
+        console.log(result);
+      })
+    )
   }
 
   createTemplate(){

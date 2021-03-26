@@ -17,7 +17,7 @@ export class EquipmentDetailsGeneralComponent extends TEMSComponent implements O
   equipment: ViewEquipment;
   generalProperties: Property[];
   specificProperties: Property[];
-  edit = false;
+  editing = false;
 
   constructor(
     private equipmentService: EquipmentService,
@@ -29,15 +29,13 @@ export class EquipmentDetailsGeneralComponent extends TEMSComponent implements O
     // if(this.equipmentId == undefined)
       // this.equipmentId = this.route.snapshot.paramMap.get('id');
     
-    console.log(this.equipmentId);
-      
     this.subscriptions.push(this.equipmentService.getEquipmentByID(this.equipmentId)
       .subscribe(response => {
         console.log(response);
         this.equipment = response;
 
         this.generalProperties= [
-          { displayName: 'Identifier', value: this.equipment.identifier},
+          { displayName: 'Identifier', value: this.equipment.definition.label},
           { displayName: 'Type', value: this.equipment.type.name},
           { displayName: 'TemsID', value: this.equipment.temsId },
           { displayName: 'Serial Number', value: this.equipment.serialNumber},
@@ -47,5 +45,9 @@ export class EquipmentDetailsGeneralComponent extends TEMSComponent implements O
     
         this.specificProperties = this.equipment.specificTypeProperties;
       }))
+  }
+
+  edit(){
+    this.editing = true;    
   }
 }

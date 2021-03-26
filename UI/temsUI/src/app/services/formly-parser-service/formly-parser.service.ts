@@ -149,7 +149,7 @@ export class FormlyParserService {
     return [
       {
         className: 'section-label',
-        template: '<h5><pre>' + addEquipment.definition.equipmentType.value + '</pre></h5>'
+        template: '<h3 class="alert alert-info">' + addEquipment.definition.equipmentType.label + '</h3>'
       },
       {
         key: 'identifier',
@@ -228,7 +228,6 @@ export class FormlyParserService {
             className: 'col-4',
             type: 'input',
             key: 'purchaseDate',
-            defaultValue: new Date(),
             templateOptions: {
               type: 'date',
               label: 'Purchase Date',

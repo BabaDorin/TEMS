@@ -13,14 +13,14 @@ namespace temsAPI.ViewModels.EquipmentDefinition
         public string Identifier { get; set; }
         public double Price { get; set; }
         public string Currency { get; set; }
-        public ViewEquipmentTypeViewModel EquipmentType { get; set; }
+        public Option EquipmentType { get; set; }
         public virtual ICollection<ViewPropertyViewModel> Properties { get; set; }
         public virtual ICollection<EquipmentDefinitionViewModel> Children { get; set; }
         public EquipmentDefinitionViewModel Parent { get; set; }
 
         public EquipmentDefinitionViewModel()
         {
-            EquipmentType = new ViewEquipmentTypeViewModel();
+            EquipmentType = new Option();
             Properties = new List<ViewPropertyViewModel>();
             Children = new List<EquipmentDefinitionViewModel>();
         }

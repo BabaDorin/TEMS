@@ -300,10 +300,10 @@ namespace temsAPI.Controllers.EquipmentControllers
                             Identifier = q.Identifier,
                             Currency = q.Currency,
                             Price = q.Price,
-                            EquipmentType = new ViewEquipmentTypeViewModel
+                            EquipmentType = new Option
                             {
-                                Id = q.EquipmentType.Id,
-                                Name = q.EquipmentType.Name
+                                Value = q.EquipmentType.Id,
+                                Label = q.EquipmentType.Name
                             },
                             Properties = q.EquipmentSpecifications
                             .Select(q => new ViewPropertyViewModel

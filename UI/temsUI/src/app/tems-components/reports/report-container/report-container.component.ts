@@ -10,6 +10,7 @@ export class ReportContainerComponent implements OnInit {
   @Input() template;  
   @Output() editTemplate = new EventEmitter();
   @Output() removeTemplate = new EventEmitter();
+  @Output() generateReport = new EventEmitter();
 
   constructor() { }
 
@@ -23,5 +24,9 @@ export class ReportContainerComponent implements OnInit {
   remove(templateId: string)
   {
     this.removeTemplate.emit(templateId);
+  }
+
+  report(templateId: string){
+    this.generateReport.emit(templateId);
   }
 }

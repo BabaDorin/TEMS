@@ -97,6 +97,32 @@ namespace temsAPI.Controllers.ReportControllers
             }
         }
 
+        [HttpGet("report/removetemplate/{templateId}")]
+        [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
+        public async Task<JsonResult> RemoveTemplate(string templateId)
+        {
+            try
+            {
+                var model = (await _unitOfWork.ReportTemplates
+                    .Find<ReportTemplate>(
+                        q => q.Id == templateId
+                    )).FirstOrDefault();
+
+                if (model == null)
+                    return ReturnResponse("Invalid id provided", ResponseStatus.Fail);
+
+                model.IsArchieved = true;
+                await _unitOfWork.Save();
+
+                return ReturnResponse("Success", ResponseStatus.Success);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured while removing the template", ResponseStatus.Fail);
+            }
+        }
+
         [HttpPost]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> AddTemplate([FromBody] AddReportTemplateViewModel viewModel)
@@ -159,13 +185,15 @@ namespace temsAPI.Controllers.ReportControllers
                         : new List<Personnel>(),
                     CreatedBy = (await _unitOfWork.TEMSUsers
                         .Find<TEMSUser>(
-                            where: q => q.UserName == User.Identity.Name
+                            where: q => q.Id == IdentityHelper.GetUserId(User)
                         )).FirstOrDefault(),
                     DateCreated = DateTime.Now,
                     UniversalProperties = (universalProperties.Count > 0)
                         ? String.Join(" ", universalProperties)
                         : null
                 };
+
+                var id = IdentityHelper.GetUserId(User);
 
                 if (User.Identity.Name == "tems@admin")
                 {
@@ -273,6 +301,13 @@ namespace temsAPI.Controllers.ReportControllers
                 Debug.WriteLine(ex);
                 return ReturnResponse("An error occured while saving the template", ResponseStatus.Fail);
             }
+        }
+
+        [HttpGet("report/generatereport/{templateId}")]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
+        public async Task<JsonResult> GenerateReport(string templateId)
+        {
+            return ReturnResponse("Will be implemented soon", ResponseStatus.Success);
         }
 
         [HttpGet]

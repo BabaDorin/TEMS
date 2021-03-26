@@ -11,7 +11,8 @@
                 <app-report-container 
                     [template]="template" 
                     (editTemplate)="edit($event)" 
-                    (removeTemplate)="remove($event, i)">
+                    (removeTemplate)="remove($event, i)"
+                    (generateReport)="generateReport($event)">
                 </app-report-container>
             </div>
         </div>

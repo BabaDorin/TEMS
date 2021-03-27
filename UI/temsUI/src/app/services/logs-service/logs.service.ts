@@ -40,6 +40,13 @@ export class LogsService extends TEMSService {
     return this.getEntityLogs('any', 'any');
   }
 
+  remove(logId: string): Observable<any>{
+    return this.http.get(
+      API_LOG_URL + '/remove/' + logId,
+      this.httpOptions
+    );
+  }
+
   getLogTypes(): Observable<any>{
     return this.http.get(
       API_LOG_URL + '/getlogtypes',

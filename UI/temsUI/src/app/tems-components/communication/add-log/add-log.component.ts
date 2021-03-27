@@ -1,3 +1,4 @@
+import { SnackService } from './../../../services/snack/snack.service';
 import { AddLog } from './../../../models/communication/logs/add-log.model';
 import { IOption } from './../../../models/option.model';
 import { LogsService } from 'src/app/services/logs-service/logs.service';
@@ -44,12 +45,14 @@ export class AddLogComponent extends TEMSComponent implements OnInit {
   alreadySelectedOptions = [];
   adresseeEndPoint;
   chipsInputLabel = "";
+  dialogRef;
 
   constructor(
     private formlyParserService: FormlyParserService,
     private equipmentservice: EquipmentService,
     private roomService: RoomsService,
     private logsService: LogsService,
+    private snackService: SnackService,
     private personnelService: PersonnelService) {
     super();
   }
@@ -115,22 +118,21 @@ export class AddLogComponent extends TEMSComponent implements OnInit {
   }
 
   onSubmit() {
-    if(this.addresseesChips.options.length > 0 && 
-      this.formlyData.model.log.logTypeId != undefined){
+    if(this.addresseesChips.options.length == 0 || 
+      this.formlyData.model.log.logTypeId == undefined)
+      return;
         
-      this.formlyData.model.log.addresseesType = this.selectedAddresseeType;
-      this.formlyData.model.log.addressees = this.addresseesChips.options;
+    this.formlyData.model.log.addresseesType = this.selectedAddresseeType;
+    this.formlyData.model.log.addressees = this.addresseesChips.options;
 
-      let addLog = this.formlyData.model.log as AddLog; // They match perfectly
+    let addLog = this.formlyData.model.log as AddLog;
 
-      this.subscriptions.push(this.logsService.addLog(addLog)
-        .subscribe(response => {
-          console.log(response);
-        }))
-    }
-    else
-    {
-      alert('Provide at least one addressee.');
-    }
+    this.subscriptions.push(this.logsService.addLog(addLog)
+      .subscribe(result => {
+        this.snackService.snack(result);
+
+        if(result.status == 1)
+          this.dialogRef.close();
+      }))
   }
 }

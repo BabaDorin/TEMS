@@ -1,15 +1,22 @@
+<h3>Logs</h3>
+<button mat-button (click)="addLog()">+ Add Log</button>
 <br>
-<button class="btn btn-secondary btn-sm" (click)="addLog()">+ Add Log</button>
-<br>
-<mat-card *ngFor="let log of logs" class="mb-2">
-    <mat-card-header>
-        <p>
-            {{ log.logType.label }} <span class="text-muted float-right">{{ log.dateCreated | date:'medium' }}</span>
-        </p>
-    </mat-card-header>
-    <mat-card-content>
-        <p>
-            {{ log.text }}
-        </p>
-    </mat-card-content>
-</mat-card>
+<hr>
+<ng-container *ngIf="loading == true">
+    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+</ng-container>
+<mat-expansion-panel *ngFor="let log of logs | paginate: { itemsPerPage: 10, currentPage: p1, id: 'logs' }; let i = index" class="mb-2">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        {{ log.logType.label }}
+      </mat-panel-title>
+      <mat-panel-description>
+        {{ log.dateCreated | date:'medium' }}
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+    {{ log.text }}
+    <br>
+    <br>
+    <button mat-button class="btn-danger" (click)="remove(log.id, i)">Remove</button>
+  </mat-expansion-panel>
+<pagination-controls (pageChange)="p1 = $event" id="logs"></pagination-controls>

@@ -1,3 +1,5 @@
+import { SnackService } from './../../services/snack/snack.service';
+import { DialogService } from './../../services/dialog-service/dialog.service';
 import { TEMSComponent } from './../../tems/tems.component';
 import { IOption } from 'src/app/models/option.model';
 import { Component, Input, OnInit } from '@angular/core';
@@ -20,55 +22,58 @@ export class EntityLogsListComponent extends TEMSComponent implements OnInit {
   @Input() equipment: IOption;
   @Input() room: IOption;
   @Input() personnel: IOption;
+  @Input() addLogEnabled: boolean = true;
 
   logs: ViewLog[];
-  @Input() addLogEnabled: boolean = true;
+  loading: boolean = true;  
 
   constructor(
     private logsService: LogsService,
-    public dialog: MatDialog
+    private dialoService: DialogService,
+    private snackService: SnackService
   ) { 
     super();
   }
 
   ngOnInit(): void {
+    let endPoint;
+
     if(this.equipment)
-      this.subscriptions.push(this.logsService.getLogsByEquipmentId(this.equipment.value)
-        .subscribe(result => {
-          console.log(result);
-          this.logs = result;
-        }))
-
+      endPoint = this.logsService.getLogsByEquipmentId(this.equipment.value);
     if(this.room)
-      this.subscriptions.push(this.logsService.getLogsByRoomId(this.room.value)
-        .subscribe(result => {
-          console.log(result);
-          this.logs = result;
-        }))
-
+        endPoint = this.logsService.getLogsByRoomId(this.room.value);
     if(this.personnel)
-      this.subscriptions.push(this.logsService.getLogsByPersonnelId(this.personnel.value)
-          .subscribe(result => {
-            console.log(result);
-            this.logs = result;
-          }))
+      endPoint = this.logsService.getLogsByPersonnelId(this.personnel.value);
+
+    if(endPoint != undefined){
+      this.subscriptions.push(
+        endPoint
+        .subscribe(result => {
+          this.loading = false;
+          if(this.snackService.snackIfError(result))
+            return;
+          this.logs = result;
+          return;
+        })
+      )
+    }
 
     if(this.equipment == undefined && this.room == undefined && this.personnel == undefined)
       this.subscriptions.push(this.logsService.getLogs()
         .subscribe(result => {
           console.log(result);
           this.logs = result;
+          this.loading = false;
         }));
   }
 
-  private addLog(){
-    // Opens a dialog containing an instance of AddLogComponent
-    
-    let dialogRef: MatDialogRef<any>;
-    dialogRef = this.dialog.open(AddLogComponent); 
-    
+  private addLog(){   
+    let selectedEntityType: string;
+    let selectedEntities: IOption[];
+
     if(this.equipment){
-      dialogRef.componentInstance.equipment = [
+      selectedEntityType = "equipment";
+      selectedEntities = [
         {
           value: this.equipment.value, 
           label: this.equipment.label
@@ -76,7 +81,8 @@ export class EntityLogsListComponent extends TEMSComponent implements OnInit {
     }
 
     if(this.room){
-      dialogRef.componentInstance.room = [
+      selectedEntityType = "room";
+      selectedEntities = [
         {
           value: this.room.value, 
           label: this.room.label
@@ -84,15 +90,36 @@ export class EntityLogsListComponent extends TEMSComponent implements OnInit {
     }
 
     if(this.personnel){
-      dialogRef.componentInstance.personnel = [
+      selectedEntityType = "personnel";
+      selectedEntities = [
         {
           value: this.personnel.value, 
           label: this.personnel.label
         }];
     }
 
-    dialogRef.afterClosed().subscribe(result => {
-      // Stuff
-    });
+    this.dialoService.openDialog(
+      AddLogComponent,
+      [{label: selectedEntityType, value: selectedEntities}],
+      () => {
+        this.ngOnInit();
+      }
+    )
+  }
+
+  remove(logId: string, index: number){
+    if(!confirm("Are you sure you want to remove this log?"))
+      return;
+
+    this.subscriptions.push(
+      this.logsService.remove(logId)
+      .subscribe(result => {
+        console.log(result);
+        this.snackService.snack(result);
+
+        if(result.status == 1)
+          this.logs.splice(index, 1);
+      })
+    )
   }
 }

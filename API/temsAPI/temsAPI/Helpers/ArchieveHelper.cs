@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
+using temsAPI.Data.Entities.CommunicationEntities;
 using temsAPI.Data.Entities.EquipmentEntities;
 using temsAPI.Data.Entities.UserEntities;
 
@@ -171,6 +172,32 @@ namespace temsAPI.Helpers
                 return "An error occured while archieving type's related data";
             }
             
+        }
+
+        public async Task<string> ArchieveLog(string logId)
+        {
+            try
+            {
+                // check if type exists
+                var log = (await _unitOfWork.Logs
+                    .Find<Log>
+                    (
+                        where: q => q.Id == logId
+                    )).FirstOrDefault();
+
+                if (log == null)
+                    return "The specified log does not exist";
+
+                log.IsArchieved = true;
+
+                await _unitOfWork.Save();
+                return null;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return "An error occured while archieving log's related data";
+            }
         }
     }
 }

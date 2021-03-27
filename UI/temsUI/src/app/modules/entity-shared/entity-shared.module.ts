@@ -1,3 +1,4 @@
+import { NgxPaginationModule } from 'ngx-pagination';
 import { EntityIssuesListComponent } from './../../tems-components/entity-issues-list/entity-issues-list.component';
 import { TemsFormsModule } from './../tems-forms/tems-forms.module';
 import { MaterialModule } from 'src/app/modules/material/material.module';
@@ -31,6 +32,7 @@ import { AgGridModule } from 'ag-grid-angular';
     CommonModule,
     MaterialModule,
     TemsFormsModule,
+    NgxPaginationModule,
     AgGridModule.withComponents([BtnCellRendererComponent]),
   ],
   exports: [

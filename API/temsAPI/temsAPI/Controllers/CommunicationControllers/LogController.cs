@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.CommunicationEntities;
 using temsAPI.Data.Entities.UserEntities;
+using temsAPI.Helpers;
 using temsAPI.System_Files;
 using temsAPI.ViewModels;
 using temsAPI.ViewModels.Log;
@@ -85,6 +86,26 @@ namespace temsAPI.Controllers.CommunicationControllers
             {
                 Debug.WriteLine(ex);
                 return ReturnResponse("An error occured when fetching equipment logs", ResponseStatus.Fail);
+            }
+        }
+
+        [HttpGet("/log/remove/{logId}")]
+        [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
+        public async Task<JsonResult> Remove(string logId)
+        {
+            try
+            {
+                string archievingResult = await (new ArchieveHelper(_userManager, _unitOfWork))
+                    .ArchieveLog(logId);
+                if (archievingResult != null)
+                    return ReturnResponse(archievingResult, ResponseStatus.Fail);
+
+                return ReturnResponse("Success", ResponseStatus.Success);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured while removing the log", ResponseStatus.Fail);
             }
         }
 

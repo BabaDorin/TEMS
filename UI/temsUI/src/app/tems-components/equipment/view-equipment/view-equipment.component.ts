@@ -1,3 +1,4 @@
+import { AddLogComponent } from 'src/app/tems-components/communication/add-log/add-log.component';
 import { SnackService } from './../../../services/snack/snack.service';
 import { DialogService } from './../../../services/dialog-service/dialog.service';
 import { Router } from '@angular/router';
@@ -28,24 +29,43 @@ export class ViewEquipmentComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  addLogSelected(){
+    let selectedNodes = this.getSelectedNodes()
+    if(selectedNodes == undefined)
+      return;
+
+    this.dialogService.openDialog(
+      AddLogComponent,
+      [{label: "equipment", value: selectedNodes }]
+    )
+  }
+
   allocateSelected() {
+    let selectedNodes = this.getSelectedNodes()
+    if(selectedNodes == undefined)
+      return;
+
+    this.dialogService.openDialog(
+      EquipmentAllocationComponent,
+      [{label: "equipment", value: selectedNodes }]
+    )
+  }
+
+  getSelectedNodes(): IOption[] {
     let selectedNodes = this.agGridEquipment.getSelectedNodes();
 
     if (selectedNodes.length == 0)
       return;
     
     if(selectedNodes.length > 20){
-      this.snackService.snack({message: "You can not allocate more that 20 equipments", status: 0})
+      this.snackService.snack({message: "You can add a log to more that 20 equipments", status: 0})
       return;
     }
-    
+
     selectedNodes = (this.agGridEquipment.getSelectedNodes() as ViewEquipmentSimplified[])
       .map(node => ({value: node.id, label: node.temsIdOrSerialNumber} as IOption));
 
-    this.dialogService.openDialog(
-      EquipmentAllocationComponent,
-      [{label: "equipment", value: selectedNodes }]
-    )
+    return selectedNodes;
   }
 
   addNew(){

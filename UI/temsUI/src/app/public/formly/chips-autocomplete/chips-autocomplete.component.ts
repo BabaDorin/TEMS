@@ -1,6 +1,6 @@
 import { IOption } from './../../../models/option.model';
 import { COMMA, ENTER, SPACE } from '@angular/cdk/keycodes';
-import { Component, ElementRef, Input, ViewChild, EventEmitter, Output, OnInit, forwardRef } from '@angular/core';
+import { Component, ElementRef, Input, ViewChild, EventEmitter, Output, OnInit, forwardRef, SimpleChanges, SimpleChange } from '@angular/core';
 import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { MatAutocompleteSelectedEvent, MatAutocomplete } from '@angular/material/autocomplete';
 import { MatChipInputEvent } from '@angular/material/chips';
@@ -54,9 +54,14 @@ export class ChipsAutocompleteComponent implements OnInit, ControlValueAccessor 
     this.listenToServer();
   }
 
-  ngOnChanges() {
+  ngOnChanges(changes: { [propName: string]: SimpleChange }) {
+    if(changes['endPoint'] && changes['endPoint'].previousValue != changes['endPoint'].currentValue ) {
+      this.options = [];
+      this.value = [];
+    }
+    this.filteredOptions = [];
     this.listenToServer();
-    this.options = (this.alreadySelected == undefined) ? [] : this.alreadySelected;
+    // this.options = (this.alreadySelected == undefined) ? [] : this.alreadySelected;
   }
 
   listenToServer(){

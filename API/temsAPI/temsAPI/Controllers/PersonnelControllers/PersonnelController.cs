@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.OtherEntities;
@@ -125,15 +126,20 @@ namespace temsAPI.Controllers.PersonnelControllers
             }
         }
 
-        [HttpGet]
-        public async Task<JsonResult> GetAllAutocompleteOptions()
+        [HttpGet("personnel/getallautocompleteoptions/{filter?}")]
+        public async Task<JsonResult> GetAllAutocompleteOptions(string? filter)
         {
             try
             {
+                Expression<Func<Personnel, bool>> expression = (filter == null)
+                    ? q => !q.IsArchieved
+                    : q => !q.IsArchieved && q.Name.Contains(filter);
+
                 List<Option> viewModel = (await _unitOfWork.Personnel
                     .FindAll<Option>(
-                        where: q => !q.IsArchieved,
+                        where: expression,
                         include: q => q.Include(q => q.Positions),
+                        take: 5,
                         select: q => new Option
                         {
                             Value = q.Id,

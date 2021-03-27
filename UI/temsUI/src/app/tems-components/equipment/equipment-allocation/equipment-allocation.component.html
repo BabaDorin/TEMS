@@ -16,6 +16,7 @@
                 <app-chips-autocomplete
                     #equipmentIdentifierChips
                     label="Choose one or more equipments..."
+                    [alreadySelected]="equipmentAlreadySelectedOptions"
                     [endPoint]="equipmentService">
                 </app-chips-autocomplete>
             </div>
@@ -33,8 +34,8 @@
                 <app-chips-autocomplete
                 #allocatedTo
                 [label]="allocatedToChipsInputLabel"
-                [availableOptions]="allocatedToAutoCompleteOptions"
                 [alreadySelected]="allocatedToAlreadySelectedOptions"
+                [endPoint]="alocateeEndPoint"
                 maxOptionsSelected="1">
                 </app-chips-autocomplete>
             </div>

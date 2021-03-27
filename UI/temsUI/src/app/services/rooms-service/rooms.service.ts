@@ -1,9 +1,8 @@
+import { IOption } from './../../models/option.model';
 import { Observable } from 'rxjs';
 import { API_ROOM_URL } from './../../models/backend.config';
 import { HttpClient } from '@angular/common/http';
 import { TEMSService } from './../tems-service/tems.service';
-import { viewClassName } from '@angular/compiler';
-import { IOption } from 'src/app/models/option.model';
 import { ViewRoomSimplified } from './../../models/room/view-room-simplified.model';
 import { ViewRoom } from './../../models/room/view-room.model';
 import { Injectable } from '@angular/core';
@@ -20,9 +19,9 @@ export class RoomsService extends TEMSService {
     super();
   }
 
-  getAllAutocompleteOptions(): Observable<any>{
-    return this.http.get(
-      API_ROOM_URL + '/getallautocompleteoptions',
+  getAllAutocompleteOptions(filter?: string): Observable<IOption[]>{
+    return this.http.get<IOption[]>(
+      API_ROOM_URL + '/getallautocompleteoptions/' + filter,
       this.httpOptions
     );
   }

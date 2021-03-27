@@ -192,7 +192,7 @@ namespace temsAPI.Controllers.EquipmentControllers
                     .FindAll<Equipment>(
                         where: expression,
                         include: q => q.Include(q => q.EquipmentDefinition),
-                        take: 10
+                        take: 5
                      ))
                     .ToList();
 

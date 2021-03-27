@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.OtherEntities;
@@ -27,13 +28,18 @@ namespace temsAPI.Controllers.RoomControllers
         {
         }
 
-        [HttpGet]
-        public async Task<JsonResult> GetAllAutocompleteOptions()
+        [HttpGet("room/getallautocompleteoptions/{filter?}")]
+        public async Task<JsonResult> GetAllAutocompleteOptions(string? filter)
         {
             try
             {
+                Expression<Func<Room, bool>> expression = (filter == null)
+                    ? q => !q.IsArchieved
+                    : q => !q.IsArchieved && q.Identifier.Contains(filter);
+
                 List<Option> viewModel = (await _unitOfWork.Rooms.FindAll<Option>(
-                    where: q => !q.IsArchieved,
+                    where: expression,
+                    take: 5,
                     select: q => new Option
                     {
                         Value = q.Id,

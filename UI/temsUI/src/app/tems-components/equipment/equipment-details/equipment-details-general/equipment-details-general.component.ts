@@ -1,3 +1,4 @@
+import { SnackService } from './../../../../services/snack/snack.service';
 import { TEMSComponent } from './../../../../tems/tems.component';
 import { Property } from './../../../../models/equipment/view-property.model';
 import { EquipmentService } from 'src/app/services/equipment-service/equipment.service';
@@ -21,7 +22,8 @@ export class EquipmentDetailsGeneralComponent extends TEMSComponent implements O
 
   constructor(
     private equipmentService: EquipmentService,
-    private route: ActivatedRoute) {
+    private route: ActivatedRoute,
+    private snackService: SnackService) {
     super();
   }
 
@@ -58,7 +60,7 @@ export class EquipmentDetailsGeneralComponent extends TEMSComponent implements O
     this.subscriptions.push(
       this.equipmentService.archieveEquipment(this.equipmentId)
       .subscribe(result => {
-        console.log(result);
+        this.snackService.snack(result);
       })
     )
   }

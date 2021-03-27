@@ -1,3 +1,4 @@
+import { SnackService } from './../../../services/snack/snack.service';
 import { DialogService } from './../../../services/dialog-service/dialog.service';
 import { TEMSComponent } from 'src/app/tems/tems.component';
 import { IOption } from './../../../models/option.model';
@@ -51,7 +52,8 @@ export class AddEquipmentComponent extends TEMSComponent implements OnInit {
   constructor(
     private equipmentService: EquipmentService,
     private formlyParserService: FormlyParserService,
-    private dialogService: DialogService) {
+    private dialogService: DialogService,
+    private snackService: SnackService) {
     super();
   }
 
@@ -191,9 +193,7 @@ export class AddEquipmentComponent extends TEMSComponent implements OnInit {
     this.subscriptions.push(
       endPoint
       .subscribe(result => {
-        console.log(result);
-        if(result.status == 1)
-          this.done.emit();
+        this.snackService.snack(result);
       })
     )
   }

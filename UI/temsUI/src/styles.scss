@@ -118,5 +118,16 @@ formly-field-mat-radio {
   }
 }
 
+.success-snackbar {
+  background: #5cdb95;
+}
+
+.error-snackbar{
+  background: #c7493a;
+}
+
+.mat-simple-snackbar .mat-button-wrapper{
+  color: white;
+}
 // @import "../node_modules/ag-grid-community/dist/styles/ag-grid.css";
 // @import "../node_modules/ag-grid-community/dist/styles/ag-theme-material.css";

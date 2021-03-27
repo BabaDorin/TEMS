@@ -1,3 +1,4 @@
+import { SnackService } from './../../../services/snack/snack.service';
 import { IssuesService } from './../../../services/issues-service/issues.service';
 import { TEMSComponent } from './../../../tems/tems.component';
 import { IOption } from './../../../models/option.model';
@@ -36,12 +37,15 @@ export class CreateIssueComponent extends TEMSComponent implements OnInit {
   @ViewChild('personnel') personnel;
   @ViewChild('equipment') equipment;
 
+  dialogRef;
+
   constructor(
     private formlyParserService: FormlyParserService,
     private roomService: RoomsService,
     private personnelService: PersonnelService,
     private equipmentService: EquipmentService,
-    private issueService: IssuesService
+    private issueService: IssuesService,
+    private snackService: SnackService
   ) {
     super();
   }
@@ -64,8 +68,11 @@ export class CreateIssueComponent extends TEMSComponent implements OnInit {
     
     console.log(addIssue);
     this.subscriptions.push(this.issueService.createIssue(addIssue)
-      .subscribe(response => {
-        console.log(response)
+      .subscribe(result => {
+        this.snackService.snack(result);
+        
+        if(result.status == 1)
+          this.dialogRef.close();
       }))
   }
 }

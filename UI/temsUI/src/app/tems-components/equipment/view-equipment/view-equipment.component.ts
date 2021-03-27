@@ -1,3 +1,4 @@
+import { CreateIssueComponent } from 'src/app/tems-components/issue/create-issue/create-issue.component';
 import { AddLogComponent } from 'src/app/tems-components/communication/add-log/add-log.component';
 import { SnackService } from './../../../services/snack/snack.service';
 import { DialogService } from './../../../services/dialog-service/dialog.service';
@@ -40,6 +41,17 @@ export class ViewEquipmentComponent implements OnInit {
     )
   }
 
+  addIssue(){
+    let selectedNodes = this.getSelectedNodes()
+    if(selectedNodes == undefined)
+      return;
+
+    this.dialogService.openDialog(
+      CreateIssueComponent,
+      [{label: "equipmentAlreadySelected", value: selectedNodes }]
+    )
+  }
+
   allocateSelected() {
     let selectedNodes = this.getSelectedNodes()
     if(selectedNodes == undefined)
@@ -58,7 +70,7 @@ export class ViewEquipmentComponent implements OnInit {
       return;
     
     if(selectedNodes.length > 20){
-      this.snackService.snack({message: "You can add a log to more that 20 equipments", status: 0})
+      this.snackService.snack({message: "You can not treat more than 20 items at a time", status: 0})
       return;
     }
 

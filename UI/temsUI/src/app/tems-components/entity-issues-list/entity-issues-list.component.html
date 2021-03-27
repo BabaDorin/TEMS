@@ -1,24 +1,70 @@
-<button *ngIf="addIssueEnabled == true" class="btn btn-secondary btn-sm" (click)="addIssue()">+ Create issue</button>
+<h2 class="mt-3">Issues</h2>
+<button *ngIf="addIssueEnabled == true" mat-button (click)="addIssue()">+ Create issue</button>
+<mat-slide-toggle class="float-right" [checked]="includingClosed" (click)="includeClosedChanged()">
+    Include Closed
+</mat-slide-toggle>
 <br>
-<mat-card *ngFor="let issue of issues | async" class="mb-2">
-    <mat-card-header>
-        <p>
-            {{ issue.status }} <br>
-            {{ issue.problem }} <span class="text-muted float-right">{{ issue.dateCreated | date:'medium' }}</span>
-        </p>
-    </mat-card-header>
-    <mat-card-content>
-        <p *ngIf="issue.rooms != udefined">
-            rooms: <span *ngFor="let room of issue.rooms"> {{ room.identifier }}</span>
-        </p>
-        <p *ngIf="issue.equipment != udefined">
-            rooms: <span *ngFor="let equipment of issue.equipment"> {{ equipment.identifier }}</span>
-        </p>
-        <p *ngIf="issue.personnel != udefined">
-            rooms: <span *ngFor="let personnel of issue.personnel"> {{ personnel.name }}</span>
-        </p>
-        <p *ngIf="issue.problemDescription != undefined">
-            {{ issue.description }}
-        </p>
-    </mat-card-content>
-</mat-card>
+<hr>
+<ng-container *ngIf="loading == true">
+    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+</ng-container>
+<mat-expansion-panel *ngFor="let issue of issues | paginate: { itemsPerPage: 10, currentPage: p1, id: 'issues' }; let i = index" class="mb-2">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        {{ issue.problem }}
+        <label *ngIf="issue.status.label == 'Urgent'" class="badge badge-gradient-danger ml-3">{{ issue.status.label }}</label>
+        <label *ngIf="issue.status.label == 'Medium'" class="badge badge-gradient-warning ml-3">{{ issue.status.label }}</label>
+        <label *ngIf="issue.status.label == 'Future'" class="badge badge-gradient-info ml-3">{{ issue.status.label }}</label>
+        <label *ngIf="issue.status.label == 'Done'" class="badge badge-gradient-success ml-3">{{ issue.status.label }}</label>
+        <label *ngIf="issue.status.label == 'Progress'" class="badge badge-gradient-primary ml-3">{{ issue.status.label }}</label>
+      </mat-panel-title>
+      <mat-panel-description>
+        {{ issue.dateCreated | date:'medium' }}
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+    <p>{{ issue.description }}</p>
+    <br>
+    <div *ngIf="issue.equipments != undefined && issue.equipments.length > 0" class="mb-4">
+        <h4>Equipments involved:</h4>
+        <hr>
+        <button mat-button *ngFor="let eq of issue.equipments" (click)="viewEquipment(eq.value)">
+            <mat-icon class="text-primary">computer</mat-icon>
+            {{ eq.label }}  {{ eq.additional }}
+        </button>
+    </div>
+    <div *ngIf="issue.rooms != undefined && issue.rooms.length > 0" class="mb-4">
+        <h4>Rooms involved:</h4>
+        <hr>
+        <button mat-button *ngFor="let rm of issue.rooms" (click)="viewRoom(rm.value)">
+            <mat-icon class="text-primary">pin_drop</mat-icon>
+            {{ rm.label }}  {{ rm.additional }}
+        </button>
+        <br>
+    </div>
+    <div *ngIf="issue.personnel != undefined && issue.personnel.length > 0" class="mb-4">
+        <h4>Personnel involved:</h4>
+        <hr>
+        <button mat-button *ngFor="let pr of issue.personnel" (click)="viewPersonnel(pr.value)">
+        <mat-icon class="text-primary">account_circle</mat-icon>
+        {{ pr.label }}  {{ pr.additional }}
+        </button>
+        <br>
+    </div>
+    <br>
+    <br>
+    <button mat-button class="btn-danger" (click)="remove(issue.id, i)">Remove</button>
+  </mat-expansion-panel>
+<pagination-controls (pageChange)="p1 = $event" id="issues"></pagination-controls>
+
+
+<!-- id: string;
+    problem: string;
+    status?: IOption;
+    label?: IOption;
+    description?: string;
+    personnel?: IOption[];
+    equipments?: IOption[];
+    rooms?: IOption[];
+    dateCreated: Date;
+    dateClosed?: Date;
+    closedBy?: ViewUserSimplified; -->

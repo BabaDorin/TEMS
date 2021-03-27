@@ -1,3 +1,4 @@
+import { SnackService } from './../snack/snack.service';
 import { IOption } from 'src/app/models/option.model';
 import { LogsService } from 'src/app/services/logs-service/logs.service';
 import { Property } from 'src/app/models/equipment/view-property.model';
@@ -22,7 +23,8 @@ export class FormlyParserService {
 
   constructor(
     private equipmentService: EquipmentService,
-    private logsService: LogsService) { }
+    private logsService: LogsService,
+  ) { }
 
   parseAddRoom() {
     let fields: FormlyFieldConfig[] =
@@ -94,8 +96,9 @@ export class FormlyParserService {
             {
               key: 'status',
               type: 'radio',
+              defaultValue: statuses[0].value,
               templateOptions: {
-                label: 'Radio',
+                label: 'Priority',
                 required: true,
                 options: statuses
               },

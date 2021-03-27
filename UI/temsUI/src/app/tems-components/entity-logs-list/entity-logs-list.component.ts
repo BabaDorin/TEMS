@@ -4,18 +4,13 @@ import { TEMSComponent } from './../../tems/tems.component';
 import { IOption } from 'src/app/models/option.model';
 import { Component, Input, OnInit } from '@angular/core';
 import { ViewLog } from 'src/app/models/communication/logs/view-logs.model';
-import { ViewEquipmentSimplified } from 'src/app/models/equipment/view-equipment-simplified.model';
-import { ViewPersonnelSimplified } from 'src/app/models/personnel/view-personnel-simplified.model';
-import { ViewRoomSimplified } from 'src/app/models/room/view-room-simplified.model';
 import { LogsService } from 'src/app/services/logs-service/logs.service';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { AddLogComponent } from '../communication/add-log/add-log.component';
-import { RoomsService } from 'src/app/services/rooms-service/rooms.service';
 
 @Component({
   selector: 'app-entity-logs-list',
   templateUrl: './entity-logs-list.component.html',
-  styleUrls: ['./entity-logs-list.component.scss']
+  styleUrls: ['./entity-logs-list.component.scss'],
 })
 export class EntityLogsListComponent extends TEMSComponent implements OnInit {
 

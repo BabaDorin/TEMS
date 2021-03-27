@@ -145,7 +145,32 @@ namespace temsAPI.Controllers.CommunicationControllers
                 return ReturnResponse("An error occured when fetching issues", ResponseStatus.Fail);
             }
         }
-       
+
+        [HttpGet("/ticket/remove/{ticketId}")]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
+        public async Task<JsonResult> Remove(string ticketId)
+        {
+            try
+            {
+                var ticket = (await _unitOfWork.Tickets
+                    .Find<Ticket>(q => q.Id == ticketId))
+                    .FirstOrDefault();
+
+                if (ticket == null)
+                    return ReturnResponse("Invalid id provided", ResponseStatus.Fail);
+
+                ticket.IsArchieved = true;
+                await _unitOfWork.Save();
+
+                return ReturnResponse("Success", ResponseStatus.Success);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured while removing the specified ticket", ResponseStatus.Fail);
+            }
+        }
+
         [HttpGet]
         public async Task<JsonResult> GetStatuses()
         {

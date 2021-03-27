@@ -31,6 +31,13 @@ export class IssuesService extends TEMSService {
     );
   }
 
+  remove(issueId: string): Observable<any>{
+    return this.http.get(
+      API_ISU_URL + '/remove/' + issueId,
+      this.httpOptions
+    );
+  }
+
   getIssuesOfEntity(
     entityType: string, 
     entityId: string, 

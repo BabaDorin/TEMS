@@ -7,11 +7,16 @@
         <div class="row">
             <div class="col-md-5">
                 <h2>Equipment (TEMSID or Serial Number)</h2>
-                <app-chips-autocomplete
+                <!-- <app-chips-autocomplete
                     #equipmentIdentifierChips
                     label="Choose one or more equipments..."
                     [availableOptions]="equipmentAutoCompleteOptions"
                     [alreadySelected]="equipmentAlreadySelectedOptions">
+                </app-chips-autocomplete> -->
+                <app-chips-autocomplete
+                    #equipmentIdentifierChips
+                    label="Choose one or more equipments..."
+                    [endPoint]="equipmentService">
                 </app-chips-autocomplete>
             </div>
             <div class="col-md-2"> => </div>

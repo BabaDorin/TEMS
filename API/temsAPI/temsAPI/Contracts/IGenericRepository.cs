@@ -17,7 +17,9 @@ namespace temsAPI.Contracts
             Expression<Func<T, TType>> select = null,
             Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
             Func<IQueryable<T>, IIncludableQueryable<T, object>> include = null,
-            List<string> includes = null
+            List<string> includes = null,
+            int? skip = null,
+            int? take = null
             );
 
         Task<IList<TType>> Find<TType>(

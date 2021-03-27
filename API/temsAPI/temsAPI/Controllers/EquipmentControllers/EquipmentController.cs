@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -167,24 +168,35 @@ namespace temsAPI.Controllers.EquipmentControllers
             }
         }
 
-        [HttpGet("equipment/getallautocompleteoptions/{onlyParents}")]
-        public async Task<JsonResult> GetAllAutocompleteOptions(bool onlyParents)
+        [HttpGet("equipment/getallautocompleteoptions/{onlyParents}/{filter?}")]
+        public async Task<JsonResult> GetAllAutocompleteOptions(bool onlyParents, string? filter = null)
         {
             try
             {
-                Expression<Func<Data.Entities.EquipmentEntities.Equipment, bool>> expression =
+                Expression<Func<Equipment, bool>> expression =
                    (onlyParents)
                    ? qu => qu.ParentID == null && !qu.IsArchieved
                    : qu => !qu.IsArchieved;
 
+                if (filter != null)
+                {
+                    Expression<Func<Equipment, bool>> expression2 =
+                        q => q.TEMSID.Contains(filter);
+
+                    expression = ExpressionCombiner.CombineTwo(expression, expression2);
+                }
+
                 List<Option> autocompleteOptions = new List<Option>();
 
-                (await _unitOfWork.Equipments
+                var filteresEquipments = (await _unitOfWork.Equipments
                     .FindAll<Equipment>(
                         where: expression,
-                        include: q => q.Include(q => q.EquipmentDefinition)
+                        include: q => q.Include(q => q.EquipmentDefinition),
+                        take: 10
                      ))
-                    .ToList()
+                    .ToList();
+
+                filteresEquipments
                     .ForEach(q =>
                     {
                         if (!String.IsNullOrEmpty(q.TEMSID))

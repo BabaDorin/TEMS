@@ -10,8 +10,10 @@
         <br>
         <button mat-button (click)="addNew()">+ Add new</button>
         <button mat-button (click)="allocateSelected()">Allocate selected items</button>
+        <mat-slide-toggle class="float-right" [checked]="includeDerived" (click)="includeDerived = !includeDerived">Include derived equipments</mat-slide-toggle>
         <hr>
-        <app-ag-grid-equipment #agGridEquipment>
+        <app-ag-grid-equipment #agGridEquipment
+        [includeDerived]="includeDerived">
 
         </app-ag-grid-equipment>
     </div>

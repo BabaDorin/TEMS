@@ -271,11 +271,11 @@ export class EquipmentService extends TEMSService {
     );
   }
   
-  getAllAutocompleteOptions(onlyParent?: boolean): Observable<any> {
+  getAllAutocompleteOptions(filter?: string, onlyParent?: boolean): Observable<any> {
     if(onlyParent == undefined) 
       onlyParent = true;
     return this.http.get(
-      API_EQ_URL + '/getallautocompleteoptions/' + onlyParent, 
+      API_EQ_URL + '/getallautocompleteoptions/' + onlyParent + '/' + filter, 
       this.httpOptions);
   }
 

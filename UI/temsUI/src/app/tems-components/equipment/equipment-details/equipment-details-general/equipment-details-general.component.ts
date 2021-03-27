@@ -70,7 +70,9 @@ export class EquipmentDetailsGeneralComponent extends TEMSComponent implements O
   viewMore(){
     console.log('here');
     this.route.navigateByUrl('/equipment/details/' + this.equipmentId);
-    this.dialogRef.close();
+    
+    if(this.dialogRef != undefined)
+      this.dialogRef.close();
   }
 
   changeState(attribute: string){

@@ -5,8 +5,8 @@ import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR } from '@angular/f
 import { MatAutocompleteSelectedEvent, MatAutocomplete } from '@angular/material/autocomplete';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { allowedNodeEnvironmentFlags } from 'process';
-import { Observable } from 'rxjs';
-import { map, startWith } from 'rxjs/operators';
+import { Observable, Subscription } from 'rxjs';
+import { debounceTime, map, startWith, switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-chips-autocomplete',
@@ -23,8 +23,6 @@ import { map, startWith } from 'rxjs/operators';
 export class ChipsAutocompleteComponent implements OnInit, ControlValueAccessor {
 
   // ISSUES: 1) DISPLAY AUTOCOMPLETE LIST ON CLICK
-
-
   @Input() alreadySelected: IOption[] = [];
   @Input() label: string;
   @Input() disabled: boolean = false;
@@ -32,97 +30,103 @@ export class ChipsAutocompleteComponent implements OnInit, ControlValueAccessor 
   @Input() placeholder: string = 'New Option...';
   @Input() onlyValuesFromAutocomplete: boolean = true;
   @Input() availableOptions: IOption[] = [];
+  @Input() endPoint;
 
-  // returns results to parent components
   @Output() dataCollected = new EventEmitter;
   @Output() dataRemoved = new EventEmitter;
-  // user has already typed - to update the list of options (if needed)
   @Output() Typing = new EventEmitter;
 
   @ViewChild('optionInput') optionInput: ElementRef<HTMLInputElement>;
   @ViewChild('auto') matAutocomplete: MatAutocomplete;
 
-  visible = true;
+  separatorKeysCodes: number[] = [ENTER, COMMA];
+  subscription = new Subscription();
+  formCtrl = new FormControl();
+  filteredOptions: IOption[];
+  options: IOption[];
   selectable = true;
   removable = true;
-  separatorKeysCodes: number[] = [ENTER, COMMA];
-  formCtrl = new FormControl();
-  filteredOptions: Observable<IOption[]>;
-  options: IOption[]; // Selected values
-  value = []; // Value accessor
+  visible = true;
+  value = [];
 
   ngOnInit() {
     this.options = this.alreadySelected;
-    if(this.availableOptions == undefined) this.availableOptions = [];
+    this.listenToServer();
   }
 
   ngOnChanges() {
-    // When parent component updates some input parameters
-    this.filteredOptions = this.formCtrl.valueChanges.pipe(
-      startWith(null),
-      map((op) => op ? this._filter(op) : this.availableOptions.slice()));
-
+    this.listenToServer();
     this.options = (this.alreadySelected == undefined) ? [] : this.alreadySelected;
   }
 
-  constructor() {
-    this.filteredOptions = this.formCtrl.valueChanges.pipe(
-      startWith(null),
-      map((op) => op ? this._filter(op) : this.availableOptions.slice()));
+  listenToServer(){
+    this.subscription.unsubscribe();
+    this.subscription = this.formCtrl.valueChanges
+    .pipe(
+      switchMap((op) => this.endPoint.getAllAutocompleteOptions(op)))
+      .subscribe(data => {
+      this.filteredOptions = (data as IOption[]);
+
+      if(this.options != undefined)
+        this.filteredOptions = this.filteredOptions
+          .filter((el) => !this.options.includes(el));
+      }
+    );
   }
 
   // When the option has been typed
   add(event: MatChipInputEvent): void {
-    const input = event.input;
     const value = event.value;
-
     let typedOption = { value: undefined, label: value };
 
     // If accepting only values from dropdown
     if (this.onlyValuesFromAutocomplete == true) {
-      typedOption = this.availableOptions.find(q => q.label.toLowerCase() == value.toLowerCase());
+      typedOption = this.filteredOptions.find(q => q.label.toLowerCase() == value.toLowerCase());
     }
 
     if (typedOption != undefined) {
+      if(this.isValueAlreadySelected(typedOption))
+        return;
+
       this.maxOptionsSelectedValidation();
-
       this.options.push(typedOption);
-
-      // Removing the typed option from availableOptions (if it exists)
-      if (this.availableOptions.find(q => q.label.toLowerCase() == value.toLowerCase()) != undefined) {
-        this.availableOptions.splice(this.availableOptions.indexOf(typedOption), 1)
-      }
-
-      input.value = '';
       this.dataCollected.emit(this.options);
+      this.formCtrl.setValue('');
+      this.optionInput.nativeElement.value = '';
     }
 
     this.onChange(this.options);
-    this.formCtrl.setValue(null);
   }
 
   // When the option has been chosen
   selected(event: MatAutocompleteSelectedEvent): void {
-    
+    if(this.isValueAlreadySelected(event.option.value))
+      return;
+
     this.maxOptionsSelectedValidation();
     this.options.push(event.option.value);
-
-    let index = this.availableOptions.indexOf(event.option.value);
-    this.availableOptions.splice(index, 1);
-    this.optionInput.nativeElement.value = '';
-    this.formCtrl.setValue(null);
+    console.log(this.options);
     this.onChange(this.options);
     this.dataCollected.emit(this.options);
+
+    this.formCtrl.setValue('');
+    this.optionInput.nativeElement.value = '';
+  }
+
+  isValueAlreadySelected(value: IOption): boolean{
+    if(this.options == undefined || this.options.length == 0)
+      return false;
+
+    return this.options.findIndex(
+      (el) => 
+      el.value == value.value
+      && el.label == value.label
+      && el.additional == value.additional) > -1
   }
 
   remove(op): void {
     const index = this.options.indexOf(op);
     if (index >= 0) {
-      // Pushing option back to available option if it belongs there
-      if (op.value != undefined) {
-        this.availableOptions.push(op);
-      }
-
       this.options.splice(index, 1);
       this.formCtrl.updateValueAndValidity();
     }
@@ -130,31 +134,14 @@ export class ChipsAutocompleteComponent implements OnInit, ControlValueAccessor 
     this.dataRemoved.emit(op);
   }
 
-
   // if there is a maxOptionsSelected specified
   maxOptionsSelectedValidation() {
     if(this.maxOptionsSelected == undefined)
       return;
     
-    if (this.maxOptionsSelected == this.options.length){
-      // If value belongs to available option, then it is inserted back there
-      // Otherwise, it is just pops out from options list.
-      let poppedOption = this.options.pop();
-      
-      if(poppedOption.value != undefined)
-        this.availableOptions.push(poppedOption);
-    }
+    if (this.maxOptionsSelected == this.options.length)
+      this.options.pop();
   }
-
-  private _filter(op): IOption[] {
-    const filterValue = (typeof (op) == "string") ? op.toLowerCase() : op.label.toLowerCase();
-    console.log('filter value: ' + filterValue);
-    return this.availableOptions.filter(option => option.label.toLowerCase().indexOf(filterValue) === 0);
-  }
-
-
-
-
 
   onChange: any = () => { };
   onTouched: any = () => { };

@@ -4,7 +4,7 @@ import { SnackService } from './../../../services/snack/snack.service';
 import { Router } from '@angular/router';
 import { TEMSComponent } from './../../../tems/tems.component';
 import { EquipmentService } from './../../../services/equipment-service/equipment.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit, OnChanges, SimpleChanges } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BtnCellRendererComponent } from 'src/app/public/ag-grid/btn-cell-renderer/btn-cell-renderer.component';
 
@@ -14,7 +14,9 @@ import { BtnCellRendererComponent } from 'src/app/public/ag-grid/btn-cell-render
   styleUrls: ['./ag-grid-equipment.component.scss']
 })
 
-export class AgGridEquipmentComponent extends TEMSComponent implements OnInit {
+export class AgGridEquipmentComponent extends TEMSComponent implements OnInit, OnChanges {
+
+  @Input() includeDerived = false;
 
   private gridApi;
   private gridColumnApi;
@@ -78,6 +80,10 @@ export class AgGridEquipmentComponent extends TEMSComponent implements OnInit {
 
     this.rowSelection = 'multiple';
   }
+  ngOnChanges(changes: SimpleChanges): void {
+    console.log('changed');
+    this.fetchEquipments();
+  }
 
   details(e) {
     this.dialogService.openDialog(
@@ -106,18 +112,24 @@ export class AgGridEquipmentComponent extends TEMSComponent implements OnInit {
   }
 
   ngOnInit() {
+
   }
 
   onGridReady(params) {
     this.gridApi = params.api;
     this.gridColumnApi = params.columnApi;
 
-    this.subscriptions.push(this.equipmentService.getEquipmentSimplified(20, 20, true)
-      .subscribe(result => {
-        console.log(result);
-        this.rowData = result;
-        this.loading = false;
-      }));
+    this.fetchEquipments();
+  }
+
+  fetchEquipments(){
+    this.loading = true;
+    this.subscriptions.push(this.equipmentService.getEquipmentSimplified(20, 20, !this.includeDerived)
+    .subscribe(result => {
+      console.log(result);
+      this.rowData = result;
+      this.loading = false;
+    }));
   }
 
   isFirstColumn(params) {

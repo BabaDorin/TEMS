@@ -78,33 +78,30 @@ namespace leave_management.Repository
             Expression<Func<T, TType>> select = null,
             Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null, 
             Func<IQueryable<T>, IIncludableQueryable<T, object>> include = null,
-            List<string> includes = null)
+            List<string> includes = null,
+            int? skip = null,
+            int? take = null)
         {
-
             IQueryable<T> query = _db;
 
             if (where != null)
-            {
                 query = query.Where(where);
-            }
 
             if (includes != null)
-            {
                 foreach (var table in includes)
-                {
                     query = query.Include(table);
-                }
-            }
 
             if (include != null)
-            {
                 query = include(query);
-            }
 
             if (orderBy != null)
-            {
                 query = orderBy(query);
-            }
+
+            if(skip != null)
+                query = query.Skip((int)skip);
+
+            if(take != null)
+                query = query.Take((int)take);
 
             return
                 (select != null)

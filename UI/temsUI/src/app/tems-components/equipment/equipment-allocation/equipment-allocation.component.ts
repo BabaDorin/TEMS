@@ -57,69 +57,69 @@ export class EquipmentAllocationComponent extends TEMSComponent implements OnIni
   }
 
   ngOnInit(): void {
-    this.subscriptions.push(this.equipmentService.getAllAutocompleteOptions()
-      .subscribe(response => {
-        this.equipmentAutoCompleteOptions = response;
-      }))
+    // this.subscriptions.push(this.equipmentService.getAllAutocompleteOptions()
+    //   .subscribe(response => {
+    //     this.equipmentAutoCompleteOptions = response;
+    //   }))
 
-    this.selectedAllocateToType="room";
-    this.allocatedToChipsInputLabel = 'Room identifier...';
+    // this.selectedAllocateToType="room";
+    // this.allocatedToChipsInputLabel = 'Room identifier...';
 
-    this.subscriptions.push(this.roomService.getAllAutocompleteOptions()
-      .subscribe(response => {
-        this.allocatedToAutoCompleteOptions = response;
-      }));
+    // this.subscriptions.push(this.roomService.getAllAutocompleteOptions()
+    //   .subscribe(response => {
+    //     this.allocatedToAutoCompleteOptions = response;
+    //   }));
     
-    if(this.equipment != undefined)
-      this.equipmentAlreadySelectedOptions = this.equipment;
+    // if(this.equipment != undefined)
+    //   this.equipmentAlreadySelectedOptions = this.equipment;
     
-    if(this.room != undefined){
-      this.allocatedToAlreadySelectedOptions = this.room;
-      this.selectedAllocateToType = 'room';
-    }
+    // if(this.room != undefined){
+    //   this.allocatedToAlreadySelectedOptions = this.room;
+    //   this.selectedAllocateToType = 'room';
+    // }
 
-    if(this.personnel != undefined){
-      this.allocatedToAlreadySelectedOptions = this.personnel;
-      this.selectedAllocateToType = 'personnel';
-    }
+    // if(this.personnel != undefined){
+    //   this.allocatedToAlreadySelectedOptions = this.personnel;
+    //   this.selectedAllocateToType = 'personnel';
+    // }
   }
 
   onSelection(){
-    switch (this.selectedAllocateToType) {
-      case 'room':
-        this.allocatedToChipsInputLabel = 'Room identifier...';
-        this.subscriptions.push(this.roomService.getAllAutocompleteOptions()
-          .subscribe(response => {
-            this.allocatedToAutoCompleteOptions = response;
-          }));
-        break;
-      case 'personnel':
-        this.allocatedToChipsInputLabel = 'Name...';
-        this.subscriptions.push(this.personnelService.getAllAutocompleteOptions()
-          .subscribe(result => {
-            this.allocatedToAutoCompleteOptions = result;
-          }))
-        break;
-    }
+    // switch (this.selectedAllocateToType) {
+    //   case 'room':
+    //     this.allocatedToChipsInputLabel = 'Room identifier...';
+    //     this.subscriptions.push(this.roomService.getAllAutocompleteOptions()
+    //       .subscribe(response => {
+    //         this.allocatedToAutoCompleteOptions = response;
+    //       }));
+    //     break;
+    //   case 'personnel':
+    //     this.allocatedToChipsInputLabel = 'Name...';
+    //     this.subscriptions.push(this.personnelService.getAllAutocompleteOptions()
+    //       .subscribe(result => {
+    //         this.allocatedToAutoCompleteOptions = result;
+    //       }))
+    //     break;
+    // }
 
-    this.allocatedToAlreadySelectedOptions = [];
+    // this.allocatedToAlreadySelectedOptions = [];
   }
 
   submit(){
-    if(this.equipmentIdentifierChips.options.length<1 || this.allocatedTo.options.length != 1)
-      return;
+    // if(this.equipmentIdentifierChips.options.length<1 || this.allocatedTo.options.length != 1)
+    //   return;
 
-    let addAllocation: AddAllocation = {
-      equipments: this.equipmentIdentifierChips.options,
-      allocateToType: this.selectedAllocateToType,
-      allocateToId: this.allocatedTo.options[0].value,
-    }
+    // let addAllocation: AddAllocation = {
+    //   equipments: this.equipmentIdentifierChips.options,
+    //   allocateToType: this.selectedAllocateToType,
+    //   allocateToId: this.allocatedTo.options[0].value,
+    // }
 
-    console.log(addAllocation);
+    // console.log(addAllocation);
 
-    this.subscriptions.push(this.allocationService.createAllocation(addAllocation)
-      .subscribe(result => {
-        console.log(result);
-      }))
+    // this.subscriptions.push(this.allocationService.createAllocation(addAllocation)
+    //   .subscribe(result => {
+    //     console.log(result);
+    //   }))
   }
 }

@@ -12,7 +12,7 @@ export class SnackService {
 
   snack(response){
     if(response.status == undefined)
-      return;
+      return false;
     
     let panelClass = (response.status == 1) ? 'success-snackbar' : 'error-snackbar';
     let seconds = (response.status == 1) ? 3 : 10;
@@ -21,5 +21,7 @@ export class SnackService {
       duration: seconds * 1000,
       panelClass: [panelClass]
     });
+
+    return response.status == 1;
   }
 }

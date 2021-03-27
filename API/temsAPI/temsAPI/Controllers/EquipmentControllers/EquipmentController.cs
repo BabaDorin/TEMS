@@ -33,13 +33,13 @@ namespace temsAPI.Controllers.EquipmentControllers
 
         [HttpPost]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
-        public async Task<JsonResult> Create([FromBody] AddEquipmentViewModel viewModel)
+        public async Task<JsonResult> Add([FromBody] AddEquipmentViewModel viewModel)
         {
             string validationResult = await ValidateAddEquipmentViewModel(viewModel);
             if (validationResult != null)
                 return ReturnResponse(validationResult, ResponseStatus.Fail);
 
-            // If we got so far, it might be valid
+                // If we got so far, it might be valid
             Equipment model = _mapper.Map<Equipment>(viewModel);
 
             model.Id = Guid.NewGuid().ToString();
@@ -47,8 +47,8 @@ namespace temsAPI.Controllers.EquipmentControllers
             await _unitOfWork.Equipments.Create(model);
             await _unitOfWork.Save();
 
-            if (!await _unitOfWork.Equipments.isExists(q => q.Id == model.Id))
-                return ReturnResponse("Fail", ResponseStatus.Fail);
+            //if (!await _unitOfWork.Equipments.isExists(q => q.Id == model.Id))
+            //    return ReturnResponse("Fail", ResponseStatus.Fail);
 
             return ReturnResponse("Success", ResponseStatus.Success);
         }
@@ -93,32 +93,49 @@ namespace temsAPI.Controllers.EquipmentControllers
         {
             try
             {
+                DateTime start = DateTime.Now;
                 // Invalid parameters
                 if (pageNumber < 0 || equipmentsPerPage < 1)
                     return ReturnResponse("Invalid parameters", ResponseStatus.Fail);
 
-
+                start = DateTime.Now;
                 Expression<Func<Equipment, bool>> expression
                     = (onlyParents) ? qu => qu.ParentID == null && !qu.IsArchieved : qu => !qu.IsArchieved;
 
-                IList<Data.Entities.EquipmentEntities.Equipment> equipments =
-                    equipments = await _unitOfWork.Equipments.FindAll<Data.Entities.EquipmentEntities.Equipment>
+                var viewModel = (await _unitOfWork.Equipments.FindAll<ViewEquipmentSimplifiedViewModel>
                         (expression,
                         include: q => q
-                                .Include(q => q.EquipmentDefinition)
-                                .ThenInclude(q => q.EquipmentType));
+                        .Include(q => q.EquipmentAllocations.Where(q => q.DateReturned == null))
+                        .ThenInclude(q => q.Room)
+                        .Include(q => q.EquipmentAllocations.Where(q => q.DateReturned == null))
+                        .ThenInclude(q => q.Personnel)
+                        .Include(q => q.EquipmentDefinition)
+                        .ThenInclude(q => q.EquipmentType),
+                        select: q => new ViewEquipmentSimplifiedViewModel
+                        {
+                            Id = q.Id,
+                            IsDefect = q.IsDefect,
+                            IsUsed = q.IsUsed,
+                            TemsId = q.TEMSID,
+                            SerialNumber = q.SerialNumber,
+                            Type = q.EquipmentDefinition.EquipmentType.Name,
+                            Definition = q.EquipmentDefinition.Identifier,
+                            Assignee = (q.EquipmentAllocations.Count(q => q.DateReturned == null) > 0)
+                                ? q.EquipmentAllocations.First(q => q.DateReturned == null).Assignee
+                                : "Deposit",
+                            TemsIdOrSerialNumber = String.IsNullOrEmpty(q.TEMSID)
+                                ? q.SerialNumber
+                                : q.TEMSID
+                        })).ToList();
 
-                var viewModel = new List<ViewEquipmentSimplifiedViewModel>();
-
-                foreach (Data.Entities.EquipmentEntities.Equipment eq in equipments)
-                {
-                    viewModel.Add(await EquipmentToEquipmentSimplifiedMapping(eq));
-                }
+                DateTime end = DateTime.Now;
+                Debug.WriteLine("Time ellapsed: " + (start - end).TotalMilliseconds);
 
                 return Json(viewModel);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Debug.WriteLine(ex);
                 return ReturnResponse("Unknown error occured when fetching equipments", ResponseStatus.Fail);
             }
         }

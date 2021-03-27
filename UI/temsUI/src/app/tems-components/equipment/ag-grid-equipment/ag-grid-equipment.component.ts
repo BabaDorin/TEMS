@@ -1,7 +1,12 @@
+import { EquipmentDetailsGeneralComponent } from './../equipment-details/equipment-details-general/equipment-details-general.component';
+import { DialogService } from './../../../services/dialog-service/dialog.service';
+import { SnackService } from './../../../services/snack/snack.service';
+import { Router } from '@angular/router';
 import { TEMSComponent } from './../../../tems/tems.component';
 import { EquipmentService } from './../../../services/equipment-service/equipment.service';
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { BtnCellRendererComponent } from 'src/app/public/ag-grid/btn-cell-renderer/btn-cell-renderer.component';
 
 @Component({
   selector: 'app-ag-grid-equipment',
@@ -18,10 +23,26 @@ export class AgGridEquipmentComponent extends TEMSComponent implements OnInit {
   private defaultColDef;
   private rowSelection;
   private rowData: [];
+  private frameworkComponents: any;
+  private pagination
+  private paginationPageSize;
+  loading: boolean = true;
 
   constructor(
-    private equipmentService: EquipmentService) {
+    private equipmentService: EquipmentService,
+    private dialogService: DialogService,
+    private snackService: SnackService) {
     super();
+
+    // enables pagination in the grid
+    this.pagination = true;
+
+    // sets 10 rows per page (default is 100)
+    this.paginationPageSize = 20;
+
+    this.frameworkComponents = {
+      btnCellRendererComponent: BtnCellRendererComponent
+    }
 
     this.columnDefs = [
       { field: 'temsId', sortable: true, filter: true },
@@ -31,6 +52,20 @@ export class AgGridEquipmentComponent extends TEMSComponent implements OnInit {
       { field: 'type', sortable: true, filter: true },
       { field: 'isUsed', sortable: false, filter: true },
       { field: 'isDefect', sortable: false, filter: true },
+      {
+        cellRenderer: 'btnCellRendererComponent',
+        cellRendererParams: {
+          onClick: this.details.bind(this),
+          label: 'Details'
+        }
+      },
+      {
+        cellRenderer: 'btnCellRendererComponent',
+        cellRendererParams: {
+          onClick: this.archieve.bind(this),
+          label: 'Archieve'
+        }
+      }
     ];
 
     this.defaultColDef = {
@@ -44,6 +79,32 @@ export class AgGridEquipmentComponent extends TEMSComponent implements OnInit {
     this.rowSelection = 'multiple';
   }
 
+  details(e) {
+    this.dialogService.openDialog(
+      EquipmentDetailsGeneralComponent,
+      [
+        { label: "displayViewMore", value: true },
+        { label: "equipmentId", value: e.rowData.id },
+      ]
+    )
+  }
+
+  archieve(e){
+    if(!confirm("Are you sure you want to archive this item? It will result in archieving all of it's logs and allocations"))
+    return;
+
+    let id = e.rowData.id;
+
+    this.subscriptions.push(
+      this.equipmentService.archieveEquipment(e.rowData.id)
+      .subscribe(result => {
+        if(this.snackService.snack(result)){
+          this.gridApi.applyTransaction({ remove: [e.rowData] });
+        }
+      })
+    )
+  }
+
   ngOnInit() {
   }
 
@@ -55,6 +116,7 @@ export class AgGridEquipmentComponent extends TEMSComponent implements OnInit {
       .subscribe(result => {
         console.log(result);
         this.rowData = result;
+        this.loading = false;
       }));
   }
 

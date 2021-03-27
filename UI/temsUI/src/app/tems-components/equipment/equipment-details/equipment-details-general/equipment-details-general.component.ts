@@ -4,7 +4,7 @@ import { Property } from './../../../../models/equipment/view-property.model';
 import { EquipmentService } from 'src/app/services/equipment-service/equipment.service';
 import { Component, Input, OnInit } from '@angular/core';
 import { ViewEquipment } from 'src/app/models/equipment/view-equipment.model';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-equipment-details-general',
@@ -14,6 +14,8 @@ import { ActivatedRoute } from '@angular/router';
 export class EquipmentDetailsGeneralComponent extends TEMSComponent implements OnInit {
 
   @Input() equipmentId: string;
+  @Input() displayViewMore: boolean = false;
+  dialogRef;
 
   equipment: ViewEquipment;
   generalProperties: Property[];
@@ -22,7 +24,7 @@ export class EquipmentDetailsGeneralComponent extends TEMSComponent implements O
 
   constructor(
     private equipmentService: EquipmentService,
-    private route: ActivatedRoute,
+    private route: Router,
     private snackService: SnackService) {
     super();
   }
@@ -38,7 +40,7 @@ export class EquipmentDetailsGeneralComponent extends TEMSComponent implements O
 
         this.generalProperties= [
           { displayName: 'Identifier', value: this.equipment.definition.label},
-          { displayName: 'Type', value: this.equipment.type.name},
+          { displayName: 'Type', value: this.equipment.type},
           { displayName: 'TemsID', value: this.equipment.temsId },
           { displayName: 'Serial Number', value: this.equipment.serialNumber},
           { displayName: 'Is Used', dataType: 'boolean', name: 'isUsed', value: this.equipment.isUsed},
@@ -63,6 +65,12 @@ export class EquipmentDetailsGeneralComponent extends TEMSComponent implements O
         this.snackService.snack(result);
       })
     )
+  }
+
+  viewMore(){
+    console.log('here');
+    this.route.navigateByUrl('/equipment/details/' + this.equipmentId);
+    this.dialogRef.close();
   }
 
   changeState(attribute: string){

@@ -6,7 +6,11 @@
 <br>
 <div class="card">
     <div class="card-body">
-        <button class="btn btn-primay" (click)="allocateSelected()">Allocate selected items</button>
+        <div class="card-title">Equipments</div>
+        <br>
+        <button mat-button (click)="addNew()">+ Add new</button>
+        <button mat-button (click)="allocateSelected()">Allocate selected items</button>
+        <hr>
         <app-ag-grid-equipment #agGridEquipment>
 
         </app-ag-grid-equipment>

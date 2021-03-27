@@ -1,3 +1,4 @@
+import { SnackService } from './services/snack/snack.service';
 import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Router } from "@angular/router";
@@ -7,7 +8,9 @@ import { tap } from "rxjs/operators";
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
 
-    constructor(private router: Router) {
+    constructor(
+        private router: Router,
+        private snackService: SnackService) {
 
     }
 
@@ -23,7 +26,12 @@ export class AuthInterceptor implements HttpInterceptor {
                 succ => {
                 },
                 err => {
+                    if(err.status == 403){
+                        this.snackService.snack({message: "Insufficient permissions", status: 0})
+                    }
+
                     if (err.status == 401) {
+                        this.snackService.snack({message: "Insufficient permissions", status: 0})
                         localStorage.removeItem('token');
                         this.router.navigateByUrl('/auth/login');
                     }

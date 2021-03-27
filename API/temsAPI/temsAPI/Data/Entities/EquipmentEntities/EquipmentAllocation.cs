@@ -28,6 +28,12 @@ namespace temsAPI.Data.Entities.EquipmentEntities
         public Room? Room { get; set; }
         public string? RoomID { get; set; }
 
+        [NotMapped]
+        public string Assignee
+        {
+            get => (Room == null) ? Personnel.Name : Room.Identifier;
+        }
+
         public DateTime? DateReturned { get; set; }
 #nullable disable
     }

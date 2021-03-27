@@ -1,3 +1,5 @@
+import { DialogService } from './../../../services/dialog-service/dialog.service';
+import { Router } from '@angular/router';
 import { IOption } from './../../../models/option.model';
 import { ViewEquipmentSimplified } from 'src/app/models/equipment/view-equipment-simplified.model';
 import { AgGridEquipmentComponent } from './../ag-grid-equipment/ag-grid-equipment.component';
@@ -15,7 +17,8 @@ export class ViewEquipmentComponent implements OnInit {
   @ViewChild('agGridEquipment') agGridEquipment: AgGridEquipmentComponent;
 
   constructor(
-    public dialog: MatDialog
+    public dialogService: DialogService,
+    public router: Router
   ) {
 
   }
@@ -31,13 +34,13 @@ export class ViewEquipmentComponent implements OnInit {
     if (selectedNodes.length == 0)
       return;
 
-    let dialogRef: MatDialogRef<any>;
-    dialogRef = this.dialog.open(EquipmentAllocationComponent);
+    this.dialogService.openDialog(
+      EquipmentAllocationComponent,
+      [{label: "equipment", value: selectedNodes }]
+    )
+  }
 
-    dialogRef.componentInstance.equipment = selectedNodes;
-
-    dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed');
-    });
+  addNew(){
+    this.router.navigate(["/equipment/add"]);
   }
 }

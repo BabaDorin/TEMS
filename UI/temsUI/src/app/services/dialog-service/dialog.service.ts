@@ -27,6 +27,8 @@ export class DialogService {
       keyValue.forEach(element => {
         dialogRef.componentInstance[element.label] = element.value;
       });
+
+      dialogRef.componentInstance["dialogRef"] = dialogRef;
     }
 
     dialogRef.afterClosed().subscribe(result => {

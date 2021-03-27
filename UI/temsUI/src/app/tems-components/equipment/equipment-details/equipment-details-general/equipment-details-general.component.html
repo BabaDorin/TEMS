@@ -64,4 +64,6 @@
     [updateEquipmentDefinitionId]="equipment.definition.value">
         Loading...
     </app-add-equipment>
+
+    <button *ngIf="displayViewMore == true" mat-button (click)="viewMore()">View More</button>
 </ng-container>

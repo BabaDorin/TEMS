@@ -1,17 +1,17 @@
+import { filter } from 'rxjs/operators';
+import { DefinitionService } from './../../../services/definition-service/definition.service';
+import { TypeService } from './../../../services/type-service/type.service';
 import { ActivatedRoute } from '@angular/router';
-import { ReportService } from './../../../services/report-service/report.service';
-import { AddReportTemplate } from './../../../models/report/add-report.model';
-import { Observable, of } from 'rxjs';
-import { TEMSComponent } from './../../../tems/tems.component';
+import { ReportService } from '../../../services/report-service/report.service';
+import { AddReportTemplate } from '../../../models/report/add-report.model';
+import { TEMSComponent } from '../../../tems/tems.component';
 import { CheckboxItem } from '../../../models/checkboxItem.model';
 import { IOption } from 'src/app/models/option.model';
-import { PersonnelService } from './../../../services/personnel-service/personnel.service';
-import { EquipmentService } from './../../../services/equipment-service/equipment.service';
-import { RoomsService } from './../../../services/rooms-service/rooms.service';
+import { PersonnelService } from '../../../services/personnel-service/personnel.service';
+import { EquipmentService } from '../../../services/equipment-service/equipment.service';
+import { RoomsService } from '../../../services/rooms-service/rooms.service';
 import { FormGroup, FormControl } from '@angular/forms';
 import { Component, OnInit, Type } from '@angular/core';
-import { element } from 'protractor';
-import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 
 @Component({
   selector: 'app-create-report-template',
@@ -37,20 +37,19 @@ export class CreateReportTemplateComponent extends TEMSComponent implements OnIn
     { value: 'Allocations', viewValue: 'Allocations' }
   ];
 
-  typesAutocompleteOptions: IOption[];
   typesAlreadySelected: IOption[] = [];
-  definitionsAutocompleteOptions: IOption[];
   definitionsAlreadySelected: IOption[] = [];
-  roomsAutocompleteOptions: IOption[];
   roomsAlreadySelected: IOption[] = [];
-  personnelAutocompleteOptions: IOption[];
   personnelAlreadySelected: IOption[] = [];
-  signatoriesAutocompleteOptions: IOption[];
   signatoriesAlreadySelected: IOption[] = [];
+
+  typesEndPointParameter;
 
   constructor(
     private roomService: RoomsService,
     private equipmentService: EquipmentService,
+    private typeService: TypeService,
+    private definitionService: DefinitionService,
     private personnelService: PersonnelService,
     private reportService: ReportService,
     private activatedroute: ActivatedRoute
@@ -75,10 +74,10 @@ export class CreateReportTemplateComponent extends TEMSComponent implements OnIn
       signatories: new FormControl()
     });
 
-    this.fetchTypes();
-    this.fetchDefinitionsOfTypes();
-    this.fetchRooms();
-    this.fetchPersonnel();
+    // this.fetchTypes();
+    // this.fetchDefinitionsOfTypes();
+    // this.fetchRooms();
+    // this.fetchPersonnel();
 
     this.sepparateBy = 'none';
     this.universalProperties = [
@@ -141,57 +140,54 @@ export class CreateReportTemplateComponent extends TEMSComponent implements OnIn
     )
   }
 
-  fetchTypes() {
-    this.subscriptions.push(
-      this.equipmentService.getTypes()
-        .subscribe(result => {
-          this.typesAutocompleteOptions = result;
-        })
-    );
-  }
+  // fetchDefinitionsOfTypes() {
+  //   
 
-  fetchDefinitionsOfTypes() {
-    let types: string[] = this.reportFormGroup.controls.types.value == undefined
-      ? null
-      : this.reportFormGroup.controls.types.value.map(q => q.value);
-
-    this.subscriptions.push(
-      this.equipmentService
-        .getDefinitionsOfTypes(types)
-        .subscribe(result => {
-          console.log(result);
-          this.definitionsAutocompleteOptions = result;
-        })
-    )
-  }
-
-  fetchRooms() {
-    this.subscriptions.push(
-      this.roomService.getAllAutocompleteOptions()
-        .subscribe(result => {
-          console.log(result);
-          this.roomsAutocompleteOptions = result;
-        }));
-  }
-
-  fetchPersonnel() {
-    this.subscriptions.push(
-      this.personnelService.getAllAutocompleteOptions()
-        .subscribe(result => {
-          console.log(result);
-          this.personnelAutocompleteOptions = result;
-          this.signatoriesAutocompleteOptions = [...this.personnelAutocompleteOptions];
-        }));
-  }
+  //   this.subscriptions.push(
+  //     this.equipmentService
+  //       .getDefinitionsOfTypes(types)
+  //       .subscribe(result => {
+  //         console.log(result);
+  //         this.definitionsAutocompleteOptions = result;
+  //       })
+  //   )
+  // }
 
   typeAdded(eventData) {
     // getting definitions for selected types
-    this.fetchDefinitionsOfTypes();
+    // this.fetchDefinitionsOfTypes();
+    this.typesEndPointParameter = this.reportFormGroup.controls.types.value == undefined
+        ? null
+        : this.reportFormGroup.controls.types.value.map(q => q.value);
+    
+    let validDefinitions = [];
+
+    if(this.reportFormGroup.controls.definitions.value != null)
+       validDefinitions = this.reportFormGroup.controls.definitions.value
+       .filter(q1 => this.typesEndPointParameter.findIndex(q2 => q2 == q1.additional) > -1);
+
+        console.log('valid');
+        console.log(validDefinitions);
+
+    this.definitionsAlreadySelected = validDefinitions;
+
     this.findCommonAndSpecificProperties();
   }
 
   typeRemoved(eventData) {
-    this.fetchDefinitionsOfTypes();
+    this.typesEndPointParameter = this.reportFormGroup.controls.types.value == undefined
+        ? null
+        : this.reportFormGroup.controls.types.value.map(q => q.value);
+    
+    let validDefinitions = [];
+
+    if(this.reportFormGroup.controls.definitions.value != null)
+       validDefinitions = this.reportFormGroup.controls.definitions.value
+        .filter(q1 => this.typesEndPointParameter.findIndex(q2 => q2 == q1.additional) > -1);
+       
+        console.log(validDefinitions);
+
+    this.definitionsAlreadySelected = validDefinitions;
 
     console.log('event data:');
     let index = this.typeSpecificProperties.findIndex(q => q.type == eventData);

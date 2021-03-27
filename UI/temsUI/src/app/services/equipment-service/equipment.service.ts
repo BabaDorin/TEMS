@@ -27,13 +27,6 @@ export class EquipmentService extends TEMSService {
     super();
   }
 
-  getTypes(): Observable<IOption[]> {
-    return this.http.get<IOption[]>(
-      API_EQTYPE_URL + '/get',
-      this.httpOptions
-      );
-  }
-
   getTypesSimplified(): Observable<ViewTypeSiplified[]>{
     return this.http.get<ViewTypeSiplified[]>(
       API_EQTYPE_URL + '/getsimplified',
@@ -279,19 +272,6 @@ export class EquipmentService extends TEMSService {
       this.httpOptions);
   }
 
-  getDefinitionsOfType(typeId: string): Observable<any> {
-    console.log(typeId);
-    return this.http.post(API_EQDEF_URL + '/getdefinitionsoftype', JSON.stringify(typeId), this.httpOptions)
-  }
-
-  getDefinitionsOfTypes(typeIds: string[]): Observable<IOption[]>{
-    return this.http.post<IOption[]>(
-      API_EQDEF_URL + '/getdefinitionsoftypes',
-      JSON.stringify(typeIds),
-      this.httpOptions
-    );
-  }
-
   getFullDefinition(definitionId: string): Observable<Definition> {
     return this.http.get<Definition>(
       API_EQDEF_URL + '/getfulldefinition/' + definitionId, 
@@ -306,4 +286,4 @@ export class EquipmentService extends TEMSService {
   generateAddEquipmentOfDefinition(definition: Definition): AddEquipment {
     return new AddEquipment(definition);
   }
-} 
+}

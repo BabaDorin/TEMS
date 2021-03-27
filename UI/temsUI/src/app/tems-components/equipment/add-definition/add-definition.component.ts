@@ -1,3 +1,4 @@
+import { TypeService } from './../../../services/type-service/type.service';
 import { Observable } from 'rxjs';
 import { EquipmentType } from './../../../models/equipment/view-type.model';
 import { IOption } from './../../../models/option.model';
@@ -37,6 +38,7 @@ export class AddDefinitionComponent extends TEMSComponent implements OnInit {
   constructor(
     private formlyParserService: FormlyParserService,
     private equipmentService: EquipmentService,
+    private typeService: TypeService,
     @Inject(MAT_DIALOG_DATA) public data: any,
     public dialogRef?: MatDialogRef<AddDefinitionComponent>) {
     super();
@@ -56,7 +58,7 @@ export class AddDefinitionComponent extends TEMSComponent implements OnInit {
     if (this.data != undefined)
       this.setDefinitionType(this.data.selectedType);
     else
-      this.subscriptions.push(this.equipmentService.getTypes().subscribe(response => {
+      this.subscriptions.push(this.typeService.getAllAutocompleteOptions().subscribe(response => {
         this.equipmentTypes = response;
       }));
   }

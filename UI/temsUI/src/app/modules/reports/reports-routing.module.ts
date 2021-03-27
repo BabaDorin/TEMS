@@ -1,5 +1,5 @@
 import { CanManageEntitiesGuard } from './../../guards/can-manage-entities.guard';
-import { CreateReportTemplateComponent } from './../../tems-components/reports/create-report-template/create-report-template.component';
+import { CreateReportTemplateComponent } from '../../tems-components/reports/create-report-template/create-report-template.component';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { ReportsComponent } from 'src/app/tems-components/reports/reports.component';

@@ -41,7 +41,7 @@
                 <app-chips-autocomplete label="Equipment types" formControlName="types"
                   placeholder="No selection = all types" 
                   [alreadySelected]="typesAlreadySelected"
-                  [availableOptions]="typesAutocompleteOptions"
+                  [endPoint]="typeService"
                   (dataCollected)="typeAdded($event)"
                   (dataRemoved)="typeRemoved($event)">
                 </app-chips-autocomplete>
@@ -49,8 +49,9 @@
               <div class="col-md-5">
                 <app-chips-autocomplete label="Definitions for selected types" formControlName="definitions"
                   placeholder="No selection = all definitions" 
-                  [alreadySelected]="definitionsAlreadySelected"
-                  [availableOptions]="definitionsAutocompleteOptions">
+                  [endPoint]="definitionService"
+                  [endPointParameter]="typesEndPointParameter"
+                  [alreadySelected]="definitionsAlreadySelected">
                 </app-chips-autocomplete>
               </div>
             </div>
@@ -59,15 +60,15 @@
               <div class="col-md-5">
                 <app-chips-autocomplete label="Include only equipment from these rooms" formControlName="rooms"
                   placeholder="No selection = all of the rooms"
-                  [alreadySelected]="roomsAlreadySelected" 
-                  [availableOptions]="roomsAutocompleteOptions">
+                  [endPoint]="roomService" 
+                  [alreadySelected]="roomsAlreadySelected">
                 </app-chips-autocomplete>
               </div>
               <div class="col-md-5">
                 <app-chips-autocomplete label="Include only equipment allocated to these people"
                   formControlName="personnel" placeholder="No selection = all personnel"
-                  [alreadySelected]="personnelAlreadySelected"
-                  [availableOptions]="personnelAutocompleteOptions">
+                  [endPoint]="personnelService"
+                  [alreadySelected]="personnelAlreadySelected">
                 </app-chips-autocomplete>
               </div>
             </div>

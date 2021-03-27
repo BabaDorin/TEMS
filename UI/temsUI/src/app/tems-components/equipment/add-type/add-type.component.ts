@@ -1,3 +1,4 @@
+import { TypeService } from './../../../services/type-service/type.service';
 import { DialogService } from './../../../services/dialog-service/dialog.service';
 import { TEMSComponent } from 'src/app/tems/tems.component';
 import { EquipmentType } from './../../../models/equipment/view-type.model';
@@ -37,7 +38,8 @@ export class AddTypeComponent extends TEMSComponent implements OnInit {
 
   constructor(
     private equipmentService: EquipmentService,
-    private dialogService: DialogService
+    private dialogService: DialogService,
+    private typeService: TypeService,
     ) {
     super();
   }
@@ -112,7 +114,7 @@ export class AddTypeComponent extends TEMSComponent implements OnInit {
   }
 
   fetchTypes(){
-    this.subscriptions.push(this.equipmentService.getTypes().subscribe(response=>{
+    this.subscriptions.push(this.typeService.getAllAutocompleteOptions().subscribe(response=>{
       this.parentTypeOptions = response;
       if(this.parentTypeOptions.length == 0)
         this.formGroup.controls.parents.disable();

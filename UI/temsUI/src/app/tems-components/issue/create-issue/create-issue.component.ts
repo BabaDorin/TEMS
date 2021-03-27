@@ -27,13 +27,8 @@ export class CreateIssueComponent extends TEMSComponent implements OnInit {
     fields: [] as FormlyFieldConfig[],
   }
 
-  roomsAutoCompleteOptions;
   @Input() roomsAlreadySelected: IOption[] = [];
-
-  equipmentAutoCompleteOptions;
   @Input() equipmentAlreadySelected: IOption[] = [];
-
-  personnelAutocompleteOptions;
   @Input() personnelAlreadySelected: IOption[] = [];
 
   @ViewChild('assignees') assignees;
@@ -57,24 +52,6 @@ export class CreateIssueComponent extends TEMSComponent implements OnInit {
         console.log(result);
         this.formlyData.fields = this.formlyParserService.parseAddIssue(new AddIssue, this.frequentProblems, result);
       }))
-
-    this.subscriptions.push(this.equipmentService.getAllAutocompleteOptions()
-      .subscribe(result => {
-        console.log(result);
-        this.equipmentAutoCompleteOptions = result;
-      }));
-
-    this.subscriptions.push(this.roomService.getAllAutocompleteOptions()
-      .subscribe(result => {
-        console.log(result);
-        this.roomsAutoCompleteOptions = result;
-      }));
-    
-    this.subscriptions.push(this.personnelService.getAllAutocompleteOptions()
-      .subscribe(result => {
-        console.log(result);
-        this.personnelAutocompleteOptions = result;
-      }));
   }
 
   onSubmit(model){

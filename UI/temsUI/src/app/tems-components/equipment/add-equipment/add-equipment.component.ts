@@ -1,3 +1,4 @@
+import { TypeService } from './../../../services/type-service/type.service';
 import { SnackService } from './../../../services/snack/snack.service';
 import { DialogService } from './../../../services/dialog-service/dialog.service';
 import { TEMSComponent } from 'src/app/tems/tems.component';
@@ -11,6 +12,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { AddEquipment } from 'src/app/models/equipment/add-equipment.model';
+import { DefinitionService } from 'src/app/services/definition-service/definition.service';
 
 @Component({
   selector: 'app-add-equipment',
@@ -51,6 +53,8 @@ export class AddEquipmentComponent extends TEMSComponent implements OnInit {
 
   constructor(
     private equipmentService: EquipmentService,
+    private typeService: TypeService,
+    private definitionService: DefinitionService,
     private formlyParserService: FormlyParserService,
     private dialogService: DialogService,
     private snackService: SnackService) {
@@ -66,7 +70,7 @@ export class AddEquipmentComponent extends TEMSComponent implements OnInit {
     }
 
     this.subscriptions.push(
-      this.equipmentService.getTypes()
+      this.typeService.getAllAutocompleteOptions()
       .subscribe(response => {
       this.types = response;
     }));
@@ -138,7 +142,7 @@ export class AddEquipmentComponent extends TEMSComponent implements OnInit {
     }
 
     if (this.types.find(q => q.value == eventData.value) != undefined)
-      this.subscriptions.push(this.equipmentService.getDefinitionsOfType(eventData.value)
+      this.subscriptions.push(this.definitionService.getDefinitionsOfType(eventData.value)
         .subscribe(response => {
           console.log(response);
           this.definitionsOfType = response;

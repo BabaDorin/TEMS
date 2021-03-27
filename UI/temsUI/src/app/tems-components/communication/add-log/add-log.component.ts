@@ -42,7 +42,7 @@ export class AddLogComponent extends TEMSComponent implements OnInit {
   }
   autoCompleteOptions = [];
   alreadySelectedOptions = [];
-
+  adresseeEndPoint;
   chipsInputLabel = "";
 
   constructor(
@@ -56,17 +56,25 @@ export class AddLogComponent extends TEMSComponent implements OnInit {
 
   ngOnInit(): void {
     let implicitAddressees;
+    this.adresseeEndPoint = this.equipmentservice;
+
     this.adresseeChosen = this.equipment != undefined || this.room != undefined || this.personnel != undefined;
 
     if (this.adresseeChosen) {
-      if (this.equipment != undefined)
+      if (this.equipment != undefined){
         implicitAddressees = { type: 'equipment', entities: this.equipment }
+        this.adresseeEndPoint = this.equipmentservice
+      }
 
-      if (this.room != undefined)
+      if (this.room != undefined){
         implicitAddressees = { type: 'room', entities: this.room }
+        this.adresseeEndPoint = this.roomService
+      }
 
-      if (this.personnel != undefined)
+      if (this.personnel != undefined){
         implicitAddressees = { type: 'personnel', entities: this.personnel }
+        this.adresseeEndPoint = this.personnelService
+      }
 
       this.selectedAddresseeType = implicitAddressees.type;
 
@@ -86,27 +94,17 @@ export class AddLogComponent extends TEMSComponent implements OnInit {
 
       case 'equipment':
         this.chipsInputLabel = 'TEMSID or Serial Number...';
-        this.subscriptions.push(this.equipmentservice.getAllAutocompleteOptions()
-          .subscribe(response => {
-            this.autoCompleteOptions = response;
-          }))
+        this.adresseeEndPoint = this.equipmentservice
         break;
       
       case 'room':
         this.chipsInputLabel = 'Room identifier...';
-        this.subscriptions.push(this.roomService.getAllAutocompleteOptions()
-          .subscribe(result => {
-            console.log(result);
-            this.autoCompleteOptions = result;
-          }));
+        this.adresseeEndPoint = this.roomService
         break;
       
       case 'personnel':
         this.chipsInputLabel = 'Name...';
-        this.subscriptions.push(this.personnelService.getAllAutocompleteOptions()
-          .subscribe(result => {
-            this.autoCompleteOptions = result;
-          }))
+        this.adresseeEndPoint = this.personnelService
         break;
     }
 

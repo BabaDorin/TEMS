@@ -18,7 +18,6 @@ export class KeysAllocationsComponent extends TEMSComponent implements OnInit {
   @ViewChild('keysIdentifierChips', { static: false }) keysIdentifierChips: ChipsAutocompleteComponent;
   @ViewChild('allocatedTo', { static: false }) allocatedTo: ChipsAutocompleteComponent;
 
-  keysAutocompleteOptions = [];
   keysAlreadySelectedOptions = [];
   keysChipsInputLabel = "Choose one or more keys to allocate...";
 
@@ -34,19 +33,7 @@ export class KeysAllocationsComponent extends TEMSComponent implements OnInit {
   
   ngOnInit(): void {
     if(this.keys)
-      this.keysAutocompleteOptions = this.keys;
-    else
-      this.subscriptions.push(this.keysService.getAutocompleteOptions()
-        .subscribe(result => {
-          console.log(result);
-          this.keysAutocompleteOptions = result;
-        }))
-      
-    this.subscriptions.push(this.personnelService.getAllAutocompleteOptions()
-      .subscribe(result => {
-        console.log(result);
-        this.personnelAutocompleteOptions = result;
-      }))
+      this.keysIdentifierChips.filteredOptions = this.keys;
   }
 
   submit(){

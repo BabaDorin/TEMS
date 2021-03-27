@@ -1,3 +1,4 @@
+import { TypeService } from './services/type-service/type.service';
 import { MenuService } from './services/menu-service/menu.service';
 import { TokenService } from './services/token-service/token.service';
 import { AuthInterceptor } from './auth.interceptor';
@@ -33,6 +34,7 @@ import { TemsFormsModule } from './modules/tems-forms/tems-forms.module';
 import { ViewDefinitionComponent } from './tems-components/equipment/view-definition/view-definition.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { SnackComponent } from './public/snack/snack.component';
+import { DefinitionService } from './services/definition-service/definition.service';
 
 @NgModule({
   declarations: [
@@ -82,6 +84,8 @@ import { SnackComponent } from './public/snack/snack.component';
     TokenService,
     MenuService,
     MatSnackBar,
+    TypeService,
+    DefinitionService
   ],
   bootstrap: [AppComponent],
 })

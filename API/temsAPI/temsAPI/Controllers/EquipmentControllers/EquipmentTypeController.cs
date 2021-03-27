@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
@@ -28,22 +29,23 @@ namespace temsAPI.EquipmentControllers
 
         }
 
-        [HttpGet]
-        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
-        public async Task<JsonResult> Get()
+        [HttpGet("equipmenttype/getallautocompleteoptions/{filter?}")]
+        public async Task<JsonResult> GetAllAutocompleteOptions(string? filter)
         {
             try
             {
-                List<Option> viewModel = new List<Option>();
-                viewModel = (await _unitOfWork.EquipmentTypes
-                    .FindAll<Option>(
-                        where: q => !q.IsArchieved,
-                        select: q => new Option
-                        {
-                            Value = q.Id,
-                            Label = q.Name,
-                        }
-                    )).ToList();
+                Expression<Func<EquipmentType, bool>> expression = (filter == null)
+                   ? q => !q.IsArchieved
+                   : q => !q.IsArchieved && q.Name.Contains(filter);
+
+                List<Option> viewModel = (await _unitOfWork.EquipmentTypes.FindAll<Option>(
+                    where: expression,
+                    take: 5,
+                    select: q => new Option
+                    {
+                        Value = q.Id,
+                        Label = q.Name,
+                    })).ToList();
 
                 return Json(viewModel);
             }

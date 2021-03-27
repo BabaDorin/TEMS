@@ -10,7 +10,7 @@
                 <app-chips-autocomplete
                     #keysIdentifierChips
                     label="Choose one or more keys to allocate"
-                    [availableOptions]="keysAutocompleteOptions"
+                    [endPoint]="keysService"
                     [alreadySelected]="keysAlreadySelectedOptions">
                 </app-chips-autocomplete>
             </div>
@@ -20,7 +20,7 @@
                 <app-chips-autocomplete
                 #allocatedTo
                 label="Handle keys to..."
-                [availableOptions]="personnelAutocompleteOptions"
+                [endPoint]="personnelService"
                 maxOptionsSelected=1>
                 </app-chips-autocomplete>
             </div>

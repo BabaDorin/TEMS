@@ -23,7 +23,7 @@
                         *ngIf="adresseeChosen" 
                         #addresseesChips
                         label="Identifier..."
-                        [availableOptions]="autoCompleteOptions" 
+                        [endPoint]="adresseeEndPoint"
                         [alreadySelected]="alreadySelectedOptions"
                         required>
                     </app-chips-autocomplete>

@@ -1,6 +1,6 @@
 import { CheckboxGroupComponent } from './../../shared/forms/checkbox-group/checkbox-group.component';
 import { TemsFormsModule } from './../tems-forms/tems-forms.module';
-import { CreateReportTemplateComponent } from './../../tems-components/reports/create-report-template/create-report-template.component';
+import { CreateReportTemplateComponent } from '../../tems-components/reports/create-report-template/create-report-template.component';
 import { MaterialModule } from 'src/app/modules/material/material.module';
 import { ReportsComponent } from './../../tems-components/reports/reports.component';
 import { NgModule } from '@angular/core';

@@ -137,30 +137,60 @@ namespace temsAPI.Controllers.EquipmentControllers
             }
         }
 
+        // find a better sollution
+        public class DefinitionsOfTypesModel
+        {
+            public string Filter { get; set; }
+            public List<string> TypeIds { get; set; }
+        }
+
         [HttpPost]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
-        public async Task<JsonResult> GetDefinitionsOfTypes([FromBody] List<string> typeIds)
+        public async Task<JsonResult> GetDefinitionsOfTypes([FromBody] DefinitionsOfTypesModel viewModel)
         {
             try
             {
-                Expression<Func<EquipmentDefinition, bool>> expression = null;
-                if (typeIds != null && typeIds.Count > 0)
-                    expression = q => !q.IsArchieved && typeIds.Contains(q.EquipmentTypeID);
-                else
-                    expression = q => !q.IsArchieved;
 
-                List<Option> viewModel = (await _unitOfWork.EquipmentDefinitions
+                Expression<Func<EquipmentDefinition, bool>> expression;
+
+                if (viewModel == null || viewModel.TypeIds == null)
+                {
+                    return Json(new List<Option>());
+                    expression = q => !q.IsArchieved;
+                }
+                else
+                {
+                    if (viewModel.TypeIds == null)
+                        viewModel.TypeIds = new List<string>();
+
+                    if (viewModel.TypeIds != null && viewModel.TypeIds.Count > 0)
+                        expression = q => !q.IsArchieved && viewModel.TypeIds.Contains(q.EquipmentTypeID);
+                    else
+                        expression = q => !q.IsArchieved;
+
+                    if (viewModel.Filter != null)
+                    {
+                        Expression<Func<EquipmentDefinition, bool>> filterExpression =
+                            q => q.Identifier.Contains(viewModel.Filter);
+
+                        expression = ExpressionCombiner.CombineTwo(expression, filterExpression);
+                    }
+                }
+                
+
+                List<Option> resultViewModel = (await _unitOfWork.EquipmentDefinitions
                     .FindAll<Option>(
                         where: expression,
+                        take: 5,
                         select: q => new Option
                         {
                             Value = q.Id,
                             Label = q.Identifier,
-                            Additional = q.Description
+                            Additional = q.EquipmentTypeID
                         }
                     )).ToList();
 
-                return Json(viewModel);
+                return Json(resultViewModel);
             }
             catch (Exception ex)
             {
@@ -168,8 +198,6 @@ namespace temsAPI.Controllers.EquipmentControllers
                 return ReturnResponse("An error occured while fetching definitions", ResponseStatus.Fail);
             }
         }
-
-
 
         [HttpGet("equipmentdefinition/getdefinitionsautocompleteoptions")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]

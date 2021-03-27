@@ -50,7 +50,7 @@ export class KeysService extends TEMSService {
     );
   }
 
-  getAutocompleteOptions(): Observable<IOption[]>{
+  getAllAutocompleteOptions(filter?: string): Observable<IOption[]>{
     return this.http.get<IOption[]>(
       API_KEY_URL + '/getautocompleteoptions',
       this.httpOptions

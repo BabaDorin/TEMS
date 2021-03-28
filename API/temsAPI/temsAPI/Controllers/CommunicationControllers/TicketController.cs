@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.CommunicationEntities;
@@ -146,8 +147,96 @@ namespace temsAPI.Controllers.CommunicationControllers
             }
         }
 
+        [HttpGet("/ticket/open/{ticketId}")]
+        [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
+        public async Task<JsonResult> Open(string ticketId)
+        {
+            try
+            {
+                var ticket = (await _unitOfWork.Tickets
+                    .Find<Ticket>(q => q.Id == ticketId))
+                    .FirstOrDefault();
+
+                if (ticket == null)
+                    return ReturnResponse("Invalid ticket provided", ResponseStatus.Fail);
+
+                ticket.ClosedById = IdentityHelper.GetUserId(User);
+                ticket.DateClosed = null;
+
+                await _unitOfWork.Save();
+
+                return ReturnResponse("Success", ResponseStatus.Success);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured while closing the ticket", ResponseStatus.Fail);
+            }
+        }
+
+
+        [HttpGet("/ticket/close/{ticketId}")]
+        [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
+        public async Task<JsonResult> Close(string ticketId)
+        {
+            try
+            {
+                var ticket = (await _unitOfWork.Tickets
+                    .Find<Ticket>(q => q.Id == ticketId))
+                    .FirstOrDefault();
+
+                if (ticket == null)
+                    return ReturnResponse("Invalid ticket provided", ResponseStatus.Fail);
+
+                ticket.ClosedById = IdentityHelper.GetUserId(User);
+                ticket.DateClosed = DateTime.Now;
+
+                await _unitOfWork.Save();
+
+                return ReturnResponse("Success", ResponseStatus.Success);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured while closing the ticket", ResponseStatus.Fail);
+            }
+        }
+
+        [HttpGet("/ticket/changestatus/{ticketId}/{statusId}")]
+        [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
+        public async Task<JsonResult> Remove(string ticketId, string statusId)
+        {
+            try
+            {
+                var ticket = (await _unitOfWork.Tickets
+                    .Find<Ticket>(q => q.Id == ticketId))
+                    .FirstOrDefault();
+
+                if (ticket == null)
+                    return ReturnResponse("Invalid status provided", ResponseStatus.Fail);
+
+                var newStatus = (await _unitOfWork.Statuses
+                    .Find<Status>(q => q.Id == statusId))
+                    .FirstOrDefault();
+
+                if (newStatus == null)
+                    return ReturnResponse("Invalid status provided", ResponseStatus.Fail);
+
+                ticket.Status = newStatus;
+                await _unitOfWork.Save();
+
+                return ReturnResponse("Success!", ResponseStatus.Success);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured while updating the status", ResponseStatus.Fail);
+            }
+        }
+
+
         [HttpGet("/ticket/remove/{ticketId}")]
-        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
+        [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> Remove(string ticketId)
         {
             try

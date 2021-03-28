@@ -1,3 +1,5 @@
+import { CAN_MANAGE_ENTITIES } from './../../models/claims';
+import { TokenService } from './../../services/token-service/token.service';
 import { SnackService } from './../../services/snack/snack.service';
 import { Router } from '@angular/router';
 import { DialogService } from './../../services/dialog-service/dialog.service';
@@ -6,9 +8,8 @@ import { TEMSComponent } from 'src/app/tems/tems.component';
 import { CreateIssueComponent } from './../issue/create-issue/create-issue.component';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { IssuesService } from './../../services/issues-service/issues.service';
-import { Component, Input, OnInit, OnChanges } from '@angular/core';
+import { Component, Input, OnInit, OnChanges, ViewChild } from '@angular/core';
 import { ViewIssueSimplified } from 'src/app/models/communication/issues/view-issue-simplified.model';
-import { config, Observable, of } from 'rxjs';
 
 @Component({
   selector: 'app-entity-issues-list',
@@ -31,18 +32,25 @@ export class EntityIssuesListComponent extends TEMSComponent implements OnInit, 
   @Input() onlyClosed: boolean = false;
   @Input() includingClosed: boolean = false;
 
+  @ViewChild('includeClosedToggle') includeClosedToggle;
+
   issues: ViewIssueSimplified[];
+  canManage = false;
+  statuses: IOption[];
 
   constructor(
     private issuesService: IssuesService,
     private dialogService: DialogService,
     private snackService: SnackService,
     private router: Router,
+    private tokenService: TokenService
   ) { 
     super();
   }
  
   ngOnInit(): void {
+    this.canManage = this.tokenService.hasClaim(CAN_MANAGE_ENTITIES);
+    this.getStatuses();
     this.getIssues();
   }
 
@@ -56,6 +64,43 @@ export class EntityIssuesListComponent extends TEMSComponent implements OnInit, 
       .subscribe(result => {
         this.issues = result;
       }))
+  }
+
+  getStatuses(){
+    this.subscriptions.push(
+      this.issuesService.getStatuses()
+      .subscribe(result => {
+        this.statuses = result;
+      })
+    )
+  }
+
+  statusChanged(eventData, issueId, index){
+    this.subscriptions.push(
+      this.issuesService.changeIssueStatus(issueId, eventData.value.value)
+      .subscribe(result => {
+        if(result.status == 0){
+          this.snackService.snack(result);
+          return;
+        }
+
+        this.issues[index].status = eventData.value;
+      })
+    )
+  }
+
+  solve(issueId: string, index: number){
+    this.subscriptions.push(
+      this.issuesService.closeIssue(issueId)
+      .subscribe(result => {
+        if(result.status == 0){
+          this.snackService.snack(result);
+          return;
+        }
+
+        this.issues[index].status = {value: 'closed', label: 'Closed'};
+      })
+    )
   }
 
   private addIssue(){

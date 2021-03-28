@@ -1,31 +1,39 @@
-<div class="card">
-    <div class="card-body">
-        <div class="card-title">Create new Issue</div>
+<div class="card animate__bounce">
+    <div class="card-body" *ngIf="sent==true">
+        <h2 class="text-center text-muted" >
+            Your ticket has been sent! Our technicians will help you as soon as possible.
+        </h2>
+        <br>
+        <img class="techSvg fade-in" src="assets/svgs/technician.svg">
+    </div>
+    
+    <div class="card-body animate__bounce" *ngIf="sent==false">
+        <div class="card-title">Report a problem</div>
         <form [formGroup]="formlyData.form" (ngSubmit)="onSubmit(formlyData.model)">
             <formly-form [form]="formlyData.form" [fields]="formlyData.fields" [model]="formlyData.model"></formly-form>
             <br>
-
-            <div class="row">
-                <div class="col-md-4">
-                    <app-chips-autocomplete #rooms label="Select one or more rooms..."
-                        [endPoint]="roomService" 
-                        [alreadySelected]="roomsAlreadySelected">
-                    </app-chips-autocomplete>
-                </div>
-                <div class="col-md-4">
-                    <app-chips-autocomplete #equipment label="Equipments' TEMSID or Serial Number..."
-                        [endPoint]="equipmentService"
-                        [alreadySelected]="equipmentAlreadySelected">
-                    </app-chips-autocomplete>
-                </div>
-                <div class="col-md-4">
-                    <app-chips-autocomplete #personnel label="People who need help..."
-                        [endPoint]="personnelService"
-                        [alreadySelected]="personnelAlreadySelected">
-                    </app-chips-autocomplete>
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12 col-lg-4 col-sm-12">
+                        <app-chips-autocomplete #equipment label="Equipments' TEMSID or Serial Number..."
+                            [endPoint]="equipmentService"
+                            [alreadySelected]="equipmentAlreadySelected">
+                        </app-chips-autocomplete>
+                    </div>
+                    <div class="col-md-6 col-lg-4 col-sm-12">
+                        <app-chips-autocomplete #rooms label="Select one or more rooms..."
+                            [endPoint]="roomService" 
+                            [alreadySelected]="roomsAlreadySelected">
+                        </app-chips-autocomplete>
+                    </div>
+                    <div class="col-md-6 col-lg-4 col-sm-12">
+                        <app-chips-autocomplete #personnel label="People who need help..."
+                            [endPoint]="personnelService"
+                            [alreadySelected]="personnelAlreadySelected">
+                        </app-chips-autocomplete>
+                    </div>
                 </div>
             </div>
-
             <div *ngIf="isRegistered">
                 <hr>
                 <app-chips-autocomplete #assignees label="Assign this issue to..."
@@ -35,8 +43,9 @@
             </div>
             <!-- 3 chips go here -->
             <button 
+                mat-button
                 type="submit" 
-                class="btn btn-gradient-primary mr-2"
+                class="btn-primary mr-2"
                 [disabled]="formlyData.form.status=='INVALID'">
                 Submit
             </button>

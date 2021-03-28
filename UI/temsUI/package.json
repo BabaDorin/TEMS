@@ -33,6 +33,7 @@
     "ag-grid-angular": "^25.0.1",
     "ag-grid-community": "^25.0.1",
     "angular-file-uploader": "^7.0.3",
+    "animate.css": "^4.1.1",
     "bootstrap": "^4.6.0",
     "chart.js": "^2.9.4",
     "compass-mixins": "^0.12.10",

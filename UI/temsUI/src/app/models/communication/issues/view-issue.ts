@@ -14,6 +14,7 @@ export interface IViewIssue {
     asignees?: ViewUserSimplified[],
     createdBy?: ViewUserSimplified,
     closedBy?: ViewUserSimplified,
+    inProgress: boolean;
     dateCreated: Date,
     dateClosed?: Date,
 }
@@ -30,6 +31,7 @@ export class ViewIssue implements IViewIssue{
     createdBy?: ViewUserSimplified;
     closedBy?: ViewUserSimplified;
     dateCreated: Date;
+    inProgress: boolean = false;
     dateClosed?: Date;
 
     constructor(){

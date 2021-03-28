@@ -20,6 +20,7 @@ export class CreateIssueComponent extends TEMSComponent implements OnInit {
 
   frequentProblems = ['Echipament Defect', 'Incarcare Cartus', 'Interventia unui tehnician'];
   isRegistered: boolean = false;
+  sent = false;
   
   private formlyData = {
     isVisible: false,
@@ -71,8 +72,9 @@ export class CreateIssueComponent extends TEMSComponent implements OnInit {
       .subscribe(result => {
         this.snackService.snack(result);
         
-        if(result.status == 1)
-          this.dialogRef.close();
+        if(result.status == 1){
+          (this.dialogRef != undefined) ? this.dialogRef.close() : this.sent = true; 
+        }
       }))
   }
 }

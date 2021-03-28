@@ -26,15 +26,25 @@ export class AuthInterceptor implements HttpInterceptor {
                 succ => {
                 },
                 err => {
+                    // if(err.status == 404){
+                    //     this.router.navigateByUrl('/error-pages/404');
+                    //     return;
+                    // }
+                    
                     if(err.status == 403){
                         this.snackService.snack({message: "Insufficient permissions", status: 0})
+                        return;
                     }
 
                     if (err.status == 401) {
                         this.snackService.snack({message: "Insufficient permissions", status: 0})
                         localStorage.removeItem('token');
                         this.router.navigateByUrl('/auth/login');
+                        return;
                     }
+
+                    this.snackService.snack({message: "Server error", status: 0})
+
                 }
             )
         )

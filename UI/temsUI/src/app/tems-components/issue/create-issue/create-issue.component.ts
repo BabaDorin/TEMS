@@ -1,3 +1,5 @@
+import { UserService } from 'src/app/services/user-service/user.service';
+import { TokenService } from './../../../services/token-service/token.service';
 import { SnackService } from './../../../services/snack/snack.service';
 import { IssuesService } from './../../../services/issues-service/issues.service';
 import { TEMSComponent } from './../../../tems/tems.component';
@@ -19,7 +21,7 @@ import { AddIssue } from 'src/app/models/communication/issues/add-issue.model';
 export class CreateIssueComponent extends TEMSComponent implements OnInit {
 
   frequentProblems = ['Echipament Defect', 'Incarcare Cartus', 'Interventia unui tehnician'];
-  isRegistered: boolean = false;
+  isRegistered: boolean;
   sent = false;
   
   private formlyData = {
@@ -32,6 +34,7 @@ export class CreateIssueComponent extends TEMSComponent implements OnInit {
   @Input() roomsAlreadySelected: IOption[] = [];
   @Input() equipmentAlreadySelected: IOption[] = [];
   @Input() personnelAlreadySelected: IOption[] = [];
+  @Input() assigneesAlreadySelected: IOption[] = [];
 
   @ViewChild('assignees') assignees;
   @ViewChild('rooms') rooms;
@@ -43,6 +46,8 @@ export class CreateIssueComponent extends TEMSComponent implements OnInit {
   constructor(
     private formlyParserService: FormlyParserService,
     private roomService: RoomsService,
+    private userService: UserService,
+    private tokenService: TokenService,
     private personnelService: PersonnelService,
     private equipmentService: EquipmentService,
     private issueService: IssuesService,
@@ -52,9 +57,12 @@ export class CreateIssueComponent extends TEMSComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.isRegistered = this.tokenService.hasClaim('UserID');
     this.subscriptions.push(this.issueService.getStatuses()
       .subscribe(result => {
-        console.log(result);
+        if(this.snackService.snackIfError(result))
+          return;
+          
         this.formlyData.fields = this.formlyParserService.parseAddIssue(new AddIssue, this.frequentProblems, result);
       }))
   }

@@ -104,6 +104,13 @@ export class UserService extends TEMSService {
     );
   }
 
+  getAllAutocompleteOptions(filter: string): Observable<IOption[]>{
+    return this.http.get<IOption[]>(
+      API_USER_URL + '/getallautocompleteoptions/' + filter,
+      this.httpOptions
+    );
+  }
+
   getUserSimplifiedById(userId: string): Observable<ViewUserSimplified>{
     return this.http.get<ViewUserSimplified>(
       API_USER_URL + '/getsimplifiedbyid/' + userId,

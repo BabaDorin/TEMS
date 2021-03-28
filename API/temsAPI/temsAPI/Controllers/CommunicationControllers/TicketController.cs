@@ -414,7 +414,8 @@ namespace temsAPI.Controllers.CommunicationControllers
                                        .Include(q => q.Personnel)
                                        .Include(q => q.Rooms)
                                        .Include(q => q.Status)
-                                       .Include(q => q.Equipments),
+                                       .Include(q => q.Equipments)
+                                       .Include(q => q.Assignees),
                         orderBy: q => q.OrderBy(q => q.Status.ImportanceIndex)
                                        .ThenByDescending(q => q.DateCreated),
                         select: q => new ViewTicketSimplifiedViewModel
@@ -445,6 +446,11 @@ namespace temsAPI.Controllers.CommunicationControllers
                                 Value = q.Id,
                                 Label = q.Identifier,
                                 Additional = string.Join(", ", q.Labels)
+                            }).ToList(),
+                            Assignees = q.Assignees.Select(q => new Option
+                            {
+                                Value = q.Id,
+                                Label = q.FullName ?? q.UserName,
                             }).ToList(),
                             Status = new Option
                             {

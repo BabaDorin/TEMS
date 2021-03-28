@@ -14,6 +14,7 @@ export interface IViewIssueSimplified{
     dateCreated: Date;
     dateClosed?: Date;
     closedBy?: IOption;
+    assignees?: IOption[]
 }
 
 export class ViewIssueSimplified implements IViewIssueSimplified{
@@ -28,4 +29,5 @@ export class ViewIssueSimplified implements IViewIssueSimplified{
     dateCreated: Date;
     dateClosed?: Date;
     closedBy?: IOption;
+    assignees?: IOption[]
 }

@@ -216,24 +216,6 @@ export class EquipmentService extends TEMSService {
     );
   }
 
-  getEquipment(): ViewEquipmentSimplified[]{
-    // returns the list of all equipment records
-    let equipments: ViewEquipmentSimplified[] = [
-      new ViewEquipmentSimplified(), new ViewEquipmentSimplified(), new ViewEquipmentSimplified(),
-      new ViewEquipmentSimplified(), new ViewEquipmentSimplified(), new ViewEquipmentSimplified(),
-      new ViewEquipmentSimplified(), new ViewEquipmentSimplified(), new ViewEquipmentSimplified(),
-      new ViewEquipmentSimplified(), new ViewEquipmentSimplified(), new ViewEquipmentSimplified(),
-      new ViewEquipmentSimplified(), new ViewEquipmentSimplified(), new ViewEquipmentSimplified(),
-      new ViewEquipmentSimplified(), new ViewEquipmentSimplified(), new ViewEquipmentSimplified(),
-      new ViewEquipmentSimplified(), new ViewEquipmentSimplified(), new ViewEquipmentSimplified(),
-      new ViewEquipmentSimplified(), new ViewEquipmentSimplified(), new ViewEquipmentSimplified(),
-      new ViewEquipmentSimplified(), new ViewEquipmentSimplified(), new ViewEquipmentSimplified(),
-      new ViewEquipmentSimplified(), new ViewEquipmentSimplified(), new ViewEquipmentSimplified(),
-    ];
-
-    return equipments;
-  }
-
   getEquipmentToUpdate(equipmentId: string): Observable<AddEquipment>{
     return this.http.get<AddEquipment>(
       API_EQ_URL + '/getequipmenttoupdate/' + equipmentId,

@@ -1,5 +1,5 @@
 <h2 class="mt-3">Issues</h2>
-<button *ngIf="addIssueEnabled == true" mat-button (click)="addIssue()">+ Create issue</button>
+<button *ngIf="addIssueEnabled == true" mat-button (click)="addIssue()"><mat-icon class="text-primary">add</mat-icon>Create issue</button>
 <button mat-button (click)="sortBy('priority')">
   <mat-icon>import_export</mat-icon>Sort by priority
 </button>
@@ -91,6 +91,16 @@
           <button mat-button *ngFor="let pr of issue.personnel" (click)="viewPersonnel(pr.value)">
             <mat-icon class="text-primary">account_circle</mat-icon>
             {{ pr.label }} {{ pr.additional }}
+          </button>
+        </div>
+      </div>
+      <div *ngIf="issue.assignees != undefined && issue.assignees.length > 0" class="mb-4">
+        <h4>Assigned to:</h4>
+        <hr>
+        <div class="alert alert-warning">
+          <button mat-button *ngFor="let assignee of issue.assignees" (click)="viewPersonnel(assignee.value)">
+            <mat-icon class="text-primary">account_circle</mat-icon>
+            {{ assignee.label }}
           </button>
         </div>
       </div>

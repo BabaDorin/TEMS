@@ -8,10 +8,10 @@
     <div class="card-body">
         <div class="card-title">Equipments</div>
         <br>
-        <button mat-button (click)="addNew()">+ Add new</button>
-        <button mat-button (click)="allocateSelected()">Allocate selected</button>
-        <button mat-button (click)="addLogSelected()">Add a log for selected</button>
-        <button mat-button (click)="addIssue()">Include selected in an issue</button>
+        <button mat-button (click)="addNew()"><mat-icon class="text-primary">add</mat-icon>Add new</button>
+        <button mat-button (click)="allocateSelected()"><mat-icon class="text-primary">double_arrow</mat-icon>Allocate selected</button>
+        <button mat-button (click)="addLogSelected()"><mat-icon class="text-primary">timeline</mat-icon>Add a log for selected</button>
+        <button mat-button (click)="addIssue()"><mat-icon class="text-primary">feedback</mat-icon>Include selected in an issue</button>
         <mat-slide-toggle class="float-right" [checked]="includeDerived" (click)="includeDerived = !includeDerived">Include derived equipments</mat-slide-toggle>
         <hr>
         <app-ag-grid-equipment #agGridEquipment

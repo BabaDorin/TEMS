@@ -8,8 +8,10 @@ using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -180,6 +182,8 @@ namespace temsAPI.Controllers.IdentityControllers
             }
         }
 
+
+
         [HttpPost]
         public async Task<IActionResult> LogIn([FromBody] LogInViewModel viewModel)
         {
@@ -222,6 +226,40 @@ namespace temsAPI.Controllers.IdentityControllers
             var securityToken = tokenHandler.CreateToken(tokenDescriptor);
             var token = tokenHandler.WriteToken(securityToken);
             return Ok(new { token });
+        }
+
+        [HttpGet("temsuser/getallautocompleteoptions/{filter?}")]
+        public async Task<JsonResult> GetAllAutocompleteOptions(string filter)
+        {
+            try
+            {
+                Expression<Func<TEMSUser, bool>> expression = 
+                    q => !q.IsArchieved && q.UserName != "tems@dmin";
+
+                if(filter != null)
+                {
+                    Expression<Func<TEMSUser, bool>> expression2 = 
+                        q => (q.UserName.Contains(filter) || q.FullName.Contains(filter));
+                    expression = ExpressionCombiner.CombineTwo(expression, expression2);
+                }
+
+                List<Option> viewModel = (await _unitOfWork.TEMSUsers
+                    .FindAll<Option>(
+                        where: expression,
+                        take: 5,
+                        select: q => new Option
+                        {
+                            Value = q.Id,
+                            Label = q.FullName ?? q.UserName
+                        })).ToList();
+
+                return Json(viewModel);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured when fetching autocomplete options", ResponseStatus.Fail);
+            }
         }
 
         [HttpGet]

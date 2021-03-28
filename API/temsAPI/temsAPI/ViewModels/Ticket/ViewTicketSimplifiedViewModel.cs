@@ -18,5 +18,6 @@ namespace temsAPI.ViewModels.Ticket
         public DateTime DateCreated { get; set; }
         public DateTime? DateClosed { get; set; }
         public Option ClosedBy { get; set; }
+        public List<Option> Assignees { get; set; }
     }
 }

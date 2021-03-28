@@ -37,8 +37,8 @@
             <div *ngIf="isRegistered">
                 <hr>
                 <app-chips-autocomplete #assignees label="Assign this issue to..."
-                    [availableOptions]="personnelAutocompleteOptions" 
-                    [alreadySelected]="personnelAlreadySelected">
+                    [endPoint]="userService" 
+                    [alreadySelected]="assigneesAlreadySelected">
                 </app-chips-autocomplete>
             </div>
             <!-- 3 chips go here -->

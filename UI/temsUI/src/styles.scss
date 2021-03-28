@@ -162,5 +162,13 @@ formly-field-mat-radio {
   }
 }
 
+@media only screen and (max-width: 1000px) {
+  .mat-slide-toggle {
+    width: 100%;
+    display: inline-block;
+    flex: none;
+  }
+}
+
 // @import "../node_modules/ag-grid-community/dist/styles/ag-grid.css";
 // @import "../node_modules/ag-grid-community/dist/styles/ag-theme-material.css";

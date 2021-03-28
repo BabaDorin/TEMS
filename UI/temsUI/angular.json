@@ -31,6 +31,7 @@
               "src/styles.scss",
               "node_modules/ag-grid-community/dist/styles/ag-grid.css",
               "node_modules/animate.css/animate.css",
+              "node_modules/canvas-confetti/dist/confetti.browser.js",
               "node_modules/ag-grid-community/dist/styles/ag-theme-material.css",
               "node_modules/bootstrap/dist/css/bootstrap.min.css"
             ],

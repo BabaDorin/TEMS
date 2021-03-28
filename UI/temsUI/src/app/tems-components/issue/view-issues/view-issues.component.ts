@@ -5,6 +5,7 @@ import { Component, OnInit } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { IOption } from 'src/app/models/option.model';
 import { RoomsService } from 'src/app/services/rooms-service/rooms.service';
+import { FormControl, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-view-issues',
@@ -13,15 +14,22 @@ import { RoomsService } from 'src/app/services/rooms-service/rooms.service';
 })
 export class ViewIssuesComponent extends TEMSComponent implements OnInit {
 
-  equipment: Observable<IOption[]>;
+  // equipment: Observable<IOption[]>;
   equipmentId: string = "any";
 
-  rooms: Observable<IOption[]>;
+  // rooms: Observable<IOption[]>;
   roomId: string = "any";
   
-  personnel: Observable<IOption[]>;
+  // personnel: Observable<IOption[]>;
+  personnelAlreadySelected=[] as IOption[];
   personnelId: string = "any";
 
+
+  filterIssueFormGroup = new FormGroup({
+    equipment: new FormControl(),
+    rooms: new FormControl(),
+    personnel: new FormControl(),
+  })
 
   constructor(
     private equipmentService: EquipmentService,
@@ -32,37 +40,34 @@ export class ViewIssuesComponent extends TEMSComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.subscriptions.push(this.equipmentService.getAllAutocompleteOptions()
-      .subscribe(result => {
-        console.log('keysAutocomplete')
-        console.log(result);
-        this.equipment = of(result);
-      }));
 
-    this.subscriptions.push(this.roomService.getAllAutocompleteOptions()
-      .subscribe(result => {
-        console.log('rooms autocomplete')
-        console.log(result);
-        this.rooms = of(result);
-      }));
-
-    this.subscriptions.push(this.personnelService.getAllAutocompleteOptions()
-      .subscribe(result => {
-        console.log('personnel')
-        console.log(result);
-        this.personnel = of(result);
-      }));
   }
 
-  equipmentSelected(value){
-    this.equipmentId = value;
+  equipmentSelected(idk){
+    let value = this.filterIssueFormGroup.controls.equipment.value;
+
+    if(value[0] != undefined)
+      this.equipmentId = value[0].value;
+    else
+      this.equipmentId = 'any';
   }
 
-  roomSelected(value){
-    this.roomId = value;
+  roomSelected(idk){
+    let value = this.filterIssueFormGroup.controls.rooms.value;
+
+    if(value[0] != undefined)
+      this.roomId = value[0].value;
+    else
+      this.roomId = "any";
+    console.log(this.roomId);
   }
 
-  personnelSelected(value){
-    this.personnelId = value;
+  personnelSelected(idk){
+    let value = this.filterIssueFormGroup.controls.personnel.value;
+
+    if(value[0] != undefined)
+      this.personnelId = value[0].value;
+    else
+      this.personnelId = 'any';
   }
 }

@@ -40,7 +40,7 @@
               <div class="col-md-5">
                 <app-chips-autocomplete label="Equipment types" formControlName="types"
                   placeholder="No selection = all types" 
-                  [alreadySelected]="typesAlreadySelected"
+                  [alreadySelected]="typesAlreadySelected"s
                   [endPoint]="typeService"
                   (dataCollected)="typeAdded($event)"
                   (dataRemoved)="typeRemoved($event)">

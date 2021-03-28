@@ -35,6 +35,7 @@
     "angular-file-uploader": "^7.0.3",
     "animate.css": "^4.1.1",
     "bootstrap": "^4.6.0",
+    "canvas-confetti": "^1.4.0",
     "chart.js": "^2.9.4",
     "compass-mixins": "^0.12.10",
     "jquery": "^3.5.1",

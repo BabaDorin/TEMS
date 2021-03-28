@@ -6,7 +6,6 @@ import { DialogService } from './../../services/dialog-service/dialog.service';
 import { IOption } from 'src/app/models/option.model';
 import { TEMSComponent } from 'src/app/tems/tems.component';
 import { CreateIssueComponent } from './../issue/create-issue/create-issue.component';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { IssuesService } from './../../services/issues-service/issues.service';
 import { Component, Input, OnInit, OnChanges, ViewChild } from '@angular/core';
 import { ViewIssueSimplified } from 'src/app/models/communication/issues/view-issue-simplified.model';
@@ -109,7 +108,10 @@ export class EntityIssuesListComponent extends TEMSComponent implements OnInit, 
           return;
         }
 
-        this.issues[index].dateClosed = new Date;
+        // Will use it later for confetti
+        // this.issues[index].dateClosed = new Date;
+        // let difference = new Date(this.issues[index].dateCreated).getHours() - new Date(this.issues[index].dateCreated).getHours();  
+        
         this.snackService.snack({message: "🎉🎉 Let's close them all!", status: 1}, 'default-snackbar')
       })
     )
@@ -177,5 +179,22 @@ export class EntityIssuesListComponent extends TEMSComponent implements OnInit, 
       })
     )
   }
+
+  // // confetti
+  // @ViewChild('myCanvas')
+  // myCanvas: ElementRef<HTMLCanvasElement>;
+  // launchConfetti(){
+  //   var myConfetti = confetti.create(this.myCanvas.nativeElement.getContext('2d'), {
+  //     resize: true,
+  //     useWorker: true
+  //   });
+  //   myConfetti({
+  //     particleCount: 100,
+  //     spread: 160
+  //     // any other options from the global
+  //     // confetti function
+  //   });
+  // }
+
 }
 

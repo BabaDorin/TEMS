@@ -1,37 +1,34 @@
 <div class="card">
     <div class="card-body">
-        <div class="card-title">View Tickets</div>
-        <form>
+        <div class="card-title">View Issues</div>
+        <form [formGroup]="filterIssueFormGroup">
             <div class="row">
                 <div class="col-4">
-                    <mat-form-field appearance="fill">
-                        <mat-label>Equipment</mat-label>
-                        <mat-select (selectionChange)="equipmentSelected($event.value)">
-                            <mat-option value="any">Any</mat-option>
-                            <mat-option *ngFor="let eq of equipment | async" [value]="eq.value">{{ eq.label }}
-                            </mat-option>
-                        </mat-select>
-                    </mat-form-field>
+                    <app-chips-autocomplete label="Equipments' TEMSID or Serial Number..."
+                    formControlName="equipment"
+                    [endPoint]="equipmentService"
+                    (dataCollected)="equipmentSelected($value)"
+                    (dataRemoved)="equipmentSelected($value)"
+                    maxOptionsSelected="1">
+                    </app-chips-autocomplete>
                 </div>
                 <div class="col-4">
-                    <mat-form-field appearance="fill">
-                        <mat-label>Room</mat-label>
-                        <mat-select (selectionChange)="roomSelected($event.value)">
-                            <mat-option value="any">Any</mat-option>
-                            <mat-option *ngFor="let room of rooms | async" [value]="room.value">{{ room.label }}
-                            </mat-option>
-                        </mat-select>
-                    </mat-form-field>
+                    <app-chips-autocomplete label="Room"
+                    formControlName="rooms"
+                    [endPoint]="roomService"
+                    (dataCollected)="roomSelected($value)"
+                    (dataRemoved)="roomSelected($value)"
+                    maxOptionsSelected="1">
+                    </app-chips-autocomplete>
                 </div>
                 <div class="col-4">
-                    <mat-form-field appearance="fill">
-                        <mat-label>Personnel</mat-label>
-                        <mat-select (selectionChange)="personnelSelected($event.value)">
-                            <mat-option value="any">Any</mat-option>
-                            <mat-option *ngFor="let pers of personnel | async" [value]="pers.value">{{ pers.label }}
-                            </mat-option>
-                        </mat-select>
-                    </mat-form-field>
+                    <app-chips-autocomplete label="Personnel"
+                    formControlName="personnel"
+                    [endPoint]="personnelService"
+                    (dataCollected)="personnelSelected($value)"
+                    (dataRemoved)="personnelSelected($value)"
+                    maxOptionsSelected="1">
+                    </app-chips-autocomplete>
                 </div>
             </div>
         </form>

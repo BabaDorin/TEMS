@@ -105,6 +105,7 @@
         </div>
       </div>
       <br>
+      
 
       <button mat-button (click)="solve(issue.id, i)" *ngIf="issue.dateClosed == undefined">
         <mat-icon class="text-primary">done</mat-icon>Mark as solved
@@ -118,5 +119,6 @@
     </ng-template>
   </mat-expansion-panel>
 </mat-accordion>
-
+<canvas #myCanvas>
 <pagination-controls (pageChange)="p1 = $event" id="issues"></pagination-controls>
+</canvas>

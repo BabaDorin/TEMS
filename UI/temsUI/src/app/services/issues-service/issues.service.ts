@@ -107,6 +107,13 @@ export class IssuesService extends TEMSService {
     );
   }
 
+  reopenIssue(issueId: string): Observable<any>{
+    return this.http.get(
+      API_ISU_URL + '/reopen/' + issueId,
+      this.httpOptions 
+    );
+  }
+
   createIssue(addIssue: AddIssue): Observable<any>{
     return this.http.post(
       API_ISU_URL + '/create',

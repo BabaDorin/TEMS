@@ -1,4 +1,4 @@
-import { IOption } from './../../option.model';
+import { IOption } from 'src/app/models/option.model';
 import { ViewPersonnelSimplified } from "../../personnel/view-personnel-simplified.model";
 import { ViewUserSimplified } from "../../user/view-user.model";
 
@@ -13,7 +13,7 @@ export interface IViewIssueSimplified{
     rooms?: IOption[];
     dateCreated: Date;
     dateClosed?: Date;
-    closedBy?: ViewUserSimplified;
+    closedBy?: IOption;
 }
 
 export class ViewIssueSimplified implements IViewIssueSimplified{
@@ -27,5 +27,5 @@ export class ViewIssueSimplified implements IViewIssueSimplified{
     rooms?: IOption[];
     dateCreated: Date;
     dateClosed?: Date;
-    closedBy?: ViewUserSimplified;
+    closedBy?: IOption;
 }

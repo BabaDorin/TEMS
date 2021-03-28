@@ -17,5 +17,6 @@ namespace temsAPI.ViewModels.Ticket
         public List<Option> Rooms { get; set; }
         public DateTime DateCreated { get; set; }
         public DateTime? DateClosed { get; set; }
+        public Option ClosedBy { get; set; }
     }
 }

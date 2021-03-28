@@ -31,6 +31,7 @@ export class EntityIssuesListComponent extends TEMSComponent implements OnInit, 
 
   @Input() onlyClosed: boolean = false;
   @Input() includingClosed: boolean = false;
+  @Input() showIncludeClosed: boolean = true;
 
   @ViewChild('includeClosedToggle') includeClosedToggle;
 
@@ -66,6 +67,16 @@ export class EntityIssuesListComponent extends TEMSComponent implements OnInit, 
       }))
   }
 
+  sortBy(criterium: string){
+    if(criterium == 'date')
+    {
+      this.issues = this.issues.sort((a,b)=> new Date(a.dateCreated).getTime() - new Date(b.dateCreated).getTime());
+      return;
+    }
+
+    this.issues = this.issues.sort((a,b) => (parseInt(a.status.additional) > parseInt(b.status.additional)) ? 1 : ((b.status.additional > a.status.additional) ? -1 : 0));
+  }
+
   getStatuses(){
     this.subscriptions.push(
       this.issuesService.getStatuses()
@@ -98,7 +109,22 @@ export class EntityIssuesListComponent extends TEMSComponent implements OnInit, 
           return;
         }
 
-        this.issues[index].status = {value: 'closed', label: 'Closed'};
+        this.issues[index].dateClosed = new Date;
+        this.snackService.snack({message: "🎉🎉 Let's close them all!", status: 1}, 'default-snackbar')
+      })
+    )
+  }
+
+  reopen(issueId: string, index: number){
+    this.subscriptions.push(
+      this.issuesService.reopenIssue(issueId)
+      .subscribe(result => {
+        if(result.status == 0){
+          this.snackService.snack(result);
+          return;
+        }
+
+        this.issues[index].dateClosed = undefined;
       })
     )
   }

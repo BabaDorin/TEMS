@@ -147,9 +147,9 @@ namespace temsAPI.Controllers.CommunicationControllers
             }
         }
 
-        [HttpGet("/ticket/open/{ticketId}")]
+        [HttpGet("/ticket/reopen/{ticketId}")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
-        public async Task<JsonResult> Open(string ticketId)
+        public async Task<JsonResult> Reopen(string ticketId)
         {
             try
             {
@@ -451,6 +451,13 @@ namespace temsAPI.Controllers.CommunicationControllers
                                 Value = q.Status.Id,
                                 Label = q.Status.Name,
                                 Additional = q.Status.ImportanceIndex.ToString()
+                            },
+                            ClosedBy = (q.ClosedById == null)
+                            ? null
+                            : new Option
+                            {
+                                Label = q.ClosedBy.FullName ?? q.ClosedBy.UserName,
+                                Value = q.ClosedById
                             }
                         }
                     )).ToList();

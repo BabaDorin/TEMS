@@ -41,6 +41,7 @@
                     Loading...
                 </app-summary-issues-analytics>
                 <app-entity-issues-list
+                    showIncludeClosed="false"
                     [equipmentId]="equipmentId"
                     [roomId]="roomId"
                     [personnelId]="personnelId">
@@ -48,7 +49,9 @@
                 </app-entity-issues-list>
             </mat-tab>
             <mat-tab label="Closed">
-                <app-entity-issues-list 
+                <ng-template matTabContent>
+                    <app-entity-issues-list 
+                    showIncludeClosed="false"
                     [equipmentId]="equipmentId"
                     [roomId]="roomId"
                     [personnelId]="personnelId"
@@ -56,6 +59,7 @@
                     addIssueEnabled="false">
                     Loading...
                 </app-entity-issues-list>
+                </ng-template>
             </mat-tab>
         </mat-tab-group>
     </div>

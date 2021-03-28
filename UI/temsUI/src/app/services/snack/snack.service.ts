@@ -10,16 +10,19 @@ export class SnackService {
     private _snack: MatSnackBar
   ) { }
 
-  snack(response){
+  snack(response, sclass?){
     if(response.status == undefined)
       return false;
     
     let panelClass = (response.status == 1) ? 'success-snackbar' : 'error-snackbar';
+    if(sclass != undefined) panelClass = sclass;
+
     let seconds = (response.status == 1) ? 3 : 10;
+
 
     this._snack.open(response.message, 'Ok', {
       duration: seconds * 1000,
-      panelClass: [panelClass]
+      panelClass: [panelClass, 'text-center']
     });
 
     return response.status == 1;

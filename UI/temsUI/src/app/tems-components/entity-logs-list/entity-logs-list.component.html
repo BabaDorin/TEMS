@@ -1,11 +1,12 @@
 <h2 class="mt-3">Logs</h2>
-<button mat-button (click)="addLog()">+ Add Log</button>
+<button mat-button (click)="addLog()"><mat-icon>add</mat-icon> Add Log</button>
 <br>
 <hr>
 <ng-container *ngIf="loading == true">
     <mat-progress-bar mode="indeterminate"></mat-progress-bar>
 </ng-container>
-<mat-expansion-panel *ngFor="let log of logs | paginate: { itemsPerPage: 10, currentPage: p1, id: 'logs' }; let i = index" class="mb-2">
+<mat-expansion-panel *ngFor="let log of logs | paginate: { itemsPerPage: 10, currentPage: p1, id: 'logs' }; let i = index" 
+class="m-2 mat-elevation-z0" hideToggle="true">
     <mat-expansion-panel-header>
       <mat-panel-title>
         {{ log.logType.label }}
@@ -19,4 +20,7 @@
     <br>
     <button mat-button class="btn-danger" (click)="remove(log.id, i)">Remove</button>
   </mat-expansion-panel>
-<pagination-controls (pageChange)="p1 = $event" id="logs"></pagination-controls>
+<pagination-controls (pageChange)="p1 = $event" id="logs" *ngIf="logs != undefined && logs.length > 0"></pagination-controls>
+<div *ngIf="loading == false && (logs == undefined || logs.length == 0)">
+  <img class="centerSvg fade-in" style="width: 300px;" src="assets/svgs/no-data.svg">
+</div>

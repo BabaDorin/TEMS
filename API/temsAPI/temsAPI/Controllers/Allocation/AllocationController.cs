@@ -117,6 +117,56 @@ namespace temsAPI.Controllers.Allocation
             }
         }
 
+
+        [HttpGet("allocation/markasreturned/{allocationId}")]
+        [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
+        public async Task<JsonResult> MarkAsReturned(string allocationId)
+        {
+            try
+            {
+                var allocation = (await _unitOfWork.EquipmentAllocations
+                    .Find<EquipmentAllocation>(q => q.Id == allocationId))
+                    .FirstOrDefault();
+
+                if (allocation == null)
+                    return ReturnResponse("Invalid allocation provided", ResponseStatus.Fail);
+
+                allocation.DateReturned = DateTime.Now;
+                await _unitOfWork.Save();
+
+                return ReturnResponse("Success", ResponseStatus.Success);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured while returning the allocation", ResponseStatus.Fail);
+            }
+        }
+
+        [HttpGet("allocation/remove/{allocationId}")]
+        [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
+        public async Task<JsonResult> Remove(string allocationId)
+        {
+            try
+            {
+                var allocation = (await _unitOfWork.EquipmentAllocations
+                    .Find<EquipmentAllocation>(q => q.Id == allocationId))
+                    .FirstOrDefault();
+
+                if (allocation == null)
+                    return ReturnResponse("Invalid allocation provided", ResponseStatus.Fail);
+
+                allocation.IsArchieved = true;
+                await _unitOfWork.Save();
+
+                return ReturnResponse("Success", ResponseStatus.Success);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured while returning the allocation", ResponseStatus.Fail);
+            }
+        }
         [HttpGet("allocation/getofentity/{entityType}/{entityId}")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
         public async Task<JsonResult> GetOfEntity(string entityType, string entityId)
@@ -174,16 +224,20 @@ namespace temsAPI.Controllers.Allocation
                                 Label = q.Equipment.TemsIdOrSerialNumber,
                                 Additional = q.Equipment.EquipmentDefinition.Identifier
                             },
-                            Personnel = new Option
-                            {
-                                Value = q.Personnel.Id,
-                                Label = q.Personnel.Name,
-                            },
-                            Room = new Option
-                            {
-                                Value = q.Room.Id,
-                                Label = q.Room.Identifier,
-                            },
+                            Personnel = (q.Personnel == null)
+                                ? null
+                                : new Option
+                                {
+                                    Value = q.Personnel.Id,
+                                    Label = q.Personnel.Name,
+                                },
+                            Room = (q.Room == null)
+                                ? null
+                                : new Option
+                                {
+                                    Value = q.Room.Id,
+                                    Label = q.Room.Identifier,
+                                },
                         })).ToList();
 
                 return Json(viewModel);

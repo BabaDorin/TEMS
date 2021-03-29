@@ -7,6 +7,7 @@ import { RoomsService } from 'src/app/services/rooms-service/rooms.service';
 import { Observable } from 'rxjs';
 import { of } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-view-keys-allocations',
@@ -27,6 +28,7 @@ export class ViewKeysAllocationsComponent extends TEMSComponent implements OnIni
   constructor(
     private keysService: KeysService,
     private roomService: RoomsService,
+    private router: Router,
     private personnelService: PersonnelService
   ){
     super();
@@ -76,6 +78,16 @@ export class ViewKeysAllocationsComponent extends TEMSComponent implements OnIni
   
   personnelSelected(key){
     this.personnelId = key;
+  }
+
+  viewRoom(roomId: string){
+    this.router.navigateByUrl('/', {skipLocationChange: true}).then(()=>
+    this.router.navigate(['/rooms/details/' + roomId]));
+  }
+  
+  viewPersonnel(personnelId: string){
+    this.router.navigateByUrl('/', {skipLocationChange: true}).then(()=>
+    this.router.navigate(['/personnel/details/' + personnelId]));
   }
 }
 

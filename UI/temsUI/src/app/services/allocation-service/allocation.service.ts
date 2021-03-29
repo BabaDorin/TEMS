@@ -42,4 +42,18 @@ export class AllocationService extends TEMSService{
       this.httpOptions
     );
   }
+
+  markAsReturned(allocationId: string): Observable<any>{
+    return this.http.get(
+      API_ALL_URL + '/markasreturned/' + allocationId,
+      this.httpOptions
+    );
+  }
+
+  remove(allocationId: string): Observable<any>{
+    return this.http.get(
+      API_ALL_URL + '/remove/' + allocationId,
+      this.httpOptions
+    );
+  }
 }

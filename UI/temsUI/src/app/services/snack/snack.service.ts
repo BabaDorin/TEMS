@@ -30,7 +30,7 @@ export class SnackService {
 
   // returns true if there is something to display in snack
   snackIfError(response): boolean{
-    if(response.status == undefined || response.status == 1)
+    if(response == undefined || response.status == undefined || response.status == 1)
       return false;
 
     this.snack(response);

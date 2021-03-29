@@ -17,7 +17,8 @@
 <mat-accordion>
   <mat-expansion-panel
     *ngFor="let issue of issues | paginate: { itemsPerPage: 20, currentPage: p1, id: 'issues' }; let i = index"
-    class="mb-2">
+    class="m-2 mat-elevation-z0"
+    hideToggle="true">
     <mat-expansion-panel-header>
       <mat-panel-title>
         {{ issue.problem }}
@@ -119,6 +120,7 @@
     </ng-template>
   </mat-expansion-panel>
 </mat-accordion>
-<canvas #myCanvas>
-<pagination-controls (pageChange)="p1 = $event" id="issues"></pagination-controls>
-</canvas>
+<pagination-controls (pageChange)="p1 = $event" id="issues" *ngIf="issues != undefined && issues.length > 0"></pagination-controls>
+<div *ngIf="loading == false && (issues == undefined || issues.length == 0)">
+  <img class="centerSvg fade-in" style="width: 300px;" src="assets/svgs/no-data.svg">
+</div>

@@ -37,6 +37,7 @@ export class EntityIssuesListComponent extends TEMSComponent implements OnInit, 
   issues: ViewIssueSimplified[];
   canManage = false;
   statuses: IOption[];
+  loading = true;
 
   constructor(
     private issuesService: IssuesService,
@@ -49,6 +50,7 @@ export class EntityIssuesListComponent extends TEMSComponent implements OnInit, 
   }
  
   ngOnInit(): void {
+    this.loading = true;
     this.canManage = this.tokenService.hasClaim(CAN_MANAGE_ENTITIES);
     this.getStatuses();
     this.getIssues();
@@ -59,10 +61,15 @@ export class EntityIssuesListComponent extends TEMSComponent implements OnInit, 
   }
 
   getIssues(){
+    this.loading = true;
     this.subscriptions.push(this.issuesService.getIssues(
       this.equipmentId, this.roomId, this.personnelId, this.includingClosed, this.onlyClosed)
       .subscribe(result => {
+        if(this.snackService.snackIfError(this.issues))
+          return;
+
         this.issues = result;
+        this.loading = false;
       }))
   }
 
@@ -109,7 +116,7 @@ export class EntityIssuesListComponent extends TEMSComponent implements OnInit, 
         }
 
         // Will use it later for confetti
-        // this.issues[index].dateClosed = new Date;
+        this.issues[index].dateClosed = new Date;
         // let difference = new Date(this.issues[index].dateCreated).getHours() - new Date(this.issues[index].dateCreated).getHours();  
         
         this.snackService.snack({message: "🎉🎉 Let's close them all!", status: 1}, 'default-snackbar')

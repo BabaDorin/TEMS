@@ -31,7 +31,7 @@ export class EntityAllocationsListComponent extends TEMSComponent implements OnI
   @Input() roomIds: string[] = [];
   @Input() onlyActive: boolean;
   @Input() onlyClosed: boolean;
-
+  equipmentNotAllocated = false;
   
   allocations: ViewAllocationSimplified[];
   loading = true;
@@ -52,15 +52,20 @@ export class EntityAllocationsListComponent extends TEMSComponent implements OnI
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    if(this.cancelFirstOnChange){
+      this.cancelFirstOnChange = false;
+      return;
+    }
+
     this.fetchAllocations();
   }
   
   fetchAllocations(){
     this.canManage = this.tokenService.hasClaim(CAN_MANAGE_ENTITIES);
 
-    // if(this.equipment) this.equipmentIds = [this.equipment.id];
-    // if(this.rooms) this.roomIds = [this.rooms.id];
-    // if(this.personnel) this.personnelIds = [this.personnel.id];
+    if(this.equipment) this.equipmentIds = [this.equipment.id];
+    if(this.rooms) this.roomIds = [this.rooms.id];
+    if(this.personnel) this.personnelIds = [this.personnel.id];
 
     if(this.onlyActive == undefined) this.onlyActive = false;
     if(this.onlyClosed == undefined) this.onlyClosed = false;
@@ -86,6 +91,8 @@ export class EntityAllocationsListComponent extends TEMSComponent implements OnI
         return;
 
         this.allocations = result;
+
+        this.equipmentNotAllocated = (this.equipment != undefined && this.allocations.findIndex(q => q.dateReturned == null) == -1);
       })
     )
   }

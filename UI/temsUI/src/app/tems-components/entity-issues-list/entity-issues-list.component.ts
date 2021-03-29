@@ -57,6 +57,11 @@ export class EntityIssuesListComponent extends TEMSComponent implements OnInit, 
   }
 
   ngOnChanges(): void {
+    if(this.cancelFirstOnChange){
+      this.cancelFirstOnChange = false;
+      return;
+    }
+    
     this.getIssues();
   }
 

@@ -10,7 +10,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 })
 export class TEMSComponent implements OnDestroy{
   // Parent component for many others
-  
+  cancelFirstOnChange = true;
+
   subscriptions: Subscription[] = [];
   constructor() {
   }

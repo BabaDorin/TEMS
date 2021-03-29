@@ -1,4 +1,7 @@
 <h2 class="mt-3">Allocations</h2>
+<h3 *ngIf="equipmentNotAllocated" class="text-muted">
+    This equipment is deposited, it's not allocated to anyone currently.
+</h3>
 <button mat-button (click)="addAllocation()">
     <mat-icon class="text-primary">add</mat-icon>Create new allocation
 </button>
@@ -9,7 +12,7 @@
 </ng-container>
 <mat-card
     *ngFor="let allocation of allocations | paginate: { itemsPerPage: 10, currentPage: p1, id: 'allocations' }; let i = index"
-    class="mb-2">
+    class="mb-2 fade-in">
 
     <div class="text-center">
         <mat-icon class="text-primary">computer</mat-icon>

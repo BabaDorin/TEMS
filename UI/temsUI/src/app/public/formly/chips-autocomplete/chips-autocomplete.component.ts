@@ -49,6 +49,7 @@ export class ChipsAutocompleteComponent implements OnInit, ControlValueAccessor 
   removable = true;
   visible = true;
   value = [];
+  cancelOnChange = true;
 
   ngOnInit() {
     console.log('already selected')
@@ -58,6 +59,12 @@ export class ChipsAutocompleteComponent implements OnInit, ControlValueAccessor 
   }
 
   ngOnChanges(changes: { [propName: string]: SimpleChange }) {
+    if(this.cancelOnChange){
+      this.cancelOnChange = false;
+      return;
+    }
+
+
     if(changes['endPoint'] && changes['endPoint'].previousValue != changes['endPoint'].currentValue ) {
       this.options = [];
       this.value = [];

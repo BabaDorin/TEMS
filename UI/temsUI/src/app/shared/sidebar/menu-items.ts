@@ -94,16 +94,7 @@ export class menuItems {
         },
         {
           path: '/equipment/allocate',
-          title: 'Allocate',
-          icon: 'mdi mdi-transfer menu-icon',
-          isActive: false,
-          isShown: this.hasClaim(CAN_VIEW_ENTITIES),
-          showSubmenu: false,
-          submenu: []
-        },
-        {
-          path: '/equipment/allocations',
-          title: 'Allocations',
+          title: 'Allocatee',
           icon: 'mdi mdi-transfer menu-icon',
           isActive: false,
           isShown: this.hasClaim(CAN_VIEW_ENTITIES),

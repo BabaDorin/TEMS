@@ -29,6 +29,7 @@ export class AgGridEquipmentComponent extends TEMSComponent implements OnInit, O
   private pagination
   private paginationPageSize;
   loading: boolean = true;
+  cancelOnChange = true;
 
   constructor(
     private equipmentService: EquipmentService,
@@ -81,6 +82,11 @@ export class AgGridEquipmentComponent extends TEMSComponent implements OnInit, O
     this.rowSelection = 'multiple';
   }
   ngOnChanges(changes: SimpleChanges): void {
+    if(this.cancelOnChange){
+      this.cancelOnChange = false;
+      return;
+    }
+    
     console.log('changed');
     this.fetchEquipments();
   }

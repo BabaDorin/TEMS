@@ -1,9 +1,9 @@
 <div class="card">
     <div class="card-body">
-        <div class="card-title">View Allocations</div>
+        <div class="card-title">Filter</div>
         <form [formGroup]="filterAllocationsFormGroup">
             <div class="row">
-                <div class="col-md-6 col-sm-12">
+                <div class="col-md-6 col-sm-12 fade-in">
                     <app-chips-autocomplete label="Equipments' TEMSID or Serial Number..."
                     formControlName="equipment"
                     [endPoint]="equipmentService"
@@ -11,7 +11,7 @@
                     (dataRemoved)="filtersChanged()">
                     </app-chips-autocomplete>
                 </div>
-                <div class="col-md-6 col-sm-12">
+                <div class="col-md-6 col-sm-12 fade-in">
                     <app-chips-autocomplete label="Room"
                     formControlName="rooms"
                     [endPoint]="roomService"
@@ -19,7 +19,7 @@
                     (dataRemoved)="filtersChanged()">
                     </app-chips-autocomplete>
                 </div>
-                <div class="col-md-6 col-sm-12">
+                <div class="col-md-6 col-sm-12 fade-in">
                     <app-chips-autocomplete label="Personnel"
                     formControlName="personnel"
                     [endPoint]="personnelService"
@@ -27,7 +27,7 @@
                     (dataRemoved)="filtersChanged()">
                     </app-chips-autocomplete>
                 </div>
-                <div class="col-md-6 col-sm-12">
+                <div class="col-md-6 col-sm-12 fade-in">
                     <app-chips-autocomplete label="Definitions"
                     formControlName="definitions"
                     [endPoint]="definitionService"

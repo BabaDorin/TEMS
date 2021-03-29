@@ -155,7 +155,7 @@ namespace temsAPI.Controllers.EquipmentControllers
 
                 if (viewModel == null || viewModel.TypeIds == null)
                 {
-                    return Json(new List<Option>());
+                    //return Json(new List<Option>());
                     expression = q => !q.IsArchieved;
                 }
                 else

@@ -1,0 +1,65 @@
+<div class="card">
+    <div class="card-body">
+        <div class="card-title">View Allocations</div>
+        <form [formGroup]="filterAllocationsFormGroup">
+            <div class="row">
+                <div class="col-md-6 col-sm-12">
+                    <app-chips-autocomplete label="Equipments' TEMSID or Serial Number..."
+                    formControlName="equipment"
+                    [endPoint]="equipmentService"
+                    (dataCollected)="filtersChanged()"
+                    (dataRemoved)="filtersChanged()">
+                    </app-chips-autocomplete>
+                </div>
+                <div class="col-md-6 col-sm-12">
+                    <app-chips-autocomplete label="Room"
+                    formControlName="rooms"
+                    [endPoint]="roomService"
+                    (dataCollected)="filtersChanged()"
+                    (dataRemoved)="filtersChanged()">
+                    </app-chips-autocomplete>
+                </div>
+                <div class="col-md-6 col-sm-12">
+                    <app-chips-autocomplete label="Personnel"
+                    formControlName="personnel"
+                    [endPoint]="personnelService"
+                    (dataCollected)="filtersChanged()"
+                    (dataRemoved)="filtersChanged()">
+                    </app-chips-autocomplete>
+                </div>
+                <div class="col-md-6 col-sm-12">
+                    <app-chips-autocomplete label="Definitions"
+                    formControlName="definitions"
+                    [endPoint]="definitionService"
+                    (dataCollected)="filtersChanged()"
+                    (dataRemoved)="filtersChanged()">
+                    </app-chips-autocomplete>
+                </div>
+            </div>
+        </form>
+        <mat-tab-group [@.disabled]="true">
+            <mat-tab label="Open">
+                <app-entity-allocations-list
+                    [equipmentIds]="equipments"
+                    [personnelIds]="personnel"
+                    [roomIds]="rooms"
+                    [definitionIds]="definitions"
+                    onlyActive="true">
+                    Loading...
+                </app-entity-allocations-list>
+            </mat-tab>
+            <mat-tab label="Closed">
+                <ng-template matTabContent>
+                    <app-entity-allocations-list
+                    [equipmentIds]="equipments"
+                    [personnelIds]="personnel"
+                    [roomIds]="rooms"
+                    [definitionIds]="definitions"
+                    onlyClosed="true">
+                    Loading...
+                    </app-entity-allocations-list>
+                </ng-template>
+            </mat-tab>
+        </mat-tab-group>
+    </div>
+</div>

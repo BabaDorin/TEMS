@@ -1,3 +1,4 @@
+import { ViewEquipmentAllocationsComponent } from './../view-equipment-allocations/view-equipment-allocations.component';
 import { CanManageEntitiesGuard } from './../../guards/can-manage-entities.guard';
 import { CanViewEntitiesGuard } from './../../guards/can-view-entities.guard';
 import { EquipmentAllocationComponent } from './equipment-allocation/equipment-allocation.component';
@@ -15,6 +16,7 @@ const routes: Routes = [
   { path: 'all', component: ViewEquipmentComponent, canActivate: [ CanViewEntitiesGuard ] },
   { path: 'quick-access', component: QuickAccessComponent, canActivate: [ CanViewEntitiesGuard ] },
   { path: 'allocate', component: EquipmentAllocationComponent, canActivate: [ CanManageEntitiesGuard ] },
+  { path: 'allocations', component: ViewEquipmentAllocationsComponent, canActivate: [ CanManageEntitiesGuard ] },
 ];
 
 @NgModule({

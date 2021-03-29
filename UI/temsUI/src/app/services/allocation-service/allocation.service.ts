@@ -1,5 +1,8 @@
+import { ViewAllocationSimplified } from './../../models/equipment/view-equipment-allocation.model';
+import { ViewEquipmentSimplified } from './../../models/equipment/view-equipment-simplified.model';
+import { IOption } from './../../models/option.model';
 import { Observable } from 'rxjs';
-import { API_ALL_URL } from './../../models/backend.config';
+import { API_ALL_URL, API_EQ_URL } from './../../models/backend.config';
 import { HttpClient } from '@angular/common/http';
 import { AddAllocation } from './../../models/allocation/add-allocation.model';
 import { TEMSService } from './../tems-service/tems.service';
@@ -21,6 +24,30 @@ export class AllocationService extends TEMSService{
       API_ALL_URL + '/getofentity/' + entityType + '/' + entityId,
       this.httpOptions
     );
+  }
+
+  getAllocations(
+    eqIds: string[], 
+    defIds:string[],
+    persIds: string[],
+    rIds: string[],
+    include?: string): Observable<ViewAllocationSimplified[]> {
+      if(include == undefined)
+        include = 'any';
+
+      let entityCollection = {
+        equipmentIds: eqIds,
+        definitionIds: defIds,
+        personnelIds: persIds,
+        roomIds: rIds,
+        include: include
+      }
+
+      return this.http.post<ViewAllocationSimplified[]>(
+        API_ALL_URL + '/getallocations',
+        JSON.stringify(entityCollection),
+        this.httpOptions
+      );
   }
 
   getEquipmentAllocations(equipmentId: string): Observable<any>{

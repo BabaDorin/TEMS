@@ -14,6 +14,7 @@ using temsAPI.Contracts;
 using temsAPI.Data.Entities.EquipmentEntities;
 using temsAPI.Data.Entities.OtherEntities;
 using temsAPI.Data.Entities.UserEntities;
+using temsAPI.Helpers;
 using temsAPI.System_Files;
 using temsAPI.ViewModels;
 using temsAPI.ViewModels.Allocation;
@@ -167,9 +168,9 @@ namespace temsAPI.Controllers.Allocation
                 return ReturnResponse("An error occured while returning the allocation", ResponseStatus.Fail);
             }
         }
-        [HttpGet("allocation/getofentity/{entityType}/{entityId}")]
+        [HttpGet("allocation/getofentity/{entityType}/{entityId}/{archieve?}")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
-        public async Task<JsonResult> GetOfEntity(string entityType, string entityId)
+        public async Task<JsonResult> GetOfEntity(string entityType, string entityId, bool? archieve)
         {
             try
             {
@@ -180,6 +181,9 @@ namespace temsAPI.Controllers.Allocation
                 // No entity id provided
                 if (String.IsNullOrEmpty(entityId.Trim()))
                     return ReturnResponse($"You have to provide a valid {entityType} Id", ResponseStatus.Fail);
+
+                if (archieve == null) archieve = false;
+                Expression<Func<EquipmentAllocation, bool>> archExpression = q => q.IsArchieved == (bool)archieve;
 
                 Expression<Func<EquipmentAllocation, bool>> expression = null;
 
@@ -206,6 +210,8 @@ namespace temsAPI.Controllers.Allocation
                         expression = q => q.PersonnelID == entityId;
                         break;
                 }
+
+                expression = ExpressionCombiner.CombineTwo(expression, archExpression);
 
                 List<ViewAllocationSimplifiedViewModel> viewModel = (await _unitOfWork.EquipmentAllocations
                     .FindAll<ViewAllocationSimplifiedViewModel>(
@@ -246,6 +252,115 @@ namespace temsAPI.Controllers.Allocation
             {
                 Debug.WriteLine(ex);
                 return ReturnResponse("An error occured when fetching entity's allocations", ResponseStatus.Fail);
+            }
+        }
+
+        /*
+         equipmentIds: equipmentIds,
+          definitionIds: definitionIds,
+          personnelIds: personnelIds,
+          roomIds: roomIds,*/
+        public class EntityCollection
+        {
+            public List<string> EquipmentIds { get; set; }
+            public List<string> DefinitionIds { get; set; }
+            public List<string> PersonnelIds { get; set; }
+            public List<string> RoomIds { get; set; }
+            //public int PageNumber { get; set; } = 1;
+            //public int ItemsPerPage { get; set; } = 30;
+            public string Include { get; set; }
+        }
+
+        [HttpPost]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
+        public async Task<JsonResult> GetAllocations([FromBody] EntityCollection entityCollection)
+        {
+            try
+            {
+                Expression<Func<EquipmentAllocation, bool>> equipmentExpression = null;
+                if (entityCollection.EquipmentIds != null && entityCollection.EquipmentIds.Count > 0)
+                    equipmentExpression = q => entityCollection.EquipmentIds.Contains(q.EquipmentID);
+
+                Expression<Func<EquipmentAllocation, bool>> definitionsExpression = null;
+                if (entityCollection.DefinitionIds != null && entityCollection.DefinitionIds.Count > 0)
+                    definitionsExpression = q => entityCollection.DefinitionIds.Contains(q.Equipment.EquipmentDefinitionID);
+
+                Expression<Func<EquipmentAllocation, bool>> roomExpression = null;
+                if (entityCollection.RoomIds != null && entityCollection.RoomIds.Count > 0)
+                    roomExpression = q => entityCollection.RoomIds.Contains(q.RoomID);
+
+                Expression<Func<EquipmentAllocation, bool>> personnelExpression = null;
+                if (entityCollection.PersonnelIds != null && entityCollection.PersonnelIds.Count > 0)
+                    personnelExpression = q => entityCollection.PersonnelIds.Contains(q.PersonnelID);
+
+                Expression<Func<EquipmentAllocation, bool>> stateExpression = null;
+                switch (entityCollection.Include)
+                {
+                    case "active": stateExpression = q => q.DateReturned == null; break;
+                    case "returned": stateExpression = q => q.DateReturned != null; break;
+                }
+
+                Expression<Func<EquipmentAllocation, bool>> finalExpression = 
+                    ExpressionCombiner.And(
+                        equipmentExpression, 
+                        definitionsExpression,
+                        roomExpression,
+                        personnelExpression,
+                        stateExpression);
+
+                Func<IQueryable<EquipmentAllocation>, IOrderedQueryable<EquipmentAllocation>> orderByExp =
+                    (entityCollection.Include == "returned")
+                    ? q => q.OrderByDescending(q => q.DateReturned)
+                    : q => q.OrderByDescending(q => q.DateAllocated);
+
+                //if (entityCollection.PageNumber < 1 || entityCollection.ItemsPerPage < 1)
+                //    return ReturnResponse("Invalid page number of items per page", ResponseStatus.Fail);
+
+                //int skip = entityCollection.PageNumber - 1 * entityCollection.ItemsPerPage;
+                //int take = entityCollection.ItemsPerPage;
+
+                var viewModel = (await _unitOfWork.EquipmentAllocations
+                    .FindAll<ViewAllocationSimplifiedViewModel>(
+                        include: q => q.Include(q => q.Room)
+                                       .Include(q => q.Personnel)
+                                       .Include(q => q.Equipment).ThenInclude(q => q.EquipmentDefinition),
+                        where: finalExpression,
+                        orderBy: orderByExp,
+                        //skip: skip,
+                        //take: take,
+                        select: q => new ViewAllocationSimplifiedViewModel
+                        {
+                            Id = q.Id,
+                            DateAllocated = q.DateAllocated,
+                            DateReturned = q.DateReturned,
+                            Equipment = new Option
+                            {
+                                Value = q.Equipment.Id,
+                                Label = q.Equipment.TemsIdOrSerialNumber,
+                                Additional = q.Equipment.EquipmentDefinition.Identifier
+                            },
+                            Personnel = (q.Personnel == null)
+                                ? null
+                                : new Option
+                                {
+                                    Value = q.Personnel.Id,
+                                    Label = q.Personnel.Name,
+                                },
+                            Room = (q.Room == null)
+                                ? null
+                                : new Option
+                                {
+                                    Value = q.Room.Id,
+                                    Label = q.Room.Identifier,
+                                },
+                        })).ToList();
+
+                return Json(viewModel) ;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured while retrieving allocations", ResponseStatus.Fail);
             }
         }
 

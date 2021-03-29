@@ -6,7 +6,7 @@ import { AllocationService } from './../../services/allocation-service/allocatio
 import { ViewPersonnelSimplified } from './../../models/personnel/view-personnel-simplified.model';
 import { ViewRoomSimplified } from './../../models/room/view-room-simplified.model';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { ViewAllocationSimplified,} from 'src/app/models/equipment/view-equipment-allocation.model';
 import { ViewEquipmentSimplified } from 'src/app/models/equipment/view-equipment-simplified.model';
 import { EquipmentAllocationComponent } from '../equipment/equipment-allocation/equipment-allocation.component';
@@ -19,11 +19,19 @@ import { IOption } from 'src/app/models/option.model';
   templateUrl: './entity-allocations-list.component.html',
   styleUrls: ['./entity-allocations-list.component.scss']
 })
-export class EntityAllocationsListComponent extends TEMSComponent implements OnInit {
+export class EntityAllocationsListComponent extends TEMSComponent implements OnInit, OnChanges {
 
   @Input() equipment: ViewEquipmentSimplified; 
-  @Input() room: ViewRoomSimplified; 
+  @Input() rooms: ViewRoomSimplified; 
   @Input() personnel: ViewPersonnelSimplified; 
+
+  @Input() equipmentIds: string[] = [];
+  @Input() personnelIds: string[] = [];
+  @Input() definitionIds: string[] = [];
+  @Input() roomIds: string[] = [];
+  @Input() onlyActive: boolean;
+  @Input() onlyClosed: boolean;
+
   
   allocations: ViewAllocationSimplified[];
   loading = true;
@@ -40,23 +48,34 @@ export class EntityAllocationsListComponent extends TEMSComponent implements OnI
   }
 
   ngOnInit(): void {
+    this.fetchAllocations();
+  }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    this.fetchAllocations();
+  }
+  
+  fetchAllocations(){
     this.canManage = this.tokenService.hasClaim(CAN_MANAGE_ENTITIES);
-    if(this.equipment == undefined && this.room == undefined && this.personnel == undefined){
-      console.warn('EntityAllocationsListComponent requires an entity in order to display logs');
-      return;
-    }
 
-    let endPoint;
+    // if(this.equipment) this.equipmentIds = [this.equipment.id];
+    // if(this.rooms) this.roomIds = [this.rooms.id];
+    // if(this.personnel) this.personnelIds = [this.personnel.id];
 
-    if(this.equipment)
-      endPoint = this.allocationService.getEquipmentAllocations(this.equipment.id);
+    if(this.onlyActive == undefined) this.onlyActive = false;
+    if(this.onlyClosed == undefined) this.onlyClosed = false;
+    
+    let include = 'any';
+    if(this.onlyActive) include = 'active';
+    if(this.onlyClosed) include = 'returned';
 
-    if(this.room)
-      endPoint = this.allocationService.getEquipmentAllocationsToRoom(this.room.id);
-
-    if(this.personnel)
-      endPoint = this.allocationService.getEquipmentAllocationsToPersonnel(this.personnel.id);
+    let endPoint = this.allocationService.getAllocations(
+      this.equipmentIds,
+      this.definitionIds,
+      this.personnelIds,
+      this.roomIds,
+      include
+    );
 
     this.loading = true;
     this.subscriptions.push(
@@ -84,12 +103,12 @@ export class EntityAllocationsListComponent extends TEMSComponent implements OnI
         }];
     }
 
-    if(this.room){
+    if(this.rooms){
       selectedEntityType = "room";
       selectedEntities = [
         {
-          value: this.room.id, 
-          label: this.room.identifier
+          value: this.rooms.id, 
+          label: this.rooms.identifier
         }];
     }
 
@@ -129,6 +148,9 @@ export class EntityAllocationsListComponent extends TEMSComponent implements OnI
 
         if(result.status == 1)
           this.allocations[index].dateReturned = new Date;
+        
+        if(this.onlyActive)
+          this.allocations.splice(index, 1);
       })
     )
   }

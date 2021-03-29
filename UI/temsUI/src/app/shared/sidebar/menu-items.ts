@@ -101,6 +101,15 @@ export class menuItems {
           showSubmenu: false,
           submenu: []
         },
+        {
+          path: '/equipment/allocations',
+          title: 'Allocations',
+          icon: 'mdi mdi-transfer menu-icon',
+          isActive: false,
+          isShown: this.hasClaim(CAN_VIEW_ENTITIES),
+          showSubmenu: false,
+          submenu: []
+        },
       ]
     },
     {

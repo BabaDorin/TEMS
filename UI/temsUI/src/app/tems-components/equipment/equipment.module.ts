@@ -1,3 +1,4 @@
+import { ViewEquipmentAllocationsComponent } from './../view-equipment-allocations/view-equipment-allocations.component';
 import { ViewTypeComponent } from './view-type/view-type.component';
 import { TemsFormsModule } from './../../modules/tems-forms/tems-forms.module';
 import { ScrollingModule } from '@angular/cdk/scrolling';
@@ -41,6 +42,7 @@ import { BtnCellRendererComponent } from 'src/app/public/ag-grid/btn-cell-render
     AgGridTooltipComponent,
     ViewTypeComponent,
     ViewPropertyComponent,
+    ViewEquipmentAllocationsComponent
   ],
   imports: [
     CommonModule,

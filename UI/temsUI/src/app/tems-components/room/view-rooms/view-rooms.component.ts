@@ -44,7 +44,7 @@ export class ViewRoomsComponent implements OnInit {
 
     this.dialogService.openDialog(
       CreateIssueComponent,
-      [{label: "roomAlreadySelected", value: selectedNodes }]
+      [{label: "roomsAlreadySelected", value: selectedNodes }]
     )
   }
 
@@ -74,4 +74,6 @@ export class ViewRoomsComponent implements OnInit {
       }
     )
   }
+
+  
 }

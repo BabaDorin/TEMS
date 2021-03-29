@@ -1,3 +1,4 @@
+import { SnackService } from './../../../services/snack/snack.service';
 import { TEMSComponent } from './../../../tems/tems.component';
 import { ChipsAutocompleteComponent } from './../../../public/formly/chips-autocomplete/chips-autocomplete.component';
 import { IOption } from '../../../models/option.model';
@@ -24,10 +25,12 @@ export class AddRoomComponent extends TEMSComponent implements OnInit {
   }
 
   roomLabels: IOption[];
+  dialogRef;
 
   constructor(
     private formlyParserService: FormlyParserService,
     private roomService: RoomsService,
+    private snackService: SnackService
   ) {
     super();
   }
@@ -48,7 +51,15 @@ export class AddRoomComponent extends TEMSComponent implements OnInit {
     model.room.labels = this.labels.options;
     this.subscriptions.push(this.roomService.createRoom(model.room as AddRoom)
       .subscribe(result => {
-        console.log(result);
+        this.snackService.snack(result);
+
+        console.log(this.dialogRef);
+        if(result.status == 1){
+          this.formlyData.model = {};
+
+          if(this.dialogRef != undefined)
+            this.dialogRef.close();
+        }
       }))
   }
 }

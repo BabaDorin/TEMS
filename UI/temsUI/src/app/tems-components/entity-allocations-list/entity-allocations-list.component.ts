@@ -22,7 +22,7 @@ import { IOption } from 'src/app/models/option.model';
 export class EntityAllocationsListComponent extends TEMSComponent implements OnInit, OnChanges {
 
   @Input() equipment: ViewEquipmentSimplified; 
-  @Input() rooms: ViewRoomSimplified; 
+  @Input() room: ViewRoomSimplified; 
   @Input() personnel: ViewPersonnelSimplified; 
 
   @Input() equipmentIds: string[] = [];
@@ -64,7 +64,7 @@ export class EntityAllocationsListComponent extends TEMSComponent implements OnI
     this.canManage = this.tokenService.hasClaim(CAN_MANAGE_ENTITIES);
 
     if(this.equipment) this.equipmentIds = [this.equipment.id];
-    if(this.rooms) this.roomIds = [this.rooms.id];
+    if(this.room) this.roomIds = [this.room.id];
     if(this.personnel) this.personnelIds = [this.personnel.id];
 
     if(this.onlyActive == undefined) this.onlyActive = false;
@@ -110,12 +110,12 @@ export class EntityAllocationsListComponent extends TEMSComponent implements OnI
         }];
     }
 
-    if(this.rooms){
+    if(this.room){
       selectedEntityType = "room";
       selectedEntities = [
         {
-          value: this.rooms.id, 
-          label: this.rooms.identifier
+          value: this.room.id, 
+          label: this.room.identifier
         }];
     }
 

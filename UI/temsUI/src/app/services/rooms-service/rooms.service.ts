@@ -55,6 +55,13 @@ export class RoomsService extends TEMSService {
     );
   }
 
+  archieveRoom(roomId: string): Observable<any>{
+    return this.http.get(
+      API_ROOM_URL + '/archieve/' + roomId,
+      this.httpOptions
+    )
+  }
+
   getRoomSimplified(id: string): ViewRoomSimplified{
     return new ViewRoomSimplified();
   }

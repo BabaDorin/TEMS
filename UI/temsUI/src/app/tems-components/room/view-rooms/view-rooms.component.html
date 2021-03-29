@@ -6,6 +6,15 @@
 <br>
 <div class="card">
     <div class="card-body">
-    <app-ag-grid-rooms></app-ag-grid-rooms>
+        <button mat-button (click)="addNew()">
+            <mat-icon class="text-primary">add</mat-icon>Add new
+        </button>
+        <button mat-button (click)="addLogSelected()">
+            <mat-icon class="text-primary">timeline</mat-icon>Add a log for selected
+        </button>
+        <button mat-button (click)="addIssue()">
+            <mat-icon class="text-primary">feedback</mat-icon>Include selected in an issue
+        </button>
+        <app-ag-grid-rooms #agGrid></app-ag-grid-rooms>
     </div>
 </div>

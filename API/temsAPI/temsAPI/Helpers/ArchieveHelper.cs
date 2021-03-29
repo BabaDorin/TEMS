@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.CommunicationEntities;
 using temsAPI.Data.Entities.EquipmentEntities;
+using temsAPI.Data.Entities.KeyEntities;
+using temsAPI.Data.Entities.OtherEntities;
 using temsAPI.Data.Entities.UserEntities;
 
 namespace temsAPI.Helpers
@@ -63,6 +65,80 @@ namespace temsAPI.Helpers
             {
                 Debug.WriteLine(ex);
                 return "An error occured while archieving equipment's related data";
+            }
+        }
+
+        public async Task<string> ArchieveRoom(string roomId)
+        {
+            try
+            {
+                var model = (await _unitOfWork.Rooms
+                    .Find<Room>(
+                        where: q => q.Id == roomId,
+                        include: q => q
+                        .Include(q => q.EquipmentAllocations)
+                        .Include(q => q.Keys)
+                        .Include(q => q.Logs)))
+                    .FirstOrDefault();
+
+                if (model == null)
+                    return "Invalid id provided";
+
+                model.IsArchieved = true;
+
+                foreach (var allocation in model.EquipmentAllocations)
+                {
+                    allocation.IsArchieved = true;
+                }
+
+                foreach (var key in model.Keys)
+                {
+                    await ArchieveKey(key.Id);
+                }
+
+                foreach (var log in model.Logs)
+                {
+                    log.IsArchieved = true;
+                }
+
+                await _unitOfWork.Save();
+                return null;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return "An error occured while archieving rooms's related data";
+            }
+        }
+
+        public async Task<string> ArchieveKey(string keyId)
+        {
+            try
+            {
+                var model = (await _unitOfWork.Keys
+                    .Find<Key>(
+                        where: q => q.Id == keyId,
+                        include: q => q
+                        .Include(q => q.KeyAllocations)))
+                    .FirstOrDefault();
+
+                if (model == null)
+                    return "Invalid id provided";
+
+                model.IsArchieved = true;
+
+                foreach (var allocation in model.KeyAllocations)
+                {
+                    allocation.IsArchieved = true;
+                }
+                
+                await _unitOfWork.Save();
+                return null;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return "An error occured while archieving key's related data";
             }
         }
 

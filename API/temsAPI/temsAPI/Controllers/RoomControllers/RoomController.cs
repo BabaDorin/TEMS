@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.OtherEntities;
 using temsAPI.Data.Entities.UserEntities;
+using temsAPI.Helpers;
 using temsAPI.System_Files;
 using temsAPI.ViewModels;
 using temsAPI.ViewModels.Personnel;
@@ -99,6 +100,25 @@ namespace temsAPI.Controllers.RoomControllers
             {
                 Debug.WriteLine(ex);
                 return ReturnResponse("An error occured when creating the room", ResponseStatus.Fail);
+            }
+        }
+
+        [HttpGet("room/archieve/{roomId}")]
+        public async Task<JsonResult> Archieve(string roomId)
+        {
+            try
+            {
+                var archievingResult = await (new ArchieveHelper(_userManager, _unitOfWork))
+                    .ArchieveRoom(roomId);
+                if (archievingResult != null)
+                    return ReturnResponse(archievingResult, ResponseStatus.Fail);
+
+                return ReturnResponse("Success", ResponseStatus.Success);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured while archieving the room", ResponseStatus.Fail);
             }
         }
 

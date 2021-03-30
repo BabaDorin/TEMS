@@ -26,14 +26,6 @@ export class RoomsService extends TEMSService {
     );
   }
 
-  getRooms(): ViewRoomSimplified[]{
-    return [
-      new ViewRoomSimplified(),
-      new ViewRoomSimplified(),
-      new ViewRoomSimplified(),
-    ];
-  }
-
   getRoomsSimplified(pageNumber: number, recordsPerPage: number): Observable<any>{
     return this.http.get(
       API_ROOM_URL + '/getSimplified' + '/' + pageNumber + '/' + recordsPerPage,

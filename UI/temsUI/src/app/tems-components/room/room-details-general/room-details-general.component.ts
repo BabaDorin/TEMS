@@ -13,7 +13,7 @@ import { Router } from '@angular/router';
   templateUrl: './room-details-general.component.html',
   styleUrls: ['./room-details-general.component.scss']
 })
-export class RoomDetailsGeneralComponent extends TEMSComponent implements OnInit, OnChanges{
+export class RoomDetailsGeneralComponent extends TEMSComponent implements OnInit{
 
   @Input() roomId: string;
   @Input() room: ViewRoom;
@@ -32,6 +32,10 @@ export class RoomDetailsGeneralComponent extends TEMSComponent implements OnInit
   }
 
   ngOnInit(): void {
+    this.fetchRoom();
+  }
+
+  fetchRoom(){
     this.subscriptions.push(
       this.roomService.getRoomById(this.roomId)
       .subscribe(result => {
@@ -51,9 +55,6 @@ export class RoomDetailsGeneralComponent extends TEMSComponent implements OnInit
     )
   }
 
-  ngOnChanges(){
-  }
-
   viewMore(){
     console.log(this.roomId);
     this.route.navigateByUrl('/rooms/details/' + this.roomId);
@@ -67,7 +68,7 @@ export class RoomDetailsGeneralComponent extends TEMSComponent implements OnInit
       AddRoomComponent,
       [{label: "roomId", value: this.roomId}],
       () => {
-        // get the new state of equipment simplified
+         this.fetchRoom();
       }
     )
   }

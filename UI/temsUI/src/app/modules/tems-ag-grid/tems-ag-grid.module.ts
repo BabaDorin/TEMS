@@ -33,7 +33,6 @@ import { BtnCellRendererComponent } from 'src/app/public/ag-grid/btn-cell-render
     AgGridTooltipComponent,
     AgGridRoomsComponent,
     BtnCellRendererComponent,
-    
   ]
 })
 export class TemsAgGridModule { }

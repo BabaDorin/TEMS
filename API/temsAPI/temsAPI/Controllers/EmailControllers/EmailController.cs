@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -16,8 +17,14 @@ namespace temsAPI.Controllers.EmailControllers
 {
     public class EmailController : TEMSController
     {
-        public EmailController(IMapper mapper, IUnitOfWork unitOfWork, UserManager<TEMSUser> userManager) : base(mapper, unitOfWork, userManager)
+        private readonly AppSettings _appSettings;
+        public EmailController(
+            IMapper mapper, 
+            IUnitOfWork unitOfWork, 
+            UserManager<TEMSUser> userManager,
+            IOptions<AppSettings> appSettings) : base(mapper, unitOfWork, userManager)
         {
+            _appSettings = appSettings.Value;
         }
 
         [HttpPost]
@@ -26,11 +33,13 @@ namespace temsAPI.Controllers.EmailControllers
         {
             try
             {
-                var mailingResult = await (new EmailService(_unitOfWork)).SendEmail(viewModel);
-                if (mailingResult != null)
-                    return ReturnResponse(mailingResult, ResponseStatus.Fail);
+                var mailingResult = await (new EmailService(_unitOfWork, _appSettings)).SendEmail(viewModel);
 
-                return ReturnResponse("Success", ResponseStatus.Success);
+                int numbersOfEmailsSent = 0;
+                if (int.TryParse(mailingResult, out numbersOfEmailsSent))
+                    return ReturnResponse(mailingResult + " mails have been sent.", ResponseStatus.Success);
+                else
+                    return ReturnResponse(mailingResult, ResponseStatus.Fail);
             }
             catch (Exception ex)
             {

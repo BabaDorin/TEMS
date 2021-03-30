@@ -60,7 +60,7 @@ export class SendEmailComponent extends TEMSComponent implements OnInit {
     }
 
     this.subscriptions.push(
-      this.emailService.sendEmail(model)
+      this.emailService.sendEmail(sendEmailModel)
       .subscribe(result => {
         this.snackService.snack(result);
 

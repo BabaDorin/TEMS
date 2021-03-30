@@ -1,3 +1,4 @@
+import { RoomLabelService } from './services/room-label.service';
 import { TypeService } from './services/type-service/type.service';
 import { MenuService } from './services/menu-service/menu.service';
 import { TokenService } from './services/token-service/token.service';
@@ -85,7 +86,8 @@ import { DefinitionService } from './services/definition-service/definition.serv
     MenuService,
     MatSnackBar,
     TypeService,
-    DefinitionService
+    DefinitionService,
+    RoomLabelService,
   ],
   bootstrap: [AppComponent],
 })

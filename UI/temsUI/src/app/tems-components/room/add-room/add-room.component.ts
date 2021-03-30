@@ -1,3 +1,4 @@
+import { RoomLabelService } from './../../../services/room-label.service';
 import { SnackService } from './../../../services/snack/snack.service';
 import { TEMSComponent } from './../../../tems/tems.component';
 import { ChipsAutocompleteComponent } from './../../../public/formly/chips-autocomplete/chips-autocomplete.component';
@@ -16,6 +17,7 @@ import { AddRoom } from 'src/app/models/room/add-room.model';
 })
 export class AddRoomComponent extends TEMSComponent implements OnInit {
 
+  roomId: string;
   @ViewChild('labels') labels: ChipsAutocompleteComponent;
 
   private formlyData = {
@@ -30,26 +32,57 @@ export class AddRoomComponent extends TEMSComponent implements OnInit {
   constructor(
     private formlyParserService: FormlyParserService,
     private roomService: RoomsService,
-    private snackService: SnackService
+    private snackService: SnackService,
+    private roomLabelService: RoomLabelService
   ) {
     super();
   }
   
   ngOnInit(): void {
     this.formlyData.model ={};
-    
-    this.subscriptions.push(this.roomService.getRoomLabels()
-      .subscribe(result => {
-        console.log(result);
-        this.roomLabels = result;
-      }))
-
     this.formlyData.fields = this.formlyParserService.parseAddRoom();
+
+    if(this.roomId == undefined)
+      return;
+    
+    this.subscriptions.push(
+      this.roomService.getRoomToUpdate(this.roomId)
+      .subscribe(result => {
+        let roomToUpdate: AddRoom = result;
+        console.log('rm');
+        console.log(roomToUpdate);
+
+        console.log(result);
+        this.formlyData.model = {};
+
+        this.formlyData.model = {
+          id: roomToUpdate.id,
+          identifier:  roomToUpdate.identifier,
+          floor: roomToUpdate.floor,
+          description: roomToUpdate.description,
+          labels: roomToUpdate.labels,
+        }
+
+        this.labels.options = roomToUpdate.labels;
+      })
+    )
   }
 
   onSubmit(model) {
-    model.room.labels = this.labels.options;
-    this.subscriptions.push(this.roomService.createRoom(model.room as AddRoom)
+    let addRoomModel: AddRoom = {
+      id: model.id,
+      identifier: model.identifier,
+      description: model.description,
+      floor: model.floor,
+      labels: this.labels.options
+    }
+
+    let endPoint = this.roomService.createRoom(addRoomModel as AddRoom);
+    if(addRoomModel.id != undefined)
+      endPoint = this.roomService.updateRoom(addRoomModel as AddRoom)
+    
+    this.subscriptions.push(
+      endPoint
       .subscribe(result => {
         this.snackService.snack(result);
 
@@ -60,6 +93,7 @@ export class AddRoomComponent extends TEMSComponent implements OnInit {
           if(this.dialogRef != undefined)
             this.dialogRef.close();
         }
-      }))
+      })
+    )
   }
 }

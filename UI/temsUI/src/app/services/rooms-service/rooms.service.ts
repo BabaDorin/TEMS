@@ -1,5 +1,5 @@
-import { IOption } from './../../models/option.model';
 import { Observable } from 'rxjs';
+import { IOption } from './../../models/option.model';
 import { API_ROOM_URL } from './../../models/backend.config';
 import { HttpClient } from '@angular/common/http';
 import { TEMSService } from './../tems-service/tems.service';
@@ -47,7 +47,22 @@ export class RoomsService extends TEMSService {
       this.httpOptions
     );
   }
-  
+
+  getRoomToUpdate(roomId: string): Observable<AddRoom>{
+    return this.http.get<AddRoom>(
+      API_ROOM_URL + '/getroomtoupdate/' + roomId,
+      this.httpOptions
+    );
+  } 
+
+  updateRoom(room: AddRoom): Observable<any>{
+    return this.http.post(
+      API_ROOM_URL + '/update',
+      JSON.stringify(room),
+      this.httpOptions
+    );
+  }
+
   getRoomById(id: string): Observable<any>{
     return this.http.get(
       API_ROOM_URL + '/getbyid/' + id,

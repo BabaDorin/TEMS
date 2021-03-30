@@ -63,18 +63,9 @@ namespace temsAPI.Controllers.RoomControllers
         {
             try
             {
-                // Indentifier is not valid
-                if (String.IsNullOrEmpty(viewModel.Identifier = viewModel.Identifier.Trim()))
-                    return ReturnResponse("Please, provide a valid room identifier", ResponseStatus.Fail);
-
-                // This room already exists
-                if (await _unitOfWork.Rooms.isExists(q => q.Identifier == viewModel.Identifier && !q.IsArchieved))
-                    return ReturnResponse($"This {viewModel.Identifier} room already exists", ResponseStatus.Fail);
-
-                // Invalid labels provided
-                foreach (Option label in viewModel.Labels)
-                    if (!await _unitOfWork.RoomLabels.isExists(q => q.Id == label.Value && !q.IsArchieved))
-                        return ReturnResponse("Invalid labels provided", ResponseStatus.Fail);
+                string validationResult = await ValidateAddRoomViewModel(viewModel);
+                if (validationResult != null)
+                    return ReturnResponse(validationResult, ResponseStatus.Fail);
 
                 // Might be valid
                 List<string> labelIds = viewModel.Labels.Select(q => q.Value).ToList();
@@ -102,6 +93,80 @@ namespace temsAPI.Controllers.RoomControllers
                 return ReturnResponse("An error occured when creating the room", ResponseStatus.Fail);
             }
         }
+
+        [HttpGet("room/getroomtoupdate/{roomId}")]
+        [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
+        public async Task<JsonResult> GetRoomToUpdate(string roomId)
+        {
+            try
+            {
+                var viewModel = (await _unitOfWork.Rooms
+                    .Find<AddRoomViewModel>(
+                        where: q => q.Id == roomId,
+                        include: q => q.Include(q => q.Labels),
+                        select: q => new AddRoomViewModel
+                        {
+                            Id = q.Id,
+                            Identifier = q.Identifier,
+                            Description = q.Description,
+                            Floor = q.Floor ?? 0,
+                            Labels = q.Labels.Select(q => new Option
+                            {
+                                Value = q.Id,
+                                Label = q.Name
+                            }).ToList(),
+                        })).FirstOrDefault();
+
+                return Json(viewModel);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured while getting room data", ResponseStatus.Fail);
+            }
+        }
+
+        [HttpPost]
+        [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
+        public async Task<JsonResult> Update([FromBody] AddRoomViewModel viewModel)
+        {
+            try
+            {
+                string validationResult = await ValidateAddRoomViewModel(viewModel);
+                if (validationResult != null)
+                    return ReturnResponse(validationResult, ResponseStatus.Fail);
+
+                var model = (await _unitOfWork.Rooms
+                    .Find<Room>(
+                        where: q => q.Id == viewModel.Id,
+                        include: q => q.Include(q => q.Labels)
+                        )).FirstOrDefault();
+
+                if (model == null)
+                    return ReturnResponse("Invalid room id provided", ResponseStatus.Fail);
+
+                model.Identifier = viewModel.Identifier;
+                model.Floor = viewModel.Floor;
+                model.Description = viewModel.Description;
+
+                List<string> labelIds = viewModel.Labels.Select(q => q.Value).ToList();
+                model.Labels.Clear();
+                await _unitOfWork.Save();
+
+                model.Labels = (await _unitOfWork.RoomLabels
+                    .FindAll<RoomLabel>(q => labelIds.Contains(q.Id)
+                    )).ToList();
+
+                await _unitOfWork.Save();
+                return ReturnResponse("Success", ResponseStatus.Success);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured while saving the room", ResponseStatus.Fail);
+            }
+        }
+
 
         [HttpGet("room/archieve/{roomId}")]
         public async Task<JsonResult> Archieve(string roomId)
@@ -226,6 +291,50 @@ namespace temsAPI.Controllers.RoomControllers
                 Debug.WriteLine(ex);
                 return ReturnResponse("An error occured when fetching the room", ResponseStatus.Fail);
             }
+        }
+
+        // ------------------------------------------------
+
+        /// <summary>
+        /// Validates an instance of AddRoomViewModel. Returns null if everything is ok,
+        /// otherwise returns the error message.
+        /// </summary>
+        /// <param name="viewModel"></param>
+        /// <returns></returns>
+        private async Task<string> ValidateAddRoomViewModel(AddRoomViewModel viewModel)
+        {
+            // If it's the update case
+            Room roomToUpdate = null;
+            if (viewModel.Id != null)
+            {
+                roomToUpdate = (await _unitOfWork.Rooms
+                    .Find<Room>(q => q.Id == viewModel.Id))
+                    .FirstOrDefault();
+
+                if (roomToUpdate == null)
+                    return "Invalid id provided";
+            }
+
+            // Indentifier is not valid
+            if (String.IsNullOrEmpty(viewModel.Identifier = viewModel.Identifier.Trim()))
+                return "Please, provide a valid room identifier";
+
+            // This room already exists and it's not the udpate case
+            if(viewModel.Id == null)
+                if (await _unitOfWork.Rooms.isExists(q => q.Identifier == viewModel.Identifier && !q.IsArchieved))
+                    return $"This {viewModel.Identifier} room already exists";
+
+            // When it's the update case
+            if (viewModel.Id != null)
+                if (await _unitOfWork.Rooms.isExists(q => q.Identifier == viewModel.Identifier && !q.IsArchieved && q.Id != viewModel.Id))
+                    return $"This {viewModel.Identifier} room already exists";
+
+            // Invalid labels provided
+            foreach (Option label in viewModel.Labels)
+                if (!await _unitOfWork.RoomLabels.isExists(q => q.Id == label.Value && !q.IsArchieved))
+                    return "Invalid labels provided";
+
+            return null;
         }
     }
 }

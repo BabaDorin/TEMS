@@ -7,6 +7,7 @@ namespace temsAPI.ViewModels.Room
 {
     public class AddRoomViewModel
     {
+        public string Id { get; set; }
         public string Identifier { get; set; }
         public int Floor { get; set; }
         public string Description { get; set; }

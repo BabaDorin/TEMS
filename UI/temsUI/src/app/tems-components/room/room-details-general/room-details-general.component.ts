@@ -1,3 +1,4 @@
+import { AddRoomComponent } from './../add-room/add-room.component';
 import { SnackService } from './../../../services/snack/snack.service';
 import { RoomsService } from 'src/app/services/rooms-service/rooms.service';
 import { TEMSComponent } from 'src/app/tems/tems.component';
@@ -18,7 +19,6 @@ export class RoomDetailsGeneralComponent extends TEMSComponent implements OnInit
   @Input() room: ViewRoom;
 
   roomProperties: Property[];
-  edit: boolean = false;
   displayViewMore = false;
   dialogRef;
 
@@ -60,5 +60,15 @@ export class RoomDetailsGeneralComponent extends TEMSComponent implements OnInit
     
     if(this.dialogRef != undefined)
       this.dialogRef.close();
+  }
+
+  edit(){
+    this.dialogService.openDialog(
+      AddRoomComponent,
+      [{label: "roomId", value: this.roomId}],
+      () => {
+        // get the new state of equipment simplified
+      }
+    )
   }
 }

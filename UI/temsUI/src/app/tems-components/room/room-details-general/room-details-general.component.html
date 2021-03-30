@@ -1,11 +1,11 @@
-<br>
-<ng-container *ngIf="room == undefined">
-    <h2>Loading...</h2>
+<ng-container *ngIf="room==undefined">
+    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
 </ng-container>
-
 <ng-container *ngIf="room != undefined">
     <h1>Room: <b>{{ room.identifier }}</b>
     </h1>
+    <button mat-button (click)="edit()">Edit</button>
+    <button mat-button (click)="archieve()">Archieve</button>
     <hr>
     <br>
     <div class="container">
@@ -17,11 +17,6 @@
     </div>
     <br>
     <br>
-
-    <!-- <div *ngIf="room.photos.length > 0">
-        <h4>Room images</h4>
-        <app-image-carousel></app-image-carousel>
-    </div> -->
     <br>
     <button *ngIf="displayViewMore == true" mat-button (click)="viewMore()">View More</button>
 </ng-container>

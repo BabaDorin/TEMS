@@ -30,37 +30,32 @@ export class FormlyParserService {
     let fields: FormlyFieldConfig[] =
       [
         {
-          key: 'room',
-          fieldGroup: [
-            {
-              key: 'identifier',
-              type: 'input',
-              templateOptions: {
-                required: true,
-                label: 'Room Identifier',
-                placeholder: '214'
-              }
-            },
-            {
-              key: 'floor',
-              type: 'input',
-              templateOptions: {
-                type: 'number',
-                label: 'Floor',
-                placeholder: '1',
-                min: 1,
-              }
-            },
-            {
-              key: 'description',
-              type: 'textarea',
-              templateOptions: {
-                label: 'Description',
-                placeholder: '...',
-                rows: 5,
-              },
-            }
-          ]
+          key: 'identifier',
+          type: 'input',
+          templateOptions: {
+            required: true,
+            label: 'Room Identifier',
+            placeholder: '214'
+          }
+        },
+        {
+          key: 'floor',
+          type: 'input',
+          templateOptions: {
+            type: 'number',
+            label: 'Floor',
+            placeholder: '1',
+            min: 1,
+          }
+        },
+        {
+          key: 'description',
+          type: 'textarea',
+          templateOptions: {
+            label: 'Description',
+            placeholder: '...',
+            rows: 5,
+          },
         }
       ];
 

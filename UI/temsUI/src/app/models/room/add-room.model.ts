@@ -1,5 +1,6 @@
 import { IOption } from './../option.model';
 export interface IAddRoom{
+    id?: string,
     identifier: string,
     floor: number,
     description: string,
@@ -7,6 +8,7 @@ export interface IAddRoom{
 }
 
 export class AddRoom implements IAddRoom{
+    id?: string;
     identifier: string;
     floor: number;
     description: string;

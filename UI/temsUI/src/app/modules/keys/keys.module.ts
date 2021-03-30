@@ -8,7 +8,6 @@ import { CommonModule } from '@angular/common';
 
 import { KeysRoutingModule } from './keys-routing.module';
 import { ViewKeysComponent } from 'src/app/tems-components/keys/view-keys/view-keys.component';
-import { AgGridKeysComponent } from 'src/app/tems-components/keys/ag-grid-keys/ag-grid-keys.component';
 import { KeysAllocationsListComponent } from 'src/app/tems-components/keys/keys-allocations-list/keys-allocations-list.component';
 import { AddKeyComponent } from 'src/app/tems-components/keys/add-key/add-key.component';
 import { TemsAgGridModule } from '../tems-ag-grid/tems-ag-grid.module';

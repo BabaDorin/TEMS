@@ -17,6 +17,8 @@ import { BtnCellRendererComponent } from 'src/app/public/ag-grid/btn-cell-render
 export class AgGridEquipmentComponent extends TEMSComponent implements OnInit, OnChanges {
 
   @Input() includeDerived = false;
+  @Input() rooms: string[];
+  @Input() personnel: string[];
 
   private gridApi;
   private gridColumnApi;
@@ -128,7 +130,12 @@ export class AgGridEquipmentComponent extends TEMSComponent implements OnInit, O
 
   fetchEquipments(){
     this.loading = true;
-    this.subscriptions.push(this.equipmentService.getEquipmentSimplified(20, 20, !this.includeDerived)
+    let entityCollection = {
+      roomIds: this.rooms,
+      personnelIds: this.personnel
+    }
+
+    this.subscriptions.push(this.equipmentService.getEquipmentSimplified(20, 20, !this.includeDerived, entityCollection)
     .subscribe(result => {
       console.log(result);
       this.rowData = result;

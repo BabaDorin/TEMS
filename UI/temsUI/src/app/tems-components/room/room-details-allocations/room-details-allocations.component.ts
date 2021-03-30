@@ -9,8 +9,10 @@ import { Component, Input, OnInit } from '@angular/core';
 export class RoomDetailsAllocationsComponent implements OnInit {
 
   @Input() room: ViewRoomSimplified;
+  roomsParameter;
   constructor() { }
 
   ngOnInit(): void {
+    this.roomsParameter = [this.room.id];
   }
 }

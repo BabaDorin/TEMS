@@ -10,6 +10,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using System.Threading.Tasks.Dataflow;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.EquipmentEntities;
 using temsAPI.Data.Entities.OtherEntities;
@@ -90,7 +91,12 @@ namespace temsAPI.Controllers.EquipmentControllers
 
         [HttpGet("equipment/getsimplified/{pageNumber}/{equipmentsPerPage}/{onlyParents}")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
-        public async Task<JsonResult> GetSimplified(int pageNumber, int equipmentsPerPage, bool onlyParents)
+        public async Task<JsonResult> GetSimplified(
+            int pageNumber, 
+            int equipmentsPerPage, 
+            bool onlyParents,
+            List<string> rooms,
+            List<string> personnel)
         {
             try
             {
@@ -99,7 +105,9 @@ namespace temsAPI.Controllers.EquipmentControllers
                 if (pageNumber < 0 || equipmentsPerPage < 1)
                     return ReturnResponse("Invalid parameters", ResponseStatus.Fail);
 
-                start = DateTime.Now;
+                if (rooms != null && rooms.Count > 0 || personnel != null && personnel.Count > 0)
+                    return Json(await GetEquipmentsOfEntities(rooms, personnel));
+
                 Expression<Func<Equipment, bool>> expression
                     = (onlyParents) ? qu => qu.ParentID == null && !qu.IsArchieved : qu => !qu.IsArchieved;
 
@@ -129,9 +137,6 @@ namespace temsAPI.Controllers.EquipmentControllers
                                 : q.TEMSID
                         })).ToList();
 
-                DateTime end = DateTime.Now;
-                Debug.WriteLine("Time ellapsed: " + (start - end).TotalMilliseconds);
-
                 return Json(viewModel);
             }
             catch (Exception ex)
@@ -140,6 +145,8 @@ namespace temsAPI.Controllers.EquipmentControllers
                 return ReturnResponse("Unknown error occured when fetching equipments", ResponseStatus.Fail);
             }
         }
+
+
 
         [HttpGet("equipment/getsimplified/{id}")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
@@ -486,5 +493,52 @@ namespace temsAPI.Controllers.EquipmentControllers
 
             return null;
         }
+
+        private static ViewEquipmentSimplifiedViewModel EquipmentToViewEquipmentSimplifiedViewModel(Equipment q)
+        {
+            return new ViewEquipmentSimplifiedViewModel
+            {
+                Id = q.Id,
+                IsDefect = q.IsDefect,
+                IsUsed = q.IsUsed,
+                TemsId = q.TEMSID,
+                SerialNumber = q.SerialNumber,
+                Type = q.EquipmentDefinition.EquipmentType.Name,
+                Definition = q.EquipmentDefinition.Identifier,
+                Assignee = (q.EquipmentAllocations.Count(q => q.DateReturned == null) > 0)
+                                ? q.EquipmentAllocations.First(q => q.DateReturned == null).Assignee
+                                : "Deposit",
+                TemsIdOrSerialNumber = String.IsNullOrEmpty(q.TEMSID)
+                                ? q.SerialNumber
+                                : q.TEMSID
+            };
+        }
+
+        private async Task<List<ViewEquipmentSimplifiedViewModel>> GetEquipmentsOfEntities(List<string> rooms, List<string> personnel)
+        {
+            Expression<Func<EquipmentAllocation, bool>> eqOfRoomsExpression = null;
+            if (rooms.Count > 0)
+                eqOfRoomsExpression = q => q.DateReturned == null && rooms.Contains(q.RoomID);
+
+            Expression<Func<EquipmentAllocation, bool>> eqOfPersonnelExpression = null;
+            if (personnel.Count > 0)
+                eqOfPersonnelExpression = q => q.DateReturned == null && personnel.Contains(q.RoomID);
+
+            Expression<Func<EquipmentAllocation, bool>> finalExpression =
+                ExpressionCombiner.CombineTwo(eqOfRoomsExpression, eqOfPersonnelExpression);
+
+            List<ViewEquipmentSimplifiedViewModel> viewModel = (await _unitOfWork.EquipmentAllocations
+                .FindAll<ViewEquipmentSimplifiedViewModel>(
+                    where: finalExpression,
+                    include: q => q.Include(q => q.Equipment)
+                    .ThenInclude(q => q.EquipmentDefinition)
+                    .ThenInclude(q => q.EquipmentType)
+                    .Include(q => q.Room)
+                    .Include(q => q.Personnel),
+                    select: q => EquipmentToViewEquipmentSimplifiedViewModel(q.Equipment)
+                    )).ToList();
+
+            return viewModel;
+        } 
     }
 }

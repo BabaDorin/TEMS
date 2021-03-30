@@ -21,6 +21,7 @@ import { BtnCellRendererComponent } from 'src/app/public/ag-grid/btn-cell-render
     BtnCellRendererComponent
   ],
   imports: [
+    CommonModule,
     AgGridModule.withComponents([BtnCellRendererComponent]),
     CommonModule,
     MaterialModule,

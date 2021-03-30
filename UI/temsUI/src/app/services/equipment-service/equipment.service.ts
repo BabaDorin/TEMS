@@ -4,8 +4,8 @@ import { TEMSService } from './../tems-service/tems.service';
 import { AddEquipment } from 'src/app/models/equipment/add-equipment.model';
 import { AddType } from './../../models/equipment/add-type.model';
 import { Definition, AddDefinition } from './../../models/equipment/add-definition.model';
-import { API_PROP_URL, API_EQTYPE_URL, API_EQDEF_URL, API_EQ_URL } from './../../models/backend.config';
-import { HttpClient } from '@angular/common/http';
+import { API_PROP_URL, API_EQTYPE_URL, API_EQDEF_URL, API_EQ_URL, IEntityCollection } from './../../models/backend.config';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { IOption } from './../../models/option.model';
 import { CheckboxItem } from '../../models/checkboxItem.model';
 import { ViewEquipmentSimplified } from './../../models/equipment/view-equipment-simplified.model';
@@ -226,10 +226,25 @@ export class EquipmentService extends TEMSService {
   getEquipmentSimplified(
     pageNumber: number, 
     recordsPerPage: number,
-    onlyParent?: boolean): Observable<any>{
+    onlyParent: boolean,
+    entityCollection: IEntityCollection): Observable<any>{
       if(onlyParent == undefined) onlyParent = true;
+      if(entityCollection.roomIds == undefined) entityCollection.roomIds = [];
+      if(entityCollection.personnelIds == undefined) entityCollection.personnelIds = [];
+
+      console.log(entityCollection.roomIds);
+
+      let params = new HttpParams();
+      entityCollection.roomIds.forEach(id => {
+        params = params.append('rooms', id);
+      })
+
+      entityCollection.personnelIds.forEach(id => {
+        params = params.append('personnel', id);
+      })
+      
       return this.http.get(API_EQ_URL + '/getsimplified/'+pageNumber+'/'+recordsPerPage+'/'+onlyParent,
-      this.httpOptions);      
+      {params: params});      
   }
 
   getEquipmentSimplifiedById(id: string): Observable<any>{

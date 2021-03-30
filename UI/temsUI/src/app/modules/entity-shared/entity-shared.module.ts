@@ -1,3 +1,4 @@
+import { TemsAgGridModule } from './../tems-ag-grid/tems-ag-grid.module';
 import { LoadingPlaceholderComponent } from './../../tems-components/loading-placeholder/loading-placeholder.component';
 import { RouterModule } from '@angular/router';
 import { NgxPaginationModule } from 'ngx-pagination';
@@ -28,7 +29,6 @@ import { AgGridModule } from 'ag-grid-angular';
     EntityIssuesListComponent,
     SummaryIssuesAnalyticsComponent,
     EntityAllocationsListComponent,
-    BtnCellRendererComponent,
     LoadingPlaceholderComponent
   ],
   imports: [
@@ -37,9 +37,10 @@ import { AgGridModule } from 'ag-grid-angular';
     RouterModule,
     TemsFormsModule,
     NgxPaginationModule,
-    AgGridModule.withComponents([BtnCellRendererComponent]),
+    TemsAgGridModule,
   ],
   exports: [
+    TemsAgGridModule,
     ImageCarouselComponent,
     PropertyRenderComponent,
     AddLogComponent,
@@ -49,7 +50,6 @@ import { AgGridModule } from 'ag-grid-angular';
     EntityIssuesListComponent,
     SummaryIssuesAnalyticsComponent,
     EntityAllocationsListComponent,
-    AgGridModule,
     LoadingPlaceholderComponent
   ]
 })

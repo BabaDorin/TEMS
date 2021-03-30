@@ -24,7 +24,6 @@ import { AnalyticsModule } from '../analytics/analytics.module';
     PersonnelDetailsComponent, 
     AddPersonnelComponent,
     ViewPersonnelComponent,
-    AgGridPersonnelComponent,
     PersonnelDetailsLogsComponent,
     SummaryPersonnelAnalyticsComponent,
     PersonnelDetailsGeneralComponent,
@@ -35,7 +34,6 @@ import { AnalyticsModule } from '../analytics/analytics.module';
   imports: [
     CommonModule,
     PersonnelRoutingModule,
-    AgGridModule,
     MaterialModule,
     TemsFormsModule,
     ReactiveFormsModule,

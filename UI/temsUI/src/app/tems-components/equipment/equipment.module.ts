@@ -1,3 +1,4 @@
+import { TemsAgGridModule } from './../../modules/tems-ag-grid/tems-ag-grid.module';
 import { ViewEquipmentAllocationsComponent } from './../view-equipment-allocations/view-equipment-allocations.component';
 import { ViewTypeComponent } from './view-type/view-type.component';
 import { TemsFormsModule } from './../../modules/tems-forms/tems-forms.module';
@@ -33,13 +34,11 @@ import { BtnCellRendererComponent } from 'src/app/public/ag-grid/btn-cell-render
     EquipmentDetailsAllocationsComponent,
     ViewEquipmentComponent,
     AddEquipmentComponent,
-    AgGridEquipmentComponent,
     AddTypeComponent,
     AddDefinitionComponent,
     SummaryEquipmentAnalyticsComponent,
     EquipmentDetailsIssuesComponent,
     AddPropertyComponent,
-    AgGridTooltipComponent,
     ViewTypeComponent,
     ViewPropertyComponent,
     ViewEquipmentAllocationsComponent

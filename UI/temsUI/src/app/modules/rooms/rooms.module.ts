@@ -20,7 +20,6 @@ import { RoomDetailsAllocationsComponent } from '../../tems-components/room/room
 
 @NgModule({
   declarations: [
-    AgGridRoomsComponent,
     ViewRoomsComponent,
     AddRoomComponent,
     SummaryRoomsAnalyticsComponent,

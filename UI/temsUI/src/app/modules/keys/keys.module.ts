@@ -11,6 +11,7 @@ import { ViewKeysComponent } from 'src/app/tems-components/keys/view-keys/view-k
 import { AgGridKeysComponent } from 'src/app/tems-components/keys/ag-grid-keys/ag-grid-keys.component';
 import { KeysAllocationsListComponent } from 'src/app/tems-components/keys/keys-allocations-list/keys-allocations-list.component';
 import { AddKeyComponent } from 'src/app/tems-components/keys/add-key/add-key.component';
+import { TemsAgGridModule } from '../tems-ag-grid/tems-ag-grid.module';
 
 
 @NgModule({
@@ -18,7 +19,6 @@ import { AddKeyComponent } from 'src/app/tems-components/keys/add-key/add-key.co
     KeysAllocationsComponent,
     ViewKeysAllocationsComponent,
     ViewKeysComponent,
-    AgGridKeysComponent,
     KeysAllocationsListComponent,
     AddKeyComponent
   ],
@@ -26,7 +26,8 @@ import { AddKeyComponent } from 'src/app/tems-components/keys/add-key/add-key.co
     CommonModule,
     KeysRoutingModule,
     TemsFormsModule,
-    MaterialModule
+    MaterialModule,
+    TemsAgGridModule
   ],
   providers: [
       KeysService,

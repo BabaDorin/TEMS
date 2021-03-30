@@ -67,6 +67,40 @@ export class FormlyParserService {
     return fields;
   }
 
+  parseSendEmail(){
+    let fields: FormlyFieldConfig[] =
+      [
+        {
+          key: 'from',
+          type: 'input-tooltip',
+          defaultValue: 'TEMS CIH Cahul',
+          templateOptions: {
+            required: true,
+            label: 'Email sender',
+          }
+        },
+        {
+          key: 'subject',
+          type: 'input',
+          templateOptions: {
+            required: true,
+            label: 'Email subject',
+          }
+        },
+        {
+          key: 'text',
+          type: 'textarea',
+          templateOptions: {
+            required: true,
+            label: 'Email text',
+            rows: 5,
+          },
+        }
+      ];
+
+    return fields;
+  }
+
   parseAddIssue(addIssue: AddIssue, frequentProblems: string[], statuses: IOption[]) {
     if (addIssue == undefined)
       addIssue = new AddIssue();

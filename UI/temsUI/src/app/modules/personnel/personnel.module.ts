@@ -18,6 +18,7 @@ import { PersonnelDetailsGeneralComponent } from 'src/app/tems-components/person
 import { PersonnelDetailsIssuesComponent } from 'src/app/tems-components/personnel/personnel-details-issues/personnel-details-issues.component';
 import { PersonnelDetailsAllocationsComponent } from 'src/app/tems-components/personnel/personnel-details-allocations/personnel-details-allocations.component';
 import { AnalyticsModule } from '../analytics/analytics.module';
+import { SendEmailComponent } from 'src/app/tems-components/send-email/send-email.component';
 
 @NgModule({
   declarations: [
@@ -29,6 +30,7 @@ import { AnalyticsModule } from '../analytics/analytics.module';
     PersonnelDetailsGeneralComponent,
     PersonnelDetailsIssuesComponent,
     PersonnelDetailsAllocationsComponent,
+    SendEmailComponent,
   ],
 
   imports: [

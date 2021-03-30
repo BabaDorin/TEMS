@@ -1,0 +1,15 @@
+<div class="container">
+    <h2>Send an email to selected personnel</h2>
+    <p class="text-muted">
+        Note: The email will be sent only to the people who have an email address assigned
+    </p>
+    <br>
+    <form [formGroup]="formlyData.form" (ngSubmit)="onSubmit(formlyData.model)">
+        <formly-form [form]="formlyData.form" [fields]="formlyData.fields" [model]="formlyData.model"></formly-form>
+        <button mat-button type="submit" class="btn-primary" [disabled]="formlyData.form.status == 'INVALID'">
+          Send email
+        </button>
+    </form>
+    <br>
+    <p class="text-muted">The email will be sent to: {{ personnelNames }}</p>
+</div>

@@ -4,6 +4,7 @@
 <hr>
 <ng-container *ngIf="loading == true">
     <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+    <app-loading-placeholder></app-loading-placeholder>
 </ng-container>
 <mat-expansion-panel *ngFor="let log of logs | paginate: { itemsPerPage: 10, currentPage: p1, id: 'logs' }; let i = index" 
 class="m-2 mat-elevation-z0" hideToggle="true">

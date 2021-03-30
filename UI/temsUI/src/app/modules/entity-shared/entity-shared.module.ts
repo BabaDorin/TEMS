@@ -1,3 +1,4 @@
+import { LoadingPlaceholderComponent } from './../../tems-components/loading-placeholder/loading-placeholder.component';
 import { RouterModule } from '@angular/router';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { EntityIssuesListComponent } from './../../tems-components/entity-issues-list/entity-issues-list.component';
@@ -27,7 +28,8 @@ import { AgGridModule } from 'ag-grid-angular';
     EntityIssuesListComponent,
     SummaryIssuesAnalyticsComponent,
     EntityAllocationsListComponent,
-    BtnCellRendererComponent
+    BtnCellRendererComponent,
+    LoadingPlaceholderComponent
   ],
   imports: [
     CommonModule,
@@ -47,7 +49,8 @@ import { AgGridModule } from 'ag-grid-angular';
     EntityIssuesListComponent,
     SummaryIssuesAnalyticsComponent,
     EntityAllocationsListComponent,
-    AgGridModule
+    AgGridModule,
+    LoadingPlaceholderComponent
   ]
 })
 export class EntitySharedModule { }

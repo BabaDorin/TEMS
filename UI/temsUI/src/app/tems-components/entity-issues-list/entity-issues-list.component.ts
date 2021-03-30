@@ -53,7 +53,7 @@ export class EntityIssuesListComponent extends TEMSComponent implements OnInit, 
     this.loading = true;
     this.canManage = this.tokenService.hasClaim(CAN_MANAGE_ENTITIES);
     this.getStatuses();
-    this.getIssues();
+    this.getIssues();  
   }
 
   ngOnChanges(): void {

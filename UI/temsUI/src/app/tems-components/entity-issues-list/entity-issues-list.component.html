@@ -13,6 +13,7 @@
 <hr>
 <ng-container *ngIf="loading == true">
   <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+  <app-loading-placeholder></app-loading-placeholder>
 </ng-container>
 <mat-accordion>
   <mat-expansion-panel
@@ -40,7 +41,7 @@
     </mat-expansion-panel-header>
     <ng-template matExpansionPanelContent>
       <ng-container *ngIf="issue.dateClosed != undefined && issue.closedBy != undefined">
-        <div class="alert alert-info">
+        <div class="alert alert-warning">
           <p>Closed on {{ issue.dateClosed | date:'short' }} by
             <button mat-button>
               <mat-icon class="text-primary ml-3" (click)="wtf(issue)">person</mat-icon>

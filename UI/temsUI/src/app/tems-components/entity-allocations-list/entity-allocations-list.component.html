@@ -9,6 +9,7 @@
 <hr>
 <ng-container *ngIf="loading == true">
     <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+    <app-loading-placeholder></app-loading-placeholder>
 </ng-container>
 <mat-card
     *ngFor="let allocation of allocations | paginate: { itemsPerPage: 10, currentPage: p1, id: 'allocations' }; let i = index"

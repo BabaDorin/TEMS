@@ -8,7 +8,7 @@
     </h1>
     <hr>
     <br>
-    <div *ngIf="edit==false">
+    <div class="container">
         <div class="row">
             <div class="col-md-6">
                 <app-property-render [properties]="roomProperties"></app-property-render>
@@ -23,8 +23,5 @@
         <app-image-carousel></app-image-carousel>
     </div> -->
     <br>
-    <div *ngIf="edit==true">
-        edit = true
-    </div>
     <button *ngIf="displayViewMore == true" mat-button (click)="viewMore()">View More</button>
 </ng-container>

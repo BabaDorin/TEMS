@@ -9,6 +9,7 @@ import { CreateIssueComponent } from './../issue/create-issue/create-issue.compo
 import { IssuesService } from './../../services/issues-service/issues.service';
 import { Component, Input, OnInit, OnChanges, ViewChild } from '@angular/core';
 import { ViewIssueSimplified } from 'src/app/models/communication/issues/view-issue-simplified.model';
+import * as confetti from 'canvas-confetti';
 
 @Component({
   selector: 'app-entity-issues-list',
@@ -33,6 +34,7 @@ export class EntityIssuesListComponent extends TEMSComponent implements OnInit, 
   @Input() showIncludeClosed: boolean = true;
 
   @ViewChild('includeClosedToggle') includeClosedToggle;
+  @ViewChild('issuesPanel', { static: true }) issuesPanel;
 
   issues: ViewIssueSimplified[];
   canManage = false;
@@ -122,8 +124,17 @@ export class EntityIssuesListComponent extends TEMSComponent implements OnInit, 
 
         // Will use it later for confetti
         this.issues[index].dateClosed = new Date;
-        // let difference = new Date(this.issues[index].dateCreated).getHours() - new Date(this.issues[index].dateCreated).getHours();  
+        let difference = new Date(this.issues[index].dateClosed).getHours() - new Date(this.issues[index].dateCreated).getHours();  
         
+        alert(difference);
+        if(difference <= 24){
+          confetti.create(undefined, { resize: true, useWorker: true })({
+            particleCount: 130,
+            spread: 130,
+            origin: { y: 0.6 }
+          });
+        }
+
         this.snackService.snack({message: "🎉🎉 Let's close them all!", status: 1}, 'default-snackbar')
       })
     )

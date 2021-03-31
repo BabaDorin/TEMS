@@ -15,112 +15,116 @@
   <mat-progress-bar mode="indeterminate"></mat-progress-bar>
   <app-loading-placeholder></app-loading-placeholder>
 </ng-container>
-<mat-accordion>
-  <mat-expansion-panel
-    *ngFor="let issue of issues | paginate: { itemsPerPage: 20, currentPage: p1, id: 'issues' }; let i = index"
-    class="m-2 mat-elevation-z0"
-    hideToggle="true">
-    <mat-expansion-panel-header>
-      <mat-panel-title>
-        {{ issue.problem }}
-        <label *ngIf="issue.status.label == 'Urgent'" class="badge-pill badge-gradient-danger ml-3">{{
-          issue.status.label
-          }}</label>
-        <label *ngIf="issue.status.label == 'Medium'" class="badge-pill badge-gradient-warning ml-3">{{
-          issue.status.label
-          }}</label>
-        <label *ngIf="issue.status.label == 'Future'" class="badge-pill badge-gradient-info ml-3">{{ issue.status.label
-          }}</label>
-        <label *ngIf="issue.dateClosed != undefined" class="badge-pill badge-gradient-secondary ml-3">Closed</label>
-        <label *ngIf="issue.status.label == 'Progress'" class="badge-pill badge-gradient-primary ml-3">{{
-          issue.status.label }}</label>
-      </mat-panel-title>
-      <mat-panel-description>
-        {{ issue.dateCreated | date:'medium' }}
-      </mat-panel-description>
-    </mat-expansion-panel-header>
-    <ng-template matExpansionPanelContent>
-      <ng-container *ngIf="issue.dateClosed != undefined && issue.closedBy != undefined">
-        <div class="alert alert-warning">
-          <p>Closed on {{ issue.dateClosed | date:'short' }} by
-            <button mat-button>
-              <mat-icon class="text-primary ml-3" (click)="wtf(issue)">person</mat-icon>
-              {{ issue.closedBy.label }}
-            </button>
-          </p>
-        </div>
-      </ng-container>
-      <ng-container *ngIf="canManage && issue.dateClosed == undefined">
-        <mat-form-field appearance="fill">
-          <mat-label>Change issue status</mat-label>
-          <mat-select (selectionChange)="statusChanged($event, issue.id, i)">
-            <mat-option *ngFor="let status of statuses" [value]="status">
-              {{ status.label }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-      </ng-container>
-      <div *ngIf="issue.description != undefined">
-        <h4>Description:</h4>
-        <hr>
-        <p>{{ issue.description }}</p>
-      </div>
-      <br>
-      <div *ngIf="issue.equipments != undefined && issue.equipments.length > 0" class="mb-4">
-        <h4>Equipments involved:</h4>
-        <hr>
-        <div class="alert alert-info">
-          <button mat-button *ngFor="let eq of issue.equipments" (click)="viewEquipment(eq.value)">
-            <mat-icon class="text-primary">computer</mat-icon>
-            {{ eq.label }} {{ eq.additional }}
-          </button>
-        </div>
-      </div>
-      <div *ngIf="issue.rooms != undefined && issue.rooms.length > 0" class="mb-4">
-        <h4>Rooms involved:</h4>
-        <hr>
-        <div class="alert alert-info">
-          <button mat-button *ngFor="let rm of issue.rooms" (click)="viewRoom(rm.value)">
-            <mat-icon class="text-primary">pin_drop</mat-icon>
-            {{ rm.label }} {{ rm.additional }}
-          </button>
-        </div>
-      </div>
-      <div *ngIf="issue.personnel != undefined && issue.personnel.length > 0" class="mb-4">
-        <h4>Personnel involved:</h4>
-        <hr>
-        <div class="alert alert-info">
-          <button mat-button *ngFor="let pr of issue.personnel" (click)="viewPersonnel(pr.value)">
-            <mat-icon class="text-primary">account_circle</mat-icon>
-            {{ pr.label }} {{ pr.additional }}
-          </button>
-        </div>
-      </div>
-      <div *ngIf="issue.assignees != undefined && issue.assignees.length > 0" class="mb-4">
-        <h4>Assigned to:</h4>
-        <hr>
-        <div class="alert alert-warning">
-          <button mat-button *ngFor="let assignee of issue.assignees" (click)="viewPersonnel(assignee.value)">
-            <mat-icon class="text-primary">account_circle</mat-icon>
-            {{ assignee.label }}
-          </button>
-        </div>
-      </div>
-      <br>
-      
+<div #issuesPanel>
 
-      <button mat-button (click)="solve(issue.id, i)" *ngIf="issue.dateClosed == undefined">
-        <mat-icon class="text-primary">done</mat-icon>Mark as solved
-      </button>
-      <button mat-button (click)="reopen(issue.id, i)" *ngIf="issue.dateClosed != undefined">
-        <mat-icon class="text-secondary">restore</mat-icon>Reopen
-      </button>
-      <button mat-button (click)="remove(issue.id, i)">
-        <mat-icon class="text-danger">delete</mat-icon>Remove
-      </button>
-    </ng-template>
-  </mat-expansion-panel>
-</mat-accordion>
+  <mat-accordion >
+    <mat-expansion-panel
+      *ngFor="let issue of issues | paginate: { itemsPerPage: 20, currentPage: p1, id: 'issues' }; let i = index"
+      class="m-2 mat-elevation-z0"
+      hideToggle="true">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          {{ issue.problem }}
+          <label *ngIf="issue.status.label == 'Urgent'" class="badge-pill badge-gradient-danger ml-3">{{
+            issue.status.label
+            }}</label>
+          <label *ngIf="issue.status.label == 'Medium'" class="badge-pill badge-gradient-warning ml-3">{{
+            issue.status.label
+            }}</label>
+          <label *ngIf="issue.status.label == 'Future'" class="badge-pill badge-gradient-info ml-3">{{ issue.status.label
+            }}</label>
+          <label *ngIf="issue.dateClosed != undefined" class="badge-pill badge-gradient-secondary ml-3">Closed</label>
+          <label *ngIf="issue.status.label == 'Progress'" class="badge-pill badge-gradient-primary ml-3">{{
+            issue.status.label }}</label>
+        </mat-panel-title>
+        <mat-panel-description>
+          {{ issue.dateCreated | date:'medium' }}
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+      <ng-template matExpansionPanelContent>
+        <ng-container *ngIf="issue.dateClosed != undefined && issue.closedBy != undefined">
+          <div class="alert alert-warning">
+            <p>Closed on {{ issue.dateClosed | date:'short' }} by
+              <button mat-button>
+                <mat-icon class="text-primary ml-3" (click)="wtf(issue)">person</mat-icon>
+                {{ issue.closedBy.label }}
+              </button>
+            </p>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="canManage && issue.dateClosed == undefined">
+          <mat-form-field appearance="fill">
+            <mat-label>Change issue status</mat-label>
+            <mat-select (selectionChange)="statusChanged($event, issue.id, i)">
+              <mat-option *ngFor="let status of statuses" [value]="status">
+                {{ status.label }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </ng-container>
+        <div *ngIf="issue.description != undefined">
+          <h4>Description:</h4>
+          <hr>
+          <p>{{ issue.description }}</p>
+        </div>
+        <br>
+        <div *ngIf="issue.equipments != undefined && issue.equipments.length > 0" class="mb-4">
+          <h4>Equipments involved:</h4>
+          <hr>
+          <div class="alert alert-info">
+            <button mat-button *ngFor="let eq of issue.equipments" (click)="viewEquipment(eq.value)">
+              <mat-icon class="text-primary">computer</mat-icon>
+              {{ eq.label }} {{ eq.additional }}
+            </button>
+          </div>
+        </div>
+        <div *ngIf="issue.rooms != undefined && issue.rooms.length > 0" class="mb-4">
+          <h4>Rooms involved:</h4>
+          <hr>
+          <div class="alert alert-info">
+            <button mat-button *ngFor="let rm of issue.rooms" (click)="viewRoom(rm.value)">
+              <mat-icon class="text-primary">pin_drop</mat-icon>
+              {{ rm.label }} {{ rm.additional }}
+            </button>
+          </div>
+        </div>
+        <div *ngIf="issue.personnel != undefined && issue.personnel.length > 0" class="mb-4">
+          <h4>Personnel involved:</h4>
+          <hr>
+          <div class="alert alert-info">
+            <button mat-button *ngFor="let pr of issue.personnel" (click)="viewPersonnel(pr.value)">
+              <mat-icon class="text-primary">account_circle</mat-icon>
+              {{ pr.label }} {{ pr.additional }}
+            </button>
+          </div>
+        </div>
+        <div *ngIf="issue.assignees != undefined && issue.assignees.length > 0" class="mb-4">
+          <h4>Assigned to:</h4>
+          <hr>
+          <div class="alert alert-warning">
+            <button mat-button *ngFor="let assignee of issue.assignees" (click)="viewPersonnel(assignee.value)">
+              <mat-icon class="text-primary">account_circle</mat-icon>
+              {{ assignee.label }}
+            </button>
+          </div>
+        </div>
+        <br>
+        
+  
+        <button mat-button (click)="solve(issue.id, i)" *ngIf="issue.dateClosed == undefined">
+          <mat-icon class="text-primary">done</mat-icon>Mark as solved
+        </button>
+        <button mat-button (click)="reopen(issue.id, i)" *ngIf="issue.dateClosed != undefined">
+          <mat-icon class="text-secondary">restore</mat-icon>Reopen
+        </button>
+        <button mat-button (click)="remove(issue.id, i)">
+          <mat-icon class="text-danger">delete</mat-icon>Remove
+        </button>
+      </ng-template>
+    </mat-expansion-panel>
+  </mat-accordion>
+</div>
+
 <pagination-controls (pageChange)="p1 = $event" id="issues" *ngIf="issues != undefined && issues.length > 0"></pagination-controls>
 <div *ngIf="loading == false && (issues == undefined || issues.length == 0)">
   <img class="centerSvg fade-in" style="width: 300px;" src="assets/svgs/no-data.svg">

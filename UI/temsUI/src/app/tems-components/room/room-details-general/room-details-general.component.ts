@@ -63,6 +63,18 @@ export class RoomDetailsGeneralComponent extends TEMSComponent implements OnInit
       this.dialogRef.close();
   }
 
+  archieve(){
+    if(!confirm("Are you sure you want to archieve this room? Allocations and logs associated with this room will get archieved as well."))
+      return;
+      
+    this.subscriptions.push(
+      this.roomService.archieveRoom(this.roomId)
+      .subscribe(result => {
+        this.snackService.snack(result);
+      })
+    )
+  }
+
   edit(){
     this.dialogService.openDialog(
       AddRoomComponent,

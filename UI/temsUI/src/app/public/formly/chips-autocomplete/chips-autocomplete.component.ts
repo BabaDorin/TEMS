@@ -32,6 +32,7 @@ export class ChipsAutocompleteComponent implements OnInit, ControlValueAccessor 
   @Input() availableOptions: IOption[] = [];
   @Input() endPoint;
   @Input() endPointParameter;
+  @Input() autocompleteOptions: IOption[];
 
   @Output() dataCollected = new EventEmitter;
   @Output() dataRemoved = new EventEmitter;
@@ -50,7 +51,6 @@ export class ChipsAutocompleteComponent implements OnInit, ControlValueAccessor 
   visible = true;
   value = [];
   cancelOnChange = true;
-
   ngOnInit() {
     console.log('already selected')
     console.log(this.alreadySelected);
@@ -77,6 +77,21 @@ export class ChipsAutocompleteComponent implements OnInit, ControlValueAccessor 
 
   listenToServer(){
     this.subscription.unsubscribe();
+
+    if(this.autocompleteOptions != undefined)
+      this.getFromAutocompleteOptions();
+    else
+      this.getFromServer();
+  }
+
+  getFromAutocompleteOptions(){
+    this.subscription = this.formCtrl.valueChanges
+    .subscribe(op => {
+      this.filteredOptions = this.autocompleteOptions.filter(q => q.label.toLowerCase().includes(op.toString().toLowerCase()) ?? []);
+    });
+  }
+
+  getFromServer(){
     this.subscription = this.formCtrl.valueChanges
     .pipe(
       switchMap((op) => {

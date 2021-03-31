@@ -1,25 +1,16 @@
-<br>
-<ng-container *ngIf="personnel == undefined">
-    <h2>Loading...</h2>
+<ng-container *ngIf="personnel==undefined">
+    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
 </ng-container>
 
 <ng-container *ngIf="personnel != undefined">
-    <h1><b>{{ personnel.name }}</b>
+    <h1>
+        <b>{{ personnel.name }}</b>
     </h1>
+    <button mat-button (click)="edit()">Edit</button>
     <hr>
     <br>
-    <div *ngIf="edit==false">
-        <div class="row">
-            <div class="col-md-6">
-                <app-property-render [properties]="personnelProperties"></app-property-render>
-            </div>
-        </div>
+    <div class="container">
+        <app-property-render [properties]="personnelProperties"></app-property-render>
     </div>
-    <br>
-    <br>
-    <br>
-    <div *ngIf="edit==true">
-        edit = true
-    </div>
-    <button class="btn btn-primary" (click)="edit=!edit">Edit data</button>
+    <button *ngIf="displayViewMore == true" mat-button (click)="viewMore()">View More</button>
 </ng-container>

@@ -1,10 +1,10 @@
 <h2 class="mt-3">Issues</h2>
 <button *ngIf="addIssueEnabled == true" mat-button (click)="addIssue()"><mat-icon class="text-primary">add</mat-icon>Create issue</button>
 <button mat-button (click)="sortBy('priority')">
-  <mat-icon>import_export</mat-icon>Sort by priority
+  <mat-icon class="text-primary">import_export</mat-icon>Sort by priority
 </button>
 <button mat-button (click)="sortBy('date')">
-  <mat-icon>import_export</mat-icon>Sort by date
+  <mat-icon class="text-primary">import_export</mat-icon>Sort by date
 </button>
 <mat-slide-toggle *ngIf="showIncludeClosed == true" class="float-right" (click)="includeClosedChanged()">
   Include Closed

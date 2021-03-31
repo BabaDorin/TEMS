@@ -1,3 +1,4 @@
+import { SendEmailComponent } from './../../send-email/send-email.component';
 import { AddPersonnelComponent } from './../add-personnel/add-personnel.component';
 import { DialogService } from './../../../services/dialog-service/dialog.service';
 import { PersonnelService } from './../../../services/personnel-service/personnel.service';
@@ -66,5 +67,12 @@ export class PersonnelDetailsGeneralComponent extends TEMSComponent implements O
         this.ngOnInit();
       }
     )
+  }
+
+  sendMail(){
+    this.dialogService.openDialog(
+      SendEmailComponent,
+      [{label: "personnel", value: [{label: this.personnel.name, value: this.personnel.id}]}]
+    );
   }
 }

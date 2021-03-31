@@ -522,7 +522,7 @@ namespace temsAPI.Controllers.EquipmentControllers
 
             Expression<Func<EquipmentAllocation, bool>> eqOfPersonnelExpression = null;
             if (personnel.Count > 0)
-                eqOfPersonnelExpression = q => q.DateReturned == null && personnel.Contains(q.RoomID);
+                eqOfPersonnelExpression = q => q.DateReturned == null && personnel.Contains(q.PersonnelID);
 
             Expression<Func<EquipmentAllocation, bool>> finalExpression =
                 ExpressionCombiner.CombineTwo(eqOfRoomsExpression, eqOfPersonnelExpression);

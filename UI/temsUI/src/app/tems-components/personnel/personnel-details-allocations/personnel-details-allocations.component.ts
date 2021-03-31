@@ -9,9 +9,11 @@ import { Component, Input, OnInit } from '@angular/core';
 export class PersonnelDetailsAllocationsComponent implements OnInit {
 
   @Input() personnel: ViewPersonnelSimplified;
+  personnelParameter;
   constructor() { }
 
   ngOnInit(): void {
+    this.personnelParameter = [this.personnel.id];
   }
 
 }

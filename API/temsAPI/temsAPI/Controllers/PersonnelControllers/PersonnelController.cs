@@ -213,7 +213,7 @@ namespace temsAPI.Controllers.PersonnelControllers
         public async Task<JsonResult> Update([FromBody] AddPersonnelViewModel viewModel)
         {
             try
-            {
+        {
                 string validationResult = await ValidateAddPersonnelViewModel(viewModel);
                 if (validationResult != null)
                     return ReturnResponse(validationResult, ResponseStatus.Fail);

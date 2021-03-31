@@ -26,6 +26,13 @@ export class PersonnelService extends TEMSService {
     );
   } 
 
+  archievePersonnel(personnelId: string): Observable<any>{
+    return this.http.get(
+      API_PERS_URL + '/archieve/' + personnelId,
+      this.httpOptions
+    );
+  }
+
   getPersonnelSimplifiedById(personnelId: string): ViewPersonnelSimplified{
     return new ViewPersonnelSimplified();
   }

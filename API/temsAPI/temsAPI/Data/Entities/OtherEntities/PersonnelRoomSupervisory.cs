@@ -20,6 +20,7 @@ namespace temsAPI.Data.Entities.OtherEntities
         [ForeignKey("RoomID")]
         public Room Room { get; set; }
         public string RoomID { get; set; }
+        public bool IsArchieved { get; set; }
 
         public DateTime DateSet { get; set; }
 #nullable enable

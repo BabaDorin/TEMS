@@ -77,6 +77,7 @@ namespace temsAPI.Helpers
                         where: q => q.Id == roomId,
                         include: q => q
                         .Include(q => q.EquipmentAllocations)
+                        .Include(q => q.PersonnelRoomSupervisories)
                         .Include(q => q.Keys)
                         .Include(q => q.Logs)))
                     .FirstOrDefault();
@@ -254,7 +255,6 @@ namespace temsAPI.Helpers
         {
             try
             {
-                // check if type exists
                 var log = (await _unitOfWork.Logs
                     .Find<Log>
                     (
@@ -275,5 +275,41 @@ namespace temsAPI.Helpers
                 return "An error occured while archieving log's related data";
             }
         }
+
+        public async Task<string> ArchievePersonnel(string personnelId)
+        {
+            try
+            {
+                var personnel = (await _unitOfWork.Personnel
+                    .Find<Personnel>
+                    (
+                        where: q => q.Id == personnelId,
+                        include: q => q
+                        .Include(q => q.PersonnelRoomSupervisories)
+                    )).FirstOrDefault();
+
+                if (personnel == null)
+                    return "The specified personnel does not exist";
+
+
+
+                personnel.IsArchieved = true;
+
+                foreach(var item in personnel.PersonnelRoomSupervisories)
+                {
+                    item.IsArchieved = true;
+                }
+
+                await _unitOfWork.Save();
+                return null;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return "An error occured while archieving log's related data";
+            }
+        }
+
+
     }
 }

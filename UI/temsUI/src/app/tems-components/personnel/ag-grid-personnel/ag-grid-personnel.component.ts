@@ -113,16 +113,16 @@ export class AgGridPersonnelComponent extends TEMSComponent implements OnInit {
   }
 
   archieve(e){
-    // if(!confirm("Are you sure you want to archive this item? It will result in archieving all of it's logs and allocations"))
-    // return;
+    if(!confirm("Are you sure you want to archive this item? It will result in archieving all of it's logs and allocations"))
+    return;
 
-    // this.subscriptions.push(
-    //   this.personnelService.archievePersonnel(e.rowData.id)
-    //   .subscribe(result => {
-    //     if(this.snackService.snack(result)){
-    //       this.gridApi.applyTransaction({ remove: [e.rowData] });
-    //     }
-    //   })
-    // )
+    this.subscriptions.push(
+      this.personnelService.archievePersonnel(e.rowData.id)
+      .subscribe(result => {
+        if(this.snackService.snack(result)){
+          this.gridApi.applyTransaction({ remove: [e.rowData] });
+        }
+      })
+    )
   }
 }

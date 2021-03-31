@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Validations;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -11,6 +12,7 @@ using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.OtherEntities;
 using temsAPI.Data.Entities.UserEntities;
+using temsAPI.Helpers;
 using temsAPI.System_Files;
 using temsAPI.ViewModels;
 using temsAPI.ViewModels.Personnel;
@@ -88,6 +90,27 @@ namespace temsAPI.Controllers.PersonnelControllers
                 return ReturnResponse("An error occured when creating the personnel", ResponseStatus.Fail);
             }
         }
+
+        [HttpGet("/personnel/archieve/{personnelId}")]
+        [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
+        public async Task<JsonResult> Archieve(string personnelId)
+        {
+            try
+            {
+                var archievingResult = await (new ArchieveHelper(_userManager, _unitOfWork))
+                    .ArchievePersonnel(personnelId);
+                if (archievingResult != null)
+                    return ReturnResponse(archievingResult, ResponseStatus.Fail);
+
+                return ReturnResponse("Success", ResponseStatus.Success);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured while archieving personnel's related data", ResponseStatus.Fail);
+            }
+        }
+
 
         [HttpGet("/personnel/getsimplified/{pageNumber}/{recordsPerPage}")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]

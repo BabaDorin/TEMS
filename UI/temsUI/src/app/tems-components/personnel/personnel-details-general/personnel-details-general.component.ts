@@ -1,3 +1,5 @@
+import { AddPersonnelComponent } from './../add-personnel/add-personnel.component';
+import { DialogService } from './../../../services/dialog-service/dialog.service';
 import { PersonnelService } from './../../../services/personnel-service/personnel.service';
 import { TEMSComponent } from './../../../tems/tems.component';
 import { ViewPersonnel } from './../../../models/personnel/view-personnel.model';
@@ -22,7 +24,8 @@ export class PersonnelDetailsGeneralComponent extends TEMSComponent implements O
   constructor(
     private personnelService: PersonnelService,
     private route: Router,
-    private snackService: SnackService
+    private snackService: SnackService,
+    private dialogService: DialogService
   ) {
     super();
   }
@@ -53,5 +56,15 @@ export class PersonnelDetailsGeneralComponent extends TEMSComponent implements O
     
     if(this.dialogRef != undefined)
       this.dialogRef.close();
+  }
+
+  edit(){
+    this.dialogService.openDialog(
+      AddPersonnelComponent,
+      [{label: "personnelId", value: this.personnelId}],
+      () => {
+        this.ngOnInit();
+      }
+    )
   }
 }

@@ -1,5 +1,6 @@
 import { IOption } from './../option.model';
 interface IAddPersonnel {
+    id?: string,
     name: string,
     phoneNumber?: string,
     email?: string;
@@ -7,6 +8,7 @@ interface IAddPersonnel {
 }
 
 export class AddPersonnel implements IAddPersonnel{
+    id?: string;
     name: string;
     phoneNumber?: string;
     email?: string;

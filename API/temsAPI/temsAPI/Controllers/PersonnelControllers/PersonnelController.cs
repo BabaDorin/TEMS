@@ -8,6 +8,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection.Metadata.Ecma335;
+using System.Text;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.OtherEntities;
@@ -55,15 +57,9 @@ namespace temsAPI.Controllers.PersonnelControllers
         {
             try
             {
-                // Invalid Name
-                if (String.IsNullOrEmpty(viewModel.Name = viewModel.Name.Trim()))
-                    return ReturnResponse("Invalid personnel name provided", ResponseStatus.Fail);
-
-                // Checking for invalid personnel positions
-                foreach (Option position in viewModel.Positions)
-                    if (!await _unitOfWork.PersonnelPositions
-                        .isExists(q => q.Id == position.Value && !q.IsArchieved))
-                        return ReturnResponse("One or more positions are invalid.", ResponseStatus.Fail);
+                string validationResult = await ValidateAddPersonnelViewModel(viewModel);
+                if (validationResult != null)
+                    return ReturnResponse(validationResult, ResponseStatus.Fail);
 
                 // It might be valid enough
                 List<string> positions = viewModel.Positions.Select(q => q.Value).ToList();
@@ -179,6 +175,78 @@ namespace temsAPI.Controllers.PersonnelControllers
             }
         }
 
+        [HttpGet("personnel/getpersonneltoupdate/{personnelId}")]
+        [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
+        public async Task<JsonResult> GetPersonnelToUpdate(string personnelId)
+        {
+            try
+            {
+                var viewModel = (await _unitOfWork.Personnel
+                    .Find<AddPersonnelViewModel>(
+                        where: q => q.Id == personnelId,
+                        include: q => q.Include(q => q.Positions),
+                        select: q => new AddPersonnelViewModel
+                        {
+                            Id = q.Id,
+                            Email = q.Email,
+                            Name = q.Name,
+                            PhoneNumber = q.PhoneNumber,
+                            Positions = q.Positions.Select(q => new Option
+                            {
+                                Value = q.Id,
+                                Label = q.Name
+                            }).ToList()
+                        }
+                    )).FirstOrDefault();
+
+                return Json(viewModel);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured while getting personnel's information", ResponseStatus.Fail);
+            }
+        }
+
+        [HttpPost]
+        [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
+        public async Task<JsonResult> Update([FromBody] AddPersonnelViewModel viewModel)
+        {
+            try
+            {
+                string validationResult = await ValidateAddPersonnelViewModel(viewModel);
+                if (validationResult != null)
+                    return ReturnResponse(validationResult, ResponseStatus.Fail);
+
+                var personnel = (await _unitOfWork.Personnel
+                     .Find<Personnel>(
+                     where: q => q.Id == viewModel.Id,
+                     include: q => q.Include(q => q.Positions)
+                    )).FirstOrDefault();
+
+                personnel.Name = viewModel.Name;
+                personnel.Email = viewModel.Email;
+                personnel.PhoneNumber = viewModel.PhoneNumber;
+
+                personnel.Positions.Clear();
+                List<string> positionIds = viewModel.Positions.Select(q => q.Value).ToList();
+                personnel.Positions = (await _unitOfWork.PersonnelPositions
+                    .FindAll<PersonnelPosition>
+                    (
+                        where: q => positionIds.Contains(q.Id)
+                    )).ToList();
+
+                await _unitOfWork.Save();
+                return ReturnResponse("Success", ResponseStatus.Success);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured while saving personnel data", ResponseStatus.Fail);
+                throw;
+            }
+        }
+
         [HttpGet("personnel/getbyid/{id}")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
         public async Task<JsonResult> GetById(string id)
@@ -230,6 +298,41 @@ namespace temsAPI.Controllers.PersonnelControllers
                 return ReturnResponse("An error occured when fetching personnel information", ResponseStatus.Fail);
                 throw;
             }
+        }
+
+        // ----------------------------------------------------
+        
+        /// <summary>
+        /// Validates an instance of AddPersonnelViewModel. Returns null if everything is ok,
+        /// otherwise returns the error message.
+        /// </summary>
+        /// <param name="viewModel"></param>
+        /// <returns></returns>
+        private async Task<string> ValidateAddPersonnelViewModel(AddPersonnelViewModel viewModel)
+        {
+            // It's the udpate case and the provided is is invalid
+            Personnel personnelToUpdate = null;
+            if(viewModel.Id != null)
+            {
+                personnelToUpdate = (await _unitOfWork.Personnel
+                    .Find<Personnel>(q => q.Id == viewModel.Id))
+                    .FirstOrDefault();
+
+                if (personnelToUpdate == null)
+                    return "Invalid personnel Id";
+            }
+
+            // Invalid Name
+            if (String.IsNullOrEmpty(viewModel.Name = viewModel.Name.Trim()))
+                return "Invalid personnel name provided";
+
+            // Checking for invalid personnel positions
+            foreach (Option position in viewModel.Positions)
+                if (!await _unitOfWork.PersonnelPositions
+                    .isExists(q => q.Id == position.Value && !q.IsArchieved))
+                    return "One or more positions are invalid.";
+
+            return null;
         }
     }
 }

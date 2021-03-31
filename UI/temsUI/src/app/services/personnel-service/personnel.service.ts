@@ -26,6 +26,21 @@ export class PersonnelService extends TEMSService {
     );
   } 
 
+  getPersonnelToUpdate(personnelId: string): Observable<AddPersonnel>{
+    return this.http.get<AddPersonnel>(
+      API_PERS_URL + '/getpersonneltoupdate/' + personnelId,
+      this.httpOptions
+    );
+  }
+
+  updatePersonnel(personnel: AddPersonnel): Observable<any>{
+    return this.http.post(
+      API_PERS_URL + '/update',
+      JSON.stringify(personnel),
+      this.httpOptions
+    );
+  }
+
   archievePersonnel(personnelId: string): Observable<any>{
     return this.http.get(
       API_PERS_URL + '/archieve/' + personnelId,

@@ -1,3 +1,4 @@
+import { SnackService } from './../../../services/snack/snack.service';
 import { ChipsAutocompleteComponent } from './../../../public/formly/chips-autocomplete/chips-autocomplete.component';
 import { IOption } from './../../../models/option.model';
 import { TEMSComponent } from './../../../tems/tems.component';
@@ -17,6 +18,8 @@ export class AddPersonnelComponent extends TEMSComponent implements OnInit {
 
   personnelPositions: IOption[];
   @ViewChild('personnelPositionsInput') personnelPositionsInput: ChipsAutocompleteComponent;
+  personnelId: string;
+  dialogRef;
 
   private formlyData = {
     form: new FormGroup({}),
@@ -26,7 +29,8 @@ export class AddPersonnelComponent extends TEMSComponent implements OnInit {
 
   constructor(
     private formlyParserService: FormlyParserService,
-    private personnelService: PersonnelService
+    private personnelService: PersonnelService,
+    private snackService: SnackService
   ) {
     super();
   }
@@ -39,15 +43,47 @@ export class AddPersonnelComponent extends TEMSComponent implements OnInit {
         console.log(result);
         this.personnelPositions = result;
       }))
+
+    if(this.personnelId == undefined) return;
+
+    this.subscriptions.push(
+      this.personnelService.getPersonnelToUpdate(this.personnelId)
+      .subscribe(result => {
+        if(this.snackService.snackIfError(result)) return;
+
+        let personnelToUpdate: AddPersonnel = result;
+        this.formlyData.model = {
+          name: personnelToUpdate.name,
+          phoneNumber: personnelToUpdate.phoneNumber,
+          email: personnelToUpdate.email,
+          positions: personnelToUpdate.positions
+        };
+
+        this.personnelPositionsInput.options = personnelToUpdate.positions;
+      })
+    )
   }
 
   onSubmit(model) {
-    model.personnel.positions = this.personnelPositionsInput.options;
-    console.log(model);
+    let addPersonnel = new AddPersonnel();
     
-    this.subscriptions.push(this.personnelService.createPersonnel(model.personnel as AddPersonnel)
+    addPersonnel.id = this.personnelId;
+    addPersonnel.name = model.name;
+    addPersonnel.phoneNumber = model.phoneNumber;
+    addPersonnel.email = model.email;
+    addPersonnel.positions = this.personnelPositionsInput.options;
+    console.log(addPersonnel);
+    
+    let endPoint = this.personnelService.createPersonnel(addPersonnel);
+    if(addPersonnel.id != undefined)
+      endPoint = this.personnelService.updatePersonnel(addPersonnel);
+
+    this.subscriptions.push(
+      endPoint
       .subscribe(result => {
-        console.log(result);
+        this.snackService.snack(result);
+        if(this.dialogRef != undefined)
+          this.dialogRef.close();
       }))
   }
 }

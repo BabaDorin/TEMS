@@ -679,35 +679,30 @@ export class FormlyParserService {
     let fields: FormlyFieldConfig[] =
       [
         {
-          key: 'personnel',
-          fieldGroup: [
-            {
-              key: 'name',
-              type: 'input',
-              templateOptions: {
-                required: true,
-                label: 'Name',
-              }
-            },
-            {
-              key: 'phoneNumber',
-              type: 'input-tooltip',
-              templateOptions: {
-                label: 'Phone Number (Without the leading 0)',
-                description: 'It will be used to send SMS!'
-              },
-            },
-            {
-              key: 'email',
-              type: 'input-tooltip',
-              templateOptions: {
-                type: 'email',
-                label: 'Email',
-                description: 'It will be used to send mails!'
-              },
-            },
-          ]
-        }
+          key: 'name',
+          type: 'input',
+          templateOptions: {
+            required: true,
+            label: 'Name',
+          }
+        },
+        {
+          key: 'phoneNumber',
+          type: 'input-tooltip',
+          templateOptions: {
+            label: 'Phone Number (Without the leading 0)',
+            description: 'It will be used to send SMS!'
+          },
+        },
+        {
+          key: 'email',
+          type: 'input-tooltip',
+          templateOptions: {
+            type: 'email',
+            label: 'Email',
+            description: 'It will be used to send mails!'
+          },
+        },
       ];
 
     return fields;

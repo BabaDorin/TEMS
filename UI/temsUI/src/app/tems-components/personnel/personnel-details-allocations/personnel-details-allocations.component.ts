@@ -1,5 +1,6 @@
+import { AgGridEquipmentComponent } from './../../equipment/ag-grid-equipment/ag-grid-equipment.component';
 import { ViewPersonnelSimplified } from 'src/app/models/personnel/view-personnel-simplified.model';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 
 @Component({
   selector: 'app-personnel-details-allocations',
@@ -9,6 +10,7 @@ import { Component, Input, OnInit } from '@angular/core';
 export class PersonnelDetailsAllocationsComponent implements OnInit {
 
   @Input() personnel: ViewPersonnelSimplified;
+  @ViewChild('agGridEquipment') adGridEquipment: AgGridEquipmentComponent;
   personnelParameter;
   constructor() { }
 
@@ -16,4 +18,7 @@ export class PersonnelDetailsAllocationsComponent implements OnInit {
     this.personnelParameter = [this.personnel.id];
   }
 
+  refreshAgGrid(){
+    this.adGridEquipment.fetchEquipments();
+  }
 }

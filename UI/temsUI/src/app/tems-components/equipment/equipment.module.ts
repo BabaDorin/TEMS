@@ -49,6 +49,7 @@ import { BtnCellRendererComponent } from 'src/app/public/ag-grid/btn-cell-render
     ScrollingModule,
     MaterialModule,
     TemsFormsModule,
+    TemsAgGridModule,
     EntitySharedModule,
     AnalyticsModule,
   ],

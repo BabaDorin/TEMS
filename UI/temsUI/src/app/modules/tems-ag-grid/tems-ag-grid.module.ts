@@ -1,3 +1,4 @@
+import { BrowserModule } from '@angular/platform-browser';
 import { MaterialModule } from './../material/material.module';
 import { AgGridRoomsComponent } from './../../tems-components/room/ag-grid-rooms/ag-grid-rooms.component';
 import { AgGridTooltipComponent } from './../../public/ag-grid/ag-grid-tooltip/ag-grid-tooltip.component';
@@ -22,8 +23,8 @@ import { BtnCellRendererComponent } from 'src/app/public/ag-grid/btn-cell-render
   ],
   imports: [
     CommonModule,
-    AgGridModule.withComponents([BtnCellRendererComponent]),
     CommonModule,
+    AgGridModule.withComponents([BtnCellRendererComponent]),
     MaterialModule,
   ],
   exports: [

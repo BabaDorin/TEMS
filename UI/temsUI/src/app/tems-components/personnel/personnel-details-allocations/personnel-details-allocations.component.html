@@ -6,6 +6,6 @@
 </app-ag-grid-equipment>
 <br>
 <br>
-<app-entity-allocations-list [personnel]="personnel">
+<app-entity-allocations-list [personnel]="personnel" (allocationCreated)="refreshAgGrid()">
     Loading...
 </app-entity-allocations-list>

@@ -6,7 +6,9 @@
 <br>
 <div class="card">
     <div class="card-body">
-    <button mat-button (click)="sendEmail()">Send E-mail to selected</button>
+    <button mat-button (click)="addNew()"><mat-icon class="text-primary">add</mat-icon>Add new</button>
+    <button mat-button (click)="sendEmail()"><mat-icon class="text-primary">mail</mat-icon>Send E-mail to selected</button>
+    <button mat-button (click)="addIssue()"><mat-icon class="text-primary">feedback</mat-icon>Include selected in an issue</button>
     <app-ag-grid-personnel #agGridPersonnel></app-ag-grid-personnel>
     </div>
 </div>

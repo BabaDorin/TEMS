@@ -84,6 +84,11 @@ export class AgGridPersonnelComponent extends TEMSComponent implements OnInit {
     this.gridApi = params.api;
     this.gridColumnApi = params.columnApi;
 
+    this.fetchPersonnel();
+  }
+
+  fetchPersonnel(){
+    this.loading = true;
     this.subscriptions.push(this.personnelService.getPersonnelSimplified(20, 20)
       .subscribe(result => {
         console.log(result);
@@ -91,6 +96,7 @@ export class AgGridPersonnelComponent extends TEMSComponent implements OnInit {
         this.loading = false;
       }));
   }
+
 
   isFirstColumn(params) {
     var displayedColumns = params.columnApi.getAllDisplayedColumns();

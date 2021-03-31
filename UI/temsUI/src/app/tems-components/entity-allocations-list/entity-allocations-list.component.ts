@@ -6,7 +6,7 @@ import { AllocationService } from './../../services/allocation-service/allocatio
 import { ViewPersonnelSimplified } from './../../models/personnel/view-personnel-simplified.model';
 import { ViewRoomSimplified } from './../../models/room/view-room-simplified.model';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { Component, OnInit, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, OnInit, Input, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
 import { ViewAllocationSimplified,} from 'src/app/models/equipment/view-equipment-allocation.model';
 import { ViewEquipmentSimplified } from 'src/app/models/equipment/view-equipment-simplified.model';
 import { EquipmentAllocationComponent } from '../equipment/equipment-allocation/equipment-allocation.component';
@@ -31,6 +31,8 @@ export class EntityAllocationsListComponent extends TEMSComponent implements OnI
   @Input() roomIds: string[] = [];
   @Input() onlyActive: boolean;
   @Input() onlyClosed: boolean;
+  
+  @Output() allocationCreated = new EventEmitter();
   equipmentNotAllocated = false;
   
   allocations: ViewAllocationSimplified[];
@@ -133,6 +135,7 @@ export class EntityAllocationsListComponent extends TEMSComponent implements OnI
       [{label: selectedEntityType, value: selectedEntities}],
       () => {
         this.ngOnInit();
+        this.allocationCreated.emit();
       }
     )
   }

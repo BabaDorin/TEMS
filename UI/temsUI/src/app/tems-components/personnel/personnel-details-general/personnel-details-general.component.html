@@ -14,5 +14,5 @@
     <div class="container">
         <app-property-render [properties]="personnelProperties"></app-property-render>
     </div>
-    <button *ngIf="displayViewMore == true" mat-button (click)="viewMore()">View More</button>
+    <a *ngIf="displayViewMore == true" mat-button [routerLink]="'/personnel/details/' + personnel.id">View More</a>
 </ng-container>

@@ -119,6 +119,7 @@ export class CreateReportTemplateComponent extends TEMSComponent implements OnIn
         controls.rooms.setValue(this.reportTemplateToUpdate.rooms),
         controls.personnel.setValue(this.reportTemplateToUpdate.personnel),
         controls.sepparateBy.setValue(this.reportTemplateToUpdate.sepparateBy),
+        this.sepparateBy = this.reportTemplateToUpdate.sepparateBy;
         controls.header.setValue(this.reportTemplateToUpdate.header),
         controls.footer.setValue(this.reportTemplateToUpdate.footer),
         controls.signatories.setValue(this.reportTemplateToUpdate.signatories),
@@ -139,19 +140,6 @@ export class CreateReportTemplateComponent extends TEMSComponent implements OnIn
       })
     )
   }
-
-  // fetchDefinitionsOfTypes() {
-  //   
-
-  //   this.subscriptions.push(
-  //     this.equipmentService
-  //       .getDefinitionsOfTypes(types)
-  //       .subscribe(result => {
-  //         console.log(result);
-  //         this.definitionsAutocompleteOptions = result;
-  //       })
-  //   )
-  // }
 
   typeAdded(eventData) {
     // getting definitions for selected types

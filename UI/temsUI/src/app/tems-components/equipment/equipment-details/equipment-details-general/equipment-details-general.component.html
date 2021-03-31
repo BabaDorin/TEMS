@@ -65,5 +65,5 @@
         Loading...
     </app-add-equipment>
 
-    <button *ngIf="displayViewMore == true" mat-button (click)="viewMore()">View More</button>
+    <a *ngIf="displayViewMore == true" mat-button [routerLink]="'/equipment/details/' + equipment.id">View More</a>
 </ng-container>

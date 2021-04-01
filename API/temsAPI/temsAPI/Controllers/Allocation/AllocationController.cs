@@ -170,7 +170,7 @@ namespace temsAPI.Controllers.Allocation
         }
         [HttpGet("allocation/getofentity/{entityType}/{entityId}/{archieve?}")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
-        public async Task<JsonResult> GetOfEntity(string entityType, string entityId, bool? archieve)
+        public async Task<JsonResult> GetOfEntity(string entityType, string entityId)
         {
             try
             {
@@ -182,14 +182,16 @@ namespace temsAPI.Controllers.Allocation
                 if (String.IsNullOrEmpty(entityId.Trim()))
                     return ReturnResponse($"You have to provide a valid {entityType} Id", ResponseStatus.Fail);
 
-                if (archieve == null) archieve = false;
-                Expression<Func<EquipmentAllocation, bool>> archExpression = q => q.IsArchieved == (bool)archieve;
+                //if (archieve == null) archieve = false;
+                //Expression<Func<EquipmentAllocation, bool>> archExpression = q => q.IsArchieved == (bool)archieve;
 
                 Expression<Func<EquipmentAllocation, bool>> expression = null;
 
+                IUnitOfWork entityUnitOfWork = null;
                 switch (entityType)
                 {
                     case "equipment":
+                        entityUnitOfWork = (IUnitOfWork)_unitOfWork.Equipments;
                         if (!await _unitOfWork.Equipments.isExists(q => q.Id == entityId))
                             return ReturnResponse("Invalid entity type or id provided", ResponseStatus.Fail);
 
@@ -211,7 +213,7 @@ namespace temsAPI.Controllers.Allocation
                         break;
                 }
 
-                expression = ExpressionCombiner.CombineTwo(expression, archExpression);
+                //expression = ExpressionCombiner.CombineTwo(expression, archExpression);
 
                 List<ViewAllocationSimplifiedViewModel> viewModel = (await _unitOfWork.EquipmentAllocations
                     .FindAll<ViewAllocationSimplifiedViewModel>(

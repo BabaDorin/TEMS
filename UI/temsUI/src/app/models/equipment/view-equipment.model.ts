@@ -23,7 +23,7 @@ export interface IViewEquipment{
     isUsed: boolean,
     isDefect: boolean;
     price: number;
-    // photos: string[];
+    isArchieved: boolean;
 }
 
 export class ViewEquipment implements IViewEquipment{
@@ -39,5 +39,5 @@ export class ViewEquipment implements IViewEquipment{
     isDefect: boolean;
     price: number;
     specificTypeProperties: Property[];
-    photos: string[];
+    isArchieved: boolean;
 }

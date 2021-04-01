@@ -13,9 +13,8 @@ export class EquipmentDetailsComponent extends TEMSComponent implements OnInit {
 
   @Input() equipmentId;
   edit: boolean;
-  equipmentSimplified: ViewEquipmentSimplified;
-  // equipment: ViewEquipment;
-  
+  equipmentSimplified = new ViewEquipmentSimplified();
+  mainHeaderLabel="General";
 
   constructor(
     private activatedroute: ActivatedRoute, 
@@ -32,9 +31,21 @@ export class EquipmentDetailsComponent extends TEMSComponent implements OnInit {
     this.subscriptions.push(this.equipmentService.getEquipmentSimplifiedById(this.equipmentId)
       .subscribe(result => {
         this.equipmentSimplified = result;
+
+        if(this.equipmentSimplified.isArchieved)
+          this.mainHeaderLabel += " (Archieved)"
+
       }));
 
     console.log('equipmentsimplified:');
     console.log(this.equipmentSimplified);
+  }
+
+  archivationStatusChanged(newStatus: boolean){
+    this.mainHeaderLabel = "General"
+
+    this.equipmentSimplified.isArchieved = !this.equipmentSimplified.isArchieved;
+    if(this.equipmentSimplified.isArchieved)
+          this.mainHeaderLabel += " (Archieved)"
   }
 }

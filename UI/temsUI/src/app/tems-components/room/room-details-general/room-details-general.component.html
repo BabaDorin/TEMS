@@ -18,5 +18,5 @@
     <br>
     <br>
     <br>
-    <a *ngIf="displayViewMore == true" mat-button [routerLink]="'/rooms/details/' + room.id">View More</a>
+    <a *ngIf="displayViewMore == true" mat-button [routerLink]="'/rooms/details/' + room.id" (click)="viewMore()">View More</a>
 </ng-container>

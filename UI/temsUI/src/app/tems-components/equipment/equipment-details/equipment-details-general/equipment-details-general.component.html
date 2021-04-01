@@ -3,67 +3,70 @@
 </ng-container>
 
 <ng-container *ngIf="equipment!=undefined">
-    <br>
-    <h1>{{ equipment.identifier }}
-        <b *ngIf="equipment.temsID != undefined"> {{ equipment.temsID }}</b>
-        <b *ngIf="equipment.temsID == undefined && equipment.serialNumber != undefined">{{ equipment.serialNumber}}</b>
-    </h1>
-    <button mat-button (click)="edit()">Edit</button>
-    <button mat-button (click)="archieve()" [disabled]="editing">Archieve</button>
-    <button mat-button (click)="changeState('isDefect')" [disabled]="editing">
-        <p *ngIf="equipment.isDefect == true">Mark as working</p>
-        <p *ngIf="equipment.isDefect == false">Mark as defect</p>
-    </button>
-    <button mat-button (click)="changeState('isUsed')" [disabled]="editing">
-        <p *ngIf="equipment.isUsed == true">Mark as unused</p>
-        <p *ngIf="equipment.isUsed == false">Mark as used</p>
-    </button>
-    <hr>
-    <br>
-    <ng-container *ngIf="editing == false">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6 col-sm-12">
-                    <!-- Common properties for each equipment go here -->
-                    <app-property-render [(properties)]="generalProperties"></app-property-render>
-                </div>
-                <div class="col-md-6 col-sm-12">
-                    <!-- Speciic properties for current equipment go here -->
-                    <app-property-render [properties]="equipment.specificTypeProperties"></app-property-render>
+    <div [class]="headerClass">
+        <br>
+        <h1>{{ equipment.identifier }}
+            <b *ngIf="equipment.temsID != undefined"> {{ equipment.temsID }}</b>
+            <b *ngIf="equipment.temsID == undefined && equipment.serialNumber != undefined">{{ equipment.serialNumber}}</b>
+        </h1>
+        <button mat-button (click)="edit()">Edit</button>
+        <button *ngIf="equipment.isArchieved" mat-button (click)="archieve()" [disabled]="editing">Dearchieve</button>
+        <button *ngIf="!equipment.isArchieved" mat-button (click)="archieve()" [disabled]="editing">Archieve</button>
+        <button mat-button (click)="changeState('isDefect')" [disabled]="editing">
+            <p *ngIf="equipment.isDefect == true">Mark as working</p>
+            <p *ngIf="equipment.isDefect == false">Mark as defect</p>
+        </button>
+        <button mat-button (click)="changeState('isUsed')" [disabled]="editing">
+            <p *ngIf="equipment.isUsed == true">Mark as unused</p>
+            <p *ngIf="equipment.isUsed == false">Mark as used</p>
+        </button>
+        <hr>
+        <br>
+        <ng-container *ngIf="editing == false">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6 col-sm-12">
+                        <!-- Common properties for each equipment go here -->
+                        <app-property-render [(properties)]="generalProperties"></app-property-render>
+                    </div>
+                    <div class="col-md-6 col-sm-12">
+                        <!-- Speciic properties for current equipment go here -->
+                        <app-property-render [properties]="equipment.specificTypeProperties"></app-property-render>
+                    </div>
                 </div>
             </div>
-        </div>
-        <br>
-        <br>
-        <ng-container *ngIf="equipment.children != undefined && equipment.children.length > 0">
-            <h2>Equipment's Children</h2>
-            <hr> -->
-            <div *ngFor="let child of equipment.children">
-                <mat-expansion-panel>
-                    <mat-expansion-panel-header>
-                        <b>{{ child.type }}: </b> {{ child.identifier }}
-                    </mat-expansion-panel-header>
-
-                    <ng-template matExpansionPanelContent class="mat-exp-panel-content">
-                        <app-equipment-details [equipmentId]="child.id"></app-equipment-details>
-                    </ng-template>
-                </mat-expansion-panel>
-                <br>
-            </div>
+            <br>
+            <br>
+            <ng-container *ngIf="equipment.children != undefined && equipment.children.length > 0">
+                <h2>Equipment's Children</h2>
+                <hr> -->
+                <div *ngFor="let child of equipment.children">
+                    <mat-expansion-panel>
+                        <mat-expansion-panel-header>
+                            <b>{{ child.type }}: </b> {{ child.identifier }}
+                        </mat-expansion-panel-header>
+    
+                        <ng-template matExpansionPanelContent class="mat-exp-panel-content">
+                            <app-equipment-details [equipmentId]="child.id"></app-equipment-details>
+                        </ng-template>
+                    </mat-expansion-panel>
+                    <br>
+                </div>
+            </ng-container>
+            <!-- <div class="container" *ngIf="equipment.photos.length > 0">
+                <h4>Equipment Images</h4>
+                <app-image-carousel></app-image-carousel>
+            </div> -->
+            <br>
         </ng-container>
-        <!-- <div class="container" *ngIf="equipment.photos.length > 0">
-            <h4>Equipment Images</h4>
-            <app-image-carousel></app-image-carousel>
-        </div> -->
-        <br>
-    </ng-container>
-
-    <app-add-equipment *ngIf="editing==true"
-    [updateEquipmentId]="equipment.id"
-    (goBack)="ngOnInit(); editing = false;"
-    [updateEquipmentDefinitionId]="equipment.definition.value">
-        Loading...
-    </app-add-equipment>
-
-    <a *ngIf="displayViewMore == true" mat-button [routerLink]="'/equipment/details/' + equipment.id">View More</a>
+    
+        <app-add-equipment *ngIf="editing==true"
+        [updateEquipmentId]="equipment.id"
+        (goBack)="ngOnInit(); editing = false;"
+        [updateEquipmentDefinitionId]="equipment.definition.value">
+            Loading...
+        </app-add-equipment>
+    
+        <a *ngIf="displayViewMore == true" mat-button [routerLink]="'/equipment/details/' + equipment.id" (click)="viewMore()">View More</a>
+    </div>
 </ng-container>

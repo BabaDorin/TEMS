@@ -16,5 +16,6 @@ namespace temsAPI.ViewModels.Equipment
         public string Type { get; set; }
         public bool IsUsed { get; set; }
         public bool IsDefect { get; set; }
+        public bool IsArchieved { get; set; }
     }
 }

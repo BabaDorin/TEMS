@@ -2,7 +2,7 @@ import { SnackService } from './../../../../services/snack/snack.service';
 import { TEMSComponent } from './../../../../tems/tems.component';
 import { Property } from './../../../../models/equipment/view-property.model';
 import { EquipmentService } from 'src/app/services/equipment-service/equipment.service';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import { ViewEquipment } from 'src/app/models/equipment/view-equipment.model';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -15,7 +15,9 @@ export class EquipmentDetailsGeneralComponent extends TEMSComponent implements O
 
   @Input() equipmentId: string;
   @Input() displayViewMore: boolean = false;
+  @Output() archivationStatusChanged = new EventEmitter();
   dialogRef;
+  headerClass;
 
   equipment: ViewEquipment;
   generalProperties: Property[];
@@ -32,11 +34,12 @@ export class EquipmentDetailsGeneralComponent extends TEMSComponent implements O
   ngOnInit(): void {
     // if(this.equipmentId == undefined)
       // this.equipmentId = this.route.snapshot.paramMap.get('id');
-    
+
     this.subscriptions.push(this.equipmentService.getEquipmentByID(this.equipmentId)
       .subscribe(response => {
         console.log(response);
         this.equipment = response;
+        this.headerClass = (this.equipment.isArchieved) ? 'text-muted' : '';
 
         this.generalProperties= [
           { displayName: 'Identifier', value: this.equipment.definition.label},
@@ -56,20 +59,26 @@ export class EquipmentDetailsGeneralComponent extends TEMSComponent implements O
   }
 
   archieve(){
-    if(!confirm("Are you sure you want to archive this item? It will result in archieving all of it's logs and allocations"))
+    if(!this.equipment.isArchieved && !confirm("Are you sure you want to archive this item? It will result in archieving all of it's logs and allocations"))
       return;
 
     this.subscriptions.push(
       this.equipmentService.archieveEquipment(this.equipmentId)
       .subscribe(result => {
         this.snackService.snack(result);
+
+        if(result.status == 1)
+          this.equipment.isArchieved = !this.equipment.isArchieved;
+          this.headerClass = (this.equipment.isArchieved) ? 'text-muted' : '';
+
+        this.archivationStatusChanged.emit(this.equipment.isArchieved);
       })
     )
   }
 
   viewMore(){
-    console.log('here');
-    this.route.navigateByUrl('/equipment/details/' + this.equipmentId);
+    // console.log('here');
+    // this.route.navigateByUrl('/equipment/details/' + this.equipmentId);
     
     if(this.dialogRef != undefined)
       this.dialogRef.close();

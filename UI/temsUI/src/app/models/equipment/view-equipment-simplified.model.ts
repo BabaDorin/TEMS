@@ -7,6 +7,7 @@ export interface IViewEquipmentSimplified{
     type: string,
     isUsed: boolean,
     isDefect: boolean;
+    isArchieved: boolean;
     assignee: string;
 }
 
@@ -19,6 +20,7 @@ export class ViewEquipmentSimplified implements IViewEquipmentSimplified{
     type: string;
     isUsed: boolean;
     isDefect: boolean;
+    isArchieved: boolean;
     assignee: string;
 
     constructor(){

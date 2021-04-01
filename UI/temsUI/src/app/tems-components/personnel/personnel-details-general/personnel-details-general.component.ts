@@ -52,9 +52,6 @@ export class PersonnelDetailsGeneralComponent extends TEMSComponent implements O
   }
 
   viewMore(){
-    console.log('here');
-    this.route.navigateByUrl('/personnel/details/' + this.personnelId);
-    
     if(this.dialogRef != undefined)
       this.dialogRef.close();
   }

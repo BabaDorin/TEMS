@@ -20,6 +20,7 @@ namespace temsAPI.ViewModels.Equipment
         public IOption Parent { get; set; }
         public bool IsUsed { get; set; }
         public bool IsDefect { get; set; }
+        public bool IsArchieved { get; set; }
         public List<string> Photos { get; set; }
 
         public ViewEquipmentViewModel()

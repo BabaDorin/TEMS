@@ -1,32 +1,36 @@
 <div class="card">
     <div class="card-body">
         <mat-tab-group [@.disabled]="true">
-            <mat-tab label="General">
-                    <app-equipment-details-general [equipmentId]="equipmentId">
+            <mat-tab [label]="mainHeaderLabel">
+                    <app-equipment-details-general 
+                    [equipmentId]="equipmentId"
+                    (archivationStatusChanged)="archivationStatusChanged()">
                         Loading...
                     </app-equipment-details-general>
             </mat-tab>
-            <mat-tab label="Logs">
-                <ng-template matTabContent>
-                    <app-equipment-details-logs [equipment]="equipmentSimplified">
-                        Loading...
-                    </app-equipment-details-logs>
-                </ng-template>
-            </mat-tab>
-            <mat-tab label="Issues">
-                <ng-template matTabContent>
-                    <app-equipment-details-issues [equipment]="equipmentSimplified">
-                        Loading...
-                    </app-equipment-details-issues>
-                </ng-template>
-            </mat-tab>
-            <mat-tab label="Allocations">
-                <ng-template matTabContent>
-                    <app-equipment-details-allocations [equipment]="equipmentSimplified">
-                        Loading...
-                    </app-equipment-details-allocations>
-                </ng-template>
-            </mat-tab>
+            <ng-container *ngIf="equipmentSimplified.isArchieved == false">
+                <mat-tab label="Logs">
+                    <ng-template matTabContent>
+                        <app-equipment-details-logs [equipment]="equipmentSimplified">
+                            Loading...
+                        </app-equipment-details-logs>
+                    </ng-template>
+                </mat-tab>
+                <mat-tab  label="Issues">
+                    <ng-template matTabContent>
+                        <app-equipment-details-issues [equipment]="equipmentSimplified">
+                            Loading...
+                        </app-equipment-details-issues>
+                    </ng-template>
+                </mat-tab>
+                <mat-tab label="Allocations">
+                    <ng-template matTabContent>
+                        <app-equipment-details-allocations [equipment]="equipmentSimplified">
+                            Loading...
+                        </app-equipment-details-allocations>
+                    </ng-template>
+                </mat-tab>
+            </ng-container>
         </mat-tab-group>
     </div>
 </div>

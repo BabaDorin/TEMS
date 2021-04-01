@@ -56,9 +56,6 @@ export class RoomDetailsGeneralComponent extends TEMSComponent implements OnInit
   }
 
   viewMore(){
-    console.log(this.roomId);
-    this.route.navigateByUrl('/rooms/details/' + this.roomId);
-    
     if(this.dialogRef != undefined)
       this.dialogRef.close();
   }

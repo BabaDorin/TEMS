@@ -120,22 +120,7 @@ namespace temsAPI.Controllers.EquipmentControllers
                         .ThenInclude(q => q.Personnel)
                         .Include(q => q.EquipmentDefinition)
                         .ThenInclude(q => q.EquipmentType),
-                        select: q => new ViewEquipmentSimplifiedViewModel
-                        {
-                            Id = q.Id,
-                            IsDefect = q.IsDefect,
-                            IsUsed = q.IsUsed,
-                            TemsId = q.TEMSID,
-                            SerialNumber = q.SerialNumber,
-                            Type = q.EquipmentDefinition.EquipmentType.Name,
-                            Definition = q.EquipmentDefinition.Identifier,
-                            Assignee = (q.EquipmentAllocations.Count(q => q.DateReturned == null) > 0)
-                                ? q.EquipmentAllocations.First(q => q.DateReturned == null).Assignee
-                                : "Deposit",
-                            TemsIdOrSerialNumber = String.IsNullOrEmpty(q.TEMSID)
-                                ? q.SerialNumber
-                                : q.TEMSID
-                        })).ToList();
+                        select: q => EquipmentToViewEquipmentSimplifiedViewModel(q))).ToList();
 
                 return Json(viewModel);
             }
@@ -237,10 +222,6 @@ namespace temsAPI.Controllers.EquipmentControllers
         {
             try
             {
-                // Invalid id provided
-                if (!await _unitOfWork.Equipments.isExists(q => q.Id == id))
-                    return ReturnResponse("Invalid equipment id provided", ResponseStatus.Fail);
-
                 Equipment model = (await _unitOfWork.Equipments
                     .Find<Equipment>(
                         where: q => q.Id == id,
@@ -255,6 +236,10 @@ namespace temsAPI.Controllers.EquipmentControllers
                         .Include(q => q.Parent)
                         .ThenInclude(q => q.EquipmentDefinition)
                       )).FirstOrDefault();
+
+                // Invalid id provided
+                if (model == null)
+                    return ReturnResponse("Invalid equipment id provided", ResponseStatus.Fail);
 
                 var activeRoomAllocation = model.EquipmentAllocations
                     .Where(q => q.DateReturned == null && q.RoomID != null)
@@ -275,6 +260,7 @@ namespace temsAPI.Controllers.EquipmentControllers
                     },
                     IsDefect = model.IsDefect,
                     IsUsed = model.IsUsed,
+                    IsArchieved = model.IsArchieved,
                     SerialNumber = model.SerialNumber,
                     TemsId = model.TEMSID,
                     Type = model.EquipmentDefinition.EquipmentType.Name,
@@ -401,6 +387,7 @@ namespace temsAPI.Controllers.EquipmentControllers
                 Id = eq.Id,
                 IsDefect = eq.IsDefect,
                 IsUsed = eq.IsUsed,
+                IsArchieved = eq.IsArchieved,
                 TemsId = eq.TEMSID,
                 SerialNumber = eq.SerialNumber,
                 Type = eq.EquipmentDefinition.EquipmentType.Name,

@@ -15,8 +15,9 @@ export class PersonnelDetailsComponent extends TEMSComponent implements OnInit {
 
   @Input() personnelId;
   edit: boolean = false;
-  personnelSimplified: ViewPersonnelSimplified;
+  personnelSimplified = new ViewPersonnelSimplified();
   personnel: ViewPersonnel;
+  mainHeaderLabel="General";
 
   constructor(
     private activatedroute: ActivatedRoute,
@@ -35,6 +36,17 @@ export class PersonnelDetailsComponent extends TEMSComponent implements OnInit {
         this.personnel = result;
 
         this.personnelSimplified = this.personnelService.getPersonnelSimplifiedFromPersonnel(this.personnel);
+
+        if(this.personnelSimplified.isArchieved)
+          this.mainHeaderLabel += " (Archieved)"
       }));
+  }
+
+  archivationStatusChanged(newStatus: boolean){
+    this.mainHeaderLabel = "General"
+
+    this.personnelSimplified.isArchieved = !this.personnelSimplified.isArchieved;
+    if(this.personnelSimplified.isArchieved)
+          this.mainHeaderLabel += " (Archieved)"
   }
 }

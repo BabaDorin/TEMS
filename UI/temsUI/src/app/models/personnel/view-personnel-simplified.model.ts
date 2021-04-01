@@ -5,6 +5,7 @@ export interface IViewPersonnelSimplified{
     allocatedEquipments?: number,
     activeTickets?:number,
     positions?: string,
+    isArchieved: boolean,
 }
 
 export class ViewPersonnelSimplified implements IViewPersonnelSimplified{
@@ -13,4 +14,5 @@ export class ViewPersonnelSimplified implements IViewPersonnelSimplified{
     allocatedEquipment?: number;
     activeTickets?:number;
     pozitions?: string;
+    isArchieved: boolean;
 }

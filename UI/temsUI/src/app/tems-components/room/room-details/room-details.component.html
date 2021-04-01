@@ -1,32 +1,36 @@
 <div class="card">
     <div class="card-body">
         <mat-tab-group [@.disabled]="true">
-            <mat-tab label="General">
-                    <app-room-details-general [roomId]="roomId">
-                        Loading...
-                    </app-room-details-general>
+            <mat-tab [label]="mainHeaderLabel">
+                <app-room-details-general 
+                [roomId]="roomId" 
+                (archivationStatusChanged)="archivationStatusChanged()">
+                    Loading...
+                </app-room-details-general>
             </mat-tab>
-            <mat-tab label="Logs">
-                <ng-template matTabContent>
-                    <app-room-details-logs [room]="roomSimplified">
-                        Loading...
-                    </app-room-details-logs>
-                </ng-template>
-            </mat-tab>
-            <mat-tab label="Issues">
-                <ng-template matTabContent>
-                    <app-room-details-issues [room]="roomSimplified">
-                        Loading...
-                    </app-room-details-issues>
-                </ng-template>
-            </mat-tab>
-            <mat-tab label="Allocations">
-                <ng-template matTabContent>
-                    <app-room-details-allocations [room]="roomSimplified">
-                        Loading...
-                    </app-room-details-allocations>
-                </ng-template>
-            </mat-tab>
+            <ng-container *ngIf="roomSimplified.isArchieved == false">
+                <mat-tab label="Logs">
+                    <ng-template matTabContent>
+                        <app-room-details-logs [room]="roomSimplified">
+                            Loading...
+                        </app-room-details-logs>
+                    </ng-template>
+                </mat-tab>
+                <mat-tab label="Issues">
+                    <ng-template matTabContent>
+                        <app-room-details-issues [room]="roomSimplified">
+                            Loading...
+                        </app-room-details-issues>
+                    </ng-template>
+                </mat-tab>
+                <mat-tab label="Allocations">
+                    <ng-template matTabContent>
+                        <app-room-details-allocations [room]="roomSimplified">
+                            Loading...
+                        </app-room-details-allocations>
+                    </ng-template>
+                </mat-tab>
+            </ng-container>
         </mat-tab-group>
     </div>
 </div>

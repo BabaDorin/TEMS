@@ -133,7 +133,8 @@ namespace temsAPI.Controllers.PersonnelControllers
                             AllocatedEquipments = q.EquipmentAllocations.Count(q => q.DateReturned == null),
                             Positions = (q.Positions != null)
                                 ? string.Join(", ", q.Positions.Select(q => q.Name))
-                                : ""
+                                : "",
+                            IsArchieved = q.IsArchieved
                         })).ToList();
 
                 return Json(viewModel);
@@ -275,6 +276,7 @@ namespace temsAPI.Controllers.PersonnelControllers
                             Name = q.Name,
                             Email = q.Email,
                             PhoneNumber = q.PhoneNumber,
+                            IsArchieved = q.IsArchieved,
                             ActiveTickets = q.Tickets.Count(q => q.DateClosed == null),
                             AllocatedEquipments = q.EquipmentAllocations.Count(q => q.DateReturned == null),
                             Positions = q.Positions.Select(q => new Option

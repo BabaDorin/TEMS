@@ -2,21 +2,24 @@
     <mat-progress-bar mode="indeterminate"></mat-progress-bar>
 </ng-container>
 <ng-container *ngIf="room != undefined">
-    <h1>Room: <b>{{ room.identifier }}</b>
-    </h1>
-    <button mat-button (click)="edit()">Edit</button>
-    <button mat-button (click)="archieve()">Archieve</button>
-    <hr>
-    <br>
-    <div class="container">
-        <div class="row">
-            <div class="col-md-6">
-                <app-property-render [properties]="roomProperties"></app-property-render>
+    <div [class]="headerClass">
+        <h1>Room: <b>{{ room.identifier }}</b>
+        </h1>
+        <button mat-button (click)="edit()">Edit</button>
+        <button *ngIf="room.isArchieved" mat-button (click)="archieve()" [disabled]="editing">Dearchieve</button>
+        <button *ngIf="!room.isArchieved" mat-button (click)="archieve()" [disabled]="editing">Archieve</button>
+        <hr>
+        <br>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <app-property-render [properties]="roomProperties"></app-property-render>
+                </div>
             </div>
         </div>
+        <br>
+        <br>
+        <br>
+        <a *ngIf="displayViewMore == true" mat-button [routerLink]="'/rooms/details/' + room.id" (click)="viewMore()">View More</a>
     </div>
-    <br>
-    <br>
-    <br>
-    <a *ngIf="displayViewMore == true" mat-button [routerLink]="'/rooms/details/' + room.id" (click)="viewMore()">View More</a>
 </ng-container>

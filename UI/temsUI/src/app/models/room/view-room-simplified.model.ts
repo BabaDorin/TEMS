@@ -5,6 +5,7 @@ export interface IViewRoomSimplified{
     description?: string;
     label?: string;
     allocatedEquipment?: number;
+    isArchieved: boolean,
 }
 
 export class ViewRoomSimplified implements IViewRoomSimplified{
@@ -14,4 +15,5 @@ export class ViewRoomSimplified implements IViewRoomSimplified{
     description?: string;
     label?: string;
     allocatedEquipment?: number;
+    isArchieved: boolean;
 }

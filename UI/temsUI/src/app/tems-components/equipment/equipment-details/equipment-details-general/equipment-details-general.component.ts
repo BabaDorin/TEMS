@@ -4,7 +4,7 @@ import { Property } from './../../../../models/equipment/view-property.model';
 import { EquipmentService } from 'src/app/services/equipment-service/equipment.service';
 import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import { ViewEquipment } from 'src/app/models/equipment/view-equipment.model';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-equipment-details-general',

@@ -86,7 +86,8 @@ export class PersonnelService extends TEMSService {
   getPersonnelSimplifiedFromPersonnel(personnel: ViewPersonnel): ViewPersonnelSimplified{
     return {
       id: personnel.id,
-      name: personnel.name
+      name: personnel.name,
+      isArchieved: personnel.isArchieved
     }
   }
 }

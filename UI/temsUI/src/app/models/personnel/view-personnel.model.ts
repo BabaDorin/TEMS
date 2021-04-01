@@ -8,6 +8,7 @@ interface IViewPersonnel {
     roomSupervisories?: IOption[],
     activeTickets?: number,
     allocatedEquipments?: number,
+    isArchieved: boolean,
     // imagePath: string -- TO BE IMPLEMENTED LATER
 }
 
@@ -20,4 +21,5 @@ export class ViewPersonnel implements IViewPersonnel{
     roomSupervisories?: IOption[];
     activeTickets?: number;
     allocatedEquipments?: number;
+    isArchieved: boolean;
 }

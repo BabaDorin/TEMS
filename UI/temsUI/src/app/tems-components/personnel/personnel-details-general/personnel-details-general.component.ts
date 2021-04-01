@@ -4,7 +4,7 @@ import { DialogService } from './../../../services/dialog-service/dialog.service
 import { PersonnelService } from './../../../services/personnel-service/personnel.service';
 import { TEMSComponent } from './../../../tems/tems.component';
 import { ViewPersonnel } from './../../../models/personnel/view-personnel.model';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Property } from 'src/app/models/equipment/view-property.model';
 import { Router } from '@angular/router';
 import { SnackService } from 'src/app/services/snack/snack.service';
@@ -17,9 +17,11 @@ import { SnackService } from 'src/app/services/snack/snack.service';
 export class PersonnelDetailsGeneralComponent extends TEMSComponent implements OnInit {
 
   @Input() personnelId: string;
+  @Output() archivationStatusChanged = new EventEmitter();
   @Input() personnel: ViewPersonnel;
   @Input() displayViewMore: boolean = false;
   dialogRef;
+  headerClass;
 
   personnelProperties: Property[];
   constructor(
@@ -37,7 +39,8 @@ export class PersonnelDetailsGeneralComponent extends TEMSComponent implements O
       .subscribe(response => {
         console.log(response);
         this.personnel = response;
-
+        this.headerClass = (this.personnel.isArchieved) ? 'text-muted' : '';
+        
         this.personnelProperties = [
           { displayName: 'Name', value: this.personnel.name },
           { displayName: 'Position', value: "display them in a fancy way" },
@@ -71,5 +74,23 @@ export class PersonnelDetailsGeneralComponent extends TEMSComponent implements O
       SendEmailComponent,
       [{label: "personnel", value: [{label: this.personnel.name, value: this.personnel.id}]}]
     );
+  }
+
+  archieve(){
+    if(!this.personnel.isArchieved && !confirm("Are you sure you want to archive this item? It will result in archieving all of it's logs and allocations"))
+      return;
+
+    this.subscriptions.push(
+      this.personnelService.archievePersonnel(this.personnelId)
+      .subscribe(result => {
+        this.snackService.snack(result);
+
+        if(result.status == 1)
+          this.personnel.isArchieved = !this.personnel.isArchieved;
+          this.headerClass = (this.personnel.isArchieved) ? 'text-muted' : '';
+
+        this.archivationStatusChanged.emit(this.personnel.isArchieved);
+      })
+    )
   }
 }

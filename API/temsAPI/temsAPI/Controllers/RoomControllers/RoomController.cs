@@ -210,7 +210,8 @@ namespace temsAPI.Controllers.RoomControllers
                         AllocatedEquipments = q.EquipmentAllocations.Count(q => q.RoomID != null && q.DateReturned == null),
                         Identifier = q.Identifier,
                         Label = string.Join(", ", q.Labels.Select(q => q.Name)),
-                        ActiveTickets = q.Tickets.Count
+                        ActiveTickets = q.Tickets.Count,
+                        IsArchieved = q.IsArchieved
                     })).OrderBy(q => q.Identifier).ToList();
 
                 return Json(viewModel);
@@ -269,6 +270,7 @@ namespace temsAPI.Controllers.RoomControllers
                             Description = q.Description,
                             Identifier = q.Identifier,
                             Floor = q.Floor ?? 0,
+                            IsArchieved = q.IsArchieved,
                             ActiveTickets = q.Tickets.Count(q => q.DateClosed == null),
                             Labels = q.Labels.Select(q => new Option
                             {

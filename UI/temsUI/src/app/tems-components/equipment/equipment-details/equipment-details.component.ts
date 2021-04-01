@@ -1,7 +1,7 @@
 import { TEMSComponent } from './../../../tems/tems.component';
 import { EquipmentService } from 'src/app/services/equipment-service/equipment.service';
 import { ViewEquipmentSimplified } from './../../../models/equipment/view-equipment-simplified.model';
-import { Component, ElementRef, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
@@ -18,7 +18,6 @@ export class EquipmentDetailsComponent extends TEMSComponent implements OnInit {
 
   constructor(
     private activatedroute: ActivatedRoute, 
-    private elementRef: ElementRef,
     private equipmentService: EquipmentService) {
       super();
   }
@@ -36,9 +35,6 @@ export class EquipmentDetailsComponent extends TEMSComponent implements OnInit {
           this.mainHeaderLabel += " (Archieved)"
 
       }));
-
-    console.log('equipmentsimplified:');
-    console.log(this.equipmentSimplified);
   }
 
   archivationStatusChanged(newStatus: boolean){

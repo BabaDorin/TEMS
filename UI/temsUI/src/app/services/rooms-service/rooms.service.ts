@@ -84,6 +84,7 @@ export class RoomsService extends TEMSService {
     roomSimplified.activeIssues =  room.activeTickets;
     roomSimplified.allocatedEquipment = 999; // room does not have allocatedEquipment
     roomSimplified.label = room.labels.join(", ");
+    roomSimplified.isArchieved = room.isArchieved;
 
     return roomSimplified;
   }

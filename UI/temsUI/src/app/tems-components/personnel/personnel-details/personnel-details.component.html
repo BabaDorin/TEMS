@@ -1,34 +1,38 @@
 <div class="card">
     <div class="card-body">
         <mat-tab-group [@.disabled]="true">
-            <mat-tab label="General">
+            <mat-tab [label]="mainHeaderLabel">
                 <ng-template matTabContent>
-                    <app-personnel-details-general [personnelId]="personnelId">
+                    <app-personnel-details-general 
+                    [personnelId]="personnelId"
+                    (archivationStatusChanged)="archivationStatusChanged()">
                         Loading...
                     </app-personnel-details-general>
                 </ng-template>
             </mat-tab>
-            <mat-tab label="Logs">
-                <ng-template matTabContent>
-                    <app-personnel-details-logs [personnel]="personnelSimplified">
-                        Loading...
-                    </app-personnel-details-logs>
-                </ng-template>
-            </mat-tab>
-            <mat-tab label="Issues">
-                <ng-template matTabContent>
-                    <app-personnel-details-issues [personnel]="personnelSimplified">
-                        Loading...
-                    </app-personnel-details-issues>
-                </ng-template>
-            </mat-tab>
-            <mat-tab label="Allocations">
-                <ng-template matTabContent>
-                    <app-personnel-details-allocations [personnel]="personnelSimplified">
-                        Loading...
-                    </app-personnel-details-allocations>
-                </ng-template>
-            </mat-tab>
+            <ng-container *ngIf="personnelSimplified.isArchieved == false">
+                <mat-tab label="Logs">
+                    <ng-template matTabContent>
+                        <app-personnel-details-logs [personnel]="personnelSimplified">
+                            Loading...
+                        </app-personnel-details-logs>
+                    </ng-template>
+                </mat-tab>
+                <mat-tab label="Issues">
+                    <ng-template matTabContent>
+                        <app-personnel-details-issues [personnel]="personnelSimplified">
+                            Loading...
+                        </app-personnel-details-issues>
+                    </ng-template>
+                </mat-tab>
+                <mat-tab label="Allocations">
+                    <ng-template matTabContent>
+                        <app-personnel-details-allocations [personnel]="personnelSimplified">
+                            Loading...
+                        </app-personnel-details-allocations>
+                    </ng-template>
+                </mat-tab>
+            </ng-container>
         </mat-tab-group>
     </div>
 </div>

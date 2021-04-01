@@ -14,9 +14,10 @@ export class RoomDetailsComponent extends TEMSComponent implements OnInit {
 
   @Input() roomId;
   edit: boolean = false;
-  roomSimplified: ViewRoomSimplified;
+  roomSimplified = new ViewRoomSimplified();
   room: ViewRoom;
-
+  mainHeaderLabel="General";
+  
   constructor(
     private activatedroute: ActivatedRoute,
     private roomService: RoomsService
@@ -33,6 +34,17 @@ export class RoomDetailsComponent extends TEMSComponent implements OnInit {
         console.log(result)
         this.room = result;
         this.roomSimplified = this.roomService.getRoomSimplifiedFromRoom(this.room);
+        
+        if(this.roomSimplified.isArchieved)
+          this.mainHeaderLabel += " (Archieved)"
       }));
+  }
+
+  archivationStatusChanged(newStatus: boolean){
+    this.mainHeaderLabel = "General"
+
+    this.roomSimplified.isArchieved = !this.roomSimplified.isArchieved;
+    if(this.roomSimplified.isArchieved)
+          this.mainHeaderLabel += " (Archieved)"
   }
 }

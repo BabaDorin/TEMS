@@ -15,5 +15,6 @@ namespace temsAPI.ViewModels.Personnel
         public List<Option> RoomSupervisories { get; set; }
         public int ActiveTickets { get; set; }
         public int AllocatedEquipments { get; set; }
+        public bool IsArchieved { get; set; }
     }
 }

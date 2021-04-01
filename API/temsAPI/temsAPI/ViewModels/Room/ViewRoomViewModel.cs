@@ -16,5 +16,6 @@ namespace temsAPI.ViewModels.Room
             = new List<ViewPersonnelSimplifiedViewModel>();
         public int ActiveTickets { get; set; }
         public List<Option> Labels { get; set; } = new List<Option>();
+        public bool IsArchieved { get; set; }
     }
 }

@@ -12,5 +12,6 @@ namespace temsAPI.ViewModels.Personnel
         public int AllocatedEquipments { get; set; }
         public int ActiveTickets { get; set; }
         public string Positions { get; set; }
+        public bool IsArchieved { get; set; }
     }
 }

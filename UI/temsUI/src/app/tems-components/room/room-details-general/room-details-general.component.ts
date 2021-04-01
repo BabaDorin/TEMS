@@ -4,7 +4,7 @@ import { RoomsService } from 'src/app/services/rooms-service/rooms.service';
 import { TEMSComponent } from 'src/app/tems/tems.component';
 import { DialogService } from './../../../services/dialog-service/dialog.service';
 import { ViewRoom } from './../../../models/room/view-room.model';
-import { Component, Input, OnChanges, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
 import { Property } from 'src/app/models/equipment/view-property.model';
 import { Router } from '@angular/router';
 
@@ -17,10 +17,12 @@ export class RoomDetailsGeneralComponent extends TEMSComponent implements OnInit
 
   @Input() roomId: string;
   @Input() room: ViewRoom;
+  @Output() archivationStatusChanged = new EventEmitter();
 
   roomProperties: Property[];
   displayViewMore = false;
   dialogRef;
+  headerClass;
 
   constructor(
     private roomService: RoomsService,
@@ -43,6 +45,7 @@ export class RoomDetailsGeneralComponent extends TEMSComponent implements OnInit
           return;
         
         this.room = result;
+        this.headerClass = (this.room.isArchieved) ? 'text-muted' : '';
 
         this.roomProperties = [
           { displayName: 'Identifier', value: this.room.identifier },
@@ -61,15 +64,21 @@ export class RoomDetailsGeneralComponent extends TEMSComponent implements OnInit
   }
 
   archieve(){
-    if(!confirm("Are you sure you want to archieve this room? Allocations and logs associated with this room will get archieved as well."))
+    if(!this.room.isArchieved && !confirm("Are you sure you want to archieve this room? Allocations and logs associated with this room will get archieved as well."))
       return;
       
-    this.subscriptions.push(
-      this.roomService.archieveRoom(this.roomId)
-      .subscribe(result => {
-        this.snackService.snack(result);
-      })
-    )
+      this.subscriptions.push(
+        this.roomService.archieveRoom(this.roomId)
+        .subscribe(result => {
+          this.snackService.snack(result);
+  
+          if(result.status == 1)
+            this.room.isArchieved = !this.room.isArchieved;
+            this.headerClass = (this.room.isArchieved) ? 'text-muted' : '';
+  
+          this.archivationStatusChanged.emit(this.room.isArchieved);
+        })
+      )
   }
 
   edit(){

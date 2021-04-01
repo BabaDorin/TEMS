@@ -118,9 +118,11 @@ export class UserService extends TEMSService {
     );
   }
 
-  removeUser(userId: string): Observable<any>{
+  archieveUser(userId: string, archivationStatus?: boolean): Observable<any>{
+    if(archivationStatus == undefined) archivationStatus = true; // to be archieved
+
     return this.http.get(
-      API_USER_URL + '/removeUser/' + userId,
+      API_USER_URL + '/archieveUser/' + userId + '/' + archivationStatus,
       this.httpOptions 
     );
   }

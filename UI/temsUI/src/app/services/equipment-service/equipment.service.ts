@@ -83,16 +83,20 @@ export class EquipmentService extends TEMSService {
       this.httpOptions);
   }
 
-  removeType(typeId: string): Observable<any>{
+  archieveType(typeId: string, archivationStatus?: boolean): Observable<any>{
+    if(archivationStatus == undefined) archivationStatus = true; // to be archieved
+
     return this.http.get(
-      API_EQTYPE_URL + '/remove/'+typeId,
+      API_EQTYPE_URL + '/archieve/' + typeId + '/' + archivationStatus,
       this.httpOptions
     );
   }
 
-  removeDefinition(definitionId: string): Observable<any>{
+  archieveDefinition(definitionId: string, archivationStatus?: boolean): Observable<any>{
+    if(archivationStatus == undefined) archivationStatus = true; // to be archieved
+    
     return this.http.get(
-      API_EQDEF_URL + '/remove/' + definitionId,
+      API_EQDEF_URL + '/archieve/' + definitionId + '/' + archivationStatus,
       this.httpOptions
     );
   }
@@ -111,9 +115,11 @@ export class EquipmentService extends TEMSService {
       this.httpOptions);
   }
 
-  removeProperty(propertyId): Observable<any>{
+  archieveProperty(propertyId: string, archivationStatus?: boolean): Observable<any>{
+    if(archivationStatus == undefined) archivationStatus = true; // to be archieved
+    
     return this.http.get(
-      API_PROP_URL + '/remove/' + propertyId,
+      API_PROP_URL + '/archieve/' + propertyId + '/' + archivationStatus,
       this.httpOptions
     );
   }
@@ -148,9 +154,11 @@ export class EquipmentService extends TEMSService {
     );
   }
 
-  archieveEquipment(equipmentId: string): Observable<any>{
+  archieveEquipment(equipmentId: string, archivationStatus?: boolean): Observable<any>{
+    if(archivationStatus == undefined)  archivationStatus = true;
+
     return this.http.get(
-      API_EQ_URL + '/archieve/' + equipmentId,
+      API_EQ_URL + '/archieve/' + equipmentId + '/' + archivationStatus,
       this.httpOptions
     );
   }

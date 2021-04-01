@@ -25,7 +25,7 @@ namespace temsAPI.Helpers
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<string> ArchieveEquipment(string equipmentId)
+        public async Task<string> SetEquipmentArchivationStatus(string equipmentId, bool status)
         {
             try
             {
@@ -41,21 +41,21 @@ namespace temsAPI.Helpers
                 if (model == null)
                     return "Invalid id provided";
 
-                model.IsArchieved = true;
+                model.IsArchieved = status;
 
                 foreach (var child in model.Children)
                 {
-                    var result = await ArchieveEquipment(child.Id);
+                    var result = await SetEquipmentArchivationStatus(child.Id, status);
                 }
 
                 foreach (var allocation in model.EquipmentAllocations)
                 {
-                    allocation.IsArchieved = true;
+                    allocation.IsArchieved = status;
                 }
 
                 foreach (var log in model.Logs)
                 {
-                    log.IsArchieved = true;
+                    log.IsArchieved = status;
                 }
 
                 await _unitOfWork.Save();
@@ -68,7 +68,7 @@ namespace temsAPI.Helpers
             }
         }
 
-        public async Task<string> ArchieveRoom(string roomId)
+        public async Task<string> SetRoomArchivationStatus(string roomId, bool status)
         {
             try
             {
@@ -85,21 +85,21 @@ namespace temsAPI.Helpers
                 if (model == null)
                     return "Invalid id provided";
 
-                model.IsArchieved = true;
+                model.IsArchieved = status;
 
                 foreach (var allocation in model.EquipmentAllocations)
                 {
-                    allocation.IsArchieved = true;
+                    allocation.IsArchieved = status;
                 }
 
                 foreach (var key in model.Keys)
                 {
-                    await ArchieveKey(key.Id);
+                    await SetKeyArchivationStatus(key.Id, status);
                 }
 
                 foreach (var log in model.Logs)
                 {
-                    log.IsArchieved = true;
+                    log.IsArchieved = status;
                 }
 
                 await _unitOfWork.Save();
@@ -112,7 +112,7 @@ namespace temsAPI.Helpers
             }
         }
 
-        public async Task<string> ArchieveKey(string keyId)
+        public async Task<string> SetKeyArchivationStatus(string keyId, bool status)
         {
             try
             {
@@ -126,11 +126,11 @@ namespace temsAPI.Helpers
                 if (model == null)
                     return "Invalid id provided";
 
-                model.IsArchieved = true;
+                model.IsArchieved = status;
 
                 foreach (var allocation in model.KeyAllocations)
                 {
-                    allocation.IsArchieved = true;
+                    allocation.IsArchieved = status;
                 }
                 
                 await _unitOfWork.Save();
@@ -143,7 +143,7 @@ namespace temsAPI.Helpers
             }
         }
 
-        public async Task<string> ArchieveDefinition(string definitionId)
+        public async Task<string> SetDefinitionArchivationStatus(string definitionId, bool status)
         {
             try
             {
@@ -158,16 +158,16 @@ namespace temsAPI.Helpers
                 if (definition == null)
                     return "Invalid definition id provided";
 
-                definition.IsArchieved = true;
+                definition.IsArchieved = status;
 
                 foreach(var child in definition.Children)
                 {
-                    var result = await ArchieveDefinition(child.Id);
+                    var result = await SetDefinitionArchivationStatus(child.Id, status);
                 }
 
                 foreach (var eq in definition.Equipment)
                 {
-                    var result = await ArchieveEquipment(eq.Id);
+                    var result = await SetEquipmentArchivationStatus(eq.Id, status);
                 }
 
                 await _unitOfWork.Save();
@@ -180,7 +180,7 @@ namespace temsAPI.Helpers
             }
         }
 
-        public async Task<string> ArchieveProperty(string propertyId)
+        public async Task<string> SetPropertyArchivationStatus(string propertyId, bool status)
         {
             try
             {
@@ -194,11 +194,11 @@ namespace temsAPI.Helpers
                 if (property == null)
                     return "Invalid id provided";
 
-                property.IsArchieved = true;
+                property.IsArchieved = status;
 
                 foreach(var spec in property.EquipmentSpecifications)
                 {
-                    spec.IsArchieved = true;
+                    spec.IsArchieved = status;
                 }
 
                 await _unitOfWork.Save();
@@ -211,7 +211,7 @@ namespace temsAPI.Helpers
             }
         }
         
-        public async Task<string> ArchieveType(string typeId)
+        public async Task<string> SetTypeArchivationStatus(string typeId, bool status)
         {
             try
             {
@@ -228,16 +228,16 @@ namespace temsAPI.Helpers
                 if (type == null)
                     return "The specified type does not exist";
 
-                type.IsArchieved = true;
+                type.IsArchieved = status;
 
                 foreach(var child in type.Children)
                 {
-                    var result = await ArchieveType(child.Id);
+                    var result = await SetTypeArchivationStatus(child.Id, status);
                 }
 
                 foreach (var def in type.EquipmentDefinitions)
                 {
-                    var result = await ArchieveDefinition(def.Id);
+                    var result = await SetDefinitionArchivationStatus(def.Id, status);
                 }
 
                 await _unitOfWork.Save();
@@ -251,7 +251,7 @@ namespace temsAPI.Helpers
             
         }
 
-        public async Task<string> ArchieveLog(string logId)
+        public async Task<string> SetLogArchivationStatus(string logId, bool status)
         {
             try
             {
@@ -264,7 +264,7 @@ namespace temsAPI.Helpers
                 if (log == null)
                     return "The specified log does not exist";
 
-                log.IsArchieved = true;
+                log.IsArchieved = status;
 
                 await _unitOfWork.Save();
                 return null;
@@ -276,7 +276,7 @@ namespace temsAPI.Helpers
             }
         }
 
-        public async Task<string> ArchievePersonnel(string personnelId)
+        public async Task<string> SetPersonnelArchivationStatus(string personnelId, bool status)
         {
             try
             {
@@ -293,11 +293,11 @@ namespace temsAPI.Helpers
 
 
 
-                personnel.IsArchieved = true;
+                personnel.IsArchieved = status;
 
                 foreach(var item in personnel.PersonnelRoomSupervisories)
                 {
-                    item.IsArchieved = true;
+                    item.IsArchieved = status;
                 }
 
                 await _unitOfWork.Save();
@@ -309,7 +309,5 @@ namespace temsAPI.Helpers
                 return "An error occured while archieving log's related data";
             }
         }
-
-
     }
 }

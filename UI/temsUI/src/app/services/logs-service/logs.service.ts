@@ -40,9 +40,11 @@ export class LogsService extends TEMSService {
     return this.getEntityLogs('any', 'any');
   }
 
-  remove(logId: string): Observable<any>{
+  archieve(logId: string, archivationStatus?: boolean): Observable<any>{
+    if(archivationStatus == undefined) archivationStatus = true; // to be archieved
+
     return this.http.get(
-      API_LOG_URL + '/remove/' + logId,
+      API_LOG_URL + '/archieve/' + logId + '/' + archivationStatus,
       this.httpOptions
     );
   }

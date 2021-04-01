@@ -224,14 +224,14 @@ namespace temsAPI.EquipmentControllers
             }
         }
 
-        [HttpGet("property/remove/{propertyId}")]
+        [HttpGet("property/archieve/{propertyId}/{archivationStatus?}")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
-        public async Task<JsonResult> Remove(string propertyId)
+        public async Task<JsonResult> Archieve(string propertyId, bool archivationStatus = true)
         {
             try
             {
                 var archievingResult = await (new ArchieveHelper(_userManager, _unitOfWork))
-                     .ArchieveProperty(propertyId);
+                     .SetPropertyArchivationStatus(propertyId, archivationStatus);
 
                 if (archievingResult != null)
                     return ReturnResponse(archievingResult, ResponseStatus.Fail);
@@ -241,7 +241,7 @@ namespace temsAPI.EquipmentControllers
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
-                return ReturnResponse("An error occured while removing the property", ResponseStatus.Fail);
+                return ReturnResponse("An error occured while changing the archivation status.", ResponseStatus.Fail);
             }
         }
 

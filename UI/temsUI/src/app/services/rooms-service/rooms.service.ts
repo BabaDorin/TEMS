@@ -63,9 +63,11 @@ export class RoomsService extends TEMSService {
     );
   }
 
-  archieveRoom(roomId: string): Observable<any>{
+  archieveRoom(roomId: string, archivationStatus?: boolean): Observable<any>{
+    if(archivationStatus == undefined) archivationStatus = true; // to be archieved
+
     return this.http.get(
-      API_ROOM_URL + '/archieve/' + roomId,
+      API_ROOM_URL + '/archieve/' + roomId + '/' + archivationStatus,
       this.httpOptions
     )
   }

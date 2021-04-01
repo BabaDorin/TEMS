@@ -41,9 +41,11 @@ export class PersonnelService extends TEMSService {
     );
   }
 
-  archievePersonnel(personnelId: string): Observable<any>{
+  archievePersonnel(personnelId: string, archivationStatus?: boolean): Observable<any>{
+    if(archivationStatus == undefined) archivationStatus = true; // to be archieved
+
     return this.http.get(
-      API_PERS_URL + '/archieve/' + personnelId,
+      API_PERS_URL + '/archieve/' + personnelId + '/' + archivationStatus,
       this.httpOptions
     );
   }

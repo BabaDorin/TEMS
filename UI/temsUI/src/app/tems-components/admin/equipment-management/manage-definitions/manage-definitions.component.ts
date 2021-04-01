@@ -61,7 +61,7 @@ export class ManageDefinitionsComponent extends TEMSComponent implements OnInit 
 
     this.unsubscribeFromAll();
     this.subscriptions.push(
-      this.equipmentService.removeDefinition(definitionId)
+      this.equipmentService.archieveDefinition(definitionId)
       .subscribe(result => {
         if(result.status == 1)
           this.definitions.splice(index, 1);

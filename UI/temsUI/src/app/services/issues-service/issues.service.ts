@@ -31,9 +31,11 @@ export class IssuesService extends TEMSService {
     );
   }
 
-  remove(issueId: string): Observable<any>{
+  archieve(issueId: string, archivationStatus?: boolean): Observable<any>{
+    if(archivationStatus == undefined) archivationStatus = true; // to be archieved
+
     return this.http.get(
-      API_ISU_URL + '/remove/' + issueId,
+      API_ISU_URL + '/archieve/' + issueId + '/' + archivationStatus,
       this.httpOptions
     );
   }

@@ -75,9 +75,11 @@ export class ReportService extends TEMSService {
     );
   }
 
-  removeTemplate(reportTemplateId: string): Observable<any>{
+  archieveTemplate(reportTemplateId: string, archivationStatus?: Boolean): Observable<any>{
+    if(archivationStatus == undefined) archivationStatus = true; // to be archieved
+
     return this.http.get(
-      API_REP_URL + '/removetemplate/' + reportTemplateId,
+      API_REP_URL + '/archieveTemplate/' + reportTemplateId + '/' + archivationStatus,
       this.httpOptions
     );
   }

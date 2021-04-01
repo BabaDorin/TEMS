@@ -107,7 +107,7 @@ export class EntityLogsListComponent extends TEMSComponent implements OnInit {
       return;
 
     this.subscriptions.push(
-      this.logsService.remove(logId)
+      this.logsService.archieve(logId)
       .subscribe(result => {
         console.log(result);
         this.snackService.snack(result);

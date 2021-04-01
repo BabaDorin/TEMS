@@ -77,9 +77,11 @@ export class AllocationService extends TEMSService{
     );
   }
 
-  remove(allocationId: string): Observable<any>{
+  archieve(allocationId: string, archivationStatus?: boolean): Observable<any>{
+    if(archivationStatus == undefined) archivationStatus = true; // to be archieved
+    
     return this.http.get(
-      API_ALL_URL + '/remove/' + allocationId,
+      API_ALL_URL + '/archieve/' + allocationId + '/' + archivationStatus, 
       this.httpOptions
     );
   }

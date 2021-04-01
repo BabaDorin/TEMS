@@ -170,7 +170,7 @@ export class EntityAllocationsListComponent extends TEMSComponent implements OnI
       return;
     
     this.subscriptions.push(
-      this.allocationService.remove(allocationId)
+      this.allocationService.archieve(allocationId)
       .subscribe(result => {
         this.snackService.snack(result);
 

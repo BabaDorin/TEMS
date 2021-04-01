@@ -46,7 +46,7 @@ export class ViewUsersComponent extends TEMSComponent implements OnInit {
 
     console.log(index);
     this.subscriptions.push(
-      this.userService.removeUser(userId)
+      this.userService.archieveUser(userId)
       .subscribe(result => {
         if(result.status == 1)
           this.users.splice(index, 1);

@@ -127,13 +127,8 @@ export class EntityIssuesListComponent extends TEMSComponent implements OnInit, 
         let difference = new Date(this.issues[index].dateClosed).getHours() - new Date(this.issues[index].dateCreated).getHours();  
         
         alert(difference);
-        if(difference <= 24){
-          confetti.create(undefined, { resize: true, useWorker: true })({
-            particleCount: 130,
-            spread: 130,
-            origin: { y: 0.6 }
-          });
-        }
+        if(difference <= 24)
+          this.launchConfetti();
 
         this.snackService.snack({message: "🎉🎉 Let's close them all!", status: 1}, 'default-snackbar')
       })
@@ -193,7 +188,7 @@ export class EntityIssuesListComponent extends TEMSComponent implements OnInit, 
       return;
 
     this.subscriptions.push(
-      this.issuesService.remove(issueId)
+      this.issuesService.archieve(issueId)
       .subscribe(result => {
         this.snackService.snack(result);
 
@@ -203,21 +198,12 @@ export class EntityIssuesListComponent extends TEMSComponent implements OnInit, 
     )
   }
 
-  // // confetti
-  // @ViewChild('myCanvas')
-  // myCanvas: ElementRef<HTMLCanvasElement>;
-  // launchConfetti(){
-  //   var myConfetti = confetti.create(this.myCanvas.nativeElement.getContext('2d'), {
-  //     resize: true,
-  //     useWorker: true
-  //   });
-  //   myConfetti({
-  //     particleCount: 100,
-  //     spread: 160
-  //     // any other options from the global
-  //     // confetti function
-  //   });
-  // }
-
+  launchConfetti(){
+    confetti.create(undefined, { resize: true, useWorker: true })({
+      particleCount: 130,
+      spread: 130,
+      origin: { y: 0.6 }
+    });
+  }
 }
 

@@ -91,12 +91,12 @@ namespace temsAPI.Controllers.CommunicationControllers
 
         [HttpGet("/log/remove/{logId}")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
-        public async Task<JsonResult> Remove(string logId)
+        public async Task<JsonResult> Archieve(string logId)
         {
             try
             {
                 string archievingResult = await (new ArchieveHelper(_userManager, _unitOfWork))
-                    .ArchieveLog(logId);
+                    .SetLogArchivationStatus(logId, true);
                 if (archievingResult != null)
                     return ReturnResponse(archievingResult, ResponseStatus.Fail);
 

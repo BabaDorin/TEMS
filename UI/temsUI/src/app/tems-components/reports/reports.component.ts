@@ -44,7 +44,7 @@ export class ReportsComponent extends TEMSComponent implements OnInit {
       return;
     
     this.subscriptions.push(
-      this.reportService.removeTemplate(templateId)
+      this.reportService.archieveTemplate(templateId)
       .subscribe(result => {
         if(result.status == 1)
           this.defaultTemplates.splice(index, 1);

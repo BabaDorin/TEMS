@@ -94,7 +94,7 @@ namespace temsAPI.Controllers.PersonnelControllers
             try
             {
                 var archievingResult = await (new ArchieveHelper(_userManager, _unitOfWork))
-                    .ArchievePersonnel(personnelId);
+                    .SetPersonnelArchivationStatus(personnelId, true);
                 if (archievingResult != null)
                     return ReturnResponse(archievingResult, ResponseStatus.Fail);
 

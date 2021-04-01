@@ -4,11 +4,12 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
+using temsAPI.Contracts;
 using temsAPI.Data.Entities.OtherEntities;
 
 namespace temsAPI.Data.Entities.EquipmentEntities
 {
-    public class EquipmentAllocation
+    public class EquipmentAllocation: IArchiveable, IIdentifiable
     {
         [Key]
         public string Id { get; set; }
@@ -17,7 +18,14 @@ namespace temsAPI.Data.Entities.EquipmentEntities
         public Equipment Equipment { get; set; }
         public string EquipmentID { get; set; }
         public DateTime DateAllocated { get; set; }
-        public bool IsArchieved { get; set; }
+        public DateTime DateArchieved { get; set; }
+        private bool isArchieved;
+        public bool IsArchieved
+        {
+            get { return isArchieved; }
+            set { isArchieved = value; DateArchieved = DateTime.Now; }
+        }
+
 
 #nullable enable
         [ForeignKey("PersonnelID")]
@@ -34,7 +42,11 @@ namespace temsAPI.Data.Entities.EquipmentEntities
             get => (Room == null) ? Personnel.Name : Room.Identifier;
         }
 
+        [NotMapped]
+        public string Identifier => $"{Equipment.TemsIdOrSerialNumber} (${Equipment.Identifier}): ${Assignee}";
+
         public DateTime? DateReturned { get; set; }
+
 #nullable disable
     }
 }

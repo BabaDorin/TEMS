@@ -5,15 +5,22 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.Design.Serialization;
 using System.Linq;
 using System.Threading.Tasks;
+using temsAPI.Contracts;
 using temsAPI.Data.Entities.CommunicationEntities;
 using temsAPI.Data.Entities.EquipmentEntities;
 using temsAPI.Data.Entities.OtherEntities;
 
 namespace temsAPI.Data.Entities.UserEntities
 {
-    public class TEMSUser : IdentityUser
+    public class TEMSUser : IdentityUser, IArchiveable, IIdentifiable
     {
-        public bool IsArchieved { get; set; }
+        public DateTime DateArchieved { get; set; }
+        private bool isArchieved;
+        public bool IsArchieved
+        {
+            get { return isArchieved; }
+            set { isArchieved = value; DateArchieved = DateTime.Now; }
+        }
         public string FullName { get; set; }
 
 #nullable enable
@@ -27,5 +34,8 @@ namespace temsAPI.Data.Entities.UserEntities
         public virtual ICollection<Ticket> AssignedTickets { get; set; }
         public virtual ICollection<Ticket> CreatedTickets { get; set; }
         public virtual ICollection<Equipment> RegisteredEquipments { get; set; }
+
+        [NotMapped]
+        public string Identifier => FullName ?? UserName;
     }
 }

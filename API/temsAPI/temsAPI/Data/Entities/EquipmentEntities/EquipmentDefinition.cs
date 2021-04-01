@@ -5,12 +5,13 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
+using temsAPI.Contracts;
 using temsAPI.Data.Entities.Report;
 
 namespace temsAPI.Data.Entities.EquipmentEntities
 {
     [Index(nameof(Identifier))]
-    public class EquipmentDefinition
+    public class EquipmentDefinition: IArchiveable, IIdentifiable
     {
         [Key]
         public string Id { get; set; }
@@ -32,7 +33,14 @@ namespace temsAPI.Data.Entities.EquipmentEntities
 
 #nullable disable
 
-        public bool IsArchieved { get; set; }
+        public DateTime DateArchieved { get; set; }
+        private bool isArchieved;
+        public bool IsArchieved
+        {
+            get { return isArchieved; }
+            set { isArchieved = value; DateArchieved = DateTime.Now; }
+        }
+
         public virtual ICollection<Equipment> Equipment { get; set; } = new List<Equipment>();
         public virtual ICollection<EquipmentSpecifications> EquipmentSpecifications { get; set; } = new List<EquipmentSpecifications>();
         public virtual ICollection<EquipmentDefinition> Children { get; set; } = new List<EquipmentDefinition>();

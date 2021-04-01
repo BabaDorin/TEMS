@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.UserEntities;
+using temsAPI.ViewModels;
 
 namespace temsAPI.Controllers
 {
@@ -39,6 +40,13 @@ namespace temsAPI.Controllers
         protected JsonResult ReturnResponse(string message, ResponseStatus status)
         {
             return Json(new { Message = message, Status = status });
+        }
+        
+        public async Task<List<IArchiveable>> GetArchievedItems(IGenericRepository<IArchiveable> repository) 
+        {
+            return (await repository.FindAll<IArchiveable>(
+                    where: q => q.IsArchieved == true
+                )).ToList();
         }
     }
 }

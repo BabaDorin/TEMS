@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
+using temsAPI.Contracts;
 using temsAPI.Data.Entities.CommunicationEntities;
 using temsAPI.Data.Entities.EquipmentEntities;
 using temsAPI.Data.Entities.KeyEntities;
@@ -11,7 +12,7 @@ using temsAPI.Data.Entities.Report;
 
 namespace temsAPI.Data.Entities.OtherEntities
 {
-    public class Room
+    public class Room : IArchiveable, IIdentifiable
     {
         [Key]
         public string Id { get; set; }
@@ -23,7 +24,13 @@ namespace temsAPI.Data.Entities.OtherEntities
         public string? Description { get; set; }
 #nullable disable
 
-        public bool IsArchieved { get; set; }
+        public DateTime DateArchieved { get; set; }
+        private bool isArchieved;
+        public bool IsArchieved
+        {
+            get { return isArchieved; }
+            set { isArchieved = value; DateArchieved = DateTime.Now; }
+        }
 
         public virtual ICollection<EquipmentAllocation> EquipmentAllocations { get; set; } = new List<EquipmentAllocation>();
         public virtual ICollection<PersonnelRoomSupervisory> PersonnelRoomSupervisories { get; set; } = new List<PersonnelRoomSupervisory>();

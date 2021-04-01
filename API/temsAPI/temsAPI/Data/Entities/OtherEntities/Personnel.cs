@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
+using temsAPI.Contracts;
 using temsAPI.Data.Entities.CommunicationEntities;
 using temsAPI.Data.Entities.EquipmentEntities;
 using temsAPI.Data.Entities.KeyEntities;
@@ -12,7 +13,7 @@ using temsAPI.Data.Entities.UserEntities;
 
 namespace temsAPI.Data.Entities.OtherEntities
 {
-    public class Personnel
+    public class Personnel: IArchiveable, IIdentifiable
     {
         [Key]
         public string Id { get; set; }
@@ -29,7 +30,13 @@ namespace temsAPI.Data.Entities.OtherEntities
         public string? TEMSUserId { get; set; }
 #nullable disable
 
-        public bool IsArchieved { get; set; }
+        public DateTime DateArchieved { get; set; }
+        private bool isArchieved;
+        public bool IsArchieved
+        {
+            get { return isArchieved; }
+            set { isArchieved = value; DateArchieved = DateTime.Now; }
+        }
 
         public virtual ICollection<EquipmentAllocation> EquipmentAllocations { get; set; } = new List<EquipmentAllocation>();
         public virtual ICollection<PersonnelRoomSupervisory> PersonnelRoomSupervisories { get; set; } = new List<PersonnelRoomSupervisory>();
@@ -43,6 +50,8 @@ namespace temsAPI.Data.Entities.OtherEntities
         [InverseProperty("Personnel")]
         public virtual ICollection<ReportTemplate> ReportTemplatesMember { get; set; } = new List<ReportTemplate>();
 
+        [NotMapped]
+        public string Identifier => Name;
 
         // BEFREE: Add multiple Emails and Phone numbers support later if needed.
     }

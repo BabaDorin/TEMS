@@ -5,11 +5,12 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
+using temsAPI.Contracts;
 
 namespace temsAPI.Data.Entities.EquipmentEntities
 {
     [Index(nameof(EquipmentDefinitionID))]
-    public class EquipmentSpecifications
+    public class EquipmentSpecifications: IArchiveable
     {
         // Which properties relates to which equipment types.
 
@@ -25,7 +26,13 @@ namespace temsAPI.Data.Entities.EquipmentEntities
         public Property Property { get; set; }
         public string PropertyID { get; set; }
 
-        public bool IsArchieved { get; set; }
+        public DateTime DateArchieved { get; set; }
+        private bool isArchieved;
+        public bool IsArchieved
+        {
+            get { return isArchieved; }
+            set { isArchieved = value; DateArchieved = DateTime.Now; }
+        }
 
 #nullable enable
         public string? Value { get; set; }

@@ -4,11 +4,12 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
+using temsAPI.Contracts;
 using temsAPI.Data.Entities.EquipmentEntities;
 
 namespace temsAPI.Data.Entities.OtherEntities
 {
-    public class PersonnelRoomSupervisory
+    public class PersonnelRoomSupervisory: IArchiveable, IIdentifiable
     {
         [Key]
         public string Id { get; set; }
@@ -20,11 +21,14 @@ namespace temsAPI.Data.Entities.OtherEntities
         [ForeignKey("RoomID")]
         public Room Room { get; set; }
         public string RoomID { get; set; }
-        public bool IsArchieved { get; set; }
+        public DateTime DateArchieved { get; set; }
+        private bool isArchieved;
+        public bool IsArchieved
+        {
+            get { return isArchieved; }
+            set { isArchieved = value; DateArchieved = DateTime.Now; }
+        }
 
-        public DateTime DateSet { get; set; }
-#nullable enable
-        public DateTime? DateCanceled { get; set; }
-#nullable disable 
+        public string Identifier => $"{Personnel.Name} - {Room.Identifier}";
     }
 }

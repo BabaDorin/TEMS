@@ -5,18 +5,25 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
+using temsAPI.Contracts;
 using temsAPI.Data.Entities.OtherEntities;
 
 namespace temsAPI.Data.Entities.KeyEntities
 {
-    public class Key
+    public class Key: IArchiveable, IIdentifiable
     {
         [Key]
         public string Id { get; set; }
 
         public string Identifier { get; set; }
         //public int Copies { get; set; } = 0;
-        public bool IsArchieved { get; set; }
+        public DateTime DateArchieved { get; set; }
+        private bool isArchieved;
+        public bool IsArchieved
+        {
+            get { return isArchieved; }
+            set { isArchieved = value; DateArchieved = DateTime.Now; }
+        }
 
 #nullable enable
         public string? Description { get; set; }

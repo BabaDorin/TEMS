@@ -4,17 +4,24 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
+using temsAPI.Contracts;
 using temsAPI.Data.Entities.Report;
 
 namespace temsAPI.Data.Entities.EquipmentEntities
 {
-    public class Property
+    public class Property: IArchiveable, IIdentifiable
     {
         [Key]
         public string Id { get; set; }
         public string Name { get; set; }
         public bool Required { get; set; } = false;
-        public bool IsArchieved { get; set; }
+        public DateTime DateArchieved { get; set; }
+        private bool isArchieved;
+        public bool IsArchieved
+        {
+            get { return isArchieved; }
+            set { isArchieved = value; DateArchieved = DateTime.Now; }
+        }
 
 #nullable enable
         public string? Description { get; set; }
@@ -33,6 +40,9 @@ namespace temsAPI.Data.Entities.EquipmentEntities
         public virtual ICollection<EquipmentType> EquipmentTypes { get; set; } = new List<EquipmentType>();
         public virtual ICollection<EquipmentSpecifications> EquipmentSpecifications { get; set; } = new List<EquipmentSpecifications>();
         public virtual ICollection<ReportTemplate> ReportTemplatesMemberOf { get; set; } = new List<ReportTemplate>();
+
+        [NotMapped]
+        public string Identifier => DisplayName;
 
     }
 }

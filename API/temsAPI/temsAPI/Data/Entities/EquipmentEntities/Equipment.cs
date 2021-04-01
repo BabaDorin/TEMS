@@ -1,10 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
+using temsAPI.Contracts;
 using temsAPI.Data.Entities.CommunicationEntities;
 using temsAPI.Data.Entities.OtherEntities;
 using temsAPI.Data.Entities.UserEntities;
@@ -13,7 +15,7 @@ namespace temsAPI.Data.Entities.EquipmentEntities
 {
     [Index(nameof(TEMSID))]
     [Index(nameof(SerialNumber))]
-    public class Equipment
+    public class Equipment : IArchiveable, IIdentifiable
     {
         [Key]
         public string Id { get; set; }
@@ -44,10 +46,19 @@ namespace temsAPI.Data.Entities.EquipmentEntities
 
         public bool IsDefect { get; set; }
         public bool IsUsed { get; set; }
-        public bool IsArchieved { get; set; }
+        public DateTime DateArchieved { get; set; }
+        private bool isArchieved;
+        public bool IsArchieved
+        {
+            get { return isArchieved; }
+            set { isArchieved = value; DateArchieved = DateTime.Now; }
+        }
 
         [NotMapped]
         public string TemsIdOrSerialNumber { get { return TEMSID ?? SerialNumber; } }
+        
+        [NotMapped]
+        public string Identifier { get => this.TemsIdOrSerialNumber; }
 
         public virtual ICollection<Log> Logs { get; set; } = new List<Log>();
         public virtual ICollection<Ticket> Tickets { get; set; } = new List<Ticket>();

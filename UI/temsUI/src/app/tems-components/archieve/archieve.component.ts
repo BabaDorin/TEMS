@@ -23,13 +23,11 @@ export class ArchieveComponent extends TEMSComponent implements OnInit {
     'Keys',
     'Report templates',
     'Equipment Allocations',
-    'Equipment Logs',
-    'Room Logs',
-    'Personnel Logs',
+    'Logs',
     'Key allocations',
     'Properties',
-    'Types',
-    'Definitions',
+    'Equipment Types',
+    'Equipment Definitions',
   ]
 
   constructor(
@@ -47,8 +45,18 @@ export class ArchieveComponent extends TEMSComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.CheckUrlAndFetchArchievedItems(this.router.url);
+
     this.location.onUrlChange(url => {
-      this.selectedType = url.split('?itemType=')[1];
+      this.CheckUrlAndFetchArchievedItems(url);
+    });
+  }
+
+  CheckUrlAndFetchArchievedItems(url){
+    if(url == undefined)
+      return;
+    
+    this.selectedType = url.split('?itemType=')[1];
       console.log(this.selectedType);
 
       if(this.selectedType == undefined || this.selectedType.length == 0)
@@ -63,6 +71,5 @@ export class ArchieveComponent extends TEMSComponent implements OnInit {
           this.archievedItems = result;
         })      
       )
-    });
   }
 }

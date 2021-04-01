@@ -12,7 +12,7 @@ using temsAPI.Data.Entities.Report;
 
 namespace temsAPI.Data.Entities.OtherEntities
 {
-    public class Room : IArchiveable, IIdentifiable
+    public class Room : IArchiveableItem
     {
         [Key]
         public string Id { get; set; }

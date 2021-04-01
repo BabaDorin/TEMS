@@ -9,7 +9,7 @@ using temsAPI.Data.Entities.Report;
 
 namespace temsAPI.Data.Entities.EquipmentEntities
 {
-    public class Property: IArchiveable, IIdentifiable
+    public class Property: IArchiveableItem
     {
         [Key]
         public string Id { get; set; }

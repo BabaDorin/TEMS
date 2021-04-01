@@ -13,7 +13,7 @@ using temsAPI.Data.Entities.UserEntities;
 
 namespace temsAPI.Data.Entities.OtherEntities
 {
-    public class Personnel: IArchiveable, IIdentifiable
+    public class Personnel: IArchiveableItem
     {
         [Key]
         public string Id { get; set; }

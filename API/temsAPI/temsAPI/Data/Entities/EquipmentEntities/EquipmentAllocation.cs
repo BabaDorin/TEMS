@@ -9,7 +9,7 @@ using temsAPI.Data.Entities.OtherEntities;
 
 namespace temsAPI.Data.Entities.EquipmentEntities
 {
-    public class EquipmentAllocation: IArchiveable, IIdentifiable
+    public class EquipmentAllocation: IArchiveableItem
     {
         [Key]
         public string Id { get; set; }
@@ -39,11 +39,11 @@ namespace temsAPI.Data.Entities.EquipmentEntities
         [NotMapped]
         public string Assignee
         {
-            get => (Room == null) ? Personnel.Name : Room.Identifier;
+            get => (Room == null) ? Personnel?.Name : Room?.Identifier;
         }
 
         [NotMapped]
-        public string Identifier => $"{Equipment.TemsIdOrSerialNumber} (${Equipment.Identifier}): ${Assignee}";
+        public string Identifier => $"Identifier: {Equipment?.TemsIdOrSerialNumber} (${Equipment?.Identifier}): ${Assignee ?? "No assignee found"}";
 
         public DateTime? DateReturned { get; set; }
 

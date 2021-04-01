@@ -9,7 +9,7 @@ using temsAPI.Data.Entities.OtherEntities;
 
 namespace temsAPI.Data.Entities.KeyEntities
 {
-    public class KeyAllocation: IArchiveable, IIdentifiable
+    public class KeyAllocation: IArchiveableItem
     {
         [Key]
         public string Id { get; set; }
@@ -37,7 +37,7 @@ namespace temsAPI.Data.Entities.KeyEntities
 #nullable disable
 
         [NotMapped]
-        public string Identifier => $"Key: {Key.Identifier}, Personnel: {Personnel.Name}";
+        public string Identifier => $"Key: {Key?.Identifier}, Personnel: {Personnel?.Name}";
 
     }
 }

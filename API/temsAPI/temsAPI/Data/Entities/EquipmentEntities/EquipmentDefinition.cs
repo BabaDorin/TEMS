@@ -11,7 +11,7 @@ using temsAPI.Data.Entities.Report;
 namespace temsAPI.Data.Entities.EquipmentEntities
 {
     [Index(nameof(Identifier))]
-    public class EquipmentDefinition: IArchiveable, IIdentifiable
+    public class EquipmentDefinition: IArchiveableItem
     {
         [Key]
         public string Id { get; set; }

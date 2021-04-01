@@ -10,7 +10,7 @@ using temsAPI.Data.Entities.OtherEntities;
 
 namespace temsAPI.Data.Entities.KeyEntities
 {
-    public class Key: IArchiveable, IIdentifiable
+    public class Key: IArchiveableItem
     {
         [Key]
         public string Id { get; set; }

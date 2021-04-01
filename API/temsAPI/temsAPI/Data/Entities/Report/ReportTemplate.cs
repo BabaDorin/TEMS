@@ -11,7 +11,7 @@ using temsAPI.Data.Entities.UserEntities;
 
 namespace temsAPI.Data.Entities.Report
 {
-    public class ReportTemplate: IArchiveable, IIdentifiable
+    public class ReportTemplate: IArchiveableItem
     {
         [Key]
         public string Id { get; set; }

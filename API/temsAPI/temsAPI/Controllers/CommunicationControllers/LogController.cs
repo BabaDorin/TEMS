@@ -89,14 +89,14 @@ namespace temsAPI.Controllers.CommunicationControllers
             }
         }
 
-        [HttpGet("/log/remove/{logId}")]
+        [HttpGet("/log/archieve/{logId}/{archivationStatus?}")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
-        public async Task<JsonResult> Archieve(string logId)
+        public async Task<JsonResult> Archieve(string logId, bool archivationStatus = true)
         {
             try
             {
                 string archievingResult = await (new ArchieveHelper(_userManager, _unitOfWork))
-                    .SetLogArchivationStatus(logId, true);
+                    .SetLogArchivationStatus(logId, archivationStatus);
                 if (archievingResult != null)
                     return ReturnResponse(archievingResult, ResponseStatus.Fail);
 
@@ -105,7 +105,7 @@ namespace temsAPI.Controllers.CommunicationControllers
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
-                return ReturnResponse("An error occured while removing the log", ResponseStatus.Fail);
+                return ReturnResponse("An error occured while changing the archivation status.", ResponseStatus.Fail);
             }
         }
 

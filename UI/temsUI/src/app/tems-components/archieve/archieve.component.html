@@ -1,0 +1,33 @@
+<div class="card">
+  <div class="card-body">
+    <div class="card-title">View Archieved items</div>
+    <p class="text-mute">Note: All of archieved items will get deleted after 30 days.</p>
+    <hr>
+    <mat-form-field>
+      <mat-label>Items' type</mat-label>
+      <mat-select [(ngModel)]="selectedType" (selectionChange)="onTypeChanged()">
+        <mat-option *ngFor="let type of types" [value]="type">{{ type }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <ng-container *ngIf="archievedItems != undefined">
+      <br>
+
+      <div 
+      class="card" 
+      *ngFor="let item of archievedItems | paginate: { itemsPerPage: 20, currentPage: p1, id: 'items' }; let i = index">
+        <div class="card-body">
+          <div class="container">
+            <div class="row">
+              <div class="col-md-10 col-sm-12">
+                <p><b>{{ item.label }}</b></p>
+              </div>
+              <div class="col-md-2 col-sm-12">
+                <button mat-button>Dearchive</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</div>

@@ -354,14 +354,14 @@ namespace temsAPI.Controllers.EquipmentControllers
             }
         }
 
-        [HttpGet("equipmentdefinition/remove/{definitionId}")]
+        [HttpGet("equipmentdefinition/archieve/{definitionId}/{archivationStatus?}")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
-        public async Task<JsonResult> Remove(string definitionId)
+        public async Task<JsonResult> Archieve(string definitionId, bool archivationStatus = true)
         {
             try
             {
                 var archievingResult = await (new ArchieveHelper(_userManager, _unitOfWork))
-                    .ArchieveDefinition(definitionId);
+                    .SetDefinitionArchivationStatus(definitionId, archivationStatus);
 
                 if (archievingResult != null)
                     return ReturnResponse(archievingResult, ResponseStatus.Fail);
@@ -371,7 +371,7 @@ namespace temsAPI.Controllers.EquipmentControllers
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
-                return ReturnResponse("An error occured while deleting the specified definition", ResponseStatus.Fail);
+                return ReturnResponse("An error occured while changing the archivation status.", ResponseStatus.Fail);
             }
         }
 

@@ -32,7 +32,6 @@ import { TagInputModule } from 'ngx-chips';
 import { MatDialogModule } from '@angular/material/dialog';
 import { TEMSComponent } from './tems/tems.component';
 import { TemsFormsModule } from './modules/tems-forms/tems-forms.module';
-import { ViewDefinitionComponent } from './tems-components/equipment/view-definition/view-definition.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { SnackComponent } from './public/snack/snack.component';
 import { DefinitionService } from './services/definition-service/definition.service';
@@ -50,7 +49,6 @@ import { DefinitionService } from './services/definition-service/definition.serv
     ContentAnimateDirective,
     QuickAccessComponent,
     TEMSComponent,
-    ViewDefinitionComponent,
     SnackComponent,
     ],
   imports: [

@@ -339,6 +339,15 @@ export class MenuService {
       isShown: this.hasClaim(CAN_VIEW_ENTITIES) || this.hasClaim(CAN_MANAGE_ENTITIES),
       showSubmenu: false,
       submenu: []
+    },
+    {
+      path: '/archieve',
+      title: 'Archieve',
+      icon: 'mdi mdi-chart-bar menu-icon',
+      isActive: false,
+      isShown: this.hasClaim(CAN_MANAGE_ENTITIES),
+      showSubmenu: false,
+      submenu: []
     }
   ];
 }

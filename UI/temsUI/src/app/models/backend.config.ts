@@ -16,6 +16,8 @@ export const API_ROLE_URL = API_URL + '/userrole';
 export const API_AUTH_URL = API_URL + '/authentication';
 export const API_REP_URL = API_URL + '/report';
 export const API_EMAIL_URL = API_URL + '/email';
+export const API_ARCH_URL = API_URL + '/archieve';
+
 
 export interface IEntityCollection{
     roomIds?: string[];

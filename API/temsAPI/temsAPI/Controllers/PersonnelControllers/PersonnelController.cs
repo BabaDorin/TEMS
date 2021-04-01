@@ -87,14 +87,14 @@ namespace temsAPI.Controllers.PersonnelControllers
             }
         }
 
-        [HttpGet("/personnel/archieve/{personnelId}")]
+        [HttpGet("/personnel/archieve/{personnelId}/{archivationStatus?}")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
-        public async Task<JsonResult> Archieve(string personnelId)
+        public async Task<JsonResult> Archieve(string personnelId, bool archivationStatus = true)
         {
             try
             {
                 var archievingResult = await (new ArchieveHelper(_userManager, _unitOfWork))
-                    .SetPersonnelArchivationStatus(personnelId, true);
+                    .SetPersonnelArchivationStatus(personnelId, archivationStatus);
                 if (archievingResult != null)
                     return ReturnResponse(archievingResult, ResponseStatus.Fail);
 
@@ -103,7 +103,7 @@ namespace temsAPI.Controllers.PersonnelControllers
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
-                return ReturnResponse("An error occured while archieving personnel's related data", ResponseStatus.Fail);
+                return ReturnResponse("An error occured while changing the archivation status.", ResponseStatus.Fail);
             }
         }
 

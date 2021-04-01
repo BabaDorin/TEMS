@@ -168,13 +168,13 @@ namespace temsAPI.Controllers.RoomControllers
         }
 
 
-        [HttpGet("room/archieve/{roomId}")]
-        public async Task<JsonResult> Archieve(string roomId)
+        [HttpGet("room/archieve/{roomId}/{archivationStatus?}")]
+        public async Task<JsonResult> Archieve(string roomId, bool archivationStatus = true)
         {
             try
             {
                 var archievingResult = await (new ArchieveHelper(_userManager, _unitOfWork))
-                    .ArchieveRoom(roomId);
+                    .SetRoomArchivationStatus(roomId, archivationStatus);
                 if (archievingResult != null)
                     return ReturnResponse(archievingResult, ResponseStatus.Fail);
 
@@ -183,7 +183,7 @@ namespace temsAPI.Controllers.RoomControllers
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
-                return ReturnResponse("An error occured while archieving the room", ResponseStatus.Fail);
+                return ReturnResponse("An error occured while changing the archivation status.", ResponseStatus.Fail);
             }
         }
 

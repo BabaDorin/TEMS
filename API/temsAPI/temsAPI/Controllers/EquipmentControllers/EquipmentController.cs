@@ -329,14 +329,14 @@ namespace temsAPI.Controllers.EquipmentControllers
             }
         }
 
-        [HttpGet("equipment/archieve/{equipmentId}")]
+        [HttpGet("equipment/archieve/{equipmentId}/{archivationStatus?}")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
-        public async Task<JsonResult> Archieve(string equipmentId)
+        public async Task<JsonResult> Archieve(string equipmentId, bool archivationStatus = true)
         {
             try
             {
                 string archievingResult = await (new ArchieveHelper(_userManager, _unitOfWork))
-                    .ArchieveEquipment(equipmentId);
+                    .SetEquipmentArchivationStatus(equipmentId, archivationStatus);
 
                 if (archievingResult != null)
                     return ReturnResponse(archievingResult, ResponseStatus.Fail);
@@ -346,7 +346,7 @@ namespace temsAPI.Controllers.EquipmentControllers
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
-                return ReturnResponse("An error occured while archieving the equipment", ResponseStatus.Fail);
+                return ReturnResponse("An error occured while changing the archivation status.", ResponseStatus.Fail);
             }
         }
 

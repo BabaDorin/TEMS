@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data;
 
-namespace leave_management.Repository
+namespace temsAPI.Repository
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : class
     {

@@ -5,9 +5,8 @@ using System.Threading.Tasks;
 
 namespace temsAPI.Contracts
 {
-    public interface IIdentifiable
+    public interface IArchiveableItem: IArchiveable, IIdentifiable
     {
-        string Id { get; set; }
-        string Identifier { get; }
+
     }
 }

@@ -1,3 +1,4 @@
+import { NgxPaginationModule } from 'ngx-pagination';
 import { TemsFormsModule } from './../tems-forms/tems-forms.module';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -14,6 +15,7 @@ import { ArchieveComponent } from 'src/app/tems-components/archieve/archieve.com
     CommonModule,
     ArchieveRoutingModule,
     TemsFormsModule,
+    NgxPaginationModule,
   ]
 })
 export class ArchieveModule { }

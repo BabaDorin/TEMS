@@ -15,7 +15,7 @@ namespace temsAPI.Data.Entities.EquipmentEntities
 {
     [Index(nameof(TEMSID))]
     [Index(nameof(SerialNumber))]
-    public class Equipment : IArchiveable, IIdentifiable
+    public class Equipment : IArchiveableItem
     {
         [Key]
         public string Id { get; set; }

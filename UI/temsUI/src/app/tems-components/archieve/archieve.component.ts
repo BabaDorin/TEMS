@@ -59,23 +59,7 @@ export class ArchieveComponent extends TEMSComponent implements OnInit {
         .subscribe(result =>{
           if(this.snackService.snackIfError(result))
             return;
-          this.archievedItems = result;
-        })      
-      )
-    });
-    
-    this.route.params.subscribe(params => {
-      this.selectedType = params['itemType'];
-      console.log(this.selectedType);
-
-      if(this.selectedType == undefined || this.selectedType.length == 0)
-        return;
-
-      this.subscriptions.push(
-        this.archieveService.getArchievedItems(this.selectedType)
-        .subscribe(result =>{
-          if(this.snackService.snackIfError(result))
-            return;
+            console.log(result);
           this.archievedItems = result;
         })      
       )

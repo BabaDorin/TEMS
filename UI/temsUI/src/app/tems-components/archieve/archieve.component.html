@@ -12,22 +12,23 @@
     <ng-container *ngIf="archievedItems != undefined">
       <br>
 
-      <div 
-      class="card" 
-      *ngFor="let item of archievedItems | paginate: { itemsPerPage: 20, currentPage: p1, id: 'items' }; let i = index">
-        <div class="card-body">
-          <div class="container">
-            <div class="row">
-              <div class="col-md-10 col-sm-12">
-                <p><b>{{ item.label }}</b></p>
-              </div>
-              <div class="col-md-2 col-sm-12">
-                <button mat-button>Dearchive</button>
-              </div>
-            </div>
+      <div class="container">
+        <div *ngFor="let item of archievedItems | paginate: { itemsPerPage: 20, currentPage: p1, id: 'items' }; let i =
+        index" class="m-3">
+        <div class="row">
+          <div class="col-md-6 col-sm-12">
+            <p>{{ item.label }}</p>
+          </div>
+          <div class="col-md-4 col-sm-12">
+            <p>Date archieved: {{ item.additional | date:'short' }}</p>
+          </div>
+          <div class="col-md-2 col-sm-12">
+            <button mat-button>Dearchive</button>
           </div>
         </div>
+        </div>
       </div>
+      <pagination-controls (pageChange)="p1 = $event" id="items"></pagination-controls>
     </ng-container>
   </div>
 </div>

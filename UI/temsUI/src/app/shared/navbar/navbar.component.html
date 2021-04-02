@@ -89,9 +89,8 @@
             </div>
           </a>
           <div class="dropdown-menu navbar-dropdown" ngbDropdownMenu aria-labelledby="profileDropdown">
-            <a class="dropdown-item" href="javascript:;">
-              <i class="mdi mdi-cached mr-2 text-success"></i>
-              Activity Log
+            <a class="dropdown-item" routerLink="profile/view">
+              <mat-icon class="text-warning">person</mat-icon>Profile
             </a>
             <div class="dropdown-divider"></div>
             <a class="dropdown-item" (click)="signOut()">

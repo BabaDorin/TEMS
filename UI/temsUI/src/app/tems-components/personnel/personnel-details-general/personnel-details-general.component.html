@@ -7,11 +7,15 @@
         <h1>
             <b>{{ personnel.name }}</b>
         </h1>
-        <button *ngIf="!personnel.isArchieved" mat-button (click)="edit()">Edit</button>
-        <button *ngIf="!personnel.isArchieved" mat-button (click)="archieve()">Archieve</button>
-        <button *ngIf="personnel.isArchieved" mat-button (click)="archieve()">Dearchieve</button>
-        <button *ngIf="!personnel.isArchieved" mat-button (click)="sendMail()">Send an email</button>
-        <button *ngIf="!personnel.isArchieved" mat-button (click)="connectWithUser()">Connect it with a user record</button>
+        <ng-container *ngIf="!personnel.isArchieved">
+            <button *ngIf="!personnel.isArchieved" mat-button (click)="edit()">Edit</button>
+            <button *ngIf="!personnel.isArchieved" mat-button (click)="archieve()">Archieve</button>
+            <button *ngIf="!personnel.isArchieved" mat-button (click)="sendMail()">Send an email</button>
+            <button *ngIf="!personnel.isArchieved" mat-button (click)="connectWithUser()">Connect it with a user record</button>
+        </ng-container>
+        <ng-container *ngIf="personnel.isArchieved">
+            <button *ngIf="personnel.isArchieved" mat-button (click)="archieve()">Dearchieve</button>
+        </ng-container>
         <hr>
         <br>
         <div class="container">

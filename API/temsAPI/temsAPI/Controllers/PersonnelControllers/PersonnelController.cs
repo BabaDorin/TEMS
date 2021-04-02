@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Validations;
+using Newtonsoft.Json.Schema;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -50,6 +51,39 @@ namespace temsAPI.Controllers.PersonnelControllers
                 return ReturnResponse("An error occured when fetching positions", ResponseStatus.Fail);
             }
         }
+
+        [HttpGet("/personnel/connectwithuser/{personnelId}/{userId}")]
+        [ClaimRequirement(TEMSClaims.CAN_MANAGE_SYSTEM_CONFIGURATION)]
+        public async Task<JsonResult> ConnectiWithUser(string personnelId, string userId)
+        {
+            try
+            {
+                var user = (await _unitOfWork.TEMSUsers
+                    .Find<TEMSUser>(q => q.Id == userId))
+                    .FirstOrDefault();
+
+                if (user == null)
+                    return ReturnResponse("Invalid user provided", ResponseStatus.Fail);
+
+                var personnel = (await _unitOfWork.Personnel
+                    .Find<Personnel>(q => q.Id == personnelId))
+                    .FirstOrDefault();
+
+                if (personnel == null)
+                    return ReturnResponse("Invalid personnel provided", ResponseStatus.Fail);
+
+                user.Personnel = personnel;
+                await _unitOfWork.Save();
+
+                return ReturnResponse("Success", ResponseStatus.Success);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured while creating the personnel - user connection.", ResponseStatus.Fail);
+            }
+        }
+
 
         [HttpPost]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]

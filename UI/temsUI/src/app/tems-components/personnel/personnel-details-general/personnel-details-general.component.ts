@@ -1,3 +1,4 @@
+import { ConnectPersonnelUserComponent } from './../../connect-personnel-user/connect-personnel-user.component';
 import { SendEmailComponent } from './../../send-email/send-email.component';
 import { AddPersonnelComponent } from './../add-personnel/add-personnel.component';
 import { DialogService } from './../../../services/dialog-service/dialog.service';
@@ -80,17 +81,25 @@ export class PersonnelDetailsGeneralComponent extends TEMSComponent implements O
     if(!this.personnel.isArchieved && !confirm("Are you sure you want to archive this item? It will result in archieving all of it's logs and allocations"))
       return;
 
+    let newArchivationStatus = !this.personnel.isArchieved;
     this.subscriptions.push(
-      this.personnelService.archievePersonnel(this.personnelId)
+      this.personnelService.archievePersonnel(this.personnelId, newArchivationStatus)
       .subscribe(result => {
         this.snackService.snack(result);
 
         if(result.status == 1)
-          this.personnel.isArchieved = !this.personnel.isArchieved;
+          this.personnel.isArchieved = newArchivationStatus;
           this.headerClass = (this.personnel.isArchieved) ? 'text-muted' : '';
 
         this.archivationStatusChanged.emit(this.personnel.isArchieved);
       })
+    )
+  }
+
+  connectWithUser(){
+    this.dialogService.openDialog(
+      ConnectPersonnelUserComponent,
+      [{label: "personnelId", value: this.personnelId}],
     )
   }
 }

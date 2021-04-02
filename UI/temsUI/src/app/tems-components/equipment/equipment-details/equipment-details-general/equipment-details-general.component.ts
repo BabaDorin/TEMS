@@ -62,13 +62,14 @@ export class EquipmentDetailsGeneralComponent extends TEMSComponent implements O
     if(!this.equipment.isArchieved && !confirm("Are you sure you want to archive this item? It will result in archieving all of it's logs and allocations"))
       return;
 
+    let newArchivationStatus = !this.equipment.isArchieved;
     this.subscriptions.push(
-      this.equipmentService.archieveEquipment(this.equipmentId)
+      this.equipmentService.archieveEquipment(this.equipmentId, newArchivationStatus)
       .subscribe(result => {
         this.snackService.snack(result);
 
         if(result.status == 1)
-          this.equipment.isArchieved = !this.equipment.isArchieved;
+          this.equipment.isArchieved = newArchivationStatus;
           this.headerClass = (this.equipment.isArchieved) ? 'text-muted' : '';
 
         this.archivationStatusChanged.emit(this.equipment.isArchieved);
@@ -77,9 +78,6 @@ export class EquipmentDetailsGeneralComponent extends TEMSComponent implements O
   }
 
   viewMore(){
-    // console.log('here');
-    // this.route.navigateByUrl('/equipment/details/' + this.equipmentId);
-    
     if(this.dialogRef != undefined)
       this.dialogRef.close();
   }

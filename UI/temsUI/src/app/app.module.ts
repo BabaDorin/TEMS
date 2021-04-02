@@ -35,6 +35,7 @@ import { TemsFormsModule } from './modules/tems-forms/tems-forms.module';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { SnackComponent } from './public/snack/snack.component';
 import { DefinitionService } from './services/definition-service/definition.service';
+import { ConnectPersonnelUserComponent } from './tems-components/connect-personnel-user/connect-personnel-user.component';
 
 @NgModule({
   declarations: [
@@ -50,6 +51,7 @@ import { DefinitionService } from './services/definition-service/definition.serv
     QuickAccessComponent,
     TEMSComponent,
     SnackComponent,
+    ConnectPersonnelUserComponent,
     ],
   imports: [
     BrowserModule,

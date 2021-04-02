@@ -57,7 +57,6 @@ export class RoomDetailsGeneralComponent extends TEMSComponent implements OnInit
       })
     )
   }
-
   viewMore(){
     if(this.dialogRef != undefined)
       this.dialogRef.close();
@@ -67,13 +66,14 @@ export class RoomDetailsGeneralComponent extends TEMSComponent implements OnInit
     if(!this.room.isArchieved && !confirm("Are you sure you want to archieve this room? Allocations and logs associated with this room will get archieved as well."))
       return;
       
+      let newArchivationStatus = !this.room.isArchieved;
       this.subscriptions.push(
-        this.roomService.archieveRoom(this.roomId)
+        this.roomService.archieveRoom(this.roomId, newArchivationStatus)
         .subscribe(result => {
           this.snackService.snack(result);
-  
+
           if(result.status == 1)
-            this.room.isArchieved = !this.room.isArchieved;
+            this.room.isArchieved = newArchivationStatus;
             this.headerClass = (this.room.isArchieved) ? 'text-muted' : '';
   
           this.archivationStatusChanged.emit(this.room.isArchieved);

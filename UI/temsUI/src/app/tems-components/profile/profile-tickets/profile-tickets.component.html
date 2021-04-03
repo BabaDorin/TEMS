@@ -1,1 +1,28 @@
-<p>profile-tickets works!</p>
+<div class="card stretch-card">
+    <div class="card-body">
+        <div class="card-title">Closed issues</div>
+        <ng-container *ngIf="!showMoreIssues">
+            
+        </ng-container>
+        <h2>{{ profile.fullName }}
+            <p>
+                <label *ngFor="let role of profile.roles" class="badge badge-gradient-info mr-2">{{ role }}</label>
+            </p>
+        </h2> 
+        <p>Username: {{ profile.username }}</p>
+        <p>Joined: {{ profile.dateRegistered | date:'short' }}</p>
+        <hr>
+        <ng-container *ngIf="profile.personnel != undefined">
+            <p class="mt-4">
+                This profile is associated with personnel: 
+                <a mat-button [routerLink]="'personnel/details/' + profile.personnel.value">
+                    <mat-icon class="text-primary">account_circle</mat-icon>{{ profile.personnel.label }}
+                </a>
+            </p>
+        </ng-container>
+    
+        <ng-container *ngIf="profile.personnel == undefined">
+            <p class="mt-4">This user is not associated with any personnel.</p>
+        </ng-container>
+    </div>
+</div>

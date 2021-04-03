@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -30,13 +31,16 @@ namespace temsAPI.Controllers.CommunicationControllers
         {
         }
 
-        [HttpGet("/ticket/getticketsofentity/{entityType}/{entityId}/{includingClosed}/{onlyClosed}")]
+        [HttpGet("/ticket/getticketsofentity/{entityType}/{entityId}/{includingClosed}/{onlyClosed}/{orderBy?}/{skip?}/{take?}")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
         public async Task<JsonResult> GetTicketsOfEntity(
-            string entityType,
+            string entityType, // "user closed" "user created", "user allocated", "personnel", "equipment", "room"
             string entityId,
             bool includingClosed,
-            bool onlyClosed)
+            bool onlyClosed,
+            string orderBy = null, // "priority", "recency", "recency closed"
+            int? skip = null,
+            int? take = null)
         {
             try
             {
@@ -65,11 +69,30 @@ namespace temsAPI.Controllers.CommunicationControllers
 
                 switch (entityType)
                 {
+                    case "user closed":
+                        if (!await _unitOfWork.TEMSUsers.isExists(q => q.Id == entityId))
+                            return ReturnResponse("Invalid type or id provided", ResponseStatus.Fail);
+
+                        expression2 = q => q.ClosedById == entityType;
+                        break;
+                    case "user created":
+                        if (!await _unitOfWork.TEMSUsers.isExists(q => q.Id == entityId))
+                            return ReturnResponse("Invalid type or id provided", ResponseStatus.Fail);
+
+                        expression2 = q => q.CreatedById == entityType;
+                        break;
+                    case "user assigned":
+                        var user = await _userManager.FindByIdAsync(entityId);
+                        if (user == null)
+                            return ReturnResponse("Invalid type or id provided", ResponseStatus.Fail);
+
+                        expression2 = q => q.Assignees.Contains(user);
+                        break;
                     case "equipment":
                         if (!await _unitOfWork.Equipments.isExists(q => q.Id == entityId))
                             return ReturnResponse("Invalid type or id provided", ResponseStatus.Fail);
 
-                        expression2 = q =>  q.Equipments.Any(q => q.Id == entityId);
+                        expression2 = q => q.Equipments.Any(q => q.Id == entityId);
                         break;
                     case "room":
                         if (!await _unitOfWork.Rooms.isExists(q => q.Id == entityId))
@@ -85,9 +108,25 @@ namespace temsAPI.Controllers.CommunicationControllers
                         break;
                 }
 
+                expression = ExpressionCombiner.CombineTwo(expression, expression2);
+
+                Func<IQueryable<Ticket>, IOrderedQueryable<Ticket>> orderByExpression = null;
+                switch (orderBy)
+                {
+                    case "recency":
+                        orderByExpression = q => q.OrderByDescending(q => q.Status.ImportanceIndex);
+                        break;
+                    case "recency closed":
+                        orderByExpression = q => q.OrderByDescending(q => q.DateClosed);
+                        break;
+                    default:
+                        orderByExpression = q => q.OrderByDescending(q => q.DateCreated);
+                        break;
+                }
+
                 List<ViewTicketSimplifiedViewModel> viewModel = (await _unitOfWork.Tickets
                     .FindAll<ViewTicketSimplifiedViewModel>(
-                        where: (expression2 == null) ? expression : ExpressionCombiner.CombineTwo(expression, expression2),
+                        where: expression,
                         include: q => q.Include(q => q.Assignees)
                                        .Include(q => q.ClosedBy)
                                        .Include(q => q.CreatedBy)
@@ -96,8 +135,9 @@ namespace temsAPI.Controllers.CommunicationControllers
                                        .Include(q => q.Rooms)
                                        .Include(q => q.Status)
                                        .Include(q => q.Equipments),
-                        orderBy: q => q.OrderBy(q => q.Status.ImportanceIndex)
-                                       .ThenByDescending(q => q.DateCreated),
+                        orderBy: orderByExpression,
+                        skip: skip ?? 0,
+                        take: take ?? int.MaxValue,
                         select: q => new ViewTicketSimplifiedViewModel
                         {
                             Id = q.Id,

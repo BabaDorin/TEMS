@@ -9,7 +9,6 @@ import { Component, Input, OnInit } from '@angular/core';
 export class ProfileGeneralComponent implements OnInit {
 
   @Input() profile;
-  roles=['admin', 'user', 'corcodus'];
 
   constructor(prof: ViewProfile) {
     console.log(prof);

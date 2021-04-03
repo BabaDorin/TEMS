@@ -90,7 +90,7 @@ export class ViewProfileComponent extends TEMSComponent implements OnInit {
     switch(newPage){
       case 'general': this.activePage = ProfileGeneralComponent; break;
       // case 'allocations': this.activePage = ProfileAllocationsComponent; break;
-      // case 'issues': this.activePage = ProfileTicketsComponent; break;
+      case 'issues': this.activePage = ProfileTicketsComponent; break;
       // case 'settings': this.activePage = ProfileSettingsComponent; break;
       default: this.activePage = ProfileGeneralComponent; break;
     }

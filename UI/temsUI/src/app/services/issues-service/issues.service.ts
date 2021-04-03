@@ -44,9 +44,12 @@ export class IssuesService extends TEMSService {
     entityType: string, 
     entityId: string, 
     includingClosed: boolean,
-    onlyClosed: boolean): Observable<any>{
+    onlyClosed: boolean,
+    orderBy?: string,
+    skip?: number,
+    take?: number): Observable<any>{
     return this.http.get(
-      API_ISU_URL + '/getticketsofentity/' + entityType + '/' + entityId + '/' + includingClosed + '/' + onlyClosed,
+      API_ISU_URL + '/getticketsofentity/' + entityType + '/' + entityId + '/' + includingClosed + '/' + onlyClosed + '/' + orderBy,
       this.httpOptions
     );
   }

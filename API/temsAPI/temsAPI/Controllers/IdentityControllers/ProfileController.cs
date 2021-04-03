@@ -2,17 +2,21 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO.Pipes;
 using System.Linq;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
+using temsAPI.Controllers.CommunicationControllers;
 using temsAPI.Data.Entities.UserEntities;
 using temsAPI.System_Files;
 using temsAPI.ViewModels;
 using temsAPI.ViewModels.Profile;
+using temsAPI.ViewModels.Ticket;
 
 namespace temsAPI.Controllers.IdentityControllers
 {
@@ -68,6 +72,7 @@ namespace temsAPI.Controllers.IdentityControllers
                 Debug.WriteLine(ex);
                 return ReturnResponse("An error occured while fetching user data", ResponseStatus.Fail);
             }
-        } 
+        }
+
     }
 }

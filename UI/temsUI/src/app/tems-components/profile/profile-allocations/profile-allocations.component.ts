@@ -7,6 +7,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ProfileAllocationsComponent implements OnInit {
 
+  profile;
   constructor() { }
 
   ngOnInit(): void {

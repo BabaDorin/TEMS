@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { ViewProfile } from 'src/app/models/profile/view-profile.model';
+import { Component, Input, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-profile-general',
@@ -7,9 +8,16 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ProfileGeneralComponent implements OnInit {
 
-  constructor() { }
+  @Input() profile;
+  roles=['admin', 'user', 'corcodus'];
 
-  ngOnInit(): void {
+  constructor(prof: ViewProfile) {
+    console.log(prof);
+    this.profile = prof;
   }
 
+  ngOnInit(): void {
+    console.log('eee');
+    console.log(this.profile);
+  }
 }

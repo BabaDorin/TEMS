@@ -57,6 +57,10 @@ namespace temsAPI.Controllers.IdentityControllers
                         }
                     )).FirstOrDefault();
 
+                viewModel.Roles = (await _userManager
+                    .GetRolesAsync(await _userManager.FindByIdAsync(userId)))
+                    .ToList();
+                
                 return Json(viewModel);
             }
             catch (Exception ex)

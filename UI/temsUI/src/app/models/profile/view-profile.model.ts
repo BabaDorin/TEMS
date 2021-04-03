@@ -10,6 +10,7 @@ export interface IViewProfile{
     dateArchieved: Date,
     dateRegistered: Date,
     allocatedKey: IOption;
+    roles: string[];
 }
 
 export class ViewProfile implements IViewProfile{
@@ -23,4 +24,5 @@ export class ViewProfile implements IViewProfile{
     dateArchieved: Date;
     dateRegistered: Date;
     allocatedKey: IOption;
+    roles: string[];
 }

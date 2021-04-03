@@ -1,8 +1,8 @@
+import { ViewProfile } from 'src/app/models/profile/view-profile.model';
 import { ProfileTicketsComponent } from './../profile/profile-tickets/profile-tickets.component';
 import { ProfileAllocationsComponent } from './../profile/profile-allocations/profile-allocations.component';
 import { ProfileSettingsComponent } from './../profile/profile-settings/profile-settings.component';
 import { ProfileGeneralComponent } from './../profile/profile-general/profile-general.component';
-import { ViewProfile } from './../../models/profile/view-profile.model';
 import { CAN_MANAGE_SYSTEM_CONFIGURATION } from './../../models/claims';
 import { TokenService } from './../../services/token-service/token.service';
 import { TEMSComponent } from './../../tems/tems.component';
@@ -10,7 +10,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { DialogService } from './../../services/dialog-service/dialog.service';
 import { SnackService } from './../../services/snack/snack.service';
 import { UserService } from './../../services/user-service/user.service';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, Injector, OnInit, ViewChild } from '@angular/core';
 import { Location } from '@angular/common'
 
 
@@ -23,9 +23,9 @@ export class ViewProfileComponent extends TEMSComponent implements OnInit {
 
   userId: string;
   isCurrentUser: boolean;
-  profile = new ViewProfile();
-
+  profile;
   activePage = ProfileGeneralComponent;
+  injector: Injector;
 
   constructor(
     private userService: UserService,
@@ -34,7 +34,8 @@ export class ViewProfileComponent extends TEMSComponent implements OnInit {
     private activatedRouter: ActivatedRoute,
     private tokenService: TokenService,
     private location: Location,
-    private router: Router
+    private router: Router,
+    private inj: Injector,
   ) {
     super();
   }
@@ -62,6 +63,9 @@ export class ViewProfileComponent extends TEMSComponent implements OnInit {
           return;
 
         this.profile = result;
+        this.injector = Injector.create([
+          { provide: ViewProfile, useValue: this.profile }
+        ], this.inj);
         this.getActivePage();
       })
     )
@@ -85,9 +89,9 @@ export class ViewProfileComponent extends TEMSComponent implements OnInit {
 
     switch(newPage){
       case 'general': this.activePage = ProfileGeneralComponent; break;
-      case 'allocations': this.activePage = ProfileAllocationsComponent; break;
-      case 'issues': this.activePage = ProfileTicketsComponent; break;
-      case 'settings': this.activePage = ProfileSettingsComponent; break;
+      // case 'allocations': this.activePage = ProfileAllocationsComponent; break;
+      // case 'issues': this.activePage = ProfileTicketsComponent; break;
+      // case 'settings': this.activePage = ProfileSettingsComponent; break;
       default: this.activePage = ProfileGeneralComponent; break;
     }
   }

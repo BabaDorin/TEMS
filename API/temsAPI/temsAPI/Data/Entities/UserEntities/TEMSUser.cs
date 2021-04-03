@@ -6,6 +6,7 @@ using System.ComponentModel.Design.Serialization;
 using System.Linq;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
+using temsAPI.Controllers.CommunicationControllers;
 using temsAPI.Data.Entities.CommunicationEntities;
 using temsAPI.Data.Entities.EquipmentEntities;
 using temsAPI.Data.Entities.OtherEntities;
@@ -26,15 +27,15 @@ namespace temsAPI.Data.Entities.UserEntities
 
 #nullable enable
         [ForeignKey("PersonnelId")]
-        public Personnel? Personnel { get; set; }
+        public Personnel? Personnel { get; set; } = new Personnel();
         public string? PersonnelId { get; set; }
 #nullable disable
 
-        public virtual ICollection<Announcement> Announcements { get; set; }
-        public virtual ICollection<Ticket> ClosedTickets { get; set; }
-        public virtual ICollection<Ticket> AssignedTickets { get; set; }
-        public virtual ICollection<Ticket> CreatedTickets { get; set; }
-        public virtual ICollection<Equipment> RegisteredEquipments { get; set; }
+        public virtual ICollection<Announcement> Announcements { get; set; } = new List<Announcement>();
+        public virtual ICollection<Ticket> ClosedTickets { get; set; } = new List<Ticket>();
+        public virtual ICollection<Ticket> AssignedTickets { get; set; } = new List<Ticket>();
+        public virtual ICollection<Ticket> CreatedTickets { get; set; } = new List<Ticket>();
+        public virtual ICollection<Equipment> RegisteredEquipments { get; set; } = new List<Equipment>();
 
         [NotMapped]
         public string Identifier => FullName ?? UserName;

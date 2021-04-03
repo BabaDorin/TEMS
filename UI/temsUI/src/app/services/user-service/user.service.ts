@@ -1,13 +1,14 @@
 import { IOption } from 'src/app/models/option.model';
 import { ViewUser, ViewUserSimplified } from './../../models/user/view-user.model';
 import { LoginModel } from './../../models/identity/login.model';
-import { API_USER_URL, API_AUTH_URL, API_URL } from './../../models/backend.config';
+import { API_USER_URL, API_AUTH_URL, API_URL, API_PROFILE_URL } from './../../models/backend.config';
 import { TEMSService } from './../tems-service/tems.service';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { AddUser } from './../../models/identity/add-user.model';
 import { Role } from '../../models/role.model';
 import { Injectable } from '@angular/core';
+import { ViewProfile } from 'src/app/models/profile/view-profile.model';
 
 @Injectable({
   providedIn: 'root'
@@ -130,6 +131,13 @@ export class UserService extends TEMSService {
   getUser(userId: string): Observable<ViewUser>{
     return this.http.get<ViewUser>(
       API_USER_URL + '/getuser/' + userId,
+      this.httpOptions
+    );
+  }
+
+  getProfileData(userId: string): Observable<ViewProfile>{
+    return this.http.get<ViewProfile>(
+      API_PROFILE_URL + '/get/' + userId,
       this.httpOptions
     );
   }

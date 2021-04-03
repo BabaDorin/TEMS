@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.UserEntities;
 using temsAPI.System_Files;
+using temsAPI.ViewModels;
 using temsAPI.ViewModels.Profile;
 
 namespace temsAPI.Controllers.IdentityControllers
@@ -36,10 +37,7 @@ namespace temsAPI.Controllers.IdentityControllers
                         .Include(q => q.ClosedTickets)
                         .Include(q => q.CreatedTickets)
                         .Include(q => q.Announcements)
-                        .Include(q => q.Personnel)
-                        .ThenInclude(q => q.EquipmentAllocations)
-                        .Include(q => q.Personnel)
-                        .ThenInclude(q => q.KeyAllocations),
+                        .Include(q => q.Personnel).ThenInclude(q => q.KeyAllocations),
                         select: q => new ViewProfileViewModel
                         {
                             Id = q.Id,
@@ -47,12 +45,17 @@ namespace temsAPI.Controllers.IdentityControllers
                             Username = q.UserName,
                             Email = q.Email,
                             IsArchieved = q.IsArchieved,
-                            DateArchieved = q.DateArchieved,
-                            DateRegistered = q.DateRegistered,
+                            //DateRegistered = q.DateRegistered,
                             PhoneNumber = q.PhoneNumber,
-                            PersonnelId = (q.Personnel == null) ? null : q.Personnel.Id,
+                            Personnel = (q.Personnel == null)
+                                ? null
+                                : new Option
+                                {
+                                    Value = q.PersonnelId,
+                                    Label = q.Personnel.Name,
+                                },
                         }
-                    )).ToList();
+                    )).FirstOrDefault();
 
                 return Json(viewModel);
             }

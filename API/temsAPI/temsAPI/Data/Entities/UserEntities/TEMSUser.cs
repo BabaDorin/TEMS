@@ -14,6 +14,7 @@ namespace temsAPI.Data.Entities.UserEntities
 {
     public class TEMSUser : IdentityUser, IArchiveable, IIdentifiable
     {
+        public DateTime DateRegistered { get; set; }
         public DateTime DateArchieved { get; set; }
         private bool isArchieved;
         public bool IsArchieved

@@ -64,6 +64,7 @@ namespace temsAPI.Controllers.IdentityControllers
                         : viewModel.FullName,
                     PhoneNumber = viewModel.PhoneNumber,
                     Email = viewModel.Email,
+                    DateRegistered = DateTime.Now
                 };
 
                 // Creating the user
@@ -110,6 +111,7 @@ namespace temsAPI.Controllers.IdentityControllers
                     return ReturnResponse("Invalid user id provided", ResponseStatus.Fail);
 
                 user.IsArchieved = true;
+                user.DateArchieved = DateTime.Now;
                 await _unitOfWork.Save();
 
                 return ReturnResponse("Success", ResponseStatus.Success);

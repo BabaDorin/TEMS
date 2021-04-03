@@ -1,4 +1,5 @@
 import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
+import { IOption } from 'src/app/models/option.model';
 
 @Component({
   selector: 'app-issue-container',
@@ -8,24 +9,31 @@ import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 export class IssueContainerComponent implements OnInit {
 
   @Input() issue;
+  @Input() statuses: IOption[];
+  @Input() readonly: boolean = false;
   @Output() solve = new EventEmitter(); 
   @Output() reopen = new EventEmitter(); 
   @Output() remove = new EventEmitter(); 
+  @Output() statusChanged = new EventEmitter(); 
 
   constructor() { }
 
   ngOnInit(): void {
   }
 
-  solveIssue(id, index){
-    this.solve.emit({id: id, index: index});
+  solveIssue(){
+    this.solve.emit();
   }
 
-  reopenIssue(id, index){
-    this.reopen.emit({id: id, index: index});
+  reopenIssue(){
+    this.reopen.emit();
   }
 
-  removeIssue(id, index){
-    this.remove.emit({id: id, index: index});
+  removeIssue(){
+    this.remove.emit();
+  }
+
+  issueStatusChanged($event){
+    this.statusChanged.emit($event);
   }
 }

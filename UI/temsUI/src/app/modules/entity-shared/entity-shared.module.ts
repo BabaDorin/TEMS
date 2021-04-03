@@ -15,6 +15,7 @@ import { CreateIssueComponent } from 'src/app/tems-components/issue/create-issue
 import { EntityLogsListComponent } from 'src/app/tems-components/entity-logs-list/entity-logs-list.component';
 import { SummaryIssuesAnalyticsComponent } from 'src/app/tems-components/analytics/summary-issues-analytics/summary-issues-analytics.component';
 import { EntityAllocationsListComponent } from 'src/app/tems-components/entity-allocations-list/entity-allocations-list.component';
+import { IssueContainerComponent } from 'src/app/tems-components/issues/issue-container/issue-container.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +28,8 @@ import { EntityAllocationsListComponent } from 'src/app/tems-components/entity-a
     EntityIssuesListComponent,
     SummaryIssuesAnalyticsComponent,
     EntityAllocationsListComponent,
-    LoadingPlaceholderComponent
+    LoadingPlaceholderComponent,
+    IssueContainerComponent,
   ],
   imports: [
     CommonModule,

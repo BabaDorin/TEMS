@@ -275,9 +275,9 @@ namespace temsAPI.Controllers.CommunicationControllers
         }
 
 
-        [HttpGet("/ticket/remove/{ticketId}")]
+        [HttpGet("/ticket/archieve/{ticketId}/{newArchivationState?}")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
-        public async Task<JsonResult> Remove(string ticketId)
+        public async Task<JsonResult> Archieve(string ticketId, bool? newArchivationState = true)
         {
             try
             {
@@ -288,7 +288,7 @@ namespace temsAPI.Controllers.CommunicationControllers
                 if (ticket == null)
                     return ReturnResponse("Invalid id provided", ResponseStatus.Fail);
 
-                ticket.IsArchieved = true;
+                ticket.IsArchieved = (bool)newArchivationState;
                 await _unitOfWork.Save();
 
                 return ReturnResponse("Success", ResponseStatus.Success);

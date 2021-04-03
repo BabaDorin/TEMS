@@ -36,7 +36,6 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { SnackComponent } from './public/snack/snack.component';
 import { DefinitionService } from './services/definition-service/definition.service';
 import { ConnectPersonnelUserComponent } from './tems-components/connect-personnel-user/connect-personnel-user.component';
-import { IssueContainerComponent } from './tems-components/issues/issue-container/issue-container.component';
 
 @NgModule({
   declarations: [
@@ -53,7 +52,6 @@ import { IssueContainerComponent } from './tems-components/issues/issue-containe
     TEMSComponent,
     SnackComponent,
     ConnectPersonnelUserComponent,
-    IssueContainerComponent,
     ],
   imports: [
     BrowserModule,

@@ -1,7 +1,5 @@
 import { ViewProfile } from 'src/app/models/profile/view-profile.model';
 import { ProfileTicketsComponent } from './../profile/profile-tickets/profile-tickets.component';
-import { ProfileAllocationsComponent } from './../profile/profile-allocations/profile-allocations.component';
-import { ProfileSettingsComponent } from './../profile/profile-settings/profile-settings.component';
 import { ProfileGeneralComponent } from './../profile/profile-general/profile-general.component';
 import { CAN_MANAGE_SYSTEM_CONFIGURATION } from './../../models/claims';
 import { TokenService } from './../../services/token-service/token.service';
@@ -24,7 +22,7 @@ export class ViewProfileComponent extends TEMSComponent implements OnInit {
   userId: string;
   isCurrentUser: boolean;
   profile;
-  activePage = ProfileGeneralComponent;
+  activePage: any = ProfileGeneralComponent;
   injector: Injector;
 
   constructor(

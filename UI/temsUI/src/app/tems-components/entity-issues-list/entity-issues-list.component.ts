@@ -113,7 +113,7 @@ export class EntityIssuesListComponent extends TEMSComponent implements OnInit, 
     )
   }
 
-  solve(issueId: string, index: number){
+  solve(issueId, index){
     this.subscriptions.push(
       this.issuesService.closeIssue(issueId)
       .subscribe(result => {
@@ -122,11 +122,11 @@ export class EntityIssuesListComponent extends TEMSComponent implements OnInit, 
           return;
         }
 
-        // Will use it later for confetti
         this.issues[index].dateClosed = new Date;
-        let difference = new Date(this.issues[index].dateClosed).getHours() - new Date(this.issues[index].dateCreated).getHours();  
+        let d1 = new Date(this.issues[index].dateClosed);
+        let d2 = new Date(this.issues[index].dateCreated);
+        let difference = Math.abs(d1.getTime() - d2.getTime()) / 36e5;
         
-        alert(difference);
         if(difference <= 24)
           this.launchConfetti();
 
@@ -135,7 +135,7 @@ export class EntityIssuesListComponent extends TEMSComponent implements OnInit, 
     )
   }
 
-  reopen(issueId: string, index: number){
+  reopen(issueId, index){
     this.subscriptions.push(
       this.issuesService.reopenIssue(issueId)
       .subscribe(result => {
@@ -183,7 +183,7 @@ export class EntityIssuesListComponent extends TEMSComponent implements OnInit, 
     this.router.navigate(['/personnel/details/' + personnelId]));
   }
 
-  remove(issueId: string, index: number){
+  remove(issueId, index){
     if(!confirm("Are you sure you want to remove that issue?"))
       return;
 

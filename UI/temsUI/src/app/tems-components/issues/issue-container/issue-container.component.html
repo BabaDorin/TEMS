@@ -31,10 +31,10 @@
             </p>
           </div>
         </ng-container>
-        <ng-container *ngIf="canManage && issue.dateClosed == undefined">
+        <ng-container *ngIf="!readonly && issue.dateClosed == undefined">
           <mat-form-field appearance="fill">
             <mat-label>Change issue status</mat-label>
-            <mat-select (selectionChange)="statusChanged($event, issue.id, i)">
+            <mat-select (selectionChange)="issueStatusChanged($event)">
               <mat-option *ngFor="let status of statuses" [value]="status">
                 {{ status.label }}
               </mat-option>
@@ -89,13 +89,13 @@
         </div>
         <br>
         
-        <button mat-button (click)="solveIssue(issue.id, i)" *ngIf="issue.dateClosed == undefined">
+        <button mat-button (click)="solveIssue()" *ngIf="issue.dateClosed == undefined">
           <mat-icon class="text-primary">done</mat-icon>Mark as solved
         </button>
-        <button mat-button (click)="reopenIssue(issue.id, i)" *ngIf="issue.dateClosed != undefined">
+        <button mat-button (click)="reopenIssue()" *ngIf="issue.dateClosed != undefined">
           <mat-icon class="text-secondary">restore</mat-icon>Reopen
         </button>
-        <button mat-button (click)="removeIssue(issue.id, i)">
+        <button mat-button (click)="removeIssue()">
           <mat-icon class="text-danger">delete</mat-icon>Remove
         </button>
       </ng-template>

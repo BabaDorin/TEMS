@@ -870,4 +870,33 @@ export class FormlyParserService {
 
     return fields;
   }
+
+  parseAccountGeneralInfo() {
+    let fields: FormlyFieldConfig[] =
+      [
+        {
+          key: 'fullName',
+          type: 'input',
+          templateOptions: {
+            required: true,
+            label: 'Full Name',
+          }
+        },
+        {
+          key: 'username',
+          type: 'input-tooltip',
+          templateOptions: {
+            minLength: 4,
+            required: true,
+            label: 'Username',
+            description: 'Minimum 4 alphanumerics or ".", "_"'
+          },
+          validators: {
+            validation: ['usernameValidator']
+          }
+        },
+      ];
+
+    return fields;
+  }
 }

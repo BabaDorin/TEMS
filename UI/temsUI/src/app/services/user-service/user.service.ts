@@ -1,3 +1,4 @@
+import { AccountGeneralInfoModel } from './../../models/identity/account-general-info.model';
 import { EmailPreferencesModel } from './../../models/identity/email-preferences.model';
 import { ChangePasswordModel } from './../../models/identity/change-password.model';
 import { IOption } from 'src/app/models/option.model';
@@ -76,30 +77,6 @@ export class UserService extends TEMSService {
     );
   }
 
-  isLoggedIn(): Observable<any>{
-    return this.http.get(
-      API_AUTH_URL + '/isauthenticated',
-      this.httpOptions
-    );
-  }
-
-  logIn(loginModel): Observable<any>{
-    return this.http.post(
-      API_USER_URL + '/login',
-      JSON.stringify(loginModel),
-      this.httpOptions
-    );
-  }
-
-  signOut(): Observable<any>{
-    let token = localStorage.getItem('token');
-    return this.http.post(
-      API_URL + "/auth/signout/",
-      JSON.stringify(token),
-      this.httpOptions
-    );
-  }
-
   getUsers(): Observable<ViewUserSimplified[]>{
     return this.http.get<ViewUserSimplified[]>(
       API_USER_URL + '/getusers',
@@ -156,6 +133,14 @@ export class UserService extends TEMSService {
     return this.http.post(
       API_USER_URL + '/changeEmailPreferences',
       JSON.stringify(emailPreferencesModel),
+      this.httpOptions
+    );
+  }
+
+  editAccountGeneralInfo(accountGeneralInfoModel: AccountGeneralInfoModel): Observable<any>{
+    return this.http.post(
+      API_USER_URL + '/editAccountGeneralInfo',
+      JSON.stringify(accountGeneralInfoModel),
       this.httpOptions
     );
   }

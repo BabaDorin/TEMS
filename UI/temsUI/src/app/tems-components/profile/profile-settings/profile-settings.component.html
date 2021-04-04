@@ -2,6 +2,17 @@
     <div class="card-body">
         <h2>Account settings</h2>
         <hr>
+        <h3>General account information</h3>
+        <form [formGroup]="accountGeneralInfoFormlyData.form" (ngSubmit)="editGeneralInfo(accountGeneralInfoFormlyData.model)">
+            <formly-form [form]="accountGeneralInfoFormlyData.form" [fields]="accountGeneralInfoFormlyData.fields"
+                [model]="accountGeneralInfoFormlyData.model"></formly-form>
+            <br>
+            <button mat-button type="submit" class="btn-primary"
+                [disabled]="accountGeneralInfoFormlyData.form.status == 'INVALID'">
+                Submit changes
+            </button>
+        </form>
+        <hr>
         <h3>Change account password</h3>
         <form [formGroup]="changePasswordFormlyData.form" (ngSubmit)="changePass(changePasswordFormlyData.model)">
             <formly-form [form]="changePasswordFormlyData.form" [fields]="changePasswordFormlyData.fields"

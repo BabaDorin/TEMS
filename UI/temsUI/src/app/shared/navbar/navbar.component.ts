@@ -1,10 +1,8 @@
-import { ScrollingModule } from '@angular/cdk/scrolling';
+import { AuthService } from './../../services/auth.service';
 import { TEMSComponent } from './../../tems/tems.component';
-import { UserService } from './../../services/user-service/user.service';
 import { Component, OnInit } from '@angular/core';
 import { NgbDropdownConfig } from '@ng-bootstrap/ng-bootstrap';
 import { Router } from '@angular/router';
-import { I } from '@angular/cdk/keycodes';
 
 @Component({
   selector: 'app-navbar',
@@ -21,7 +19,7 @@ export class NavbarComponent extends TEMSComponent implements OnInit {
   constructor(
     config: NgbDropdownConfig,
     private route: Router,
-    private userService: UserService) {
+    private authService: AuthService) {
       super();
       config.placement = 'bottom-right';
   }
@@ -29,10 +27,8 @@ export class NavbarComponent extends TEMSComponent implements OnInit {
   signOut(){
     console.log('got here');
     this.subscriptions.push(
-      this.userService.signOut()
+      this.authService.signOut()
       .subscribe());
-
-    localStorage.removeItem('token');
     this.route.navigateByUrl('');
     window.location.reload()
   }
@@ -83,5 +79,4 @@ export class NavbarComponent extends TEMSComponent implements OnInit {
   toggleRightSidebar() {
     document.querySelector('#right-sidebar').classList.toggle('open');
   }
-
 }

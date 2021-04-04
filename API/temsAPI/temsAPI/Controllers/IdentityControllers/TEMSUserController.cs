@@ -72,6 +72,11 @@ namespace temsAPI.Controllers.IdentityControllers
                         : false
                 };
 
+                // Email already exists.
+                if(model.Email != null)
+                    if (await _userManager.FindByEmailAsync(model.Email) != null)
+                        return ReturnResponse("The provided email is already in use", ResponseStatus.Fail);
+
                 // Creating the user
                 string result = await _userHelper.CreateUser(model, viewModel.Password);
                 if (result != null)
@@ -187,50 +192,6 @@ namespace temsAPI.Controllers.IdentityControllers
                 Debug.WriteLine(ex);
                 return ReturnResponse("An error occured when updating the record", ResponseStatus.Fail);
             }
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> LogIn([FromBody] LogInViewModel viewModel)
-        {
-            var user = await _userManager.FindByNameAsync(viewModel.Username);
-
-            if (user == null || !await _userManager.CheckPasswordAsync(user, viewModel.Password))
-                return ReturnResponse("Username or password is incorrect", ResponseStatus.Fail);
-
-            List<Claim> claims = new List<Claim>();
-            claims.Add(new Claim("UserID", user.Id.ToString()));
-            claims.Add(new Claim("Username", user.UserName.ToString()));
-            
-            var userClaims = await _userManager.GetClaimsAsync(user);
-
-
-            List<string> userRoles = (await _userManager.GetRolesAsync(user)).ToList();
-            foreach (string role in userRoles)
-            {
-                userClaims = userClaims.Union(await _roleManager
-                    .GetClaimsAsync(await _roleManager.FindByNameAsync(role)))
-                    .Select(q => new Claim(q.Type, q.Value))
-                    .ToList();
-            }
-
-            foreach (var claim in userClaims)
-            {
-                claims.Add(new Claim(claim.Type, claim.Value));
-            }
-
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.UtcNow.AddDays(10),
-                SigningCredentials = new SigningCredentials(
-                    new SymmetricSecurityKey(
-                        Encoding.UTF8.GetBytes(
-                            _appSettings.JWT_Secret)), SecurityAlgorithms.HmacSha256Signature)
-            };
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var securityToken = tokenHandler.CreateToken(tokenDescriptor);
-            var token = tokenHandler.WriteToken(securityToken);
-            return Ok(new { token });
         }
 
         [HttpGet("temsuser/getallautocompleteoptions/{filter?}")]
@@ -491,7 +452,13 @@ namespace temsAPI.Controllers.IdentityControllers
                     .Find<TEMSUser>(q => q.Id == viewModel.UserId))
                     .FirstOrDefault();
 
+                // Will come back later to handle emails via usermanager and to implement
+                // email confirmation.
+                if (await _userManager.FindByEmailAsync(viewModel.Email) != null)
+                    return ReturnResponse("The provided email is aldreay in use.", ResponseStatus.Fail);
+
                 user.Email = viewModel.Email;
+                user.NormalizedEmail = viewModel.Email.ToUpper();
                 user.GetEmailNotifications = viewModel.GetNotifications;
 
                 await _unitOfWork.Save();
@@ -504,5 +471,42 @@ namespace temsAPI.Controllers.IdentityControllers
                 return ReturnResponse("An error occured while saving email preferences.", ResponseStatus.Fail);
             }
         }
+
+        [HttpPost]
+        [Authorize]
+        public async Task<JsonResult> EditAccountGeneralInfo([FromBody] AccountGeneralInfoViewModel viewModel)
+        {
+            try
+            {
+                if (viewModel.UserId != IdentityHelper.GetUserId(User))
+                    return ReturnResponse("You don't have enough privilleges to change this user's account info ;)", ResponseStatus.Fail);
+
+                string validationResult = viewModel.Validate();
+                if (validationResult != null)
+                    return ReturnResponse(validationResult, ResponseStatus.Fail);
+
+                var user = (await _unitOfWork.TEMSUsers
+                    .Find<TEMSUser>(q => q.Id == viewModel.UserId))
+                    .FirstOrDefault();
+
+                if(user.UserName != viewModel.Username)
+                {
+                    var result = await _userManager.SetUserNameAsync(user, viewModel.Username);
+                    if (!result.Succeeded)
+                        return ReturnResponse("Either the provided username is invalid or it is already in use.", ResponseStatus.Fail);
+                }
+                
+                user.FullName = viewModel.FullName;
+                await _unitOfWork.Save();
+
+                return ReturnResponse("Success", ResponseStatus.Success);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured while updating account information", ResponseStatus.Fail);
+            }
+        }
+
     }
 }

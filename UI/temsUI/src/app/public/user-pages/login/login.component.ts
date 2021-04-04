@@ -1,3 +1,5 @@
+import { SnackService } from './../../../services/snack/snack.service';
+import { AuthService } from './../../../services/auth.service';
 import { Router } from '@angular/router';
 import { UserService } from 'src/app/services/user-service/user.service';
 import { LoginModel } from './../../../models/identity/login.model';
@@ -25,7 +27,8 @@ export class LoginComponent extends TEMSComponent implements OnInit {
   
   constructor(
     private formlyParserService: FormlyParserService,
-    private userService: UserService,
+    private authService: AuthService,
+    private snackService: SnackService,
     private router: Router
   ) { 
     super();
@@ -39,9 +42,10 @@ export class LoginComponent extends TEMSComponent implements OnInit {
     let loginModel: LoginModel = this.formlyData.model.login;
 
     this.subscriptions.push(
-      this.userService.logIn(loginModel)
+      this.authService.logIn(loginModel)
       .subscribe(result => {
-        console.log(result);
+        if(this.snackService.snackIfError(result))
+          return;
 
         if(result.token != undefined){
           localStorage.setItem('token', result.token);

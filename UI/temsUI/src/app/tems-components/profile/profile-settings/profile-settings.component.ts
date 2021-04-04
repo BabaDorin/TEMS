@@ -1,3 +1,4 @@
+import { AccountGeneralInfoModel } from './../../../models/identity/account-general-info.model';
 import { EmailPreferencesModel } from './../../../models/identity/email-preferences.model';
 import { ChangePasswordModel } from './../../../models/identity/change-password.model';
 import { UserService } from 'src/app/services/user-service/user.service';
@@ -30,6 +31,12 @@ export class ProfileSettingsComponent extends TEMSComponent implements OnInit {
     fields: [] as FormlyFieldConfig[],
   }
 
+  private accountGeneralInfoFormlyData = {
+    form: new FormGroup({}),
+    model: {} as any,
+    fields: [] as FormlyFieldConfig[],
+  }
+
   constructor(
     prof: ViewProfile,
     private userService: UserService,
@@ -42,10 +49,17 @@ export class ProfileSettingsComponent extends TEMSComponent implements OnInit {
 
   ngOnInit(): void {
     this.changePasswordFormlyData.fields = this.formlyParserService.parseChangePassword();
+
     this.emailPreferencesFormlyData.fields = this.formlyParserService.parseChangeEmailPreferences();
     this.emailPreferencesFormlyData.model = {
       email: this.profile.email,
       getNotifications: this.profile.getEmailNotifications
+    }
+
+    this.accountGeneralInfoFormlyData.fields = this.formlyParserService.parseAccountGeneralInfo();
+    this.accountGeneralInfoFormlyData.model = {
+      fullName: this.profile.fullName,
+      username: this.profile.username,
     }
   }  
 
@@ -70,6 +84,16 @@ export class ProfileSettingsComponent extends TEMSComponent implements OnInit {
     emailPreferencesModel.userId = this.profile.id;
 
     this.userService.changeEmailPreferences(emailPreferencesModel)
+      .subscribe(result => {
+        this.snackService.snack(result);
+      });
+  }
+
+  editGeneralInfo(model){
+    let accountGeneralInfoModel: AccountGeneralInfoModel = model;
+    accountGeneralInfoModel.userId = this.profile.id;
+    
+    this.userService.editAccountGeneralInfo(accountGeneralInfoModel)
       .subscribe(result => {
         this.snackService.snack(result);
       });

@@ -15,6 +15,7 @@ namespace temsAPI.ViewModels.Profile
         public string Username { get; set; }
         public string PhoneNumber { get; set; }
         public string Email { get; set; }
+        public bool GetEmailNotifications { get; set; }
         public bool IsArchieved { get; set; }
         public List<string> Roles { get; set; }
         public DateTime DateArchieved { get; set; }

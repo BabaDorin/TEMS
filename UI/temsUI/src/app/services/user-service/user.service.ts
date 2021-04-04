@@ -1,3 +1,4 @@
+import { EmailPreferencesModel } from './../../models/identity/email-preferences.model';
 import { ChangePasswordModel } from './../../models/identity/change-password.model';
 import { IOption } from 'src/app/models/option.model';
 import { ViewUser, ViewUserSimplified } from './../../models/user/view-user.model';
@@ -147,6 +148,14 @@ export class UserService extends TEMSService {
     return this.http.post(
       API_USER_URL + '/changePassword',
       JSON.stringify(changePasswordModel),
+      this.httpOptions
+    );
+  }
+
+  changeEmailPreferences(emailPreferencesModel: EmailPreferencesModel): Observable<any>{
+    return this.http.post(
+      API_USER_URL + '/changeEmailPreferences',
+      JSON.stringify(emailPreferencesModel),
       this.httpOptions
     );
   }

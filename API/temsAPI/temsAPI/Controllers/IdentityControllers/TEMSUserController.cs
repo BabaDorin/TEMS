@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.Options;
@@ -65,7 +66,10 @@ namespace temsAPI.Controllers.IdentityControllers
                         : viewModel.FullName,
                     PhoneNumber = viewModel.PhoneNumber,
                     Email = viewModel.Email,
-                    DateRegistered = DateTime.Now
+                    DateRegistered = DateTime.Now,
+                    GetEmailNotifications = (viewModel.Roles.FindIndex(q => q.Label.ToLower() == "technician" || q.Label.ToLower() == "tehnician") != -1)
+                        ? true
+                        : false
                 };
 
                 // Creating the user
@@ -184,8 +188,6 @@ namespace temsAPI.Controllers.IdentityControllers
                 return ReturnResponse("An error occured when updating the record", ResponseStatus.Fail);
             }
         }
-
-
 
         [HttpPost]
         public async Task<IActionResult> LogIn([FromBody] LogInViewModel viewModel)
@@ -469,6 +471,37 @@ namespace temsAPI.Controllers.IdentityControllers
             {
                 Debug.WriteLine(ex);
                 return ReturnResponse("An error occured while changing account's password", ResponseStatus.Fail);
+            }
+        }
+
+        [HttpPost]
+        [Authorize]
+        public async Task<JsonResult> ChangeEmailPreferences([FromBody] ChangeEmailPreferencesViewModel viewModel)
+        {
+            try
+            {
+                if (viewModel.UserId != IdentityHelper.GetUserId(User))
+                    return ReturnResponse("You don't have enough privilleges to change this user's email configuration ;)", ResponseStatus.Fail);
+
+                string validationResult = viewModel.Validate();
+                if (validationResult != null)
+                    return ReturnResponse(validationResult, ResponseStatus.Fail);
+
+                var user = (await _unitOfWork.TEMSUsers
+                    .Find<TEMSUser>(q => q.Id == viewModel.UserId))
+                    .FirstOrDefault();
+
+                user.Email = viewModel.Email;
+                user.GetEmailNotifications = viewModel.GetNotifications;
+
+                await _unitOfWork.Save();
+
+                return ReturnResponse("Success", ResponseStatus.Success);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured while saving email preferences.", ResponseStatus.Fail);
             }
         }
     }

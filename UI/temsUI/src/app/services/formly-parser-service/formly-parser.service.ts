@@ -846,4 +846,28 @@ export class FormlyParserService {
 
     return fields;
   }
+
+  parseChangeEmailPreferences() {
+    let fields: FormlyFieldConfig[] =
+      [
+        {
+          key: 'email',
+          type: 'input-tooltip',
+          templateOptions: {
+            type: "email",
+            description: 'The email address is primarily used for account recovering. If you desire, you can recieve notifications too.',
+            label: 'Email address',
+          }
+        },
+        {
+          key: 'getNotifications',
+          type: 'checkbox',
+          templateOptions: {
+            label: 'Get notifications via Email',
+          }
+        },
+      ];
+
+    return fields;
+  }
 }

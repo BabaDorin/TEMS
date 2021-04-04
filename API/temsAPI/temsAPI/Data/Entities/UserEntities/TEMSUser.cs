@@ -25,6 +25,8 @@ namespace temsAPI.Data.Entities.UserEntities
         }
         public string FullName { get; set; }
 
+        public bool GetEmailNotifications { get; set; }
+
 #nullable enable
         [ForeignKey("PersonnelId")]
         public Personnel? Personnel { get; set; } = new Personnel();

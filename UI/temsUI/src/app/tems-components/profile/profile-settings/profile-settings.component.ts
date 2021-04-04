@@ -1,3 +1,4 @@
+import { EmailPreferencesModel } from './../../../models/identity/email-preferences.model';
 import { ChangePasswordModel } from './../../../models/identity/change-password.model';
 import { UserService } from 'src/app/services/user-service/user.service';
 import { FormlyParserService } from 'src/app/services/formly-parser-service/formly-parser.service';
@@ -23,6 +24,12 @@ export class ProfileSettingsComponent extends TEMSComponent implements OnInit {
     fields: [] as FormlyFieldConfig[],
   }
 
+  private emailPreferencesFormlyData = {
+    form: new FormGroup({}),
+    model: {} as any,
+    fields: [] as FormlyFieldConfig[],
+  }
+
   constructor(
     prof: ViewProfile,
     private userService: UserService,
@@ -35,6 +42,11 @@ export class ProfileSettingsComponent extends TEMSComponent implements OnInit {
 
   ngOnInit(): void {
     this.changePasswordFormlyData.fields = this.formlyParserService.parseChangePassword();
+    this.emailPreferencesFormlyData.fields = this.formlyParserService.parseChangeEmailPreferences();
+    this.emailPreferencesFormlyData.model = {
+      email: this.profile.email,
+      getNotifications: this.profile.getEmailNotifications
+    }
   }  
 
   changePass(model){
@@ -51,5 +63,15 @@ export class ProfileSettingsComponent extends TEMSComponent implements OnInit {
           this.changePasswordFormlyData.model = {};
       })
     )
+  }
+
+  saveEmailPreferences(model){
+    let emailPreferencesModel: EmailPreferencesModel = model;
+    emailPreferencesModel.userId = this.profile.id;
+
+    this.userService.changeEmailPreferences(emailPreferencesModel)
+      .subscribe(result => {
+        this.snackService.snack(result);
+      });
   }
 }

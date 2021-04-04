@@ -11,6 +11,7 @@ export interface IViewProfile{
     dateRegistered: Date,
     allocatedKey: IOption;
     roles: string[];
+    getEmailNotifications: boolean,
 }
 
 export class ViewProfile implements IViewProfile{
@@ -25,4 +26,5 @@ export class ViewProfile implements IViewProfile{
     dateRegistered: Date;
     allocatedKey: IOption;
     roles: string[];
+    getEmailNotifications: boolean;
 }

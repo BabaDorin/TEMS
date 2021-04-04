@@ -12,5 +12,16 @@
                 Change my password
             </button>
         </form>
+        <hr>
+        <h3>Email preferences</h3>
+        <form [formGroup]="emailPreferencesFormlyData.form" (ngSubmit)="saveEmailPreferences(emailPreferencesFormlyData.model)">
+            <formly-form [form]="emailPreferencesFormlyData.form" [fields]="emailPreferencesFormlyData.fields"
+                [model]="emailPreferencesFormlyData.model"></formly-form>
+            <p class="text-muted">Tech support team is advised to activate email notifications in order to be notified when someone reports an issue.</p>
+            <button mat-button type="submit" class="btn-primary"
+                [disabled]="emailPreferencesFormlyData.form.status == 'INVALID'">
+                Save email preferences
+            </button>
+        </form>
     </div>
 </div>

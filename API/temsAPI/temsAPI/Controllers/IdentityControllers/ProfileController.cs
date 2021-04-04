@@ -49,6 +49,7 @@ namespace temsAPI.Controllers.IdentityControllers
                             Username = q.UserName,
                             Email = q.Email,
                             IsArchieved = q.IsArchieved,
+                            GetEmailNotifications = q.GetEmailNotifications,
                             //DateRegistered = q.DateRegistered,
                             PhoneNumber = q.PhoneNumber,
                             Personnel = (q.Personnel == null)

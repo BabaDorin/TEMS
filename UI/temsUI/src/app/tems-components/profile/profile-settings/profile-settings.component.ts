@@ -1,3 +1,4 @@
+import { ChangePasswordModel } from './../../../models/identity/change-password.model';
 import { UserService } from 'src/app/services/user-service/user.service';
 import { FormlyParserService } from 'src/app/services/formly-parser-service/formly-parser.service';
 import { FormGroup, FormControl } from '@angular/forms';
@@ -37,8 +38,12 @@ export class ProfileSettingsComponent extends TEMSComponent implements OnInit {
   }  
 
   changePass(model){
+
+    let changePasswordModel: ChangePasswordModel = model;
+    changePasswordModel.userId = this.profile.id;
+
     this.subscriptions.push(
-      this.userService.changePassword(model)
+      this.userService.changePassword(changePasswordModel)
       .subscribe(result => {
         this.snackService.snack(result);
 

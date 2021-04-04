@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -436,6 +437,38 @@ namespace temsAPI.Controllers.IdentityControllers
             {
                 Debug.WriteLine(ex);
                 return ReturnResponse("An error occured when fetching users", ResponseStatus.Fail);
+            }
+        }
+
+        [HttpPost]
+        [Authorize]
+        public async Task<JsonResult> ChangePassword([FromBody] ChangePasswordViewModel viewModel)
+        {
+            try
+            {
+                if (viewModel.UserId != IdentityHelper.GetUserId(User))
+                    return ReturnResponse("You don't have enough privilleges to change this user's password ;)", ResponseStatus.Fail);
+
+                string validationResult = viewModel.Validate();
+                if (validationResult != null)
+                    return ReturnResponse(validationResult, ResponseStatus.Fail);
+
+                if (viewModel.OldPass == viewModel.NewPass)
+                    return ReturnResponse("Your new password matches the old one.", ResponseStatus.Fail);
+
+                var user = await _userManager.FindByIdAsync(viewModel.UserId);
+                var result = _userManager.ChangePasswordAsync(user, viewModel.OldPass, viewModel.NewPass);
+
+                if (result.Result.Errors.Count() > 0)
+                    return ReturnResponse("The password has not been changed. Make sure the data you've " +
+                        "provided is valid", ResponseStatus.Fail);
+
+                return ReturnResponse("Success", ResponseStatus.Success);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured while changing account's password", ResponseStatus.Fail);
             }
         }
     }

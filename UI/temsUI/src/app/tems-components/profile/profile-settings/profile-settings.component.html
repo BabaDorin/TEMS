@@ -1,1 +1,16 @@
-<p>profile-settings works!</p>
+<div class="card strech-card">
+    <div class="card-body">
+        <h2>Account settings</h2>
+        <hr>
+        <h3>Change account password</h3>
+        <form [formGroup]="changePasswordFormlyData.form" (ngSubmit)="changePass(changePasswordFormlyData.model)">
+            <formly-form [form]="changePasswordFormlyData.form" [fields]="changePasswordFormlyData.fields"
+                [model]="changePasswordFormlyData.model"></formly-form>
+            <br>
+            <button mat-button type="submit" class="btn-primary"
+                [disabled]="changePasswordFormlyData.form.status == 'INVALID'">
+                Submit
+            </button>
+        </form>
+    </div>
+</div>

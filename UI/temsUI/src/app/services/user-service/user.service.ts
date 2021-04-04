@@ -1,3 +1,4 @@
+import { ChangePasswordModel } from './../../models/identity/change-password.model';
 import { IOption } from 'src/app/models/option.model';
 import { ViewUser, ViewUserSimplified } from './../../models/user/view-user.model';
 import { LoginModel } from './../../models/identity/login.model';
@@ -138,6 +139,14 @@ export class UserService extends TEMSService {
   getProfileData(userId: string): Observable<ViewProfile>{
     return this.http.get<ViewProfile>(
       API_PROFILE_URL + '/get/' + userId,
+      this.httpOptions
+    );
+  }
+
+  changePassword(changePasswordModel: ChangePasswordModel): Observable<any>{
+    return this.http.post(
+      API_USER_URL + '/changePassword',
+      JSON.stringify(changePasswordModel),
       this.httpOptions
     );
   }

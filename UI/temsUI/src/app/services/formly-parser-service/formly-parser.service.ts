@@ -62,7 +62,7 @@ export class FormlyParserService {
     return fields;
   }
 
-  parseSendEmail(){
+  parseSendEmail() {
     let fields: FormlyFieldConfig[] =
       [
         {
@@ -799,6 +799,50 @@ export class FormlyParserService {
           key: 'personnel',
         },
       ];
+
+    return fields;
+  }
+
+  parseChangePassword() {
+    let fields: FormlyFieldConfig[] =
+      [
+        {
+          key: 'oldPass',
+          type: 'input',
+          templateOptions: {
+            type: "password",
+            required: true,
+            label: 'Old password',
+          }
+        },
+        {
+          validators: {
+            validation: [
+              { name: 'fieldMatch', options: { errorPath: 'confirmNewPass' } },
+            ],
+          },
+          fieldGroup: [
+
+            {
+              key: 'newPass',
+              type: 'input',
+              templateOptions: {
+                type: "password",
+                required: true,
+                label: 'New password',
+              }
+            },
+            {
+              key: 'confirmNewPass',
+              type: 'input',
+              templateOptions: {
+                type: "password",
+                required: true,
+                label: 'Confirm new password',
+              }
+            },
+          ]
+        }];
 
     return fields;
   }

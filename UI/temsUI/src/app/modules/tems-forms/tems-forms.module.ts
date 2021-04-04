@@ -15,7 +15,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormlyModule } from '@ngx-formly/core';
 import { MaterialModule } from '../material/material.module';
-import { specCharValidator } from 'src/app/models/validators';
+import { fieldMatchValidator, specCharValidator } from 'src/app/models/validators';
 import { usernameValidator } from 'src/app/models/validators';
 import { CheckboxGroupComponent } from 'src/app/shared/forms/checkbox-group/checkbox-group.component';
 
@@ -72,6 +72,7 @@ import { CheckboxGroupComponent } from 'src/app/shared/forms/checkbox-group/chec
       validators: [
         { name: 'specCharValidator', validation: specCharValidator },
         { name: 'usernameValidator', validation: usernameValidator },
+        { name: 'fieldMatch', validation: fieldMatchValidator },
       ],  
       validationMessages: [
         { name: 'specCharValidator', message: 'No special characters or spaces allowed!' },

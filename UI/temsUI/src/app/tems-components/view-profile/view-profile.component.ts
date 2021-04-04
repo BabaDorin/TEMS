@@ -10,6 +10,7 @@ import { SnackService } from './../../services/snack/snack.service';
 import { UserService } from './../../services/user-service/user.service';
 import { Component, Injector, OnInit, ViewChild } from '@angular/core';
 import { Location } from '@angular/common'
+import { ProfileSettingsComponent } from '../profile/profile-settings/profile-settings.component';
 
 
 @Component({
@@ -89,7 +90,7 @@ export class ViewProfileComponent extends TEMSComponent implements OnInit {
       case 'general': this.activePage = ProfileGeneralComponent; break;
       // case 'allocations': this.activePage = ProfileAllocationsComponent; break;
       case 'issues': this.activePage = ProfileTicketsComponent; break;
-      // case 'settings': this.activePage = ProfileSettingsComponent; break;
+      case 'settings': this.activePage = ProfileSettingsComponent; break;
       default: this.activePage = ProfileGeneralComponent; break;
     }
   }

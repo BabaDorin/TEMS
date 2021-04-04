@@ -12,5 +12,10 @@ namespace temsAPI.Helpers
         {
             return user.Claims.Where(q => q.Type == "UserID").Select(q => q.Value).SingleOrDefault();
         }
+
+        public static bool isAuthenticated(ClaimsPrincipal user)
+        {
+            return user.Identity.IsAuthenticated;
+        }
     }
 }

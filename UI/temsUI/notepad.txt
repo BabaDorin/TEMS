@@ -1,22 +1,10 @@
 DOCS
 https://blog.aspose.com/2020/04/22/create-zip-archives-add-files-or-folders-to-zip-in-csharp-asp.net/
 
-
 TODO
+--> Solve spelling mistakes:
+    Equipments => Equipment (Equipment has no plural form)
 
-
-2. Adding logs property
-
-
-
-todo:
-spelling mistakes:
-1) Equipments => Equipment (Equipment has no plural form)
-
-repair equipmentallocation
-go further with room => details, logs etc etc
-
-
-Now when one signs out, token is marked as invalid by being saved into jwtblacklist..
-
-===> VALIADATE ONE'S TOKEN on backend <=====
+--> There are two methods with similar implementation within TicketController (GetTickets and GetTicketsOfEntity),
+    get rid of one
+    

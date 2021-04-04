@@ -13,7 +13,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { EquipmentRoutingModule } from './equipment-routing.module';
 import { EquipmentDetailsComponent } from './equipment-details/equipment-details.component';
-import { EquipmentDetailsGeneralComponent } from './equipment-details/equipment-details-general/equipment-details-general.component';
 import { EquipmentDetailsLogsComponent } from './equipment-details/equipment-details-logs/equipment-details-logs.component';
 import { EquipmentDetailsAllocationsComponent } from './equipment-details/equipment-details-allocations/equipment-details-allocations.component';
 import { EquipmentDetailsIssuesComponent } from './equipment-details/equipment-details-issues/equipment-details-issues.component';
@@ -26,7 +25,6 @@ import { ViewPropertyComponent } from './view-property/view-property.component';
 @NgModule({
   declarations: [
     EquipmentDetailsComponent,
-    EquipmentDetailsGeneralComponent,
     EquipmentDetailsLogsComponent,
     EquipmentDetailsAllocationsComponent,
     ViewEquipmentComponent,

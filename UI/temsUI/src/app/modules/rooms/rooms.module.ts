@@ -24,7 +24,6 @@ import { RoomDetailsAllocationsComponent } from '../../tems-components/room/room
     AddRoomComponent,
     SummaryRoomsAnalyticsComponent,
     RoomDetailsComponent,
-    RoomDetailsGeneralComponent,
     RoomDetailsLogsComponent,
     RoomDetailsIssuesComponent,
     RoomDetailsAllocationsComponent,

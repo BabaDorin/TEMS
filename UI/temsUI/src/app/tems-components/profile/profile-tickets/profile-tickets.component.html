@@ -1,17 +1,60 @@
 <div class="card stretch-card">
     <div class="card-body">
-        <div class="card-title">Closed issues</div>
-        <ng-container *ngIf="!showMoreIssues">
+        <h2>Closed issues</h2>
+        <p *ngIf="lastClosedIssues.length == 0" class="text-muted">No data...</p>
+        <ng-container *ngIf="!showMoreClosed">
             <app-issue-container 
             *ngFor="let issue of lastClosedIssues"
             [issue]="issue"
             readonly="true">
             </app-issue-container>
-            <a mat-button (click)="showMoreIssues = true">View more...</a>
+            <a mat-button *ngIf="lastClosedIssues.length > 0" (click)="showMoreClosed = true">View more...</a>
         </ng-container>
-        <ng-container *ngIf="showMoreIssues">
+        <ng-container *ngIf="showMoreClosed">
             <app-entity-issues-list
             [endPoint]="closedIssuesEndPoint"
+            [addIssueEnabled]="false"
+            [showIncludeClosed]="false">
+            </app-entity-issues-list>
+        </ng-container>
+    </div>
+</div>
+<div class="card stretch-card mt-3">
+    <div class="card-body">
+        <h2>Created issues</h2>
+        <p *ngIf="lastCreatedIssues.length == 0" class="text-muted">No data...</p>
+        <ng-container *ngIf="!showMoreCreated">
+            <app-issue-container 
+            *ngFor="let issue of lastCreatedIssues"
+            [issue]="issue"
+            readonly="true">
+            </app-issue-container>
+            <a mat-button *ngIf="lastCreatedIssues.length > 0" (click)="showMoreCreated = true">View more...</a>
+        </ng-container>
+        <ng-container *ngIf="showMoreCreated">
+            <app-entity-issues-list
+            [endPoint]="createdIssuesEndPoint"
+            [addIssueEnabled]="false"
+            [showIncludeClosed]="false">
+            </app-entity-issues-list>
+        </ng-container>
+    </div>
+</div>
+<div class="card stretch-card mt-3">
+    <div class="card-body">
+        <h2>Assigned issues</h2>
+        <p *ngIf="lastAssignedIssues.length == 0" class="text-muted">No data...</p>
+        <ng-container *ngIf="!showMoreAssigned">
+            <app-issue-container 
+            *ngFor="let issue of lastAssignedIssues"
+            [issue]="issue"
+            readonly="true">
+            </app-issue-container>
+            <a mat-button *ngIf="lastAssignedIssues.length > 0" (click)="showMoreAssigned = true">View more...</a>
+        </ng-container>
+        <ng-container *ngIf="showMoreAssigned">
+            <app-entity-issues-list
+            [endPoint]="assignedIssuesEndPoint"
             [addIssueEnabled]="false"
             [showIncludeClosed]="false">
             </app-entity-issues-list>

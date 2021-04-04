@@ -51,30 +51,30 @@
           <h4>Equipments involved:</h4>
           <hr>
           <div class="alert alert-info">
-            <button mat-button *ngFor="let eq of issue.equipments" (click)="viewEquipment(eq.value)">
+            <a mat-button *ngFor="let eq of issue.equipments" [routerLink]="'/equipment/details/' + eq.value">
               <mat-icon class="text-primary">computer</mat-icon>
               {{ eq.label }} {{ eq.additional }}
-            </button>
+            </a>
           </div>
         </div>
         <div *ngIf="issue.rooms != undefined && issue.rooms.length > 0" class="mb-4">
           <h4>Rooms involved:</h4>
           <hr>
           <div class="alert alert-info">
-            <button mat-button *ngFor="let rm of issue.rooms" (click)="viewRoom(rm.value)">
+            <a mat-button *ngFor="let rm of issue.rooms" [routerLink]="'/rooms/details/' + rm.value">
               <mat-icon class="text-primary">pin_drop</mat-icon>
               {{ rm.label }} {{ rm.additional }}
-            </button>
+            </a>
           </div>
         </div>
         <div *ngIf="issue.personnel != undefined && issue.personnel.length > 0" class="mb-4">
           <h4>Personnel involved:</h4>
           <hr>
           <div class="alert alert-info">
-            <button mat-button *ngFor="let pr of issue.personnel" (click)="viewPersonnel(pr.value)">
+            <a mat-button *ngFor="let pr of issue.personnel" [routerLink]="'/personnel/details/' + pr.value">
               <mat-icon class="text-primary">account_circle</mat-icon>
               {{ pr.label }} {{ pr.additional }}
-            </button>
+            </a>
           </div>
         </div>
         <div *ngIf="issue.assignees != undefined && issue.assignees.length > 0" class="mb-4">

@@ -34,7 +34,7 @@ namespace temsAPI.Controllers.CommunicationControllers
         [HttpGet("/ticket/getticketsofentity/{entityType}/{entityId}/{includingClosed}/{onlyClosed}/{orderBy?}/{skip?}/{take?}")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
         public async Task<JsonResult> GetTicketsOfEntity(
-            string entityType, // "user closed" "user created", "user allocated", "personnel", "equipment", "room"
+            string entityType, // "user closed" "user created", "user assigned", "personnel", "equipment", "room"
             string entityId,
             bool includingClosed,
             bool onlyClosed,
@@ -45,7 +45,7 @@ namespace temsAPI.Controllers.CommunicationControllers
             try
             {
                 // Invalid IdentityType
-                if ((new List<string> { "any", "user closed", "user created", "user allocated", "equipment", "room", "personnel" }).IndexOf(entityType) == -1)
+                if ((new List<string> { "any", "user closed", "user created", "user assigned", "equipment", "room", "personnel" }).IndexOf(entityType) == -1)
                     return ReturnResponse("Invalid type or id provided", ResponseStatus.Fail);
 
                 // No identityId Provided
@@ -126,7 +126,6 @@ namespace temsAPI.Controllers.CommunicationControllers
 
                 List<ViewTicketSimplifiedViewModel> viewModel = (await _unitOfWork.Tickets
                     .FindAll<ViewTicketSimplifiedViewModel>(
-                        where: expression,
                         include: q => q.Include(q => q.Assignees)
                                        .Include(q => q.ClosedBy)
                                        .Include(q => q.CreatedBy)
@@ -135,6 +134,7 @@ namespace temsAPI.Controllers.CommunicationControllers
                                        .Include(q => q.Rooms)
                                        .Include(q => q.Status)
                                        .Include(q => q.Equipments),
+                        where: expression,
                         orderBy: orderByExpression,
                         skip: skip ?? 0,
                         take: take ?? int.MaxValue,
@@ -167,16 +167,26 @@ namespace temsAPI.Controllers.CommunicationControllers
                                 Label = q.Identifier,
                                 Additional = string.Join(", ", q.Labels)
                             }).ToList(),
+                            Assignees = q.Assignees.Select(q => new Option
+                            {
+                                Value = q.Id,
+                                Label = q.FullName ?? q.UserName,
+                            }).ToList(),
                             Status = new Option
                             {
                                 Value = q.Status.Id,
                                 Label = q.Status.Name,
                                 Additional = q.Status.ImportanceIndex.ToString()
+                            },
+                            ClosedBy = (q.ClosedById == null)
+                            ? null
+                            : new Option
+                            {
+                                Label = q.ClosedBy.FullName ?? q.ClosedBy.UserName,
+                                Value = q.ClosedById
                             }
                         }
-                    )).OrderBy(q => int.Parse(q.Status.Additional))
-                      .ThenByDescending(q => q.DateCreated)
-                      .ToList();
+                    )).ToList();
 
                 return (Json(viewModel));
             }
@@ -213,7 +223,6 @@ namespace temsAPI.Controllers.CommunicationControllers
                 return ReturnResponse("An error occured while closing the ticket", ResponseStatus.Fail);
             }
         }
-
 
         [HttpGet("/ticket/close/{ticketId}")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
@@ -365,6 +374,9 @@ namespace temsAPI.Controllers.CommunicationControllers
                     Id = Guid.NewGuid().ToString(),
                     StatusId = viewModel.Status,
                     Problem = viewModel.Problem,
+                    CreatedBy = (IdentityHelper.isAuthenticated(User)) 
+                        ? await _userManager.FindByIdAsync(IdentityHelper.GetUserId(User)) 
+                        : null,
                     DateCreated = DateTime.Now,
                     Description = viewModel.ProblemDescription,
                     Rooms = await _unitOfWork.Rooms.FindAll<Room>(

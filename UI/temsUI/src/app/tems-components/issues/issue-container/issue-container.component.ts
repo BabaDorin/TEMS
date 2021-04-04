@@ -1,3 +1,4 @@
+import { Router } from '@angular/router';
 import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import { IOption } from 'src/app/models/option.model';
 
@@ -16,13 +17,16 @@ export class IssueContainerComponent implements OnInit {
   @Output() remove = new EventEmitter(); 
   @Output() statusChanged = new EventEmitter(); 
 
-  constructor() { }
+  constructor(
+    private router: Router,
+  ) { }
 
   ngOnInit(): void {
   }
 
   solveIssue(){
     this.solve.emit();
+    console.log(this.issue);
   }
 
   reopenIssue(){

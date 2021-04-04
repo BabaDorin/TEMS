@@ -27,7 +27,6 @@ import { TemsAgGridModule } from '../tems-ag-grid/tems-ag-grid.module';
     ViewPersonnelComponent,
     PersonnelDetailsLogsComponent,
     SummaryPersonnelAnalyticsComponent,
-    PersonnelDetailsGeneralComponent,
     PersonnelDetailsIssuesComponent,
     PersonnelDetailsAllocationsComponent,
     SendEmailComponent,

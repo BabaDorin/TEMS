@@ -1,3 +1,6 @@
+import { EquipmentDetailsGeneralComponent } from './../../tems-components/equipment/equipment-details/equipment-details-general/equipment-details-general.component';
+import { PersonnelDetailsGeneralComponent } from './../../tems-components/personnel/personnel-details-general/personnel-details-general.component';
+import { RoomDetailsGeneralComponent } from './../../tems-components/room/room-details-general/room-details-general.component';
 import { TemsAgGridModule } from './../tems-ag-grid/tems-ag-grid.module';
 import { LoadingPlaceholderComponent } from './../../tems-components/loading-placeholder/loading-placeholder.component';
 import { RouterModule } from '@angular/router';
@@ -30,6 +33,9 @@ import { IssueContainerComponent } from 'src/app/tems-components/issues/issue-co
     EntityAllocationsListComponent,
     LoadingPlaceholderComponent,
     IssueContainerComponent,
+    RoomDetailsGeneralComponent,
+    PersonnelDetailsGeneralComponent,
+    EquipmentDetailsGeneralComponent,
   ],
   imports: [
     CommonModule,
@@ -52,6 +58,9 @@ import { IssueContainerComponent } from 'src/app/tems-components/issues/issue-co
     EntityAllocationsListComponent,
     LoadingPlaceholderComponent,
     IssueContainerComponent,
+    RoomDetailsGeneralComponent,
+    PersonnelDetailsGeneralComponent,
+    EquipmentDetailsGeneralComponent,
   ]
 })
 export class EntitySharedModule { }

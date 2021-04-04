@@ -176,21 +176,6 @@ export class EntityIssuesListComponent extends TEMSComponent implements OnInit, 
     this.getIssues()
   }
 
-  viewEquipment(equipmentId: string){
-    this.router.navigateByUrl('/', {skipLocationChange: true}).then(()=>
-    this.router.navigate(['/equipment/details/' + equipmentId]));
-  }
-
-  viewRoom(roomId: string){
-    this.router.navigateByUrl('/', {skipLocationChange: true}).then(()=>
-    this.router.navigate(['/rooms/details/' + roomId]));
-  }
-  
-  viewPersonnel(personnelId: string){
-    this.router.navigateByUrl('/', {skipLocationChange: true}).then(()=>
-    this.router.navigate(['/personnel/details/' + personnelId]));
-  }
-
   remove(issueId, index){
     if(!confirm("Are you sure you want to remove that issue?"))
       return;

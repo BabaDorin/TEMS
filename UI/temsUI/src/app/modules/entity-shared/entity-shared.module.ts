@@ -50,7 +50,8 @@ import { IssueContainerComponent } from 'src/app/tems-components/issues/issue-co
     EntityIssuesListComponent,
     SummaryIssuesAnalyticsComponent,
     EntityAllocationsListComponent,
-    LoadingPlaceholderComponent
+    LoadingPlaceholderComponent,
+    IssueContainerComponent,
   ]
 })
 export class EntitySharedModule { }

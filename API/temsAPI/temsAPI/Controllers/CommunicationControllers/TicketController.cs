@@ -45,7 +45,7 @@ namespace temsAPI.Controllers.CommunicationControllers
             try
             {
                 // Invalid IdentityType
-                if ((new List<string> { "any", "equipment", "room", "personnel" }).IndexOf(entityType) == -1)
+                if ((new List<string> { "any", "user closed", "user created", "user allocated", "equipment", "room", "personnel" }).IndexOf(entityType) == -1)
                     return ReturnResponse("Invalid type or id provided", ResponseStatus.Fail);
 
                 // No identityId Provided
@@ -73,13 +73,13 @@ namespace temsAPI.Controllers.CommunicationControllers
                         if (!await _unitOfWork.TEMSUsers.isExists(q => q.Id == entityId))
                             return ReturnResponse("Invalid type or id provided", ResponseStatus.Fail);
 
-                        expression2 = q => q.ClosedById == entityType;
+                        expression2 = q => q.ClosedById == entityId;
                         break;
                     case "user created":
                         if (!await _unitOfWork.TEMSUsers.isExists(q => q.Id == entityId))
                             return ReturnResponse("Invalid type or id provided", ResponseStatus.Fail);
 
-                        expression2 = q => q.CreatedById == entityType;
+                        expression2 = q => q.CreatedById == entityId;
                         break;
                     case "user assigned":
                         var user = await _userManager.FindByIdAsync(entityId);

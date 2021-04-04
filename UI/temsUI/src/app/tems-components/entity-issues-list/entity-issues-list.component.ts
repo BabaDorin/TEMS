@@ -23,6 +23,7 @@ export class EntityIssuesListComponent extends TEMSComponent implements OnInit, 
   @Input() roomId: string = "any";
   @Input() addIssueEnabled: boolean = true;
   @Input() personnelId: string = "any";
+  @Input() endPoint;
 
   // for AddIssueComponent
   @Input() equipment: IOption[] = [];
@@ -40,6 +41,7 @@ export class EntityIssuesListComponent extends TEMSComponent implements OnInit, 
   canManage = false;
   statuses: IOption[];
   loading = true;
+  pageNumber = 1;
 
   constructor(
     private issuesService: IssuesService,
@@ -69,8 +71,13 @@ export class EntityIssuesListComponent extends TEMSComponent implements OnInit, 
 
   getIssues(){
     this.loading = true;
-    this.subscriptions.push(this.issuesService.getIssues(
-      this.equipmentId, this.roomId, this.personnelId, this.includingClosed, this.onlyClosed)
+
+    if(this.endPoint == undefined)
+      this.endPoint =  this.issuesService.getIssues(
+        this.equipmentId, this.roomId, this.personnelId, this.includingClosed, this.onlyClosed);
+
+    this.subscriptions.push(
+      this.endPoint
       .subscribe(result => {
         if(this.snackService.snackIfError(this.issues))
           return;
@@ -108,7 +115,7 @@ export class EntityIssuesListComponent extends TEMSComponent implements OnInit, 
           return;
         }
 
-        this.issues[index].status = eventData.value;
+        this.issues[index + (this.pageNumber-1)*20].status = eventData.value;
       })
     )
   }
@@ -122,9 +129,10 @@ export class EntityIssuesListComponent extends TEMSComponent implements OnInit, 
           return;
         }
 
-        this.issues[index].dateClosed = new Date;
-        let d1 = new Date(this.issues[index].dateClosed);
-        let d2 = new Date(this.issues[index].dateCreated);
+        let selectedIssue = this.issues[index + (this.pageNumber-1)*20];
+        selectedIssue.dateClosed = new Date;
+        let d1 = new Date(selectedIssue.dateClosed);
+        let d2 = new Date(selectedIssue.dateCreated);
         let difference = Math.abs(d1.getTime() - d2.getTime()) / 36e5;
         
         if(difference <= 24)
@@ -144,7 +152,7 @@ export class EntityIssuesListComponent extends TEMSComponent implements OnInit, 
           return;
         }
 
-        this.issues[index].dateClosed = undefined;
+        this.issues[index + (this.pageNumber-1)*20].dateClosed = undefined;
       })
     )
   }
@@ -191,9 +199,8 @@ export class EntityIssuesListComponent extends TEMSComponent implements OnInit, 
       this.issuesService.archieve(issueId)
       .subscribe(result => {
         this.snackService.snack(result);
-
         if(result.status == 1)
-          this.issues.splice(index, 1);
+          this.issues.splice(index + (this.pageNumber-1)*20, 1);
       })
     )
   }

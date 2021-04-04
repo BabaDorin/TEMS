@@ -49,7 +49,7 @@ export class IssuesService extends TEMSService {
     skip?: number,
     take?: number): Observable<any>{
     return this.http.get(
-      API_ISU_URL + '/getticketsofentity/' + entityType + '/' + entityId + '/' + includingClosed + '/' + onlyClosed + '/' + orderBy,
+      API_ISU_URL + '/getticketsofentity/' + entityType + '/' + entityId + '/' + includingClosed + '/' + onlyClosed + '/' + orderBy + '/' + skip + '/' + take,
       this.httpOptions
     );
   }

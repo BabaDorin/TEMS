@@ -1,3 +1,4 @@
+import { EntitySharedModule } from 'src/app/modules/entity-shared/entity-shared.module';
 import { ProfileSettingsComponent } from './../../tems-components/profile/profile-settings/profile-settings.component';
 import { ProfileTicketsComponent } from './../../tems-components/profile/profile-tickets/profile-tickets.component';
 import { ProfileAllocationsComponent } from './../../tems-components/profile/profile-allocations/profile-allocations.component';
@@ -22,6 +23,7 @@ import { ProfileRoutingModule } from './profile-routing.module';
     CommonModule,
     ProfileRoutingModule,
     TemsFormsModule,
+    EntitySharedModule,
   ]
 })
 export class ProfileModule { }

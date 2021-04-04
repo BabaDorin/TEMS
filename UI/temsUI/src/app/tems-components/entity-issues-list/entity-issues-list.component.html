@@ -20,7 +20,7 @@
 <div #issuesPanel>
 
   <mat-accordion>
-    <div *ngFor="let issue of issues | paginate: { itemsPerPage: 20, currentPage: p1, id: 'issues' }; let i = index">
+    <div *ngFor="let issue of issues | paginate: { itemsPerPage: 20, currentPage: pageNumber, id: 'issues' }; let i = index">
       <app-issue-container 
       [issue]="issue"
       [statuses]="statuses"
@@ -33,7 +33,7 @@
   </mat-accordion>
 </div>
 
-<pagination-controls (pageChange)="p1 = $event" id="issues" *ngIf="issues != undefined && issues.length > 0">
+<pagination-controls (pageChange)="pageNumber = $event" id="issues" *ngIf="issues != undefined && issues.length > 0">
 </pagination-controls>
 <div *ngIf="loading == false && (issues == undefined || issues.length == 0)">
   <img class="centerSvg fade-in" style="width: 300px;" src="assets/svgs/no-data.svg">

@@ -20,7 +20,7 @@ export class AppComponent implements OnInit{
     // When needed (For example, when loading the page...), Feel free to add more cases here.
     router.events.forEach((event) => { 
       if(event instanceof NavigationStart) {
-        if((event['url'] == '/auth/login') || (event['url'] == '/auth/register') || (event['url'] == '/error-pages/404') || (event['url'] == '/error-pages/500') ) {
+        if((event['url'] == '/auth/login') || (event['url'] == '/auth/register') || (event['url'] == '/error-pages/404') || (event['url'] == '/error-pages/500') || (event['url'] == '/error-pages/403')) {
           this.showSidebar = false;
           this.showNavbar = false;
           this.showFooter = false;

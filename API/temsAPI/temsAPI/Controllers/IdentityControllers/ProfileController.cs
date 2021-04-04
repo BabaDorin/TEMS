@@ -40,8 +40,8 @@ namespace temsAPI.Controllers.IdentityControllers
                         .Include(q => q.AssignedTickets)
                         .Include(q => q.ClosedTickets)
                         .Include(q => q.CreatedTickets)
-                        .Include(q => q.Announcements)
-                        .Include(q => q.Personnel).ThenInclude(q => q.KeyAllocations),
+                        .Include(q => q.Announcements),
+                        //.Include(q => q.Personnel).ThenInclude(q => q.KeyAllocations),
                         select: q => new ViewProfileViewModel
                         {
                             Id = q.Id,
@@ -49,7 +49,7 @@ namespace temsAPI.Controllers.IdentityControllers
                             Username = q.UserName,
                             Email = q.Email,
                             IsArchieved = q.IsArchieved,
-                            GetEmailNotifications = q.GetEmailNotifications,
+                            GetEmailNotifications = (q.GetEmailNotifications == null) ? false : q.GetEmailNotifications,
                             //DateRegistered = q.DateRegistered,
                             PhoneNumber = q.PhoneNumber,
                             Personnel = (q.Personnel == null)

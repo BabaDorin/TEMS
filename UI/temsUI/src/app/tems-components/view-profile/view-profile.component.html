@@ -4,12 +4,13 @@
             <div class="card stretch-card">
                 <div class="card-body">
                     <div
-                        style="max-width: 90%; max-height: 90%; padding-top: 90%; margin: auto; background-color: blueviolet;">
+                        style="max-width: 90%; max-height: 90%; margin: auto;">
+                        <img src="assets/svgs/default_avatar.svg" style="width: 100%;">
                     </div>
                     <a mat-button class="btn-block mt-3" (click)="viewPage('general')">General Info</a>
                     <!-- <a mat-button class="btn-block" (click)="viewPage('allocations')">Allocations</a> -->
                     <a mat-button class="btn-block" (click)="viewPage('issues')">Issues</a>
-                    <a mat-button class="btn-block" (click)="viewPage('settings')">Settings</a>
+                    <a mat-button *ngIf="isCurrentUser" class="btn-block" (click)="viewPage('settings')">Settings</a>
                 </div>
             </div>
         </div>

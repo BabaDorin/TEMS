@@ -9,6 +9,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { ViewProfile } from 'src/app/models/profile/view-profile.model';
 import { SnackService } from 'src/app/services/snack/snack.service';
 import { FormlyFieldConfig } from '@ngx-formly/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-profile-settings',
@@ -18,6 +19,7 @@ import { FormlyFieldConfig } from '@ngx-formly/core';
 export class ProfileSettingsComponent extends TEMSComponent implements OnInit {
 
   @Input() profile: ViewProfile;
+  isCurrentUser: boolean;
 
   private changePasswordFormlyData = {
     form: new FormGroup({}),
@@ -39,15 +41,22 @@ export class ProfileSettingsComponent extends TEMSComponent implements OnInit {
 
   constructor(
     prof: ViewProfile,
+    isCurrentUser: boolean,
     private userService: UserService,
     private snackService: SnackService,
+    private router: Router,
     private formlyParserService: FormlyParserService) {
     super();
     console.log(prof);
     this.profile = prof;
+    this.isCurrentUser = isCurrentUser;
   }
 
   ngOnInit(): void {
+    if(!this.isCurrentUser)
+      this.router.navigate(['/error-pages/403'])
+
+
     this.changePasswordFormlyData.fields = this.formlyParserService.parseChangePassword();
 
     this.emailPreferencesFormlyData.fields = this.formlyParserService.parseChangeEmailPreferences();

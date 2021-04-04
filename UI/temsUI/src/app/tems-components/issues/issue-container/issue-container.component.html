@@ -24,10 +24,10 @@
         <ng-container *ngIf="issue.dateClosed != undefined && issue.closedBy != undefined">
           <div class="alert alert-warning">
             <p>Closed on {{ issue.dateClosed | date:'short' }} by
-              <button mat-button>
+              <a mat-button [routerLink]="'/profile/view/' + issue.closedBy.value">
                 <mat-icon class="text-primary ml-3" (click)="wtf(issue)">person</mat-icon>
                 {{ issue.closedBy.label }}
-              </button>
+              </a>
             </p>
           </div>
         </ng-container>
@@ -81,10 +81,10 @@
           <h4>Assigned to:</h4>
           <hr>
           <div class="alert alert-warning">
-            <button mat-button *ngFor="let assignee of issue.assignees" (click)="viewPersonnel(assignee.value)">
+            <a mat-button *ngFor="let assignee of issue.assignees" [routerLink]="'/profile/view/' + assignee.value">
               <mat-icon class="text-primary">account_circle</mat-icon>
               {{ assignee.label }}
-            </button>
+            </a>
           </div>
         </div>
         <br>

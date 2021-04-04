@@ -52,8 +52,8 @@ export class ViewProfileComponent extends TEMSComponent implements OnInit {
       this.location.go('/profile/view/' + currentUserId);
     }
 
-    this.isCurrentUser = (this.userId == this.tokenService.getClaimValue('UserID')) || this.tokenService.hasClaim(CAN_MANAGE_SYSTEM_CONFIGURATION);
-    
+    this.isCurrentUser = this.userId == this.tokenService.getClaimValue('UserID');
+
     this.subscriptions.push(
       this.userService.getProfileData(this.userId)
       .subscribe(result => {
@@ -63,7 +63,8 @@ export class ViewProfileComponent extends TEMSComponent implements OnInit {
 
         this.profile = result;
         this.injector = Injector.create([
-          { provide: ViewProfile, useValue: this.profile }
+          { provide: ViewProfile, useValue: this.profile },
+          { provide: Boolean, useValue: this.isCurrentUser },
         ], this.inj);
         this.getActivePage();
       })

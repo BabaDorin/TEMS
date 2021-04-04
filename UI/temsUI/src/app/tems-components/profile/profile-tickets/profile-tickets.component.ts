@@ -25,15 +25,17 @@ export class ProfileTicketsComponent extends TEMSComponent implements OnInit {
   lastAssignedIssues: ViewIssueSimplified[] = [];
   assignedIssuesEndPoint;
   showMoreAssigned: boolean = false;
-
+  isCurrentUser: boolean;
 
   constructor(
     prof: ViewProfile,
+    isCurrentUser: boolean,
     private issueService: IssuesService,
     private snackService: SnackService) {
     super();
     console.log(prof);
     this.profile = prof;
+    this.isCurrentUser = isCurrentUser;
   }
 
   ngOnInit(): void {

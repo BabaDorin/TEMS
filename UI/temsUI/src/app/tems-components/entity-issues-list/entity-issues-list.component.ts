@@ -43,6 +43,10 @@ export class EntityIssuesListComponent extends TEMSComponent implements OnInit, 
   loading = true;
   pageNumber = 1;
 
+  confettiAbused:number = 0;
+  timeOfLastFiredConfetti: Date;
+  confettiCanceled = false;
+
   constructor(
     private issuesService: IssuesService,
     private dialogService: DialogService,
@@ -134,11 +138,10 @@ export class EntityIssuesListComponent extends TEMSComponent implements OnInit, 
         let d1 = new Date(selectedIssue.dateClosed);
         let d2 = new Date(selectedIssue.dateCreated);
         let difference = Math.abs(d1.getTime() - d2.getTime()) / 36e5;
-        
+        this.snackService.snack({message: "🎉🎉 Let's close them all!", status: 1}, 'default-snackbar')
+
         if(difference <= 24)
           this.launchConfetti();
-
-        this.snackService.snack({message: "🎉🎉 Let's close them all!", status: 1}, 'default-snackbar')
       })
     )
   }
@@ -191,6 +194,27 @@ export class EntityIssuesListComponent extends TEMSComponent implements OnInit, 
   }
 
   launchConfetti(){
+    if(this.confettiCanceled)
+      return;
+
+    if(this.timeOfLastFiredConfetti == undefined)
+      this.timeOfLastFiredConfetti = new Date;
+    else{
+      if(Math.abs((new Date().getTime() - this.timeOfLastFiredConfetti.getTime()) / 1000) < 10){
+        this.confettiAbused++;
+        if(this.confettiAbused >= 3)
+          this.confettiCanceled = true;
+      }
+      else
+        this.confettiAbused = 0;
+    }
+
+
+    if(this.confettiCanceled){
+      this.snackService.snack({message: "Țajiunji.", status: 0});
+      return;
+    }
+  
     confetti.create(undefined, { resize: true, useWorker: true })({
       particleCount: 130,
       spread: 130,

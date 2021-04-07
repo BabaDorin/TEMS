@@ -3,44 +3,40 @@
         <div class="card-title">
             Equipment Allocation
         </div>
-        <br>
-        <div class="row">
-            <div class="col-md-5">
-                <h2>Equipment (TEMSID or Serial Number)</h2>
-                <!-- <app-chips-autocomplete
-                    #equipmentIdentifierChips
-                    label="Choose one or more equipments..."
-                    [availableOptions]="equipmentAutoCompleteOptions"
-                    [alreadySelected]="equipmentAlreadySelectedOptions">
-                </app-chips-autocomplete> -->
-                <app-chips-autocomplete
-                    #equipmentIdentifierChips
-                    label="Choose one or more equipments..."
-                    [alreadySelected]="equipmentAlreadySelectedOptions"
-                    [endPoint]="equipmentService">
-                </app-chips-autocomplete>
+        <hr>
+        <form [formGroup]="equipmentAllocationFormGroup" (submit)="submit(equipmentAllocationFormGroup.controls)">
+            <div class="row">
+                <div class="col-md-12">
+                    <app-chips-autocomplete #equipmentIdentifierChips label="Choose the equipment you want to allocate..."
+                        [alreadySelected]="equipmentAlreadySelectedOptions" [endPoint]="equipmentService"
+                        placeholder="TEMSID or Serial Number"
+                        formControlName="equipment">
+                    </app-chips-autocomplete>
+                </div>
+                <div class="col-md-3">
+                    <mat-form-field appearance="fill">
+                        <mat-label>Allocate to</mat-label>
+                        <mat-select (ngModelChange)="onSelection()" formControlName="allocateToType">
+                            <mat-option *ngFor="let type of allocateToTypes" [value]="type.value">
+                                {{ type.viewValue }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div class="col-md-9">
+                    <app-chips-autocomplete #allocatedTo [label]="allocatedToChipsInputLabel"
+                        [alreadySelected]="allocatedToAlreadySelectedOptions" [endPoint]="alocateeEndPoint"
+                        maxOptionsSelected="1" formControlName="allocateTo">
+                    </app-chips-autocomplete>
+                </div>
             </div>
-            <div class="col-md-2"> => </div>
-            <div class="col-md-5">
-                <mat-form-field appearance="fill">
-                    <mat-label>Allocate to</mat-label>
-                    <mat-select [(ngModel)]="selectedAllocateToType" (ngModelChange)="onSelection()">
-                        <mat-option *ngFor="let type of allocateToTypes" [value]="type.value">
-                            {{ type.viewValue }}
-                        </mat-option>
-                    </mat-select>
-                </mat-form-field>
-
-                <app-chips-autocomplete
-                #allocatedTo
-                [label]="allocatedToChipsInputLabel"
-                [alreadySelected]="allocatedToAlreadySelectedOptions"
-                [endPoint]="alocateeEndPoint"
-                maxOptionsSelected="1">
-                </app-chips-autocomplete>
-            </div>
-        </div>
-        <button class="btn btn-primary btn-block" (click)="submit()">Allocate</button>
+            <button 
+                mat-button
+                type="submit" 
+                class="btn-primary mr-2">
+                Create allocation
+            </button>
+        </form>
         <br>
     </div>
 </div>

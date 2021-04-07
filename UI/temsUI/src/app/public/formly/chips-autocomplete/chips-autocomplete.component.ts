@@ -184,6 +184,9 @@ export class ChipsAutocompleteComponent implements OnInit, ControlValueAccessor 
 
   writeValue(options: IOption[]): void {
     this.value = options;
+    if(Array.isArray(options)){
+      this.options = options;
+    }
   }
   registerOnChange(fn: any): void {
     this.onChange = fn;

@@ -1,27 +1,15 @@
 <div class="card">
-    <div class="card-body">
-        <div class="card-title">{{ header }}</div>
-        <form (submit)="onSubmit()">
-            <mat-form-field>
-              <mat-label>{{ label }}</mat-label>
-              <input type="text"
-                     [placeholder]="placeholder"
-                     aria-label="Tems ID or Serial Number"
-                     matInput
-                     [formControl]="optionInput"
-                     [matAutocomplete]="auto"
-                     required>
-              <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
-                <mat-option *ngFor="let option of filteredOptions | async" [value]="option.label"
-                (onSelectionChange)="optionSelected(option.value)">
-                  {{option.label}} <span class="text-muted">{{ option.additional }}</span>
-                </mat-option>
-              </mat-autocomplete>
-            </mat-form-field>
-            <br>
-            <button type="submit" class="btn btn-primary" [disabled]="optionInput.length == 0">
-              Find
-            </button>
-          </form>
-    </div>
+  <div class="card-body">
+    <div class="card-title">{{ header }}</div>
+    <form [formGroup]="quickAccessFormGroup" (submit)="onSubmit()">
+      <div style="max-width: 600px;">
+        <app-chips-autocomplete #identifier [label]="label" [endPoint]="endPoint"
+          [placeholder]="placeholder" formControlName="selectedEntities" maxOptionsSelected="1">
+        </app-chips-autocomplete>
+        <button type="submit" mat-button>
+          <mat-icon class="text-primary">search</mat-icon> Find
+        </button>
+      </div>
+    </form>
+  </div>
 </div>

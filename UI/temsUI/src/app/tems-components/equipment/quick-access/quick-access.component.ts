@@ -1,13 +1,13 @@
-import { IOption } from './../../../models/option.model';
+import { ChipsAutocompleteComponent } from 'src/app/public/formly/chips-autocomplete/chips-autocomplete.component';
+import { SnackService } from 'src/app/services/snack/snack.service';
 import { PersonnelService } from './../../../services/personnel-service/personnel.service';
 import { RoomsService } from './../../../services/rooms-service/rooms.service';
 import { EquipmentService } from 'src/app/services/equipment-service/equipment.service';
-import { Component, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
-import { Observable } from 'rxjs';
-import { map, startWith } from 'rxjs/operators';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from "@angular/router"
 import { TEMSComponent } from 'src/app/tems/tems.component';
+import { IOption } from 'src/app/models/option.model';
 
 @Component({
   selector: 'app-quick-access',
@@ -16,134 +16,84 @@ import { TEMSComponent } from 'src/app/tems/tems.component';
 })
 export class QuickAccessComponent extends TEMSComponent implements OnInit {
 
-  optionInput = new FormControl();
-  options: IOption[] = [];
-  filteredOptions: Observable<IOption[]>;
-  selectedOptionId: string;
   type: string; // equipment, room or personnel
-
-  header; label; placeholder;
+  header; 
+  label; 
+  placeholder; 
+  endPoint;
+  @ViewChild('identifier') identifier: ChipsAutocompleteComponent;
 
   constructor(
     private equipmentService: EquipmentService,
     private router: Router,
     private activatedroute: ActivatedRoute,
     private roomService: RoomsService,
-    private personnelService: PersonnelService
+    private personnelService: PersonnelService,
+    private snackService: SnackService
   ) {
     super();
+  }
+
+  quickAccessFormGroup = new FormGroup({
+    selectedEntities: new FormControl()
+  })
+
+  get selectedEntity() {
+    let value = this.quickAccessFormGroup.controls.selectedEntities.value;
+    if(value == undefined || value.length == 0) return undefined;
+    return value[0]
   }
 
   ngOnInit() {
     this.checkRoute();
   }
 
-  onSubmit() {
-    if(this.optionInput.value.length == 0)
-      return;
-
-    let selectedOptionByLabel = this.options
-      .find(q => q.label.toLowerCase() == this.optionInput.value.toLowerCase());
-
-    if(selectedOptionByLabel == undefined)
-      return;
-
-    // 1) The value has not been selected within drowdown options
-    if(this.selectedOptionId == undefined){
-
-      if(selectedOptionByLabel == undefined){
-        console.log('not found');
-        return;
-      }
-      else
-        this.selectedOptionId = selectedOptionByLabel.value;
-    }
-    else
-    {
-      // Option was selected via dropwdown, but we still have to check if the
-      // option from mat-input matches with selectedOptionId
-      let selectedOptionById = this.options
-        .find(q => q.value == this.selectedOptionId);
-      
-      // Does not Match
-      if(selectedOptionById.label != this.optionInput.value)
-        this.selectedOptionId = selectedOptionByLabel.value
-    }
-
-    this.router.navigate(["/" + this.type + "/details/" + this.selectedOptionId]);
-  }
-
-  private _filter(value: string): IOption[] {
-    const filterValue = value.toLowerCase();
-    return this.options.filter(option => option.label.toLowerCase().indexOf(filterValue) === 0);
-  }
-
-  // Subscribes to route changes
   private checkRoute() {
     this.activatedroute.params.subscribe(params => {
       if (params['type']) {
         this.type = this.activatedroute.snapshot.paramMap.get("type");
-        console.log(this.type);
-
-
         if (['equipment', 'rooms', 'personnel'].indexOf(this.type) == -1) {
           this.router.navigate(['/error-pages/404']);
         }
     
         switch (this.type) {
           case 'equipment':
-            this.subscriptions.push(this.equipmentService.getAllAutocompleteOptions()
-              .subscribe(response => {
-                this.options = response;
-              }))
-
-              this.header = "Find equipment by TEMSID or Serial Number";
-            this.label = "Indentifier";
-            this.placeholder = "LPB021";
+            this.endPoint = this.equipmentService;
+            this.header = "Find an equipment";
+            this.label = "Find equipment by it's TEMSID or Serial Number";
+            this.placeholder = "TEMSID or Serial Number";
             break;
     
           case 'rooms':
-            this.subscriptions.push(this.roomService.getAllAutocompleteOptions()
-              .subscribe(result => {
-                console.log(result);
-                this.options = result;
-              }))
-            this.header = "Find room by identifier";
-            this.label = "Indentifier";
-            this.placeholder = "104";
+            this.endPoint = this.roomService;
+            this.header = "Find a room";
+            this.label = "Find room by identifier";
+            this.placeholder = "Room's identifier";
             break;
     
           case 'personnel':
-            this.subscriptions.push(this.personnelService.getAllAutocompleteOptions()
-              .subscribe(result => {
-                console.log(result),
-                this.options = result;
-              }))
-            this.header = "Find personnel by name";
-            this.label = "Indentifier";
-            this.placeholder = "Ciolac";
+            this.endPoint = this.personnelService;
+            this.header = "Find personnel";
+            this.label = "Find personnel by name";
+            this.placeholder = "Personnel's name";
             break;
         }
-    
-        this.filteredOptions = this.optionInput.valueChanges.pipe(
-          startWith(''),
-          map(value => this._filter(value))
-        );
+
+        if(this.identifier != undefined)
+          this.identifier.alreadySelected = [] as IOption[];
       }
     });
   }
 
-  optionSelected(optionId: string){
-    console.log('Option selected: ' + optionId);
-    this.selectedOptionId = optionId;
-  }
+  onSubmit() {
+    if(this.selectedEntity == undefined){
+      this.snackService.snack({
+        message: "Please, choose an entity from the dropdown",
+        status: 0
+      });
+      return;
+    }
 
-  findIdByLabel(label: string){
-    let option = this.options.find(q => q.label.toLowerCase() == label.toLowerCase());
-
-    if(option != undefined)
-      return option.value;
-
-    return undefined;
+    this.router.navigate(["/" + this.type + "/details/" + this.selectedEntity.value]);
   }
 }

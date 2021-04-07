@@ -323,5 +323,33 @@ namespace temsAPI.Controllers.KeyControllers
                 return ReturnResponse("An error occured while marking the key as returned", ResponseStatus.Fail);
             }
         }
+
+
+        [HttpGet("key/archieve/{keyId}")]
+        [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
+        public async Task<JsonResult> Archieve(string keyId)
+        {
+            try
+            {
+                var key = (await _unitOfWork.Keys
+                    .Find<Key>(q => q.Id == keyId))
+                    .FirstOrDefault();
+
+                if (key == null)
+                    return ReturnResponse("Invalid id provided", ResponseStatus.Fail);
+
+                string archivationResult = await new ArchieveHelper(_userManager, _unitOfWork)
+                    .SetKeyArchivationStatus(keyId, true);
+                if (archivationResult != null)
+                    return ReturnResponse(archivationResult, ResponseStatus.Fail);
+
+                return ReturnResponse("Success", ResponseStatus.Success);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured while archieving the key and it's related data", ResponseStatus.Fail);
+            }
+        }
     }
 }

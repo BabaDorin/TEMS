@@ -63,4 +63,11 @@ export class KeysService extends TEMSService {
       this.httpOptions
     );
   }
+
+  archieveKey(keyId: string): Observable<any>{
+    return this.http.get(
+      API_KEY_URL+ '/archieve/' + keyId,
+      this.httpOptions
+    );
+  }
 }

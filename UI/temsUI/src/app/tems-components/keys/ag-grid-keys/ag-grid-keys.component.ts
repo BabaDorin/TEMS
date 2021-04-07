@@ -120,7 +120,17 @@ export class AgGridKeysComponent extends TEMSComponent implements OnInit, OnChan
   }
 
   archieve(e){
+    if(!confirm("Are you sure you want to archive this key? It will result in archieving all of it's allocations"))
+    return;
 
+    this.subscriptions.push(
+      this.keysService.archieveKey(e.rowData.id) // HERE
+      .subscribe(result => {
+        if(this.snackService.snack(result)){
+          this.gridApi.applyTransaction({ remove: [e.rowData] });
+        }
+      })
+    )
   }
 
   onGridReady(params) {

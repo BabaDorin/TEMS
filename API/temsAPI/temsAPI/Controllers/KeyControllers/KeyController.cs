@@ -31,19 +31,23 @@ namespace temsAPI.Controllers.KeyControllers
         {
             try
             {
-                List<ViewKeySimplifiedViewModel> viewModel = (await _unitOfWork.Keys
-                    .FindAll<ViewKeySimplifiedViewModel>(
+                var keys = (await _unitOfWork.Keys
+                    .FindAll<Key>(
                         where: q => !q.IsArchieved,
-                        include: q => q.Include(qu => qu.KeyAllocations
-                            .Where(q => q.DateReturned == null).OrderByDescending(q => q.DateAllocated))
-                        .ThenInclude(q => q.Personnel)
-                        .Include(q => q.Room),
-                         select: q => new ViewKeySimplifiedViewModel
-                         {
-                             Id = q.Id,
-                             Identifier = q.Identifier,
-                             Description = q.Description,
-                             Room =
+                        include: q => q
+                        .Include(q => q.Room)
+                        .Include(q => q.KeyAllocations).ThenInclude(q => q.Personnel)));
+
+                var keysSimplified = keys.Select(q =>
+                {
+                    var lastActiveAllocation = q.KeyAllocations.FirstOrDefault(q => q.DateReturned == null);
+
+                    return new ViewKeySimplifiedViewModel()
+                    {
+                        Id = q.Id,
+                        Identifier = q.Identifier,
+                        Description = q.Description,
+                        Room =
                                 (q.Room != null)
                                 ? new Option
                                 {
@@ -55,23 +59,25 @@ namespace temsAPI.Controllers.KeyControllers
                                     Value = "--",
                                     Label = "--"
                                 },
-                             AllocatedTo =
-                                (q.KeyAllocations.Count > 0)
+                        AllocatedTo =
+                                (lastActiveAllocation != null)
                                 ? new Option
                                 {
-                                    Value = q.KeyAllocations.First().PersonnelID,
-                                    Label = q.KeyAllocations.First().Personnel.Name,
+                                    Value = lastActiveAllocation.PersonnelID,
+                                    Label = lastActiveAllocation.Personnel.Name,
                                 }
                                 : new Option
                                 {
                                     Value = "--",
                                     Label = "--"
                                 },
-                             TimePassed = (q.KeyAllocations.Count > 0)
-                                ? $"{(DateTime.Now - q.KeyAllocations.First().DateAllocated).TotalMinutes:f0} minutes ago"
+                        TimePassed = (lastActiveAllocation != null)
+                                ? $"{(DateTime.Now - lastActiveAllocation.DateAllocated).TotalMinutes:f0} minutes ago"
                                 : "--"
-                         }
-                         )).ToList();
+                    };
+                });
+
+                var viewModel = keysSimplified.ToList();
 
                 return Json(viewModel);
             }
@@ -288,6 +294,33 @@ namespace temsAPI.Controllers.KeyControllers
             {
                 Debug.WriteLine(ex);
                 return ReturnResponse("An error occured when fetching key allocations", ResponseStatus.Fail);
+            }
+        }
+
+        [HttpGet("key/markasreturned/{keyId}")]
+        [ClaimRequirement(TEMSClaims.CAN_ALLOCATE_KEYS)]
+        public async Task<JsonResult> MarkAsReturned(string keyId)
+        {
+            try
+            {
+                if (keyId == null || !await _unitOfWork.Keys.isExists(q => q.Id == keyId))
+                    return ReturnResponse("No id has been provided", ResponseStatus.Fail);
+
+                var key = (await _unitOfWork.Keys
+                    .Find<Key>(
+                        where: q => q.Id == keyId,
+                        include: q => q.Include(q => q.KeyAllocations.Where(q => q.DateReturned == null))))
+                        .FirstOrDefault();
+
+                key.KeyAllocations.ToList().ForEach(q => q.DateReturned = DateTime.Now);
+                await _unitOfWork.Save();
+
+                return ReturnResponse("Success", ResponseStatus.Success);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured while marking the key as returned", ResponseStatus.Fail);
             }
         }
     }

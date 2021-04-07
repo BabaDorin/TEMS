@@ -56,4 +56,11 @@ export class KeysService extends TEMSService {
       this.httpOptions
     );
   }
+
+  markAsReturned(keyId: string): Observable<any>{
+    return this.http.get(
+      API_KEY_URL + '/markAsReturned/' + keyId,
+      this.httpOptions
+    );
+  }
 }

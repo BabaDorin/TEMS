@@ -332,7 +332,7 @@ export class FormlyParserService {
     return fields;
   }
 
-  parseAddKey(roomOptions: IOption[]) {
+  parseAddKey() {
     let fields: FormlyFieldConfig[] =
       [
         {
@@ -356,15 +356,6 @@ export class FormlyParserService {
                 label: 'Number of copies',
                 description: "Number of available options"
               },
-            },
-            {
-              key: 'roomId',
-              type: 'select',
-              templateOptions: {
-                required: true,
-                label: 'Room',
-                options: roomOptions
-              }
             },
             {
               key: 'description',

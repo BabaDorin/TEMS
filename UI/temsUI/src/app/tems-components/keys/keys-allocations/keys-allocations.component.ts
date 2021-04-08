@@ -1,3 +1,5 @@
+import { CAN_MANAGE_ENTITIES, CAN_ALLOCATE_KEYS } from './../../../models/claims';
+import { TokenService } from './../../../services/token-service/token.service';
 import { SnackService } from './../../../services/snack/snack.service';
 import { FormControl, FormGroup } from '@angular/forms';
 import { AddKeyAllocation } from './../../../models/key/add-key-allocation.model';
@@ -27,7 +29,8 @@ export class KeysAllocationsComponent extends TEMSComponent implements OnInit {
   constructor(
     private keysService: KeysService,
     private personnelService: PersonnelService,
-    private snackService: SnackService
+    private snackService: SnackService,
+    private tokenService: TokenService,
   ) { 
     super();
   }

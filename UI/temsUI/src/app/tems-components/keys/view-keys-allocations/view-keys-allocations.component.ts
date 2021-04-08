@@ -1,3 +1,5 @@
+import { CAN_MANAGE_ENTITIES, CAN_ALLOCATE_KEYS } from './../../../models/claims';
+import { TokenService } from './../../../services/token-service/token.service';
 import { SnackService } from './../../../services/snack/snack.service';
 import { PersonnelService } from 'src/app/services/personnel-service/personnel.service';
 import { TEMSComponent } from 'src/app/tems/tems.component';
@@ -25,18 +27,22 @@ export class ViewKeysAllocationsComponent extends TEMSComponent implements OnIni
   roomId: string = "any";
   personnel: Observable<IOption[]>;
   personnelId: string = "any";
+  canManage: boolean = false;
 
   constructor(
     private keysService: KeysService,
     private roomService: RoomsService,
     private router: Router,
     private personnelService: PersonnelService,
-    private snackService: SnackService
+    private snackService: SnackService,
+    private tokenService: TokenService
   ){
     super();
   }
 
   ngOnInit(): void {
+    this.canManage = this.tokenService.hasClaim(CAN_MANAGE_ENTITIES) || this.tokenService.hasClaim(CAN_ALLOCATE_KEYS);
+    
     this.subscriptions.push(this.keysService.getAllAutocompleteOptions()
       .subscribe(result => {
         console.log(result);

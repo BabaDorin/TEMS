@@ -1,25 +1,50 @@
 <div class="card">
     <div class="card-body">
-        <!-- <button class="btn btn-secondary btn-sm" (click)="addAllocation()">+ Create allocation</button> -->
-        <br>
-        <p *ngFor="let allocation of allocations | async">allocation.key.identifier</p>
-        <!-- <mat-card *ngFor="let allocation of allocations | async" class="mb-2">
-            <mat-card-header>
-                <p>
-                    <b>{{ allocation.key.identifier }}</b> => <b>{{ allocation.personnel.name }}</b>
-                </p>
-                <p>
-                    Date allocated: {{ allocation.dateAllocated | date:'medium'}}
-                </p>
-                <p *ngIf="allocation.dateReturned != undefined">
-                    Date returned: {{ allocation.dateReturned | date:'medium'}}
-                </p>
-            </mat-card-header>
-            <mat-card-content>
-                <p *ngIf="allocation.description != undefined">
-                    {{ allocation.description }}
-                </p>
-            </mat-card-content>
-        </mat-card> -->
+        <button mat-button (click)="createAllocation()" class="mb-3">
+            <mat-icon class="text-primary">add</mat-icon>Create new allocation
+        </button>
+
+        <ng-container *ngIf="loading == true">
+            <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+            <app-loading-placeholder *ngIf="allocations == undefined || allocations.length == 0"></app-loading-placeholder>
+        </ng-container>
+        <mat-card
+            *ngFor="let allocation of allocations | paginate: { itemsPerPage: 10, currentPage: p1, id: 'allocations' }; let i = index"
+            class="mb-2 fade-in">
+            <div class="text-center">
+                <mat-icon class="text-primary">vpn_key</mat-icon>
+                {{ allocation.key.label }}
+                <mat-icon class="text-primary mr-3 ml-3">east</mat-icon>
+                <a mat-button [routerLink]="'/personnel/details/' + allocation.personnel.value">
+                    <mat-icon class="text-primary">
+                        account_circle
+                    </mat-icon> {{ allocation.personnel.label }}
+                </a>
+                <button *ngIf="canManage" mat-button (click)="remove(allocation.id, i)">
+                    <mat-icon class="text-secondary">delete</mat-icon>
+                </button>
+                <div class="mt-2 mb-2 text-center">
+                    <p class="text-muted">Allocated: {{ allocation.dateAllocated | date:'medium' }}</p>
+                    <p *ngIf="allocation.dateReturned != undefined">
+                        <span class="text-muted">Returned: {{ allocation.dateReturned | date:'medium' }}</span>
+                    </p>
+                </div>
+            </div>
+        </mat-card>
+        <pagination-controls (pageChange)="p1 = $event" id="allocations"
+            *ngIf="allocations != undefined && allocations.length > 0">
+        </pagination-controls>
+
+        <div *ngIf="loading == false && (allocations == undefined || allocations.length == 0)">
+            <img class="centerSvg fade-in" style="width: 300px;" src="assets/svgs/no-data.svg">
+        </div>
     </div>
 </div>
+
+<!-- id: string,
+    key: IOption,
+    personnel: IOption,
+    room?: IOption,
+    dateAllocated: Date,
+    allocatedBy?: IOption,
+    dateReturned?: Date, -->

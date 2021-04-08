@@ -1,3 +1,6 @@
+import { KeysAllocationsComponent } from 'src/app/tems-components/keys/keys-allocations/keys-allocations.component';
+import { DialogService } from 'src/app/services/dialog-service/dialog.service';
+import { SnackService } from './../../../services/snack/snack.service';
 import { TEMSComponent } from 'src/app/tems/tems.component';
 import { Component, Input, OnInit, SimpleChanges } from '@angular/core';
 import { ViewKeyAllocation } from 'src/app/models/key/view-key-allocation.model';
@@ -11,19 +14,30 @@ import { Observable, of } from 'rxjs';
 })
 export class KeysAllocationsListComponent extends TEMSComponent implements OnInit {
 
-  @Input() keyId;
-  @Input() roomId;
-  @Input() personnelId;
-  allocations: Observable<ViewKeyAllocation[]>;
+  @Input() keyId: string;
+  @Input() roomId: string;
+  @Input() personnelId: string;
+  @Input() canManage: boolean;
+
+  allocations: ViewKeyAllocation[];
+  cancelOnChange: boolean = true;
+  loading: boolean = true;
 
   constructor(
-    private keyService: KeysService
+    private keyService: KeysService,
+    private snackService: SnackService,
+    private dialogService: DialogService,
   ) { 
     super();
   }
 
   ngOnInit(): void {
-    // this.getAllocations();
+    if(this.cancelOnChange){
+      this.cancelOnChange = false;
+      return;
+    }
+
+    this.getAllocations();
   }
 
   ngOnChanges(): void {
@@ -31,10 +45,24 @@ export class KeysAllocationsListComponent extends TEMSComponent implements OnIni
   }
 
   getAllocations(){
+    this.loading = true;
     this.subscriptions.push(this.keyService.getAllocations(this.keyId, this.roomId, this.personnelId)
       .subscribe(result => {
-        // console.log(result);
-        this.allocations = of(result);
+        this.loading = false;
+        if(this.snackService.snackIfError(result))
+          return;
+
+        this.allocations = result;
       }));
+  }
+
+  createAllocation(){
+    this.dialogService.openDialog(
+      KeysAllocationsComponent,
+      undefined,
+      () => {
+        this.getAllocations();
+      }
+    );
   }
 }

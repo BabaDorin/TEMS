@@ -1,3 +1,4 @@
+import { NgxPaginationModule } from 'ngx-pagination';
 import { MaterialModule } from 'src/app/modules/material/material.module';
 import { TemsFormsModule } from './../tems-forms/tems-forms.module';
 import { KeysService } from 'src/app/services/keys-service/keys.service';
@@ -11,6 +12,8 @@ import { ViewKeysComponent } from 'src/app/tems-components/keys/view-keys/view-k
 import { KeysAllocationsListComponent } from 'src/app/tems-components/keys/keys-allocations-list/keys-allocations-list.component';
 import { AddKeyComponent } from 'src/app/tems-components/keys/add-key/add-key.component';
 import { TemsAgGridModule } from '../tems-ag-grid/tems-ag-grid.module';
+import { LoadingplaceholderModule } from '../loadingplaceholder/loadingplaceholder.module';
+import { NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 
 
 @NgModule({
@@ -26,7 +29,10 @@ import { TemsAgGridModule } from '../tems-ag-grid/tems-ag-grid.module';
     KeysRoutingModule,
     TemsFormsModule,
     MaterialModule,
-    TemsAgGridModule
+    TemsAgGridModule,
+    LoadingplaceholderModule,
+    NgbPaginationModule,
+    NgxPaginationModule,
   ],
   providers: [
       KeysService,

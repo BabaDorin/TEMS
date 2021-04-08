@@ -126,10 +126,10 @@ namespace temsAPI.Helpers
                 if (model == null)
                     return "Invalid id provided";
 
-                SetArchivationStatus(model, status);
+                model.IsArchieved = status;
 
                 foreach (var allocation in model.KeyAllocations)
-                    SetArchivationStatus(allocation, status);
+                    model.IsArchieved = status;
                 
                 await _unitOfWork.Save();
                 return null;
@@ -153,7 +153,7 @@ namespace temsAPI.Helpers
                 if (model == null)
                     return "Invalid id provided";
 
-                SetArchivationStatus(model, status);
+                model.IsArchieved = status;
                 await _unitOfWork.Save();
                 return null;
             }
@@ -329,26 +329,6 @@ namespace temsAPI.Helpers
                 Debug.WriteLine(ex);
                 return "An error occured while archieving log's related data";
             }
-        }
-
-        public void SetArchivationStatus(IArchiveable model, bool status)
-        {
-            if (status)
-                Archivate(model);
-            else
-                Dearchivate(model);
-        }
-
-        public void Archivate(IArchiveable model)
-        {
-            model.IsArchieved = true;
-            model.DateArchieved = DateTime.Now;
-        }
-
-        public void Dearchivate(IArchiveable model)
-        {
-            model.IsArchieved = false;
-            model.DateArchieved = DateTime.MinValue;
         }
 
         internal Task<string> SetKeyAllocationArchivationStatus(string allocationId, bool? archivationStatus)

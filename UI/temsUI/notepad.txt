@@ -8,3 +8,4 @@ TODO
 --> There are two methods with similar implementation within TicketController (GetTickets and GetTicketsOfEntity),
     get rid of one
     
+--> Improve the logic of keys moving from one to another table

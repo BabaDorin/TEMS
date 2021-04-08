@@ -18,6 +18,7 @@ export class AgGridKeysComponent extends TEMSComponent implements OnInit, OnChan
   @Input() displayAsAllocated: boolean;
   
   @Output() keyReturned = new EventEmitter();
+  @Output() allocateKey = new EventEmitter();
 
   private gridApi;
   private gridColumnApi;
@@ -47,9 +48,8 @@ export class AgGridKeysComponent extends TEMSComponent implements OnInit, OnChan
     }
   }
 
-  ngOnChanges(): void {
-    if(this.keys != undefined)
-      this.rowData = this.keys;
+  ngOnChanges(changes): void {
+    this.rowData = this.keys;
   }
 
   ngOnInit(): void {
@@ -109,14 +109,15 @@ export class AgGridKeysComponent extends TEMSComponent implements OnInit, OnChan
       .subscribe(result => {
         if(this.snackService.snackIfError(result))
           this.return;
-        
+
         this.keyReturned.emit(e.rowData);
+        this.gridApi.applyTransaction({ remove: [e.rowData] });
       })
     )
   }
 
   allocate(e){
-
+    this.allocateKey.emit([{value: e.rowData.id, label: e.rowData.identifier}]);
   }
 
   archieve(e){

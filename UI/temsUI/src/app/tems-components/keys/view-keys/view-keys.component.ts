@@ -51,9 +51,13 @@ export class ViewKeysComponent extends TEMSComponent implements OnInit {
     if (selectedNodes.length == 0)
       return;
 
+    this.allocateKeys(selectedNodes);
+  }
+
+  allocateKeys(keys: IOption[]){
     this.dialogService.openDialog(
       KeysAllocationsComponent,
-      [{label: "keysAlreadySelectedOptions", value: selectedNodes }],
+      [{label: "keysAlreadySelectedOptions", value: keys }],
       () => {
         this.getKeys();
       }
@@ -68,5 +72,9 @@ export class ViewKeysComponent extends TEMSComponent implements OnInit {
         this.getKeys();
       }
     )
+  }
+
+  keyReturned(keyData){
+    this.getKeys(); // NO!
   }
 }

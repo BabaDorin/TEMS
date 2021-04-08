@@ -90,7 +90,7 @@ namespace temsAPI.Controllers.KeyControllers
 
         [HttpGet]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
-        public async Task<JsonResult> GetAutocompleteOptions()
+        public async Task<JsonResult> GetAllAutocompleteOptions()
         {
             try
             {
@@ -98,6 +98,7 @@ namespace temsAPI.Controllers.KeyControllers
                     .FindAll<Option>(
                         where: q => !q.IsArchieved,
                         include: q => q.Include(q => q.Room),
+                        orderBy: q => q.OrderBy(q => q.Identifier),
                         select: q => new Option
                         {
                             Value = q.Id,
@@ -323,7 +324,6 @@ namespace temsAPI.Controllers.KeyControllers
                 return ReturnResponse("An error occured while marking the key as returned", ResponseStatus.Fail);
             }
         }
-
 
         [HttpGet("key/archieve/{keyId}")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]

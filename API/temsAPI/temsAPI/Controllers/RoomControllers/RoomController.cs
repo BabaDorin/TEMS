@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -34,13 +35,22 @@ namespace temsAPI.Controllers.RoomControllers
         {
             try
             {
-                Expression<Func<Room, bool>> expression = (filter == null)
-                    ? q => !q.IsArchieved
-                    : q => !q.IsArchieved && q.Identifier.Contains(filter);
+                int take = 5;
+                Expression<Func<Room, bool>> expression = null;
+                if(filter == null)
+                {
+                    expression = q => !q.IsArchieved;
+                    take = int.MaxValue;
+                }
+                else
+                {
+                    expression = q => !q.IsArchieved && q.Identifier.Contains(filter);
+                }
 
                 List<Option> viewModel = (await _unitOfWork.Rooms.FindAll<Option>(
                     where: expression,
-                    take: 5,
+                    take: take,
+                    orderBy: q => q.OrderBy(q => q.Identifier),
                     select: q => new Option
                     {
                         Value = q.Id,

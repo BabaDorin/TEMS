@@ -185,15 +185,24 @@ namespace temsAPI.Controllers.PersonnelControllers
         {
             try
             {
-                Expression<Func<Personnel, bool>> expression = (filter == null)
-                    ? q => !q.IsArchieved
-                    : q => !q.IsArchieved && q.Name.Contains(filter);
+                int take = 5;
+                Expression<Func<Personnel, bool>> expression = null;
+                if (filter == null)
+                {
+                    expression = q => !q.IsArchieved;
+                    take = int.MaxValue;
+                }
+                else
+                {
+                    expression = q => !q.IsArchieved && q.Identifier.Contains(filter);
+                }
 
                 List<Option> viewModel = (await _unitOfWork.Personnel
                     .FindAll<Option>(
                         where: expression,
                         include: q => q.Include(q => q.Positions),
-                        take: 5,
+                        take: take,
+                        orderBy: q => q.OrderBy(q => q.Name),
                         select: q => new Option
                         {
                             Value = q.Id,

@@ -1,3 +1,4 @@
+import { SnackService } from './../../../services/snack/snack.service';
 import { PersonnelService } from 'src/app/services/personnel-service/personnel.service';
 import { TEMSComponent } from 'src/app/tems/tems.component';
 import { Component, OnInit, ViewChild} from '@angular/core';
@@ -29,7 +30,8 @@ export class ViewKeysAllocationsComponent extends TEMSComponent implements OnIni
     private keysService: KeysService,
     private roomService: RoomsService,
     private router: Router,
-    private personnelService: PersonnelService
+    private personnelService: PersonnelService,
+    private snackService: SnackService
   ){
     super();
   }
@@ -37,6 +39,11 @@ export class ViewKeysAllocationsComponent extends TEMSComponent implements OnIni
   ngOnInit(): void {
     this.subscriptions.push(this.keysService.getAllAutocompleteOptions()
       .subscribe(result => {
+        console.log(result);
+
+        if(this.snackService.snackIfError(result))
+          return;
+
         console.log('keysAutocomplete')
         console.log(result);
         this.keys = of(result);
@@ -45,6 +52,11 @@ export class ViewKeysAllocationsComponent extends TEMSComponent implements OnIni
 
     this.subscriptions.push(this.roomService.getAllAutocompleteOptions()
       .subscribe(result => {
+        console.log(result);
+
+        if(this.snackService.snackIfError(result))
+          return;
+
         console.log('rooms autocomplete')
         console.log(result);
         this.rooms = of(result);
@@ -52,8 +64,11 @@ export class ViewKeysAllocationsComponent extends TEMSComponent implements OnIni
 
     this.subscriptions.push(this.personnelService.getAllAutocompleteOptions()
       .subscribe(result => {
-        console.log('personnel')
         console.log(result);
+
+        if(this.snackService.snackIfError(result))
+          return;
+        console.log('personnel')
         this.personnel = of(result);
       }));
   }

@@ -20,8 +20,12 @@ export class RoomsService extends TEMSService {
   }
 
   getAllAutocompleteOptions(filter?: string): Observable<IOption[]>{
+    let endPoint = API_ROOM_URL + '/getallautocompleteoptions';
+    if(filter != undefined)
+      endPoint += '/' + filter;
+      
     return this.http.get<IOption[]>(
-      API_ROOM_URL + '/getallautocompleteoptions/' + filter,
+      endPoint,
       this.httpOptions
     );
   }

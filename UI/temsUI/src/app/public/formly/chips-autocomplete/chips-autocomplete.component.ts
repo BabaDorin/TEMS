@@ -107,6 +107,7 @@ export class ChipsAutocompleteComponent implements OnInit, ControlValueAccessor 
     this.subscription = this.formCtrl.valueChanges
       .pipe(
         switchMap((op) => {
+          if(op == undefined) op = '';
           return (this.endPointParameter == undefined)
             ? this.endPoint.getAllAutocompleteOptions(op)
             : this.endPoint.getAllAutocompleteOptions(op, this.endPointParameter)

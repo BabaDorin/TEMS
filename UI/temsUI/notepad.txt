@@ -2,6 +2,8 @@ DOCS
 https://blog.aspose.com/2020/04/22/create-zip-archives-add-files-or-folders-to-zip-in-csharp-asp.net/
 
 TODO
+------------ As soon as possible >>>>
+
 --> Solve spelling mistakes:
     Equipments => Equipment (Equipment has no plural form)
 
@@ -18,3 +20,22 @@ TODO
     If a formControl represents an instance of ChipsAutocompleteComponent, then it should reflet the real state 
     anytime.
     ** Components currently affected by this: EquipmentAllocation, KeysAllocation.
+
+--> There are a lot of renundant code snippets (Like GetAllAutocompleteOptions) on backend that needs to be extracted
+    to a sepparate class, service, controller or helper in order to end up with a more maintainable codebase.
+
+--> Move all of the ViewModel validation logic from backend controllers inside the ViewModels' types. 
+
+--> When sending an email, make sure an email is not being sent more than once to a single email address (For example,
+    when there are 2 or more personnel records having the same email, send the message only once.)
+
+--> Some entities' identitifer properties return data that does not present much value (Like: Personnel: [And no personnel inserted here]);
+    Do some includes where necessary, but do not exagerate.
+
+--> Server-side paging & filtering, especially for equipment.
+
+------------ Future >>>>
+
+--> Write and read url parameters (representing key, personnel or room filters) within ViewKeyAllocationComponent
+    in order to offer the possibility of getting some route snapshots that can be sent to other people and the filters
+    be set automatically when they'll open the url. 

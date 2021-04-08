@@ -331,13 +331,6 @@ namespace temsAPI.Controllers.KeyControllers
         {
             try
             {
-                var key = (await _unitOfWork.Keys
-                    .Find<Key>(q => q.Id == keyId))
-                    .FirstOrDefault();
-
-                if (key == null)
-                    return ReturnResponse("Invalid id provided", ResponseStatus.Fail);
-
                 string archivationResult = await new ArchieveHelper(_userManager, _unitOfWork)
                     .SetKeyArchivationStatus(keyId, true);
                 if (archivationResult != null)
@@ -349,6 +342,27 @@ namespace temsAPI.Controllers.KeyControllers
             {
                 Debug.WriteLine(ex);
                 return ReturnResponse("An error occured while archieving the key and it's related data", ResponseStatus.Fail);
+            }
+        }
+
+        [HttpGet("key/archieveallocation/{allocationId}/{archivationStatus?}")]
+        public async Task<JsonResult> ArchieveAllocation(string allocationId, bool? archivationStatus)
+        {
+            try
+            {
+                if (archivationStatus == null) archivationStatus = true;
+
+                string archivationResult = await (new ArchieveHelper(_userManager, _unitOfWork)
+                    .SetKeyAllocationArchivationStatus(allocationId, (bool)archivationStatus));
+                if (archivationResult != null)
+                    return ReturnResponse(archivationResult, ResponseStatus.Fail);
+
+                return ReturnResponse("Success", ResponseStatus.Success);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured while archieving the specified allocation", ResponseStatus.Fail);
             }
         }
     }

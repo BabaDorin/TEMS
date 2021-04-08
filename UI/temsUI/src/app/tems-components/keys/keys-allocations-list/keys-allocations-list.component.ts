@@ -56,6 +56,21 @@ export class KeysAllocationsListComponent extends TEMSComponent implements OnIni
       }));
   }
 
+  delete(allocationId: string, index: number){
+    if(!confirm('Are you sure you want to remove that allocation?'))
+      return;
+    
+    this.subscriptions.push(
+      this.keyService.archieveAllocation(allocationId)
+      .subscribe(result => {
+        this.snackService.snack(result);
+
+        if(result.status == 1)
+          this.allocations.splice(index, 1);
+      })
+    )
+  }
+
   createAllocation(){
     this.dialogService.openDialog(
       KeysAllocationsComponent,

@@ -34,6 +34,9 @@ TODO
 
 --> Server-side paging & filtering, especially for equipment.
 
+--> Improve the archivation logic by making the DateArchieved nullable and by using the new approach (SetArchivationStatus) 
+    when setting the archivation status of an item.
+
 ------------ Future >>>>
 
 --> Write and read url parameters (representing key, personnel or room filters) within ViewKeyAllocationComponent

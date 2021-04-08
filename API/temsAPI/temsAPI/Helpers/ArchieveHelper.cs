@@ -126,12 +126,10 @@ namespace temsAPI.Helpers
                 if (model == null)
                     return "Invalid id provided";
 
-                model.IsArchieved = status;
+                SetArchivationStatus(model, status);
 
                 foreach (var allocation in model.KeyAllocations)
-                {
-                    allocation.IsArchieved = status;
-                }
+                    SetArchivationStatus(allocation, status);
                 
                 await _unitOfWork.Save();
                 return null;
@@ -140,6 +138,29 @@ namespace temsAPI.Helpers
             {
                 Debug.WriteLine(ex);
                 return "An error occured while archieving key's related data";
+            }
+        }
+
+        public async Task<string> SetKeyAllocationArchivationStatus(string allocationId, bool status)
+        {
+            try
+            {
+                var model = (await _unitOfWork.KeyAllocations
+                    .Find<KeyAllocation>(
+                        where: q => q.Id == allocationId))
+                    .FirstOrDefault();
+
+                if (model == null)
+                    return "Invalid id provided";
+
+                SetArchivationStatus(model, status);
+                await _unitOfWork.Save();
+                return null;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return "An error occured while archieving the allocation";
             }
         }
 
@@ -308,6 +329,31 @@ namespace temsAPI.Helpers
                 Debug.WriteLine(ex);
                 return "An error occured while archieving log's related data";
             }
+        }
+
+        public void SetArchivationStatus(IArchiveable model, bool status)
+        {
+            if (status)
+                Archivate(model);
+            else
+                Dearchivate(model);
+        }
+
+        public void Archivate(IArchiveable model)
+        {
+            model.IsArchieved = true;
+            model.DateArchieved = DateTime.Now;
+        }
+
+        public void Dearchivate(IArchiveable model)
+        {
+            model.IsArchieved = false;
+            model.DateArchieved = DateTime.MinValue;
+        }
+
+        internal Task<string> SetKeyAllocationArchivationStatus(string allocationId, bool? archivationStatus)
+        {
+            throw new NotImplementedException();
         }
     }
 }

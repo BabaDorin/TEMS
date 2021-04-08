@@ -16,6 +16,7 @@ export class AgGridKeysComponent extends TEMSComponent implements OnInit, OnChan
 
   @Input() keys: IViewKeySimplified[] = [];
   @Input() displayAsAllocated: boolean;
+  @Input() loading: boolean = false;
   
   @Output() keyReturned = new EventEmitter();
   @Output() allocateKey = new EventEmitter();

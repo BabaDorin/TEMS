@@ -43,11 +43,7 @@ export class EquipmentAllocationComponent extends TEMSComponent implements OnIni
   ];
   alocateeEndPoint;
 
-  equipmentAllocationFormGroup = new FormGroup({
-    equipment: new FormControl('', Validators.required),
-    allocateTo: new FormControl('', Validators.required),
-    allocateToType: new FormControl('room'),
-  })
+  equipmentAllocationFormGroup: FormGroup; 
 
   constructor(
     private equipmentService: EquipmentService,
@@ -78,6 +74,12 @@ export class EquipmentAllocationComponent extends TEMSComponent implements OnIni
       this.selectedAllocateToType = 'personnel';
       this.alocateeEndPoint = this.personnelService;
     }
+
+    this.equipmentAllocationFormGroup = new FormGroup({
+      equipment: new FormControl(this.equipmentAlreadySelectedOptions, Validators.required),
+      allocateTo: new FormControl(this.allocatedToAlreadySelectedOptions, Validators.required),
+      allocateToType: new FormControl(this.selectedAllocateToType),
+    })
   }
 
   onSelection() {

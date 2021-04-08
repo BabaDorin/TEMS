@@ -9,3 +9,12 @@ TODO
     get rid of one
     
 --> Improve the logic of keys moving from one to another table
+
+--> ChipsAutocompleteComponent needs some refactoring. The NG Value accessor does not work as supposed. For intance,
+    when the initial value is set via alreadySelected, the value that goes to the client FormControl is null.
+    Only after adding or removing one item, the value refreshes and starts to reflect the real state.
+    The current overcome for this problem is assigning the initial value both via [alreadySelected] input parameter
+    and formControl initial value (like keys: new FormControl(alreadySelectedKeys)).
+    If a formControl represents an instance of ChipsAutocompleteComponent, then it should reflet the real state 
+    anytime.
+    ** Components currently affected by this: EquipmentAllocation, KeysAllocation.

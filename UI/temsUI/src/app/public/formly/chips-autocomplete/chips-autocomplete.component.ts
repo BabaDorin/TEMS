@@ -45,69 +45,81 @@ export class ChipsAutocompleteComponent implements OnInit, ControlValueAccessor 
   subscription = new Subscription();
   formCtrl = new FormControl();
   filteredOptions: IOption[];
-  options: IOption[];
+  selectedOptions: IOption[];
   selectable = true;
   removable = true;
   visible = true;
   value = [];
   cancelOnChange = true;
+
+  set options(value) {
+    this.selectedOptions = value;
+  }
+
+  get options() {
+    return this.selectedOptions
+  }
+
+  constructor() {
+  }
+
   ngOnInit() {
-    console.log('already selected')
-    console.log(this.alreadySelected);
-    this.options = this.alreadySelected;
+    this.selectedOptions = this.alreadySelected;
+    this.onChange(this.selectedOptions);
     this.listenToServer();
   }
 
   ngOnChanges(changes: { [propName: string]: SimpleChange }) {
-    if(this.cancelOnChange){
+    if (this.cancelOnChange) {
       this.cancelOnChange = false;
       return;
     }
 
-
-    if(changes['endPoint'] && changes['endPoint'].previousValue != changes['endPoint'].currentValue ) {
-      this.options = [];
+    if (changes['endPoint'] && changes['endPoint'].previousValue != changes['endPoint'].currentValue) {
+      this.selectedOptions = [];
       this.value = [];
+      this.onChange(this.selectedOptions);
     }
 
     this.filteredOptions = [];
     this.listenToServer();
     this.options = (this.alreadySelected == undefined) ? [] : this.alreadySelected;
+    this.onChange(this.selectedOptions);
   }
 
-  listenToServer(){
+  listenToServer() {
     this.subscription.unsubscribe();
 
-    if(this.autocompleteOptions != undefined)
+    if (this.autocompleteOptions != undefined)
       this.getFromAutocompleteOptions();
     else
       this.getFromServer();
   }
 
-  getFromAutocompleteOptions(){
+  getFromAutocompleteOptions() {
     this.subscription = this.formCtrl.valueChanges
-    .subscribe(op => {
-      this.filteredOptions = this.autocompleteOptions.filter(q => q.label.toLowerCase().includes(op.toString().toLowerCase()) ?? []);
-    });
+      .subscribe(op => {
+        this.filteredOptions = this.autocompleteOptions.filter(q => q.label.toLowerCase().includes(op.toString().toLowerCase()) ?? []);
+      });
   }
 
-  getFromServer(){
+  getFromServer() {
     this.subscription = this.formCtrl.valueChanges
-    .pipe(
-      switchMap((op) => {
-        return (this.endPointParameter == undefined) 
-        ? this.endPoint.getAllAutocompleteOptions(op)
-        : this.endPoint.getAllAutocompleteOptions(op, this.endPointParameter)
-      }))
+      .pipe(
+        switchMap((op) => {
+          return (this.endPointParameter == undefined)
+            ? this.endPoint.getAllAutocompleteOptions(op)
+            : this.endPoint.getAllAutocompleteOptions(op, this.endPointParameter)
+        }))
       .subscribe(data => {
         console.log(data);
         this.filteredOptions = (data as IOption[]);
 
-      if(this.options != undefined)
-        this.filteredOptions = this.filteredOptions
-          .filter((el) => !this.options.includes(el));
+        if (this.selectedOptions != undefined)
+          this.filteredOptions = this.filteredOptions
+            .filter((el) => !this.selectedOptions.includes(el));
       }
-    );
+      );
   }
 
   // When the option has been typed
@@ -121,62 +133,59 @@ export class ChipsAutocompleteComponent implements OnInit, ControlValueAccessor 
     }
 
     if (typedOption != undefined) {
-      if(this.isValueAlreadySelected(typedOption))
+      if (this.isValueAlreadySelected(typedOption))
         return;
 
       this.maxOptionsSelectedValidation();
-      this.options.push(typedOption);
-      this.dataCollected.emit(this.options);
+      this.selectedOptions.push(typedOption);
+      this.dataCollected.emit(this.selectedOptions);
       this.formCtrl.setValue('');
       this.optionInput.nativeElement.value = '';
     }
 
-    this.onChange(this.options);
+    this.onChange(this.selectedOptions);
   }
 
   // When the option has been chosen
   selected(event: MatAutocompleteSelectedEvent): void {
-    if(this.isValueAlreadySelected(event.option.value))
+    if (this.isValueAlreadySelected(event.option.value))
       return;
 
     this.maxOptionsSelectedValidation();
-    this.options.push(event.option.value);
-    console.log(this.options);
-    this.onChange(this.options);
-    this.dataCollected.emit(this.options);
+    this.selectedOptions.push(event.option.value);
+    console.log(this.selectedOptions);
+    this.onChange(this.selectedOptions);
+    this.dataCollected.emit(this.selectedOptions);
 
     this.formCtrl.setValue('');
     this.optionInput.nativeElement.value = '';
   }
 
-  isValueAlreadySelected(value: IOption): boolean{
-    if(this.options == undefined || this.options.length == 0)
+  isValueAlreadySelected(value: IOption): boolean {
+    if (this.selectedOptions == undefined || this.selectedOptions.length == 0)
       return false;
 
-    return this.options.findIndex(
-      (el) => 
-      el.value == value.value
-      && el.label == value.label
-      && el.additional == value.additional) > -1
+    return this.selectedOptions.findIndex(
+      (el) => el.value == value.value) > -1
   }
 
   remove(op): void {
-    const index = this.options.indexOf(op);
+    const index = this.selectedOptions.indexOf(op);
     if (index >= 0) {
-      this.options.splice(index, 1);
+      this.selectedOptions.splice(index, 1);
       this.formCtrl.updateValueAndValidity();
     }
-    this.onChange(this.options);
+    this.onChange(this.selectedOptions);
     this.dataRemoved.emit(op);
   }
 
   // if there is a maxOptionsSelected specified
   maxOptionsSelectedValidation() {
-    if(this.maxOptionsSelected == undefined)
+    if (this.maxOptionsSelected == undefined)
       return;
-    
-    if (this.maxOptionsSelected == this.options.length)
-      this.options.pop();
+
+    if (this.maxOptionsSelected == this.selectedOptions.length)
+      this.selectedOptions.pop();
   }
 
   onChange: any = () => { };
@@ -184,9 +193,9 @@ export class ChipsAutocompleteComponent implements OnInit, ControlValueAccessor 
 
   writeValue(options: IOption[]): void {
     this.value = options;
-    if(Array.isArray(options)){
-      this.options = options;
-    }
+    if (Array.isArray(options)) {
+      this.selectedOptions = options;
+    };
   }
   registerOnChange(fn: any): void {
     this.onChange = fn;

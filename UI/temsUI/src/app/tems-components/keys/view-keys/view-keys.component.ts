@@ -19,6 +19,7 @@ export class ViewKeysComponent extends TEMSComponent implements OnInit {
   @ViewChild('agGridKeys') agGridKeys: AgGridKeysComponent;
   unallocatedKeys: ViewKeySimplified[] = [];
   allocatedKeys: ViewKeySimplified[] = [];
+  loading: boolean = true;
 
   constructor(
     private keysService: KeysService,
@@ -35,8 +36,13 @@ export class ViewKeysComponent extends TEMSComponent implements OnInit {
   getKeys(){
     let keys = [] as ViewKeySimplified[];
     
+    this.loading = true;
     this.subscriptions.push(this.keysService.getKeys()
       .subscribe(result => {
+        this.loading = false;
+        if(this.snackService.snackIfError(result))
+          return;
+        
         keys = result;
 
         this.unallocatedKeys = keys.filter(key => key.allocatedTo.value == "--");

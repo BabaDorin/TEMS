@@ -1,3 +1,5 @@
+import { SnackService } from './../../../services/snack/snack.service';
+import { FormControl, FormGroup } from '@angular/forms';
 import { AddKeyAllocation } from './../../../models/key/add-key-allocation.model';
 import { TEMSComponent } from './../../../tems/tems.component';
 import { PersonnelService } from './../../../services/personnel-service/personnel.service';
@@ -15,44 +17,58 @@ export class KeysAllocationsComponent extends TEMSComponent implements OnInit {
 
   @Input() keys: IOption[];
 
-  @ViewChild('keysIdentifierChips', { static: false }) keysIdentifierChips: ChipsAutocompleteComponent;
-  @ViewChild('allocatedTo', { static: false }) allocatedTo: ChipsAutocompleteComponent;
+  @ViewChild('keysIdentifierChips') keysIdentifierChips: ChipsAutocompleteComponent;
+  @ViewChild('allocatedTo') allocatedTo: ChipsAutocompleteComponent;
 
   keysAlreadySelectedOptions = [];
   keysChipsInputLabel = "Choose one or more keys to allocate...";
-
-  personnelAutocompleteOptions = [];
+  dialogRef;
 
   constructor(
     private keysService: KeysService,
-    private personnelService: PersonnelService
+    private personnelService: PersonnelService,
+    private snackService: SnackService
   ) { 
     super();
   }
 
+  keyAllocationFormGroup: FormGroup;
   
   ngOnInit(): void {
     if(this.keys)
       this.keysIdentifierChips.filteredOptions = this.keys;
+
+    this.keyAllocationFormGroup = new FormGroup({
+      keys: new FormControl(this.keysAlreadySelectedOptions),
+      personnel: new FormControl()
+    });
   }
 
-  submit(){
-    if(this.keysIdentifierChips.options.length == 0 || this.allocatedTo.options.length == 0)
-      return;
-
-    let allocation = {
-      keys: this.keysIdentifierChips.options,
-      personnel: this.allocatedTo.options
-    }
-
+  submit(model){
+    console.log('model:');
+    console.log(model);
+    if(model.keys.value == undefined 
+      || model.keys.value.length == 0 
+      || model.personnel.value == undefined
+      || model.personnel.value.length == 0){
+        this.snackService.snack({
+          message: "Please, provide at least one key and one personnel",
+          status: 0
+        });
+        return;
+      }
+    
     let addKeyAllocation: AddKeyAllocation = {
-      keyIds: this.keysIdentifierChips.options.map(q => q.value),
-      personnelId: this.allocatedTo.options.map(q => q.value)[0],
+      keyIds: model.keys.value.map(q => q.value),
+      personnelId: model.personnel.value.map(q => q.value)[0],
     }
 
     this.subscriptions.push(this.keysService.createAllocation(addKeyAllocation)
       .subscribe(result => {
-        console.log(result);
+        this.snackService.snack(result);
+
+        if(result.status == 1 && this.dialogRef != undefined)
+          this.dialogRef.close();
       }));
   }
 }

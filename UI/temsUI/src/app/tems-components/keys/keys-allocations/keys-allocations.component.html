@@ -3,29 +3,31 @@
         <div class="card-title">
             Keys Allocation
         </div>
-        <br>
-        <div class="row">
-            <div class="col-md-5">
-                <h2>Key</h2>
-                <app-chips-autocomplete
-                    #keysIdentifierChips
-                    label="Choose one or more keys to allocate"
-                    [endPoint]="keysService"
-                    [alreadySelected]="keysAlreadySelectedOptions">
-                </app-chips-autocomplete>
+        <hr>
+        <form [formGroup]="keyAllocationFormGroup" (submit)="submit(keyAllocationFormGroup.controls)">
+            <div class="row">
+                <div class="col-md-5">
+                    <h2>Key</h2>
+                    <app-chips-autocomplete #keysIdentifierChips label="Choose one or more keys to allocate"
+                        [endPoint]="keysService" [alreadySelected]="keysAlreadySelectedOptions"
+                        formControlName="keys">
+                    </app-chips-autocomplete>
+                </div>
+                <div class="col-md-2 mt-2">
+                    <div class="d-flex align-items-center justify-content-center">
+                        <p class="text-center">
+                            Allocate to
+                        </p>
+                    </div>
+                </div>
+                <div class="col-md-5">
+                    <h2>Personnel</h2>
+                    <app-chips-autocomplete #allocatedTo label="Handle keys to..." [endPoint]="personnelService"
+                        maxOptionsSelected=1 formControlName="personnel">
+                    </app-chips-autocomplete>
+                </div>
             </div>
-            <div class="col-md-2"> Allocate to </div>
-            <div class="col-md-5">
-                <h2>Personnel</h2>
-                <app-chips-autocomplete
-                #allocatedTo
-                label="Handle keys to..."
-                [endPoint]="personnelService"
-                maxOptionsSelected=1>
-                </app-chips-autocomplete>
-            </div>
-        </div>
-        <button class="btn btn-primary btn-block" (click)="submit()">Allocate</button>
-        <br>
+            <button mat-button type="submit" class="btn-primary mr-2">Allocate</button>
+        </form>
     </div>
 </div>

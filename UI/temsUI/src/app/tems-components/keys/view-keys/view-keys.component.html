@@ -5,19 +5,15 @@
             <mat-tab label="Unallocated">
                 <br>
                 <br>
-                <button class="btn btn-primay" (click)="allocateSelectedKeys()">Allocate selected keys</button>
-                <button class="btn btn-primay" (click)="addKey()">+ Add new</button>
-                <app-ag-grid-keys #agGridKeys [keys]="unallocatedKeys"
-                (allocateKey)="allocateKeys($event)">
+                <button mat-button (click)="addKey()"><mat-icon class="text-primary">add</mat-icon>Add new</button>
+                <button mat-button (click)="allocateSelectedKeys()"><mat-icon class="text-primary">double_arrow</mat-icon>Allocate selected</button>
+                <app-ag-grid-keys #agGridKeys [loading]="loading" [keys]="unallocatedKeys" (allocateKey)="allocateKeys($event)">
                 </app-ag-grid-keys>
             </mat-tab>
             <mat-tab label="Allocated">
                 <br>
                 <br>
-                <button class="btn btn-primay" (click)="allocateSelectedKeys()">Allocate selected keys</button>
-                <button class="btn btn-primay" (click)="addKey()">+ Add new</button>
-                <app-ag-grid-keys [keys]="allocatedKeys" displayAsAllocated="true"
-                (keyReturned)="keyReturned($event)">
+                <app-ag-grid-keys [keys]="allocatedKeys" [loading]="loading" displayAsAllocated="true" (keyReturned)="keyReturned($event)">
                 </app-ag-grid-keys>
             </mat-tab>
         </mat-tab-group>

@@ -35,8 +35,8 @@ export class KeysService extends TEMSService {
     );
   }
 
-  createAllocation(addKeyAllocation: AddKeyAllocation): Observable<string>{
-    return this.http.post<string>(
+  createAllocation(addKeyAllocation: AddKeyAllocation): Observable<any>{
+    return this.http.post(
       API_KEY_URL + '/createAllocation',
       JSON.stringify(addKeyAllocation),
       this.httpOptions

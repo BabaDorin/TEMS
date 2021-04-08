@@ -26,8 +26,17 @@ namespace temsAPI.Data.Entities.Report
         private bool isArchieved;
         public bool IsArchieved
         {
-            get { return isArchieved; }
-            set { isArchieved = value; DateArchieved = DateTime.Now; }
+            get
+            {
+                return isArchieved;
+            }
+            set
+            {
+                isArchieved = value;
+                DateArchieved = (value)
+                    ? DateTime.Now
+                    : null;
+            }
         }
 
         // Universal propertill will be stored like this: "property1 property2 property3"

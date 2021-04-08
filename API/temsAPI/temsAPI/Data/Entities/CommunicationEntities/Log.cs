@@ -37,8 +37,22 @@ namespace temsAPI.Data.Entities.CommunicationEntities
         public LogType? LogType { get; set; }
         public string? LogTypeID { get; set; }
 #nullable disable
-        
-        public bool IsArchieved { get; set; }
+
+        private bool isArchieved;
+        public bool IsArchieved
+        {
+            get
+            {
+                return isArchieved;
+            }
+            set
+            {
+                isArchieved = value;
+                DateArchieved = (value)
+                    ? DateTime.Now
+                    : null;
+            }
+        }
         public DateTime? DateArchieved { get; set; }
 
         [NotMapped]

@@ -20,8 +20,17 @@ namespace temsAPI.Data.Entities.OtherEntities
         private bool isArchieved;
         public bool IsArchieved
         {
-            get { return isArchieved; }
-            set { isArchieved = value; DateArchieved = DateTime.Now; }
+            get
+            {
+                return isArchieved;
+            }
+            set
+            {
+                isArchieved = value;
+                DateArchieved = (value)
+                    ? DateTime.Now
+                    : null;
+            }
         }
 
         public ICollection<Ticket> Tickets { get; set; }

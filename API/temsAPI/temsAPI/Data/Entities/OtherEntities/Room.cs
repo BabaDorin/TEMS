@@ -28,10 +28,18 @@ namespace temsAPI.Data.Entities.OtherEntities
         private bool isArchieved;
         public bool IsArchieved
         {
-            get { return isArchieved; }
-            set { isArchieved = value; DateArchieved = DateTime.Now; }
+            get
+            {
+                return isArchieved;
+            }
+            set
+            {
+                isArchieved = value;
+                DateArchieved = (value)
+                    ? DateTime.Now
+                    : null;
+            }
         }
-
         public virtual ICollection<EquipmentAllocation> EquipmentAllocations { get; set; } = new List<EquipmentAllocation>();
         public virtual ICollection<PersonnelRoomSupervisory> PersonnelRoomSupervisories { get; set; } = new List<PersonnelRoomSupervisory>();
         public virtual ICollection<Log> Logs { get; set; } = new List<Log>();

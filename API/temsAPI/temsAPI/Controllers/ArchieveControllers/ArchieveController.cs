@@ -26,7 +26,7 @@ namespace temsAPI.Controllers.ArchieveControllers
         class ArchievedItem : IArchiveable, IIdentifiable
         {
             public bool IsArchieved { get; set; }
-            public DateTime DateArchieved { get; set; }
+            public DateTime? DateArchieved { get; set; }
 
             public string Identifier => "";
 

@@ -26,7 +26,7 @@ namespace temsAPI.Data.Entities.EquipmentEntities
         public Property Property { get; set; }
         public string PropertyID { get; set; }
 
-        public DateTime DateArchieved { get; set; }
+        public DateTime? DateArchieved { get; set; }
         private bool isArchieved;
         public bool IsArchieved
         {

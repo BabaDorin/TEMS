@@ -12,7 +12,7 @@ namespace temsAPI.Data.Entities.OtherEntities
         [Key]
         public string Id { get; set; }
         public string Name { get; set; }
-        public DateTime DateArchieved { get; set; }
+        public DateTime? DateArchieved { get; set; }
         private bool isArchieved;
         public bool IsArchieved
         {

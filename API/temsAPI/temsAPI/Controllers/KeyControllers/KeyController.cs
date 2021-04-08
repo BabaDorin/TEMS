@@ -261,6 +261,7 @@ namespace temsAPI.Controllers.KeyControllers
                         where: finalExpression,
                         include: q => q.Include(q => q.Personnel)
                                        .Include(q => q.Key).ThenInclude(q => q.Room),
+                        orderBy: q => q.OrderByDescending(q => q.DateAllocated),
                         select: q => new ViewKeyAllocationViewModel
                         {
                             Id = q.Id,
@@ -287,7 +288,7 @@ namespace temsAPI.Controllers.KeyControllers
                                     : "--",
                             }
                         }
-                        )).OrderByDescending(q => q.DateAllocated).ToList();
+                        )).ToList();
 
                 return Json(viewModel);
             }

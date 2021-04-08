@@ -44,8 +44,13 @@ namespace temsAPI.Data.Entities.CommunicationEntities
         public string? CreatedById { get; set; }
 #nullable disable
 
-        public bool IsArchieved { get; set; }
-        public DateTime DateArchieved { get; set; }
+        private bool isArchieved;
+        public bool IsArchieved
+        {
+            get { return isArchieved; }
+            set { isArchieved = value; DateArchieved = DateTime.Now; }
+        }
+        public DateTime? DateArchieved { get; set; }
 
         public ICollection<Personnel> Personnel { get; set; } = new List<Personnel>();
         public ICollection<Equipment> Equipments { get; set; } = new List<Equipment>();

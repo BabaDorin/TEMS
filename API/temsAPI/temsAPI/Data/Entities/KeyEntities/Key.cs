@@ -17,7 +17,7 @@ namespace temsAPI.Data.Entities.KeyEntities
 
         public string Identifier { get; set; }
         //public int Copies { get; set; } = 0;
-        public DateTime DateArchieved { get; set; }
+        public DateTime? DateArchieved { get; set; }
         private bool isArchieved;
         public bool IsArchieved
         {

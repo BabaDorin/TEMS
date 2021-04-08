@@ -22,7 +22,7 @@ namespace temsAPI.Data.Entities.Report
         public string Header { get; set; }
         public string Footer { get; set; }
         public DateTime DateCreated { get; set; }
-        public DateTime DateArchieved { get; set; }
+        public DateTime? DateArchieved { get; set; }
         private bool isArchieved;
         public bool IsArchieved
         {

@@ -46,7 +46,7 @@ namespace temsAPI.Data.Entities.EquipmentEntities
 
         public bool IsDefect { get; set; }
         public bool IsUsed { get; set; }
-        public DateTime DateArchieved { get; set; }
+        public DateTime? DateArchieved { get; set; }
         private bool isArchieved;
         public bool IsArchieved
         {

@@ -21,7 +21,7 @@ namespace temsAPI.Data.Entities.KeyEntities
         [ForeignKey("KeyID")]
         public Key Key { get; set; }
         public string KeyID { get; set; }
-        public DateTime DateArchieved { get; set; }
+        public DateTime? DateArchieved { get; set; }
         private bool isArchieved;
         public bool IsArchieved
         {

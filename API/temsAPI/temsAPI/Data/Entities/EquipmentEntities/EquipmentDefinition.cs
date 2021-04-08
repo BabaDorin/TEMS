@@ -33,7 +33,7 @@ namespace temsAPI.Data.Entities.EquipmentEntities
 
 #nullable disable
 
-        public DateTime DateArchieved { get; set; }
+        public DateTime? DateArchieved { get; set; }
         private bool isArchieved;
         public bool IsArchieved
         {

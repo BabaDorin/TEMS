@@ -15,7 +15,7 @@ namespace temsAPI.Data.Entities.EquipmentEntities
         public string Id { get; set; }
         public string Name { get; set; }
         public bool Required { get; set; } = false;
-        public DateTime DateArchieved { get; set; }
+        public DateTime? DateArchieved { get; set; }
         private bool isArchieved;
         public bool IsArchieved
         {

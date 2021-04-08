@@ -30,7 +30,7 @@ namespace temsAPI.Data.Entities.OtherEntities
         public string? TEMSUserId { get; set; }
 #nullable disable
 
-        public DateTime DateArchieved { get; set; }
+        public DateTime? DateArchieved { get; set; }
         private bool isArchieved;
         public bool IsArchieved
         {

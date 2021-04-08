@@ -16,7 +16,7 @@ namespace temsAPI.Data.Entities.OtherEntities
         public string Id { get; set; }
         public string Name { get; set; }
         public int ImportanceIndex { get; set; } = Int32.MaxValue;
-        public DateTime DateArchieved { get; set; }
+        public DateTime? DateArchieved { get; set; }
         private bool isArchieved;
         public bool IsArchieved
         {

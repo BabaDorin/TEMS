@@ -8,6 +8,6 @@ namespace temsAPI.Contracts
     public interface IArchiveable
     {
         bool IsArchieved { get; set; }
-        DateTime DateArchieved { get; set; }
+        DateTime? DateArchieved { get; set; }
     }
 }

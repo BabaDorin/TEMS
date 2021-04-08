@@ -39,7 +39,7 @@ namespace temsAPI.Data.Entities.CommunicationEntities
 #nullable disable
         
         public bool IsArchieved { get; set; }
-        public DateTime DateArchieved { get; set; }
+        public DateTime? DateArchieved { get; set; }
 
         [NotMapped]
         public string Identifier => $"LogType: {LogType?.Type}, Text: {Text}, Equipment: {Equipment?.TemsIdOrSerialNumber ?? "none"}, Personnel: {Personnel?.Name ?? "none"}, Room: {Room?.Identifier ?? "none"}";

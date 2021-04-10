@@ -34,11 +34,19 @@ TODO
 
 --> Server-side paging & filtering, especially for equipment.
 
---> Improve the archivation logic by making the DateArchieved nullable and by using the new approach (SetArchivationStatus) 
-    when setting the archivation status of an item.
-
 ------------ Future >>>>
 
 --> Write and read url parameters (representing key, personnel or room filters) within ViewKeyAllocationComponent
     in order to offer the possibility of getting some route snapshots that can be sent to other people and the filters
     be set automatically when they'll open the url. 
+
+
+
+-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+
+------------ Solved >>>>
+
+--> Improve the archivation logic by making the DateArchieved nullable and by using the new approach (SetArchivationStatus) 
+    when setting the archivation status of an item.

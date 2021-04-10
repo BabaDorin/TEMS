@@ -24,27 +24,26 @@ export class AddEquipmentComponent extends TEMSComponent implements OnInit {
 
   header = "Add Equipment";
 
+  @Output() done = new EventEmitter();
+  @Output() goBack = new EventEmitter();
   @Input() updateEquipmentId: string;
   @Input() updateEquipmentDefinitionId: string;
   updateEquipment: AddEquipment;
 
-  @Output() done = new EventEmitter();
-  @Output() goBack = new EventEmitter();
-
+  // For selecting type and definition
   formGroup = new FormGroup({
     equipmentType: new FormControl(),
     equipmentDefinition: new FormControl(),
     properties: new FormControl(),
   });
 
-  initialFormlyData;
+  // For providing equipment data
   formlyData = {
     isVisible: false,
     form: new FormGroup({}),
     model: {} as any,
     fields: [] as FormlyFieldConfig[],
   }
-
 
   types: IOption[] = [];
   selectedType: string;
@@ -64,7 +63,6 @@ export class AddEquipmentComponent extends TEMSComponent implements OnInit {
   }
 
   ngOnInit(): void {
-
     if(this.updateEquipmentId != undefined){
       this.header = "Update Equipment";
       this.edit();
@@ -74,33 +72,32 @@ export class AddEquipmentComponent extends TEMSComponent implements OnInit {
     this.fetchTypes();
   }
 
+  // Using this component for updating an equipment
   edit(){
     // 1) get equipment's full definition
     if(this.updateEquipmentDefinitionId != undefined){
       this.subscriptions.push(
         this.equipmentService.getFullDefinition(this.updateEquipmentDefinitionId)
         .subscribe(result => {
-
+          if(this.snackService.snackIfError(result))
+            return;
           this.selectedFullDefinition = result; 
-          console.log('fulldefinition: ');
-          console.log(this.selectedFullDefinition);
 
-           // 2) Generate formly fields
-           this.createAddEquipmentFormly();
+          // 2) Generate formly fields
+          this.createAddEquipmentFormly();
 
-            // 3) Get equipment from db and complete the formly model
-           this.fetchEquipmentData();
+          // 3) Get equipment from backend and complete the formly model
+          this.fetchEquipmentData();
         })
       )
     }
   }
 
+  // Used when updating an equipment.
   fetchEquipmentData(){
     this.subscriptions.push(
       this.equipmentService.getEquipmentToUpdate(this.updateEquipmentId)
       .subscribe(result => {
-        console.log('this is what i got');
-        console.log(result);
         this.formlyData.model = {};
         this.formlyData.model.equipmentDefinitionID = this.selectedFullDefinition.id;
         this.formlyData.model.identifier = this.selectedFullDefinition.identifier;
@@ -138,23 +135,6 @@ export class AddEquipmentComponent extends TEMSComponent implements OnInit {
     }));
   }
 
-  onTypeChanged(eventData) {
-    if (eventData.value == undefined)
-      return;
-
-    // true if the user has inserted some data into the 
-    // formly and now he wants to switch to another type, therefore the formly model will 
-    // get completely wiped out
-    let isUnsavedModel = false;
-
-    if (!isUnsavedModel ||
-      isUnsavedModel && confirm('There are unsaved changes, do you still want to continue?')) {
-      this.wipeAddEquipmentFormly();
-    }
-
-    this.fetchDefinitionsOfType();
-  }
-
   fetchDefinitionsOfType(){
     console.log(this.selectedType);
     if (this.types.find(q => q.value == this.selectedType) != undefined)
@@ -168,32 +148,42 @@ export class AddEquipmentComponent extends TEMSComponent implements OnInit {
       this.definitionsOfType = undefined;
   }
 
+  onTypeChanged(eventData) {
+    if (eventData.value == undefined)
+      return;
+
+    this.wipeAddEquipmentFormly();
+    this.fetchDefinitionsOfType();
+  }
+
   onDefinitionChanged(eventData) {
     if (eventData.value == undefined)
       return;
 
     if (this.definitionsOfType.find(q => q.value == eventData.value) != undefined) {
-      this.subscriptions.push(this.equipmentService.getFullDefinition(eventData.value)
-        .subscribe(response => {
-          console.log(response);
-          this.selectedFullDefinition = response;
+      this.subscriptions.push(
+        this.equipmentService.getFullDefinition(eventData.value)
+        .subscribe(result => {
+          if(this.snackService.snackIfError(result))
+            return;
+          this.selectedFullDefinition = result;
           this.createAddEquipmentFormly();
         }))
     }
   }
 
   createAddEquipmentFormly() {
-    let addEq = this.equipmentService.generateAddEquipmentOfDefinition(this.selectedFullDefinition);
+    let addEq: AddEquipment = this.equipmentService.generateAddEquipmentOfDefinition(this.selectedFullDefinition);
     let formlyFields = this.formlyParserService.parseAddEquipment(addEq);
     
     this.formlyData.fields = formlyFields;
     this.formlyData.isVisible = true;
+
+    // BEFREE
     this.formlyData.model = { 
       equipmentDefinitionID: addEq.definition.id,
       identifier: this.selectedFullDefinition.identifier
     };
-
-    this.initialFormlyData = {...this.formlyData};
   }
 
   wipeAddEquipmentFormly() {

@@ -32,11 +32,11 @@ namespace temsAPI.Data.Entities.EquipmentEntities
         }
 
 
-        public virtual ICollection<Property> Properties { get; set; } = new List<Property>();
-        public virtual ICollection<EquipmentDefinition> EquipmentDefinitions { get; set; } = new List<EquipmentDefinition>();
-        public virtual ICollection<EquipmentType> Children { get; set; } = new List<EquipmentType>();
-        public virtual ICollection<EquipmentType> Parents { get; set; } = new List<EquipmentType>();
-        public virtual ICollection<ReportTemplate> ReportTemplatesMemberOf { get; set; } = new List<ReportTemplate>();
+        public ICollection<Property> Properties { get; set; } = new List<Property>();
+        public ICollection<EquipmentDefinition> EquipmentDefinitions { get; set; } = new List<EquipmentDefinition>();
+        public ICollection<EquipmentType> Children { get; set; } = new List<EquipmentType>();
+        public ICollection<EquipmentType> Parents { get; set; } = new List<EquipmentType>();
+        public ICollection<ReportTemplate> ReportTemplatesMemberOf { get; set; } = new List<ReportTemplate>();
 
         [NotMapped]
         public string Identifier => Name;

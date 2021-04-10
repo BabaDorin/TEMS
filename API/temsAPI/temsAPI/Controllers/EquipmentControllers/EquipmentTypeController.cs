@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Schema;
 using System;
@@ -118,46 +119,31 @@ namespace temsAPI.EquipmentControllers
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
         public async Task<JsonResult> FullType([FromBody] string typeId)
         {
-            if (!await _unitOfWork.EquipmentTypes.isExists(q => q.Id == typeId))
-                return ReturnResponse("There is no equipment type associated with the specified typeId", ResponseStatus.Fail);
-
-            EquipmentType equipmentType = (await _unitOfWork.EquipmentTypes
-                .Find<EquipmentType>(
-                    where: q => q.Id == typeId,
-                    include: q => q
-                    .Include(q => q.Parents.Where(q => !q.IsArchieved))
-                    .Include(q => q.Properties.Where(q => !q.IsArchieved))
-                    .ThenInclude(q => q.DataType)))
-                .FirstOrDefault();
-
-            var test = (await _unitOfWork.EquipmentTypes
-                .FindAll<EquipmentType>()).ToList();
-
-            ViewEquipmentTypeViewModel viewModel = new ViewEquipmentTypeViewModel
+            try
             {
-                Id = equipmentType.Id,
-                Name = equipmentType.Name,
-                Properties = equipmentType.Properties
-                .Where(q => !q.IsArchieved)
-                .Select(q => new ViewPropertyViewModel
-                {
-                    Description = q.Description,
-                    DataType = q.DataType.Name,
-                    DisplayName = q.DisplayName,
-                    Id = q.Id,
-                    Max = q.Max == null ? 0 : (int)q.Max,
-                    Min = q.Min == null ? 0 : (int)q.Min,
-                    Name = q.Name,
-                    Required = q.Required,
-                }).ToList(),
-                Parents = equipmentType.Parents.Select(q => new Option
-                {
-                    Value = q.Id,
-                    Label = q.Name
-                }).ToList()
-            };
+                if (!await _unitOfWork.EquipmentTypes.isExists(q => q.Id == typeId))
+                    return ReturnResponse("There is no equipment type associated with the specified typeId", ResponseStatus.Fail);
 
-            return Json(viewModel);
+                var model = (await _unitOfWork.EquipmentTypes
+                    .Find<EquipmentType>(
+                        where: q => q.Id == typeId,
+                        include: q => q
+                        .Include(q => q.Parents.Where(q => !q.IsArchieved))
+                        .Include(q => q.Properties.Where(q => !q.IsArchieved))
+                        .ThenInclude(q => q.DataType)
+                        .Include(q => q.Children.Where(q => !q.IsArchieved))
+                        .ThenInclude(q => q.Properties.Where(q => !q.IsArchieved))
+                        .ThenInclude(q => q.DataType)
+                        )).FirstOrDefault();
+
+                var viewModel = ViewEquipmentTypeViewModel.ParseEquipmentType(model);
+                return Json(viewModel);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured while fetching type info", ResponseStatus.Fail);
+            }
         }
 
         [HttpPost]

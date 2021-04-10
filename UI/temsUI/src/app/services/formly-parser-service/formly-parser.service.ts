@@ -438,7 +438,7 @@ export class FormlyParserService {
     );
 
     console.log('children');
-    if (addDefinition.children.length == 0)
+    // if (addDefinition.children.length == 0)
       return fields;
 
     console.log('continue');

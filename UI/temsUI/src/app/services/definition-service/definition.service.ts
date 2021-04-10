@@ -26,8 +26,10 @@ export class DefinitionService extends TEMSService {
   }
 
   getDefinitionsOfType(typeId: string): Observable<any> {
-    console.log(typeId);
-    return this.http.post(API_EQDEF_URL + '/getdefinitionsoftype', JSON.stringify(typeId), this.httpOptions)
+    return this.http.get(
+      API_EQDEF_URL + '/getdefinitionsoftype/' + typeId, 
+      this.httpOptions
+    );
   }
 
   getDefinitionsOfTypes(typeIds: string[]): Observable<IOption[]>{

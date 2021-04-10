@@ -1,3 +1,5 @@
+import { DefinitionService } from 'src/app/services/definition-service/definition.service';
+import { TEMSComponent } from './../../tems/tems.component';
 import { SnackService } from './../snack/snack.service';
 import { IOption } from 'src/app/models/option.model';
 import { LogsService } from 'src/app/services/logs-service/logs.service';
@@ -6,16 +8,17 @@ import { AddEquipment } from './../../models/equipment/add-equipment.model';
 import { AddIssue } from '../../models/communication/issues/add-issue.model';
 import { EquipmentService } from './../equipment-service/equipment.service';
 import { Definition } from './../../models/equipment/add-definition.model';
-import { FormlyFieldConfig } from '@ngx-formly/core';
+import { FormlyField, FormlyFieldConfig } from '@ngx-formly/core';
 import { Injectable } from '@angular/core';
 import { of } from 'rxjs';
 import { AddRoom } from 'src/app/models/room/add-room.model';
 import { AddPersonnel } from 'src/app/models/personnel/add-personnel.model';
+import { tap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
-export class FormlyParserService {
+export class FormlyParserService extends TEMSComponent {
 
   // documentation: https://formly.dev/guide/properties-options
   // This service is used for parsing an object of type AddEquipment to a FormlyFieldCOnfig array.
@@ -24,7 +27,10 @@ export class FormlyParserService {
   constructor(
     private equipmentService: EquipmentService,
     private logsService: LogsService,
-  ) { }
+    private definitionService: DefinitionService
+  ) {
+    super();
+  }
 
   parseAddRoom() {
     let fields: FormlyFieldConfig[] =
@@ -443,10 +449,9 @@ export class FormlyParserService {
     // Adding children with 'repeat' type
     let tempKey = 0;
     addDefinition.children.forEach(childDefinition => {
-
       fields.push(
         {
-          template: '<h4>' + childDefinition.equipmentType.value + ' definitions</h4>',
+          template: '<h4>' + childDefinition.equipmentType.label + ' definitions</h4>',
         },
         {
           key: '' + tempKey++, // in realilty - this will be the child definition ID
@@ -469,21 +474,24 @@ export class FormlyParserService {
               },
               {
                 className: 'col-6',
-                key: 'identifier',
+                key: 'identifierSelect',
                 type: 'select',
                 templateOptions: {
                   description: 'Choose an existing definition',
                   label: 'Choose existing one',
-                  clickEvent: console.log('hello'),
-                }
-              },
+                  options: this.definitionService.getDefinitionsOfType(childDefinition.equipmentType.value).pipe(tap(defs => {
+                    defs.unshift({value: "new", label: "new"});
+                  })),
+                  change: (field, $event)=>{ 
+                    this.setChildDefinition(field.parent, $event.value);
+                },
+                },
+              }
             ]
           }
         }
       )
 
-      // let lastFieldGroup = fields[fields.length - 1].fieldGroup;
-      console.log('got to destination')
       let destination = fields[fields.length - 1].fieldArray.fieldGroup;
 
       childDefinition.properties.forEach(property => {
@@ -501,6 +509,63 @@ export class FormlyParserService {
       );
     });
     return fields;
+  }
+
+  resetDefinitionProperties(childFieldGroup: FormlyFieldConfig){
+    childFieldGroup.fieldGroup.forEach(e => {
+      if(e.key != "identifierSelect"){
+        e.defaultValue = null;
+      }
+    })
+
+    childFieldGroup.fieldGroup.find(q => q.key == "identifier").defaultValue = "";
+    childFieldGroup.fieldGroup[childFieldGroup.fieldGroup.length-1].fieldGroup[0].defaultValue = "0";
+    childFieldGroup.fieldGroup[childFieldGroup.fieldGroup.length-1].fieldGroup[1].defaultValue = "lei";
+  }
+
+  setChildDefinition(childFieldGroup: FormlyFieldConfig, definitionId: string){
+    let priceField = childFieldGroup.fieldGroup[childFieldGroup.fieldGroup.length-1].fieldGroup[0]; 
+    let currencyField = childFieldGroup.fieldGroup[childFieldGroup.fieldGroup.length-1].fieldGroup[1];
+
+    this.resetDefinitionProperties(childFieldGroup);
+
+    if(definitionId == "new"){
+      childFieldGroup.fieldGroup.forEach(e => {
+        if(e.key != "identifierSelect"){
+          e.templateOptions.disabled = false
+        }
+      })
+
+      priceField.templateOptions.disabled = false;
+      currencyField.templateOptions.disabled = false;
+      return;
+    }
+
+    this.subscriptions.push(
+      this.equipmentService.getFullDefinition(definitionId)
+      .subscribe(result => {
+        
+        childFieldGroup.fieldGroup.forEach(e => {
+          if(e.key != "identifierSelect")
+            e.templateOptions.disabled = true
+        })
+        
+        let definition: Definition = result;
+        definition.properties.forEach(q => {
+          console.log('property:');
+          console.log(q);
+
+          let propertyField = childFieldGroup.fieldGroup.find(e => e.key == q.name); 
+          propertyField.defaultValue = q.value;
+        });
+
+        priceField.defaultValue = definition.price;
+        priceField.templateOptions.disabled = true;
+
+        currencyField.defaultValue = definition.currency;
+        currencyField.templateOptions.disabled = true;
+      })
+    )
   }
 
   generatePriceFields() {

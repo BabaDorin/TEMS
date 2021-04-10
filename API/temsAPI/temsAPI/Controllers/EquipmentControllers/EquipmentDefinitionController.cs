@@ -113,9 +113,9 @@ namespace temsAPI.Controllers.EquipmentControllers
             }
         }
 
-        [HttpPost]
+        [HttpGet("equipmentdefinition/getdefinitionsoftype/{typeId}")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
-        public async Task<JsonResult> GetDefinitionsOfType([FromBody] string typeId)
+        public async Task<JsonResult> GetDefinitionsOfType(string typeId)
         {
             List<Option> options = new List<Option>();
             try
@@ -339,6 +339,7 @@ namespace temsAPI.Controllers.EquipmentControllers
                             {
                                 Id = q.Property.Id,
                                 DisplayName = q.Property.DisplayName,
+                                Name = q.Property.Name,
                                 Value = q.Value,
                             })
                             .ToList()

@@ -454,7 +454,7 @@ export class FormlyParserService extends TEMSComponent {
           template: '<h4>' + childDefinition.equipmentType.label + ' definitions</h4>',
         },
         {
-          key: '' + tempKey++, // in realilty - this will be the child definition ID
+          key: childDefinition.equipmentType.value, // in realilty - this will be the child definition ID
           type: 'repeat',
           wrappers: ['formly-wrapper'],
           fieldArray: {

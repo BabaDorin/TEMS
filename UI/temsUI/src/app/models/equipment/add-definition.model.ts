@@ -22,7 +22,7 @@ export class AddDefinition implements IAddDefinition{
     price: number;
     currency: string;
     properties? = [] as IOption[];
-    children?: AddDefinition[];
+    children? = [] as AddDefinition[];
 }
 
 export interface IDefinition{

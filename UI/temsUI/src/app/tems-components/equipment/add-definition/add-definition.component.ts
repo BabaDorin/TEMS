@@ -84,7 +84,7 @@ export class AddDefinitionComponent extends TEMSComponent implements OnInit {
           response => {
             console.log('type: ');
             console.log(response);
-            
+
             parentFullType = response;
             this.addDefinition.equipmentType = { value: parentFullType.id, label: parentFullType.name } as IOption;
 
@@ -171,22 +171,13 @@ export class AddDefinitionComponent extends TEMSComponent implements OnInit {
   }
 
   onSubmit(model) {
-    console.log('this on submit');
+    console.log('formly model');
     console.log(this.formlyData.model);
 
-    let addDefinition = new AddDefinition();
-    addDefinition.id = this.updateDefinitionId,
-      addDefinition.typeId = this.typeId;
-    addDefinition.identifier = model.identifier;
-    addDefinition.price = model.price;
-    addDefinition.description = model.description;
-    addDefinition.currency = model.currency;
-
-    var propNames = Object.getOwnPropertyNames(model);
-    propNames.forEach(propName => {
-      if ((this.addDefinition.properties.find(q => q.name == propName)))
-        addDefinition.properties.push({ value: propName, label: model[propName] } as IOption)
-    });
+    let addDefinition: AddDefinition = this.generateAddDefinitionModel(model, this.typeId);
+    addDefinition.id = this.updateDefinitionId;
+    console.log('add definition');
+    console.log(addDefinition);
 
     let endPoint = this.equipmentService.addDefinition(addDefinition);
     if (addDefinition.id != undefined)
@@ -199,5 +190,37 @@ export class AddDefinitionComponent extends TEMSComponent implements OnInit {
           if (result.status == 1)
             this.dialogRef.close();
         }));
+  }
+
+  commonDefinitionProperties = ["Identifier", "IdentifierSelect", "Description", "Price", "Currency"];
+  generateAddDefinitionModel(model, typeId): AddDefinition{
+    let addDefinition = new AddDefinition();
+
+    if(model.identifierSelect != undefined && model.identifierSelect != "new"){
+      addDefinition.id = model.identifierSelect;
+      return addDefinition;
+    }
+    
+      addDefinition.typeId = typeId;
+    addDefinition.identifier = model.identifier;
+    addDefinition.price = model.price;
+    addDefinition.description = model.description;
+    addDefinition.currency = model.currency;
+
+    var propNames = Object.getOwnPropertyNames(model);
+    propNames.forEach(propName => {
+      if(!Array.isArray(model[propName])
+        && this.commonDefinitionProperties.findIndex(q => q.toLowerCase() == propName.toLowerCase()) == -1){
+          addDefinition.properties.push({ value: propName, label: model[propName] } as IOption)
+        }
+
+      if(Array.isArray(model[propName])){
+        model[propName].forEach(def => {
+          addDefinition.children.push(this.generateAddDefinitionModel(def, propName))
+        })
+      }
+    });
+
+    return addDefinition;
   }
 }

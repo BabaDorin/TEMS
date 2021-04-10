@@ -437,11 +437,8 @@ export class FormlyParserService {
       this.generatePriceFields(),
     );
 
-    console.log('children');
-    // if (addDefinition.children.length == 0)
+    if (addDefinition.children.length == 0)
       return fields;
-
-    console.log('continue');
 
     // Adding children with 'repeat' type
     let tempKey = 0;
@@ -457,7 +454,7 @@ export class FormlyParserService {
           wrappers: ['formly-wrapper'],
           fieldArray: {
             templateOptions: {
-              btnText: '+ ' + childDefinition.equipmentType.value,
+              btnText: '+ ' + childDefinition.equipmentType.label,
             },
             fieldGroup: [
               {
@@ -485,8 +482,9 @@ export class FormlyParserService {
         }
       )
 
-      let lastFieldGroup = fields[fields.length - 1].fieldGroup;
-      let destination = lastFieldGroup[lastFieldGroup.length - 1].fieldArray.fieldGroup;
+      // let lastFieldGroup = fields[fields.length - 1].fieldGroup;
+      console.log('got to destination')
+      let destination = fields[fields.length - 1].fieldArray.fieldGroup;
 
       childDefinition.properties.forEach(property => {
         destination.push(this.generatePropertyFieldGroup(property));

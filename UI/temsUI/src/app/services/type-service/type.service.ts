@@ -17,8 +17,12 @@ export class TypeService extends TEMSService{
   }
 
   getAllAutocompleteOptions(filter?: string): Observable<IOption[]> {
+    let endPoint = API_EQTYPE_URL + '/getallautocompleteoptions';
+    if(filter != undefined)
+      endPoint += '/' + filter;
+     
     return this.http.get<IOption[]>(
-      API_EQTYPE_URL + '/getallautocompleteoptions/' + filter,
+      endPoint,
       this.httpOptions
       );
   }

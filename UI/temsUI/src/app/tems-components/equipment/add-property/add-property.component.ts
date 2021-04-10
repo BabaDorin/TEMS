@@ -1,3 +1,4 @@
+import { SnackService } from 'src/app/services/snack/snack.service';
 import { TEMSComponent } from 'src/app/tems/tems.component';
 import { AddProperty } from './../../../models/equipment/add-property.model';
 import { FormlyParserService } from 'src/app/services/formly-parser-service/formly-parser.service';
@@ -20,11 +21,13 @@ export class AddPropertyComponent extends TEMSComponent implements OnInit {
     form: new FormGroup({}),
     model: {} as any,
     fields: [] as FormlyFieldConfig[],
-  }
+  };
+  dialogRef;
 
   constructor(
     private equipmentService: EquipmentService,
-    private formlyParser: FormlyParserService
+    private formlyParser: FormlyParserService,
+    private snackService: SnackService
   ) { 
     super(); 
   }
@@ -79,7 +82,9 @@ export class AddPropertyComponent extends TEMSComponent implements OnInit {
     this.subscriptions.push(
       endPoint
       .subscribe(result => {
-        console.log(result);
+        this.snackService.snack(result);
+        if(result.status == 1)
+          this.dialogRef.close();
       })
     )
   }

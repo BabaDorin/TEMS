@@ -89,7 +89,8 @@ export class ChipsAutocompleteComponent implements OnInit, ControlValueAccessor 
 
   listenToServer() {
     this.subscription.unsubscribe();
-
+    console.log(this.autocompleteOptions);
+    
     if (this.autocompleteOptions != undefined)
       this.getFromAutocompleteOptions();
     else

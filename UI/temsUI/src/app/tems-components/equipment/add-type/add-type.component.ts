@@ -1,3 +1,4 @@
+import { SnackService } from 'src/app/services/snack/snack.service';
 import { TypeService } from './../../../services/type-service/type.service';
 import { DialogService } from './../../../services/dialog-service/dialog.service';
 import { TEMSComponent } from 'src/app/tems/tems.component';
@@ -27,12 +28,13 @@ export class AddTypeComponent extends TEMSComponent implements OnInit {
     name: new FormControl('', Validators.required),
     properties: new FormControl('', Validators.required),
   });
+  dialogRef;
 
   get parents() { return this.formGroup.controls.parents; }
   get properties(){ return this.formGroup.controls.properties; }
 
-  parentTypeOptions: IOption[]; 
-  propertyOptions: IOption[];
+  parentTypeOptions: IOption[] = []; 
+  propertyOptions: IOption[] = [];
   parentTypeAlreadySelected: IOption[] = [];
   propertyAlreadySelected: IOption[] = [];
 
@@ -40,6 +42,7 @@ export class AddTypeComponent extends TEMSComponent implements OnInit {
     private equipmentService: EquipmentService,
     private dialogService: DialogService,
     private typeService: TypeService,
+    private snackService: SnackService
     ) {
     super();
   }
@@ -97,7 +100,9 @@ export class AddTypeComponent extends TEMSComponent implements OnInit {
       this.subscriptions.push(
         endPoint
         .subscribe(result => {
-          console.log(result);
+          this.snackService.snack(result);
+          if(result.status == 1)
+            this.dialogRef.close();
         })
       )
     }
@@ -123,6 +128,7 @@ export class AddTypeComponent extends TEMSComponent implements OnInit {
 
   fetchProperties(){
     this.subscriptions.push(this.equipmentService.getProperties().subscribe(response => {
+      console.log(response);
       this.propertyOptions = response;
       if(this.propertyOptions.length == 0)
         this.formGroup.controls.properties.disable();

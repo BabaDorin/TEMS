@@ -195,16 +195,18 @@ export class FormlyParserService {
       },
       {
         key: 'temsid',
-        type: 'input',
+        type: 'input-tooltip',
         templateOptions: {
           label: 'TEMSID',
+          description: "The unique identifier you've given to the item, like LPB002"
         }
       },
       {
         key: 'serialNumber',
-        type: 'input',
+        type: 'input-tooltip',
         templateOptions: {
           label: 'Serial Number',
+          description: "The serial number assigned to the item by it's manufacturer"
         }
       },
       {

@@ -1,3 +1,4 @@
+import { SnackService } from 'src/app/services/snack/snack.service';
 import { TypeService } from './../../../services/type-service/type.service';
 import { Observable } from 'rxjs';
 import { EquipmentType } from './../../../models/equipment/view-type.model';
@@ -22,7 +23,7 @@ export class AddDefinitionComponent extends TEMSComponent implements OnInit {
 
   // Provide a value for this in order to edit a definition instead of adding one.
   updateDefinitionId: string;
-  typeId: string;
+  @Input() typeId: string;
 
   private formlyData = {
     isVisible: false,
@@ -30,6 +31,7 @@ export class AddDefinitionComponent extends TEMSComponent implements OnInit {
     model: {} as any,
     fields: [] as FormlyFieldConfig[],
   }
+  dialogRef;
 
   addDefinition: Definition;
   equipmentTypes: IOption[];
@@ -39,8 +41,7 @@ export class AddDefinitionComponent extends TEMSComponent implements OnInit {
     private formlyParserService: FormlyParserService,
     private equipmentService: EquipmentService,
     private typeService: TypeService,
-    @Inject(MAT_DIALOG_DATA) public data: any,
-    public dialogRef?: MatDialogRef<AddDefinitionComponent>) {
+    private snackService: SnackService) {
     super();
   }
 
@@ -55,17 +56,18 @@ export class AddDefinitionComponent extends TEMSComponent implements OnInit {
     }
 
 
-    if (this.data != undefined)
-      this.setDefinitionType(this.data.selectedType);
+    if (this.typeId != undefined)
+      this.setDefinitionType(this.typeId);
     else
-      this.subscriptions.push(this.typeService.getAllAutocompleteOptions().subscribe(response => {
-        this.equipmentTypes = response;
-      }));
+      this.subscriptions.push(
+        this.typeService.getAllAutocompleteOptions()
+          .subscribe(response => {
+            this.equipmentTypes = response;
+          }));
   }
 
   onSelectionChanged(eventData) {
     this.setDefinitionType(eventData.value);
-    this.data = '1';
   }
 
   setDefinitionType(typeId: string) {
@@ -102,8 +104,6 @@ export class AddDefinitionComponent extends TEMSComponent implements OnInit {
   }
 
   update() {
-    this.data = '1';
-
     console.log(this.formlyData.model);
     this.subscriptions.push(
       this.equipmentService.getDefinitionToUpdate(this.updateDefinitionId)
@@ -171,7 +171,7 @@ export class AddDefinitionComponent extends TEMSComponent implements OnInit {
 
     let addDefinition = new AddDefinition();
     addDefinition.id = this.updateDefinitionId,
-    addDefinition.typeId = this.typeId;
+      addDefinition.typeId = this.typeId;
     addDefinition.identifier = model.identifier;
     addDefinition.price = model.price;
     addDefinition.description = model.description;
@@ -184,13 +184,15 @@ export class AddDefinitionComponent extends TEMSComponent implements OnInit {
     });
 
     let endPoint = this.equipmentService.addDefinition(addDefinition);
-    if(addDefinition.id != undefined)
+    if (addDefinition.id != undefined)
       endPoint = this.equipmentService.updateDefinition(addDefinition);
 
     this.subscriptions.push(
       endPoint
-      .subscribe(response => {
-        console.log(response);
-      }));
+        .subscribe(result => {
+          this.snackService.snack(result);
+          if (result.status == 1)
+            this.dialogRef.close();
+        }));
   }
 }

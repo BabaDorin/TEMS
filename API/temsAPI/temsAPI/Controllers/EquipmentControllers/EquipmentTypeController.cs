@@ -273,11 +273,12 @@ namespace temsAPI.EquipmentControllers
             // If it's the update case, check if the record exists
             if (viewModel.Id != null)
                 if (!await _unitOfWork.EquipmentTypes.isExists(q => q.Id == viewModel.Id))
-                    return "The type which is being updated does exist";
+                    return "The type which is being updated does not exist";
 
             // Check if this model has already been inserted (And it's not the update case)
             if(viewModel.Id == null)
-                if (await _unitOfWork.EquipmentTypes.isExists(q => q.Name.ToLower() == viewModel.Name.ToLower()))
+                if (await _unitOfWork.EquipmentTypes
+                    .isExists(q => q.Name.ToLower() == viewModel.Name.ToLower() && !q.IsArchieved))
                     return $"{viewModel.Name} already exists";
 
             // Invalid parents

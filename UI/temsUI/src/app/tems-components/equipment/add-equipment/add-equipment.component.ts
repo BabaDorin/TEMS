@@ -37,15 +37,17 @@ export class AddEquipmentComponent extends TEMSComponent implements OnInit {
     properties: new FormControl(),
   });
 
-  private formlyData = {
+  initialFormlyData;
+  formlyData = {
     isVisible: false,
     form: new FormGroup({}),
     model: {} as any,
     fields: [] as FormlyFieldConfig[],
   }
 
+
   types: IOption[] = [];
-  selectedType: IOption;
+  selectedType: string;
 
   definitionsOfType: IOption[];
   selectedDefinition: IOption;
@@ -68,12 +70,8 @@ export class AddEquipmentComponent extends TEMSComponent implements OnInit {
       this.edit();
       return;
     }
-
-    this.subscriptions.push(
-      this.typeService.getAllAutocompleteOptions()
-      .subscribe(response => {
-      this.types = response;
-    }));
+  
+    this.fetchTypes();
   }
 
   edit(){
@@ -127,6 +125,19 @@ export class AddEquipmentComponent extends TEMSComponent implements OnInit {
     )
   }
 
+  fetchTypes(){
+    this.subscriptions.push(
+      this.typeService.getAllAutocompleteOptions()
+      .subscribe(response => {
+        if(this.snackService.snackIfError(response))
+          return;
+        
+        console.log('types:');
+        console.log(response);
+        this.types = response;
+    }));
+  }
+
   onTypeChanged(eventData) {
     if (eventData.value == undefined)
       return;
@@ -141,10 +152,16 @@ export class AddEquipmentComponent extends TEMSComponent implements OnInit {
       this.wipeAddEquipmentFormly();
     }
 
-    if (this.types.find(q => q.value == eventData.value) != undefined)
-      this.subscriptions.push(this.definitionService.getDefinitionsOfType(eventData.value)
+    this.fetchDefinitionsOfType();
+  }
+
+  fetchDefinitionsOfType(){
+    console.log(this.selectedType);
+    if (this.types.find(q => q.value == this.selectedType) != undefined)
+      this.subscriptions.push(this.definitionService.getDefinitionsOfType(this.selectedType)
         .subscribe(response => {
-          console.log(response);
+          if(this.snackService.snackIfError(response))
+            return;
           this.definitionsOfType = response;
         }))
     else
@@ -175,6 +192,8 @@ export class AddEquipmentComponent extends TEMSComponent implements OnInit {
       equipmentDefinitionID: addEq.definition.id,
       identifier: this.selectedFullDefinition.identifier
     };
+
+    this.initialFormlyData = {...this.formlyData};
   }
 
   wipeAddEquipmentFormly() {
@@ -198,6 +217,10 @@ export class AddEquipmentComponent extends TEMSComponent implements OnInit {
       endPoint
       .subscribe(result => {
         this.snackService.snack(result);
+
+        if(result.status == 1){
+          this.createAddEquipmentFormly();
+        }
       })
     )
   }
@@ -205,11 +228,21 @@ export class AddEquipmentComponent extends TEMSComponent implements OnInit {
   openDialog(componentName: string): void {
     switch(componentName){
       case 'add-type':
-        this.dialogService.openDialog(AddTypeComponent);
+        this.dialogService.openDialog(
+          AddTypeComponent,
+          undefined,
+          () => {
+            this.fetchTypes();
+          });
         break;
 
       case 'add-definition':
-        this.dialogService.openDialog(AddDefinitionComponent);
+        this.dialogService.openDialog(
+          AddDefinitionComponent,
+          [{label: "typeId", value: this.selectedType}],
+          () => {
+            this.fetchDefinitionsOfType();
+          });
         break;
     }
   }

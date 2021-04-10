@@ -288,8 +288,9 @@ namespace temsAPI.EquipmentControllers
             // Check if the property already exists (and it's not the update case)
             if(viewModel.Id == null)
                 if (await _unitOfWork.Properties
-                    .isExists(q => q.Name.ToLower() == viewModel.Name.ToLower() ||
-                                   q.DisplayName.ToLower() == viewModel.DisplayName.ToLower()))
+                    .isExists(q => (q.Name.ToLower() == viewModel.Name.ToLower() 
+                                    || q.DisplayName.ToLower() == viewModel.DisplayName.ToLower())
+                                    && !q.IsArchieved))
                         return "This property already exists";
 
             return null;

@@ -167,8 +167,9 @@ export class FormlyParserService extends TEMSComponent {
 
     let index = 0;
     addEquipment.children.forEach(childAddEquipment => {
+      console.log(childAddEquipment);
       formlyFieldsAddEquipment[formlyFieldsAddEquipment.length - 1].fieldGroup.push({
-        key: '' + index++, // in reality - the index of child definition
+        key: childAddEquipment.definition.id + '---' + index++, // in reality - the index of child definition
         type: 'eq-repeat',
         wrappers: ['formly-wrapper'],
         fieldArray: {
@@ -192,6 +193,7 @@ export class FormlyParserService extends TEMSComponent {
       {
         key: 'identifier',
         type: 'input',
+        defaultValue: addEquipment.definition.identifier,
         templateOptions: {
           label: 'Identifier',
         },
@@ -454,7 +456,7 @@ export class FormlyParserService extends TEMSComponent {
           template: '<h4>' + childDefinition.equipmentType.label + ' definitions</h4>',
         },
         {
-          key: childDefinition.equipmentType.value, // in realilty - this will be the child definition ID
+          key: childDefinition.equipmentType.value,
           type: 'repeat',
           wrappers: ['formly-wrapper'],
           fieldArray: {

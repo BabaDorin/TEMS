@@ -183,6 +183,8 @@ export class AddEquipmentComponent extends TEMSComponent implements OnInit {
 
   createAddEquipmentFormly() {
     let addEq: AddEquipment = this.equipmentService.generateAddEquipmentOfDefinition(this.selectedFullDefinition);
+    console.log('add equipment:');
+    console.log(addEq);
     let formlyFields = this.formlyParserService.parseAddEquipment(addEq);
     
     this.formlyData.fields = formlyFields;
@@ -207,6 +209,25 @@ export class AddEquipmentComponent extends TEMSComponent implements OnInit {
     let submitAddEquipment = new AddEquipment();
     submitAddEquipment = model;
     submitAddEquipment.id = this.updateEquipmentId;
+    submitAddEquipment.children = [];
+
+    console.log('model:');
+    console.log(model);
+    var propNames = Object.getOwnPropertyNames(model);
+    propNames.forEach(propName => {
+      if(Array.isArray(model[propName]) && propName.indexOf("---") > -1){
+        console.log('array found: ');
+        console.log(model[propName]);
+          model[propName].forEach(child => {
+            console.log('child:');
+            console.log(child);
+            let childEquipment = new AddEquipment();
+            childEquipment = child;
+            childEquipment.equipmentDefinitionID = propName.split('---')[0];
+            submitAddEquipment.children.push(childEquipment);
+          })
+        }
+    });
 
     let endPoint = this.equipmentService.addEquipment(submitAddEquipment);
     if(this.updateEquipmentId != undefined)

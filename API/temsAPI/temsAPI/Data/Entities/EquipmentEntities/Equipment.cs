@@ -1,15 +1,20 @@
-﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.CommunicationEntities;
 using temsAPI.Data.Entities.OtherEntities;
 using temsAPI.Data.Entities.UserEntities;
+using temsAPI.Helpers;
+using temsAPI.ViewModels.Equipment;
 
 namespace temsAPI.Data.Entities.EquipmentEntities
 {
@@ -73,5 +78,31 @@ namespace temsAPI.Data.Entities.EquipmentEntities
         public virtual ICollection<Ticket> Tickets { get; set; } = new List<Ticket>();
         public virtual ICollection<Equipment> Children { get; set; } = new List<Equipment>();
         public virtual ICollection<EquipmentAllocation> EquipmentAllocations { get; set; } = new List<EquipmentAllocation>();
+    
+        public static Equipment FromViewModel(ClaimsPrincipal createdBy, AddEquipmentViewModel viewModel)
+        {
+            Equipment model = new Equipment
+            {
+                Id = Guid.NewGuid().ToString(),
+                TEMSID = viewModel.Temsid,
+                SerialNumber = viewModel.SerialNumber,
+                Currency = viewModel.Currency,
+                PurchaseDate = viewModel.PurchaseDate,
+                Description = viewModel.Description,
+                EquipmentDefinitionID = viewModel.EquipmentDefinitionID,
+                IsDefect = viewModel.IsDefect,
+                IsUsed = viewModel.IsUsed,
+                Price = viewModel.Price,
+                RegisterDate = DateTime.Now,
+                RegisteredByID = IdentityHelper.GetUserId(createdBy),
+            };
+
+            foreach(var child in viewModel.Children)
+            {
+                model.Children.Add(FromViewModel(createdBy, child));
+            }
+
+            return model;
+        }
     }
 }

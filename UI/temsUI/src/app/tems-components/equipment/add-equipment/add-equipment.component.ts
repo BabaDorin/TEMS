@@ -98,6 +98,10 @@ export class AddEquipmentComponent extends TEMSComponent implements OnInit {
     this.subscriptions.push(
       this.equipmentService.getEquipmentToUpdate(this.updateEquipmentId)
       .subscribe(result => {
+        if(this.snackService.snackIfError(result))
+          return;
+        
+        console.log(result);
         this.formlyData.model = {};
         this.formlyData.model.equipmentDefinitionID = this.selectedFullDefinition.id;
         this.formlyData.model.identifier = this.selectedFullDefinition.identifier;
@@ -117,6 +121,10 @@ export class AddEquipmentComponent extends TEMSComponent implements OnInit {
     this.subscriptions.push(
       this.equipmentService.getFullDefinition(this.updateEquipmentDefinitionId)
       .subscribe(result => {
+        if(this.snackService.snackIfError(result))
+          return;
+        
+        console.log(result);
         this.selectedFullDefinition = result; 
       })
     )
@@ -166,6 +174,7 @@ export class AddEquipmentComponent extends TEMSComponent implements OnInit {
         .subscribe(result => {
           if(this.snackService.snackIfError(result))
             return;
+          console.log(result);
           this.selectedFullDefinition = result;
           this.createAddEquipmentFormly();
         }))

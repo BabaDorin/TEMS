@@ -292,37 +292,7 @@ namespace temsAPI.Controllers.EquipmentControllers
                 if (!await _unitOfWork.EquipmentDefinitions.isExists(q => q.Id == definitionId))
                     return ReturnResponse("There is no definition having the specified id", ResponseStatus.Fail);
 
-                EquipmentDefinitionViewModel viewModel = (await _unitOfWork.EquipmentDefinitions
-                    .Find<EquipmentDefinitionViewModel>(
-                        where: q => q.Id == definitionId,
-                        include: q => q
-                        .Include(q => q.Children.Where(q => !q.IsArchieved))
-                        .Include(q => q.EquipmentSpecifications)
-                        .ThenInclude(q => q.Property).ThenInclude(q => q.DataType)
-                        .Include(q => q.Parent)
-                        .Include(q => q.EquipmentType),
-                        select: q => new EquipmentDefinitionViewModel
-                        {
-                            Id = q.Id,
-                            Identifier = q.Identifier,
-                            Currency = q.Currency,
-                            Price = q.Price,
-                            EquipmentType = new Option
-                            {
-                                Value = q.EquipmentType.Id,
-                                Label = q.EquipmentType.Name
-                            },
-                            Properties = q.EquipmentSpecifications
-                            .Select(q => new ViewPropertyViewModel
-                            {
-                                Id = q.Property.Id,
-                                DisplayName = q.Property.DisplayName,
-                                Name = q.Property.Name,
-                                Value = q.Value,
-                            })
-                            .ToList()
-                        }))
-                        .FirstOrDefault();
+                var viewModel = await EquipmentDefinitionViewModel.FromModel(_unitOfWork, definitionId);
 
                 return Json(viewModel);
             }

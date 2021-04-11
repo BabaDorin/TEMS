@@ -4,6 +4,8 @@ https://blog.aspose.com/2020/04/22/create-zip-archives-add-files-or-folders-to-z
 TODO
 ------------ As soon as possible >>>>
 
+-->  Attach - deatach children equipment (For example, when replacing components)
+
 --> Fix archieving for types, properties, definitions etc. (The endpoint frontent communicates with is not valid)
 
 --> Solve spelling mistakes:

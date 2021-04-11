@@ -1,9 +1,7 @@
 import { LoadingplaceholderModule } from './../loadingplaceholder/loadingplaceholder.module';
-import { EquipmentDetailsGeneralComponent } from './../../tems-components/equipment/equipment-details/equipment-details-general/equipment-details-general.component';
 import { PersonnelDetailsGeneralComponent } from './../../tems-components/personnel/personnel-details-general/personnel-details-general.component';
 import { RoomDetailsGeneralComponent } from './../../tems-components/room/room-details-general/room-details-general.component';
 import { TemsAgGridModule } from './../tems-ag-grid/tems-ag-grid.module';
-import { LoadingPlaceholderComponent } from './../../tems-components/loading-placeholder/loading-placeholder.component';
 import { RouterModule } from '@angular/router';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { EntityIssuesListComponent } from './../../tems-components/entity-issues-list/entity-issues-list.component';
@@ -35,7 +33,6 @@ import { IssueContainerComponent } from 'src/app/tems-components/issues/issue-co
     IssueContainerComponent,
     RoomDetailsGeneralComponent,
     PersonnelDetailsGeneralComponent,
-    EquipmentDetailsGeneralComponent,
   ],
   imports: [
     CommonModule,
@@ -44,7 +41,7 @@ import { IssueContainerComponent } from 'src/app/tems-components/issues/issue-co
     TemsFormsModule,
     NgxPaginationModule,
     TemsAgGridModule,
-    LoadingplaceholderModule
+    LoadingplaceholderModule,
   ],
   exports: [
     TemsAgGridModule,
@@ -58,9 +55,8 @@ import { IssueContainerComponent } from 'src/app/tems-components/issues/issue-co
     SummaryIssuesAnalyticsComponent,
     EntityAllocationsListComponent,
     IssueContainerComponent,
-    RoomDetailsGeneralComponent,
     PersonnelDetailsGeneralComponent,
-    EquipmentDetailsGeneralComponent,
+    RoomDetailsGeneralComponent,
   ]
 })
 export class EntitySharedModule { }

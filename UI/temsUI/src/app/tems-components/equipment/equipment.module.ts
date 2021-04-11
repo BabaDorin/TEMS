@@ -1,3 +1,4 @@
+import { EquipmentDetailsGeneralComponent } from './equipment-details/equipment-details-general/equipment-details-general.component';
 import { ViewDefinitionComponent } from './view-definition/view-definition.component';
 import { TemsAgGridModule } from './../../modules/tems-ag-grid/tems-ag-grid.module';
 import { ViewEquipmentAllocationsComponent } from './../view-equipment-allocations/view-equipment-allocations.component';
@@ -24,7 +25,6 @@ import { ViewPropertyComponent } from './view-property/view-property.component';
 
 @NgModule({
   declarations: [
-    EquipmentDetailsComponent,
     EquipmentDetailsLogsComponent,
     EquipmentDetailsAllocationsComponent,
     ViewEquipmentComponent,
@@ -37,7 +37,9 @@ import { ViewPropertyComponent } from './view-property/view-property.component';
     ViewTypeComponent,
     ViewPropertyComponent,
     ViewDefinitionComponent,
-    ViewEquipmentAllocationsComponent
+    ViewEquipmentAllocationsComponent,
+    EquipmentDetailsComponent,
+    EquipmentDetailsGeneralComponent
   ],
   imports: [
     CommonModule,

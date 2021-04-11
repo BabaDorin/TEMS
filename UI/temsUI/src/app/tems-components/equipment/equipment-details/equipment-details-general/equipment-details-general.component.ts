@@ -37,6 +37,9 @@ export class EquipmentDetailsGeneralComponent extends TEMSComponent implements O
 
     this.subscriptions.push(this.equipmentService.getEquipmentByID(this.equipmentId)
       .subscribe(response => {
+        if(this.snackService.snackIfError(response))
+          return;
+        
         console.log(response);
         this.equipment = response;
         this.headerClass = (this.equipment.isArchieved) ? 'text-muted' : '';

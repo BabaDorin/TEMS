@@ -9,17 +9,19 @@
             <b *ngIf="equipment.temsID != undefined"> {{ equipment.temsID }}</b>
             <b *ngIf="equipment.temsID == undefined && equipment.serialNumber != undefined">{{ equipment.serialNumber}}</b>
         </h1>
-        <button mat-button (click)="edit()">Edit</button>
-        <button *ngIf="equipment.isArchieved" mat-button (click)="archieve()" [disabled]="editing">Dearchieve</button>
-        <button *ngIf="!equipment.isArchieved" mat-button (click)="archieve()" [disabled]="editing">Archieve</button>
-        <button mat-button (click)="changeState('isDefect')" [disabled]="editing">
-            <p *ngIf="equipment.isDefect == true">Mark as working</p>
-            <p *ngIf="equipment.isDefect == false">Mark as defect</p>
-        </button>
-        <button mat-button (click)="changeState('isUsed')" [disabled]="editing">
-            <p *ngIf="equipment.isUsed == true">Mark as unused</p>
-            <p *ngIf="equipment.isUsed == false">Mark as used</p>
-        </button>
+        <ng-container *ngIf="canManage">
+            <button mat-button (click)="edit()">Edit</button>
+            <button *ngIf="equipment.isArchieved" mat-button (click)="archieve()" [disabled]="editing">Dearchieve</button>
+            <button *ngIf="!equipment.isArchieved" mat-button (click)="archieve()" [disabled]="editing">Archieve</button>
+            <button mat-button (click)="changeState('isDefect')" [disabled]="editing">
+                <p *ngIf="equipment.isDefect == true">Mark as working</p>
+                <p *ngIf="equipment.isDefect == false">Mark as defect</p>
+            </button>
+            <button mat-button (click)="changeState('isUsed')" [disabled]="editing">
+                <p *ngIf="equipment.isUsed == true">Mark as unused</p>
+                <p *ngIf="equipment.isUsed == false">Mark as used</p>
+            </button>
+        </ng-container>
         <hr>
         <br>
         <ng-container *ngIf="editing == false">
@@ -39,14 +41,33 @@
             <br>
             <ng-container *ngIf="equipment.children != undefined && equipment.children.length > 0">
                 <h2>Equipment's Children</h2>
-                <div *ngFor="let child of equipment.children">
+                <button *ngIf="canManage" mat-button><mat-icon class="text-primary">add</mat-icon> Attach</button>
+                <div *ngFor="let child of equipment.children; let i = index">
                     <mat-expansion-panel>
                         <mat-expansion-panel-header>
-                            <b>{{ child.additional }}: </b> {{ child.label }}
+                            <b>{{ child.additional }}: </b> {{ child.label }} 
+                            <button mat-button (click)="detach(child.value, i)">
+                                <mat-icon class="text-danger">exclude</mat-icon> Detach
+                            </button>
                         </mat-expansion-panel-header>
     
                         <ng-container matExpansionPanelContent class="mat-exp-panel-content">
                             <app-equipment-details [equipmentId]="child.value"></app-equipment-details>
+                        </ng-container>
+                    </mat-expansion-panel>
+                    <br>
+                </div>
+            </ng-container>
+            <ng-container *ngIf="detachedEquipments.length > 0">
+                <h2 class="text-muted">Detached equipments (These will dissapear after a refresh)</h2>
+                <div *ngFor="let detachedEq of detachedEquipments">
+                    <mat-expansion-panel>
+                        <mat-expansion-panel-header>
+                            <b>{{ detachedEq.additional }}: </b> {{ detachedEq.label }}
+                        </mat-expansion-panel-header>
+
+                        <ng-container matExpansionPanelContent class="mat-exp-panel-content">
+                            <app-equipment-details [equipmentId]="detachedEq.value"></app-equipment-details>
                         </ng-container>
                     </mat-expansion-panel>
                     <br>

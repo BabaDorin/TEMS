@@ -185,7 +185,7 @@ export class AddEquipmentComponent extends TEMSComponent implements OnInit {
     let addEq: AddEquipment = this.equipmentService.generateAddEquipmentOfDefinition(this.selectedFullDefinition);
     console.log('add equipment:');
     console.log(addEq);
-    let formlyFields = this.formlyParserService.parseAddEquipment(addEq);
+    let formlyFields = this.formlyParserService.parseAddEquipment(addEq, this.updateEquipmentId != undefined);
     
     this.formlyData.fields = formlyFields;
     this.formlyData.isVisible = true;
@@ -238,7 +238,7 @@ export class AddEquipmentComponent extends TEMSComponent implements OnInit {
       .subscribe(result => {
         this.snackService.snack(result);
 
-        if(result.status == 1){
+        if(result.status == 1 && this.updateEquipmentId == undefined){
           this.createAddEquipmentFormly();
         }
       })

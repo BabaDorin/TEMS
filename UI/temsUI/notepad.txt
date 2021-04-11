@@ -4,6 +4,11 @@ https://blog.aspose.com/2020/04/22/create-zip-archives-add-files-or-folders-to-z
 TODO
 ------------ As soon as possible >>>>
 
+--> If an equipment is child for another, the first one will be 'included' in the second one, which means that
+    it won't be possible to allocate only children equipment. In order to do that, it should be first deatached from
+    the parent, and only then will be possible to use it like a non-child equipment. (1: Hide 'allocate' tab
+    for children, and treat this case on backend). 
+
 --> Implement temslogger
 
 -->  Attach - deatach children equipment (For example, when replacing components)

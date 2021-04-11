@@ -1,3 +1,6 @@
+import { IOption } from './../../../../models/option.model';
+import { CAN_MANAGE_ENTITIES } from './../../../../models/claims';
+import { TokenService } from './../../../../services/token-service/token.service';
 import { SnackService } from './../../../../services/snack/snack.service';
 import { TEMSComponent } from './../../../../tems/tems.component';
 import { Property } from './../../../../models/equipment/view-property.model';
@@ -19,19 +22,23 @@ export class EquipmentDetailsGeneralComponent extends TEMSComponent implements O
   dialogRef;
   headerClass;
 
+  canManage:boolean = false;
   equipment: ViewEquipment;
   generalProperties: Property[];
   specificProperties: Property[];
+  detachedEquipments = [];
   editing = false;
 
   constructor(
     private equipmentService: EquipmentService,
+    private tokenService: TokenService,
     private route: Router,
     private snackService: SnackService) {
     super();
   }
 
   ngOnInit(): void {
+    this.canManage = this.tokenService.hasClaim(CAN_MANAGE_ENTITIES);
     // if(this.equipmentId == undefined)
       // this.equipmentId = this.route.snapshot.paramMap.get('id');
 
@@ -100,6 +107,26 @@ export class EquipmentDetailsGeneralComponent extends TEMSComponent implements O
           this.equipment.isUsed = !this.equipment.isUsed;
           this.generalProperties[this.generalProperties.length-2].value = this.equipment.isUsed;
         }
+      })
+    )
+  }
+
+  attach(){
+    
+  }
+
+  detach(childId: string, index: number){
+    if(!confirm("Are you sure you want to detach this equipment from it's parent?"))
+      return;
+
+    this.subscriptions.push(
+      this.equipmentService.detach(childId)
+      .subscribe(result => {
+        if(this.snackService.snackIfError(result))
+          return;
+
+        this.detachedEquipments.push(this.equipment.children[index]);
+        this.equipment.children.splice(index, 1);
       })
     )
   }

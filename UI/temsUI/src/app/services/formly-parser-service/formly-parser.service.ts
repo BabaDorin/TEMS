@@ -150,7 +150,7 @@ export class FormlyParserService extends TEMSComponent {
       criteria.toLowerCase().indexOf(name.toLowerCase()) === 0);
   }
 
-  parseAddEquipment(addEquipment: AddEquipment, formlyFields?: FormlyFieldConfig[]) {
+  parseAddEquipment(addEquipment: AddEquipment, updating = false, formlyFields?: FormlyFieldConfig[]) {
     let formlyFieldsAddEquipment =
       (formlyFields == undefined) ? [] as FormlyFieldConfig[] : formlyFields;
 
@@ -162,7 +162,7 @@ export class FormlyParserService extends TEMSComponent {
       }
     )
 
-    if (addEquipment.children == undefined || addEquipment.children.length == 0)
+    if (addEquipment.children == undefined || addEquipment.children.length == 0 || updating)
       return formlyFieldsAddEquipment;
 
     let index = 0;

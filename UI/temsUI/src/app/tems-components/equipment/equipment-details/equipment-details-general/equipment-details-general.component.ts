@@ -24,9 +24,10 @@ export class EquipmentDetailsGeneralComponent extends TEMSComponent implements O
 
   canManage:boolean = false;
   equipment: ViewEquipment;
-  // get canAttach(){
-  //   return this.equipment.type.children.length > 0;
-  // }
+  get canAttach(){
+    // returns true if equipment can have children
+    return this.equipment.definition.children.length > 0;
+  }
   generalProperties: Property[];
   specificProperties: Property[];
   detachedEquipments = [];
@@ -55,8 +56,8 @@ export class EquipmentDetailsGeneralComponent extends TEMSComponent implements O
         this.headerClass = (this.equipment.isArchieved) ? 'text-muted' : '';
 
         this.generalProperties= [
-          { displayName: 'Identifier', value: this.equipment.definition.label},
-          { displayName: 'Type', value: this.equipment.type},
+          { displayName: 'Identifier', value: this.equipment.definition.identifier},
+          { displayName: 'Type', value: this.equipment.type.name},
           { displayName: 'TemsID', value: this.equipment.temsId },
           { displayName: 'Serial Number', value: this.equipment.serialNumber},
           { displayName: 'Is Used', dataType: 'boolean', name: 'isUsed', value: this.equipment.isUsed},

@@ -27,40 +27,32 @@ namespace temsAPI.ViewModels.EquipmentDefinition
             Children = new List<EquipmentDefinitionViewModel>();
         }
 
-        public static async Task<EquipmentDefinitionViewModel> FromModel(IUnitOfWork unitOfWork, string modelId)
+        public static EquipmentDefinitionViewModel ParseEquipmentDefinition(Data.Entities.EquipmentEntities.EquipmentDefinition model)
         {
-            var viewModel = (await unitOfWork.EquipmentDefinitions
-                    .Find<EquipmentDefinitionViewModel>(
-                        where: q => q.Id == modelId,
-                        include: q => q
-                        .Include(q => q.Children.Where(q => !q.IsArchieved))
-                        .Include(q => q.EquipmentSpecifications)
-                        .ThenInclude(q => q.Property).ThenInclude(q => q.DataType)
-                        .Include(q => q.Parent)
-                        .Include(q => q.EquipmentType),
-                        select: q => new EquipmentDefinitionViewModel
-                        {
-                            Id = q.Id,
-                            Identifier = q.Identifier,
-                            Currency = q.Currency,
-                            Price = q.Price,
-                            EquipmentType = new Option
-                            {
-                                Value = q.EquipmentType.Id,
-                                Label = q.EquipmentType.Name
-                            },
-                            Properties = q.EquipmentSpecifications
-                            .Select(q => new ViewPropertyViewModel
-                            {
-                                Id = q.Property.Id,
-                                DisplayName = q.Property.DisplayName,
-                                Name = q.Property.Name,
-                                Value = q.Value,
-                            })
-                            .ToList(),
-                            Children = q.Children.Select(child=> FromModel(unitOfWork, child.Id).Result).ToList(),
-                        }))
-                        .FirstOrDefault();
+            var viewModel = new EquipmentDefinitionViewModel
+            {
+                Id = model.Id,
+                Identifier = model.Identifier,
+                Currency = model.Currency,
+                Price = model.Price,
+                EquipmentType = (model.EquipmentType == null)
+                    ? null
+                    : new Option
+                    {
+                        Value = model.EquipmentType.Id,
+                        Label = model.EquipmentType.Name
+                    },
+                Properties = model.EquipmentSpecifications?
+                .Select(q => new ViewPropertyViewModel
+                {
+                    Id = q.Property.Id,
+                    DisplayName = q.Property.DisplayName,
+                    Name = q.Property.Name,
+                    Value = q.Value,
+                })
+                .ToList(),
+                Children = model.Children?.Select(child => ParseEquipmentDefinition(child)).ToList()
+            };
 
             return viewModel;
         }

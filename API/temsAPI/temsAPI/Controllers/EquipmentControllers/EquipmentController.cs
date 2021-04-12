@@ -136,8 +136,6 @@ namespace temsAPI.Controllers.EquipmentControllers
             }
         }
 
-
-
         [HttpGet("equipment/getsimplified/{id}")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
         public async Task<JsonResult> GetSimplified(string id)
@@ -230,8 +228,9 @@ namespace temsAPI.Controllers.EquipmentControllers
                 Equipment model = (await _unitOfWork.Equipments
                     .Find<Equipment>(
                         where: q => q.Id == id,
-                        include: q => q.Include(q => q.EquipmentDefinition)
-                        .ThenInclude(q => q.EquipmentType)
+                        include: q => q
+                        .Include(q => q.EquipmentDefinition).ThenInclude(q => q.Children)
+                        .Include(q => q.EquipmentDefinition).ThenInclude(q => q.EquipmentType)
                         .Include(q => q.EquipmentAllocations).ThenInclude(q => q.Room)
                         .Include(q => q.EquipmentAllocations).ThenInclude(q => q.Personnel)
                         .Include(q => q.Children)
@@ -246,60 +245,7 @@ namespace temsAPI.Controllers.EquipmentControllers
                 if (model == null)
                     return ReturnResponse("Invalid equipment id provided", ResponseStatus.Fail);
 
-                var activeRoomAllocation = model.EquipmentAllocations
-                    .Where(q => q.DateReturned == null && q.RoomID != null)
-                    ?.FirstOrDefault();
-
-                var activePersonnelAllocation = model.EquipmentAllocations
-                    .Where(q => q.DateReturned == null && q.PersonnelID != null)
-                    ?.FirstOrDefault();
-
-                ViewEquipmentViewModel viewModel = new ViewEquipmentViewModel
-                {
-                    Id = model.Id,
-                    Definition = new Option
-                    {
-                        Value = model.EquipmentDefinition.Id,
-                        Label = model.EquipmentDefinition.Identifier,
-                        Additional = model.EquipmentDefinition.Description
-                    },
-                    IsDefect = model.IsDefect,
-                    IsUsed = model.IsUsed,
-                    IsArchieved = model.IsArchieved,
-                    SerialNumber = model.SerialNumber,
-                    TemsId = model.TEMSID,
-                    Type = model.EquipmentDefinition.EquipmentType.Name,
-                    Personnnel = (activePersonnelAllocation == null)
-                        ? null
-                        : new Option
-                        {
-                            Value = activePersonnelAllocation.PersonnelID,
-                            Label = activePersonnelAllocation.Personnel.Name
-                        },
-                    Room = (activeRoomAllocation == null)
-                        ? new Option { Value = "Deposit", Label = "Deposit" }
-                        : new Option
-                        {
-                            Value = activeRoomAllocation.RoomID,
-                            Label = activeRoomAllocation.Room.Identifier
-                        },
-                    Parent = (model.Parent == null)
-                        ? null
-                        : new Option
-                        {
-                            Value = model.Parent.Id,
-                            Label = model.Parent.EquipmentDefinition.Identifier,
-                        },
-                    Children = model.Children
-                        .Select(q => new Option
-                        {
-                            Value = q.Id,
-                            Label = q.EquipmentDefinition.Identifier,
-                            Additional = q.EquipmentDefinition.EquipmentType.Name
-                        }).ToList(),
-                    SpecificTypeProperties = _mapper.Map<List<ViewPropertyViewModel>>
-                            (model.EquipmentDefinition.EquipmentType.Properties),
-                };
+                var viewModel = ViewEquipmentViewModel.ParseEquipment(_mapper, model);
 
                 return Json(viewModel);
             }
@@ -352,6 +298,30 @@ namespace temsAPI.Controllers.EquipmentControllers
             {
                 Debug.WriteLine(ex);
                 return ReturnResponse("An error occured while changing the archivation status.", ResponseStatus.Fail);
+            }
+        }
+
+        [HttpGet("equipment/detach/{childId}")]
+        [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
+        public async Task<JsonResult> Detach(string childId)
+        {
+            try
+            {
+                var equipment = (await _unitOfWork.Equipments
+                    .Find<Equipment>(q => q.Id == childId))
+                    .FirstOrDefault();
+
+                if (equipment == null)
+                    return ReturnResponse("Invalid child ID provided.", ResponseStatus.Fail);
+
+                equipment.ParentID = null;
+                await _unitOfWork.Save();
+                return ReturnResponse("Success", ResponseStatus.Success);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured while detaching the child equipment.", ResponseStatus.Fail);
             }
         }
 

@@ -1,3 +1,4 @@
+import { Definition } from './add-definition.model';
 import { IOption } from 'src/app/models/option.model';
 import { viewClassName } from '@angular/compiler';
 import { ViewRoomSimplified } from './../room/view-room-simplified.model';
@@ -12,23 +13,23 @@ export interface ILightViewEquipment{
 
 export interface IViewEquipment{
     id: string,
-    definition: IOption;
+    definition: Definition;
     temsId: string,
     serialNumber: string,
-    room: IOption;
-    type: EquipmentType;
+    room: IOption,
+    type: EquipmentType,
     specificTypeProperties: Property[],
-    children: IOption[];
+    children: IOption[],
     parent: IOption;
     isUsed: boolean,
-    isDefect: boolean;
-    price: number;
-    isArchieved: boolean;
+    isDefect: boolean,
+    price: number,
+    isArchieved: boolean,
 }
 
 export class ViewEquipment implements IViewEquipment{
     id: string;
-    definition: IOption;
+    definition: Definition;
     temsId: string;
     serialNumber: string;
     room: IOption;

@@ -292,8 +292,18 @@ namespace temsAPI.Controllers.EquipmentControllers
                 if (!await _unitOfWork.EquipmentDefinitions.isExists(q => q.Id == definitionId))
                     return ReturnResponse("There is no definition having the specified id", ResponseStatus.Fail);
 
-                var viewModel = await EquipmentDefinitionViewModel.FromModel(_unitOfWork, definitionId);
+                var model = (await _unitOfWork.EquipmentDefinitions
+                    .Find<EquipmentDefinition>(
+                        where: q => q.Id == definitionId,
+                        include: q => q
+                        .Include(q => q.Children.Where(q => !q.IsArchieved))
+                        .Include(q => q.EquipmentSpecifications)
+                        .ThenInclude(q => q.Property).ThenInclude(q => q.DataType)
+                        .Include(q => q.Parent)
+                        .Include(q => q.EquipmentType)
+                        )).FirstOrDefault();
 
+                var viewModel = EquipmentDefinitionViewModel.ParseEquipmentDefinition(model);
                 return Json(viewModel);
             }
             catch (Exception ex)

@@ -1,7 +1,8 @@
-﻿using System;
+﻿using AutoMapper;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
+using temsAPI.ViewModels.EquipmentDefinition;
+using temsAPI.ViewModels.EquipmentType;
 using temsAPI.ViewModels.Property;
 
 namespace temsAPI.ViewModels.Equipment
@@ -9,12 +10,12 @@ namespace temsAPI.ViewModels.Equipment
     public class ViewEquipmentViewModel
     {
         public string Id { get; set; }
-        public Option Definition { get; set; }
+        public EquipmentDefinitionViewModel Definition { get; set; }
         public string TemsId { get; set; }
         public string SerialNumber { get; set; }
         public IOption Room { get; set; }
         public IOption Personnnel { get; set; }
-        public string Type { get; set; }
+        public ViewEquipmentTypeViewModel Type { get; set; }
         public List<ViewPropertyViewModel> SpecificTypeProperties { get; set; }
         public List<Option> Children { get; set; }
         public IOption Parent { get; set; }
@@ -28,6 +29,61 @@ namespace temsAPI.ViewModels.Equipment
             SpecificTypeProperties = new List<ViewPropertyViewModel>();
             Children = new List<Option>();
             Photos = new List<string>();
+        }
+
+        public static ViewEquipmentViewModel ParseEquipment(IMapper  mapper, Data.Entities.EquipmentEntities.Equipment model)
+        {
+            var activeRoomAllocation = model.EquipmentAllocations
+                    .Where(q => q.DateReturned == null && q.RoomID != null)
+                    ?.FirstOrDefault();
+
+            var activePersonnelAllocation = model.EquipmentAllocations
+                .Where(q => q.DateReturned == null && q.PersonnelID != null)
+                ?.FirstOrDefault();
+
+            ViewEquipmentViewModel viewModel = new ViewEquipmentViewModel
+            {
+                Id = model.Id,
+                Definition = EquipmentDefinitionViewModel.ParseEquipmentDefinition(model.EquipmentDefinition),
+                IsDefect = model.IsDefect,
+                IsUsed = model.IsUsed,
+                IsArchieved = model.IsArchieved,
+                SerialNumber = model.SerialNumber,
+                TemsId = model.TEMSID,
+                Type = ViewEquipmentTypeViewModel.ParseEquipmentType(model.EquipmentDefinition.EquipmentType),
+                Personnnel = (activePersonnelAllocation == null)
+                        ? null
+                        : new Option
+                        {
+                            Value = activePersonnelAllocation.PersonnelID,
+                            Label = activePersonnelAllocation.Personnel.Name
+                        },
+                Room = (activeRoomAllocation == null)
+                        ? new Option { Value = "Deposit", Label = "Deposit" }
+                        : new Option
+                        {
+                            Value = activeRoomAllocation.RoomID,
+                            Label = activeRoomAllocation.Room.Identifier
+                        },
+                Parent = (model.Parent == null)
+                        ? null
+                        : new Option
+                        {
+                            Value = model.Parent.Id,
+                            Label = model.Parent.EquipmentDefinition.Identifier,
+                        },
+                Children = model.Children
+                        .Select(q => new Option
+                        {
+                            Value = q.Id,
+                            Label = q.EquipmentDefinition.Identifier,
+                            Additional = q.EquipmentDefinition.EquipmentType.Name
+                        }).ToList(),
+                SpecificTypeProperties = mapper.Map<List<ViewPropertyViewModel>>
+                            (model.EquipmentDefinition.EquipmentType.Properties),
+            };
+
+            return viewModel;
         }
     }
 }

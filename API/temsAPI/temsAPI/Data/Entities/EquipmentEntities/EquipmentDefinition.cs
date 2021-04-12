@@ -54,7 +54,7 @@ namespace temsAPI.Data.Entities.EquipmentEntities
 
         public virtual ICollection<Equipment> Equipment { get; set; } = new List<Equipment>();
         public virtual ICollection<EquipmentSpecifications> EquipmentSpecifications { get; set; } = new List<EquipmentSpecifications>();
-        public virtual ICollection<EquipmentDefinition> Children { get; set; } = new List<EquipmentDefinition>();
+        public ICollection<EquipmentDefinition> Children { get; set; } = new List<EquipmentDefinition>();
         public virtual ICollection<ReportTemplate> ReportTemplatesMemberOf { get; set; } = new List<ReportTemplate>();
     
         public static async Task<EquipmentDefinition> FromViewModel(IUnitOfWork unitOfWork, AddEquipmentDefinitionViewModel viewModel)

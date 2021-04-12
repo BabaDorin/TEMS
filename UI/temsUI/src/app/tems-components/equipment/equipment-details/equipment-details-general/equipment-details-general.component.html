@@ -14,18 +14,17 @@
             <button *ngIf="equipment.isArchieved" mat-button (click)="archieve()" [disabled]="editing">Dearchieve</button>
             <button *ngIf="!equipment.isArchieved" mat-button (click)="archieve()" [disabled]="editing">Archieve</button>
             <button mat-button (click)="changeState('isDefect')" [disabled]="editing">
-                <p *ngIf="equipment.isDefect == true">Mark as working</p>
-                <p *ngIf="equipment.isDefect == false">Mark as defect</p>
-                <p>Attach an equipment</p>
+                <p *ngIf="equipment.isDefect">Mark as working</p>
+                <p *ngIf="!equipment.isDefect">Mark as defect</p>
             </button>
             <button mat-button (click)="changeState('isUsed')" [disabled]="editing">
-                <p *ngIf="equipment.isUsed == true">Mark as unused</p>
-                <p *ngIf="equipment.isUsed == false">Mark as used</p>
+                <p *ngIf="equipment.isUsed">Mark as unused</p>
+                <p *ngIf="!equipment.isUsed">Mark as used</p>
             </button>
         </ng-container>
         <hr>
         <br>
-        <ng-container *ngIf="editing == false">
+        <ng-container *ngIf="!editing">
             <div class="container">
                 <div class="row">
                     <div class="col-md-6 col-sm-12">
@@ -40,24 +39,26 @@
             </div>
             <br>
             <br>
-            <ng-container *ngIf="equipment.children != undefined && equipment.children.length > 0">
+            <ng-container *ngIf="canAttach">
                 <h2>Equipment's Children</h2>
                 <button *ngIf="canManage" mat-button><mat-icon class="text-primary">add</mat-icon> Attach</button>
-                <div *ngFor="let child of equipment.children; let i = index">
-                    <mat-expansion-panel>
-                        <mat-expansion-panel-header>
-                            <b>{{ child.additional }}: </b> {{ child.label }} 
-                            <button mat-button (click)="detach(child.value, i)">
-                                <mat-icon class="text-danger">exclude</mat-icon> Detach
-                            </button>
-                        </mat-expansion-panel-header>
-    
-                        <ng-container matExpansionPanelContent class="mat-exp-panel-content">
-                            <app-equipment-details [equipmentId]="child.value"></app-equipment-details>
-                        </ng-container>
-                    </mat-expansion-panel>
-                    <br>
-                </div>
+                <ng-container *ngIf="equipment.children != undefined && equipment.children.length > 0">
+                    <div *ngFor="let child of equipment.children; let i = index">
+                        <mat-expansion-panel>
+                            <mat-expansion-panel-header>
+                                <b>{{ child.additional }}: </b> {{ child.label }} 
+                                <button mat-button (click)="detach(child.value, i)">
+                                    <mat-icon class="text-danger">exclude</mat-icon> Detach
+                                </button>
+                            </mat-expansion-panel-header>
+        
+                            <ng-container matExpansionPanelContent class="mat-exp-panel-content">
+                                <app-equipment-details [equipmentId]="child.value"></app-equipment-details>
+                            </ng-container>
+                        </mat-expansion-panel>
+                        <br>
+                    </div>
+                </ng-container>
             </ng-container>
             <ng-container *ngIf="detachedEquipments.length > 0">
                 <h2 class="text-muted">Detached equipments (These will dissapear after a refresh)</h2>
@@ -84,7 +85,7 @@
         <app-add-equipment *ngIf="editing==true"
         [updateEquipmentId]="equipment.id"
         (goBack)="ngOnInit(); editing = false;"
-        [updateEquipmentDefinitionId]="equipment.definition.value">
+        [updateEquipmentDefinitionId]="equipment.definition.id">
             Loading...
         </app-add-equipment>
     

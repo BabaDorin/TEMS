@@ -41,7 +41,9 @@
             <br>
             <ng-container *ngIf="canAttach">
                 <h2>Equipment's Children</h2>
-                <button *ngIf="canManage" mat-button><mat-icon class="text-primary">add</mat-icon> Attach</button>
+                <button *ngIf="canManage" mat-button (click)="attach()">
+                    <mat-icon class="text-primary">add</mat-icon> Attach
+                </button>
                 <ng-container *ngIf="equipment.children != undefined && equipment.children.length > 0">
                     <div *ngFor="let child of equipment.children; let i = index">
                         <mat-expansion-panel>

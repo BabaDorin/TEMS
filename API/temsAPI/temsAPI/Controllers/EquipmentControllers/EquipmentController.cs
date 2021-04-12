@@ -256,6 +256,43 @@ namespace temsAPI.Controllers.EquipmentControllers
             }
         }
 
+        [HttpGet("equipment/getequipmentofdefinitions")]
+        [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
+        public async Task<JsonResult> GetEquipmentOfDefinitions(string[] definitionIds, bool onlyDeatachedEquipment = false)
+        {
+            try
+            {
+                if (definitionIds == null)
+                    return ReturnResponse("Please, provide some definitions", ResponseStatus.Fail);
+
+                Expression<Func<Equipment, bool>> expression = q =>
+                    definitionIds.Contains(q.EquipmentDefinitionID) && !q.IsArchieved;
+
+                if (onlyDeatachedEquipment)
+                    expression = ExpressionCombiner.CombineTwo(expression, q => q.ParentID == null);
+
+                var viewModel = (await _unitOfWork.Equipments
+                    .Find<Option>(
+                        include: q => q.Include(q => q.EquipmentDefinition),
+                        where: expression,
+                        select: q => new Option
+                        {
+                            Value = q.Id,
+                            Label = q.Identifier,
+                            Additional = $"{q.Description} {q.EquipmentDefinition.Identifier}"
+                        }
+                    )).ToList();
+
+                return Json(viewModel);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured while fetching equipment of definitions", ResponseStatus.Fail);
+                throw;
+            }
+        }
+
         [HttpGet("equipment/getequipmenttoupdate/{equipmentId}")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> GetEquipmentToUpdate(string equipmentId)
@@ -322,6 +359,37 @@ namespace temsAPI.Controllers.EquipmentControllers
             {
                 Debug.WriteLine(ex);
                 return ReturnResponse("An error occured while detaching the child equipment.", ResponseStatus.Fail);
+            }
+        }
+
+        [HttpPost]
+        [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
+        public async Task<JsonResult> Attach([FromBody] AttachEquipmentViewModel viewModel)
+        {
+            try
+            {
+                string validationResult = await viewModel.Validate(_unitOfWork);
+                if (validationResult != null)
+                    return ReturnResponse(validationResult, ResponseStatus.Fail);
+
+                var parent = (await _unitOfWork.Equipments
+                    .Find<Equipment>(q => q.Id == viewModel.ParentId))
+                    .FirstOrDefault();
+
+                foreach(var childId in viewModel.ChildrenIds)
+                {
+                    parent.Children.Add((await _unitOfWork.Equipments
+                        .Find<Equipment>(q => q.Id == childId))
+                        .FirstOrDefault());
+                }
+
+                await _unitOfWork.Save();
+                return ReturnResponse("Success", ResponseStatus.Success);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured while attaching child equipment", ResponseStatus.Fail);
             }
         }
 

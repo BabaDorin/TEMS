@@ -22,7 +22,7 @@
     </mat-chip-list>
     <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
       <mat-option *ngFor="let option of filteredOptions" [value]="option">
-        {{ option.label }}
+        {{ option.label }} <span class="text-muted"> {{ option.additional }}</span>
       </mat-option>
     </mat-autocomplete>
   </mat-form-field>

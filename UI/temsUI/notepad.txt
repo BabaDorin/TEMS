@@ -55,6 +55,7 @@ TODO
     in order to offer the possibility of getting some route snapshots that can be sent to other people and the filters
     be set automatically when they'll open the url. 
 
+--> Implement server-side filtering for AttachEquipmentComponent.
 
 
 -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*

@@ -1,3 +1,5 @@
+import { AttachEquipmentComponent } from './../../attach-equipment/attach-equipment.component';
+import { DialogService } from './../../../../services/dialog-service/dialog.service';
 import { IOption } from './../../../../models/option.model';
 import { CAN_MANAGE_ENTITIES } from './../../../../models/claims';
 import { TokenService } from './../../../../services/token-service/token.service';
@@ -37,14 +39,13 @@ export class EquipmentDetailsGeneralComponent extends TEMSComponent implements O
     private equipmentService: EquipmentService,
     private tokenService: TokenService,
     private route: Router,
+    private dialogService: DialogService,
     private snackService: SnackService) {
     super();
   }
 
   ngOnInit(): void {
     this.canManage = this.tokenService.hasClaim(CAN_MANAGE_ENTITIES);
-    // if(this.equipmentId == undefined)
-      // this.equipmentId = this.route.snapshot.paramMap.get('id');
 
     this.subscriptions.push(this.equipmentService.getEquipmentByID(this.equipmentId)
       .subscribe(response => {
@@ -116,7 +117,13 @@ export class EquipmentDetailsGeneralComponent extends TEMSComponent implements O
   }
 
   attach(){
-    
+    this.dialogService.openDialog(
+      AttachEquipmentComponent,
+      [{label: "equipment", value: this.equipment}],
+      () => {
+        this.ngOnInit();
+      }
+    )
   }
 
   detach(childId: string, index: number){

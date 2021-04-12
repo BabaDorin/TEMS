@@ -14,6 +14,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ViewDefinitionSimplified } from 'src/app/models/equipment/view-definition-simplified.model';
 import { Property } from 'src/app/models/equipment/view-property.model';
+import { AttachEquipment } from 'src/app/models/equipment/attach-equipment.model';
 
 @Injectable({
   providedIn: 'root'
@@ -296,6 +297,28 @@ export class EquipmentService extends TEMSService {
     return this.http.get(
       API_EQ_URL + '/detach/' + childId,
       this.httpOptions
+    );
+  }
+  
+  attach(model: AttachEquipment): Observable<any>{
+    return this.http.post(
+      API_EQ_URL + '/attach',
+      JSON.stringify(model),
+      this.httpOptions
+    );
+  }
+
+  getEquipmentOfDefinitions(definitionIds: string[]): Observable<IOption[]>{
+    let params = new HttpParams();
+    definitionIds.forEach(id => {
+      params = params.append('definitionIds', id);
+    })
+
+    params = params.append('onlyDeatachedEquipment', "true");
+
+    return this.http.get<IOption[]>(
+      API_EQ_URL + '/getEquipmentOfDefinitions',
+      {params: params}
     );
   }
 }

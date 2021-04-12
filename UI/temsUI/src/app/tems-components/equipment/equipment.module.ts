@@ -22,6 +22,7 @@ import { EntitySharedModule } from 'src/app/modules/entity-shared/entity-shared.
 import { AnalyticsModule } from 'src/app/modules/analytics/analytics.module';
 import { AddPropertyComponent } from './add-property/add-property.component';
 import { ViewPropertyComponent } from './view-property/view-property.component';
+import { AttachEquipmentComponent } from './attach-equipment/attach-equipment.component';
 
 @NgModule({
   declarations: [
@@ -39,7 +40,8 @@ import { ViewPropertyComponent } from './view-property/view-property.component';
     ViewDefinitionComponent,
     ViewEquipmentAllocationsComponent,
     EquipmentDetailsComponent,
-    EquipmentDetailsGeneralComponent
+    EquipmentDetailsGeneralComponent,
+    AttachEquipmentComponent
   ],
   imports: [
     CommonModule,

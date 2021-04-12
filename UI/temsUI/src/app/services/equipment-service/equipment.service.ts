@@ -292,9 +292,9 @@ export class EquipmentService extends TEMSService {
     return new AddEquipment(definition);
   }
   
-  detach(equipmentId: string): Observable<any> {
+  detach(childId: string): Observable<any> {
     return this.http.get(
-      API_EQ_URL + '/detach/' + equipmentId,
+      API_EQ_URL + '/detach/' + childId,
       this.httpOptions
     );
   }

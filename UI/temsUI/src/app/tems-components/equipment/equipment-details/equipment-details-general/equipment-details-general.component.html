@@ -16,6 +16,7 @@
             <button mat-button (click)="changeState('isDefect')" [disabled]="editing">
                 <p *ngIf="equipment.isDefect == true">Mark as working</p>
                 <p *ngIf="equipment.isDefect == false">Mark as defect</p>
+                <p>Attach an equipment</p>
             </button>
             <button mat-button (click)="changeState('isUsed')" [disabled]="editing">
                 <p *ngIf="equipment.isUsed == true">Mark as unused</p>

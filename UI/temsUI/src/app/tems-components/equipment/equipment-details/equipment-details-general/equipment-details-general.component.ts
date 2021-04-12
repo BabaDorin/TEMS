@@ -24,6 +24,9 @@ export class EquipmentDetailsGeneralComponent extends TEMSComponent implements O
 
   canManage:boolean = false;
   equipment: ViewEquipment;
+  // get canAttach(){
+  //   return this.equipment.type.children.length > 0;
+  // }
   generalProperties: Property[];
   specificProperties: Property[];
   detachedEquipments = [];

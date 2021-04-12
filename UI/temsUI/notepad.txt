@@ -1,8 +1,12 @@
 DOCS
 https://blog.aspose.com/2020/04/22/create-zip-archives-add-files-or-folders-to-zip-in-csharp-asp.net/
 
+Currently working on:
+    Attach Detach feature.
+
 TODO
 ------------ As soon as possible >>>>
+--> IMPORTANT: test update definitions!
 
 --> If an equipment is child for another, the first one will be 'included' in the second one, which means that
     it won't be possible to allocate only children equipment. In order to do that, it should be first deatached from

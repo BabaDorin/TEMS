@@ -105,7 +105,13 @@ namespace temsAPI.Data.Entities.EquipmentEntities
                 }
 
                 // Case 2: Child definition has been defined now, it's new for the system
-                model.Children.Add(await FromViewModel(unitOfWork, child));
+                var newChildDefinition = await FromViewModel(unitOfWork, child);
+                await unitOfWork.EquipmentDefinitions.Create(newChildDefinition);
+                await unitOfWork.Save();
+                newChildDefinition = (await unitOfWork.EquipmentDefinitions
+                    .Find<EquipmentDefinition>(q => q.Id == newChildDefinition.Id))
+                    .FirstOrDefault();
+                model.Children.Add(newChildDefinition);
             }
         }
     }

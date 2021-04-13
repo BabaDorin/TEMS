@@ -1,12 +1,15 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Diagnostics;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -422,6 +425,33 @@ namespace temsAPI.Controllers.EquipmentControllers
             }
         }
 
+        [HttpPost]
+        [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
+        public async Task<JsonResult> BulkUpload()
+        {
+            try
+            {
+                var files = Request.Form.Files;
+
+                foreach(var file in files)
+                {
+                    string fileContents;
+                    using (var stream = file.OpenReadStream())
+                    using (var reader = new StreamReader(stream))
+                    {
+                        fileContents = await reader.ReadToEndAsync();
+                        Debug.WriteLine(fileContents);
+                    }
+                }
+
+                return ReturnResponse("Success", ResponseStatus.Success);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured while uploading files", ResponseStatus.Fail);
+            }
+        }
         // -------------------------< Extract then to a separate file >--------------------------------
         private async Task<ViewEquipmentSimplifiedViewModel> EquipmentToEquipmentSimplifiedMapping(Equipment eq)
         {

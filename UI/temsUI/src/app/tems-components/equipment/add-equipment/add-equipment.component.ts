@@ -13,6 +13,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { AddEquipment } from 'src/app/models/equipment/add-equipment.model';
 import { DefinitionService } from 'src/app/services/definition-service/definition.service';
+import { BulkUploadComponent } from '../bulk-upload/bulk-upload.component';
 
 @Component({
   selector: 'app-add-equipment',
@@ -270,5 +271,9 @@ export class AddEquipmentComponent extends TEMSComponent implements OnInit {
 
   back(){
     this.goBack.emit();
+  }
+
+  bulkUpload(){
+    this.dialogService.openDialog(BulkUploadComponent);
   }
 }

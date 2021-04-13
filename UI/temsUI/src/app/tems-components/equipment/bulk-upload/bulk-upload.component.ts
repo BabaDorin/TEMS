@@ -1,0 +1,62 @@
+import { TEMSComponent } from './../../../tems/tems.component';
+import { SnackService } from './../../../services/snack/snack.service';
+import { EquipmentService } from 'src/app/services/equipment-service/equipment.service';
+import { Component, OnInit, Output } from '@angular/core';
+
+@Component({
+  selector: 'app-bulk-upload',
+  templateUrl: './bulk-upload.component.html',
+  styleUrls: ['./bulk-upload.component.scss']
+})
+export class BulkUploadComponent extends TEMSComponent implements OnInit {
+
+  selectedFiles;
+  feedback='';
+  dialogRef;
+  logs;
+
+  constructor(
+    private equipmentService: EquipmentService,
+    private snackService: SnackService
+  ) {
+    super();
+  }
+
+  ngOnInit(): void {
+  }
+
+  onFilesSelected($event){
+    console.log($event);
+    this.selectedFiles = $event.target.files;
+    console.log('selected filed:');
+    console.log(this.selectedFiles);
+  }
+
+  uploadFiles(){
+    if(this.selectedFiles == undefined || this.selectedFiles.length == 0){
+      this.snackService.snack({message: "Select some files first", status: 0});
+      return;
+    }
+
+    let formData = new FormData();
+    for(let i = 0; i < this.selectedFiles.length; i++){
+      formData.append(this.selectedFiles.item(i).name, this.selectedFiles.item(i));
+    }
+    
+    this.feedback = "Processing... Please, do not close this modal until finished.";
+    this.subscriptions.push(
+      this.equipmentService.bulkUpload(formData)
+      .subscribe(result => {
+        console.log(result);
+
+        if(this.snackService.snackIfError(result))
+          return;
+
+        if(Array.isArray(result)){
+          this.dialogRef.close();
+        }
+      })
+    )
+    
+  }
+}

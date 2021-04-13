@@ -1,7 +1,16 @@
 <div class="card">
   <div class="card-body">
-    <h4 class="card-title">{{ header }}</h4>
-    
+    <div class="card-title">
+      <h4>{{ header }}</h4>
+      <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Add Equipment Menu" class="float-right">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item (click)="bulkUpload()">
+          <span>Bulk upload</span>
+        </button>
+      </mat-menu>
+    </div>
     <ng-container *ngIf="updateEquipmentId == undefined">
       <p class="card-description">Please, provide all of the necessary data in order to register the equipment.</p>
       <hr>

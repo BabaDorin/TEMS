@@ -23,6 +23,7 @@ import { AnalyticsModule } from 'src/app/modules/analytics/analytics.module';
 import { AddPropertyComponent } from './add-property/add-property.component';
 import { ViewPropertyComponent } from './view-property/view-property.component';
 import { AttachEquipmentComponent } from './attach-equipment/attach-equipment.component';
+import { BulkUploadComponent } from './bulk-upload/bulk-upload.component';
 
 @NgModule({
   declarations: [
@@ -41,7 +42,8 @@ import { AttachEquipmentComponent } from './attach-equipment/attach-equipment.co
     ViewEquipmentAllocationsComponent,
     EquipmentDetailsComponent,
     EquipmentDetailsGeneralComponent,
-    AttachEquipmentComponent
+    AttachEquipmentComponent,
+    BulkUploadComponent
   ],
   imports: [
     CommonModule,

@@ -5,7 +5,7 @@ import { AddEquipment } from 'src/app/models/equipment/add-equipment.model';
 import { AddType } from './../../models/equipment/add-type.model';
 import { Definition, AddDefinition } from './../../models/equipment/add-definition.model';
 import { API_PROP_URL, API_EQTYPE_URL, API_EQDEF_URL, API_EQ_URL, IEntityCollection } from './../../models/backend.config';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { IOption } from './../../models/option.model';
 import { CheckboxItem } from '../../models/checkboxItem.model';
 import { ViewEquipmentSimplified } from './../../models/equipment/view-equipment-simplified.model';
@@ -319,6 +319,23 @@ export class EquipmentService extends TEMSService {
     return this.http.get<IOption[]>(
       API_EQ_URL + '/getEquipmentOfDefinitions',
       {params: params}
+    );
+  }
+
+  getUploadOptions = (): HttpHeaders => {
+    const headers = new HttpHeaders();
+    headers.set('Accept', 'application/json');
+    headers.delete('Content-Type');
+    return headers;
+  }
+
+  bulkUpload(formData): Observable<any>{
+    
+
+    return this.http.post(
+      API_EQ_URL + '/bulkupload',
+      formData,
+      { headers: this.getUploadOptions() }
     );
   }
 }

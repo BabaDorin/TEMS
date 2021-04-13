@@ -10,8 +10,8 @@ export interface IAddDefinition{
     description?: string;
     price: number;
     currency: string;
-    properties?: IOption[],
-    children?: AddDefinition[];
+    properties: IOption[],
+    children: AddDefinition[];
 }
 
 export class AddDefinition implements IAddDefinition{
@@ -21,8 +21,8 @@ export class AddDefinition implements IAddDefinition{
     description?: string;
     price: number;
     currency: string;
-    properties? = [] as IOption[];
-    children? = [] as AddDefinition[];
+    properties = [] as IOption[];
+    children = [] as AddDefinition[];
 }
 
 export interface IDefinition{

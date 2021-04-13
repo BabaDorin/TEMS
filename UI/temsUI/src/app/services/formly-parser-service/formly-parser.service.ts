@@ -492,7 +492,7 @@ export class FormlyParserService extends TEMSComponent {
             ]
           }
         }
-      )
+      );
 
       let destination = fields[fields.length - 1].fieldArray.fieldGroup;
 
@@ -525,7 +525,7 @@ export class FormlyParserService extends TEMSComponent {
     childFieldGroup.fieldGroup[childFieldGroup.fieldGroup.length-1].fieldGroup[1].defaultValue = "lei";
   }
 
-  setChildDefinition(childFieldGroup: FormlyFieldConfig, definitionId: string){
+  setChildDefinition(childFieldGroup: FormlyFieldConfig, definitionId){
     let priceField = childFieldGroup.fieldGroup[childFieldGroup.fieldGroup.length-1].fieldGroup[0]; 
     let currencyField = childFieldGroup.fieldGroup[childFieldGroup.fieldGroup.length-1].fieldGroup[1];
 
@@ -646,6 +646,7 @@ export class FormlyParserService extends TEMSComponent {
   }
 
   generatePropertyFieldGroup(addProperty: Property): FormlyFieldConfig {
+    // When the formly form is used for updating,
     let propertyFieldGroup: FormlyFieldConfig;
     switch (addProperty.dataType.toLowerCase()) {
       case 'text':

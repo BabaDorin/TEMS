@@ -69,7 +69,9 @@ namespace temsAPI.Controllers.EquipmentControllers
                 EquipmentDefinition definition = (await _unitOfWork.EquipmentDefinitions
                     .Find<EquipmentDefinition>(
                         where: q => q.Id == viewModel.Id,
-                        include: q => q.Include(q => q.EquipmentSpecifications)
+                        include: q => q
+                        .Include(q => q.EquipmentSpecifications)
+                        .Include(q => q.Children)
                     )).FirstOrDefault();
 
                 definition.Identifier = viewModel.Identifier;
@@ -80,6 +82,8 @@ namespace temsAPI.Controllers.EquipmentControllers
                 definition.Description = viewModel.Description;
 
                 await AssignSpecifications(definition, viewModel);
+                definition.Children.Clear();
+                await EquipmentDefinition.SetDefinitionChildren(_unitOfWork, definition, viewModel.Children);
                 await _unitOfWork.Save();
 
                 return ReturnResponse("Success!", ResponseStatus.Success);
@@ -297,6 +301,7 @@ namespace temsAPI.Controllers.EquipmentControllers
                         where: q => q.Id == definitionId,
                         include: q => q
                         .Include(q => q.Children.Where(q => !q.IsArchieved))
+                        .ThenInclude(q => q.EquipmentType)
                         .Include(q => q.EquipmentSpecifications)
                         .ThenInclude(q => q.Property).ThenInclude(q => q.DataType)
                         .Include(q => q.Parent)

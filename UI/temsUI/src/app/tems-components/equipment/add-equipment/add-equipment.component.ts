@@ -124,6 +124,7 @@ export class AddEquipmentComponent extends TEMSComponent implements OnInit {
         if(this.snackService.snackIfError(result))
           return;
         
+        console.log('full definition:');
         console.log(result);
         this.selectedFullDefinition = result; 
       })

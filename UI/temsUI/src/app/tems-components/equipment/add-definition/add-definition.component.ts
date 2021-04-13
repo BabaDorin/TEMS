@@ -129,13 +129,18 @@ export class AddDefinitionComponent extends TEMSComponent implements OnInit {
           });
 
           resultDefinition.children.forEach(child => {
+
+            if(updateDefinition[child.typeId] == undefined)
+              updateDefinition[child.typeId] = [];
+
             updateDefinition[child.typeId].push({
               typeId: child.typeId,
               identifier: child.identifier,
+              identifierSelect: child.id,
               description: child.description,
               price: child.price,
               currency: child.currency,
-            })
+            });
 
             child.properties.forEach(property => {
               updateDefinition[child.typeId][updateDefinition[child.typeId].length][property.label] = property.value;
@@ -192,7 +197,7 @@ export class AddDefinitionComponent extends TEMSComponent implements OnInit {
         }));
   }
 
-  commonDefinitionProperties = ["Identifier", "IdentifierSelect", "Description", "Price", "Currency"];
+  commonDefinitionProperties = ["Identifier", "IdentifierSelect", "Description", "Price", "Currency", "TypeId"];
   generateAddDefinitionModel(model, typeId): AddDefinition{
     let addDefinition = new AddDefinition();
 

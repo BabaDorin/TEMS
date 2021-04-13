@@ -57,6 +57,9 @@ TODO
 
 --> Implement server-side filtering for AttachEquipmentComponent.
 
+--> When updating a definition, if it has some children then for all of the children the definition will be selected
+    from the dropdown and all of the fields will be disabled. Basically you have to find a way to call the change 
+    function when the value of identifierSelect changes.
 
 -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*

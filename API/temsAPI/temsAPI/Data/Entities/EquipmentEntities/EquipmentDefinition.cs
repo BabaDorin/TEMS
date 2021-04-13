@@ -81,10 +81,17 @@ namespace temsAPI.Data.Entities.EquipmentEntities
                 });
             }
 
-            foreach(var child in viewModel.Children)
+            await SetDefinitionChildren(unitOfWork, equipmentDefinition, viewModel.Children);
+
+            return equipmentDefinition;
+        }
+
+        public static async Task SetDefinitionChildren(IUnitOfWork unitOfWork, EquipmentDefinition model, ICollection<AddEquipmentDefinitionViewModel> children)
+        {
+            foreach (var child in children)
             {
                 // Case 1: Child definition already existed
-                if(child.Id != null)
+                if (child.Id != null)
                 {
                     var childDefinition = (await unitOfWork.EquipmentDefinitions
                         .Find<EquipmentDefinition>(q => q.Id == child.Id))
@@ -93,15 +100,13 @@ namespace temsAPI.Data.Entities.EquipmentEntities
                     if (childDefinition == null)
                         throw new Exception("Invalid child definition ID provided");
 
-                    equipmentDefinition.Children.Add(childDefinition);
+                    model.Children.Add(childDefinition);
                     continue;
                 }
 
                 // Case 2: Child definition has been defined now, it's new for the system
-                equipmentDefinition.Children.Add(await FromViewModel(unitOfWork, child));
+                model.Children.Add(await FromViewModel(unitOfWork, child));
             }
-
-            return equipmentDefinition;
         }
     }
 }

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Diagnostics;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
+using SIC_Parser;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -432,19 +433,41 @@ namespace temsAPI.Controllers.EquipmentControllers
             try
             {
                 var files = Request.Form.Files;
-
+                var bulkUploadResult = new List<SICFileUploadResultViewModel>();
+                var sicParser = new SICParser();
+                Stopwatch sw = new Stopwatch();
                 foreach(var file in files)
                 {
-                    string fileContents;
+                    // trebu de testat
+                    if (Path.GetExtension(file.FileName) != ".json")
+                    {
+                        bulkUploadResult.Add(new SICFileUploadResultViewModel
+                        {
+                            FileName = file.FileName,
+                            Message = "Keep it for yourself ;)",
+                            Status = ResponseStatus.Fail
+                        });
+                        continue;
+                    }
+                       
                     using (var stream = file.OpenReadStream())
                     using (var reader = new StreamReader(stream))
                     {
-                        fileContents = await reader.ReadToEndAsync();
-                        Debug.WriteLine(fileContents);
+                        var fileContent = await reader.ReadToEndAsync();
+                        sw.Start();
+                        var parseResult = sicParser.ParseSICStream(fileContent);
+                        sw.Stop();
+                        bulkUploadResult.Add(new SICFileUploadResultViewModel
+                        {
+                            FileName = file.FileName,
+                            Status = (parseResult == null) ? ResponseStatus.Success : ResponseStatus.Fail,
+                            EllapsedMiliseconds = (int)sw.ElapsedMilliseconds,
+                            Message = (parseResult == null) ? "Succes!" : parseResult
+                        });
                     }
                 }
 
-                return ReturnResponse("Success", ResponseStatus.Success);
+                return Json(bulkUploadResult);
             }
             catch (Exception ex)
             {

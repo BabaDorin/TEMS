@@ -5,6 +5,8 @@ VisualStudioVersion = 16.0.30804.86
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "temsAPI", "temsAPI\temsAPI.csproj", "{DC143E8E-60F4-45D7-A912-058086BF6FA9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SIC-Parser", "SIC-Parser\SIC-Parser.csproj", "{F38602E6-D655-40C5-B25A-B22C58E4109C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{DC143E8E-60F4-45D7-A912-058086BF6FA9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DC143E8E-60F4-45D7-A912-058086BF6FA9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DC143E8E-60F4-45D7-A912-058086BF6FA9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F38602E6-D655-40C5-B25A-B22C58E4109C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F38602E6-D655-40C5-B25A-B22C58E4109C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F38602E6-D655-40C5-B25A-B22C58E4109C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F38602E6-D655-40C5-B25A-B22C58E4109C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

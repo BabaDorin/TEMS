@@ -12,6 +12,8 @@ namespace SIC_Parser
             try
             {
                 Computer test = JsonConvert.DeserializeObject<Computer>(stream);
+
+
                 return null;
             }
             catch (Exception ex)

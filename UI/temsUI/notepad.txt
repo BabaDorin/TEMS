@@ -6,6 +6,9 @@ Currently working on:
 
 TODO
 ------------ As soon as possible >>>>
+--> Treat indexes properrly when using pagination on properties and types
+--> Fix spelling mistakes SIC Integration
+
 --> IMPORTANT: test update definitions!
 
 --> If an equipment is child for another, the first one will be 'included' in the second one, which means that

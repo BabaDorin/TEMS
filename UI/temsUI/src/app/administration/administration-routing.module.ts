@@ -1,3 +1,4 @@
+import { SystemConfigComponent } from './../tems-components/admin/system-config/system-config.component';
 import { RoleManagementComponent } from './../tems-components/admin/role-management/role-management.component';
 import { EquipmentManagementComponent } from './../tems-components/admin/equipment-management/equipment-management.component';
 import { NgModule } from '@angular/core';
@@ -10,6 +11,7 @@ const routes: Routes = [
   { path: 'equipment', component: EquipmentManagementComponent },
   { path: 'users', component: UserManagementComponent },
   { path: 'roles', component: RoleManagementComponent },
+  { path: 'system-configuration', component: SystemConfigComponent },
 ];
 
 @NgModule({

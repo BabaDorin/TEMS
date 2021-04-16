@@ -240,7 +240,7 @@ namespace temsAPI.Services
                     Id = Guid.NewGuid().ToString(),
                     DataType = textDT,
                     DisplayName = "Model",
-                    Name = "Speed",
+                    Name = "Model",
                 },
                 new Property
                 {
@@ -307,7 +307,11 @@ namespace temsAPI.Services
                 }
             };
 
-            SICproperties.ForEach(async property => await RegisterProperty(property));
+            foreach(var prop in SICproperties)
+            {
+                await RegisterProperty(prop);
+            }
+            Debug.WriteLine("SIC Properties - Checked");
             await _unitOfWork.Save();
             Debug.WriteLine("SIC Properties - Checked");
 
@@ -381,7 +385,11 @@ namespace temsAPI.Services
                     Properties = await GetProperties("Caption", "Model", "SerialNumber", "Size", "MediaType"),
                 },
             };
-            SICequipmentTypes.ForEach(async type => await RegisterType(type));
+            foreach(var type in SICequipmentTypes)
+            {
+                await RegisterType(type);
+            }
+            await _unitOfWork.Save();
         }
 
         private async Task<List<Property>> GetProperties(params string[] propertyNames)

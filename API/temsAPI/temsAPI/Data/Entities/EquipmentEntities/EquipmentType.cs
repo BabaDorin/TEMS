@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -31,6 +32,10 @@ namespace temsAPI.Data.Entities.EquipmentEntities
             }
         }
 
+#nullable enable
+        [DefaultValue(true)]
+        public bool? EditableTypeInfo { get; set; } = true;
+#nullable disable
 
         public ICollection<Property> Properties { get; set; } = new List<Property>();
         public ICollection<EquipmentDefinition> EquipmentDefinitions { get; set; } = new List<EquipmentDefinition>();

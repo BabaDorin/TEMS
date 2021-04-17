@@ -10,6 +10,7 @@ TODO
 --> Fix spelling mistakes SIC Integration
 
 --> Add oncascadedeleete
+--> Add IsEditable to viewmodel and restrict user from editin non-editable properties and types (inputs are disabled)
 
 --> Forbid circular refference for types and definitions
 

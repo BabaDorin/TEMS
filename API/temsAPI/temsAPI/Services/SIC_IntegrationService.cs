@@ -86,6 +86,7 @@ namespace temsAPI.Services
                     DataType = textDT,
                     DisplayName = "TeamViewer ID",
                     Name = "TeamViewerID",
+                    EditablePropertyInfo = false,
                 },
                 new Property
                 {
@@ -93,6 +94,7 @@ namespace temsAPI.Services
                     DataType = textDT,
                     DisplayName = "TeamViewer Access Password",
                     Name = "TeamViewerPassword",
+                    EditablePropertyInfo = false,
                 },
                 new Property
                 {
@@ -100,6 +102,7 @@ namespace temsAPI.Services
                     DataType = textDT,
                     DisplayName = "Manufacturer",
                     Name = "Manufacturer",
+                    EditablePropertyInfo = false,
                 },
                 new Property
                 {
@@ -107,6 +110,7 @@ namespace temsAPI.Services
                     DataType = textDT,
                     DisplayName = "Name",
                     Name = "Name",
+                    EditablePropertyInfo = false,
                 },
                 new Property
                 {
@@ -114,6 +118,7 @@ namespace temsAPI.Services
                     DataType = textDT,
                     DisplayName = "Architecture",
                     Name = "Architecture",
+                    EditablePropertyInfo = false,
                 },
                 new Property
                 {
@@ -121,6 +126,7 @@ namespace temsAPI.Services
                     DataType = numberDT,
                     DisplayName = "Number of cores",
                     Name = "NumberOfCores",
+                    EditablePropertyInfo = false,
                 },
                 new Property
                 {
@@ -128,6 +134,7 @@ namespace temsAPI.Services
                     DataType = textDT,
                     DisplayName = "Processor ID",
                     Name = "ProcessorId",
+                    EditablePropertyInfo = false,
                 },
                 new Property
                 {
@@ -135,6 +142,7 @@ namespace temsAPI.Services
                     DataType = numberDT,
                     DisplayName = "Level 2 Cache Size",
                     Name = "L2CacheSize",
+                    EditablePropertyInfo = false,
                 },
                 new Property
                 {
@@ -142,6 +150,7 @@ namespace temsAPI.Services
                     DataType = numberDT,
                     DisplayName = "Level 3 Cache Size",
                     Name = "L3CacheSize",
+                    EditablePropertyInfo = false,
                 },
                 new Property
                 {
@@ -149,6 +158,7 @@ namespace temsAPI.Services
                     DataType = numberDT,
                     DisplayName = "Thread Count",
                     Name = "ThreadCount",
+                    EditablePropertyInfo = false,
                 },
                 new Property
                 {
@@ -156,6 +166,7 @@ namespace temsAPI.Services
                     DataType = numberDT,
                     DisplayName = "Maximum Clock Speed",
                     Name = "MaxClockSpeed",
+                    EditablePropertyInfo = false,
                 },
                 new Property
                 {
@@ -163,6 +174,7 @@ namespace temsAPI.Services
                     DataType = textDT,
                     DisplayName = "Socket Designation",
                     Name = "SocketDesignation",
+                    EditablePropertyInfo = false,
                 },
                 new Property
                 {
@@ -170,6 +182,7 @@ namespace temsAPI.Services
                     DataType = numberDT,
                     DisplayName = "Adapter RAM",
                     Name = "AdapterRAM",
+                    EditablePropertyInfo = false,
                 },
                 new Property
                 {
@@ -177,6 +190,7 @@ namespace temsAPI.Services
                     DataType = textDT,
                     DisplayName = "Video Mode Description",
                     Name = "VideoModeDescription",
+                    EditablePropertyInfo = false,
                 },
                 new Property
                 {
@@ -184,6 +198,7 @@ namespace temsAPI.Services
                     DataType = textDT,
                     DisplayName = "Video Processor",
                     Name = "VideoProcessor",
+                    EditablePropertyInfo = false,
                 },
                 new Property
                 {
@@ -191,6 +206,7 @@ namespace temsAPI.Services
                     DataType = textDT,
                     DisplayName = "Video Mode Description",
                     Name = "VideoModeDescription",
+                    EditablePropertyInfo = false,
                 },
                 new Property
                 {
@@ -198,6 +214,7 @@ namespace temsAPI.Services
                     DataType = textDT,
                     DisplayName = "Video Memory Type",
                     Name = "VideoMemoryType",
+                    EditablePropertyInfo = false,
                 },
                 new Property
                 {
@@ -205,6 +222,7 @@ namespace temsAPI.Services
                     DataType = textDT,
                     DisplayName = "Monitor Manufacturer",
                     Name = "MonitorManufacturer",
+                    EditablePropertyInfo = false,
                 },
                 new Property
                 {
@@ -212,6 +230,7 @@ namespace temsAPI.Services
                     DataType = textDT,
                     DisplayName = "Screen Height",
                     Name = "ScreenHeight",
+                    EditablePropertyInfo = false,
                 },
                 new Property
                 {
@@ -219,6 +238,7 @@ namespace temsAPI.Services
                     DataType = textDT,
                     DisplayName = "Screen Width",
                     Name = "ScreenWidth",
+                    EditablePropertyInfo = false,
                 },
                 new Property
                 {
@@ -226,6 +246,7 @@ namespace temsAPI.Services
                     DataType = textDT,
                     DisplayName = "Refresh Rate (Hz)",
                     Name = "RefreshRateInHz",
+                    EditablePropertyInfo = false,
                 },
                 new Property
                 {
@@ -233,6 +254,7 @@ namespace temsAPI.Services
                     DataType = textDT,
                     DisplayName = "Product",
                     Name = "Product",
+                    EditablePropertyInfo = false,
                 },
                 new Property
                 {
@@ -240,6 +262,7 @@ namespace temsAPI.Services
                     DataType = textDT,
                     DisplayName = "Description",
                     Name = "Description",
+                    EditablePropertyInfo = false,
                 },
                 new Property
                 {
@@ -247,6 +270,7 @@ namespace temsAPI.Services
                     DataType = textDT,
                     DisplayName = "Network interface type",
                     Name = "NetworkInterfaceType",
+                    EditablePropertyInfo = false,
                 },
                 new Property
                 {
@@ -254,6 +278,7 @@ namespace temsAPI.Services
                     DataType = numberDT,
                     DisplayName = "Speed",
                     Name = "Speed",
+                    EditablePropertyInfo = false,
                 },
                 new Property
                 {
@@ -261,6 +286,7 @@ namespace temsAPI.Services
                     DataType = textDT,
                     DisplayName = "Model",
                     Name = "Model",
+                    EditablePropertyInfo = false,
                 },
                 new Property
                 {
@@ -268,6 +294,7 @@ namespace temsAPI.Services
                     DataType = textDT,
                     DisplayName = "Maximum Output Wattage",
                     Name = "MaxOutputWattage",
+                    EditablePropertyInfo = false,
                 },
                 new Property
                 {
@@ -275,6 +302,7 @@ namespace temsAPI.Services
                     DataType = textDT,
                     DisplayName = "Capacity",
                     Name = "Capacity",
+                    EditablePropertyInfo = false,
                 },
                 new Property
                 {
@@ -282,6 +310,7 @@ namespace temsAPI.Services
                     DataType = textDT,
                     DisplayName = "Memory type",
                     Name = "MemoryType",
+                    EditablePropertyInfo = false,
                 },
                 new Property
                 {
@@ -289,6 +318,7 @@ namespace temsAPI.Services
                     DataType = textDT,
                     DisplayName = "Caption",
                     Name = "Caption",
+                    EditablePropertyInfo = false,
                 },
                 new Property
                 {
@@ -296,6 +326,7 @@ namespace temsAPI.Services
                     DataType = textDT,
                     DisplayName = "Interface Type",
                     Name = "InterfaceType",
+                    EditablePropertyInfo = false,
                 },
                 new Property
                 {
@@ -303,6 +334,7 @@ namespace temsAPI.Services
                     DataType = numberDT,
                     DisplayName = "Size",
                     Name = "Size",
+                    EditablePropertyInfo = false,
                 },
                 new Property
                 {
@@ -310,6 +342,7 @@ namespace temsAPI.Services
                     DataType = textDT,
                     DisplayName = "Media Type",
                     Name = "MediaType",
+                    EditablePropertyInfo = false,
                 },
                 new Property
                 {
@@ -317,6 +350,7 @@ namespace temsAPI.Services
                     DataType = numberDT,
                     DisplayName = "Configured Clock Speed",
                     Name = "ConfiguredClockSpeed",
+                    EditablePropertyInfo = false,
                 },
                 new Property
                 {
@@ -324,6 +358,7 @@ namespace temsAPI.Services
                     DataType = textDT,
                     DisplayName = "Partition number",
                     Name = "PartNumber",
+                    EditablePropertyInfo = false,
                 }
             };
 
@@ -352,6 +387,7 @@ namespace temsAPI.Services
                     Id = Guid.NewGuid().ToString(),
                     Parents = new List<EquipmentType>() {computerType},
                     Name = "CPU",
+                    EditableTypeInfo = false,
                     Properties = await GetProperties("Manufacturer", "Name", "Architecture", "NumberOfCores", "ProcessorId", "Description", "L2CacheSize", "L3CacheSize", "ThreadCount", "MaxClockSpeed", "SocketDesignation"),
                 },
                 new EquipmentType
@@ -359,6 +395,7 @@ namespace temsAPI.Services
                     Id = Guid.NewGuid().ToString(),
                     Parents = new List<EquipmentType>() {computerType},
                     Name = "GPU",
+                    EditableTypeInfo = false,
                     Properties = await GetProperties("Name", "AdapterRAM", "VideoModeDescription", "VideoProcessor", "VideoMemoryType"),
                 },
                 new EquipmentType
@@ -366,6 +403,7 @@ namespace temsAPI.Services
                     Id = Guid.NewGuid().ToString(),
                     Parents = new List<EquipmentType>() {computerType},
                     Name = "Monitor",
+                    EditableTypeInfo = false,
                     Properties = await GetProperties("MonitorManufacturer", "Name", "ScreenHeight", "ScreenWidth", "RefreshRateInHz"),
                 },
                 new EquipmentType
@@ -373,6 +411,7 @@ namespace temsAPI.Services
                     Id = Guid.NewGuid().ToString(),
                     Parents = new List<EquipmentType>() {computerType},
                     Name = "Motherboard",
+                    EditableTypeInfo = false,
                     Properties = await GetProperties("Manufacturer", "Product"),
                 },
                 new EquipmentType
@@ -380,6 +419,7 @@ namespace temsAPI.Services
                     Id = Guid.NewGuid().ToString(),
                     Parents = new List<EquipmentType>() {computerType},
                     Name = "Network Interface",
+                    EditableTypeInfo = false,
                     Properties = await GetProperties("Name", "NetworkInterfaceType", "Speed"),
                 },
                 new EquipmentType
@@ -387,6 +427,7 @@ namespace temsAPI.Services
                     Id = Guid.NewGuid().ToString(),
                     Parents = new List<EquipmentType>() {computerType},
                     Name = "PSU",
+                    EditableTypeInfo = false,
                     Properties = await GetProperties("Model", "MaxOutputWattage", "SerialNumber"),
                 },
                 new EquipmentType
@@ -394,6 +435,7 @@ namespace temsAPI.Services
                     Id = Guid.NewGuid().ToString(),
                     Parents = new List<EquipmentType>() {computerType},
                     Name = "RAM",
+                    EditableTypeInfo = false,
                     Properties = await GetProperties("Manufacturer", "Capacity", "MemoryType", "ConfiguredClockSpeed", "PartNumber"),
                 },
                 new EquipmentType
@@ -401,6 +443,7 @@ namespace temsAPI.Services
                     Id = Guid.NewGuid().ToString(),
                     Parents = new List<EquipmentType>() {computerType},
                     Name = "Storage",
+                    EditableTypeInfo = false,
                     Properties = await GetProperties("Caption", "Model", "SerialNumber", "Size", "MediaType"),
                 },
             };

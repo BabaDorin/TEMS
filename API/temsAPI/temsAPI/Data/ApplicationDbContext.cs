@@ -147,6 +147,15 @@ namespace temsAPI.Data
             //    .WithOne(e => e.User)
             //    .OnDelete(DeleteBehavior.SetNull);
 
+
+            // Default values:
+            modelBuilder.Entity<Property>()
+                .Property(e => e.EditablePropertyInfo)
+                .HasDefaultValue(true);
+
+            modelBuilder.Entity<EquipmentType>()
+                .Property(e => e.EditableTypeInfo)
+                .HasDefaultValue(true);
             base.OnModelCreating(modelBuilder);
         }
 

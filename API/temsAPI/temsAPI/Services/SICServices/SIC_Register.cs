@@ -76,6 +76,11 @@ namespace temsAPI.Services.SICServices
             else
                 computer.EquipmentDefinition = await RegisterComputerDefinition(sicComputer);
 
+            await _unitOfWork.Save();
+            await AssignData(computer, sicComputer);
+            await _unitOfWork.Save();
+            
+            // BEFREE: TEST & ADD MORE VALIDATION
             return null;
         }
 
@@ -136,6 +141,65 @@ namespace temsAPI.Services.SICServices
 
             await _unitOfWork.Save();
             return computerDefinition;
+        }
+
+        private async Task AssignData(Equipment computer, Computer sicComputer)
+        {
+            // Motherboards
+            for (int i = 0; i < sicComputer.Motherboards.Count; i++)
+                await AssignChildData(sicComputer.Motherboards[i], "Product", computer, "Motherboard" + i + " " + sicComputer.Motherboards[i].SerialNumber);
+
+            computer.SerialNumber = sicComputer.Motherboards[0].SerialNumber;
+
+            //CPUs
+            for (int i = 0; i < sicComputer.CPUs.Count; i++)
+                await AssignChildData(sicComputer.CPUs[i], "Name", computer, "CPU" + i + " " + computer.SerialNumber);
+
+            // GPUs
+            for (int i = 0; i < sicComputer.GPUs.Count; i++)
+                await AssignChildData(sicComputer.GPUs[i], "Name", computer, "GPU" + i + " " + computer.SerialNumber);
+
+            // PSUs
+            for (int i = 0; i < sicComputer.PSUs.Count; i++)
+            {
+                var psu = sicComputer.PSUs[i];
+                if (string.IsNullOrEmpty(psu.SerialNumber))
+                    continue;
+
+                await AssignChildData(psu, "Model", computer.Parent, psu.SerialNumber);
+            }
+
+            // Network Interfaces
+            for (int i = 0; i < sicComputer.NetworkInterfaces.Count; i++)
+                await AssignChildData(sicComputer.NetworkInterfaces[i], "Description", computer, "NetIntf" + i + " " + sicComputer.NetworkInterfaces[i].PhysicalAddress);
+
+            // Monitors
+            for (int i = 0; i < sicComputer.Monitors.Count; i++)
+                await AssignChildData(sicComputer.Monitors[i], "Name", computer, "Mon" + i + " " + sicComputer.Monitors[i].SerialNumber, sicComputer.Monitors[i].TEMSID);
+
+            // RAMs
+            for (int i = 0; i < sicComputer.RAMs.Count; i++)
+                await AssignChildData(sicComputer.RAMs[i], "PartNumber", computer, "RAM" + i + " " + computer.SerialNumber);
+
+            // RAMs
+            for (int i = 0; i < sicComputer.Storages.Count; i++)
+                await AssignChildData(sicComputer.Storages[i], "Caption", computer, sicComputer.Storages[i].SerialNumber);
+        }
+
+        private async Task AssignChildData<T>(T entity, string identifierPropName, Equipment parent, string serialNumber, string TEMSID = null)
+        {
+            string identifierValue = entity.GetType().GetProperty(identifierPropName).GetValue(entity).ToString();
+
+            var definition = (await _unitOfWork.EquipmentDefinitions
+                    .Find<EquipmentDefinition>(q => q.Identifier == identifierValue))
+                    .FirstOrDefault();
+
+            parent.Children.Add(new Equipment
+            {
+                Id = Guid.NewGuid().ToString(),
+                SerialNumber = serialNumber,
+                EquipmentDefinition = definition,
+            });
         }
 
         private async Task AddChildDefinition<T>(T entity, string identifierPropName, EquipmentDefinition parentDefinition)

@@ -4,7 +4,7 @@ using System.Diagnostics;
 
 namespace SIC_Parser.Models
 {
-    class Computer
+    public class Computer
     {
         // follows singleton pattern
         private static Computer instance;

@@ -9,12 +9,12 @@ using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.EquipmentEntities;
 
-namespace temsAPI.Services
+namespace temsAPI.Services.SICServices
 {
     /// <summary>
     /// Contains the logic for making TEMS compatible with SIC
     /// </summary>
-    public class SIC_IntegrationService
+    internal class SIC_IntegrationService
     {
         public List<string> SICProperties { get; }
         public List<string> SICTypes { get; private set; }
@@ -553,6 +553,5 @@ namespace temsAPI.Services
             await _unitOfWork.EquipmentTypes.Create(equipmentType);
             return true;
         }
-
     }
 }

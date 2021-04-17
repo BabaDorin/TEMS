@@ -20,6 +20,7 @@ using temsAPI.Data.Entities.EquipmentEntities;
 using temsAPI.Data.Entities.OtherEntities;
 using temsAPI.Data.Entities.UserEntities;
 using temsAPI.Helpers;
+using temsAPI.Services.SICServices;
 using temsAPI.System_Files;
 using temsAPI.ViewModels;
 using temsAPI.ViewModels.Equipment;
@@ -433,39 +434,7 @@ namespace temsAPI.Controllers.EquipmentControllers
             try
             {
                 var files = Request.Form.Files;
-                var bulkUploadResult = new List<SICFileUploadResultViewModel>();
-                var sicParser = new SICParser();
-                Stopwatch sw = new Stopwatch();
-                foreach(var file in files)
-                {
-                    // trebu de testat
-                    if (Path.GetExtension(file.FileName) != ".json")
-                    {
-                        bulkUploadResult.Add(new SICFileUploadResultViewModel
-                        {
-                            FileName = file.FileName,
-                            Message = "Keep it for yourself ;)",
-                            Status = ResponseStatus.Fail
-                        });
-                        continue;
-                    }
-                       
-                    using (var stream = file.OpenReadStream())
-                    using (var reader = new StreamReader(stream))
-                    {
-                        var fileContent = await reader.ReadToEndAsync();
-                        sw.Start();
-                        var parseResult = sicParser.ParseSICStream(fileContent);
-                        sw.Stop();
-                        bulkUploadResult.Add(new SICFileUploadResultViewModel
-                        {
-                            FileName = file.FileName,
-                            Status = (parseResult == null) ? ResponseStatus.Success : ResponseStatus.Fail,
-                            EllapsedMiliseconds = (int)sw.ElapsedMilliseconds,
-                            Message = (parseResult == null) ? "Succes!" : parseResult
-                        });
-                    }
-                }
+                var bulkUploadResult = await new SICService(_unitOfWork).ValidateAndRegisterComputers(files);
 
                 return Json(bulkUploadResult);
             }

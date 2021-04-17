@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SIC_Parser.Models
 {
-    class Monitor : Device
+    public class Monitor : Device
     {
         public string TEMSID { get; set; }
         public string SerialNumber { get; set; }

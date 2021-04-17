@@ -24,129 +24,41 @@ namespace temsAPI.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            //modelBuilder.Entity<Key>()
-            //    .Property(b => b.Copies)
-            //    .HasDefaultValueSql("1");
-
-            // OnDeleteCascade PropertyEquipmentTypeAssociations
-            //modelBuilder.Entity<EquipmentType>()
-            //    .HasMany(e => e.PropertyEquipmentTypeAssociations)
-            //    .WithOne(e => e.Type)
-            //    .OnDelete(DeleteBehavior.ClientCascade);
-
-            //modelBuilder.Entity<Property>()
-            //    .HasMany(e => e.PropertyEquipmentTypeAssociations)
-            //    .WithOne(e => e.Property)
-            //    .OnDelete(DeleteBehavior.ClientCascade);
-
-            //OnDeleteCascade EquipmentSpecifications
-            modelBuilder.Entity<EquipmentDefinition>()
-                .HasMany(e => e.EquipmentSpecifications)
-                .WithOne(e => e.EquipmentDefinition)
-                .OnDelete(DeleteBehavior.Cascade);
-
+            // On delete cascade: Property => EquipmentTypeSpecifications:
             modelBuilder.Entity<Property>()
                 .HasMany(e => e.EquipmentSpecifications)
                 .WithOne(e => e.Property)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // Many to Many EquipmentTypes 
-            modelBuilder.Entity<EquipmentType>()
-                .HasMany(e => e.Children)
-                .WithMany(q => q.Parents);
-                
-
-            // OnDeleteCascade EquipmentDefinition
+            // OnDeleteCascade: EquipmentType => EquipmentDefinitions
             modelBuilder.Entity<EquipmentType>()
                 .HasMany(e => e.EquipmentDefinitions)
                 .WithOne(e => e.EquipmentType)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // OnDeleteCascade Logs
-            modelBuilder.Entity<Equipment>()
-                .HasMany(e => e.Logs)
-                .WithOne(e => e.Equipment)
+            // OnDeleteCascade: EquipmentDefinition => Equipment
+            modelBuilder.Entity<EquipmentDefinition>()
+                .HasMany(e => e.Equipment)
+                .WithOne(e => e.EquipmentDefinition)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // OnDeleteCascade RoomEquipmentAllocations
-            modelBuilder.Entity<Equipment>()
-                .HasMany(e => e.EquipmentAllocations)
-                .WithOne(e => e.Equipment)
+            // OnDeleteCascade: EquipmentDefinition => EquipmentSpecifications
+            modelBuilder.Entity<EquipmentDefinition>()
+                .HasMany(e => e.EquipmentSpecifications)
+                .WithOne(e => e.EquipmentDefinition)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<Room>()
-                .HasMany(e => e.EquipmentAllocations)
-                .WithOne(e => e.Room)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            // OnDeleteCascade PersonnelRoomSupervisory
-            modelBuilder.Entity<Personnel>()
-                .HasMany(e => e.PersonnelRoomSupervisories)
-                .WithOne(e => e.Personnel)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            modelBuilder.Entity<Room>()
-                .HasMany(e => e.PersonnelRoomSupervisories)
-                .WithOne(e => e.Room)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            // OnDeleteCascade PersonnelEquipmentAllocation
-            modelBuilder.Entity<Equipment>()
-                .HasMany(e => e.EquipmentAllocations)
-                .WithOne(e => e.Equipment)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            modelBuilder.Entity<Personnel>()
-                .HasMany(e => e.EquipmentAllocations)
-                .WithOne(e => e.Personnel)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            // OnDeleteCascade Equipment
-            modelBuilder.Entity<Equipment>()
-                .HasMany(e => e.Children)
-                .WithOne(e => e.Parent)
-                .OnDelete(DeleteBehavior.ClientCascade);
-
-            // OnDeleteCascade EquipmentDefinition
+            // OnDeleteCascade: EquipmentDefinition => Child EquipmentDefinition
             modelBuilder.Entity<EquipmentDefinition>()
                 .HasMany(e => e.Children)
                 .WithOne(e => e.Parent)
-                .OnDelete(DeleteBehavior.ClientCascade);
-
-            // OnDeleteCascade KeyAllocation
-            modelBuilder.Entity<Key>()
-                .HasMany(e => e.KeyAllocations)
-                .WithOne(e => e.Key)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            modelBuilder.Entity<Personnel>()
-                .HasMany(e => e.KeyAllocations)
-                .WithOne(e => e.Personnel)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            // OnDeleteCascade Tickets
-            //modelBuilder.Entity<Equipment>()
-            //    .HasMany(e => e.Tickets)
-            //    .WithOne(e => e.Equipment)
-            //    .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.ClientSetNull);
 
             // OnDeleteCascade DataType
             modelBuilder.Entity<DataType>()
                 .HasMany(e => e.DataTypeProperties)
                 .WithOne(e => e.DataType)
                 .OnDelete(DeleteBehavior.Cascade);
-
-            // Delete behaviour between user <-> personnel
-            //modelBuilder.Entity<Personnel>()
-            //    .HasOne(e => e.User)
-            //    .WithOne(e => e.Personnel)
-            //    .OnDelete(DeleteBehavior.SetNull);
-
-            //modelBuilder.Entity<TEMSUser>()
-            //    .HasOne(e => e.Personnel)
-            //    .WithOne(e => e.User)
-            //    .OnDelete(DeleteBehavior.SetNull);
-
 
             // Default values:
             modelBuilder.Entity<Property>()

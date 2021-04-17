@@ -1,13 +1,10 @@
 ﻿using Microsoft.AspNetCore.Http;
-using Microsoft.IdentityModel.Tokens;
-using SIC_Parser;
+using Newtonsoft.Json;
 using SIC_Parser.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Formats.Asn1;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Controllers;
@@ -44,34 +41,50 @@ namespace temsAPI.Services.SICServices
         public async Task<List<SICFileUploadResultViewModel>> ValidateAndRegisterComputers(IFormFileCollection sicFiles)
         {
             var bulkUploadResult = new List<SICFileUploadResultViewModel>();
-            var sicParser = new SICParser();
             Stopwatch sw = new Stopwatch();
             foreach (var file in sicFiles)
             {
-                if (Path.GetExtension(file.FileName) != ".json")
+                try
                 {
-                    bulkUploadResult.Add(new SICFileUploadResultViewModel
+                    if (Path.GetExtension(file.FileName) != ".json")
                     {
-                        FileName = file.FileName,
-                        Message = "Keep it for yourself ;)",
-                        Status = ResponseStatus.Fail
-                    });
-                    continue;
-                }
+                        bulkUploadResult.Add(new SICFileUploadResultViewModel
+                        {
+                            FileName = file.FileName,
+                            Message = "Keep it for yourself ;)",
+                            Status = ResponseStatus.Fail
+                        });
+                        continue;
+                    }
 
-                using (var stream = file.OpenReadStream())
-                using (var reader = new StreamReader(stream))
+                    using (var stream = file.OpenReadStream())
+                    using (var reader = new StreamReader(stream))
+                    {
+                        var fileContent = await reader.ReadToEndAsync();
+
+                        sw.Start();
+                        var computer = JsonConvert.DeserializeObject<Computer>(fileContent);
+                        string registerResult = await RegisterComputer(computer);
+                        sw.Stop();
+
+                        bulkUploadResult.Add(new SICFileUploadResultViewModel
+                        {
+                            FileName = file.FileName,
+                            Status = (registerResult == null) ? ResponseStatus.Success : ResponseStatus.Fail,
+                            EllapsedMiliseconds = (int)sw.ElapsedMilliseconds,
+                            Message = (registerResult == null) ? "Succes!" : registerResult
+                        });
+                    }
+                }
+                catch (Exception ex)
                 {
-                    var fileContent = await reader.ReadToEndAsync();
-                    sw.Start();
-                    var parseResult = sicParser.ParseSICStream(fileContent);
                     sw.Stop();
                     bulkUploadResult.Add(new SICFileUploadResultViewModel
                     {
                         FileName = file.FileName,
-                        Status = (parseResult == null) ? ResponseStatus.Success : ResponseStatus.Fail,
+                        Status = ResponseStatus.Fail,
                         EllapsedMiliseconds = (int)sw.ElapsedMilliseconds,
-                        Message = (parseResult == null) ? "Succes!" : parseResult
+                        Message = "I could not read the file ;( \nDetails: " + ex.Message
                     });
                 }
             }

@@ -33,15 +33,16 @@ namespace temsAPI.Data
 
         private static void SeedRoles(RoleManager<IdentityRole> roleManager)
         {
-            (new List<string>() { "Administrator", "Technician", "Personnel", "User", "Guest" })
-                .ForEach(r =>
+            var roles = new List<string>() { "Administrator", "Technician", "Personnel", "User", "Guest" };
+                
+            foreach(var r in roles)
+            {
+                if (roleManager.Roles == null || !roleManager.RoleExistsAsync(r).Result) //null
                 {
-                    if (!roleManager.RoleExistsAsync(r).Result)
-                    {
-                        var role = new IdentityRole { Name = r };
-                        var result = roleManager.CreateAsync(role).Result;
-                    }
-                });
+                    var role = new IdentityRole { Name = r };
+                    var result = roleManager.CreateAsync(role).Result;
+                }
+            }
         }
 
         private static void SeedUsers(UserManager<TEMSUser> userManager)

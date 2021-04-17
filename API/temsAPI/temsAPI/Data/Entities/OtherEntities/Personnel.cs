@@ -25,9 +25,7 @@ namespace temsAPI.Data.Entities.OtherEntities
 
         public string? ImagePath { get; set; }
 
-        [ForeignKey("TEMSUserId")]
         public TEMSUser? TEMSUser { get; set; }
-        public string? TEMSUserId { get; set; }
 #nullable disable
 
         public DateTime? DateArchieved { get; set; }

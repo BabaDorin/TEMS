@@ -38,7 +38,8 @@ namespace temsAPI.Data.Entities.UserEntities
 
 #nullable enable
         [ForeignKey("PersonnelId")]
-        public Personnel? Personnel { get; set; } = new Personnel();
+        [InverseProperty("TEMSUser")]
+        public Personnel? Personnel { get; set; }
         public string? PersonnelId { get; set; }
 #nullable disable
 

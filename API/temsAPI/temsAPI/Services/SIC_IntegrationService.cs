@@ -1,8 +1,10 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Formats.Asn1;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.EquipmentEntities;
@@ -14,11 +16,34 @@ namespace temsAPI.Services
     /// </summary>
     public class SIC_IntegrationService
     {
+        public List<string> SICProperties { get; }
+        public List<string> SICTypes { get; private set; }
+
         private IUnitOfWork _unitOfWork;
 
         public SIC_IntegrationService(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
+
+            SICProperties = new List<string>()
+            {
+                "TeamViewerID", "TeamViewerPassword", "Manufacturer",
+                "Name", "Architecture", "NumberOfCores", "ProcessorId",
+                "L2CacheSize", "L3CacheSize", "ThreadCount", "MaxClockSpeed",
+                "SocketDesignation", "AdapterRAM", "VideoModeDescription",
+                "VideoProcessor",  "VideoModeDescription",  "MonitorManufacturer",
+                "ScreenWidth", "RefreshRateInHz", "Product",
+                "Description", "NetworkInterfaceType", "Speed", "Model",  "MaxOutputWattage",
+                "Capacity", "Caption", "InterfaceType", "Size",
+                "MediaType", "ConfiguredClockSpeed", "PartNumber"
+            };
+
+            SICTypes = new List<string>()
+            {
+                "CPU", "GPU", "Monitor", "Motherboard",
+                "Network Interface", "PSU", "RAM", "Storage",
+                "Computer",
+            };
         }
 
         public async Task<string> PrepareDBForSICIntegration()
@@ -39,6 +64,8 @@ namespace temsAPI.Services
 
         private async Task AddNecessaryTypesAndProperties()
         {
+            //await RemoveSICTypesAndProperties();
+
             // DataTypes:
             var textDT = (await _unitOfWork.DataTypes
                 .Find<DataType>(q => q.Name.ToLower() == "text"))
@@ -73,13 +100,6 @@ namespace temsAPI.Services
                     DataType = textDT,
                     DisplayName = "Manufacturer",
                     Name = "Manufacturer",
-                },
-                new Property
-                {
-                    Id = Guid.NewGuid().ToString(),
-                    DataType = textDT,
-                    DisplayName = "Name",
-                    Name = "Name",
                 },
                 new Property
                 {
@@ -134,7 +154,7 @@ namespace temsAPI.Services
                 {
                     Id = Guid.NewGuid().ToString(),
                     DataType = numberDT,
-                    DisplayName = "Maximul Clock Speed",
+                    DisplayName = "Maximum Clock Speed",
                     Name = "MaxClockSpeed",
                 },
                 new Property
@@ -307,11 +327,10 @@ namespace temsAPI.Services
                 }
             };
 
-            foreach(var prop in SICproperties)
+            foreach (var prop in SICproperties)
             {
                 await RegisterProperty(prop);
             }
-            Debug.WriteLine("SIC Properties - Checked");
             await _unitOfWork.Save();
             Debug.WriteLine("SIC Properties - Checked");
 
@@ -385,11 +404,55 @@ namespace temsAPI.Services
                     Properties = await GetProperties("Caption", "Model", "SerialNumber", "Size", "MediaType"),
                 },
             };
-            foreach(var type in SICequipmentTypes)
+            foreach (var type in SICequipmentTypes)
             {
                 await RegisterType(type);
             }
             await _unitOfWork.Save();
+        }
+
+        private async Task RemoveSICTypesAndProperties()
+        {
+            // Remove properties that are used excusively by SIC equipments.
+            foreach(var sicProp in SICProperties)
+            {
+                var property = (await _unitOfWork.Properties
+                    .Find<Property>(
+                        where: q => q.Name == sicProp,
+                        include: q => q.Include(q => q.EquipmentTypes)))
+                    .FirstOrDefault();
+
+                if (property == null)
+                    continue;
+
+                bool propertyUsedByOtherTypes = false;
+                foreach(var eqType in property.EquipmentTypes)
+                    if (!SICTypes.Contains(eqType.Name))
+                    {
+                        propertyUsedByOtherTypes = true;
+                        break;
+                    }
+
+                if (propertyUsedByOtherTypes)
+                    continue;
+
+                _unitOfWork.Properties.Delete(property);
+            }
+            await _unitOfWork.Save();
+
+            // Remove types
+            foreach (var sicType in SICTypes)
+            {
+                var eqType = (await _unitOfWork.EquipmentTypes
+                    .Find<EquipmentType>(q => q.Name == sicType))
+                    .FirstOrDefault();
+
+                if (eqType == null)
+                    continue;
+
+                _unitOfWork.EquipmentTypes.Delete(eqType);
+                await _unitOfWork.Save();
+            }
         }
 
         private async Task<List<Property>> GetProperties(params string[] propertyNames)
@@ -444,7 +507,7 @@ namespace temsAPI.Services
                     return true;
             }
 
-            _unitOfWork.EquipmentTypes.Create(equipmentType);
+            await _unitOfWork.EquipmentTypes.Create(equipmentType);
             return true;
         }
 

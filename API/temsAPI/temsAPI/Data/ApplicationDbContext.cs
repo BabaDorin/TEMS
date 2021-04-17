@@ -54,6 +54,24 @@ namespace temsAPI.Data
                 .WithOne(e => e.Parent)
                 .OnDelete(DeleteBehavior.ClientSetNull);
 
+            //  OnDeleteCascade: Equipment => Child Equipment
+            modelBuilder.Entity<Equipment>()
+                .HasMany(e => e.Children)
+                .WithOne(e => e.Parent)
+                .OnDelete(DeleteBehavior.ClientCascade);
+
+            // OnDeleteCascade: Equipmet => Logs
+            modelBuilder.Entity<Equipment>()
+                .HasMany(e => e.Logs)
+                .WithOne(e => e.Equipment)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // OnDeleteCascade: Equipment => Allocations
+            modelBuilder.Entity<Equipment>()
+                .HasMany(e => e.EquipmentAllocations)
+                .WithOne(e => e.Equipment)
+                .OnDelete(DeleteBehavior.Cascade);
+
             // OnDeleteCascade DataType
             modelBuilder.Entity<DataType>()
                 .HasMany(e => e.DataTypeProperties)

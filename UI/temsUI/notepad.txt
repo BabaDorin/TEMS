@@ -5,11 +5,12 @@ Currently working on:
     Attach Detach feature.
 
 IMPORTANT NOTES:
---> EquipmentType => Children and EquipmentDefinition => children are not configured with DeleteBehaviour.Cascade. 
+--> EquipmentType => Children, EquipmentDefinition => children are not configured with DeleteBehaviour.Cascade.
     Therefore, this should be accomplished
     manually after propting the user if we wants to keep child types. (In case if a child type can exist
     on his own). Also, note that an eq type can be child for more than one parent.
-    All of the above are valid for definition too.
+    All of the above are valid for definition too. (Actually it's valid for equipment to, but in this the Cascade
+    is implemented, user will have to deatach children equipment if he wants to keep them.); 
 
 TODO
 ------------ As soon as possible >>>>

@@ -54,6 +54,13 @@ namespace temsAPI.Services.SICServices
                 if (validationResult != null)
                     return validationResult;
 
+                // TEMSID or SerialNumber of this computer already exists
+                if (await _unitOfWork.Equipments.isExists(q => q.TEMSID == sicComputer.TEMSID))
+                    return $"An equipment with the [{sicComputer.TEMSID}] TEMSID already exists.";
+
+                if (await _unitOfWork.Equipments.isExists(q => q.SerialNumber == sicComputer.Motherboards[0].SerialNumber))
+                    return $"An equipment with the [{sicComputer.Motherboards[0].SerialNumber}] SerialNumber already exists.";
+                
                 var computerType = (await _unitOfWork.EquipmentTypes
                     .Find<EquipmentType>(
                         where: q => q.Name == "Computer",
@@ -75,7 +82,12 @@ namespace temsAPI.Services.SICServices
                     computer.EquipmentDefinition = await RegisterComputerDefinition(sicComputer);
 
                 await _unitOfWork.Save();
-                await AssignData(computer, sicComputer);
+                
+                string assignationResult = await AssignData(computer, sicComputer);
+                if(assignationResult != null)
+                    return assignationResult;
+
+                await _unitOfWork.Equipments.Create(computer);
                 await _unitOfWork.Save();
 
                 // BEFREE: TEST & ADD MORE VALIDATION
@@ -96,7 +108,7 @@ namespace temsAPI.Services.SICServices
         /// <returns>The equipment definition that has been created</returns>
         private async Task<EquipmentDefinition> RegisterComputerDefinition(Computer sicComputer)
         {
-            var computerType = (await _unitOfWork.EquipmentTypes
+            var type = (await _unitOfWork.EquipmentTypes
                 .Find<EquipmentType>(q => q.Name == "Computer"))
                 .FirstOrDefault();
 
@@ -104,50 +116,77 @@ namespace temsAPI.Services.SICServices
             {
                 Id = Guid.NewGuid().ToString(),
                 Identifier = sicComputer.Identifier,
-                EquipmentType = computerType
+                EquipmentType = type
             };
 
+            await _unitOfWork.EquipmentDefinitions.Create(computerDefinition);
+            await _unitOfWork.Save();
+
             // CPU Definitions
-            foreach(var cpu in sicComputer.CPUs)
-                await AddChildDefinition(cpu, "Name", computerDefinition);
+            type = (await _unitOfWork.EquipmentTypes
+                .Find<EquipmentType>(q => q.Name == "CPU"))
+                .FirstOrDefault();
+            foreach (var cpu in sicComputer.CPUs)
+                await AddChildDefinition(cpu, "Name", computerDefinition, type);
 
             // GPU Definitions
+            type = (await _unitOfWork.EquipmentTypes
+                .Find<EquipmentType>(q => q.Name == "GPU"))
+                .FirstOrDefault();
             foreach (var gpu in sicComputer.GPUs)
-                await AddChildDefinition(gpu, "Name", computerDefinition);
+                await AddChildDefinition(gpu, "Name", computerDefinition, type);
 
             // PSUs
+            type = (await _unitOfWork.EquipmentTypes
+                .Find<EquipmentType>(q => q.Name == "PSU"))
+                .FirstOrDefault();
             foreach (var psu in sicComputer.PSUs)
             {
                 if (String.IsNullOrEmpty(psu.SerialNumber))
                     continue;
                 
-                await AddChildDefinition(psu, "Model", computerDefinition);
+                await AddChildDefinition(psu, "Model", computerDefinition, type);
             }
 
             // Motherboards
-            foreach(var motherBoard in sicComputer.Motherboards)
-                await AddChildDefinition(motherBoard, "Product", computerDefinition);
+            type = (await _unitOfWork.EquipmentTypes
+                .Find<EquipmentType>(q => q.Name == "Motherboard"))
+                .FirstOrDefault();
+            foreach (var motherboard in sicComputer.Motherboards)
+                await AddChildDefinition(motherboard, "Product", computerDefinition, type);
 
             // NetworkInterfaces
+            type = (await _unitOfWork.EquipmentTypes
+                .Find<EquipmentType>(q => q.Name == "Network Interface"))
+                .FirstOrDefault();
             foreach (var netIntf in sicComputer.NetworkInterfaces)
-                await AddChildDefinition(netIntf, "Description", computerDefinition);
+                await AddChildDefinition(netIntf, "Description", computerDefinition, type);
 
             // Monitors
+            type = (await _unitOfWork.EquipmentTypes
+                .Find<EquipmentType>(q => q.Name == "Monitor"))
+                .FirstOrDefault();
             foreach (var monitor in sicComputer.Monitors)
             {
                 if (String.IsNullOrEmpty(monitor.SerialNumber) && String.IsNullOrEmpty(monitor.TEMSID))
                     continue;
 
-                await AddChildDefinition(monitor, "Name", computerDefinition);
+                await AddChildDefinition(monitor, "Name", computerDefinition, type);
             }
 
             // RAMS
+            type = (await _unitOfWork.EquipmentTypes
+                .Find<EquipmentType>(q => q.Name == "RAM"))
+                .FirstOrDefault();
             foreach (var ram in sicComputer.RAMs)
-                await AddChildDefinition(ram, "PartNumber", computerDefinition);
+                await AddChildDefinition(ram, "PartNumber", computerDefinition, type);
 
             // Storages
+            type = (await _unitOfWork.EquipmentTypes
+                .Find<EquipmentType>(q => q.Name == "Storage"))
+                .FirstOrDefault();
             foreach (var storage in sicComputer.Storages)
-                await AddChildDefinition(storage, "Caption", computerDefinition);
+                await AddChildDefinition(storage, "Caption", computerDefinition, type);
 
             await _unitOfWork.Save();
             return computerDefinition;
@@ -160,21 +199,43 @@ namespace temsAPI.Services.SICServices
         /// <param name="computer"></param>
         /// <param name="sicComputer"></param>
         /// <returns></returns>
-        private async Task AssignData(Equipment computer, Computer sicComputer)
+        private async Task<string> AssignData(Equipment computer, Computer sicComputer)
         {
+            StringBuilder stringBuilder = new StringBuilder("");
+            string serialNumber;
+            string temsId;
+
             // Motherboards
             for (int i = 0; i < sicComputer.Motherboards.Count; i++)
-                await AssignChildData(sicComputer.Motherboards[i], "Product", computer, "Motherboard" + i + " " + sicComputer.Motherboards[i].SerialNumber);
+            {
+                serialNumber = "Motherboard" + i + " " + sicComputer.Motherboards[i].SerialNumber;
+                if (await _unitOfWork.Equipments.isExists(q => q.SerialNumber == serialNumber))
+                    stringBuilder.Append($"A motherboard with the [{serialNumber}] serial number already exists.\n");
+                else
+                    await AssignChildData(sicComputer.Motherboards[i], "Product", computer, serialNumber);
+            }
 
             computer.SerialNumber = sicComputer.Motherboards[0].SerialNumber;
 
             //CPUs
             for (int i = 0; i < sicComputer.CPUs.Count; i++)
-                await AssignChildData(sicComputer.CPUs[i], "Name", computer, "CPU" + i + " " + computer.SerialNumber);
+            {
+                serialNumber = "CPU" + i + " " + computer.SerialNumber;
+                if (await _unitOfWork.Equipments.isExists(q => q.SerialNumber == serialNumber))
+                    stringBuilder.Append($"A CPU with the [{serialNumber}] serial number already exists.\n");
+                else
+                    await AssignChildData(sicComputer.CPUs[i], "Name", computer, serialNumber);
+            }
 
             // GPUs
             for (int i = 0; i < sicComputer.GPUs.Count; i++)
-                await AssignChildData(sicComputer.GPUs[i], "Name", computer, "GPU" + i + " " + computer.SerialNumber);
+            {
+                serialNumber = "GPU" + i + " " + computer.SerialNumber;
+                if (await _unitOfWork.Equipments.isExists(q => q.SerialNumber == serialNumber))
+                    stringBuilder.Append($"A GPU with the [{serialNumber}] serial number already exists.\n");
+                else
+                    await AssignChildData(sicComputer.GPUs[i], "Name", computer, "GPU" + i + " " + computer.SerialNumber);
+            }
 
             // PSUs
             for (int i = 0; i < sicComputer.PSUs.Count; i++)
@@ -183,24 +244,67 @@ namespace temsAPI.Services.SICServices
                 if (string.IsNullOrEmpty(psu.SerialNumber))
                     continue;
 
-                await AssignChildData(psu, "Model", computer.Parent, psu.SerialNumber);
+                serialNumber = psu.SerialNumber;
+                if (await _unitOfWork.Equipments.isExists(q => q.SerialNumber == serialNumber))
+                    stringBuilder.Append($"A PSU with the [{serialNumber}] serial number already exists.\n");
+                else
+                    await AssignChildData(psu, "Model", computer.Parent, serialNumber);
             }
 
             // Network Interfaces
             for (int i = 0; i < sicComputer.NetworkInterfaces.Count; i++)
-                await AssignChildData(sicComputer.NetworkInterfaces[i], "Description", computer, $"NetIntf{i}_{computer.SerialNumber}_{sicComputer.NetworkInterfaces[i].PhysicalAddress}");
+            {
+                serialNumber = $"NetIntf{i}_{computer.SerialNumber}_{sicComputer.NetworkInterfaces[i].PhysicalAddress}";
+                if (await _unitOfWork.Equipments.isExists(q => q.SerialNumber == serialNumber))
+                    stringBuilder.Append($"A Network Interface with the [{serialNumber}] serial number already exists.\n");
+                else
+                    await AssignChildData(sicComputer.NetworkInterfaces[i], "Description", computer, serialNumber);
+            }
 
             // Monitors
             for (int i = 0; i < sicComputer.Monitors.Count; i++)
-                await AssignChildData(sicComputer.Monitors[i], "Name", computer, "Mon" + i + " " + sicComputer.Monitors[i].SerialNumber, sicComputer.Monitors[i].TEMSID);
+            {
+                serialNumber = "Mon" + i + " " + sicComputer.Monitors[i].SerialNumber;
+                temsId = sicComputer.Monitors[i].TEMSID;
+                bool ok = true;
+
+                if (await _unitOfWork.Equipments.isExists(q => q.SerialNumber == serialNumber))
+                {
+                    ok = false;
+                    stringBuilder.Append($"Monitor with the [{serialNumber}] serial number already exists.\n");
+                }
+
+                if(await _unitOfWork.Equipments.isExists(q => q.TEMSID == temsId))
+                {
+                    ok = false;
+                    stringBuilder.Append($"An equipment with the [{temsId}] TEMSID already exists.\n");
+                }
+                
+                if(ok)
+                    await AssignChildData(sicComputer.Monitors[i], "Name", computer, serialNumber);
+            }
 
             // RAMs
             for (int i = 0; i < sicComputer.RAMs.Count; i++)
-                await AssignChildData(sicComputer.RAMs[i], "PartNumber", computer, "RAM" + i + " " + computer.SerialNumber);
+            {
+                serialNumber = "RAM" + i + " " + computer.SerialNumber;
+                if (await _unitOfWork.Equipments.isExists(q => q.SerialNumber == serialNumber))
+                    stringBuilder.Append($"A RAM chip with the [{serialNumber}] serial number already exists.\n");
+                else
+                    await AssignChildData(sicComputer.RAMs[i], "PartNumber", computer, serialNumber);
+            }
 
-            // RAMs
+            // Storages
             for (int i = 0; i < sicComputer.Storages.Count; i++)
-                await AssignChildData(sicComputer.Storages[i], "Caption", computer, $"Storage{i}_{computer.SerialNumber}_{sicComputer.Storages[i].SerialNumber}");
+            {
+                serialNumber = $"Storage{i}_{computer.SerialNumber}_{sicComputer.Storages[i].SerialNumber}";
+                if (await _unitOfWork.Equipments.isExists(q => q.SerialNumber == serialNumber))
+                    stringBuilder.Append($"A storage device with the [{serialNumber}] serial number already exists.\n");
+                else
+                    await AssignChildData(sicComputer.Storages[i], "Caption", computer, serialNumber);
+            }
+
+            return (stringBuilder.ToString() == "") ? null : stringBuilder.ToString();
         }
 
         /// <summary>
@@ -228,8 +332,6 @@ namespace temsAPI.Services.SICServices
                 SerialNumber = serialNumber,
                 EquipmentDefinition = definition,
             });
-
-            await _unitOfWork.Save();
         }
 
         /// <summary>
@@ -240,7 +342,7 @@ namespace temsAPI.Services.SICServices
         /// <param name="identifierPropName">Name of the property which identifies child model's definition</param>
         /// <param name="parentDefinition">computer's definition</param>
         /// <returns></returns>
-        private async Task AddChildDefinition<T>(T entity, string identifierPropName, EquipmentDefinition parentDefinition)
+        private async Task AddChildDefinition<T>(T entity, string identifierPropName, EquipmentDefinition parentDefinition, EquipmentType type)
         {
             string identifierValue = entity.GetType().GetProperty(identifierPropName).GetValue(entity).ToString();
             EquipmentDefinition def = (await _unitOfWork.EquipmentDefinitions
@@ -257,9 +359,13 @@ namespace temsAPI.Services.SICServices
             {
                 Id = Guid.NewGuid().ToString(),
                 Identifier = identifierValue,
+                Parent = parentDefinition,
+                EquipmentType = type
             };
 
             await AddDefinitionSpecifications(def, entity);
+            await _unitOfWork.EquipmentDefinitions.Create(def);
+            await _unitOfWork.Save();
         }
 
         /// <summary>
@@ -282,17 +388,6 @@ namespace temsAPI.Services.SICServices
 
                 if (property == null)
                     continue;
-
-                
-                if(property.DataType.Name.ToLower() == "number")
-                {
-                    double testVal;
-                    if(!double.TryParse(prop.GetValue(entity).ToString(), out testVal))
-                    {
-                        throw new Exception($"Property: {prop.Name} is of type number, but it's value: " +
-                            $"{prop.GetValue(entity).ToString()} is of another type.");
-                    }
-                }
 
                 definition.EquipmentSpecifications.Add(new EquipmentSpecifications
                 {

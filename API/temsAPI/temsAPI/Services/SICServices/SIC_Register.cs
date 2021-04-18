@@ -2,7 +2,9 @@
 using SIC_Parser.Models;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.EquipmentEntities;
@@ -26,31 +28,6 @@ namespace temsAPI.Services.SICServices
         /// <returns>Returns null if everything is ok, otherwise - error message.</returns>
         public async Task<string> RegisterComputer(Computer sicComputer)
         {
-            // Step 1: Register the computer itself.
-            // Validation:
-            sicComputer.TEMSID = sicComputer.TEMSID.Trim();
-            if (String.IsNullOrEmpty(sicComputer.TEMSID))
-                return "Computer TEMSID is Mandatory!";
-
-            sicComputer.Identifier = sicComputer.Identifier.Trim();
-            if (String.IsNullOrEmpty(sicComputer.Identifier))
-                return "Computer identifier is Mandatory!";
-
-            var computerType = (await _unitOfWork.EquipmentTypes
-                .Find<EquipmentType>(
-                    where: q => q.Name == "Computer",
-                    include: q => q.Include(q => q.EquipmentDefinitions)
-                 )).FirstOrDefault();
-
-            var computerDefinition = computerType.EquipmentDefinitions
-                .FirstOrDefault(q => q.Identifier == sicComputer.Identifier);
-
-            var computer = new Equipment
-            {
-                Id = Guid.NewGuid().ToString(),
-                TEMSID = sicComputer.TEMSID,
-            };
-
             // Process of registering a computer:
             // 1) Create an equipment with name Computer. Set ID.
             // 2) Find out if computer definition exists. If not - create it.
@@ -71,19 +48,52 @@ namespace temsAPI.Services.SICServices
             //   Add description for types that have this property
             //   Description for computer will be TV data.
 
-            if (computerDefinition != null)
-                computer.EquipmentDefinition = computerDefinition;
-            else
-                computer.EquipmentDefinition = await RegisterComputerDefinition(sicComputer);
+            try
+            {
+                string validationResult = sicComputer.Validate();
+                if (validationResult != null)
+                    return validationResult;
 
-            await _unitOfWork.Save();
-            await AssignData(computer, sicComputer);
-            await _unitOfWork.Save();
+                var computerType = (await _unitOfWork.EquipmentTypes
+                    .Find<EquipmentType>(
+                        where: q => q.Name == "Computer",
+                        include: q => q.Include(q => q.EquipmentDefinitions)
+                     )).FirstOrDefault();
+
+                var computerDefinition = computerType.EquipmentDefinitions
+                    .FirstOrDefault(q => q.Identifier == sicComputer.Identifier);
+
+                var computer = new Equipment
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    TEMSID = sicComputer.TEMSID,
+                };
+
+                if (computerDefinition != null)
+                    computer.EquipmentDefinition = computerDefinition;
+                else
+                    computer.EquipmentDefinition = await RegisterComputerDefinition(sicComputer);
+
+                await _unitOfWork.Save();
+                await AssignData(computer, sicComputer);
+                await _unitOfWork.Save();
+
+                // BEFREE: TEST & ADD MORE VALIDATION
+                return null;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return $"An error occured while registering the computer. Details: {ex.Message}";
+            }
             
-            // BEFREE: TEST & ADD MORE VALIDATION
-            return null;
         }
 
+        /// <summary>
+        /// Registers a new computer definition, based on info provided by sicCoputer model.
+        /// </summary>
+        /// <param name="sicComputer"></param>
+        /// <returns>The equipment definition that has been created</returns>
         private async Task<EquipmentDefinition> RegisterComputerDefinition(Computer sicComputer)
         {
             var computerType = (await _unitOfWork.EquipmentTypes
@@ -143,6 +153,13 @@ namespace temsAPI.Services.SICServices
             return computerDefinition;
         }
 
+        /// <summary>
+        /// Given an instance of Equipment (computer) and the sicComputer model, it assigns data from
+        /// sicComputer to Equipment instance.
+        /// </summary>
+        /// <param name="computer"></param>
+        /// <param name="sicComputer"></param>
+        /// <returns></returns>
         private async Task AssignData(Equipment computer, Computer sicComputer)
         {
             // Motherboards
@@ -171,7 +188,7 @@ namespace temsAPI.Services.SICServices
 
             // Network Interfaces
             for (int i = 0; i < sicComputer.NetworkInterfaces.Count; i++)
-                await AssignChildData(sicComputer.NetworkInterfaces[i], "Description", computer, "NetIntf" + i + " " + sicComputer.NetworkInterfaces[i].PhysicalAddress);
+                await AssignChildData(sicComputer.NetworkInterfaces[i], "Description", computer, $"NetIntf{i}_{computer.SerialNumber}_{sicComputer.NetworkInterfaces[i].PhysicalAddress}");
 
             // Monitors
             for (int i = 0; i < sicComputer.Monitors.Count; i++)
@@ -183,9 +200,20 @@ namespace temsAPI.Services.SICServices
 
             // RAMs
             for (int i = 0; i < sicComputer.Storages.Count; i++)
-                await AssignChildData(sicComputer.Storages[i], "Caption", computer, sicComputer.Storages[i].SerialNumber);
+                await AssignChildData(sicComputer.Storages[i], "Caption", computer, $"Storage{i}_{computer.SerialNumber}_{sicComputer.Storages[i].SerialNumber}");
         }
 
+        /// <summary>
+        /// Assigns data from sicEntity (child equipment, like GPU, CPU etc.) to the parent, which is the 
+        /// Equipment instance of computer (parent).
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="entity">SIC child model</param>
+        /// <param name="identifierPropName">Name of the property which identifies child model's definition</param>
+        /// <param name="parent">Equipment instance, representing the computer</param>
+        /// <param name="serialNumber">The serial number that will be assigned to child</param>
+        /// <param name="TEMSID">(Optional) - child temsId (if it exists)</param>
+        /// <returns></returns>
         private async Task AssignChildData<T>(T entity, string identifierPropName, Equipment parent, string serialNumber, string TEMSID = null)
         {
             string identifierValue = entity.GetType().GetProperty(identifierPropName).GetValue(entity).ToString();
@@ -200,8 +228,18 @@ namespace temsAPI.Services.SICServices
                 SerialNumber = serialNumber,
                 EquipmentDefinition = definition,
             });
+
+            await _unitOfWork.Save();
         }
 
+        /// <summary>
+        /// Adds from existing or creates a new definition for child equipment.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="entity">SIC child model</param>
+        /// <param name="identifierPropName">Name of the property which identifies child model's definition</param>
+        /// <param name="parentDefinition">computer's definition</param>
+        /// <returns></returns>
         private async Task AddChildDefinition<T>(T entity, string identifierPropName, EquipmentDefinition parentDefinition)
         {
             string identifierValue = entity.GetType().GetProperty(identifierPropName).GetValue(entity).ToString();
@@ -224,6 +262,14 @@ namespace temsAPI.Services.SICServices
             await AddDefinitionSpecifications(def, entity);
         }
 
+        /// <summary>
+        /// Adds definition specifications (property-value associations) based on the provided
+        /// entity.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="definition">Definition to be modified</param>
+        /// <param name="entity">SIC Child model</param>
+        /// <returns></returns>
         private async Task AddDefinitionSpecifications<T>(EquipmentDefinition definition, T entity)
         {
             foreach (var prop in entity.GetType().GetProperties())

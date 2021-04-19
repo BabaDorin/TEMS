@@ -25,11 +25,8 @@ export class BulkUploadComponent extends TEMSComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  onFilesSelected($event){
-    console.log($event);
-    this.selectedFiles = $event.target.files;
-    console.log('selected filed:');
-    console.log(this.selectedFiles);
+  onFilesSelected(files){
+    this.selectedFiles = files;
   }
 
   uploadFiles(){

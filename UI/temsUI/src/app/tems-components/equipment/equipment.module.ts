@@ -1,3 +1,4 @@
+import { FileUploadModule } from './../../modules/file-upload/file-upload.module';
 import { EquipmentDetailsGeneralComponent } from './equipment-details/equipment-details-general/equipment-details-general.component';
 import { ViewDefinitionComponent } from './view-definition/view-definition.component';
 import { TemsAgGridModule } from './../../modules/tems-ag-grid/tems-ag-grid.module';
@@ -43,7 +44,7 @@ import { BulkUploadComponent } from './bulk-upload/bulk-upload.component';
     EquipmentDetailsComponent,
     EquipmentDetailsGeneralComponent,
     AttachEquipmentComponent,
-    BulkUploadComponent
+    BulkUploadComponent,
   ],
   imports: [
     CommonModule,
@@ -54,6 +55,7 @@ import { BulkUploadComponent } from './bulk-upload/bulk-upload.component';
     TemsAgGridModule,
     EntitySharedModule,
     AnalyticsModule,
+    FileUploadModule
   ],
   exports: [
   ],

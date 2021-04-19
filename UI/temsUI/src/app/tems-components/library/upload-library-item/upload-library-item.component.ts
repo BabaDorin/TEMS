@@ -1,9 +1,7 @@
 import { LibraryService } from './../../../services/library-service/library.service';
-import { API_LBR_URL } from './../../../models/backend.config';
 import { TEMSComponent } from 'src/app/tems/tems.component';
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { HttpClient, HttpEventType, HttpRequest } from '@angular/common/http';
-import { AddLibraryItem } from 'src/app/models/library/add-library-item.model';
+import { Component, OnInit } from '@angular/core';
+import { HttpEventType } from '@angular/common/http';
 
 @Component({
   selector: 'app-upload-library-item',
@@ -98,11 +96,7 @@ export class UploadLibraryItemComponent extends TEMSComponent implements OnInit 
     this.uploadEnabled = true;
   }
 
-  onFileDropped($event) {
-    this.prepareFilesList($event);
-  }
-
-  fileBrowseHandler(files) {
+  filesSelected(files) {
     this.prepareFilesList(files);
   }
 

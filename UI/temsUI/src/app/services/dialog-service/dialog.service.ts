@@ -8,16 +8,16 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 })
 export class DialogService {
 
+  dialogRef: MatDialogRef<any>;
+
   constructor(
     private dialog: MatDialog,
   ) { 
 
   }
 
-  openDialog(component: ComponentType<any>, keyValue?: IOption[], afterClosed?: Function){
-    let dialogRef: MatDialogRef<any>;
-
-    dialogRef = this.dialog.open(component,
+  openDialog(component: ComponentType<any>, keyValue?: IOption[], afterClosed?: Function, beforeClosed?: Function){
+    this.dialogRef = this.dialog.open(component,
       {
         maxHeight: '80vh',
         autoFocus: false
@@ -25,13 +25,17 @@ export class DialogService {
 
     if(keyValue != undefined){
       keyValue.forEach(element => {
-        dialogRef.componentInstance[element.label] = element.value;
+        this.dialogRef.componentInstance[element.label] = element.value;
       });
     }
 
-    dialogRef.componentInstance["dialogRef"] = dialogRef;
+    this.dialogRef.componentInstance["dialogRef"] = this.dialogRef;
 
-    dialogRef.afterClosed().subscribe(result => {
+    this.dialogRef.beforeClosed().subscribe(result => {
+      beforeClosed();
+    })
+
+    this.dialogRef.afterClosed().subscribe(result => {
       if(afterClosed != undefined)
         afterClosed();
     })

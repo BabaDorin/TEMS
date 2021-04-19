@@ -7,7 +7,12 @@
         </p>
         <hr>
         <app-file-upload (filesSelected)="onFilesSelected($event)"></app-file-upload>
-        <button mat-button (click)="uploadFiles()">Upload</button>
+        <button 
+            mat-button
+            class="btn-primary mr-2"
+            (click)="uploadFiles()">
+            Upload
+        </button>
         <p>{{ feedback }}</p>
     </div>
 </div>

@@ -25,6 +25,7 @@ import { AddPropertyComponent } from './add-property/add-property.component';
 import { ViewPropertyComponent } from './view-property/view-property.component';
 import { AttachEquipmentComponent } from './attach-equipment/attach-equipment.component';
 import { BulkUploadComponent } from './bulk-upload/bulk-upload.component';
+import { BulkUploadResultsComponent } from './bulk-upload-results/bulk-upload-results.component';
 
 @NgModule({
   declarations: [
@@ -45,6 +46,7 @@ import { BulkUploadComponent } from './bulk-upload/bulk-upload.component';
     EquipmentDetailsGeneralComponent,
     AttachEquipmentComponent,
     BulkUploadComponent,
+    BulkUploadResultsComponent,
   ],
   imports: [
     CommonModule,

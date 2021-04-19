@@ -1,3 +1,4 @@
+import { SICFileUploadResult } from './../../../models/equipment/bulk-upload-result.model';
 import { TypeService } from './../../../services/type-service/type.service';
 import { SnackService } from './../../../services/snack/snack.service';
 import { DialogService } from './../../../services/dialog-service/dialog.service';
@@ -22,6 +23,8 @@ import { BulkUploadComponent } from '../bulk-upload/bulk-upload.component';
   providers: []
 })
 export class AddEquipmentComponent extends TEMSComponent implements OnInit {
+
+  bulkUploadResults: SICFileUploadResult[];
 
   header = "Add Equipment";
 
@@ -274,6 +277,17 @@ export class AddEquipmentComponent extends TEMSComponent implements OnInit {
   }
 
   bulkUpload(){
-    this.dialogService.openDialog(BulkUploadComponent);
+    this.dialogService.openDialog(
+      BulkUploadComponent,
+      undefined,
+      undefined,
+      () => {
+        this.bulkUploadResults = this.dialogService.dialogRef.componentInstance["uploadResults"];
+      }
+    );
+  }
+  
+  clearResults(){
+    this.bulkUploadResults = undefined;
   }
 }

@@ -11,53 +11,63 @@
         </button>
       </mat-menu>
     </div>
-    <ng-container *ngIf="updateEquipmentId == undefined">
-      <p class="card-description">Please, provide all of the necessary data in order to register the equipment.</p>
-      <hr>
-      <br>
-      <form class="forms-sample" [formGroup]="formGroup">
-      <!-- Choose Equipment Type -->
-      <div class="form-group">
-        <mat-form-field>
-          <mat-label>Equipment Type</mat-label>
-          <mat-select formControlName="equipmentType" 
-          [(ngModel)]="selectedType" (selectionChange)="onTypeChanged($event)">
-            <mat-option (click)="openDialog('add-type')">+ Add New</mat-option>
-            <mat-option *ngFor="let type of types" [value]="type.value">{{ type.label }}</mat-option>
-          </mat-select>
-        </mat-form-field>
-      </div>
-      <!-- Choose Equipment Definition -->
-      <ng-container *ngIf="selectedType != undefined">
+
+    <!-- serves the 'add-equipment' form -->
+    <ng-container *ngIf="bulkUploadResults == undefined">
+      <ng-container *ngIf="updateEquipmentId == undefined">
+        <p class="card-description">Please, provide all of the necessary data in order to register the equipment.</p>
+        <hr>
+        <br>
+        <form class="forms-sample" [formGroup]="formGroup">
+        <!-- Choose Equipment Type -->
         <div class="form-group">
           <mat-form-field>
-            <mat-label>Equipment Definition</mat-label>
-            <mat-select formControlName="equipmentDefinition" 
-            [(ngModel)]="selectedDefinition" (selectionChange)="onDefinitionChanged($event)">
-              <mat-option (click)="openDialog('add-definition')">+ Add New</mat-option>
-              <mat-option *ngFor="let definition of definitionsOfType" [value]="definition.value">{{ definition.label }}</mat-option>
+            <mat-label>Equipment Type</mat-label>
+            <mat-select formControlName="equipmentType" 
+            [(ngModel)]="selectedType" (selectionChange)="onTypeChanged($event)">
+              <mat-option (click)="openDialog('add-type')">+ Add New</mat-option>
+              <mat-option *ngFor="let type of types" [value]="type.value">{{ type.label }}</mat-option>
             </mat-select>
           </mat-form-field>
         </div>
+        <!-- Choose Equipment Definition -->
+        <ng-container *ngIf="selectedType != undefined">
+          <div class="form-group">
+            <mat-form-field>
+              <mat-label>Equipment Definition</mat-label>
+              <mat-select formControlName="equipmentDefinition" 
+              [(ngModel)]="selectedDefinition" (selectionChange)="onDefinitionChanged($event)">
+                <mat-option (click)="openDialog('add-definition')">+ Add New</mat-option>
+                <mat-option *ngFor="let definition of definitionsOfType" [value]="definition.value">{{ definition.label }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </ng-container>
+        </form>
       </ng-container>
+  
+      <ng-container *ngIf="updateEquipmentId != undefined && formlyData.isVisible == false">
+        <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+      </ng-container>
+      <form *ngIf="formlyData.isVisible" [formGroup]="formlyData.form" (ngSubmit)="onSubmit(formlyData.model)">
+        <formly-form [form]="formlyData.form" [fields]="formlyData.fields" [model]="formlyData.model"></formly-form>
+        <br>
+        <p *ngIf="updateEquipmentId != undefined" class="text-muted">
+          This form can be used only to update information related only to this specific equipment. If you want to
+          edit info of it's children, you can do it by accessing them individually. Also, use 'attach' and 'deattach' 
+          options to add or remove children equipments.
+        </p>
+        <button *ngIf="updateEquipmentId != undefined" mat-button (click)="back()" >Go back</button>
+        <button mat-button type="submit" class="btn-primary" [disabled]="formlyData.form.status == 'INVALID'">
+          Submit
+        </button>
       </form>
     </ng-container>
-
-    <ng-container *ngIf="updateEquipmentId != undefined && formlyData.isVisible == false">
-      <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+    
+    <!-- serves for displaying bulk upload results -->
+    <ng-container *ngIf="bulkUploadResults != undefined">
+      <app-bulk-upload-results [bulkUploadResults]="bulkUploadResults"></app-bulk-upload-results>
+      <button mat-button (click)="clearResults()"><mat-icon class="text-primary">arrow_back</mat-icon>Back</button>
     </ng-container>
-    <form *ngIf="formlyData.isVisible" [formGroup]="formlyData.form" (ngSubmit)="onSubmit(formlyData.model)">
-      <formly-form [form]="formlyData.form" [fields]="formlyData.fields" [model]="formlyData.model"></formly-form>
-      <br>
-      <p *ngIf="updateEquipmentId != undefined" class="text-muted">
-        This form can be used only to update information related only to this specific equipment. If you want to
-        edit info of it's children, you can do it by accessing them individually. Also, use 'attach' and 'deattach' 
-        options to add or remove children equipments.
-      </p>
-      <button *ngIf="updateEquipmentId != undefined" mat-button (click)="back()" >Go back</button>
-      <button mat-button type="submit" class="btn-primary" [disabled]="formlyData.form.status == 'INVALID'">
-        Submit
-      </button>
-    </form>
   </div>
 </div>

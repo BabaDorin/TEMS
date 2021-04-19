@@ -2,6 +2,7 @@ import { TEMSComponent } from './../../../tems/tems.component';
 import { SnackService } from './../../../services/snack/snack.service';
 import { EquipmentService } from 'src/app/services/equipment-service/equipment.service';
 import { Component, OnInit, Output } from '@angular/core';
+import { SICFileUploadResult } from 'src/app/models/equipment/bulk-upload-result.model';
 
 @Component({
   selector: 'app-bulk-upload',
@@ -13,7 +14,7 @@ export class BulkUploadComponent extends TEMSComponent implements OnInit {
   selectedFiles;
   feedback='';
   dialogRef;
-  logs;
+  uploadResults = [] as SICFileUploadResult[];
 
   constructor(
     private equipmentService: EquipmentService,
@@ -30,6 +31,7 @@ export class BulkUploadComponent extends TEMSComponent implements OnInit {
   }
 
   uploadFiles(){
+    
     if(this.selectedFiles == undefined || this.selectedFiles.length == 0){
       this.snackService.snack({message: "Select some files first", status: 0});
       return;
@@ -50,10 +52,10 @@ export class BulkUploadComponent extends TEMSComponent implements OnInit {
           return;
 
         if(Array.isArray(result)){
+          this.uploadResults = result;
           this.dialogRef.close();
         }
       })
     )
-    
   }
 }

@@ -129,7 +129,7 @@ namespace temsAPI.Controllers.ReportControllers
         {
             try
             {
-                string validationMessage = await ValidateTemplate(viewModel);
+                string validationMessage = await viewModel.Validate(_unitOfWork);
                 if (validationMessage != null)
                     return ReturnResponse(validationMessage, ResponseStatus.Fail);
 
@@ -343,77 +343,6 @@ namespace temsAPI.Controllers.ReportControllers
                 Debug.WriteLine(ex);
                 return ReturnResponse("An error occured while fetching report templates", ResponseStatus.Fail);
             }
-        }
-
-
-        // -----------------------------------------------------------------------
-
-        /// <summary>
-        /// Validates an instance of AddReportViewModel. Return null if everything is ok, otherwise - 
-        /// returns an error message.
-        /// </summary>
-        /// <param name="viewModel"></param>
-        /// <returns></returns>
-        private async Task<string> ValidateTemplate(AddReportTemplateViewModel viewModel)
-        {
-            // Invalid id provided (When it's the udpate case)
-            if (viewModel.Id != null && !await _unitOfWork.ReportTemplates
-                .isExists(q => q.Id == viewModel.Id))
-                return "Invalid id provided";
-
-            // Invalid subject
-            if (new List<string>() { "equipment", "rooms", "personnel", "allocations" }
-                .IndexOf(viewModel.Subject) == -1)
-                return "Invalid subject";
-
-            // Invalid types provided
-            if(viewModel.Types != null)
-                foreach (var item in viewModel.Types)
-                    if (!await _unitOfWork.EquipmentTypes.isExists(q => q.Id == item.Value))
-                        return $"{item.Label} is not a valid type";
-
-            // Invalid definitions provided
-            if(viewModel.Definitions != null)
-                foreach (var item in viewModel.Definitions)
-                    if (!await _unitOfWork.EquipmentDefinitions.isExists(q => q.Id == item.Value))
-                        return $"{item.Label} is not a valid definition";
-
-            // Invalid personnel provided
-            if (viewModel.Personnel != null)
-                foreach (var item in viewModel.Personnel)
-                    if (!await _unitOfWork.Personnel.isExists(q => q.Id == item.Value))
-                        return $"{item.Label} is not a valid personnel";
-
-            // Invalid rooms provided
-            if (viewModel.Rooms != null)
-                foreach (var item in viewModel.Rooms)
-                    if (!await _unitOfWork.Rooms.isExists(q => q.Id == item.Value))
-                        return $"{item.Label} is not a valid room";
-
-            // Invalid signatories provided
-            if (viewModel.Signatories != null)
-                foreach (var item in viewModel.Signatories)
-                    if (!await _unitOfWork.Personnel.isExists(q => q.Id == item.Value))
-                        return $"{item.Label} is not a valid type";
-
-            // Invalid SepparateBy
-            if (new List<string>() { "none", "room", "personnel", "type", "definition" }
-                .IndexOf(viewModel.SepparateBy) == -1)
-                return "Invalid SepparateBy";
-
-            // Invalid properties
-            if(viewModel.CommonProperties != null)
-                foreach (var item in viewModel.CommonProperties)
-                    if (!ReportHelper.UniversalProperties.Contains(item) && !await _unitOfWork.Properties.isExists(q => q.Name == item))
-                        return $"{item} is not a valid property";
-
-            var specificProperties = viewModel.SpecificProperties?.SelectMany(q => q.Properties).ToList();
-            if(specificProperties != null)
-                foreach (var item in specificProperties)
-                    if (!await _unitOfWork.Properties.isExists(q => q.Name == item))
-                        return $"{item} is not a valid property";
-
-            return null;
         }
     }
 }

@@ -1,14 +1,15 @@
-﻿using System;
+﻿using ReportGenerator.Models;
+using System;
 using System.Collections.Generic;
 using System.Text;
-using temsAPI.Data.Entities.Report;
 
 namespace ReportGenerator.Services
 {
-    class ReportGenerator
+    public class ReportGenerator
     {
-        public string GenerateReport(ReportTemplate reportTemplate)
+        public string GenerateReport(ReportData reportData)
         {
+            // Logic of creating an excel file, based on provided ReportData
             return "Done!";
         }
     }

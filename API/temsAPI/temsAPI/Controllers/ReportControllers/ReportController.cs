@@ -14,6 +14,7 @@ using temsAPI.Data.Entities.OtherEntities;
 using temsAPI.Data.Entities.Report;
 using temsAPI.Data.Entities.UserEntities;
 using temsAPI.Helpers;
+using temsAPI.Services;
 using temsAPI.System_Files;
 using temsAPI.ViewModels;
 using temsAPI.ViewModels.Report;
@@ -222,7 +223,7 @@ namespace temsAPI.Controllers.ReportControllers
         {
             try
             {
-                string validationMessage = await ValidateTemplate(viewModel);
+                string validationMessage = await viewModel.Validate(_unitOfWork);
                 if (validationMessage != null)
                     return ReturnResponse(validationMessage, ResponseStatus.Fail);
 
@@ -307,6 +308,15 @@ namespace temsAPI.Controllers.ReportControllers
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
         public async Task<JsonResult> GenerateReport(string templateId)
         {
+            var reportTemplate = (await _unitOfWork.ReportTemplates
+                .Find<ReportTemplate>(q => q.Id == templateId))
+                .FirstOrDefault();
+            if (reportTemplate == null)
+                return ReturnResponse("Invalid template ID provided", ResponseStatus.Fail);
+
+            var reportingService = new ReportingService();
+            reportingService.GenerateReport(reportTemplate);
+
             return ReturnResponse("Will be implemented soon", ResponseStatus.Success);
         }
 

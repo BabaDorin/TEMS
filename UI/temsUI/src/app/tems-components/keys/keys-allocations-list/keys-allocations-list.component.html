@@ -20,7 +20,7 @@
                         account_circle
                     </mat-icon> {{ allocation.personnel.label }}
                 </a>
-                <button *ngIf="canManage" mat-button (click)="delete(allocation.id, i)">
+                <button *ngIf="canManage" mat-button (click)="delete(allocation.id, (p1 - 1) * 10 + i)">
                     <mat-icon class="text-secondary">delete</mat-icon>
                 </button>
                 <div class="mt-2 mb-2 text-center">
@@ -40,11 +40,3 @@
         </div>
     </div>
 </div>
-
-<!-- id: string,
-    key: IOption,
-    personnel: IOption,
-    room?: IOption,
-    dateAllocated: Date,
-    allocatedBy?: IOption,
-    dateReturned?: Date, -->

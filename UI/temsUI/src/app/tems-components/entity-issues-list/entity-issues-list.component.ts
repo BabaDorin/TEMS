@@ -119,7 +119,7 @@ export class EntityIssuesListComponent extends TEMSComponent implements OnInit, 
           return;
         }
 
-        this.issues[index + (this.pageNumber-1)*20].status = eventData.value;
+        this.issues[index].status = eventData.value;
       })
     )
   }
@@ -133,7 +133,7 @@ export class EntityIssuesListComponent extends TEMSComponent implements OnInit, 
           return;
         }
 
-        let selectedIssue = this.issues[index + (this.pageNumber-1)*20];
+        let selectedIssue = this.issues[index];
         selectedIssue.dateClosed = new Date;
         let d1 = new Date(selectedIssue.dateClosed);
         let d2 = new Date(selectedIssue.dateCreated);
@@ -155,7 +155,7 @@ export class EntityIssuesListComponent extends TEMSComponent implements OnInit, 
           return;
         }
 
-        this.issues[index + (this.pageNumber-1)*20].dateClosed = undefined;
+        this.issues[index].dateClosed = undefined;
       })
     )
   }
@@ -188,7 +188,7 @@ export class EntityIssuesListComponent extends TEMSComponent implements OnInit, 
       .subscribe(result => {
         this.snackService.snack(result);
         if(result.status == 1)
-          this.issues.splice(index + (this.pageNumber-1)*20, 1);
+          this.issues.splice(index, 1);
       })
     )
   }

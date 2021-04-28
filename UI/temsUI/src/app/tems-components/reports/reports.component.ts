@@ -17,7 +17,8 @@ export class ReportsComponent extends TEMSComponent implements OnInit {
   defaultTemplates: ViewReportSimplified[];
   customTemplates: ViewReportSimplified[];
   templates: ViewReportSimplified[];
-
+  pageNumber = 1;
+  
   constructor(
     private reportService: ReportService,
     private router: Router,

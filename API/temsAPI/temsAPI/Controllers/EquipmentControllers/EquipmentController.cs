@@ -169,7 +169,7 @@ namespace temsAPI.Controllers.EquipmentControllers
         }
 
         [HttpGet("equipment/getallautocompleteoptions/{onlyParents}/{filter?}")]
-        public async Task<JsonResult> GetAllAutocompleteOptions(bool onlyParents, string? filter = null)
+        public async Task<JsonResult> GetAllAutocompleteOptions(bool onlyParents, string filter = null)
         {
             try
             {

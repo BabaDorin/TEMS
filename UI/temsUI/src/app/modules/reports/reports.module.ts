@@ -1,3 +1,5 @@
+import { NgxPaginationModule } from 'ngx-pagination';
+import { NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
 import { CheckboxGroupComponent } from './../../shared/forms/checkbox-group/checkbox-group.component';
 import { TemsFormsModule } from './../tems-forms/tems-forms.module';
 import { CreateReportTemplateComponent } from '../../tems-components/reports/create-report-template/create-report-template.component';
@@ -22,9 +24,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     CommonModule,
     ReportsRoutingModule,
     MaterialModule,
-    // ReactiveFormsModule,
-    // FormsModule,
-    TemsFormsModule
+    TemsFormsModule,
+    NgxPaginationModule,
   ],
   exports: [
     ReportsComponent,

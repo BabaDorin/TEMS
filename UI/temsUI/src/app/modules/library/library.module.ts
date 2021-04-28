@@ -1,3 +1,4 @@
+import { NgxPaginationModule } from 'ngx-pagination';
 import { FileUploadModule } from './../file-upload/file-upload.module';
 import { TemsFormsModule } from './../tems-forms/tems-forms.module';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
@@ -28,6 +29,7 @@ import { FileIconComponent } from 'src/app/tems-components/tems-icons/file-icon/
     TemsFormsModule,
     NgbModule,
     FileUploadModule,
+    NgxPaginationModule,
   ]
 })
 export class LibraryModule { }

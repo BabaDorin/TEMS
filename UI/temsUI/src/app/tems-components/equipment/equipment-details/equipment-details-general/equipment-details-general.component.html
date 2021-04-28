@@ -70,9 +70,9 @@
                             <b>{{ detachedEq.additional }}: </b> {{ detachedEq.label }}
                         </mat-expansion-panel-header>
 
-                        <ng-container matExpansionPanelContent class="mat-exp-panel-content">
+                        <ng-template matExpansionPanelContent class="mat-exp-panel-content">
                             <app-equipment-details [equipmentId]="detachedEq.value"></app-equipment-details>
-                        </ng-container>
+                        </ng-template>
                     </mat-expansion-panel>
                     <br>
                 </div>

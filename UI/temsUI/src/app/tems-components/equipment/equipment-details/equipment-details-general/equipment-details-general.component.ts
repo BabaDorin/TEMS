@@ -1,6 +1,5 @@
 import { AttachEquipmentComponent } from './../../attach-equipment/attach-equipment.component';
 import { DialogService } from './../../../../services/dialog-service/dialog.service';
-import { IOption } from './../../../../models/option.model';
 import { CAN_MANAGE_ENTITIES } from './../../../../models/claims';
 import { TokenService } from './../../../../services/token-service/token.service';
 import { SnackService } from './../../../../services/snack/snack.service';
@@ -9,7 +8,6 @@ import { Property } from './../../../../models/equipment/view-property.model';
 import { EquipmentService } from 'src/app/services/equipment-service/equipment.service';
 import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import { ViewEquipment } from 'src/app/models/equipment/view-equipment.model';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-equipment-details-general',
@@ -38,7 +36,6 @@ export class EquipmentDetailsGeneralComponent extends TEMSComponent implements O
   constructor(
     private equipmentService: EquipmentService,
     private tokenService: TokenService,
-    private route: Router,
     private dialogService: DialogService,
     private snackService: SnackService) {
     super();
@@ -52,7 +49,6 @@ export class EquipmentDetailsGeneralComponent extends TEMSComponent implements O
         if(this.snackService.snackIfError(response))
           return;
         
-        console.log(response);
         this.equipment = response;
         this.headerClass = (this.equipment.isArchieved) ? 'text-muted' : '';
 
@@ -66,6 +62,12 @@ export class EquipmentDetailsGeneralComponent extends TEMSComponent implements O
         ];
     
         this.specificProperties = this.equipment.specificTypeProperties;
+  
+        if(this.detachedEquipments != undefined){
+          this.detachedEquipments = this.detachedEquipments.filter(q => {
+            return this.equipment.children.findIndex(eq => eq.value == q.value) == -1
+          })
+        }
       }))
   }
 

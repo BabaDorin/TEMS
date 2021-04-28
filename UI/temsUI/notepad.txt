@@ -14,9 +14,9 @@ IMPORTANT NOTES:
 
 TODO
 ------------ As soon as possible >>>>
---> Treat indexes properrly when using pagination on properties and types
---> Fix spelling mistakes SIC Integration
+
 --> Remove deatached from attached if it has been attached back =)
+
 --> Display custom properties (equipment)
 --> Add pagination to reports, library
 --> Dearchive does not work (no logic added)
@@ -86,6 +86,9 @@ TODO
 -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 
 ------------ Solved >>>>
+
+--> Fix spelling mistakes SIC Integration
+--> Treat indexes properrly when using pagination on properties and types
 
 --> Improve the archivation logic by making the DateArchieved nullable and by using the new approach (SetArchivationStatus) 
     when setting the archivation status of an item.

@@ -235,6 +235,8 @@ namespace temsAPI.Controllers.EquipmentControllers
                         where: q => q.Id == id,
                         include: q => q
                         .Include(q => q.EquipmentDefinition).ThenInclude(q => q.Children)
+                        .Include(q => q.EquipmentDefinition).ThenInclude(q => q.EquipmentSpecifications)
+                        .ThenInclude(q => q.Property)
                         .Include(q => q.EquipmentDefinition).ThenInclude(q => q.EquipmentType)
                         .Include(q => q.EquipmentAllocations).ThenInclude(q => q.Room)
                         .Include(q => q.EquipmentAllocations).ThenInclude(q => q.Personnel)

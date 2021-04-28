@@ -18,7 +18,7 @@ export interface IViewEquipment{
     serialNumber: string,
     room: IOption,
     type: EquipmentType,
-    specificTypeProperties: Property[],
+    specificProperties: Property[],
     children: IOption[],
     parent: IOption;
     isUsed: boolean,
@@ -39,6 +39,6 @@ export class ViewEquipment implements IViewEquipment{
     isUsed: boolean;
     isDefect: boolean;
     price: number;
-    specificTypeProperties: Property[];
+    specificProperties: Property[];
     isArchieved: boolean;
 }

@@ -15,9 +15,8 @@ IMPORTANT NOTES:
 TODO
 ------------ As soon as possible >>>>
 
---> Remove deatached from attached if it has been attached back =)
-
 --> Display custom properties (equipment)
+
 --> Add pagination to reports, library
 --> Dearchive does not work (no logic added)
 --> Provided email is already in use (User - settings) when turning on email notifications
@@ -87,6 +86,7 @@ TODO
 
 ------------ Solved >>>>
 
+--> Remove deatached from attached if it has been attached back =)
 --> Fix spelling mistakes SIC Integration
 --> Treat indexes properrly when using pagination on properties and types
 

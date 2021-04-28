@@ -21,17 +21,16 @@ export class EquipmentDetailsGeneralComponent extends TEMSComponent implements O
   @Output() archivationStatusChanged = new EventEmitter();
   dialogRef;
   headerClass;
-
   canManage:boolean = false;
   equipment: ViewEquipment;
+  generalProperties: Property[];
+  detachedEquipments = [];
+  editing = false;
+
   get canAttach(){
     // returns true if equipment can have children
     return this.equipment.definition.children.length > 0;
   }
-  generalProperties: Property[];
-  specificProperties: Property[];
-  detachedEquipments = [];
-  editing = false;
 
   constructor(
     private equipmentService: EquipmentService,
@@ -50,6 +49,7 @@ export class EquipmentDetailsGeneralComponent extends TEMSComponent implements O
           return;
         
         this.equipment = response;
+        console.log(response);
         this.headerClass = (this.equipment.isArchieved) ? 'text-muted' : '';
 
         this.generalProperties= [
@@ -61,8 +61,6 @@ export class EquipmentDetailsGeneralComponent extends TEMSComponent implements O
           { displayName: 'Is Defect', dataType: 'boolean', name: 'isUsed', value: this.equipment.isDefect},
         ];
     
-        this.specificProperties = this.equipment.specificTypeProperties;
-  
         if(this.detachedEquipments != undefined){
           this.detachedEquipments = this.detachedEquipments.filter(q => {
             return this.equipment.children.findIndex(eq => eq.value == q.value) == -1

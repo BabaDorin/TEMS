@@ -24,7 +24,10 @@
                 class="col-md-2" 
                 class="limitedWidth" 
                 *ngFor="let template of customTemplates | paginate: { itemsPerPage: 24, currentPage: pageNumber, id: 'reports' }; let i = index">
-                <app-report-container [template]="template"></app-report-container>
+                <app-report-container 
+                    [template]="template"
+                    (templateRemoved)="templateRemoved($event)">
+                </app-report-container>
             </div>
 
             <div class="col-md-2" class="limitedWidth">

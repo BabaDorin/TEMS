@@ -97,22 +97,16 @@ namespace temsAPI.Controllers.ReportControllers
             }
         }
 
-        [HttpGet("report/removetemplate/{templateId}")]
+        [HttpGet("report/archievetemplate/{templateId}/{flag?}")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
-        public async Task<JsonResult> RemoveTemplate(string templateId)
+        public async Task<JsonResult> ArchieveTemplate(string templateId, bool flag = true)
         {
             try
             {
-                var model = (await _unitOfWork.ReportTemplates
-                    .Find<ReportTemplate>(
-                        q => q.Id == templateId
-                    )).FirstOrDefault();
-
-                if (model == null)
-                    return ReturnResponse("Invalid id provided", ResponseStatus.Fail);
-
-                model.IsArchieved = true;
-                await _unitOfWork.Save();
+                string archivationResult = await (new ArchieveHelper(_userManager, _unitOfWork))
+                    .SetReportTemplateArchivationStatus(templateId, flag);
+                if (archivationResult != null)
+                    return ReturnResponse(archivationResult, ResponseStatus.Fail);
 
                 return ReturnResponse("Success", ResponseStatus.Success);
             }

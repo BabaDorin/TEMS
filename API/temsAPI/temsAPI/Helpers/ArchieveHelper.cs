@@ -10,6 +10,7 @@ using temsAPI.Data.Entities.CommunicationEntities;
 using temsAPI.Data.Entities.EquipmentEntities;
 using temsAPI.Data.Entities.KeyEntities;
 using temsAPI.Data.Entities.OtherEntities;
+using temsAPI.Data.Entities.Report;
 using temsAPI.Data.Entities.UserEntities;
 
 namespace temsAPI.Helpers
@@ -327,13 +328,32 @@ namespace temsAPI.Helpers
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
-                return "An error occured while archieving log's related data";
+                return "An error occured while archieving personnel's related data";
             }
         }
 
-        internal Task<string> SetKeyAllocationArchivationStatus(string allocationId, bool? archivationStatus)
+        public async Task<string> SetReportTemplateArchivationStatus(string templateId, bool status)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var template = (await _unitOfWork.ReportTemplates
+                    .Find<ReportTemplate>(
+                        q => q.Id == templateId
+                    )).FirstOrDefault();
+
+                if (template == null)
+                    return "Invalid id provided";
+
+                template.IsArchieved = status;
+                await _unitOfWork.Save();
+
+                return null;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return "An error occured while archieving template's related data";
+            }
         }
     }
 }

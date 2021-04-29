@@ -36,8 +36,6 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { SnackComponent } from './public/snack/snack.component';
 import { DefinitionService } from './services/definition-service/definition.service';
 import { ConnectPersonnelUserComponent } from './tems-components/connect-personnel-user/connect-personnel-user.component';
-import { AgGridArchievedItemsComponent } from './tems-components/archieve/ag-grid-archieved-items/ag-grid-archieved-items.component';
-import { ViewArchieveComponent } from './tems-components/archieve/view-archieve/view-archieve.component';
 
 @NgModule({
   declarations: [
@@ -54,8 +52,6 @@ import { ViewArchieveComponent } from './tems-components/archieve/view-archieve/
     TEMSComponent,
     SnackComponent,
     ConnectPersonnelUserComponent,
-    AgGridArchievedItemsComponent,
-    ViewArchieveComponent,
     ],
   imports: [
     BrowserModule,

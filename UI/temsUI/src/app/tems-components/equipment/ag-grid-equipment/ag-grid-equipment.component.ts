@@ -1,11 +1,9 @@
 import { EquipmentDetailsGeneralComponent } from './../equipment-details/equipment-details-general/equipment-details-general.component';
 import { DialogService } from './../../../services/dialog-service/dialog.service';
 import { SnackService } from './../../../services/snack/snack.service';
-import { Router } from '@angular/router';
 import { TEMSComponent } from './../../../tems/tems.component';
 import { EquipmentService } from './../../../services/equipment-service/equipment.service';
 import { Component, Input, OnInit, OnChanges, SimpleChanges } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { BtnCellRendererComponent } from 'src/app/public/ag-grid/btn-cell-renderer/btn-cell-renderer.component';
 
 @Component({

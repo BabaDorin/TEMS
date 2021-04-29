@@ -56,7 +56,7 @@ export class AgGridKeysComponent extends TEMSComponent implements OnInit, OnChan
   ngOnInit(): void {
     if(this.displayAsAllocated){
       this.columnDefs = [
-        { headerName: 'Indentifier',  field: 'identifier', sortable: true, filter: true, checkboxSelection: true, headerCheckboxSelection: true},
+        { headerName: 'Identifier',  field: 'identifier', sortable: true, filter: true, checkboxSelection: true, headerCheckboxSelection: true},
         { headerName: 'Room', field: 'room.label', sortable: true, filter: true },
         { headerName: 'Allocated to', field: 'allocatedTo.label', sortable: true, filter: true },
         { headerName: 'Time', field: 'timePassed', sortable: true, filter: true },

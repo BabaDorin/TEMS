@@ -4,7 +4,6 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
 import { Location } from '@angular/common'
 import { TEMSComponent } from 'src/app/tems/tems.component';
-import { IOption } from 'src/app/models/option.model';
 import { ArchieveService } from 'src/app/services/archieve.service';
 import { SnackService } from 'src/app/services/snack/snack.service';
 import { ArchievedItem } from 'src/app/models/archieve/archieved-item.model';

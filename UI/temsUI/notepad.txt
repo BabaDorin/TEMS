@@ -24,6 +24,7 @@ TODO
 
 --> Add "Remove all archieved items" option for admins (system configuration)
 
+--> Add generic AgGridItems Component
 --> Learn about services in ASP.NET and build the IdentityService, which will provide data about the currently logged
     in user.
 --> Better UX when dealing with reports (For ex >> Redirect to listing after adding a report and other).

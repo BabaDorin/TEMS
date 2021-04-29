@@ -1,4 +1,4 @@
-import { AgGridModule } from 'ag-grid-angular';
+import { AgGridAngular, AgGridModule } from 'ag-grid-angular';
 import { AgGridArchievedItemsComponent } from './../../tems-components/archieve/ag-grid-archieved-items/ag-grid-archieved-items.component';
 import { ViewArchieveComponent } from './../../tems-components/archieve/view-archieve/view-archieve.component';
 import { NgxPaginationModule } from 'ngx-pagination';

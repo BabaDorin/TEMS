@@ -12,12 +12,12 @@
     </mat-form-field>
     <br>
     <button mat-button (click)="dearchive()">
-      <mat-icon class="text-primary">double_arrow</mat-icon>Dearchive selected
+      <mat-icon class="text-primary">history</mat-icon>Dearchive selected
     </button>
     <button *ngIf="canRemove" mat-button (click)="remove()">
-      <mat-icon class="text-primary">timeline</mat-icon>Remove selected (completely)
+      <mat-icon class="text-muted">delete_forever</mat-icon>Remove selected (completely)
     </button>
-    <app-ag-grid-archieved-items #archievedItems [itemsType]="selectedType">
+    <app-ag-grid-archieved-items #agArchievedItems [itemsType]="selectedType">
     </app-ag-grid-archieved-items>
   </div>
 </div>

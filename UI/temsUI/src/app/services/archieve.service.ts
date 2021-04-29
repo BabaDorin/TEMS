@@ -23,4 +23,11 @@ export class ArchieveService extends TEMSService {
       this.httpOptions
     );
   }
+
+  setArchivationStatus(itemType: string, itemId: string, status: boolean): Observable<any>{
+    return this.http.get(
+      API_ARCH_URL + '/setArchivationStatus/' + itemType + '/' + itemId + '/' + status,
+      this.httpOptions 
+    );
+  }
 }

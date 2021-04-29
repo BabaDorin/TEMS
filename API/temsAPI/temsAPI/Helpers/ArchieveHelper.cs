@@ -47,7 +47,7 @@ namespace temsAPI.Helpers
             {
                 var model = (await _unitOfWork.Equipments
                     .Find<Equipment>(
-                        where: q => q.Id == equipmentId,
+                        where: q => q.Id == equipmentId && q.ParentID == null,
                         include: q => q
                         .Include(q => q.Children)
                         .Include(q => q.EquipmentAllocations)
@@ -81,6 +81,30 @@ namespace temsAPI.Helpers
             {
                 Debug.WriteLine(ex);
                 return "An error occured while archieving equipment's related data";
+            }
+        }
+
+        public async Task<string> SetEquipmenAllocationtArchivationStatus(string allocationId, bool status)
+        {
+            try
+            {
+                var allocation = (await _unitOfWork.EquipmentAllocations
+                    .Find<EquipmentAllocation>(
+                        where: q => q.Id == allocationId))
+                    .FirstOrDefault();
+
+                if (allocation == null)
+                    return "Invalid allocation id provided";
+
+                allocation.IsArchieved = status;
+                
+                await _unitOfWork.Save();
+                return null;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return "An error occured while archieving allocation's related data";
             }
         }
 
@@ -336,6 +360,31 @@ namespace temsAPI.Helpers
                 {
                     item.IsArchieved = status;
                 }
+
+                await _unitOfWork.Save();
+                return null;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return "An error occured while archieving personnel's related data";
+            }
+        }
+
+        public async Task<string> SetTicketArchivationStatus(string ticketId, bool status)
+        {
+            try
+            {
+                var ticket = (await _unitOfWork.Tickets
+                    .Find<Ticket>
+                    (
+                        where: q => q.Id == ticketId
+                    )).FirstOrDefault();
+
+                if (ticket == null)
+                    return "Invalid ticket id";
+
+                ticket.IsArchieved = status;
 
                 await _unitOfWork.Save();
                 return null;

@@ -1,45 +1,35 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
-using temsAPI.Data.Entities.CommunicationEntities;
-using temsAPI.Data.Entities.EquipmentEntities;
-using temsAPI.Data.Entities.KeyEntities;
-using temsAPI.Data.Entities.OtherEntities;
-using temsAPI.Data.Entities.Report;
 using temsAPI.Data.Entities.UserEntities;
 using temsAPI.Helpers;
 using temsAPI.Repository;
 using temsAPI.System_Files;
-using temsAPI.ViewModels;
 using temsAPI.ViewModels.Archieve;
 
 namespace temsAPI.Controllers.ArchieveControllers
 {
     public class ArchieveController : TEMSController
-    {  
+    {
+        // BEFREE: Find a way to get rid of these switch statements via creating a smart way of accessing
+        // the repo by item type.
+
         public ArchieveController(IMapper mapper, IUnitOfWork unitOfWork, UserManager<TEMSUser> userManager) : base(mapper, unitOfWork, userManager)
         {
-        }
 
-        public IActionResult Index()
-        {
-            return View();
         }
-
+        
         [HttpGet("/archieve/getarchieveditems/{itemType}")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> GetArchievedItems(string itemType)
         {
             try
             {
-                var archievedItems = new List<ArchievedItemViewModel>();
                 switch (itemType.ToLower())
                 {
                     case "equipment":
@@ -76,5 +66,66 @@ namespace temsAPI.Controllers.ArchieveControllers
                 return ReturnResponse("An error occured while retrieveing archieved items", ResponseStatus.Fail);
             }
         }
+
+        [HttpGet("archieve/setArchivationStatus/{itemType}/{itemId}/{status}")]
+        public async Task<JsonResult> SetArchivationStatus(string itemType, string itemId, bool status)
+        {
+            try
+            {
+                string archivationStatus = null;
+                ArchieveHelper archieveHelper = new ArchieveHelper(_userManager, _unitOfWork);
+                switch (itemType.ToLower())
+                {
+                    case "equipment":
+                        archivationStatus = await archieveHelper.SetEquipmentArchivationStatus(itemId, status);
+                        break;
+                    case "issues":
+                        archivationStatus = await archieveHelper.SetTicketArchivationStatus(itemId, status);
+                        break;
+                    case "rooms":
+                        archivationStatus = await archieveHelper.SetRoomArchivationStatus(itemId, status);
+                        break;
+                    case "personnel":
+                        archivationStatus = await archieveHelper.SetPersonnelArchivationStatus(itemId, status);
+                        break;
+                    case "keys":
+                        archivationStatus = await archieveHelper.SetKeyArchivationStatus(itemId, status);
+                        break;
+                    case "report templates":
+                        archivationStatus = await archieveHelper.SetReportTemplateArchivationStatus(itemId, status);
+                        break;
+                    case "equipment allocations":
+                        archivationStatus = await archieveHelper.SetEquipmenAllocationtArchivationStatus(itemId, status);
+                        break;
+                    case "logs":
+                        archivationStatus = await archieveHelper.SetLogArchivationStatus(itemId, status);
+                        break;
+                    case "key allocations":
+                        archivationStatus = await archieveHelper.SetKeyAllocationArchivationStatus(itemId, status);
+                        break;
+                    case "properties":
+                        archivationStatus = await archieveHelper.SetPropertyArchivationStatus(itemId, status);
+                        break;
+                    case "equipment types":
+                        archivationStatus = await archieveHelper.SetTypeArchivationStatus(itemId, status);
+                        break;
+                    case "equipment definitions":
+                        archivationStatus = await archieveHelper.SetDefinitionArchivationStatus(itemId, status);
+                        break;
+                    default:
+                        return ReturnResponse("Unknown items type", ResponseStatus.Fail);
+                }
+
+                if (archivationStatus != null)
+                    return ReturnResponse(archivationStatus, ResponseStatus.Fail);
+
+                return ReturnResponse("Success", ResponseStatus.Success);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                return ReturnResponse("An error occured while setting the archivation status", ResponseStatus.Fail);
+            }
+        }   
     }
 }

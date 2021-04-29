@@ -15,7 +15,7 @@ export class AgGridArchievedItemsComponent extends TEMSComponent implements OnIn
   @Input() items: ArchievedItem[];
   @Input() itemsType: string;
 
-  private gridApi;
+  public gridApi;
   private gridColumnApi;
 
   private columnDefs;
@@ -72,6 +72,7 @@ export class AgGridArchievedItemsComponent extends TEMSComponent implements OnIn
   fetchArchievedItems(){
     if(this.itemsType == undefined){
       this.loading = false;
+      this.rowData = [];
       return;
     }
 
@@ -86,6 +87,10 @@ export class AgGridArchievedItemsComponent extends TEMSComponent implements OnIn
         this.rowData = result;
       })
     )
+  }
+
+  removeItem(item){
+    this.gridApi.applyTransaction({ remove: [item] });
   }
 
   ngOnInit(): void {

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.OtherEntities;
+using temsAPI.Data.Entities.UserEntities;
 
 namespace temsAPI.Data.Entities.EquipmentEntities
 {
@@ -56,6 +57,9 @@ namespace temsAPI.Data.Entities.EquipmentEntities
 
         public DateTime? DateReturned { get; set; }
 
+        [ForeignKey("ArchievedById")]
+        public TEMSUser? ArchievedBy { get; set; }
+        public string? ArchievedById { get; set; }
 #nullable disable
     }
 }

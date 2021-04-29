@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
+using temsAPI.Data.Entities.UserEntities;
 
 namespace temsAPI.Data.Entities.OtherEntities
 {
@@ -28,6 +30,12 @@ namespace temsAPI.Data.Entities.OtherEntities
                     : null;
             }
         }
+
+#nullable enable
+        [ForeignKey("ArchievedById")]
+        public TEMSUser? ArchievedBy { get; set; }
+        public string? ArchievedById { get; set; }
+#nullable disable
 
         public virtual ICollection<Personnel> Personnel { get; set; } = new List<Personnel>();
 

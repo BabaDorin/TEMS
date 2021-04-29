@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.EquipmentEntities;
 using temsAPI.Data.Entities.OtherEntities;
+using temsAPI.Data.Entities.UserEntities;
 
 namespace temsAPI.Data.Entities.CommunicationEntities
 {
@@ -36,6 +37,10 @@ namespace temsAPI.Data.Entities.CommunicationEntities
         [ForeignKey("LogTypeID")]
         public LogType? LogType { get; set; }
         public string? LogTypeID { get; set; }
+
+        [ForeignKey("ArchievedById")]
+        public TEMSUser? ArchievedBy { get; set; }
+        public string? ArchievedById { get; set; }
 #nullable disable
 
         private bool isArchieved;

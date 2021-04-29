@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.Report;
+using temsAPI.Data.Entities.UserEntities;
 using temsAPI.ViewModels.EquipmentDefinition;
 
 namespace temsAPI.Data.Entities.EquipmentEntities
@@ -32,6 +33,10 @@ namespace temsAPI.Data.Entities.EquipmentEntities
         public EquipmentDefinition? Parent { get; set; }
         public string? ParentID { get; set; }
         public string? Description { get; set; }
+
+        [ForeignKey("ArchievedById")]
+        public TEMSUser? ArchievedBy { get; set; }
+        public string? ArchievedById { get; set; }
 
 #nullable disable
 

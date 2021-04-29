@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.OtherEntities;
+using temsAPI.Data.Entities.UserEntities;
 
 namespace temsAPI.Data.Entities.KeyEntities
 {
@@ -16,7 +17,6 @@ namespace temsAPI.Data.Entities.KeyEntities
         public string Id { get; set; }
 
         public string Identifier { get; set; }
-        //public int Copies { get; set; } = 0;
         public DateTime? DateArchieved { get; set; }
         private bool isArchieved;
         public bool IsArchieved
@@ -39,6 +39,10 @@ namespace temsAPI.Data.Entities.KeyEntities
         [ForeignKey("RoomId")]
         public Room? Room { get; set; }
         public string? RoomId { get; set; }
+
+        [ForeignKey("ArchievedById")]
+        public TEMSUser? ArchievedBy { get; set; }
+        public string? ArchievedById { get; set; }
 #nullable disable
 
         public virtual ICollection<KeyAllocation> KeyAllocations { get; set; } = new List<KeyAllocation>();

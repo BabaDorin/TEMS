@@ -1,3 +1,4 @@
+import { ArchievedItem } from './../models/archieve/archieved-item.model';
 import { Observable } from 'rxjs';
 import { IOption } from './../models/option.model';
 import { API_ARCH_URL } from './../models/backend.config';
@@ -16,8 +17,8 @@ export class ArchieveService extends TEMSService {
     super();
   }
 
-  getArchievedItems(itemType: string): Observable<IOption[]>{
-    return this.http.get<IOption[]>(
+  getArchievedItems(itemType: string): Observable<ArchievedItem[]>{
+    return this.http.get<ArchievedItem[]>(
       API_ARCH_URL + '/getarchieveditems/' + itemType,
       this.httpOptions
     );

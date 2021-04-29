@@ -14,39 +14,16 @@ using temsAPI.Data.Entities.KeyEntities;
 using temsAPI.Data.Entities.OtherEntities;
 using temsAPI.Data.Entities.Report;
 using temsAPI.Data.Entities.UserEntities;
+using temsAPI.Helpers;
 using temsAPI.Repository;
 using temsAPI.System_Files;
 using temsAPI.ViewModels;
+using temsAPI.ViewModels.Archieve;
 
 namespace temsAPI.Controllers.ArchieveControllers
 {
     public class ArchieveController : TEMSController
-    {
-
-        class ArchievedItem : IArchiveable, IIdentifiable
-        {
-            private bool isArchieved;
-            public bool IsArchieved
-            {
-                get
-                {
-                    return isArchieved;
-                }
-                set
-                {
-                    isArchieved = value;
-                    DateArchieved = (value)
-                        ? DateTime.Now
-                        : null;
-                }
-            }
-            public DateTime? DateArchieved { get; set; }
-
-            public string Identifier => "";
-
-            public string Id { get; set; }
-        }
-
+    {  
         public ArchieveController(IMapper mapper, IUnitOfWork unitOfWork, UserManager<TEMSUser> userManager) : base(mapper, unitOfWork, userManager)
         {
         }
@@ -62,22 +39,35 @@ namespace temsAPI.Controllers.ArchieveControllers
         {
             try
             {
+                var archievedItems = new List<ArchievedItemViewModel>();
                 switch (itemType.ToLower())
                 {
-                    case "equipment": return Json(await getArchieved<Equipment>(_unitOfWork.Equipments));
-                    case "issues": return Json(await getArchieved<Ticket>(_unitOfWork.Tickets));
-                    case "rooms": return Json(await getArchieved<Room>(_unitOfWork.Rooms));
-                    case "personnel": return Json(await getArchieved<Personnel>(_unitOfWork.Personnel));
-                    case "keys": return Json(await getArchieved<Key>(_unitOfWork.Keys));
-                    case "report templates": return Json(await getArchieved<ReportTemplate>(_unitOfWork.ReportTemplates));
-                    case "equipment allocations": return Json(await getArchieved<EquipmentAllocation>(_unitOfWork.EquipmentAllocations));
-                    case "logs": return Json(await getArchieved<Log>(_unitOfWork.Logs));
-                    case "key allocations": return Json(await getArchieved<KeyAllocation>(_unitOfWork.KeyAllocations));
-                    case "properties": return Json(await getArchieved<Property>(_unitOfWork.Properties));
-                    case "equipment types": return Json(await getArchieved<EquipmentType>(_unitOfWork.EquipmentTypes));
-                    case "equipment definitions": return Json(await getArchieved<EquipmentDefinition>(_unitOfWork.EquipmentDefinitions));
+                    case "equipment":
+                        return Json(await ArchieveHelper.GetArchievedItemsFromRepo(_unitOfWork.Equipments));
+                    case "issues":
+                        return Json(await ArchieveHelper.GetArchievedItemsFromRepo(_unitOfWork.Tickets));
+                    case "rooms":
+                        return Json(await ArchieveHelper.GetArchievedItemsFromRepo(_unitOfWork.Rooms));
+                    case "personnel":
+                        return Json(await ArchieveHelper.GetArchievedItemsFromRepo(_unitOfWork.Personnel));
+                    case "keys":
+                        return Json(await ArchieveHelper.GetArchievedItemsFromRepo(_unitOfWork.Keys));
+                    case "report templates":
+                        return Json(await ArchieveHelper.GetArchievedItemsFromRepo(_unitOfWork.ReportTemplates));
+                    case "equipment allocations":
+                        return Json(await ArchieveHelper.GetArchievedItemsFromRepo(_unitOfWork.EquipmentAllocations));
+                    case "logs":
+                        return Json(await ArchieveHelper.GetArchievedItemsFromRepo(_unitOfWork.Logs));
+                    case "key allocations":
+                        return Json(await ArchieveHelper.GetArchievedItemsFromRepo(_unitOfWork.KeyAllocations));
+                    case "properties":
+                        return Json(await ArchieveHelper.GetArchievedItemsFromRepo(_unitOfWork.Properties));
+                    case "equipment types":
+                        return Json(await ArchieveHelper.GetArchievedItemsFromRepo(_unitOfWork.EquipmentTypes));
+                    case "equipment definitions":
+                        return Json(await ArchieveHelper.GetArchievedItemsFromRepo(_unitOfWork.EquipmentDefinitions));
                     default:
-                        return ReturnResponse("An error occured", ResponseStatus.Fail);
+                        return ReturnResponse("Unknown items type", ResponseStatus.Fail);
                 }
             }
             catch (Exception ex)
@@ -85,19 +75,6 @@ namespace temsAPI.Controllers.ArchieveControllers
                 Debug.WriteLine(ex);
                 return ReturnResponse("An error occured while retrieveing archieved items", ResponseStatus.Fail);
             }
-        }
-
-        public async Task<List<Option>> getArchieved<T>(IGenericRepository<T> repo) where T: class, IArchiveableItem
-        {
-            return (await repo.FindAll<Option>(
-                    where: q => q.IsArchieved,
-                    select: q => new Option
-                    {
-                        Label = q.Identifier,
-                        Value = q.Id,
-                        Additional = q.DateArchieved.ToString()
-                    }
-                )).ToList();
         }
     }
 }

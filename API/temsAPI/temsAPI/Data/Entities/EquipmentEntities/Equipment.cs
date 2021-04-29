@@ -44,6 +44,10 @@ namespace temsAPI.Data.Entities.EquipmentEntities
         public TEMSUser? RegisteredBy { get; set; }
         public string? RegisteredByID { get; set; }
 
+        [ForeignKey("ArchievedById")]
+        public TEMSUser? ArchievedBy { get; set; }
+        public string? ArchievedById { get; set; }
+
         public DateTime? PurchaseDate { get; set; }
         public DateTime? RegisterDate { get; set; }
         public DateTime? DeletedDate { get; set; }

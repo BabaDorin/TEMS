@@ -12,6 +12,8 @@ using temsAPI.Data.Entities.KeyEntities;
 using temsAPI.Data.Entities.OtherEntities;
 using temsAPI.Data.Entities.Report;
 using temsAPI.Data.Entities.UserEntities;
+using temsAPI.ViewModels;
+using temsAPI.ViewModels.Archieve;
 
 namespace temsAPI.Helpers
 {
@@ -24,6 +26,19 @@ namespace temsAPI.Helpers
         {
             _userManager = userManager;
             _unitOfWork = unitOfWork;
+        }
+
+        public static async Task<List<ArchievedItemViewModel>> GetArchievedItemsFromRepo<T>(IGenericRepository<T> repo) where T : class, IArchiveableItem
+        {
+            return (await repo.FindAll<ArchievedItemViewModel>(
+                    where: q => q.IsArchieved,
+                    select: q => new ArchievedItemViewModel
+                    {
+                        Id = q.Id,
+                        Identifier = q.Identifier,
+                        DateArchieved = (DateTime)q.DateArchieved
+                    }
+                )).ToList();
         }
 
         public async Task<string> SetEquipmentArchivationStatus(string equipmentId, bool status)

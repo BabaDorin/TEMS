@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
@@ -24,6 +25,7 @@ using temsAPI.Data.Entities.UserEntities;
 using temsAPI.Helpers;
 using temsAPI.Mappings;
 using temsAPI.Repository;
+using temsAPI.Services;
 using temsAPI.System_Files;
 
 namespace temsAPI
@@ -55,6 +57,8 @@ namespace temsAPI
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.AddTransient<IUnitOfWork, UnitOfWork>();
+            services.AddHttpContextAccessor();
+            services.AddSingleton<IdentityService>();
             services.AddAutoMapper(typeof(Maps));
 
             services.AddDefaultIdentity<TEMSUser>()

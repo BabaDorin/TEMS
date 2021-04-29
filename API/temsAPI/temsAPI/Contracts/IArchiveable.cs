@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using temsAPI.Data.Entities.UserEntities;
 
 namespace temsAPI.Contracts
 {
@@ -9,5 +10,6 @@ namespace temsAPI.Contracts
     {
         bool IsArchieved { get; set; }
         DateTime? DateArchieved { get; set; }
+        TEMSUser ArchievedBy { get; set; }
     }
 }

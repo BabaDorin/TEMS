@@ -41,6 +41,10 @@ namespace temsAPI.Data.Entities.UserEntities
         [InverseProperty("TEMSUser")]
         public Personnel? Personnel { get; set; }
         public string? PersonnelId { get; set; }
+
+        [ForeignKey("ArchievedById")]
+        public TEMSUser? ArchievedBy { get; set; }
+        public string? ArchievedById { get; set; }
 #nullable disable
 
         public virtual ICollection<Announcement> Announcements { get; set; } = new List<Announcement>();

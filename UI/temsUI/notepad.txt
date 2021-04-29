@@ -16,10 +16,10 @@ TODO
 ------------ As soon as possible >>>>
 
 // TD:
---> Provided email is already in use (User - settings) when turning on email notifications
---> Add IsEditable to viewmodel and restrict user from editin non-editable properties and types (inputs are disabled)
 --> Fix archieving for types, properties, definitions etc. (The endpoint frontent communicates with is not valid)
+--> Error when fetching properties
 
+--> EquipmentManager
 --> Add "Remove all archieved items" option for admins (system configuration)
 --> Email confirmation + password reset via email
 --> Add generic AgGridItems Component
@@ -72,6 +72,8 @@ TODO
 
 ------------ Solved >>>>
 
+--> Add IsEditable to viewmodel and restrict user from editin non-editable properties and types (inputs are disabled)
+--> Provided email is already in use (User - settings) when turning on email notifications
 --> Dearchive does not work (no logic added)
 --> Improve archieve
 --> Add pagination to reports, library

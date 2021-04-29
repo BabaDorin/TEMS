@@ -72,6 +72,7 @@ namespace temsAPI.EquipmentControllers
                         {
                             Id = q.Id,
                             Name = q.Name,
+                            Editable = (bool)q.EditableTypeInfo,
                             Children = String.Join(", ", q.Children
                             .Where(q => !q.IsArchieved)
                             .Select(q => q.Name))
@@ -102,6 +103,7 @@ namespace temsAPI.EquipmentControllers
                         {
                             Id = q.Id,
                             Name = q.Name,
+                            Editable = (bool)q.EditableTypeInfo,
                             Children = String.Join(", ", q.Children.Select(q => q.Name))
                         }
                         )).FirstOrDefault();
@@ -197,6 +199,9 @@ namespace temsAPI.EquipmentControllers
                 if (equipmentTypeToUpdate == null)
                     return ReturnResponse("An error occured, the type has not been found", ResponseStatus.Fail);
 
+                if ((bool)!equipmentTypeToUpdate.EditableTypeInfo)
+                    return ReturnResponse("This type can not be edited", ResponseStatus.Fail);
+
                 await SetProperties(equipmentTypeToUpdate, viewModel);
 
                 string setParentsResponse = await SetParents(equipmentTypeToUpdate, viewModel);
@@ -272,7 +277,6 @@ namespace temsAPI.EquipmentControllers
                 foreach (Option parent in viewModel.Parents)
                     if (!await _unitOfWork.EquipmentTypes.isExists(q => q.Id == parent.Value))
                         return $"Parent {parent.Label} not found.";
-
 
             // Invalid properties
             if (viewModel.Properties != null)

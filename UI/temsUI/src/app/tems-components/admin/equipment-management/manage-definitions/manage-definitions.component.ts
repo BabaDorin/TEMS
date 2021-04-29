@@ -56,7 +56,7 @@ export class ManageDefinitionsComponent extends TEMSComponent implements OnInit 
   }
 
   remove(definitionId: string, index: number){
-    if(!confirm("Are you sure you want to remove that defintion?"))
+    if(!confirm("Are you sure you want to remove that defintion?" + index))
     return;
 
     this.unsubscribeFromAll();

@@ -68,7 +68,8 @@ namespace temsAPI.EquipmentControllers
                         {
                             Id = q.Id,
                             Description = q.Description,
-                            DisplayName = q.DisplayName
+                            DisplayName = q.DisplayName,
+                            Editable = (bool)q.EditablePropertyInfo
                         }
                     )).ToList();
                 return Json(viewModel);
@@ -79,8 +80,6 @@ namespace temsAPI.EquipmentControllers
                 return ReturnResponse("An error occured when fetching properties", ResponseStatus.Fail);
             }
         }
-
-
 
         [HttpGet("property/getsimplifiedbyid/{propertyId}")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
@@ -96,7 +95,8 @@ namespace temsAPI.EquipmentControllers
                         {
                             Id = q.Id,
                             Description = q.Description,
-                            DisplayName = q.DisplayName
+                            DisplayName = q.DisplayName,
+                            Editable = (bool)q.EditablePropertyInfo
                         }
                     )).FirstOrDefault();
 
@@ -115,14 +115,22 @@ namespace temsAPI.EquipmentControllers
         {
             try
             {
-                Property model = ((await _unitOfWork.Properties
-                    .Find<Property>(
+                ViewPropertyViewModel viewModel = ((await _unitOfWork.Properties
+                    .Find<ViewPropertyViewModel>(
                         where: q => q.Id == propertyId,
-                        include: q => q.Include(q => q.DataType)
+                        include: q => q.Include(q => q.DataType),
+                        select: q => new ViewPropertyViewModel
+                        {
+                            Id = q.Id,
+                            DataType = q.DataType.Name.ToLower(),
+                            Description = q.Description,
+                            DisplayName = q.DisplayName,
+                            Max = (int)q.Max,
+                            Min = (int)q.Min,
+                            Name = q.Name,
+                            Required = q.Required,
+                        }
                     )).FirstOrDefault());
-
-                ViewPropertyViewModel viewModel = _mapper.Map<ViewPropertyViewModel>(model);
-                viewModel.DataType = model.DataType.Name.ToLower();
 
                 return Json(viewModel);
             }
@@ -138,7 +146,7 @@ namespace temsAPI.EquipmentControllers
         public async Task<JsonResult> Add([FromBody] AddPropertyViewModel viewModel)
         {
 
-            string validationResult = await ValidateAddPropertyViewModel(viewModel);
+            string validationResult = await viewModel.Validate(_unitOfWork);
             if (validationResult != null)
                 return ReturnResponse(validationResult, ResponseStatus.Fail);
 
@@ -196,7 +204,7 @@ namespace temsAPI.EquipmentControllers
         {
             try
             {
-                string validationResult = await ValidateAddPropertyViewModel(viewModel);
+                string validationResult = await viewModel.Validate(_unitOfWork);
                 if (validationResult != null)
                     return ReturnResponse(validationResult, ResponseStatus.Fail);
 
@@ -204,6 +212,9 @@ namespace temsAPI.EquipmentControllers
                     .Find<Property>(
                         where: q => q.Id == viewModel.Id
                     )).FirstOrDefault();
+
+                if ((bool)!propertyToUpdate.EditablePropertyInfo)
+                    return ReturnResponse("This property can not be edited.", ResponseStatus.Fail);
 
                 propertyToUpdate.Name = viewModel.Name;
                 propertyToUpdate.DisplayName = viewModel.DisplayName;
@@ -243,57 +254,6 @@ namespace temsAPI.EquipmentControllers
                 Debug.WriteLine(ex);
                 return ReturnResponse("An error occured while changing the archivation status.", ResponseStatus.Fail);
             }
-        }
-
-        // -----------------------------------------------------------------
-
-        /// <summary>
-        /// Validates an AddPropertyViewModel instance and trims it's properties' values.
-        /// It returns null if everything is ok, otherwise - returns the error message.
-        /// </summary>
-        /// <param name="viewModel"></param>
-        /// <returns></returns>
-        private async Task<string> ValidateAddPropertyViewModel(AddPropertyViewModel viewModel)
-        {
-            viewModel.Name = viewModel.Name?.Trim();
-
-            // name is null
-            if (String.IsNullOrEmpty(viewModel.Name))
-                return "'Name' is required.";
-
-            // name - no spaces or special chars
-            if ((viewModel.Name).Any(Char.IsWhiteSpace))
-                return "'Name' value can not contain spaces.";
-
-            if (!RegexValidation.OnlyAlphaNumeric.IsMatch(viewModel.Name))
-                return "'Name' value can not contain non-alphanumeric characters," +
-                    " Allowed: only a-z, A-Z, 0-9.";
-
-            // displayName is null
-            if (string.IsNullOrEmpty(viewModel.DisplayName.Trim()))
-                return "'DisplayName' is required.";
-
-            // dataType should be a valid one
-            viewModel.DataType = viewModel.DataType?.ToLower().Trim();
-            if (!await _unitOfWork.DataTypes.isExists(q => q.Name == viewModel.DataType))
-                return "The datatype that has been provided seems invalid.";
-
-            viewModel.Description = viewModel.Description?.Trim();
-
-            // If it's the update case
-            if (viewModel.Id != null)
-                if (!await _unitOfWork.Properties.isExists(q => q.Id == viewModel.Id))
-                    return "The property that is being updated does not exist.";
-
-            // Check if the property already exists (and it's not the update case)
-            if(viewModel.Id == null)
-                if (await _unitOfWork.Properties
-                    .isExists(q => (q.Name.ToLower() == viewModel.Name.ToLower() 
-                                    || q.DisplayName.ToLower() == viewModel.DisplayName.ToLower())
-                                    && !q.IsArchieved))
-                        return "This property already exists";
-
-            return null;
         }
     }
 }

@@ -11,6 +11,7 @@ namespace temsAPI.ViewModels.EquipmentType
     {
         public string Id { get; set; }
         public string Name { get; set; }
+        public bool Editable { get; set; }
         public virtual ICollection<ViewPropertyViewModel> Properties { get; set; }
         public virtual ICollection<Option> Parents { get; set; }
         public virtual ICollection<ViewEquipmentTypeViewModel> Children { get; set; }
@@ -22,6 +23,7 @@ namespace temsAPI.ViewModels.EquipmentType
             {
                 Id = equipmentType.Id,
                 Name = equipmentType.Name,
+                Editable = (bool)equipmentType.EditableTypeInfo,
                 Properties = equipmentType.Properties
                             .Where(q => !q.IsArchieved)
                             .Select(q => new ViewPropertyViewModel

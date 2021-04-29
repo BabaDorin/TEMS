@@ -11,7 +11,6 @@ import { Router } from '@angular/router';
 })
 export class ReportsComponent extends TEMSComponent implements OnInit {
 
-
   defaultTemplates: ViewReportSimplified[];
   customTemplates: ViewReportSimplified[];
   templates: ViewReportSimplified[];

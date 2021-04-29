@@ -1,20 +1,24 @@
-import { TEMSComponent } from './../../tems/tems.component';
+import { CAN_MANAGE_SYSTEM_CONFIGURATION } from 'src/app/models/claims';
+import { TokenService } from './../../../services/token-service/token.service';
 import { Router, ActivatedRoute } from '@angular/router';
-import { IOption } from './../../models/option.model';
-import { SnackService } from './../../services/snack/snack.service';
-import { ArchieveService } from './../../services/archieve.service';
 import { Component, OnInit } from '@angular/core';
 import { Location } from '@angular/common'
+import { TEMSComponent } from 'src/app/tems/tems.component';
+import { IOption } from 'src/app/models/option.model';
+import { ArchieveService } from 'src/app/services/archieve.service';
+import { SnackService } from 'src/app/services/snack/snack.service';
+import { ArchievedItem } from 'src/app/models/archieve/archieved-item.model';
 
 @Component({
-  selector: 'app-archieve',
-  templateUrl: './archieve.component.html',
-  styleUrls: ['./archieve.component.scss']
+  selector: 'app-view-archieve',
+  templateUrl: './view-archieve.component.html',
+  styleUrls: ['./view-archieve.component.scss']
 })
-export class ArchieveComponent extends TEMSComponent implements OnInit {
+export class ViewArchieveComponent extends TEMSComponent implements OnInit {
 
-  archievedItems: IOption[] = [];
+  archievedItems: ArchievedItem[] = [];
   selectedType: string;
+  canRemove: boolean = false;
   types = [
     'Equipment',
     'Issues',
@@ -28,14 +32,15 @@ export class ArchieveComponent extends TEMSComponent implements OnInit {
     'Properties',
     'Equipment Types',
     'Equipment Definitions',
-  ]
+  ];
 
   constructor(
     private archieveService: ArchieveService,
     private snackService: SnackService,
     private route: ActivatedRoute,
     private router: Router,
-    private location: Location
+    private location: Location,
+    private tokenService: TokenService
   ) {
     super();
   }
@@ -45,6 +50,7 @@ export class ArchieveComponent extends TEMSComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.canRemove = this.tokenService.hasClaim(CAN_MANAGE_SYSTEM_CONFIGURATION);
     this.CheckUrlAndFetchArchievedItems(this.router.url);
 
     this.location.onUrlChange(url => {

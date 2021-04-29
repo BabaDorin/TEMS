@@ -46,12 +46,16 @@ namespace temsAPI.Data.Entities.UserEntities
         public TEMSUser? ArchievedBy { get; set; }
         public string? ArchievedById { get; set; }
 #nullable disable
-
+        public virtual ICollection<Equipment> RegisteredEquipment { get; set; } = new List<Equipment>();
         public virtual ICollection<Announcement> Announcements { get; set; } = new List<Announcement>();
         public virtual ICollection<Ticket> ClosedTickets { get; set; } = new List<Ticket>();
         public virtual ICollection<Ticket> AssignedTickets { get; set; } = new List<Ticket>();
         public virtual ICollection<Ticket> CreatedTickets { get; set; } = new List<Ticket>();
         public virtual ICollection<Equipment> RegisteredEquipments { get; set; } = new List<Equipment>();
+
+        // Archieved stuff
+        public virtual ICollection<Ticket> ArchievedTickets { get; set; } = new List<Ticket>();
+        public virtual ICollection<Equipment> ArchievedEquipment { get; set; } = new List<Equipment>();
 
         [NotMapped]
         public string Identifier => FullName ?? UserName;

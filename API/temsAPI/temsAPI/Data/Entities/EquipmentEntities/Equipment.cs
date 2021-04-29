@@ -40,10 +40,12 @@ namespace temsAPI.Data.Entities.EquipmentEntities
         public EquipmentDefinition? EquipmentDefinition { get; set; }
         public string? EquipmentDefinitionID { get; set; }
 
+        [InverseProperty("RegisteredEquipment")]
         [ForeignKey("RegisteredByID")]
         public TEMSUser? RegisteredBy { get; set; }
         public string? RegisteredByID { get; set; }
 
+        [InverseProperty("ArchievedEquipment")]
         [ForeignKey("ArchievedById")]
         public TEMSUser? ArchievedBy { get; set; }
         public string? ArchievedById { get; set; }

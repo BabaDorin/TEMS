@@ -69,7 +69,7 @@ namespace temsAPI.EquipmentControllers
                             Id = q.Id,
                             Description = q.Description,
                             DisplayName = q.DisplayName,
-                            Editable = (bool)q.EditablePropertyInfo
+                            Editable = q.EditablePropertyInfo
                         }
                     )).ToList();
                 return Json(viewModel);

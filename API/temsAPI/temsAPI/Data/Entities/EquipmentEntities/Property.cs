@@ -34,12 +34,12 @@ namespace temsAPI.Data.Entities.EquipmentEntities
             }
         }
 
-#nullable enable
         [DefaultValue(true)]
-        public bool? EditablePropertyInfo { get; set; } = true;
+        public bool EditablePropertyInfo { get; set; } = true;
+
+#nullable enable
         public string? Description { get; set; }
         public string? DisplayName { get; set; }
-
         public int? Min { get; set; }
         public int? Max { get; set; }
         public string? Options { get; set; } // Will be integrated soon, i guess

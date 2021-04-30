@@ -219,9 +219,9 @@ namespace temsAPI.EquipmentControllers
             }
         }
 
-        [HttpGet("equipmenttype/remove/{typeId}")]
+        [HttpGet("equipmenttype/archieve/{typeId}/{status}")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
-        public async Task<JsonResult> Remove(string typeId)
+        public async Task<JsonResult> Archieve(string typeId, bool status = true)
         {
             try
             {

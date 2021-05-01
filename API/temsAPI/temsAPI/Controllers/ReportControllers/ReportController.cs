@@ -23,8 +23,15 @@ namespace temsAPI.Controllers.ReportControllers
 {
     public class ReportController : TEMSController
     {
-        public ReportController(IMapper mapper, IUnitOfWork unitOfWork, UserManager<TEMSUser> userManager) : base(mapper, unitOfWork, userManager)
+        ReportingService _reportingService;
+
+        public ReportController(
+            IMapper mapper, 
+            IUnitOfWork unitOfWork, 
+            UserManager<TEMSUser> userManager,
+            ReportingService reportingService) : base(mapper, unitOfWork, userManager)
         {
+            _reportingService = reportingService;
         }
 
         [HttpGet("report/gettemplatetoupdate/{templateId}")]
@@ -314,8 +321,7 @@ namespace temsAPI.Controllers.ReportControllers
             if (reportTemplate == null)
                 return ReturnResponse("Invalid template ID provided", ResponseStatus.Fail);
 
-            var reportingService = new ReportingService();
-            reportingService.GenerateReport(reportTemplate);
+            _reportingService.GenerateReport(reportTemplate);
 
             return ReturnResponse("Will be implemented soon", ResponseStatus.Success);
         }

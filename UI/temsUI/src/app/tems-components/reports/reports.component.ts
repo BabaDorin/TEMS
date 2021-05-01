@@ -55,6 +55,7 @@ export class ReportsComponent extends TEMSComponent implements OnInit {
   }
 
   generateReport(templateId: string){
+    console.log('got it');
     this.subscriptions.push(
       this.reportService.generateReport(templateId)
       .subscribe(result => {

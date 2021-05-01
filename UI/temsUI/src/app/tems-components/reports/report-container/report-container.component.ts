@@ -26,7 +26,7 @@ export class ReportContainerComponent implements OnInit {
     this.removeTemplate.emit(templateId);
   }
 
-  report(templateId: string){
+  genReport(templateId: string){
     this.generateReport.emit(templateId);
   }
 }

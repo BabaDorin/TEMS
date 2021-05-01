@@ -1,4 +1,4 @@
-<mat-card  class="reportContainer" (click)="report(template.id)">
+<mat-card  class="reportContainer">
     <mat-card-header>
         <mat-card-title>{{ template.name }} </mat-card-title>
         <mat-card-subtitle><p>{{ template.description }} </p></mat-card-subtitle>
@@ -32,8 +32,9 @@
         </div>
         <br>
         <!-- <button mat-button class="float-right" *ngIf="template.isDefault==false">Remove</button> -->
-        <button mat-button (click)="edit(template.id)">Edit</button>
-        <button mat-button (click)="remove(template.id)">Remove</button>
+        <button mat-button (click)="edit(template.id)" class="d-block">Edit</button>
+        <button mat-button (click)="remove(template.id)" class="d-block">Remove</button>
+        <button mat-button (click)="genReport(template.id)" class="d-block">Generate report</button>
         <br>
     </mat-card-content>
 </mat-card>

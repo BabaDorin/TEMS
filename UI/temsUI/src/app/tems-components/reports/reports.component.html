@@ -21,7 +21,7 @@
         <br>
         <div class="row">
             <div class="col-md-2" class="limitedWidth" *ngFor="let template of customTemplates">
-                <app-report-container [template]="template"></app-report-container>
+                <app-report-container [template]="template" (generateReport)="generateReport($event)"></app-report-container>
             </div>
             <div class="col-md-2" class="limitedWidth">
                 <div class="d-flex align-items-center d-flex justify-content-center" style="height: 100%;">

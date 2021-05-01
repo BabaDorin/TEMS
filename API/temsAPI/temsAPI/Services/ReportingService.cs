@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
+using OfficeOpenXml.FormulaParsing.ExpressionGraph;
 using ReportGenerator.Models;
 using ReportGenerator.Services;
 using temsAPI.Contracts;
@@ -23,12 +26,44 @@ namespace temsAPI.Services
             _userManager = userManager;
         }
 
-        public void GenerateReport(ReportTemplate template)
+        public FileInfo GenerateReport(ReportTemplate template)
         {
             List<Equipment> equipment = new List<Equipment>();
-            var reportCriteria = new ReportCriteria();
+            var reportData = GenerateReportData(template);
+            var reportGenerator = new ReportGenerator.Services.ReportGenerator();
+            return reportGenerator.GenerateReport(reportData);
+        }
 
-            //var reportGenerator = new ReportGenerator.Services.ReportGenerator(equipment, reportCriteria);
+        private ReportData GenerateReportData(ReportTemplate template)
+        {
+            var reportData = new ReportData
+            {
+                Footer = template.Footer,
+                Header = template.Header,
+                Name = template.Name,
+                ReportItemGroups = new List<ReportItemGroup>()
+            };
+
+            // Test report item group => Includes all equipment records
+            System.Linq.Expressions.Expression<Func<Equipment, bool>> mainFilter =
+                q => !q.IsArchieved;
+
+            reportData.ReportItemGroups.Add(new ReportItemGroup
+            {
+                Name = "Test item group",
+                ReportItemGroupSignatories = new List<string>() { "Baba Dorin" },
+                ItemsTable = FetchItems<Equipment>(template, mainFilter)
+            });
+
+            return reportData;
+        }
+
+        private DataTable FetchItems<T>(
+            ReportTemplate reportTemplate,
+            System.Linq.Expressions.Expression<Func<T, bool>> lambda)
+        {
+            
+            return new DataTable();
         }
     }
 }

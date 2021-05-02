@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using ReportGenerator.Models;
 using System;
 using System.Collections.Generic;
@@ -58,6 +59,61 @@ namespace temsAPI.Services.Report
             if (template.Subject.ToLower() != "equipment")
                 throw new Exception("Only Equipment subject supported for now.");
 
+            var equipment = await FetchEquipmentItems(template);
+            
+            // BEFREE: Test if this method works. If so, remove the part responsible for 
+            // fetching separators.
+            IEnumerable<IGrouping<IIdentifiable, Equipment>> groupedItems = null;
+            switch (template.SepparateBy)
+            {
+                case "type":
+                    groupedItems = equipment
+                       .GroupBy(q => q.EquipmentDefinition.EquipmentType)
+                       .ToList();
+                    break;
+                case "definition":
+                    groupedItems = equipment
+                        .GroupBy(q => q.EquipmentDefinition)
+                        .ToList();
+                    break;
+                case "room":
+                    groupedItems = equipment
+                        .GroupBy(q => q.EquipmentAllocations
+                        .FirstOrDefault(q1 => q1.DateReturned == null) == null
+                            ? null
+                            : q.EquipmentAllocations.FirstOrDefault(q1 => q1.DateReturned == null).Room ?? null);
+                    break;
+                case "personnel":
+                    groupedItems = equipment
+                        .GroupBy(q => q.EquipmentAllocations
+                        .FirstOrDefault(q1 => q1.DateReturned == null) == null
+                            ? null
+                            : q.EquipmentAllocations.FirstOrDefault(q1 => q1.DateReturned == null).Personnel ?? null);
+                    break;
+            }
+
+            List<ReportItemGroup> reportItemGroups = new List<ReportItemGroup>();
+            foreach(var group in groupedItems)
+            {
+                ReportItemGroup reportItemGroup = new ReportItemGroup
+                {
+                    Name = group.Key.Identifier
+                };
+
+                // Now, all that's left (for now) is to convert the equipment list 
+                // to a datatable.
+            }
+            
+            return new List<ReportItemGroup>();
+        }
+
+        public List<string> FetchSignatories(ReportTemplate template)
+        {
+            return template.Signatories.Select(q => q.Name).ToList();
+        }
+
+        public async Task<List<Equipment>> FetchEquipmentItems(ReportTemplate template)
+        {
             Expression<Func<Equipment, bool>> mainExpression = q => !q.IsArchieved;
             Expression<Func<Equipment, bool>> typeFilter = null;
             Expression<Func<Equipment, bool>> definitionFilter = null;
@@ -65,7 +121,7 @@ namespace temsAPI.Services.Report
             Expression<Func<Equipment, bool>> roomFilter = null;
 
             // Build types filter
-            if(template.EquipmentTypes != null && template.EquipmentTypes.Count > 0)
+            if (template.EquipmentTypes != null && template.EquipmentTypes.Count > 0)
                 typeFilter = q => template.EquipmentTypes.Contains(q.EquipmentDefinition.EquipmentType);
 
             // Build definition filter
@@ -73,14 +129,14 @@ namespace temsAPI.Services.Report
                 definitionFilter = q => template.EquipmentDefinitions.Contains(q.EquipmentDefinition);
 
             // Build personnel filter
-            if(template.Personnel != null && template.Personnel.Count > 0)
+            if (template.Personnel != null && template.Personnel.Count > 0)
                 personnelFilter = q => template.Personnel.Contains(
                     q.EquipmentAllocations.FirstOrDefault(q1 => q1.DateReturned == null) == null
                     ? null
                     : q.EquipmentAllocations.FirstOrDefault(q1 => q1.DateReturned == null).Personnel);
 
             // Build roomFilter
-            if (template.Rooms!= null && template.Rooms.Count > 0)
+            if (template.Rooms != null && template.Rooms.Count > 0)
                 roomFilter = q => template.Rooms.Contains(
                     q.EquipmentAllocations.FirstOrDefault(q1 => q1.DateReturned == null) == null
                     ? null
@@ -94,21 +150,14 @@ namespace temsAPI.Services.Report
                 personnelFilter,
                 roomFilter);
 
-            var equipment = (await _unitOfWork.Equipments
+            return (await _unitOfWork.Equipments
                 .Find<Equipment>(
+                    include: q => q
+                    .Include(q => q.EquipmentDefinition).ThenInclude(q => q.EquipmentType)
+                    .Include(q => q.EquipmentDefinition).ThenInclude(q => q.EquipmentSpecifications)
+                    .Include(q => q.EquipmentAllocations.Where(q1 => q1.DateReturned == null)),
                     where: mainExpression
                 )).ToList();
-
-            // Step 2: Having the equipment, build the expression for sepparating them (if needed)
-            // ... Working on it
-
-            // Build data table, according to template and separator
-            return new List<ReportItemGroup>();
-        }
-
-        public List<string> FetchSignatories(ReportTemplate template)
-        {
-            return template.Signatories.Select(q => q.Name).ToList();
         }
 
         public async Task<List<Option>> FetchSeparators(ReportTemplate template)

@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ViewEngines;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -14,7 +13,7 @@ using temsAPI.Data.Entities.OtherEntities;
 using temsAPI.Data.Entities.Report;
 using temsAPI.Data.Entities.UserEntities;
 using temsAPI.Helpers;
-using temsAPI.Services;
+using temsAPI.Services.Report;
 using temsAPI.System_Files;
 using temsAPI.ViewModels;
 using temsAPI.ViewModels.Report;
@@ -321,7 +320,7 @@ namespace temsAPI.Controllers.ReportControllers
             if (reportTemplate == null)
                 return ReturnResponse("Invalid template ID provided", ResponseStatus.Fail);
 
-            _reportingService.GenerateReport(reportTemplate);
+            var excelReport = _reportingService.GenerateReport(reportTemplate);
 
             return ReturnResponse("Will be implemented soon", ResponseStatus.Success);
         }

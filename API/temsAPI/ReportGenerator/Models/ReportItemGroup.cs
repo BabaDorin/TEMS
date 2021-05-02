@@ -9,6 +9,8 @@ namespace ReportGenerator.Models
     {
         public string Name { get; set; }
         public DataTable ItemsTable { get; set; }
-        public List<string> ReportItemGroupSignatories { get; set; }
+
+        // Useful feature, might be implemented in the future.
+        //public List<string> ReportItemGroupSignatories { get; set; } 
     }
 }

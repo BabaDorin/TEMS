@@ -4,10 +4,13 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
+using temsAPI.Data.Entities.EquipmentEntities;
 using temsAPI.Data.Entities.Report;
 using temsAPI.Data.Entities.UserEntities;
+using temsAPI.Helpers;
 using temsAPI.ViewModels;
 
 namespace temsAPI.Services.Report
@@ -38,22 +41,69 @@ namespace temsAPI.Services.Report
             if (separators.Count == 0)
                 separators.Add(new Option());
 
-            foreach (Option separator in separators)
-            {
-                reportData.ReportItemGroups.Add(await GenerateReportItemGroup(template, separator));
-            }
+            reportData.ReportItemGroups = await GenerateReportItemGroups(template, separators);
 
             return reportData;
         }
 
-        public async Task<ReportItemGroup> GenerateReportItemGroup(ReportTemplate template, Option separator)
+        public async Task<List<ReportItemGroup>> GenerateReportItemGroups(
+            ReportTemplate template, 
+            List<Option> separator)
         {
-            ReportItemGroup reportItemGroup = new();
-            reportItemGroup.Name = separator.Label;
+            //1 => build the main lambda exp and fetch all respective items 
+            //2 => sepparate fetched items into multiple report item groups.
+
+            // Executing step 1:
+            // Build the main lambda expression, based on template.
+            if (template.Subject.ToLower() != "equipment")
+                throw new Exception("Only Equipment subject supported for now.");
+
+            Expression<Func<Equipment, bool>> mainExpression = q => !q.IsArchieved;
+            Expression<Func<Equipment, bool>> typeFilter = null;
+            Expression<Func<Equipment, bool>> definitionFilter = null;
+            Expression<Func<Equipment, bool>> personnelFilter = null;
+            Expression<Func<Equipment, bool>> roomFilter = null;
+
+            // Build types filter
+            if(template.EquipmentTypes != null && template.EquipmentTypes.Count > 0)
+                typeFilter = q => template.EquipmentTypes.Contains(q.EquipmentDefinition.EquipmentType);
+
+            // Build definition filter
+            if (template.EquipmentDefinitions != null && template.EquipmentDefinitions.Count > 0)
+                definitionFilter = q => template.EquipmentDefinitions.Contains(q.EquipmentDefinition);
+
+            // Build personnel filter
+            if(template.Personnel != null && template.Personnel.Count > 0)
+                personnelFilter = q => template.Personnel.Contains(
+                    q.EquipmentAllocations.FirstOrDefault(q1 => q1.DateReturned == null) == null
+                    ? null
+                    : q.EquipmentAllocations.FirstOrDefault(q1 => q1.DateReturned == null).Personnel);
+
+            // Build roomFilter
+            if (template.Rooms!= null && template.Rooms.Count > 0)
+                roomFilter = q => template.Rooms.Contains(
+                    q.EquipmentAllocations.FirstOrDefault(q1 => q1.DateReturned == null) == null
+                    ? null
+                    : q.EquipmentAllocations.FirstOrDefault(q1 => q1.DateReturned == null).Room);
+
+            // Merge filters
+            mainExpression = ExpressionCombiner.And(
+                mainExpression,
+                typeFilter,
+                definitionFilter,
+                personnelFilter,
+                roomFilter);
+
+            var equipment = (await _unitOfWork.Equipments
+                .Find<Equipment>(
+                    where: mainExpression
+                )).ToList();
+
+            // Step 2: Having the equipment, build the expression for sepparating them (if needed)
+            // ... Working on it
 
             // Build data table, according to template and separator
-            reportItemGroup.ItemsTable = new DataTable();
-            return reportItemGroup;
+            return new List<ReportItemGroup>();
         }
 
         public List<string> FetchSignatories(ReportTemplate template)

@@ -1,11 +1,13 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using ReportGenerator.Models;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.EquipmentEntities;
@@ -13,6 +15,7 @@ using temsAPI.Data.Entities.Report;
 using temsAPI.Data.Entities.UserEntities;
 using temsAPI.Helpers;
 using temsAPI.ViewModels;
+using Property = temsAPI.Data.Entities.EquipmentEntities.Property;
 
 namespace temsAPI.Services.Report
 {
@@ -20,6 +23,8 @@ namespace temsAPI.Services.Report
     {
         IUnitOfWork _unitOfWork;
         UserManager<TEMSUser> _userManager;
+        List<string> reportUniversalPropertiesList = new List<string>();
+
 
         public ReportDataGenerator(IUnitOfWork unitOfWork, UserManager<TEMSUser> userManager)
         {
@@ -42,13 +47,20 @@ namespace temsAPI.Services.Report
             if (separators.Count == 0)
                 separators.Add(new Option());
 
+            reportUniversalPropertiesList = template.UniversalProperties.Split(' ').ToList();
+            for (int i = 0; i < reportUniversalPropertiesList.Count; i++)
+            {
+                var prop = reportUniversalPropertiesList[i];
+                reportUniversalPropertiesList[i] = prop.First().ToString().ToUpper() + prop.Substring(1);
+            }
+
             reportData.ReportItemGroups = await GenerateReportItemGroups(template, separators);
 
             return reportData;
         }
 
         public async Task<List<ReportItemGroup>> GenerateReportItemGroups(
-            ReportTemplate template, 
+            ReportTemplate template,
             List<Option> separator)
         {
             //1 => build the main lambda exp and fetch all respective items 
@@ -60,7 +72,7 @@ namespace temsAPI.Services.Report
                 throw new Exception("Only Equipment subject supported for now.");
 
             var equipment = await FetchEquipmentItems(template);
-            
+
             // BEFREE: Test if this method works. If so, remove the part responsible for 
             // fetching separators.
             IEnumerable<IGrouping<IIdentifiable, Equipment>> groupedItems = null;
@@ -93,18 +105,57 @@ namespace temsAPI.Services.Report
             }
 
             List<ReportItemGroup> reportItemGroups = new List<ReportItemGroup>();
-            foreach(var group in groupedItems)
+            foreach (var group in groupedItems)
             {
                 ReportItemGroup reportItemGroup = new ReportItemGroup
                 {
-                    Name = group.Key.Identifier
+                    Name = group.Key.Identifier,
+                    ItemsTable = ItemGroupToDataTable(group.ToList(), template)
                 };
 
-                // Now, all that's left (for now) is to convert the equipment list 
-                // to a datatable.
+                reportItemGroups.Add(reportItemGroup);
             }
-            
-            return new List<ReportItemGroup>();
+
+            return reportItemGroups;
+        }
+
+        public DataTable ItemGroupToDataTable(List<Equipment> items, ReportTemplate reportTemplate)
+        {
+            var itemGroupDataTable = new DataTable();
+
+            // Universal properties to columns
+            foreach (string prop in reportUniversalPropertiesList)
+                itemGroupDataTable.Columns.Add(prop, prop == "price" ? typeof(double) : typeof(string));
+
+            // Specific properties to columns
+            foreach (var prop in reportTemplate.Properties)
+                itemGroupDataTable.Columns.Add(prop.DisplayName, prop.DataType.GetNativeType());
+
+            var equipmentProperties = typeof(Equipment).GetProperties();
+            foreach (Equipment eq in items)
+            {
+                var row = itemGroupDataTable.NewRow();
+                // Add values for universal properties
+                foreach (string prop in reportUniversalPropertiesList)
+                {
+                    row[prop] = equipmentProperties
+                        .First(qu => qu.Name.ToLower() == prop.ToLower())
+                        .GetValue(eq);
+                }
+
+                // Add values for specific properties
+                foreach(Property prop in reportTemplate.Properties)
+                {
+                    var p = eq.EquipmentDefinition.EquipmentSpecifications
+                        .FirstOrDefault(qu => qu.Property.Id == prop.Id);
+
+                    row[prop.DisplayName] = p?.Value;
+                }
+
+                itemGroupDataTable.Rows.Add(row);
+            }
+
+            return itemGroupDataTable;
         }
 
         public List<string> FetchSignatories(ReportTemplate template)

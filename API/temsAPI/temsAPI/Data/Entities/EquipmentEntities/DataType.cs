@@ -14,7 +14,16 @@ namespace temsAPI.Data.Entities.EquipmentEntities
         public string Id { get; set; }
         public string Name { get; set; }
 
-        [JsonIgnore]
         public virtual ICollection<Property> DataTypeProperties { get; set; }
+
+        public Type GetNativeType()
+        {
+            switch (Name.ToLower())
+            {
+                case "number": return typeof(double);
+                case "boolean": return typeof(bool);
+                default: return typeof(string);
+            }
+        }
     }
 }

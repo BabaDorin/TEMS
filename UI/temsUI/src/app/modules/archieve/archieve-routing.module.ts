@@ -1,10 +1,11 @@
+import { CanViewEntitiesGuard } from 'src/app/guards/can-view-entities.guard';
+import { ViewArchieveComponent } from './../../tems-components/archieve/view-archieve/view-archieve.component';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { ArchieveComponent } from 'src/app/tems-components/archieve/archieve.component';
 
 const routes: Routes = [
-  { path: '', component: ArchieveComponent },
-  { path: '/:id', component: ArchieveComponent }
+  { path: '', component: ViewArchieveComponent, canActivate: [ CanViewEntitiesGuard ] },
+  { path: '/:id', component: ViewArchieveComponent, canActivate: [ CanViewEntitiesGuard ] }
 ];
 
 @NgModule({

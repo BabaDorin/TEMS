@@ -454,7 +454,7 @@ namespace temsAPI.Controllers.IdentityControllers
 
                 // Will come back later to handle emails via usermanager and to implement
                 // email confirmation.
-                if (await _userManager.FindByEmailAsync(viewModel.Email) != null)
+                if (viewModel.Email != user.Email && await _userManager.FindByEmailAsync(viewModel.Email) != null)
                     return ReturnResponse("The provided email is aldreay in use.", ResponseStatus.Fail);
 
                 user.Email = viewModel.Email;

@@ -1,29 +1,49 @@
+import { SnackService } from 'src/app/services/snack/snack.service';
+import { Report } from './../../../models/report/report.model';
+import { ReportService } from './../../../services/report-service/report.service';
+import { TEMSComponent } from './../../../tems/tems.component';
 import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-report-container',
   templateUrl: './report-container.component.html',
   styleUrls: ['./report-container.component.scss']
 })
-export class ReportContainerComponent implements OnInit {
+export class ReportContainerComponent extends TEMSComponent implements OnInit {
 
-  @Input() template;  
-  @Output() editTemplate = new EventEmitter();
-  @Output() removeTemplate = new EventEmitter();
+  @Input() template: Report;  
+  @Output() templateRemoved = new EventEmitter();
   @Output() generateReport = new EventEmitter();
 
-  constructor() { }
+  constructor(
+    private router: Router,
+    private reportService: ReportService,
+    private snackService: SnackService
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
+    console.log(this.template)
   }
 
-  edit(templateId: string){
-    this.editTemplate.emit(templateId);
+  edit(){
+    this.router.navigate(["/reports/updatetemplate/" + this.template.id]);
   }
 
-  remove(templateId: string)
-  {
-    this.removeTemplate.emit(templateId);
+  remove(){
+    if(!confirm("Are you sure that you want to remove that report template?"))
+      return;
+    
+    this.subscriptions.push(
+      this.reportService.archieveTemplate(this.template.id)
+      .subscribe(result => {
+        this.snackService.snack(result);
+        if(result.status == 1)
+          this.templateRemoved.emit(this.template);
+      })
+    )
   }
 
   genReport(templateId: string){

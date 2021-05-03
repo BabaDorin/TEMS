@@ -19,7 +19,7 @@ class="m-2 mat-elevation-z0" hideToggle="true">
     {{ log.text }}
     <br>
     <br>
-    <button mat-button class="btn-danger" (click)="remove(log.id, i)">Remove</button>
+    <button mat-button class="btn-danger" (click)="remove(log.id, ((p1-1)*10) + i)">Remove</button>
   </mat-expansion-panel>
 <pagination-controls (pageChange)="p1 = $event" id="logs" *ngIf="logs != undefined && logs.length > 0"></pagination-controls>
 <div *ngIf="loading == false && (logs == undefined || logs.length == 0)">

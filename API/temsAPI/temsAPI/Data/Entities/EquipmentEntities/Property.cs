@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.Report;
+using temsAPI.Data.Entities.UserEntities;
 
 namespace temsAPI.Data.Entities.EquipmentEntities
 {
@@ -33,19 +34,23 @@ namespace temsAPI.Data.Entities.EquipmentEntities
             }
         }
 
-#nullable enable
         [DefaultValue(true)]
-        public bool? EditablePropertyInfo { get; set; } = true;
+        public bool EditablePropertyInfo { get; set; } = true;
+
+#nullable enable
         public string? Description { get; set; }
         public string? DisplayName { get; set; }
-
         public int? Min { get; set; }
         public int? Max { get; set; }
         public string? Options { get; set; } // Will be integrated soon, i guess
 
-        //[ForeignKey("DataTypeID")]
+        [ForeignKey("DataTypeID")]
         public DataType? DataType { get; set; }
         public string? DataTypeID { get; set; }
+
+        [ForeignKey("ArchievedById")]
+        public TEMSUser? ArchievedBy { get; set; }
+        public string? ArchievedById { get; set; }
 #nullable disable
 
         //public virtual ICollection<PropertyEquipmentTypeAssociation> PropertyEquipmentTypeAssociations { get; set; }

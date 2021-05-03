@@ -24,10 +24,10 @@
       <app-issue-container 
       [issue]="issue"
       [statuses]="statuses"
-      (statusChanged)="statusChanged($event, issue.id, i)"
-      (solve)="solve(issue.id, i)"
-      (reopen)="reopen(issue.id, i)"
-      (remove)="remove(issue.id, i)">
+      (statusChanged)="statusChanged($event, issue.id, (pageNumber-1)*20 + i)"
+      (solve)="solve(issue.id, (pageNumber-1)*20 + i)"
+      (reopen)="reopen(issue.id, (pageNumber-1)*20 + i)"
+      (remove)="remove(issue.id, (pageNumber-1)*20 + i)">
       </app-issue-container>
     </div>
   </mat-accordion>

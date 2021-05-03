@@ -1,6 +1,5 @@
 import { AttachEquipmentComponent } from './../../attach-equipment/attach-equipment.component';
 import { DialogService } from './../../../../services/dialog-service/dialog.service';
-import { IOption } from './../../../../models/option.model';
 import { CAN_MANAGE_ENTITIES } from './../../../../models/claims';
 import { TokenService } from './../../../../services/token-service/token.service';
 import { SnackService } from './../../../../services/snack/snack.service';
@@ -9,7 +8,6 @@ import { Property } from './../../../../models/equipment/view-property.model';
 import { EquipmentService } from 'src/app/services/equipment-service/equipment.service';
 import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import { ViewEquipment } from 'src/app/models/equipment/view-equipment.model';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-equipment-details-general',
@@ -23,22 +21,20 @@ export class EquipmentDetailsGeneralComponent extends TEMSComponent implements O
   @Output() archivationStatusChanged = new EventEmitter();
   dialogRef;
   headerClass;
-
   canManage:boolean = false;
   equipment: ViewEquipment;
+  generalProperties: Property[];
+  detachedEquipments = [];
+  editing = false;
+
   get canAttach(){
     // returns true if equipment can have children
     return this.equipment.definition.children.length > 0;
   }
-  generalProperties: Property[];
-  specificProperties: Property[];
-  detachedEquipments = [];
-  editing = false;
 
   constructor(
     private equipmentService: EquipmentService,
     private tokenService: TokenService,
-    private route: Router,
     private dialogService: DialogService,
     private snackService: SnackService) {
     super();
@@ -52,8 +48,8 @@ export class EquipmentDetailsGeneralComponent extends TEMSComponent implements O
         if(this.snackService.snackIfError(response))
           return;
         
-        console.log(response);
         this.equipment = response;
+        console.log(response);
         this.headerClass = (this.equipment.isArchieved) ? 'text-muted' : '';
 
         this.generalProperties= [
@@ -65,7 +61,11 @@ export class EquipmentDetailsGeneralComponent extends TEMSComponent implements O
           { displayName: 'Is Defect', dataType: 'boolean', name: 'isUsed', value: this.equipment.isDefect},
         ];
     
-        this.specificProperties = this.equipment.specificTypeProperties;
+        if(this.detachedEquipments != undefined){
+          this.detachedEquipments = this.detachedEquipments.filter(q => {
+            return this.equipment.children.findIndex(eq => eq.value == q.value) == -1
+          })
+        }
       }))
   }
 

@@ -124,8 +124,10 @@ export class ManageTypesPropertiesComponent extends TEMSComponent implements OnI
     );
   }
 
-  removeType(typeId: string, index: number){
-    if(confirm("Do you realy want to remove that type?")){
+  removeType(typeId: string, index){
+
+    console.log(index);
+    if(confirm("Do you realy want to remove that type?"  + index)){
       this.equipmentService.archieveType(typeId)
       .subscribe(result => {
         console.log(result);
@@ -136,7 +138,7 @@ export class ManageTypesPropertiesComponent extends TEMSComponent implements OnI
   }
 
   removeProperty(propertyId: string, index: number){
-    if(confirm("Do you realy want to remove that property?")){
+    if(confirm("Do you realy want to remove that property?"  + index)){
       this.equipmentService.archieveProperty(propertyId)
       .subscribe(result => {
         console.log(result);

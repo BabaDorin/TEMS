@@ -10,7 +10,10 @@ using temsAPI.Data.Entities.CommunicationEntities;
 using temsAPI.Data.Entities.EquipmentEntities;
 using temsAPI.Data.Entities.KeyEntities;
 using temsAPI.Data.Entities.OtherEntities;
+using temsAPI.Data.Entities.Report;
 using temsAPI.Data.Entities.UserEntities;
+using temsAPI.ViewModels;
+using temsAPI.ViewModels.Archieve;
 
 namespace temsAPI.Helpers
 {
@@ -25,13 +28,26 @@ namespace temsAPI.Helpers
             _unitOfWork = unitOfWork;
         }
 
+        public static async Task<List<ArchievedItemViewModel>> GetArchievedItemsFromRepo<T>(IGenericRepository<T> repo) where T : class, IArchiveableItem
+        {
+            return (await repo.FindAll<ArchievedItemViewModel>(
+                    where: q => q.IsArchieved,
+                    select: q => new ArchievedItemViewModel
+                    {
+                        Id = q.Id,
+                        Identifier = q.Identifier,
+                        DateArchieved = (DateTime)q.DateArchieved
+                    }
+                )).ToList();
+        }
+
         public async Task<string> SetEquipmentArchivationStatus(string equipmentId, bool status)
         {
             try
             {
                 var model = (await _unitOfWork.Equipments
                     .Find<Equipment>(
-                        where: q => q.Id == equipmentId,
+                        where: q => q.Id == equipmentId && q.ParentID == null,
                         include: q => q
                         .Include(q => q.Children)
                         .Include(q => q.EquipmentAllocations)
@@ -65,6 +81,30 @@ namespace temsAPI.Helpers
             {
                 Debug.WriteLine(ex);
                 return "An error occured while archieving equipment's related data";
+            }
+        }
+
+        public async Task<string> SetEquipmenAllocationtArchivationStatus(string allocationId, bool status)
+        {
+            try
+            {
+                var allocation = (await _unitOfWork.EquipmentAllocations
+                    .Find<EquipmentAllocation>(
+                        where: q => q.Id == allocationId))
+                    .FirstOrDefault();
+
+                if (allocation == null)
+                    return "Invalid allocation id provided";
+
+                allocation.IsArchieved = status;
+                
+                await _unitOfWork.Save();
+                return null;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return "An error occured while archieving allocation's related data";
             }
         }
 
@@ -327,13 +367,57 @@ namespace temsAPI.Helpers
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
-                return "An error occured while archieving log's related data";
+                return "An error occured while archieving personnel's related data";
             }
         }
 
-        internal Task<string> SetKeyAllocationArchivationStatus(string allocationId, bool? archivationStatus)
+        public async Task<string> SetTicketArchivationStatus(string ticketId, bool status)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var ticket = (await _unitOfWork.Tickets
+                    .Find<Ticket>
+                    (
+                        where: q => q.Id == ticketId
+                    )).FirstOrDefault();
+
+                if (ticket == null)
+                    return "Invalid ticket id";
+
+                ticket.IsArchieved = status;
+
+                await _unitOfWork.Save();
+                return null;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return "An error occured while archieving personnel's related data";
+            }
+        }
+
+        public async Task<string> SetReportTemplateArchivationStatus(string templateId, bool status)
+        {
+            try
+            {
+                var template = (await _unitOfWork.ReportTemplates
+                    .Find<ReportTemplate>(
+                        q => q.Id == templateId
+                    )).FirstOrDefault();
+
+                if (template == null)
+                    return "Invalid id provided";
+
+                template.IsArchieved = status;
+                await _unitOfWork.Save();
+
+                return null;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return "An error occured while archieving template's related data";
+            }
         }
     }
 }

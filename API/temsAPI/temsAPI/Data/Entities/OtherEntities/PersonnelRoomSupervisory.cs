@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.EquipmentEntities;
+using temsAPI.Data.Entities.UserEntities;
 
 namespace temsAPI.Data.Entities.OtherEntities
 {
@@ -37,6 +38,12 @@ namespace temsAPI.Data.Entities.OtherEntities
                     : null;
             }
         }
+
+#nullable enable
+        [ForeignKey("ArchievedById")]
+        public TEMSUser? ArchievedBy { get; set; }
+        public string? ArchievedById { get; set; }
+#nullable disable
 
         public string Identifier => $"{Personnel.Name} - {Room.Identifier}";
     }

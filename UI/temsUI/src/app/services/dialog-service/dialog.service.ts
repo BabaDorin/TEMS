@@ -31,9 +31,9 @@ export class DialogService {
 
     this.dialogRef.componentInstance["dialogRef"] = this.dialogRef;
 
-    this.dialogRef.beforeClosed().subscribe(result => {
-      beforeClosed();
-    })
+    // this.dialogRef.beforeClosed().subscribe(result => {
+    //   beforeClosed();
+    // })
 
     this.dialogRef.afterClosed().subscribe(result => {
       if(afterClosed != undefined)

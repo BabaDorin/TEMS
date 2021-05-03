@@ -33,7 +33,7 @@
                     </div>
                     <div class="col-md-6 col-sm-12">
                         <!-- Speciic properties for current equipment go here -->
-                        <app-property-render [properties]="equipment.specificTypeProperties"></app-property-render>
+                        <app-property-render [properties]="equipment.definition.properties"></app-property-render>
                     </div>
                 </div>
             </div>
@@ -70,9 +70,9 @@
                             <b>{{ detachedEq.additional }}: </b> {{ detachedEq.label }}
                         </mat-expansion-panel-header>
 
-                        <ng-container matExpansionPanelContent class="mat-exp-panel-content">
+                        <ng-template matExpansionPanelContent class="mat-exp-panel-content">
                             <app-equipment-details [equipmentId]="detachedEq.value"></app-equipment-details>
-                        </ng-container>
+                        </ng-template>
                     </mat-expansion-panel>
                     <br>
                 </div>

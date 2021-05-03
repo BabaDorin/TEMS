@@ -9,6 +9,7 @@ namespace temsAPI.ViewModels.EquipmentType
     {
         public string Id { get; set; }
         public string Name { get; set; }
+        public bool Editable { get; set; }
         public string Properties { get; set; }
         public string Parent { get; set; }
         public string Children { get; set; }

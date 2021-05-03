@@ -26,6 +26,10 @@ namespace temsAPI.Data.Entities.OtherEntities
         public string? ImagePath { get; set; }
 
         public TEMSUser? TEMSUser { get; set; }
+
+        [ForeignKey("ArchievedById")]
+        public TEMSUser? ArchievedBy { get; set; }
+        public string? ArchievedById { get; set; }
 #nullable disable
 
         public DateTime? DateArchieved { get; set; }

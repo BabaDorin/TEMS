@@ -14,65 +14,53 @@ IMPORTANT NOTES:
 
 TODO
 ------------ As soon as possible >>>>
---> Treat indexes properrly when using pagination on properties and types
---> Fix spelling mistakes SIC Integration
 
+// TD:
+
+
+--> EquipmentManager
+--> remove teamviewer id from definition, add it to item description
+--> Email confirmation + password reset via email
+--> Add generic AgGridItems Component
+--> Learn about services in ASP.NET and build the IdentityService, which will provide data about the currently logged
+    in user.
+--> Better UX when dealing with reports (For ex >> Redirect to listing after adding a report and other).
 --> Add oncascadedeleete
---> Add IsEditable to viewmodel and restrict user from editin non-editable properties and types (inputs are disabled)
-
 --> Forbid circular refference for types and definitions
-
 --> IMPORTANT: test update definitions!
-
 --> If an equipment is child for another, the first one will be 'included' in the second one, which means that
     it won't be possible to allocate only children equipment. In order to do that, it should be first deatached from
     the parent, and only then will be possible to use it like a non-child equipment. (1: Hide 'allocate' tab
     for children, and treat this case on backend). 
-
 --> Implement temslogger
-
--->  Attach - deatach children equipment (For example, when replacing components)
-
---> Fix archieving for types, properties, definitions etc. (The endpoint frontent communicates with is not valid)
-
---> Solve spelling mistakes:
-    Equipments => Equipment (Equipment has no plural form)
-
 --> There are two methods with similar implementation within TicketController (GetTickets and GetTicketsOfEntity),
     get rid of one
-    
 --> Improve the logic of keys moving from one to another table
-
 --> ChipsAutocompleteComponent needs some refactoring. The NG Value accessor does not work as supposed. For intance,
     when the initial value is set via alreadySelected, the value that goes to the client FormControl is null.
     Only after adding or removing one item, the value refreshes and starts to reflect the real state.
     The current overcome for this problem is assigning the initial value both via [alreadySelected] input parameter
     and formControl initial value (like keys: new FormControl(alreadySelectedKeys)).
     If a formControl represents an instance of ChipsAutocompleteComponent, then it should reflet the real state 
-    anytime.
+    anytime.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
     ** Components currently affected by this: EquipmentAllocation, KeysAllocation.
-
 --> There are a lot of renundant code snippets (Like GetAllAutocompleteOptions) on backend that needs to be extracted
     to a sepparate class, service, controller or helper in order to end up with a more maintainable codebase.
-
 --> Move all of the ViewModel validation logic from backend controllers inside the ViewModels' types. 
-
 --> When sending an email, make sure an email is not being sent more than once to a single email address (For example,
     when there are 2 or more personnel records having the same email, send the message only once.)
-
 --> Some entities' identitifer properties return data that does not present much value (Like: Personnel: [And no personnel inserted here]);
     Do some includes where necessary, but do not exagerate.
-
 --> Server-side paging & filtering, especially for equipment.
 
 ------------ Future >>>>
 
+--> Solve spelling mistakes:
+    Equipments => Equipment (Equipment has no plural form)
 --> Write and read url parameters (representing key, personnel or room filters) within ViewKeyAllocationComponent
     in order to offer the possibility of getting some route snapshots that can be sent to other people and the filters
     be set automatically when they'll open the url. 
-
 --> Implement server-side filtering for AttachEquipmentComponent.
-
 --> When updating a definition, if it has some children then for all of the children the definition will be selected
     from the dropdown and all of the fields will be disabled. Basically you have to find a way to call the change 
     function when the value of identifierSelect changes.
@@ -82,6 +70,19 @@ TODO
 -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 
 ------------ Solved >>>>
+
+--> Fix archieving for types, properties, definitions etc. (The endpoint frontent communicates with is not valid)
+--> Error when fetching properties
+--> Add IsEditable to viewmodel and restrict user from editin non-editable properties and types (inputs are disabled)
+--> Provided email is already in use (User - settings) when turning on email notifications
+--> Dearchive does not work (no logic added)
+--> Improve archieve
+--> Add pagination to reports, library
+--> Display custom properties (equipment)
+--> Remove deatached from attached if it has been attached back =)
+--> Fix spelling mistakes SIC Integration
+-->  Attach - deatach children equipment (For example, when replacing components)
+--> Treat indexes properrly when using pagination on properties and types
 
 --> Improve the archivation logic by making the DateArchieved nullable and by using the new approach (SetArchivationStatus) 
     when setting the archivation status of an item.

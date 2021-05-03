@@ -16,8 +16,8 @@
             </mat-card-content>
             <mat-card-actions>
                 <button mat-button (click)="view(item.id)">View</button>
-                <button mat-button (click)="edit(item.id, i)">Edit</button>
-                <button mat-button (click)="remove(item.id, i)">Remove</button>
+                <button mat-button (click)="edit(item.id, (p1-1)*10 + i)">Edit</button>
+                <button mat-button (click)="remove(item.id, (p1-1)*10 + i)">Remove</button>
             </mat-card-actions>
         </mat-card>
     </li>

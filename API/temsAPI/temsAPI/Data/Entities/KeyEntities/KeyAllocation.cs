@@ -6,6 +6,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.OtherEntities;
+using temsAPI.Data.Entities.UserEntities;
+using temsAPI.Services;
 
 namespace temsAPI.Data.Entities.KeyEntities
 {
@@ -23,6 +25,7 @@ namespace temsAPI.Data.Entities.KeyEntities
         public string KeyID { get; set; }
         public DateTime? DateArchieved { get; set; }
         private bool isArchieved;
+
         public bool IsArchieved
         {
             get
@@ -43,6 +46,10 @@ namespace temsAPI.Data.Entities.KeyEntities
 
 #nullable enable
         public DateTime? DateReturned { get; set; }
+
+        [ForeignKey("ArchievedById")]
+        public TEMSUser? ArchievedBy { get; set; }
+        public string? ArchievedById { get; set; }
 #nullable disable
 
         [NotMapped]

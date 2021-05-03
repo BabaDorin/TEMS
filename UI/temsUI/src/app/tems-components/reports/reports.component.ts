@@ -1,10 +1,8 @@
 import { TEMSComponent } from 'src/app/tems/tems.component';
 import { ViewReportSimplified } from './../../models/report/view-report-simplified.model';
 import { ReportService } from './../../services/report-service/report.service';
-import { Report } from './../../models/report/report.model';
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-reports',
@@ -13,11 +11,11 @@ import { HttpClient } from '@angular/common/http';
 })
 export class ReportsComponent extends TEMSComponent implements OnInit {
 
-
   defaultTemplates: ViewReportSimplified[];
   customTemplates: ViewReportSimplified[];
   templates: ViewReportSimplified[];
-
+  pageNumber = 1;
+  
   constructor(
     private reportService: ReportService,
     private router: Router,
@@ -35,23 +33,12 @@ export class ReportsComponent extends TEMSComponent implements OnInit {
     )
   }
 
-  edit(templateId: string){
-    this.router.navigate(["/reports/updatetemplate/" + templateId]);
-  }
-
-  remove(templateId: string, index){
-    if(!confirm("Are you sure that you want to remove that report template?"))
+  templateRemoved(template){
+    let index = this.customTemplates.indexOf(template);
+    if(index == -1)
       return;
-    
-    this.subscriptions.push(
-      this.reportService.archieveTemplate(templateId)
-      .subscribe(result => {
-        if(result.status == 1)
-          this.defaultTemplates.splice(index, 1);
 
-        console.log(result);
-      })
-    )
+    this.customTemplates.splice(index, 1);
   }
 
   generateReport(templateId: string){

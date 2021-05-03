@@ -42,6 +42,11 @@ namespace temsAPI.Data.Entities.CommunicationEntities
         [ForeignKey("CreatedById")]
         public TEMSUser? CreatedBy { get; set; }
         public string? CreatedById { get; set; }
+
+        [InverseProperty("ArchievedTickets")]
+        [ForeignKey("ArchievedById")]
+        public TEMSUser? ArchievedBy { get; set; }
+        public string? ArchievedById { get; set; }
 #nullable disable
 
         private bool isArchieved;

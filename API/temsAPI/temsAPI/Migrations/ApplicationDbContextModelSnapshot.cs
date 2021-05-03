@@ -482,6 +482,9 @@ namespace temsAPI.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("ArchievedById")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<DateTime?>("DateArchieved")
                         .HasColumnType("datetime2");
 
@@ -511,6 +514,8 @@ namespace temsAPI.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ArchievedById");
+
                     b.HasIndex("EquipmentID");
 
                     b.HasIndex("LogTypeID");
@@ -538,6 +543,9 @@ namespace temsAPI.Migrations
             modelBuilder.Entity("temsAPI.Data.Entities.CommunicationEntities.Ticket", b =>
                 {
                     b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ArchievedById")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ClosedById")
@@ -571,6 +579,8 @@ namespace temsAPI.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ArchievedById");
 
                     b.HasIndex("ClosedById");
 
@@ -628,6 +638,9 @@ namespace temsAPI.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("ArchievedById")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("Currency")
                         .HasColumnType("nvarchar(max)");
 
@@ -673,7 +686,12 @@ namespace temsAPI.Migrations
                     b.Property<string>("TEMSID")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("TEMSUserId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("ArchievedById");
 
                     b.HasIndex("EquipmentDefinitionID");
 
@@ -685,12 +703,17 @@ namespace temsAPI.Migrations
 
                     b.HasIndex("TEMSID");
 
+                    b.HasIndex("TEMSUserId");
+
                     b.ToTable("Equipments");
                 });
 
             modelBuilder.Entity("temsAPI.Data.Entities.EquipmentEntities.EquipmentAllocation", b =>
                 {
                     b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ArchievedById")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("DateAllocated")
@@ -716,6 +739,8 @@ namespace temsAPI.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ArchievedById");
+
                     b.HasIndex("EquipmentID");
 
                     b.HasIndex("PersonnelID");
@@ -728,6 +753,9 @@ namespace temsAPI.Migrations
             modelBuilder.Entity("temsAPI.Data.Entities.EquipmentEntities.EquipmentDefinition", b =>
                 {
                     b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ArchievedById")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Currency")
@@ -756,6 +784,8 @@ namespace temsAPI.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ArchievedById");
+
                     b.HasIndex("EquipmentTypeID");
 
                     b.HasIndex("Identifier");
@@ -768,6 +798,9 @@ namespace temsAPI.Migrations
             modelBuilder.Entity("temsAPI.Data.Entities.EquipmentEntities.EquipmentSpecifications", b =>
                 {
                     b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ArchievedById")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime?>("DateArchieved")
@@ -787,6 +820,8 @@ namespace temsAPI.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ArchievedById");
+
                     b.HasIndex("EquipmentDefinitionID");
 
                     b.HasIndex("PropertyID");
@@ -799,10 +834,13 @@ namespace temsAPI.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("ArchievedById")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<DateTime?>("DateArchieved")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool?>("EditableTypeInfo")
+                    b.Property<bool>("EditableTypeInfo")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
                         .HasDefaultValue(true);
@@ -815,12 +853,17 @@ namespace temsAPI.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ArchievedById");
+
                     b.ToTable("EquipmentTypes");
                 });
 
             modelBuilder.Entity("temsAPI.Data.Entities.EquipmentEntities.Property", b =>
                 {
                     b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ArchievedById")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("DataTypeID")
@@ -835,7 +878,7 @@ namespace temsAPI.Migrations
                     b.Property<string>("DisplayName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool?>("EditablePropertyInfo")
+                    b.Property<bool>("EditablePropertyInfo")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
                         .HasDefaultValue(true);
@@ -859,6 +902,8 @@ namespace temsAPI.Migrations
                         .HasColumnType("bit");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ArchievedById");
 
                     b.HasIndex("DataTypeID");
 
@@ -890,6 +935,9 @@ namespace temsAPI.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("ArchievedById")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<DateTime?>("DateArchieved")
                         .HasColumnType("datetime2");
 
@@ -907,6 +955,8 @@ namespace temsAPI.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ArchievedById");
+
                     b.HasIndex("RoomId");
 
                     b.ToTable("Keys");
@@ -915,6 +965,9 @@ namespace temsAPI.Migrations
             modelBuilder.Entity("temsAPI.Data.Entities.KeyEntities.KeyAllocation", b =>
                 {
                     b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ArchievedById")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("DateAllocated")
@@ -936,6 +989,8 @@ namespace temsAPI.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ArchievedById");
 
                     b.HasIndex("KeyID");
 
@@ -1019,6 +1074,9 @@ namespace temsAPI.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("ArchievedById")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<DateTime?>("DateArchieved")
                         .HasColumnType("datetime2");
 
@@ -1039,12 +1097,17 @@ namespace temsAPI.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ArchievedById");
+
                     b.ToTable("Personnel");
                 });
 
             modelBuilder.Entity("temsAPI.Data.Entities.OtherEntities.PersonnelPosition", b =>
                 {
                     b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ArchievedById")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime?>("DateArchieved")
@@ -1058,12 +1121,17 @@ namespace temsAPI.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ArchievedById");
+
                     b.ToTable("PersonnelPositions");
                 });
 
             modelBuilder.Entity("temsAPI.Data.Entities.OtherEntities.PersonnelRoomSupervisory", b =>
                 {
                     b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ArchievedById")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime?>("DateArchieved")
@@ -1080,6 +1148,8 @@ namespace temsAPI.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ArchievedById");
+
                     b.HasIndex("PersonnelID");
 
                     b.HasIndex("RoomID");
@@ -1090,6 +1160,9 @@ namespace temsAPI.Migrations
             modelBuilder.Entity("temsAPI.Data.Entities.OtherEntities.Room", b =>
                 {
                     b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ArchievedById")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime?>("DateArchieved")
@@ -1109,12 +1182,17 @@ namespace temsAPI.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ArchievedById");
+
                     b.ToTable("Rooms");
                 });
 
             modelBuilder.Entity("temsAPI.Data.Entities.OtherEntities.RoomLabel", b =>
                 {
                     b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ArchievedById")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime?>("DateArchieved")
@@ -1128,12 +1206,17 @@ namespace temsAPI.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ArchievedById");
+
                     b.ToTable("RoomLabels");
                 });
 
             modelBuilder.Entity("temsAPI.Data.Entities.OtherEntities.Status", b =>
                 {
                     b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ArchievedById")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime?>("DateArchieved")
@@ -1150,12 +1233,17 @@ namespace temsAPI.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ArchievedById");
+
                     b.ToTable("Statuses");
                 });
 
             modelBuilder.Entity("temsAPI.Data.Entities.Report.ReportTemplate", b =>
                 {
                     b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ArchievedById")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("CreatedById")
@@ -1192,6 +1280,8 @@ namespace temsAPI.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ArchievedById");
 
                     b.HasIndex("CreatedById");
 
@@ -1254,6 +1344,9 @@ namespace temsAPI.Migrations
                 {
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
 
+                    b.Property<string>("ArchievedById")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<DateTime?>("DateArchieved")
                         .HasColumnType("datetime2");
 
@@ -1271,6 +1364,8 @@ namespace temsAPI.Migrations
 
                     b.Property<string>("PersonnelId")
                         .HasColumnType("nvarchar(450)");
+
+                    b.HasIndex("ArchievedById");
 
                     b.HasIndex("PersonnelId")
                         .IsUnique()
@@ -1551,6 +1646,10 @@ namespace temsAPI.Migrations
 
             modelBuilder.Entity("temsAPI.Data.Entities.CommunicationEntities.Log", b =>
                 {
+                    b.HasOne("temsAPI.Data.Entities.UserEntities.TEMSUser", "ArchievedBy")
+                        .WithMany()
+                        .HasForeignKey("ArchievedById");
+
                     b.HasOne("temsAPI.Data.Entities.EquipmentEntities.Equipment", "Equipment")
                         .WithMany("Logs")
                         .HasForeignKey("EquipmentID")
@@ -1568,6 +1667,8 @@ namespace temsAPI.Migrations
                         .WithMany("Logs")
                         .HasForeignKey("RoomID");
 
+                    b.Navigation("ArchievedBy");
+
                     b.Navigation("Equipment");
 
                     b.Navigation("LogType");
@@ -1579,6 +1680,10 @@ namespace temsAPI.Migrations
 
             modelBuilder.Entity("temsAPI.Data.Entities.CommunicationEntities.Ticket", b =>
                 {
+                    b.HasOne("temsAPI.Data.Entities.UserEntities.TEMSUser", "ArchievedBy")
+                        .WithMany("ArchievedTickets")
+                        .HasForeignKey("ArchievedById");
+
                     b.HasOne("temsAPI.Data.Entities.UserEntities.TEMSUser", "ClosedBy")
                         .WithMany("ClosedTickets")
                         .HasForeignKey("ClosedById");
@@ -1594,6 +1699,8 @@ namespace temsAPI.Migrations
                     b.HasOne("temsAPI.Data.Entities.OtherEntities.Status", "Status")
                         .WithMany("Tickets")
                         .HasForeignKey("StatusId");
+
+                    b.Navigation("ArchievedBy");
 
                     b.Navigation("ClosedBy");
 
@@ -1615,6 +1722,10 @@ namespace temsAPI.Migrations
 
             modelBuilder.Entity("temsAPI.Data.Entities.EquipmentEntities.Equipment", b =>
                 {
+                    b.HasOne("temsAPI.Data.Entities.UserEntities.TEMSUser", "ArchievedBy")
+                        .WithMany("ArchievedEquipment")
+                        .HasForeignKey("ArchievedById");
+
                     b.HasOne("temsAPI.Data.Entities.EquipmentEntities.EquipmentDefinition", "EquipmentDefinition")
                         .WithMany("Equipment")
                         .HasForeignKey("EquipmentDefinitionID")
@@ -1626,8 +1737,14 @@ namespace temsAPI.Migrations
                         .OnDelete(DeleteBehavior.ClientCascade);
 
                     b.HasOne("temsAPI.Data.Entities.UserEntities.TEMSUser", "RegisteredBy")
-                        .WithMany("RegisteredEquipments")
+                        .WithMany("RegisteredEquipment")
                         .HasForeignKey("RegisteredByID");
+
+                    b.HasOne("temsAPI.Data.Entities.UserEntities.TEMSUser", null)
+                        .WithMany("RegisteredEquipments")
+                        .HasForeignKey("TEMSUserId");
+
+                    b.Navigation("ArchievedBy");
 
                     b.Navigation("EquipmentDefinition");
 
@@ -1638,6 +1755,10 @@ namespace temsAPI.Migrations
 
             modelBuilder.Entity("temsAPI.Data.Entities.EquipmentEntities.EquipmentAllocation", b =>
                 {
+                    b.HasOne("temsAPI.Data.Entities.UserEntities.TEMSUser", "ArchievedBy")
+                        .WithMany()
+                        .HasForeignKey("ArchievedById");
+
                     b.HasOne("temsAPI.Data.Entities.EquipmentEntities.Equipment", "Equipment")
                         .WithMany("EquipmentAllocations")
                         .HasForeignKey("EquipmentID")
@@ -1651,6 +1772,8 @@ namespace temsAPI.Migrations
                         .WithMany("EquipmentAllocations")
                         .HasForeignKey("RoomID");
 
+                    b.Navigation("ArchievedBy");
+
                     b.Navigation("Equipment");
 
                     b.Navigation("Personnel");
@@ -1660,6 +1783,10 @@ namespace temsAPI.Migrations
 
             modelBuilder.Entity("temsAPI.Data.Entities.EquipmentEntities.EquipmentDefinition", b =>
                 {
+                    b.HasOne("temsAPI.Data.Entities.UserEntities.TEMSUser", "ArchievedBy")
+                        .WithMany()
+                        .HasForeignKey("ArchievedById");
+
                     b.HasOne("temsAPI.Data.Entities.EquipmentEntities.EquipmentType", "EquipmentType")
                         .WithMany("EquipmentDefinitions")
                         .HasForeignKey("EquipmentTypeID")
@@ -1669,6 +1796,8 @@ namespace temsAPI.Migrations
                         .WithMany("Children")
                         .HasForeignKey("ParentID");
 
+                    b.Navigation("ArchievedBy");
+
                     b.Navigation("EquipmentType");
 
                     b.Navigation("Parent");
@@ -1676,6 +1805,10 @@ namespace temsAPI.Migrations
 
             modelBuilder.Entity("temsAPI.Data.Entities.EquipmentEntities.EquipmentSpecifications", b =>
                 {
+                    b.HasOne("temsAPI.Data.Entities.UserEntities.TEMSUser", "ArchievedBy")
+                        .WithMany()
+                        .HasForeignKey("ArchievedById");
+
                     b.HasOne("temsAPI.Data.Entities.EquipmentEntities.EquipmentDefinition", "EquipmentDefinition")
                         .WithMany("EquipmentSpecifications")
                         .HasForeignKey("EquipmentDefinitionID")
@@ -1686,17 +1819,34 @@ namespace temsAPI.Migrations
                         .HasForeignKey("PropertyID")
                         .OnDelete(DeleteBehavior.Cascade);
 
+                    b.Navigation("ArchievedBy");
+
                     b.Navigation("EquipmentDefinition");
 
                     b.Navigation("Property");
                 });
 
+            modelBuilder.Entity("temsAPI.Data.Entities.EquipmentEntities.EquipmentType", b =>
+                {
+                    b.HasOne("temsAPI.Data.Entities.UserEntities.TEMSUser", "ArchievedBy")
+                        .WithMany()
+                        .HasForeignKey("ArchievedById");
+
+                    b.Navigation("ArchievedBy");
+                });
+
             modelBuilder.Entity("temsAPI.Data.Entities.EquipmentEntities.Property", b =>
                 {
+                    b.HasOne("temsAPI.Data.Entities.UserEntities.TEMSUser", "ArchievedBy")
+                        .WithMany()
+                        .HasForeignKey("ArchievedById");
+
                     b.HasOne("temsAPI.Data.Entities.EquipmentEntities.DataType", "DataType")
                         .WithMany("DataTypeProperties")
                         .HasForeignKey("DataTypeID")
                         .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("ArchievedBy");
 
                     b.Navigation("DataType");
                 });
@@ -1718,15 +1868,25 @@ namespace temsAPI.Migrations
 
             modelBuilder.Entity("temsAPI.Data.Entities.KeyEntities.Key", b =>
                 {
+                    b.HasOne("temsAPI.Data.Entities.UserEntities.TEMSUser", "ArchievedBy")
+                        .WithMany()
+                        .HasForeignKey("ArchievedById");
+
                     b.HasOne("temsAPI.Data.Entities.OtherEntities.Room", "Room")
                         .WithMany("Keys")
                         .HasForeignKey("RoomId");
+
+                    b.Navigation("ArchievedBy");
 
                     b.Navigation("Room");
                 });
 
             modelBuilder.Entity("temsAPI.Data.Entities.KeyEntities.KeyAllocation", b =>
                 {
+                    b.HasOne("temsAPI.Data.Entities.UserEntities.TEMSUser", "ArchievedBy")
+                        .WithMany()
+                        .HasForeignKey("ArchievedById");
+
                     b.HasOne("temsAPI.Data.Entities.KeyEntities.Key", "Key")
                         .WithMany("KeyAllocations")
                         .HasForeignKey("KeyID");
@@ -1734,6 +1894,8 @@ namespace temsAPI.Migrations
                     b.HasOne("temsAPI.Data.Entities.OtherEntities.Personnel", "Personnel")
                         .WithMany("KeyAllocations")
                         .HasForeignKey("PersonnelID");
+
+                    b.Navigation("ArchievedBy");
 
                     b.Navigation("Key");
 
@@ -1755,8 +1917,30 @@ namespace temsAPI.Migrations
                     b.Navigation("UploadedBy");
                 });
 
+            modelBuilder.Entity("temsAPI.Data.Entities.OtherEntities.Personnel", b =>
+                {
+                    b.HasOne("temsAPI.Data.Entities.UserEntities.TEMSUser", "ArchievedBy")
+                        .WithMany()
+                        .HasForeignKey("ArchievedById");
+
+                    b.Navigation("ArchievedBy");
+                });
+
+            modelBuilder.Entity("temsAPI.Data.Entities.OtherEntities.PersonnelPosition", b =>
+                {
+                    b.HasOne("temsAPI.Data.Entities.UserEntities.TEMSUser", "ArchievedBy")
+                        .WithMany()
+                        .HasForeignKey("ArchievedById");
+
+                    b.Navigation("ArchievedBy");
+                });
+
             modelBuilder.Entity("temsAPI.Data.Entities.OtherEntities.PersonnelRoomSupervisory", b =>
                 {
+                    b.HasOne("temsAPI.Data.Entities.UserEntities.TEMSUser", "ArchievedBy")
+                        .WithMany()
+                        .HasForeignKey("ArchievedById");
+
                     b.HasOne("temsAPI.Data.Entities.OtherEntities.Personnel", "Personnel")
                         .WithMany("PersonnelRoomSupervisories")
                         .HasForeignKey("PersonnelID");
@@ -1765,16 +1949,51 @@ namespace temsAPI.Migrations
                         .WithMany("PersonnelRoomSupervisories")
                         .HasForeignKey("RoomID");
 
+                    b.Navigation("ArchievedBy");
+
                     b.Navigation("Personnel");
 
                     b.Navigation("Room");
                 });
 
+            modelBuilder.Entity("temsAPI.Data.Entities.OtherEntities.Room", b =>
+                {
+                    b.HasOne("temsAPI.Data.Entities.UserEntities.TEMSUser", "ArchievedBy")
+                        .WithMany()
+                        .HasForeignKey("ArchievedById");
+
+                    b.Navigation("ArchievedBy");
+                });
+
+            modelBuilder.Entity("temsAPI.Data.Entities.OtherEntities.RoomLabel", b =>
+                {
+                    b.HasOne("temsAPI.Data.Entities.UserEntities.TEMSUser", "ArchievedBy")
+                        .WithMany()
+                        .HasForeignKey("ArchievedById");
+
+                    b.Navigation("ArchievedBy");
+                });
+
+            modelBuilder.Entity("temsAPI.Data.Entities.OtherEntities.Status", b =>
+                {
+                    b.HasOne("temsAPI.Data.Entities.UserEntities.TEMSUser", "ArchievedBy")
+                        .WithMany()
+                        .HasForeignKey("ArchievedById");
+
+                    b.Navigation("ArchievedBy");
+                });
+
             modelBuilder.Entity("temsAPI.Data.Entities.Report.ReportTemplate", b =>
                 {
+                    b.HasOne("temsAPI.Data.Entities.UserEntities.TEMSUser", "ArchievedBy")
+                        .WithMany()
+                        .HasForeignKey("ArchievedById");
+
                     b.HasOne("temsAPI.Data.Entities.UserEntities.TEMSUser", "CreatedBy")
                         .WithMany()
                         .HasForeignKey("CreatedById");
+
+                    b.Navigation("ArchievedBy");
 
                     b.Navigation("CreatedBy");
                 });
@@ -1796,9 +2015,15 @@ namespace temsAPI.Migrations
 
             modelBuilder.Entity("temsAPI.Data.Entities.UserEntities.TEMSUser", b =>
                 {
+                    b.HasOne("temsAPI.Data.Entities.UserEntities.TEMSUser", "ArchievedBy")
+                        .WithMany()
+                        .HasForeignKey("ArchievedById");
+
                     b.HasOne("temsAPI.Data.Entities.OtherEntities.Personnel", "Personnel")
                         .WithOne("TEMSUser")
                         .HasForeignKey("temsAPI.Data.Entities.UserEntities.TEMSUser", "PersonnelId");
+
+                    b.Navigation("ArchievedBy");
 
                     b.Navigation("Personnel");
                 });
@@ -1884,9 +2109,15 @@ namespace temsAPI.Migrations
                 {
                     b.Navigation("Announcements");
 
+                    b.Navigation("ArchievedEquipment");
+
+                    b.Navigation("ArchievedTickets");
+
                     b.Navigation("ClosedTickets");
 
                     b.Navigation("CreatedTickets");
+
+                    b.Navigation("RegisteredEquipment");
 
                     b.Navigation("RegisteredEquipments");
                 });

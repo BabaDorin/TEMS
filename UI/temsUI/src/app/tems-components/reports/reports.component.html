@@ -20,9 +20,17 @@
         <h2>Custom report templates</h2>
         <br>
         <div class="row">
-            <div class="col-md-2" class="limitedWidth" *ngFor="let template of customTemplates">
-                <app-report-container [template]="template" (generateReport)="generateReport($event)"></app-report-container>
+            <div 
+                class="col-md-2" 
+                class="limitedWidth" 
+                *ngFor="let template of customTemplates | paginate: { itemsPerPage: 24, currentPage: pageNumber, id: 'reports' }; let i = index">
+                <app-report-container 
+                    [template]="template"
+                    (templateRemoved)="templateRemoved($event)"
+                    (generateReport)="generateReport($event)">
+                </app-report-container>
             </div>
+
             <div class="col-md-2" class="limitedWidth">
                 <div class="d-flex align-items-center d-flex justify-content-center" style="height: 100%;">
                     <mat-card style="margin: auto" class="reportContainer" (click)="createTemplate()">
@@ -41,6 +49,11 @@
                 </div>
             </div>
         </div>
+        <pagination-controls
+            (pageChange)="pageNumber = $event" 
+            id="reports" 
+            *ngIf="customTemplates != undefined && customTemplates.length > 0">
+        </pagination-controls>
     </div>
 </div>
 <br>

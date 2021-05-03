@@ -6,6 +6,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
+using temsAPI.Data.Entities.UserEntities;
 
 namespace temsAPI.Data.Entities.EquipmentEntities
 {
@@ -45,6 +46,10 @@ namespace temsAPI.Data.Entities.EquipmentEntities
 
 #nullable enable
         public string? Value { get; set; }
+
+        [ForeignKey("ArchievedById")]
+        public TEMSUser? ArchievedBy { get; set; }
+        public string? ArchievedById { get; set; }
 #nullable disable
     }
 }

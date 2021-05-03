@@ -9,6 +9,7 @@ using temsAPI.Data.Entities.CommunicationEntities;
 using temsAPI.Data.Entities.EquipmentEntities;
 using temsAPI.Data.Entities.KeyEntities;
 using temsAPI.Data.Entities.Report;
+using temsAPI.Data.Entities.UserEntities;
 
 namespace temsAPI.Data.Entities.OtherEntities
 {
@@ -22,6 +23,10 @@ namespace temsAPI.Data.Entities.OtherEntities
 #nullable enable
         public int? Floor { get; set; }
         public string? Description { get; set; }
+
+        [ForeignKey("ArchievedById")]
+        public TEMSUser? ArchievedBy { get; set; }
+        public string? ArchievedById { get; set; }
 #nullable disable
 
         public DateTime? DateArchieved { get; set; }

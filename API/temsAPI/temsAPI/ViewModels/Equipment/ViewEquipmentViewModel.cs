@@ -16,7 +16,7 @@ namespace temsAPI.ViewModels.Equipment
         public IOption Room { get; set; }
         public IOption Personnnel { get; set; }
         public ViewEquipmentTypeViewModel Type { get; set; }
-        public List<ViewPropertyViewModel> SpecificTypeProperties { get; set; }
+        public List<ViewPropertyViewModel> SpecificProperties { get; set; }
         public List<Option> Children { get; set; }
         public IOption Parent { get; set; }
         public bool IsUsed { get; set; }
@@ -26,7 +26,7 @@ namespace temsAPI.ViewModels.Equipment
 
         public ViewEquipmentViewModel()
         {
-            SpecificTypeProperties = new List<ViewPropertyViewModel>();
+            SpecificProperties = new List<ViewPropertyViewModel>();
             Children = new List<Option>();
             Photos = new List<string>();
         }
@@ -72,15 +72,15 @@ namespace temsAPI.ViewModels.Equipment
                             Value = model.Parent.Id,
                             Label = model.Parent.EquipmentDefinition.Identifier,
                         },
-                Children = model.Children
+                Children = (model.Children == null)
+                        ? null
+                        : model.Children
                         .Select(q => new Option
                         {
                             Value = q.Id,
                             Label = q.EquipmentDefinition.Identifier,
                             Additional = q.EquipmentDefinition.EquipmentType.Name
                         }).ToList(),
-                SpecificTypeProperties = mapper.Map<List<ViewPropertyViewModel>>
-                            (model.EquipmentDefinition.EquipmentType.Properties),
             };
 
             return viewModel;

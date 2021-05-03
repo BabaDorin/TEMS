@@ -17,7 +17,7 @@ TODO
 
 // TD:
 
-
+--> When equipment type is removed from report template, selected specific properties remain... =(
 --> EquipmentManager
 --> remove teamviewer id from definition, add it to item description
 --> Email confirmation + password reset via email

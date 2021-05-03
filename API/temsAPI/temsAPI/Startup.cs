@@ -26,10 +26,7 @@ using temsAPI.Helpers;
 using temsAPI.Mappings;
 using temsAPI.Repository;
 using temsAPI.Services;
-<<<<<<< HEAD
 using temsAPI.Services.Report;
-=======
->>>>>>> frontend-and-backend-interaction
 using temsAPI.System_Files;
 
 namespace temsAPI

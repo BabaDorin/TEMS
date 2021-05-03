@@ -316,7 +316,7 @@ namespace temsAPI.Controllers.ReportControllers
                     .Include(q => q.EquipmentDefinitions)
                     .Include(q => q.EquipmentTypes)
                     .Include(q => q.Personnel)
-                    .Include(q => q.Properties)
+                    .Include(q => q.Properties).ThenInclude(q => q.DataType)
                     .Include(q => q.Rooms)
                     .Include(q => q.Signatories)
                     )).FirstOrDefault();

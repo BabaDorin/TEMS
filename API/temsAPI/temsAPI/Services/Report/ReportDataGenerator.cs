@@ -109,13 +109,21 @@ namespace temsAPI.Services.Report
             List<ReportItemGroup> reportItemGroups = new List<ReportItemGroup>();
             foreach (var group in groupedItems)
             {
-                ReportItemGroup reportItemGroup = new ReportItemGroup
+                try
                 {
-                    Name = group.Key.Identifier,
-                    ItemsTable = ItemGroupToDataTable(group.ToList(), template)
-                };
+                    List<Equipment> items = group.ToList();
+                    ReportItemGroup reportItemGroup = new ReportItemGroup
+                    {
+                        Name = group.Key?.Identifier,
+                        ItemsTable = ItemGroupToDataTable(items, template)
+                    };
 
-                reportItemGroups.Add(reportItemGroup);
+                    reportItemGroups.Add(reportItemGroup);
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex);
+                }
             }
 
             return reportItemGroups;
@@ -131,7 +139,12 @@ namespace temsAPI.Services.Report
 
             // Specific properties to columns
             foreach (var prop in reportTemplate.Properties)
+            {
+                if (itemGroupDataTable.Columns.Contains(prop.DisplayName))
+                    continue;
+                
                 itemGroupDataTable.Columns.Add(prop.DisplayName, prop.DataType.GetNativeType());
+            }
 
             var equipmentProperties = typeof(Equipment).GetProperties();
             foreach (Equipment eq in items)
@@ -206,14 +219,14 @@ namespace temsAPI.Services.Report
             List<Equipment> equipment = null;
             try
             {
-            //include: q => q
-            //    .Include(q => q.EquipmentDefinition).ThenInclude(q => q.EquipmentType)
-            //    .Include(q => q.EquipmentDefinition).ThenInclude(q => q.EquipmentSpecifications)
-            //    .Include(q => q.EquipmentAllocations.Where(q1 => q1.DateReturned == null)),
                 equipment = (await _unitOfWork.Equipments
                 .Find<Equipment>(
-                    
-                    where: q => !q.IsArchieved
+                    include: q => q
+                    .Include(q => q.EquipmentDefinition).ThenInclude(q => q.EquipmentType)
+                    .Include(q => q.EquipmentDefinition).ThenInclude(q => q.EquipmentSpecifications)
+                    .ThenInclude(q => q.Property)
+                    .Include(q => q.EquipmentAllocations.Where(q1 => q1.DateReturned == null)),
+                    where: mainExpression
                 )).ToList();
             }
             catch (Exception ex)

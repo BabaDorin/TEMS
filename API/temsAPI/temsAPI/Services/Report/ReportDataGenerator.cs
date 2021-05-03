@@ -5,6 +5,7 @@ using ReportGenerator.Models;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -72,6 +73,7 @@ namespace temsAPI.Services.Report
                 throw new Exception("Only Equipment subject supported for now.");
 
             var equipment = await FetchEquipmentItems(template);
+            // EXIT
 
             // BEFREE: Test if this method works. If so, remove the part responsible for 
             // fetching separators.
@@ -160,7 +162,7 @@ namespace temsAPI.Services.Report
 
         public List<string> FetchSignatories(ReportTemplate template)
         {
-            return template.Signatories.Select(q => q.Name).ToList();
+            return template.Signatories?.Select(q => q.Name).ToList();
         }
 
         public async Task<List<Equipment>> FetchEquipmentItems(ReportTemplate template)
@@ -201,21 +203,32 @@ namespace temsAPI.Services.Report
                 personnelFilter,
                 roomFilter);
 
-            return (await _unitOfWork.Equipments
+            List<Equipment> equipment = null;
+            try
+            {
+            //include: q => q
+            //    .Include(q => q.EquipmentDefinition).ThenInclude(q => q.EquipmentType)
+            //    .Include(q => q.EquipmentDefinition).ThenInclude(q => q.EquipmentSpecifications)
+            //    .Include(q => q.EquipmentAllocations.Where(q1 => q1.DateReturned == null)),
+                equipment = (await _unitOfWork.Equipments
                 .Find<Equipment>(
-                    include: q => q
-                    .Include(q => q.EquipmentDefinition).ThenInclude(q => q.EquipmentType)
-                    .Include(q => q.EquipmentDefinition).ThenInclude(q => q.EquipmentSpecifications)
-                    .Include(q => q.EquipmentAllocations.Where(q1 => q1.DateReturned == null)),
-                    where: mainExpression
+                    
+                    where: q => !q.IsArchieved
                 )).ToList();
+            }
+            catch (Exception ex)
+            {
+                Debug.Write(ex.Message);
+            }
+            
+            return equipment;
         }
 
         public async Task<List<Option>> FetchSeparators(ReportTemplate template)
         {
             // Note: Sepparate by options might differ for another subject.
             // Only equipment subject is treated for now.
-            if (template.Subject != "Equipment")
+            if (template.Subject.ToLower() != "equipment")
                 throw new Exception("Only Equipment subject is supported at the moment.");
 
             // Sepparate by possible values: "none", "room", "personnel", "type", "definition" 

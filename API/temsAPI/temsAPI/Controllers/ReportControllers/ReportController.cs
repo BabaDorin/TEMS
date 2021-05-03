@@ -315,12 +315,22 @@ namespace temsAPI.Controllers.ReportControllers
         public async Task<JsonResult> GenerateReport(string templateId)
         {
             var reportTemplate = (await _unitOfWork.ReportTemplates
-                .Find<ReportTemplate>(q => q.Id == templateId))
-                .FirstOrDefault();
+                .Find<ReportTemplate>(
+                    where: q => q.Id == templateId,
+                    include: q => q
+                    .Include(q => q.CreatedBy)
+                    .Include(q => q.EquipmentDefinitions)
+                    .Include(q => q.EquipmentTypes)
+                    .Include(q => q.Personnel)
+                    .Include(q => q.Properties)
+                    .Include(q => q.Rooms)
+                    .Include(q => q.Signatories)
+                    )).FirstOrDefault();
+
             if (reportTemplate == null)
                 return ReturnResponse("Invalid template ID provided", ResponseStatus.Fail);
 
-            var excelReport = _reportingService.GenerateReport(reportTemplate);
+            var excelReport = await _reportingService.GenerateReport(reportTemplate);
 
             return ReturnResponse("Will be implemented soon", ResponseStatus.Success);
         }

@@ -1,3 +1,4 @@
+import { SnackService } from './../../services/snack/snack.service';
 import { TEMSComponent } from 'src/app/tems/tems.component';
 import { ViewReportSimplified } from './../../models/report/view-report-simplified.model';
 import { ReportService } from './../../services/report-service/report.service';
@@ -19,6 +20,7 @@ export class ReportsComponent extends TEMSComponent implements OnInit {
   constructor(
     private reportService: ReportService,
     private router: Router,
+    private snackService: SnackService
   ) {
     super();
   }
@@ -46,7 +48,8 @@ export class ReportsComponent extends TEMSComponent implements OnInit {
     this.subscriptions.push(
       this.reportService.generateReport(templateId)
       .subscribe(result => {
-        console.log(result);
+        if(this.snackService.snackIfError(result))
+          return;
       })
     )
   }

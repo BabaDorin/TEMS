@@ -109,21 +109,14 @@ namespace temsAPI.Services.Report
             List<ReportItemGroup> reportItemGroups = new List<ReportItemGroup>();
             foreach (var group in groupedItems)
             {
-                try
+                List<Equipment> items = group.ToList();
+                ReportItemGroup reportItemGroup = new ReportItemGroup
                 {
-                    List<Equipment> items = group.ToList();
-                    ReportItemGroup reportItemGroup = new ReportItemGroup
-                    {
-                        Name = group.Key?.Identifier,
-                        ItemsTable = ItemGroupToDataTable(items, template)
-                    };
+                    Name = group.Key?.Identifier,
+                    ItemsTable = ItemGroupToDataTable(items, template)
+                };
 
-                    reportItemGroups.Add(reportItemGroup);
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine(ex);
-                }
+                reportItemGroups.Add(reportItemGroup);
             }
 
             return reportItemGroups;
@@ -216,23 +209,15 @@ namespace temsAPI.Services.Report
                 personnelFilter,
                 roomFilter);
 
-            List<Equipment> equipment = null;
-            try
-            {
-                equipment = (await _unitOfWork.Equipments
-                .Find<Equipment>(
-                    include: q => q
-                    .Include(q => q.EquipmentDefinition).ThenInclude(q => q.EquipmentType)
-                    .Include(q => q.EquipmentDefinition).ThenInclude(q => q.EquipmentSpecifications)
-                    .ThenInclude(q => q.Property)
-                    .Include(q => q.EquipmentAllocations.Where(q1 => q1.DateReturned == null)),
-                    where: mainExpression
-                )).ToList();
-            }
-            catch (Exception ex)
-            {
-                Debug.Write(ex.Message);
-            }
+            var equipment = (await _unitOfWork.Equipments
+            .Find<Equipment>(
+                include: q => q
+                .Include(q => q.EquipmentDefinition).ThenInclude(q => q.EquipmentType)
+                .Include(q => q.EquipmentDefinition).ThenInclude(q => q.EquipmentSpecifications)
+                .ThenInclude(q => q.Property)
+                .Include(q => q.EquipmentAllocations.Where(q1 => q1.DateReturned == null)),
+                where: mainExpression
+            )).ToList();
             
             return equipment;
         }

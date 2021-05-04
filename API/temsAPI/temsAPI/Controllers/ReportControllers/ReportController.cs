@@ -308,7 +308,9 @@ namespace temsAPI.Controllers.ReportControllers
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
         public async Task<JsonResult> GenerateReport(string templateId)
         {
-            var reportTemplate = (await _unitOfWork.ReportTemplates
+            try
+            {
+                var reportTemplate = (await _unitOfWork.ReportTemplates
                 .Find<ReportTemplate>(
                     where: q => q.Id == templateId,
                     include: q => q
@@ -321,12 +323,18 @@ namespace temsAPI.Controllers.ReportControllers
                     .Include(q => q.Signatories)
                     )).FirstOrDefault();
 
-            if (reportTemplate == null)
-                return ReturnResponse("Invalid template ID provided", ResponseStatus.Fail);
+                if (reportTemplate == null)
+                    return ReturnResponse("Invalid template ID provided", ResponseStatus.Fail);
 
-            var excelReport = await _reportingService.GenerateReport(reportTemplate);
+                var excelReport = await _reportingService.GenerateReport(reportTemplate);
 
-            return ReturnResponse("Will be implemented soon", ResponseStatus.Success);
+                return ReturnResponse("Will be implemented soon", ResponseStatus.Success);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured while preparing the report", ResponseStatus.Fail);
+            }
         }
 
         [HttpGet]

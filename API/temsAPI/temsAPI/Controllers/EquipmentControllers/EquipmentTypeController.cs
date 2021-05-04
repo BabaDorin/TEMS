@@ -35,13 +35,14 @@ namespace temsAPI.EquipmentControllers
         {
             try
             {
+                int take = (filter == null) ? int.MaxValue : 5;
                 Expression<Func<EquipmentType, bool>> expression = (filter == null)
                    ? q => !q.IsArchieved
                    : q => !q.IsArchieved && q.Name.Contains(filter);
 
                 List<Option> viewModel = (await _unitOfWork.EquipmentTypes.FindAll<Option>(
                     where: expression,
-                    take: 5,
+                    take: take,
                     select: q => new Option
                     {
                         Value = q.Id,

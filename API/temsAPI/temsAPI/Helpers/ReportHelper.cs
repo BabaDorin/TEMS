@@ -7,9 +7,30 @@ namespace temsAPI.Helpers
 {
     public class ReportHelper
     {
-        public static List<string> UniversalProperties = new List<string>
+        public enum CommonEquipmentProperties
         {
-            "temsid", "serialNumber", "price", "currency", "purchaseDate", "description", "identifier"
+            Temsid,
+            SerialNumber,
+            Definition,
+            Type,
+            Description,
+            Price,
+            PriceCurrency,
+            PurchaseDate,
+            Allocatee
+        }
+
+        // default association = string
+        public static List<Tuple<CommonEquipmentProperties, Type>> CommonPropertyEquipmentTypes = new()
+        {
+            new Tuple<CommonEquipmentProperties, Type>(CommonEquipmentProperties.Price, typeof(double)),
+            new Tuple<CommonEquipmentProperties, Type>(CommonEquipmentProperties.PurchaseDate, typeof(DateTime)),
         };
+
+        public static List<string> CommonProperties = Enum
+            .GetValues(typeof(CommonEquipmentProperties))
+            .Cast<CommonEquipmentProperties>()
+            .Select(q => q.ToString().ToLower())
+            .ToList();
     }
 }

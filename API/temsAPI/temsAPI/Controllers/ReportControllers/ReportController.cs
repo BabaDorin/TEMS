@@ -90,9 +90,9 @@ namespace temsAPI.Controllers.ReportControllers
                     }).ToList(),
                 };
 
-                if (model.UniversalProperties != null)
+                if (model.CommonProperties != null)
                     viewModel.Properties = viewModel.Properties
-                        .Concat(model.UniversalProperties.Split(' '))
+                        .Concat(model.CommonProperties.Split(' '))
                         .ToList();
 
                 return Json(viewModel); // update it    
@@ -138,11 +138,16 @@ namespace temsAPI.Controllers.ReportControllers
                 List<string> definitionIds = viewModel.Definitions?.Select(q => q.Value).ToList();
                 List<string> roomIds = viewModel.Rooms?.Select(q => q.Value).ToList();
                 List<string> personnelIds = viewModel.Personnel?.Select(q => q.Value).ToList();
-                List<string> specificProperties = viewModel.SpecificProperties?.SelectMany(q => q.Properties).ToList();
+                List<string> specificProperties = viewModel.SpecificProperties?
+                    .Where(q => viewModel.Types.Any(q1 => q1.Label == q.Type))
+                    .SelectMany(q => q.Properties).ToList();
                 List<string> propertyIds = viewModel.CommonProperties?
-                    .Concat(specificProperties == null ? new List<string>() : specificProperties)
+                    .Concat(specificProperties ?? new List<string>())
                     .ToList();
-                List<string> universalProperties = viewModel.CommonProperties.Where(q => ReportHelper.UniversalProperties.Contains(q)).ToList();
+                List<string> commonProperties = viewModel.CommonProperties?
+                    .Where(q => ReportHelper.CommonProperties.Contains(q.ToLower()))
+                    .Select(q => q.ToLower())
+                    .ToList();
                 List<string> signatoriesIds = viewModel.Signatories?.Select(q => q.Value).ToList();
 
                 ReportTemplate model = new ReportTemplate
@@ -189,8 +194,8 @@ namespace temsAPI.Controllers.ReportControllers
                             where: q => q.Id == IdentityHelper.GetUserId(User)
                         )).FirstOrDefault(),
                     DateCreated = DateTime.Now,
-                    UniversalProperties = (universalProperties.Count > 0)
-                        ? String.Join(" ", universalProperties)
+                    CommonProperties = (commonProperties.Count > 0)
+                        ? String.Join(" ", commonProperties)
                         : null
                 };
 
@@ -235,7 +240,7 @@ namespace temsAPI.Controllers.ReportControllers
                 List<string> propertyIds = viewModel.CommonProperties?
                     .Concat(specificProperties == null ? new List<string>() : specificProperties)
                     .ToList();
-                List<string> universalProperties = viewModel.CommonProperties.Where(q => ReportHelper.UniversalProperties.Contains(q)).ToList();
+                List<string> universalProperties = viewModel.CommonProperties.Where(q => ReportHelper.CommonProperties.Contains(q)).ToList();
                 List<string> signatoriesIds = viewModel.Signatories?.Select(q => q.Value).ToList();
 
                 var model = (await _unitOfWork.ReportTemplates
@@ -290,7 +295,7 @@ namespace temsAPI.Controllers.ReportControllers
                         .Find<TEMSUser>(
                             where: q => q.UserName == User.Identity.Name
                         )).FirstOrDefault();
-                model.UniversalProperties = (universalProperties.Count > 0)
+                model.CommonProperties = (universalProperties.Count > 0)
                         ? String.Join(" ", universalProperties)
                         : null;
 

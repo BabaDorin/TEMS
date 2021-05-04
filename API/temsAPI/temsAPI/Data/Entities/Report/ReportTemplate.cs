@@ -43,7 +43,7 @@ namespace temsAPI.Data.Entities.Report
         // These properties are hard-coded becuase they won't change and we don't want to keep
         // properties into Properties entity that are not related to any type
         // Universal properties are equipment's default properties.
-        public string UniversalProperties { get; set; }
+        public string CommonProperties { get; set; }
 
 #nullable enable
         [ForeignKey("CreatedById")]

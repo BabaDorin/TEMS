@@ -48,7 +48,7 @@ namespace temsAPI.Services.Report
             if (separators.Count == 0)
                 separators.Add(new Option());
 
-            reportUniversalPropertiesList = template.UniversalProperties.Split(' ').ToList();
+            reportUniversalPropertiesList = template.CommonProperties.Split(' ').ToList();
             for (int i = 0; i < reportUniversalPropertiesList.Count; i++)
             {
                 var prop = reportUniversalPropertiesList[i];

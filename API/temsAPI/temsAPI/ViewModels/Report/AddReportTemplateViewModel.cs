@@ -75,7 +75,7 @@ namespace temsAPI.ViewModels.Report
             // Invalid properties
             if (CommonProperties != null)
                 foreach (var item in CommonProperties)
-                    if (!ReportHelper.UniversalProperties.Contains(item) && !await unitOfWork.Properties.isExists(q => q.Name == item))
+                    if (!ReportHelper.CommonProperties.Contains(item) && !await unitOfWork.Properties.isExists(q => q.Name == item))
                         return $"{item} is not a valid property";
 
             var specificProperties = SpecificProperties?.SelectMany(q => q.Properties).ToList();

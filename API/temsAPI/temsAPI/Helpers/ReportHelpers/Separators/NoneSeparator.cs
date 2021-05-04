@@ -13,7 +13,7 @@ namespace temsAPI.Helpers
             public IEnumerable<IGrouping<IIdentifiable, Equipment>> GroupEquipment(List<Equipment> equipment)
             {
                 var groups = new List<Grouping<IIdentifiable, Equipment>>();
-                groups.Append(new Grouping<IIdentifiable, Equipment>(null, equipment));
+                groups.Add(new Grouping<IIdentifiable, Equipment>(null, equipment));
                 return groups;
             }
         }

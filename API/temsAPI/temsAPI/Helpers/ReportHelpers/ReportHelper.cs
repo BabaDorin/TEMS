@@ -38,7 +38,7 @@ namespace temsAPI.Helpers
             Type,
             Description,
             Price,
-            PriceCurrency,
+            Currency,
             PurchaseDate,
             Allocatee
         }
@@ -67,7 +67,7 @@ namespace temsAPI.Helpers
 
         public static ICommonPropertyValueProvider GetCommonPropertyValueProvider(string commonPropName, Equipment equipment)
         {
-            switch (commonPropName)
+            switch (commonPropName.ToLower())
             {
                 case "definition": return new DefinitionValueProvider();
                 case "type": return new TypeValueProvider();

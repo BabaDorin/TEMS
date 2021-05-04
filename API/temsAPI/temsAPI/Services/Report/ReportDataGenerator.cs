@@ -174,6 +174,8 @@ namespace temsAPI.Services.Report
                 .Include(q => q.EquipmentDefinition).ThenInclude(q => q.EquipmentType)
                 .Include(q => q.EquipmentDefinition).ThenInclude(q => q.EquipmentSpecifications)
                 .ThenInclude(q => q.Property)
+                .Include(q => q.EquipmentAllocations).ThenInclude(q => q.Personnel)
+                .Include(q => q.EquipmentAllocations).ThenInclude(q => q.Room)
                 .Include(q => q.EquipmentAllocations.Where(q1 => q1.DateReturned == null)),
                 where: mainExpression
             )).ToList();

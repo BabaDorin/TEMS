@@ -20,7 +20,7 @@ namespace temsAPI.Helpers
                 if (properties == null)
                     properties = typeof(Equipment).GetProperties();
 
-                return properties.First(q => q.Name.ToLower() == propName.ToLower())?
+                return properties.FirstOrDefault(q => q.Name.ToLower() == propName.ToLower())?
                         .GetValue(equipment);
             }
         }

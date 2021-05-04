@@ -82,7 +82,7 @@ export class CreateReportTemplateComponent extends TEMSComponent implements OnIn
       new CheckboxItem('type', 'Type'),
       new CheckboxItem('description', 'Description'),
       new CheckboxItem('price', 'Price'),
-      new CheckboxItem('priceCurrency', 'Price Currency'),
+      new CheckboxItem('currency', 'Currency'),
       new CheckboxItem('purchaseDate', 'Date of purchase'),
       new CheckboxItem('allocatee', 'Allocatee'),
     ];

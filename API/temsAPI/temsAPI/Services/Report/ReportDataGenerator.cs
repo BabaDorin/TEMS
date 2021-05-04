@@ -44,10 +44,6 @@ namespace temsAPI.Services.Report
                 Signatories = FetchSignatories(template)
             };
 
-            List<Option> separators = await FetchSeparators(template);
-            if (separators.Count == 0)
-                separators.Add(new Option());
-
             reportUniversalPropertiesList = template.CommonProperties.Split(' ').ToList();
             for (int i = 0; i < reportUniversalPropertiesList.Count; i++)
             {
@@ -55,14 +51,13 @@ namespace temsAPI.Services.Report
                 reportUniversalPropertiesList[i] = prop.First().ToString().ToUpper() + prop.Substring(1);
             }
 
-            reportData.ReportItemGroups = await GenerateReportItemGroups(template, separators);
+            reportData.ReportItemGroups = await GenerateReportItemGroups(template);
 
             return reportData;
         }
 
         public async Task<List<ReportItemGroup>> GenerateReportItemGroups(
-            ReportTemplate template,
-            List<Option> separator)
+            ReportTemplate template)
         {
             //1 => build the main lambda exp and fetch all respective items 
             //2 => sepparate fetched items into multiple report item groups.
@@ -75,36 +70,8 @@ namespace temsAPI.Services.Report
             var equipment = await FetchEquipmentItems(template);
             // EXIT
 
-            // BEFREE: Test if this method works. If so, remove the part responsible for 
-            // fetching separators.
-            IEnumerable<IGrouping<IIdentifiable, Equipment>> groupedItems = null;
-            switch (template.SepparateBy)
-            {
-                case "type":
-                    groupedItems = equipment
-                       .GroupBy(q => q.EquipmentDefinition.EquipmentType)
-                       .ToList();
-                    break;
-                case "definition":
-                    groupedItems = equipment
-                        .GroupBy(q => q.EquipmentDefinition)
-                        .ToList();
-                    break;
-                case "room":
-                    groupedItems = equipment
-                        .GroupBy(q => q.EquipmentAllocations
-                        .FirstOrDefault(q1 => q1.DateReturned == null) == null
-                            ? null
-                            : q.EquipmentAllocations.FirstOrDefault(q1 => q1.DateReturned == null).Room ?? null);
-                    break;
-                case "personnel":
-                    groupedItems = equipment
-                        .GroupBy(q => q.EquipmentAllocations
-                        .FirstOrDefault(q1 => q1.DateReturned == null) == null
-                            ? null
-                            : q.EquipmentAllocations.FirstOrDefault(q1 => q1.DateReturned == null).Personnel ?? null);
-                    break;
-            }
+            var separator = ReportHelper.GetSeparator(template);
+            var groupedItems = separator.GroupEquipment(equipment);
 
             List<ReportItemGroup> reportItemGroups = new List<ReportItemGroup>();
             foreach (var group in groupedItems)
@@ -220,60 +187,6 @@ namespace temsAPI.Services.Report
             )).ToList();
             
             return equipment;
-        }
-
-        public async Task<List<Option>> FetchSeparators(ReportTemplate template)
-        {
-            // Note: Sepparate by options might differ for another subject.
-            // Only equipment subject is treated for now.
-            if (template.Subject.ToLower() != "equipment")
-                throw new Exception("Only Equipment subject is supported at the moment.");
-
-            // Sepparate by possible values: "none", "room", "personnel", "type", "definition" 
-            switch (template.SepparateBy)
-            {
-                case "room":
-                    return (await _unitOfWork.Rooms
-                        .Find(
-                            where: q => !q.IsArchieved,
-                            select: q => new Option
-                            {
-                                Label = q.Identifier,
-                                Value = q.Id
-                            })).ToList();
-                case "personnel":
-                    return (await _unitOfWork.Personnel
-                        .Find(
-                            where: q => !q.IsArchieved,
-                            select: q => new Option
-                            {
-                                Label = q.Name,
-                                Value = q.Id
-                            }
-                        )).ToList();
-                case "type":
-                    return (await _unitOfWork.EquipmentTypes
-                        .Find(
-                            where: q => !q.IsArchieved,
-                            select: q => new Option
-                            {
-                                Label = q.Name,
-                                Value = q.Id
-                            }
-                        )).ToList();
-                case "definition":
-                    return (await _unitOfWork.EquipmentDefinitions
-                        .Find(
-                            where: q => !q.IsArchieved,
-                            select: q => new Option
-                            {
-                                Value = q.Identifier,
-                                Label = q.Id
-                            }
-                        )).ToList();
-                default:
-                    return new List<Option>();
-            }
         }
 
         public DataTable FetchItems<T>(

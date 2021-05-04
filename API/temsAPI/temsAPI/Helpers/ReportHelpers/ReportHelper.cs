@@ -1,12 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using temsAPI.Data.Entities.Report;
 
 namespace temsAPI.Helpers
 {
-    public class ReportHelper
+
+    public partial class ReportHelper
     {
+
+        public static IEquipmentSeparator GetSeparator(ReportTemplate reportTemplate)
+        {
+            switch (reportTemplate.SepparateBy.ToLower())
+            {
+                case "type": return new TypeSeparator();
+                case "definition": return new DefinitionSeparator();
+                case "personnel": return new PersonnelSeparator();
+                case "room": return new RoomSeparator();
+                default: return new NoneSeparator();
+            }
+        }
+
         public enum CommonEquipmentProperties
         {
             Temsid,

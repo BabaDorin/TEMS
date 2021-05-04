@@ -1,26 +1,33 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using temsAPI.Data.Entities.EquipmentEntities;
 using temsAPI.Data.Entities.Report;
+using temsAPI.Helpers.ReportHelpers;
 
 namespace temsAPI.Helpers
 {
-
     public partial class ReportHelper
     {
+        private static PropertyInfo[] equipmentProperties = typeof(Equipment).GetProperties();
 
-        public static IEquipmentSeparator GetSeparator(ReportTemplate reportTemplate)
+        public enum Subjects
         {
-            switch (reportTemplate.SepparateBy.ToLower())
-            {
-                case "type": return new TypeSeparator();
-                case "definition": return new DefinitionSeparator();
-                case "personnel": return new PersonnelSeparator();
-                case "room": return new RoomSeparator();
-                default: return new NoneSeparator();
-            }
+            Equipment,
+            Personnel,
+            Room
+        }
+
+        public enum Separators
+        {
+            None,
+            Type,
+            Definition,
+            Personnel,
+            Room
         }
 
         public enum CommonEquipmentProperties
@@ -36,12 +43,38 @@ namespace temsAPI.Helpers
             Allocatee
         }
 
-        // default association = string
-        public static List<Tuple<CommonEquipmentProperties, Type>> CommonPropertyEquipmentTypes = new()
+        public static IEquipmentSeparator GetSeparator(ReportTemplate reportTemplate)
         {
-            new Tuple<CommonEquipmentProperties, Type>(CommonEquipmentProperties.Price, typeof(double)),
-            new Tuple<CommonEquipmentProperties, Type>(CommonEquipmentProperties.PurchaseDate, typeof(DateTime)),
-        };
+            switch (reportTemplate.SepparateBy.ToLower())
+            {
+                case "type": return new TypeSeparator();
+                case "definition": return new DefinitionSeparator();
+                case "personnel": return new PersonnelSeparator();
+                case "room": return new RoomSeparator();
+                default: return new NoneSeparator();
+            }
+        }
+
+        public static Type GetCommonPropertyType(string commonProperty)
+        {
+            switch (commonProperty.ToLower())
+            {
+                case "price": return typeof(double);
+                case "datepurchased": return typeof(DateTime);
+                default: return typeof(string);
+            }
+        }
+
+        public static ICommonPropertyValueProvider GetCommonPropertyValueProvider(string commonPropName, Equipment equipment)
+        {
+            switch (commonPropName)
+            {
+                case "definition": return new DefinitionValueProvider();
+                case "type": return new TypeValueProvider();
+                case "allocatee": return new AllocateeValueProvider();
+                default: return new DefaultCommonPropertyValueProvider(commonPropName);
+            }
+        }
 
         public static List<string> CommonProperties = Enum
             .GetValues(typeof(CommonEquipmentProperties))

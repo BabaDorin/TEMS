@@ -15,7 +15,6 @@ using temsAPI.Data.Entities.EquipmentEntities;
 using temsAPI.Data.Entities.Report;
 using temsAPI.Data.Entities.UserEntities;
 using temsAPI.Helpers;
-using temsAPI.ViewModels;
 using Property = temsAPI.Data.Entities.EquipmentEntities.Property;
 
 namespace temsAPI.Services.Report
@@ -24,8 +23,7 @@ namespace temsAPI.Services.Report
     {
         IUnitOfWork _unitOfWork;
         UserManager<TEMSUser> _userManager;
-        List<string> reportUniversalPropertiesList = new List<string>();
-
+        List<string> reportCommonPropertiesList = new List<string>();
 
         public ReportDataGenerator(IUnitOfWork unitOfWork, UserManager<TEMSUser> userManager)
         {
@@ -44,12 +42,10 @@ namespace temsAPI.Services.Report
                 Signatories = FetchSignatories(template)
             };
 
-            reportUniversalPropertiesList = template.CommonProperties.Split(' ').ToList();
-            for (int i = 0; i < reportUniversalPropertiesList.Count; i++)
-            {
-                var prop = reportUniversalPropertiesList[i];
-                reportUniversalPropertiesList[i] = prop.First().ToString().ToUpper() + prop.Substring(1);
-            }
+            reportCommonPropertiesList = template.CommonProperties
+                .Split(' ')
+                .Select(q => q.First().ToString().ToUpper() + q.Substring(1))
+                .ToList();
 
             reportData.ReportItemGroups = await GenerateReportItemGroups(template);
 
@@ -68,7 +64,6 @@ namespace temsAPI.Services.Report
                 throw new Exception("Only Equipment subject supported for now.");
 
             var equipment = await FetchEquipmentItems(template);
-            // EXIT
 
             var separator = ReportHelper.GetSeparator(template);
             var groupedItems = separator.GroupEquipment(equipment);
@@ -94,8 +89,8 @@ namespace temsAPI.Services.Report
             var itemGroupDataTable = new DataTable();
 
             // Universal properties to columns
-            foreach (string prop in reportUniversalPropertiesList)
-                itemGroupDataTable.Columns.Add(prop, prop == "price" ? typeof(double) : typeof(string));
+            foreach (string prop in reportCommonPropertiesList)
+                itemGroupDataTable.Columns.Add(prop, ReportHelper.GetCommonPropertyType(prop));
 
             // Specific properties to columns
             foreach (var prop in reportTemplate.Properties)
@@ -106,16 +101,13 @@ namespace temsAPI.Services.Report
                 itemGroupDataTable.Columns.Add(prop.DisplayName, prop.DataType.GetNativeType());
             }
 
-            var equipmentProperties = typeof(Equipment).GetProperties();
             foreach (Equipment eq in items)
             {
                 var row = itemGroupDataTable.NewRow();
                 // Add values for universal properties
-                foreach (string prop in reportUniversalPropertiesList)
+                foreach (string prop in reportCommonPropertiesList)
                 {
-                    row[prop] = equipmentProperties
-                        .First(qu => qu.Name.ToLower() == prop.ToLower())
-                        .GetValue(eq);
+                    row[prop] = ReportHelper.GetCommonPropertyValueProvider(prop, eq).GetValue(eq);
                 }
 
                 // Add values for specific properties

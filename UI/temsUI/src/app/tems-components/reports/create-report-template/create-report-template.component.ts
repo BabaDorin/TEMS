@@ -74,18 +74,17 @@ export class CreateReportTemplateComponent extends TEMSComponent implements OnIn
       signatories: new FormControl()
     });
 
-    // this.fetchTypes();
-    // this.fetchDefinitionsOfTypes();
-    // this.fetchRooms();
-    // this.fetchPersonnel();
-
     this.sepparateBy = 'none';
     this.universalProperties = [
       new CheckboxItem('temsid', 'TEMSID'),
-      new CheckboxItem('identifier', 'Identifier'),
       new CheckboxItem('serialNumber', 'Serial Number'),
+      new CheckboxItem('definition', 'Definition'),
+      new CheckboxItem('type', 'Type'),
       new CheckboxItem('description', 'Description'),
       new CheckboxItem('price', 'Price'),
+      new CheckboxItem('priceCurrency', 'Price Currency'),
+      new CheckboxItem('purchaseDate', 'Date of purchase'),
+      new CheckboxItem('allocatee', 'Allocatee'),
     ];
     this.equipmentCommonProperties = this.universalProperties;
     this.equipmentCommonProperties.map(q => q.checked = true);

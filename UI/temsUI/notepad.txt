@@ -17,6 +17,8 @@ TODO
 
 // TD:
 
+--> Description property is always considered as desired specific property, idk why (report);
+
 --> When equipment type is removed from report template, selected specific properties remain... =(
 --> EquipmentManager
 --> remove teamviewer id from definition, add it to item description

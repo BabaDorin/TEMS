@@ -19,7 +19,8 @@ namespace ReportGenerator.Services
         public FileInfo GenerateReport(ReportData reportData)
         {
             // Logic of creating an excel file, based on provided ReportData
-            var file = new FileInfo(@"C:\Users\Dorin\Desktop\testreport2.xlsx");
+            string uniqueSuffix = Guid.NewGuid().ToString();
+            var file = new FileInfo(@$"C:\Users\Dorin\Desktop\testreport{uniqueSuffix}.xlsx");
             SaveExcelFile(reportData, file);
             return file;
         }
@@ -30,10 +31,13 @@ namespace ReportGenerator.Services
             
             using (var pck = new ExcelPackage(file))
             {
-                foreach (ReportItemGroup itemGroup in reportData.ReportItemGroups)
+                ExcelWorksheet ws = pck.Workbook.Worksheets.Add("Items");
+                int lastStartingLine = 1;
+                for (int i = 0; i < reportData.ReportItemGroups.Count; i++)
                 {
-                    ExcelWorksheet ws = pck.Workbook.Worksheets.Add("Items");
-                    ws.Cells["A1"].LoadFromDataTable(itemGroup.ItemsTable, true);
+                    var itemGroup = reportData.ReportItemGroups[i];
+                    ws.Cells[$"A{lastStartingLine}"].LoadFromDataTable(itemGroup.ItemsTable, true);
+                    lastStartingLine = lastStartingLine + itemGroup.ItemsTable.Rows.Count + 3;
                     pck.Save();
                 }
             }

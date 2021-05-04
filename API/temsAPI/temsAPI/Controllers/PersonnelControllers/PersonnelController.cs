@@ -194,7 +194,7 @@ namespace temsAPI.Controllers.PersonnelControllers
                 }
                 else
                 {
-                    expression = q => !q.IsArchieved && q.Identifier.Contains(filter);
+                    expression = q => !q.IsArchieved && q.Name.Contains(filter);
                 }
 
                 List<Option> viewModel = (await _unitOfWork.Personnel

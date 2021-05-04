@@ -113,10 +113,13 @@ namespace temsAPI.Services.Report
                 // Add values for specific properties
                 foreach(Property prop in reportTemplate.Properties)
                 {
+                    if (row[prop.DisplayName] != DBNull.Value)
+                        continue; // There is already something there so we won't override. (It happens).#
+
                     var p = eq.EquipmentDefinition.EquipmentSpecifications
                         .FirstOrDefault(qu => qu.Property.Id == prop.Id);
 
-                    row[prop.DisplayName] = p?.Value;
+                    row[prop.DisplayName] = p == null ? DBNull.Value : p.Value;
                 }
 
                 itemGroupDataTable.Rows.Add(row);

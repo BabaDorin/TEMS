@@ -14,10 +14,13 @@ namespace temsAPI.Helpers
                 var lastAllocation = equipment.EquipmentAllocations
                     .FirstOrDefault(q => q.DateReturned == null);
 
-                return lastAllocation == null
+                var allocatee = lastAllocation == null
                     ? null
-                    : "Personnel: " + lastAllocation.Personnel?.Name 
-                        ?? "Room: " + lastAllocation.Room?.Identifier;
+                    : lastAllocation.Personnel != null
+                        ? "Personnel: " + lastAllocation.Personnel.Name
+                        : "Room: " + lastAllocation.Room.Identifier;
+
+                return allocatee ?? "Deposit";
             }
         }
     }

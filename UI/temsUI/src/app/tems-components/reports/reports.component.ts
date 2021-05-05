@@ -18,7 +18,8 @@ export class ReportsComponent extends TEMSComponent implements OnInit {
   customTemplates: ViewReportSimplified[];
   templates: ViewReportSimplified[];
   lastGeneratedReports = [] as GeneratedReport[];
-  pageNumber = 1;
+  templatePageNumber = 1;
+  generatedReportsPageNumber = 1;
   downloader: Downloader;
   
   constructor(
@@ -78,12 +79,30 @@ export class ReportsComponent extends TEMSComponent implements OnInit {
     )
   }
 
-  printFromGeneratedReport(repId: string){
-    alert(repId);
+  printFromGeneratedReport(repId: string, index: number){
+    if(this.downloader == undefined) this.downloader = new Downloader();
+
+    this.subscriptions.push(
+      this.reportService.getReport(repId)
+      .subscribe(result => {
+        if(this.snackService.snackIfError(result))
+          return;
+        
+        this.downloader.downloadFile(result, "Report.xlsx");
+      })
+    )
   }
 
-  removeGeneratedReport(repId: string){
-    alert(repId);
+  removeGeneratedReport(repId: string, index: number){
+    this.subscriptions.push(
+      this.reportService.removeReport(repId)
+      .subscribe(result => {
+        this.snackService.snack(result);
+
+        if(result.status == 1)
+          this.lastGeneratedReports.splice(index, 1);
+      })
+    )
   }
 
   createTemplate(){

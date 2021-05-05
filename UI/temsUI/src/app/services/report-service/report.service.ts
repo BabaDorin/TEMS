@@ -101,4 +101,21 @@ export class ReportService extends TEMSService {
       }
     );
   }
+
+  getReport(reportId: string): Observable<any>{
+    return this.http.get(
+      API_REP_URL + '/getreport/' + reportId,
+      {
+        reportProgress: true,
+        responseType: 'blob',
+      }
+    )
+  }
+
+  removeReport(reportId: string): Observable<any>{
+    return this.http.get(
+      API_REP_URL + '/removereport/' + reportId,
+      this.httpOptions
+    )
+  }
 }

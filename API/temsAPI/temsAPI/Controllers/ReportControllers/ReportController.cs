@@ -33,6 +33,8 @@ namespace temsAPI.Controllers.ReportControllers
         ReportingService _reportingService;
         AppSettings _appSettings;
         ReportManager _reportManager;
+        GeneratedReportFileHandler fileHandler = new();
+        
         public ReportController(
             IMapper mapper,
             IUnitOfWork unitOfWork, 
@@ -350,38 +352,20 @@ namespace temsAPI.Controllers.ReportControllers
                 report.GeneratedByID = IdentityHelper.GetUserId(User);
                 report.DateGenerated = DateTime.Now;
 
-                GeneratedReportFileHandler fileHandler = new();
                 report.DBPath = fileHandler.GetDBPath();
 
                 var excelReport = await _reportingService.GenerateReport(reportTemplate, report.DBPath);
-
-                int totalReports = await _unitOfWork.Reports.Count();
-                while(totalReports > _appSettings.MaxGeneratedReportsStored)
-                {
-                    var toBeRemoved = await _unitOfWork.Reports.OldestRecord();
-                    string result = await _reportManager.RemoveReport(toBeRemoved);
-
-                    if (result == null)
-                        --totalReports;
-                    else
-                        break;
-                }
-
+                
+                await _reportManager.CheckForReportsOverflow();
+                
                 await _unitOfWork.Reports.Create(report);
                 await _unitOfWork.Save();
 
-                if (!System.IO.File.Exists(report.DBPath))
+                var memory = await _reportManager.GetReportMemoryStream(report.DBPath);
+                if (memory == null)
                     return NotFound();
 
-                var memory = new MemoryStream();
-                await using (var stream = new FileStream(report.DBPath, FileMode.Open))
-                {
-                    await stream.CopyToAsync(memory);
-                }
-                memory.Position = 0;
-
-                var file = File(memory, fileHandler.GetContentType(report.DBPath), "Report.xlsx");
-                return file;
+                return File(memory, fileHandler.GetContentType(report.DBPath), "Report.xlsx");
             }
             catch (Exception ex)
             {
@@ -476,6 +460,26 @@ namespace temsAPI.Controllers.ReportControllers
             {
                 Debug.WriteLine(ex);
                 return ReturnResponse("An error occured while removing the report", ResponseStatus.Fail);
+            }
+        }
+
+        [HttpGet("report/getreport/{reportId}")]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
+        public async Task<IActionResult> GetReport(string reportId)
+        {
+            try
+            {
+                var report = await _reportManager.GetReport(reportId);
+                if (report == null)
+                    return NotFound();
+
+                var memory = await _reportManager.GetReportMemoryStream(report.DBPath);
+                return File(memory, fileHandler.GetContentType(report.DBPath), "Report.xlsx");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured while retrieving the report", ResponseStatus.Fail);
             }
         }
     }

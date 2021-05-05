@@ -8,11 +8,8 @@
         <br>
         <div class="row">
             <div class="col-md-2" class="limitedWidth" *ngFor="let template of defaultTemplates; let i = index">
-                <app-report-container 
-                    [template]="template" 
-                    (editTemplate)="edit($event)" 
-                    (removeTemplate)="remove($event, i)"
-                    (generateReport)="generateReport($event)">
+                <app-report-container [template]="template" (editTemplate)="edit($event)"
+                    (removeTemplate)="remove($event, i)" (generateReport)="generateReport($event)">
                 </app-report-container>
             </div>
         </div>
@@ -20,13 +17,12 @@
         <h2>Custom report templates</h2>
         <br>
         <div class="row">
-            <div 
-                class="col-md-3" 
-                class="limitedWidth" 
-                *ngFor="let template of customTemplates | paginate: { itemsPerPage: 24, currentPage: pageNumber, id: 'reports' }; let i = index">
-                <app-report-container 
-                    [template]="template"
-                    (templateRemoved)="templateRemoved($event)"
+            <div class="col-md-3" class="limitedWidth" *ngFor="let template of customTemplates | paginate: { 
+                    itemsPerPage: 10, 
+                    currentPage: templatePageNumber, 
+                    id: 'reports' }; 
+                    let i = index">
+                <app-report-container [template]="template" (templateRemoved)="templateRemoved($event)"
                     (generateReport)="generateReport($event)">
                 </app-report-container>
             </div>
@@ -49,9 +45,7 @@
                 </div>
             </div>
         </div>
-        <pagination-controls
-            (pageChange)="pageNumber = $event" 
-            id="reports" 
+        <pagination-controls (pageChange)="templatePageNumber = $event" id="reports"
             *ngIf="customTemplates != undefined && customTemplates.length > 0">
         </pagination-controls>
     </div>
@@ -61,16 +55,26 @@
     <div class="card-body">
         <div class="card-title">Last generated reports</div>
         <hr>
-        <mat-card *ngFor="let report of lastGeneratedReports" class="mb-2">
+        <mat-card *ngFor="let report of lastGeneratedReports | paginate: { 
+                itemsPerPage: 10, 
+                currentPage: generatedReportsPageNumber, 
+                id: 'generatedReports' }; 
+                let i = index" class="mb-2">
             <mat-card-header>
                 <p class="d-block">Template: {{ report.template }}</p>
             </mat-card-header>
             <p class="text-muted d-block">
-                Report generated on {{ report.dateGenerated | date: 'medium' }} 
+                Report generated on {{ report.dateGenerated | date: 'medium' }}
                 by <a href="#" class="text-muted">{{ report.generatedBy.label }}</a>
             </p>
-            <button mat-button class="text-primary" (click)="printFromGeneratedReport(report.id)">Print</button>
-            <button mat-button class="text-primary" (click)="removeGeneratedReport(report.id)">Remove</button>
+            <button mat-button class="text-primary"
+                (click)="printFromGeneratedReport(report.id)">Print</button>
+            <button mat-button class="text-primary" 
+                (click)="removeGeneratedReport(report.id, (generatedReportsPageNumber-1)*10 + i)">Remove</button>
         </mat-card>
+
+        <pagination-controls (pageChange)="generatedReportsPageNumber = $event" id="generatedReports"
+            *ngIf="lastGeneratedReports != undefined && lastGeneratedReports.length > 0">
+        </pagination-controls>
     </div>
 </div>

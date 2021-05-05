@@ -44,5 +44,10 @@ namespace temsAPI.Helpers.StaticFileHelpers
             if(File.Exists(filePath))
                 File.Delete(filePath);
         }
+
+        public bool FileExists(string filePath)
+        {
+            return File.Exists(filePath);
+        }
     }
 }

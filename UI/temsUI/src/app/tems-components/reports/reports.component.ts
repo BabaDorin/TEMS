@@ -1,3 +1,4 @@
+import { Downloader } from './../../shared/downloader/fileDownloader';
 import { SnackService } from './../../services/snack/snack.service';
 import { TEMSComponent } from 'src/app/tems/tems.component';
 import { ViewReportSimplified } from './../../models/report/view-report-simplified.model';
@@ -16,6 +17,7 @@ export class ReportsComponent extends TEMSComponent implements OnInit {
   customTemplates: ViewReportSimplified[];
   templates: ViewReportSimplified[];
   pageNumber = 1;
+  downloader: Downloader;
   
   constructor(
     private reportService: ReportService,
@@ -44,12 +46,14 @@ export class ReportsComponent extends TEMSComponent implements OnInit {
   }
 
   generateReport(templateId: string){
-    console.log('got it');
+    if(this.downloader == undefined) this.downloader = new Downloader();
+
     this.subscriptions.push(
       this.reportService.generateReport(templateId)
-      .subscribe(result => {
-        if(this.snackService.snackIfError(result))
+      .subscribe(event => {
+        if(this.snackService.snackIfError(event))
           return;
+        this.downloader.downloadFile(event, "Report.xlsx");
       })
     )
   }

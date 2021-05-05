@@ -37,7 +37,7 @@ namespace temsAPI.Helpers
         {
             foreach(var action in scheduledActions)
             {
-                await action.Start();
+                await action.Start();   
             }
         }
     }

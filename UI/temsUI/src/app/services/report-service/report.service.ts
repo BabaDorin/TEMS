@@ -87,7 +87,10 @@ export class ReportService extends TEMSService {
   generateReport(reportTemplateId: string): Observable<any>{
     return this.http.get(
       API_REP_URL + '/generatereport/' + reportTemplateId,
-      this.httpOptions
+      {
+        reportProgress: true,
+        responseType: 'blob',
+      }
     );
   }
 }

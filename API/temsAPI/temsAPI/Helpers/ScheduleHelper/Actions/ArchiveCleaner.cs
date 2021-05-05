@@ -17,9 +17,9 @@ namespace temsAPI.Helpers.ScheduleHelper.Actions
         /// <summary>
         /// Completely wipes data about items that were archieved for more than 30 days
         /// </summary>
-        public void Start()
+        public async Task Start()
         {
-            // Will be implemented after adding properly delete behaviour for each entity
+            throw new NotImplementedException();
         }
     }
 }

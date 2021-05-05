@@ -165,7 +165,7 @@ namespace temsAPI
                     pattern: "{controller=Home}/{action=Index}/{id?}");
             });
 
-            (new Scheduler()).Start();
+            //(new Scheduler(unitOfWork)).Start();
         }
     }
 }

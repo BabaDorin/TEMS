@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
@@ -321,9 +322,9 @@ namespace temsAPI.Controllers.ReportControllers
             }
         }
 
-        [HttpGet("report/generatereport/{templateId}")]
+        [HttpGet("report/generatereport/{templateId}"), DisableRequestSizeLimit]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
-        public async Task<JsonResult> GenerateReport(string templateId)
+        public async Task<IActionResult> GenerateReport(string templateId)
         {
             try
             {
@@ -369,7 +370,18 @@ namespace temsAPI.Controllers.ReportControllers
                 await _unitOfWork.Reports.Create(report);
                 await _unitOfWork.Save();
 
-                return ReturnResponse("Will be implemented soon", ResponseStatus.Success);
+                if (!System.IO.File.Exists(report.DBPath))
+                    return NotFound();
+
+                var memory = new MemoryStream();
+                await using (var stream = new FileStream(report.DBPath, FileMode.Open))
+                {
+                    await stream.CopyToAsync(memory);
+                }
+                memory.Position = 0;
+
+                var file = File(memory, fileHandler.GetContentType(report.DBPath), "Report.xlsx");
+                return file;
             }
             catch (Exception ex)
             {

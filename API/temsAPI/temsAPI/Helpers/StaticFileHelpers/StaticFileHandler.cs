@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.StaticFiles;
+using System;
 using System.IO;
 
 namespace temsAPI.Helpers.StaticFileHelpers
@@ -10,6 +11,19 @@ namespace temsAPI.Helpers.StaticFileHelpers
         public string CurrentDirectory
         {
             get => Directory.GetCurrentDirectory();
+        }
+
+        public string GetContentType(string path)
+        {
+            var provider = new FileExtensionContentTypeProvider();
+            string contentType;
+
+            if (!provider.TryGetContentType(path, out contentType))
+            {
+                contentType = "application/octet-stream";
+            }
+
+            return contentType;
         }
 
         public string SanitarizeFileNameAndRemoveExtension(string fileName)

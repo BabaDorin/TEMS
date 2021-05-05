@@ -1,3 +1,4 @@
+import { Downloader } from './../../../shared/downloader/fileDownloader';
 import { DialogService } from 'src/app/services/dialog-service/dialog.service';
 import { UploadLibraryItemComponent } from 'src/app/tems-components/library/upload-library-item/upload-library-item.component';
 import { TEMSComponent } from './../../../tems/tems.component';
@@ -14,6 +15,7 @@ export class ViewLibraryComponent extends TEMSComponent implements OnInit {
 
   libraryItems: ViewLibraryItem[];
   pageNumber = 1;
+  downloader = new Downloader();
 
   constructor(
     private libraryService: LibraryService,
@@ -37,20 +39,11 @@ export class ViewLibraryComponent extends TEMSComponent implements OnInit {
 
     this.subscriptions.push(this.libraryService.downloadItem(item.id)
       .subscribe((event) => {
-        this.downloadFile(event, item.actualName);
+        this.downloader.downloadFile(event, item.actualName);
         button.disabled = false;
         button.innerHTML = "Download";
         item.downloads++;
       }));
-  }
-
-  private downloadFile(data, fileName: string) {
-    const downloadedFile = new Blob([data], { type: data.type.toString() });
-    var url = window.URL.createObjectURL(downloadedFile);
-    var anchor = document.createElement("a");
-    anchor.download = fileName;
-    anchor.href = url;
-    anchor.click();
   }
 
   removeItem(item: ViewLibraryItem){

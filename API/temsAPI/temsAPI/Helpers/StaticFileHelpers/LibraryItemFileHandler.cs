@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;
 using System;
 using System.IO;
 using System.IO.Compression;
 using System.Net.Http.Headers;
+using System.Threading.Tasks;
 
 namespace temsAPI.Helpers.StaticFileHelpers
 {
@@ -46,21 +48,6 @@ namespace temsAPI.Helpers.StaticFileHelpers
                         .Trim('"');
             actualName = SanitarizeFileNameAndRemoveExtension(actualName);
             return AddMd5Suffix(actualName);
-        }
-
-
-
-        public string GetContentType(string path)
-        {
-            var provider = new FileExtensionContentTypeProvider();
-            string contentType;
-
-            if (!provider.TryGetContentType(path, out contentType))
-            {
-                contentType = "application/octet-stream";
-            }
-
-            return contentType;
         }
     }
 }

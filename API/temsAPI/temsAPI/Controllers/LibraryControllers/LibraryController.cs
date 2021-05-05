@@ -13,6 +13,7 @@ using temsAPI.Contracts;
 using temsAPI.Data.Entities.LibraryEntities;
 using temsAPI.Data.Entities.UserEntities;
 using temsAPI.Helpers;
+using temsAPI.Helpers.StaticFileHelpers;
 using temsAPI.System_Files;
 using temsAPI.ViewModels.Library;
 
@@ -40,6 +41,7 @@ namespace temsAPI.Controllers.LibraryControllers
             {
                 var formCollection = await Request.ReadFormAsync();
                 var file = formCollection.Files.First();
+                LibraryItemFileHandler fileHandler = new();
 
                 if (file == null)
                 {
@@ -47,15 +49,14 @@ namespace temsAPI.Controllers.LibraryControllers
                     throw new Exception("Null file ??");
                 }
 
-
                 AddLibraryItemViewModel viewModel = new AddLibraryItemViewModel
                 {
                     DisplayName = Request.Form["myName"],
                     Description = Request.Form["myDescription"],
-                    ActualName = FileUploadService.GetSanitarizedUniqueActualName(file),
+                    ActualName = fileHandler.GetSanitarizedUniqueActualName(file),
                 };
 
-                string dbPath = FileUploadService.CompressAndSave(file, viewModel.ActualName);
+                string dbPath = fileHandler.CompressAndSave(file, viewModel.ActualName);
 
                 if(dbPath == null)
                     return StatusCode(500, $"File could not be uploaded");
@@ -81,7 +82,7 @@ namespace temsAPI.Controllers.LibraryControllers
                 // delete the file since we ca'nt access it.
                 await Task.Run(() =>
                 {
-                    FileUploadService.DeleteFile(model.DbPath);
+                    fileHandler.DeleteFile(model.DbPath);
                 }).ConfigureAwait(false);
                 return StatusCode(500, $"An error occured when saving the file in database." +
                     $" Consider uploading again.");

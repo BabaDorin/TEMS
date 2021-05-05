@@ -49,6 +49,7 @@ namespace temsAPI.Repository
         private IGenericRepository<LibraryFolder> _libraryFolders;
         private IGenericRepository<LibraryItem> _libraryItems;
         private IGenericRepository<ReportTemplate> _reportTemplates;
+        private IGenericRepository<Report> _reports;
         private IGenericRepository<TemsJWT> _jwtBlacklist;
 
         public IGenericRepository<Announcement> Announcements 
@@ -111,6 +112,8 @@ namespace temsAPI.Repository
             => _libraryItems ??= new GenericRepository<LibraryItem>(_context);
         public IGenericRepository<ReportTemplate> ReportTemplates
             => _reportTemplates ??= new GenericRepository<ReportTemplate>(_context);
+        public IGenericRepository<Report> Reports
+            => _reports ??= new GenericRepository<Report>(_context);
         public IGenericRepository<TemsJWT> JWTBlacklist
             => _jwtBlacklist ??= new GenericRepository<TemsJWT>(_context);
 

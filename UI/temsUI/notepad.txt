@@ -19,9 +19,8 @@ TODO
 
 --> Description property is always considered as desired specific property, idk why (report);
 
---> When equipment type is removed from report template, selected specific properties remain... =(
 --> EquipmentManager
---> remove teamviewer id from definition, add it to item description
+ --> remove teamviewer id from definition, add it to item description
 --> Email confirmation + password reset via email
 --> Add generic AgGridItems Component
 --> Learn about services in ASP.NET and build the IdentityService, which will provide data about the currently logged

@@ -13,6 +13,7 @@ using temsAPI.Data.Entities.OtherEntities;
 using temsAPI.Data.Entities.Report;
 using temsAPI.Data.Entities.UserEntities;
 using temsAPI.Helpers;
+using temsAPI.Services;
 using temsAPI.Services.Report;
 using temsAPI.System_Files;
 using temsAPI.ViewModels;
@@ -330,6 +331,12 @@ namespace temsAPI.Controllers.ReportControllers
 
                 if (reportTemplate == null)
                     return ReturnResponse("Invalid template ID provided", ResponseStatus.Fail);
+
+                Report report = new();
+                report.Id = Guid.NewGuid().ToString();
+                report.Template = reportTemplate.Name;
+                report.GeneratedByID = IdentityHelper.GetUserId(User);
+                report.DateGenerated = DateTime.Now;
 
                 var excelReport = await _reportingService.GenerateReport(reportTemplate);
 

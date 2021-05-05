@@ -48,6 +48,7 @@ namespace temsAPI.Contracts
 
         // Report templates
         IGenericRepository<ReportTemplate> ReportTemplates { get; }
+        IGenericRepository<Report> Reports { get; }
 
         // Other entities
         IGenericRepository<Personnel> Personnel { get; }

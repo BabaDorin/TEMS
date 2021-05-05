@@ -129,6 +129,7 @@ namespace temsAPI.Data
 
         // Report entities
         public DbSet<ReportTemplate> ReportTemplates { get; set; }
+        public DbSet<Report> Reports { get; set; }
 
         // Key entities
         public DbSet<Key> Keys { get; set; }

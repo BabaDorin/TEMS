@@ -18,7 +18,7 @@ TODO
 // TD:
 
 --> Description property is always considered as desired specific property, idk why (report);
-
+--> Check if OldestRecord() actually returns the oldest record within a dbset
 --> EquipmentManager
  --> remove teamviewer id from definition, add it to item description
 --> Email confirmation + password reset via email

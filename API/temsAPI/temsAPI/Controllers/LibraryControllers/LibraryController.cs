@@ -22,6 +22,7 @@ namespace temsAPI.Controllers.LibraryControllers
     public class LibraryController : TEMSController
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private LibraryItemFileHandler fileHandler = new();
         private ISession _session => _httpContextAccessor.HttpContext.Session;
 
         public LibraryController(
@@ -41,7 +42,6 @@ namespace temsAPI.Controllers.LibraryControllers
             {
                 var formCollection = await Request.ReadFormAsync();
                 var file = formCollection.Files.First();
-                LibraryItemFileHandler fileHandler = new();
 
                 if (file == null)
                 {
@@ -145,7 +145,7 @@ namespace temsAPI.Controllers.LibraryControllers
                         q => q.Id == itemId
                     )).FirstOrDefault();
 
-                FileUploadService.DeleteFile(libraryItem.DbPath);
+                fileHandler.DeleteFile(libraryItem.DbPath);
 
                 _unitOfWork.LibraryItems.Delete(libraryItem);
                 await _unitOfWork.Save();
@@ -183,7 +183,7 @@ namespace temsAPI.Controllers.LibraryControllers
             }
             memory.Position = 0;
 
-            var file = File(memory, FileUploadService.GetContentType(filePath), item.ActualName + ".zip");
+            var file = File(memory, fileHandler.GetContentType(filePath), item.ActualName + ".zip");
 
             // Update downloads counter
             await Task.Run(async () =>

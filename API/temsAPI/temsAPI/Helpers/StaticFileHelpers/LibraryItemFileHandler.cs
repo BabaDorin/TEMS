@@ -22,7 +22,7 @@ namespace temsAPI.Helpers.StaticFileHelpers
                 if (file.Length > 0)
                 {
                     dbPath = String.Concat(
-                        Path.Combine(FileUploadService.LibraryFolderName, actualName),
+                        Path.Combine(FolderPath, actualName),
                         ".zip");
 
                     using (var zipArchive = new ZipArchive(System.IO.File.OpenWrite(dbPath), ZipArchiveMode.Create))
@@ -45,7 +45,7 @@ namespace temsAPI.Helpers.StaticFileHelpers
                         .FileName
                         .Trim('"');
             actualName = SanitarizeFileNameAndRemoveExtension(actualName);
-            return FileUploadService.AddMd5Suffix(actualName);
+            return AddMd5Suffix(actualName);
         }
 
 

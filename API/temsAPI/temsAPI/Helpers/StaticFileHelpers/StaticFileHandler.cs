@@ -26,7 +26,7 @@ namespace temsAPI.Helpers.StaticFileHelpers
             string finalFileName =
                 fileName +
                 "_" +
-                EncryptionService.Md5(DateTime.Now.ToString());
+                EncryptionService.Md5(Guid.NewGuid().ToString());
             return finalFileName;
         }
 
@@ -41,7 +41,8 @@ namespace temsAPI.Helpers.StaticFileHelpers
 
         public void DeleteFile(string filePath)
         {
-            File.Delete(filePath);
+            if(File.Exists(filePath))
+                File.Delete(filePath);
         }
     }
 }

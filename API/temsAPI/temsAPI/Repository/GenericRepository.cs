@@ -21,6 +21,16 @@ namespace temsAPI.Repository
             _db = _context.Set<T>();
         }
 
+        public async Task<T> OldestRecord()
+        {
+            return await _db.FirstAsync();
+        }
+
+        public async Task<int> Count()
+        {
+            return await _db.CountAsync();
+        }
+
         public async Task Create(T entity)
         {
             await _db.AddAsync(entity);

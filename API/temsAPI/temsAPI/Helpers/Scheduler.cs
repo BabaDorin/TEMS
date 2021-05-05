@@ -27,9 +27,21 @@ namespace temsAPI.Helpers
             ClearItemsArchievedForMoreThan30Days();
         }
 
+        /// <summary>
+        /// Completely wipes data about items that were archieved for more than 30 days
+        /// </summary>
         private void ClearItemsArchievedForMoreThan30Days()
         {
             // Will be implemented after adding properly delete behaviour for each entity
+        }
+
+        /// <summary>
+        /// Removes files that do not have any reports associated and vice versa.
+        /// Also checks if there are not any foreign files inside the reports folder
+        /// </summary>
+        private void SanitarizeReports()
+        {
+
         }
     }
 }

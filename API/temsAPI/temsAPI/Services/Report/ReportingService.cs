@@ -18,11 +18,11 @@ namespace temsAPI.Services.Report
             _userManager = userManager;
         }
 
-        public async Task<FileInfo> GenerateReport(ReportTemplate template)
+        public async Task<FileInfo> GenerateReport(ReportTemplate template, string filePath)
         {
             var reportDataGenerator = new ReportDataGenerator(_unitOfWork, _userManager);
             var reportData = await reportDataGenerator.GenerateReportData(template);
-            var reportGenerator = new ReportGenerator.Services.ReportGenerator();
+            var reportGenerator = new ReportGenerator.Services.ReportGenerator(filePath);
             return reportGenerator.GenerateReport(reportData);
         }
     }

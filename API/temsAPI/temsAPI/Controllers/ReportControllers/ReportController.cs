@@ -1,10 +1,14 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Rewrite;
+using Microsoft.AspNetCore.Routing.Constraints;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
@@ -12,7 +16,9 @@ using temsAPI.Data.Entities.EquipmentEntities;
 using temsAPI.Data.Entities.OtherEntities;
 using temsAPI.Data.Entities.Report;
 using temsAPI.Data.Entities.UserEntities;
+using temsAPI.Data.Managers;
 using temsAPI.Helpers;
+using temsAPI.Helpers.StaticFileHelpers;
 using temsAPI.Services;
 using temsAPI.Services.Report;
 using temsAPI.System_Files;
@@ -24,14 +30,19 @@ namespace temsAPI.Controllers.ReportControllers
     public class ReportController : TEMSController
     {
         ReportingService _reportingService;
-
+        AppSettings _appSettings;
+        ReportManager _reportManager;
         public ReportController(
-            IMapper mapper, 
+            IMapper mapper,
             IUnitOfWork unitOfWork, 
             UserManager<TEMSUser> userManager,
-            ReportingService reportingService) : base(mapper, unitOfWork, userManager)
+            ReportingService reportingService,
+            IOptions<AppSettings> appSettings,
+            ReportManager reportManager) : base(mapper, unitOfWork, userManager)
         {
             _reportingService = reportingService;
+            _appSettings = appSettings.Value;
+            _reportManager = reportManager;
         }
 
         [HttpGet("report/gettemplatetoupdate/{templateId}")]
@@ -338,7 +349,25 @@ namespace temsAPI.Controllers.ReportControllers
                 report.GeneratedByID = IdentityHelper.GetUserId(User);
                 report.DateGenerated = DateTime.Now;
 
-                var excelReport = await _reportingService.GenerateReport(reportTemplate);
+                GeneratedReportFileHandler fileHandler = new();
+                report.DBPath = fileHandler.GetDBPath();
+
+                var excelReport = await _reportingService.GenerateReport(reportTemplate, report.DBPath);
+
+                int totalReports = await _unitOfWork.Reports.Count();
+                while(totalReports > _appSettings.MaxGeneratedReportsStored)
+                {
+                    var toBeRemoved = await _unitOfWork.Reports.OldestRecord();
+                    string result = await _reportManager.RemoveReport(toBeRemoved);
+
+                    if (result == null)
+                        --totalReports;
+                    else
+                        break;
+                }
+
+                await _unitOfWork.Reports.Create(report);
+                await _unitOfWork.Save();
 
                 return ReturnResponse("Will be implemented soon", ResponseStatus.Success);
             }
@@ -381,6 +410,29 @@ namespace temsAPI.Controllers.ReportControllers
             {
                 Debug.WriteLine(ex);
                 return ReturnResponse("An error occured while fetching report templates", ResponseStatus.Fail);
+            }
+        }
+
+        [HttpGet("report/removeReport/{reportId}")]
+        [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
+        public async Task<JsonResult> RemoveReport(string reportId)
+        {
+            try
+            {
+                var report = await _reportManager.GetReport(reportId);
+                if (report == null)
+                    return ReturnResponse("Invalid id provided", ResponseStatus.Fail);
+
+                string result = await _reportManager.RemoveReport(report);
+                if (result != null)
+                    return ReturnResponse(result, ResponseStatus.Fail);
+
+                return ReturnResponse("Success", ResponseStatus.Success);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured while removing the report", ResponseStatus.Fail);
             }
         }
     }

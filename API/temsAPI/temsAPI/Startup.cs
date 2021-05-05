@@ -22,6 +22,7 @@ using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data;
 using temsAPI.Data.Entities.UserEntities;
+using temsAPI.Data.Managers;
 using temsAPI.Helpers;
 using temsAPI.Mappings;
 using temsAPI.Repository;
@@ -58,9 +59,15 @@ namespace temsAPI
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.AddTransient<IUnitOfWork, UnitOfWork>();
+
+            // TEMS Services
             services.AddScoped<ReportingService>();
-            services.AddHttpContextAccessor();
             services.AddSingleton<IdentityService>();
+
+            // TEMS Entity managers
+            services.AddScoped<ReportManager>();
+
+            services.AddHttpContextAccessor();
             services.AddAutoMapper(typeof(Maps));
 
             services.AddDefaultIdentity<TEMSUser>()

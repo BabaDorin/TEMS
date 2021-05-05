@@ -11,16 +11,17 @@ namespace ReportGenerator.Services
 {
     public class ReportGenerator
     {
-        public ReportGenerator()
+        private string _filePath = null;
+        public ReportGenerator(string filePath)
         {
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+            _filePath = filePath;
         }
 
         public FileInfo GenerateReport(ReportData reportData)
         {
             // Logic of creating an excel file, based on provided ReportData
-            string uniqueSuffix = Guid.NewGuid().ToString();
-            var file = new FileInfo(@$"C:\Users\Dorin\Desktop\testreport{uniqueSuffix}.xlsx");
+            var file = new FileInfo(_filePath);
             SaveExcelFile(reportData, file);
             return file;
         }

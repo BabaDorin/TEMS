@@ -61,6 +61,16 @@
     <div class="card-body">
         <div class="card-title">Last generated reports</div>
         <hr>
-        <br>
+        <mat-card *ngFor="let report of lastGeneratedReports" class="mb-2">
+            <mat-card-header>
+                <p class="d-block">Template: {{ report.template }}</p>
+            </mat-card-header>
+            <p class="text-muted d-block">
+                Report generated on {{ report.dateGenerated | date: 'medium' }} 
+                by <a href="#" class="text-muted">{{ report.generatedBy.label }}</a>
+            </p>
+            <button mat-button class="text-primary" (click)="printFromGeneratedReport(report.id)">Print</button>
+            <button mat-button class="text-primary" (click)="removeGeneratedReport(report.id)">Remove</button>
+        </mat-card>
     </div>
 </div>

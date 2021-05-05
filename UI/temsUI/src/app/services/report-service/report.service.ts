@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { AddReportTemplate } from './../../models/report/add-report.model';
 import { ViewReportSimplified } from './../../models/report/view-report-simplified.model';
 import { Injectable } from '@angular/core';
+import { GeneratedReport } from 'src/app/models/report/generated-report.model';
 
 @Injectable({
   providedIn: 'root'
@@ -48,6 +49,13 @@ export class ReportService extends TEMSService {
   getTemplates(): Observable<ViewReportSimplified[]>{
     return this.http.get<ViewReportSimplified[]>(
       API_REP_URL + '/gettemplates',
+      this.httpOptions
+    );
+  }
+
+  getLastGeneratedReports(): Observable<GeneratedReport[]>{
+    return this.http.get<GeneratedReport[]>(
+      API_REP_URL + '/getlastgeneratedreports',
       this.httpOptions
     );
   }

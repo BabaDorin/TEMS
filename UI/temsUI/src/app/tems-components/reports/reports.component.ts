@@ -1,3 +1,4 @@
+import { GeneratedReport } from './../../models/report/generated-report.model';
 import { Downloader } from './../../shared/downloader/fileDownloader';
 import { SnackService } from './../../services/snack/snack.service';
 import { TEMSComponent } from 'src/app/tems/tems.component';
@@ -16,6 +17,7 @@ export class ReportsComponent extends TEMSComponent implements OnInit {
   defaultTemplates: ViewReportSimplified[];
   customTemplates: ViewReportSimplified[];
   templates: ViewReportSimplified[];
+  lastGeneratedReports = [] as GeneratedReport[];
   pageNumber = 1;
   downloader: Downloader;
   
@@ -28,13 +30,8 @@ export class ReportsComponent extends TEMSComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.subscriptions.push(
-      this.reportService.getTemplates()
-      .subscribe(result => {
-        this.defaultTemplates = result.filter(q => q.isDefault == true);
-        this.customTemplates = result.filter(q => q.isDefault == false);
-      })
-    )
+    this.fetchReportTemplates();
+    this.fetchLastGeneratedReports();
   }
 
   templateRemoved(template){
@@ -56,6 +53,37 @@ export class ReportsComponent extends TEMSComponent implements OnInit {
         this.downloader.downloadFile(event, "Report.xlsx");
       })
     )
+  }
+
+  fetchReportTemplates(){
+    this.subscriptions.push(
+      this.reportService.getTemplates()
+      .subscribe(result => {
+        this.defaultTemplates = result.filter(q => q.isDefault == true);
+        this.customTemplates = result.filter(q => q.isDefault == false);
+      })
+    )
+  }
+
+  fetchLastGeneratedReports(){
+    this.subscriptions.push(
+      this.reportService.getLastGeneratedReports()
+      .subscribe(result => {
+        console.log(result);
+        if(this.snackService.snackIfError(result))
+          return;
+        
+        this.lastGeneratedReports = result;
+      })
+    )
+  }
+
+  printFromGeneratedReport(repId: string){
+    alert(repId);
+  }
+
+  removeGeneratedReport(repId: string){
+    alert(repId);
   }
 
   createTemplate(){

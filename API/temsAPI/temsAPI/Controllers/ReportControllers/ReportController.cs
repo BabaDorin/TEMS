@@ -425,6 +425,37 @@ namespace temsAPI.Controllers.ReportControllers
             }
         }
 
+        [HttpGet]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
+        public async Task<JsonResult> GetLastGeneratedReports()
+        {
+            try
+            {
+                var viewModel = (await _unitOfWork.Reports
+                    .Find(
+                        include: q => q.Include(q => q.GeneratedBy),
+                        select: q => new ViewGeneratedReportViewModel
+                        {
+                            Id = q.Id,
+                            DateGenerated = q.DateGenerated,
+                            GeneratedBy = new Option
+                            {
+                                Value = q.GeneratedBy.Id,
+                                Label = q.GeneratedBy.FullName ?? q.GeneratedBy.UserName
+                            },
+                            Template = q.Template
+                        }
+                    )).ToList();
+
+                return Json(viewModel);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured while fetching last generated reports", ResponseStatus.Fail);
+            }
+        }
+
         [HttpGet("report/removeReport/{reportId}")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> RemoveReport(string reportId)

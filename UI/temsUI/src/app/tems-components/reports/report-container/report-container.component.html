@@ -8,9 +8,10 @@
             <img src="assets/svgs/report-icon.svg">
         </div>
         <br>
-        <!-- <button mat-button class="float-right" *ngIf="template.isDefault==false">Remove</button> -->
-        <button mat-button (click)="edit(template.id)" class="d-block">Edit</button>
-        <button mat-button (click)="remove(template.id)" class="d-block">Remove</button>
+        <ng-container *ngIf="canManage">
+            <button mat-button (click)="edit(template.id)" class="d-block">Edit</button>
+            <button mat-button (click)="remove(template.id)" class="d-block">Remove</button>
+        </ng-container>
         <button mat-button (click)="genReport(template.id)" class="d-block">Generate report</button>
         <br>
     </mat-card-content>

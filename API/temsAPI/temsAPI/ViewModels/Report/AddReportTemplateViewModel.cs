@@ -17,7 +17,7 @@ namespace temsAPI.ViewModels.Report
         public List<Option> Definitions { get; set; } = new List<Option>();
         public List<Option> Personnel { get; set; } = new List<Option>();
         public List<Option> Rooms { get; set; } = new List<Option>();
-        public string SepparateBy { get; set; }
+        public string SeparateBy { get; set; }
         public List<string> CommonProperties { get; set; } = new List<string>();
         public List<SpecificPropertyWrapper> SpecificProperties { get; set; } = new List<SpecificPropertyWrapper>();
         public List<string> Properties { get; set; } = new List<string>();
@@ -69,7 +69,7 @@ namespace temsAPI.ViewModels.Report
 
             // Invalid SepparateBy
             if (new List<string>() { "none", "room", "personnel", "type", "definition" }
-                .IndexOf(SepparateBy) == -1)
+                .IndexOf(SeparateBy) == -1)
                 return "Invalid SepparateBy";
 
             // Invalid properties

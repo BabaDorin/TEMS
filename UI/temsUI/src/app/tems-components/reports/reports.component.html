@@ -22,12 +22,15 @@
                     currentPage: templatePageNumber, 
                     id: 'reports' }; 
                     let i = index">
-                <app-report-container [template]="template" (templateRemoved)="templateRemoved($event)"
+                <app-report-container 
+                    [template]="template" 
+                    [canManage]="canManage" 
+                    (templateRemoved)="templateRemoved($event)"
                     (generateReport)="generateReport($event)">
                 </app-report-container>
             </div>
 
-            <div class="col-md-3" class="limitedWidth">
+            <div class="col-md-3" class="limitedWidth" *ngIf="canManage">
                 <div class="d-flex align-items-center d-flex justify-content-center" style="height: 100%;">
                     <mat-card style="margin: auto" class="reportContainer" (click)="createTemplate()">
                         <mat-card-content>
@@ -53,7 +56,14 @@
 <br>
 <div class="card">
     <div class="card-body">
-        <div class="card-title">Last generated reports</div>
+        <div class="card-title align-text-center">
+            Last generated reports  
+            <mat-icon matSuffix class="mr-1">
+                <i class="mdi mdi-information-outline"
+                    matTooltip="These are references to generated report files, which means that data within these
+                    reports is static and reflects the state at the moment of generation."></i>
+            </mat-icon>
+        </div>
         <hr>
         <mat-card *ngFor="let report of lastGeneratedReports | paginate: { 
                 itemsPerPage: 10, 
@@ -65,11 +75,14 @@
             </mat-card-header>
             <p class="text-muted d-block">
                 Report generated on {{ report.dateGenerated | date: 'medium' }}
-                by <a href="#" class="text-muted">{{ report.generatedBy.label }}</a>
+                by 
+                <a class="text-muted" [routerLink]="'/profile/view/' + report.generatedBy.value">
+                    {{ report.generatedBy.label }}
+                </a>
             </p>
             <button mat-button class="text-primary"
                 (click)="printFromGeneratedReport(report.id)">Print</button>
-            <button mat-button class="text-primary" 
+            <button mat-button class="text-primary" *ngIf="canManage"
                 (click)="removeGeneratedReport(report.id, (generatedReportsPageNumber-1)*10 + i)">Remove</button>
         </mat-card>
 

@@ -95,7 +95,7 @@ namespace temsAPI.Controllers.ReportControllers
                         Label = q.Name
                     }).ToList(),
                     Properties = model.Properties.Select(q => q.Name).ToList(),
-                    SepparateBy = model.SepparateBy,
+                    SeparateBy = model.SeparateBy,
                     Header = model.Header,
                     Footer = model.Footer,
                     Signatories = model.Signatories.Select(q => new Option
@@ -191,7 +191,7 @@ namespace temsAPI.Controllers.ReportControllers
                         .FindAll<Personnel>(q => personnelIds.Contains(q.Id)))
                         .ToList()
                         : new List<Personnel>(),
-                    SepparateBy = viewModel.SepparateBy,
+                    SeparateBy = viewModel.SeparateBy,
                     Properties = (propertyIds != null)
                         ? (await _unitOfWork.Properties
                         .FindAll<Property>(q => propertyIds.Contains(q.Name)))
@@ -293,7 +293,7 @@ namespace temsAPI.Controllers.ReportControllers
                         .FindAll<Personnel>(q => personnelIds.Contains(q.Id)))
                         .ToList()
                         : new List<Personnel>();
-                model.SepparateBy = viewModel.SepparateBy;
+                model.SeparateBy = viewModel.SeparateBy;
                 model.Properties = (propertyIds != null)
                         ? (await _unitOfWork.Properties
                         .FindAll<Property>(q => propertyIds.Contains(q.Name)))

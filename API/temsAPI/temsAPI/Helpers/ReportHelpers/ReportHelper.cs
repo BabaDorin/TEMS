@@ -45,7 +45,7 @@ namespace temsAPI.Helpers
 
         public static IEquipmentSeparator GetSeparator(ReportTemplate reportTemplate)
         {
-            switch (reportTemplate.SepparateBy.ToLower())
+            switch (reportTemplate.SeparateBy.ToLower())
             {
                 case "type": return new TypeSeparator();
                 case "definition": return new DefinitionSeparator();

@@ -16,9 +16,8 @@ TODO
 ------------ As soon as possible >>>>
 
 // TD:
-
+--> Report - frontend issues
 --> Description property is always considered as desired specific property, idk why (report);
---> Check if OldestRecord() actually returns the oldest record within a dbset
 --> Find a way to pass unitofwork to scheduler
 --> EquipmentManager
  --> remove teamviewer id from definition, add it to item description

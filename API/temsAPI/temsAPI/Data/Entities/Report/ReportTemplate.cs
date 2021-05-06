@@ -18,7 +18,7 @@ namespace temsAPI.Data.Entities.Report
         public string Name { get; set; }
         public string Description { get; set; }
         public string Subject { get; set; }
-        public string SepparateBy { get; set; }
+        public string SeparateBy { get; set; }
         public string Header { get; set; }
         public string Footer { get; set; }
         public DateTime DateCreated { get; set; }

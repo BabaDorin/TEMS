@@ -1,3 +1,5 @@
+import { CAN_MANAGE_ENTITIES } from 'src/app/models/claims';
+import { TokenService } from './../../services/token-service/token.service';
 import { GeneratedReport } from './../../models/report/generated-report.model';
 import { Downloader } from './../../shared/downloader/fileDownloader';
 import { SnackService } from './../../services/snack/snack.service';
@@ -21,16 +23,19 @@ export class ReportsComponent extends TEMSComponent implements OnInit {
   templatePageNumber = 1;
   generatedReportsPageNumber = 1;
   downloader: Downloader;
+  canManage = false;
   
   constructor(
     private reportService: ReportService,
     private router: Router,
-    private snackService: SnackService
+    private snackService: SnackService,
+    private tokenService: TokenService
   ) {
     super();
   }
 
   ngOnInit(): void {
+    this.canManage = this.tokenService.hasClaim(CAN_MANAGE_ENTITIES);
     this.fetchReportTemplates();
     this.fetchLastGeneratedReports();
   }

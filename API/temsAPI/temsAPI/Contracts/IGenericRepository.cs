@@ -11,7 +11,7 @@ namespace temsAPI.Contracts
     {
         // Interface which defines CRUD
         // Every domain class should offer CRUD operations
-
+        
         Task<IList<TType>> FindAll<TType>(
             Expression<Func<T, bool>> where = null,
             Expression<Func<T, TType>> select = null,
@@ -30,7 +30,6 @@ namespace temsAPI.Contracts
            );
 
         Task<bool> isExists(Expression<Func<T, bool>> expression = null);
-        Task<T> OldestRecord();
         Task<int> Count();
         Task Create(T entity);
         void Update(T entity);

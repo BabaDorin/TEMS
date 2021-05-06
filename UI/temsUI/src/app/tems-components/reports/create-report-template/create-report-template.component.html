@@ -1,41 +1,53 @@
 <div class="card">
   <div class="card-body">
     <div class="card-title">Create new report template</div>
-    <hr>
-    <br>
+    <hr class="mb-2">
     <form [formGroup]="reportFormGroup">
-      <p>If you want to save this template, assign it with a name and description if necessary</p>
-      <mat-form-field class="reportFormControl">
+      <p class="text-muted">
+        If you want to save this template, provide a name and a description if necessary
+      </p>
+      
+      <mat-form-field class="reportFormControl mb-2">
         <mat-label>Name</mat-label>
         <input matInput formControlName="name">
       </mat-form-field>
-      <br>
-      <mat-form-field class="reportFormControl">
+
+      <mat-form-field class="reportFormControl mb-2">
         <mat-label>Description</mat-label>
         <textarea matInput formControlName="description"></textarea>
       </mat-form-field>
-      <br>
-      <hr>
-      <br>
+      <hr class="mt-3 mb-3">
+
       <mat-vertical-stepper>
+        <!-- STEP 1- Subject choice -->
         <mat-step>
           <ng-template matStepLabel>Choose the subject</ng-template>
+          <p class="text-muted">
+            Choose the type of entities that will be present in the report. 
+          </p>
           <mat-form-field class="reportFormControl">
             <mat-label>Choose the report's subject</mat-label>
             <mat-select formControlName="subject">
               <mat-option *ngFor="let option of reportObjectOptions" [value]="option.value">
-                {{ option.viewValue }}
+                {{ option.label }}
               </mat-option>
             </mat-select>
           </mat-form-field>
-          <div>
-            <button mat-button matStepperNext>Next</button>
-          </div>
+          <button mat-button class="d-block" matStepperNext>Next</button>
         </mat-step>
+
+        <!-- STEP 2 - Layout configuration (For equipment: Types, definitions, personnel, room, SeparateBy) -->
         <mat-step>
           <ng-template matStepLabel>Layout configuration</ng-template>
-          <div *ngIf="reportFormGroup.controls.subject.value == 'equipment'">
-
+          <p class="text-muted">
+            Configure the way how TEMS should generate the report.
+          </p>
+          <ng-container *ngIf="reportFormGroup.controls.subject.value != 'equipment'">
+            <p class="text-muted">
+              Please, select a supported subject first.
+            </p>
+          </ng-container>
+          <ng-container *ngIf="reportFormGroup.controls.subject.value == 'equipment'">
             <div class="row">
               <div class="col-md-5">
                 <app-chips-autocomplete label="Equipment types" formControlName="types"
@@ -75,37 +87,45 @@
             <br>
             <mat-label>Sepparate by:</mat-label><br><br>
             
-            <mat-radio-group formControlName="sepparateBy" [(ngModel)]="sepparateBy">
+            <mat-radio-group formControlName="separateBy">
               <mat-radio-button value="none">No separation</mat-radio-button><br>
               <mat-radio-button value="room">By Room</mat-radio-button><br>
               <mat-radio-button value="personnel">By Personnel</mat-radio-button><br>
               <mat-radio-button value="type">By Type</mat-radio-button><br>
               <mat-radio-button value="definition">By Definition</mat-radio-button><br>
             </mat-radio-group>
-
-            <div>
-              <button mat-button matStepperNext>Next</button>
-            </div>
-          </div>
+          </ng-container>
+          <button mat-button matStepperNext>Next</button>
         </mat-step>
+
+        <!-- STEP - Select report properties -->
         <mat-step>
           <ng-template matStepLabel>Choose report columns</ng-template>
-          <app-checkbox-group [options]="equipmentCommonProperties" label="Common proprerties for all types"
-            (toggle)="onCommonPropChange($event)">
-          </app-checkbox-group>
-          <br>
-          <br>
-          <!-- have to sync
-             this with the actual value of typespecificproperties -->
-          <ng-container *ngFor="let type of typeSpecificProperties">
-            <app-checkbox-group [options]="type.properties" label="Specific properties of {{ type.type.value }}"
-              (toggle)="onSpecificPropChange($event, type.type)">
-            </app-checkbox-group>
+
+          <!-- No subject selected -->
+          <ng-container *ngIf="reportFormGroup.controls.subject.value != 'equipment'">
+            <p class="text-muted">Please, select a supported subject first.</p>
           </ng-container>
-          <div>
-            <button mat-button matStepperNext>Next</button>
-          </div>
+
+          <!-- Equipment subject -->
+          <ng-container *ngIf="reportFormGroup.controls.subject.value == 'equipment'">
+            <!-- Common properties for all equipment records -->
+            <app-checkbox-group [options]="equipmentCommonProperties" label="Common proprerties for all types"
+            (toggle)="onCommonPropChange($event)">
+            </app-checkbox-group>
+
+            <!-- Type specific properties -->
+            <ng-container *ngFor="let type of typeSpecificProperties">
+            <div class="mt-2">
+              <app-checkbox-group [options]="type.properties" label="Specific properties of {{ type.type.label }}"
+              (toggle)="onSpecificPropChange($event, type.type)">
+              </app-checkbox-group>
+            </div>
+            </ng-container>
+          </ng-container>
+          <button mat-button matStepperNext>Next</button>
         </mat-step>
+
         <mat-step>
           <ng-template matStepLabel>Additional report data</ng-template>
           <br>

@@ -11,7 +11,7 @@ import { PersonnelService } from '../../../services/personnel-service/personnel.
 import { EquipmentService } from '../../../services/equipment-service/equipment.service';
 import { RoomsService } from '../../../services/rooms-service/rooms.service';
 import { FormGroup, FormControl } from '@angular/forms';
-import { Component, OnInit, Type } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-create-report-template',
@@ -24,17 +24,16 @@ export class CreateReportTemplateComponent extends TEMSComponent implements OnIn
   reportTemplateToUpdate: AddReportTemplate;
 
   reportFormGroup: FormGroup;
-  sepparateBy: string;
   equipmentCommonProperties: CheckboxItem[];
   specificProperties: { type: IOption, properties: CheckboxItem[] }[] = [];
   universalProperties: CheckboxItem[];
   typeSpecificProperties: { type: IOption, properties: CheckboxItem[] }[] = [];
 
   reportObjectOptions = [
-    { value: 'equipment', viewValue: 'Equipment' },
-    { value: 'rooms', viewValue: 'Rooms' },
-    { value: 'Personnel', viewValue: 'Personnel' },
-    { value: 'Allocations', viewValue: 'Allocations' }
+    { value: 'equipment', label: 'Equipment' },
+    { value: 'rooms', label: 'Rooms (Not supported yet)' },
+    { value: 'Personnel', label: 'Personnel (Not supported yet)' },
+    { value: 'Allocations', label: 'Allocations (Not supported yet)' }
   ];
 
   typesAlreadySelected: IOption[] = [];
@@ -66,7 +65,7 @@ export class CreateReportTemplateComponent extends TEMSComponent implements OnIn
       definitions: new FormControl(),
       rooms: new FormControl(),
       personnel: new FormControl(),
-      sepparateBy: new FormControl(),
+      separateBy: new FormControl(),
       commonProperties: new FormControl(),
       specificProperties: new FormControl(),
       header: new FormControl(),
@@ -74,7 +73,10 @@ export class CreateReportTemplateComponent extends TEMSComponent implements OnIn
       signatories: new FormControl()
     });
 
-    this.sepparateBy = 'none';
+    let controls = this.reportFormGroup.controls;
+    controls.subject.setValue('equipment'),
+    controls.separateBy.setValue('none');
+
     this.universalProperties = [
       new CheckboxItem('temsid', 'TEMSID'),
       new CheckboxItem('serialNumber', 'Serial Number'),
@@ -117,8 +119,7 @@ export class CreateReportTemplateComponent extends TEMSComponent implements OnIn
         controls.definitions.setValue(this.reportTemplateToUpdate.definitions),
         controls.rooms.setValue(this.reportTemplateToUpdate.rooms),
         controls.personnel.setValue(this.reportTemplateToUpdate.personnel),
-        controls.sepparateBy.setValue(this.reportTemplateToUpdate.sepparateBy),
-        this.sepparateBy = this.reportTemplateToUpdate.sepparateBy;
+        controls.separateBy.setValue(this.reportTemplateToUpdate.separateBy),
         controls.header.setValue(this.reportTemplateToUpdate.header),
         controls.footer.setValue(this.reportTemplateToUpdate.footer),
         controls.signatories.setValue(this.reportTemplateToUpdate.signatories),
@@ -214,6 +215,9 @@ export class CreateReportTemplateComponent extends TEMSComponent implements OnIn
         this.subscriptions.push(
           this.equipmentService.getPropertiesOfType(element.value)
             .subscribe(result => {
+              console.log('ELEMENT:');
+              console.log(element);
+
               this.typeSpecificProperties.push(
                 {
                   type: element,
@@ -316,7 +320,7 @@ export class CreateReportTemplateComponent extends TEMSComponent implements OnIn
       definitions: this.controls.definitions.value,
       rooms: this.controls.rooms.value,
       personnel: this.controls.personnel.value,
-      sepparateBy: this.controls.sepparateBy.value,
+      separateBy: this.controls.separateBy.value,
       commonProperties: this.controls.commonProperties.value,
       specificProperties: (this.controls.specificProperties.value != null)
         ? this.controls.specificProperties.value.map(q => ({properties: q.properties, type: q.type.value}))

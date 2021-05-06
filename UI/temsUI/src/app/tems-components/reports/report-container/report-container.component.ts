@@ -13,6 +13,7 @@ import { Router } from '@angular/router';
 export class ReportContainerComponent extends TEMSComponent implements OnInit {
 
   @Input() template: Report;  
+  @Input() canManage: boolean = false;
   @Output() templateRemoved = new EventEmitter();
   @Output() generateReport = new EventEmitter();
 

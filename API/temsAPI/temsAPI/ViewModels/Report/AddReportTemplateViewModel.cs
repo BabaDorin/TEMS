@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
+using temsAPI.Data.Entities.Report;
+using temsAPI.Data.Entities.UserEntities;
 using temsAPI.Helpers;
 
 namespace temsAPI.ViewModels.Report
@@ -24,6 +26,83 @@ namespace temsAPI.ViewModels.Report
         public string Header { get; set; }
         public string Footer { get; set; }
         public List<Option> Signatories { get; set; } = new List<Option>();
+
+
+        public async Task<ReportTemplate> ToReportTemplate(IUnitOfWork unitOfWork, TEMSUser author)
+        {
+            List<string> typeIds = Types?.Select(q => q.Value).ToList();
+            List<string> definitionIds = Definitions?.Select(q => q.Value).ToList();
+            List<string> roomIds = Rooms?.Select(q => q.Value).ToList();
+            List<string> personnelIds = Personnel?.Select(q => q.Value).ToList();
+            List<string> specificProperties = SpecificProperties?
+                .Where(q => Types.Any(q1 => q1.Label == q.Type))
+                .SelectMany(q => q.Properties).ToList();
+            List<string> propertyIds = CommonProperties?
+                .Concat(specificProperties ?? new List<string>())
+                .ToList();
+            List<string> commonProperties = CommonProperties?
+                .Where(q => ReportHelper.CommonProperties.Contains(q.ToLower()))
+                .Select(q => q.ToLower())
+                .ToList();
+            List<string> signatoriesIds = Signatories?.Select(q => q.Value).ToList();
+
+            ReportTemplate model = new ReportTemplate
+            {
+                Id = Guid.NewGuid().ToString(),
+                Name = Name,
+                Description = Description,
+                Subject = Subject,
+                EquipmentTypes = (typeIds != null)
+                    ? (await unitOfWork.EquipmentTypes
+                    .FindAll<Data.Entities.EquipmentEntities.EquipmentType>(q => typeIds.Contains(q.Id)))
+                    .ToList()
+                    : new List<Data.Entities.EquipmentEntities.EquipmentType>(),
+                EquipmentDefinitions = (definitionIds != null)
+                    ? (await unitOfWork.EquipmentDefinitions
+                    .FindAll<Data.Entities.EquipmentEntities.EquipmentDefinition>(q => definitionIds.Contains(q.Id)))
+                    .ToList()
+                    : new List<Data.Entities.EquipmentEntities.EquipmentDefinition>(),
+                Rooms = (roomIds != null)
+                    ? (await unitOfWork.Rooms
+                    .FindAll<Data.Entities.OtherEntities.Room>(q => roomIds.Contains(q.Id)))
+                    .ToList()
+                    : new List<Data.Entities.OtherEntities.Room>(),
+                Personnel = (personnelIds != null)
+                    ? (await unitOfWork.Personnel
+                    .FindAll<Data.Entities.OtherEntities.Personnel>(q => personnelIds.Contains(q.Id)))
+                    .ToList()
+                    : new List<Data.Entities.OtherEntities.Personnel>(),
+                SeparateBy = SeparateBy,
+                Properties = (propertyIds != null)
+                    ? (await unitOfWork.Properties
+                    .FindAll<Data.Entities.EquipmentEntities.Property>(q => propertyIds.Contains(q.Name)))
+                    .ToList()
+                    : new List<Data.Entities.EquipmentEntities.Property>(),
+                Header = Header,
+                Footer = Footer,
+                Signatories = (signatoriesIds != null)
+                    ? (await unitOfWork.Personnel
+                    .FindAll<Data.Entities.OtherEntities.Personnel>(q => signatoriesIds.Contains(q.Id)))
+                    .ToList()
+                    : new List<Data.Entities.OtherEntities.Personnel>(),
+                CreatedBy = (await unitOfWork.TEMSUsers
+                    .Find<Data.Entities.UserEntities.TEMSUser>(
+                        where: q => q.Id == author.Id
+                    )).FirstOrDefault(),
+                DateCreated = DateTime.Now,
+                CommonProperties = (commonProperties.Count > 0)
+                    ? String.Join(" ", commonProperties)
+                    : null
+            };
+
+            if (author.Email == "tems@admin")
+            {
+                model.CreatedBy = null;
+                model.CreatedById = null;
+            }
+
+            return model;
+        }
 
         public async Task<string> Validate(IUnitOfWork unitOfWork)
         {

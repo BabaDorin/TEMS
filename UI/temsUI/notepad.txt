@@ -17,6 +17,7 @@ TODO
 
 // TD:
 --> Report - frontend issues
+--> Test Include equipment from rooms and personnel
 --> Description property is always considered as desired specific property, idk why (report);
 --> Find a way to pass unitofwork to scheduler
 --> EquipmentManager

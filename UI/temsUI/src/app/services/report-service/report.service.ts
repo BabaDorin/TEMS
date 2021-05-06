@@ -102,6 +102,17 @@ export class ReportService extends TEMSService {
     );
   }
 
+  generateReportFromRawTemplate(addReportTemplateModel: AddReportTemplate): Observable<any>{
+    return this.http.post(
+      API_REP_URL + '/generatereportfromrawtemplate', 
+      addReportTemplateModel,
+      {
+        reportProgress: true,
+        responseType: 'blob',
+      }
+    )
+  }
+
   getReport(reportId: string): Observable<any>{
     return this.http.get(
       API_REP_URL + '/getreport/' + reportId,

@@ -18,7 +18,6 @@ export class CheckboxGroupComponent implements OnInit {
 
   onToggle() {
     const checkedOptions = this.options.filter(x => x.checked);
-    // this.selectedValues = checkedOptions.map(x => x.value);
     this.toggle.emit(checkedOptions.map(x => x.value));
   }
 }

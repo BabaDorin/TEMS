@@ -1,3 +1,5 @@
+import { Downloader } from './../../../shared/downloader/fileDownloader';
+import { SnackService } from './../../../services/snack/snack.service';
 import { filter } from 'rxjs/operators';
 import { DefinitionService } from './../../../services/definition-service/definition.service';
 import { TypeService } from './../../../services/type-service/type.service';
@@ -22,6 +24,7 @@ export class CreateReportTemplateComponent extends TEMSComponent implements OnIn
 
   updateReportId: string;
   reportTemplateToUpdate: AddReportTemplate;
+  downloader: Downloader;
 
   reportFormGroup: FormGroup;
   equipmentCommonProperties: CheckboxItem[];
@@ -51,7 +54,8 @@ export class CreateReportTemplateComponent extends TEMSComponent implements OnIn
     private definitionService: DefinitionService,
     private personnelService: PersonnelService,
     private reportService: ReportService,
-    private activatedroute: ActivatedRoute
+    private activatedroute: ActivatedRoute,
+    private snackService: SnackService
   ) {
     super();
   }
@@ -78,18 +82,17 @@ export class CreateReportTemplateComponent extends TEMSComponent implements OnIn
     controls.separateBy.setValue('none');
 
     this.universalProperties = [
-      new CheckboxItem('temsid', 'TEMSID'),
-      new CheckboxItem('serialNumber', 'Serial Number'),
-      new CheckboxItem('definition', 'Definition'),
-      new CheckboxItem('type', 'Type'),
-      new CheckboxItem('description', 'Description'),
-      new CheckboxItem('price', 'Price'),
-      new CheckboxItem('currency', 'Currency'),
-      new CheckboxItem('purchaseDate', 'Date of purchase'),
+      new CheckboxItem('temsid', 'TEMSID', true),
+      new CheckboxItem('serialNumber', 'Serial Number', true),
+      new CheckboxItem('definition', 'Definition', true),
+      new CheckboxItem('type', 'Type', true),
+      new CheckboxItem('description', 'Description', false),
+      new CheckboxItem('price', 'Price', true),
+      new CheckboxItem('currency', 'Currency', true, "HeheBoai"),
+      new CheckboxItem('purchaseDate', 'Date of purchase', false),
       new CheckboxItem('allocatee', 'Allocatee'),
     ];
     this.equipmentCommonProperties = this.universalProperties;
-    this.equipmentCommonProperties.map(q => q.checked = true);
     this.reportFormGroup.controls.commonProperties.setValue(this.equipmentCommonProperties.map(q => q.value));
 
     if(this.updateReportId == undefined)
@@ -142,8 +145,6 @@ export class CreateReportTemplateComponent extends TEMSComponent implements OnIn
   }
 
   typeAdded(eventData) {
-    // getting definitions for selected types
-    // this.fetchDefinitionsOfTypes();
     this.typesEndPointParameter = this.reportFormGroup.controls.types.value == undefined
         ? null
         : this.reportFormGroup.controls.types.value.map(q => q.value);
@@ -306,11 +307,22 @@ export class CreateReportTemplateComponent extends TEMSComponent implements OnIn
     return this.reportFormGroup.controls;
   }
 
-  submit() {
+  save(generateReportAfterSaving: boolean = false) {
+    let addReportTemplateModel = this.getReportTemplate();
+    let endPoint = this.reportService.addReportTemplate(addReportTemplateModel);
+    
+    if(addReportTemplateModel.id != undefined)
+      endPoint = this.reportService.updateReportTemplate(addReportTemplateModel); 
 
-    console.log('controls');
-    console.log(this.controls);
+    this.subscriptions.push(
+      endPoint
+      .subscribe(result => {
+        this.snackService.snack(result);
+      })
+    )
+  }
 
+  getReportTemplate(): AddReportTemplate{
     let addReportTemplate: AddReportTemplate = {
       id: this.updateReportId,
       name: this.controls.name.value,
@@ -329,21 +341,22 @@ export class CreateReportTemplateComponent extends TEMSComponent implements OnIn
       footer: this.controls.footer.value,
       signatories: this.controls.signatories.value,
       properties: undefined
-    }
+    };
 
-    console.log('this is it');
-    console.log(addReportTemplate);
+    return addReportTemplate;
+  }
 
-
-    let endPoint = this.reportService.addReportTemplate(addReportTemplate);
-    
-    if(addReportTemplate.id != undefined)
-      endPoint = this.reportService.updateReportTemplate(addReportTemplate); 
+  generateReport(){
+    let addReportTemplateModel = this.getReportTemplate();
 
     this.subscriptions.push(
-      endPoint
+      this.reportService.generateReportFromRawTemplate(addReportTemplateModel)
       .subscribe(result => {
-        console.log(result);
+        if(this.snackService.snackIfError(result))
+          return;
+
+        if(this.downloader == undefined) this.downloader = new Downloader();
+        this.downloader.downloadFile(result, "Report.xlsx");
       })
     )
   }

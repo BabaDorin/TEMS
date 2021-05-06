@@ -4,10 +4,12 @@
     <div *ngFor="let item of options">
         <mat-checkbox  [(ngModel)]="item.checked" (change)="onToggle()">
             {{ item.label }}
+            <ng-container *ngIf="item.description != undefined">
+                <mat-icon matSuffix>
+                    <i class="mdi mdi-information-outline"
+                        [matTooltip]="item.description"></i>
+                </mat-icon>
+            </ng-container>
         </mat-checkbox>
-        <ng-container *ngIf="item.description != undefined">
-            <p class="text-muted">{{ item.description }}</p>
-        </ng-container>
-        <br>
     </div>
 </section>

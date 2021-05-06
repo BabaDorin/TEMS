@@ -11,6 +11,7 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.EquipmentEntities;
@@ -149,84 +150,17 @@ namespace temsAPI.Controllers.ReportControllers
                 if (validationMessage != null)
                     return ReturnResponse(validationMessage, ResponseStatus.Fail);
 
-                List<string> typeIds = viewModel.Types?.Select(q => q.Value).ToList();
-                List<string> definitionIds = viewModel.Definitions?.Select(q => q.Value).ToList();
-                List<string> roomIds = viewModel.Rooms?.Select(q => q.Value).ToList();
-                List<string> personnelIds = viewModel.Personnel?.Select(q => q.Value).ToList();
-                List<string> specificProperties = viewModel.SpecificProperties?
-                    .Where(q => viewModel.Types.Any(q1 => q1.Label == q.Type))
-                    .SelectMany(q => q.Properties).ToList();
-                List<string> propertyIds = viewModel.CommonProperties?
-                    .Concat(specificProperties ?? new List<string>())
-                    .ToList();
-                List<string> commonProperties = viewModel.CommonProperties?
-                    .Where(q => ReportHelper.CommonProperties.Contains(q.ToLower()))
-                    .Select(q => q.ToLower())
-                    .ToList();
-                List<string> signatoriesIds = viewModel.Signatories?.Select(q => q.Value).ToList();
+                var user = (await _unitOfWork.TEMSUsers
+                    .Find<TEMSUser>(q => q.Id == IdentityHelper.GetUserId(User)))
+                    .FirstOrDefault();
 
-                ReportTemplate model = new ReportTemplate
-                {
-                    Id = Guid.NewGuid().ToString(),
-                    Name = viewModel.Name,
-                    Description = viewModel.Description,
-                    Subject = viewModel.Subject,
-                    EquipmentTypes = (typeIds != null)
-                        ? (await _unitOfWork.EquipmentTypes
-                        .FindAll<EquipmentType>(q => typeIds.Contains(q.Id)))
-                        .ToList()
-                        : new List<EquipmentType>(),
-                    EquipmentDefinitions = (definitionIds != null)
-                        ? (await _unitOfWork.EquipmentDefinitions
-                        .FindAll<EquipmentDefinition>(q => definitionIds.Contains(q.Id)))
-                        .ToList()
-                        : new List<EquipmentDefinition>(),
-                    Rooms = (roomIds != null)
-                        ? (await _unitOfWork.Rooms
-                        .FindAll<Room>(q => roomIds.Contains(q.Id)))
-                        .ToList()
-                        : new List<Room>(),
-                    Personnel = (personnelIds != null)
-                        ? (await _unitOfWork.Personnel
-                        .FindAll<Personnel>(q => personnelIds.Contains(q.Id)))
-                        .ToList()
-                        : new List<Personnel>(),
-                    SeparateBy = viewModel.SeparateBy,
-                    Properties = (propertyIds != null)
-                        ? (await _unitOfWork.Properties
-                        .FindAll<Property>(q => propertyIds.Contains(q.Name)))
-                        .ToList()
-                        : new List<Property>(),
-                    Header = viewModel.Header,
-                    Footer = viewModel.Footer,
-                    Signatories = (signatoriesIds != null)
-                        ? (await _unitOfWork.Personnel
-                        .FindAll<Personnel>(q => signatoriesIds.Contains(q.Id)))
-                        .ToList()
-                        : new List<Personnel>(),
-                    CreatedBy = (await _unitOfWork.TEMSUsers
-                        .Find<TEMSUser>(
-                            where: q => q.Id == IdentityHelper.GetUserId(User)
-                        )).FirstOrDefault(),
-                    DateCreated = DateTime.Now,
-                    CommonProperties = (commonProperties.Count > 0)
-                        ? String.Join(" ", commonProperties)
-                        : null
-                };
+                if (user == null)
+                    return ReturnResponse("An error occured - Invalid user", ResponseStatus.Fail);
 
-                var id = IdentityHelper.GetUserId(User);
-
-                if (User.Identity.Name == "tems@admin")
-                {
-                    model.CreatedBy = null;
-                    model.CreatedById = null;
-                }
+                var model = await viewModel.ToReportTemplate(_unitOfWork, user);
 
                 await _unitOfWork.ReportTemplates.Create(model);
                 await _unitOfWork.Save();
-
-                if (!await _unitOfWork.ReportTemplates.isExists(q => q.Id == model.Id))
-                    return ReturnResponse("Fail", ResponseStatus.Fail);
 
                 return ReturnResponse("Success!", ResponseStatus.Success);
             }
@@ -460,6 +394,31 @@ namespace temsAPI.Controllers.ReportControllers
             {
                 Debug.WriteLine(ex);
                 return ReturnResponse("An error occured while removing the report", ResponseStatus.Fail);
+            }
+        }
+
+        [HttpPost("report/generatereportfromrawtemplate")]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
+        public async Task<IActionResult> GenerateReportFromRawTemplate([FromBody] AddReportTemplateViewModel template)
+        {
+            try
+            {
+                string validationResult = await template.Validate(_unitOfWork);
+                if (validationResult != null)
+                    return ReturnResponse(validationResult, ResponseStatus.Fail);
+
+                var reportTemplate = await template.ToReportTemplate(_unitOfWork, new TEMSUser());
+                
+                string filePath = fileHandler.GetTempDBPath();
+                var excelFile = await _reportingService.GenerateReport(reportTemplate, filePath);
+                
+                var memory = await _reportManager.GetReportMemoryStream(filePath);
+                return File(memory, fileHandler.GetContentType(filePath), "Report.xlsx");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return NoContent();
             }
         }
 

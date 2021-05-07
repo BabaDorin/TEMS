@@ -140,11 +140,11 @@
           <!-- signatories   -->
           <app-chips-autocomplete
           class="reportFormControl d-block"
-          label="Signatories" 
+          label="Signatories"
           formControlName="signatories"
           [alreadySelected]="signatoriesAlreadySelected"
-          [availableOptions]="signatoriesAutocompleteOptions"
-          onlyValuesFromAutocomplete="false">
+          [endPoint]="personnelService"
+          onlyValuesFromAutocomplete="true">
           </app-chips-autocomplete>
         </mat-step>
       </mat-vertical-stepper>

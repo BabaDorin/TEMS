@@ -1,5 +1,6 @@
 ﻿using OfficeOpenXml;
 using ReportGenerator.Models;
+using ReportGenerator.Models.Styles;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -32,12 +33,15 @@ namespace ReportGenerator.Services
             
             using (var pck = new ExcelPackage(file))
             {
+                var styles = new ExcelPackageStyleCollection(pck);
+
                 ExcelWorksheet ws = pck.Workbook.Worksheets.Add("Items");
                 int lastStartingLine = 1;
                 for (int i = 0; i < reportData.ReportItemGroups.Count; i++)
                 {
                     var itemGroup = reportData.ReportItemGroups[i];
                     ws.Cells[$"A{lastStartingLine}"].LoadFromDataTable(itemGroup.ItemsTable, true);
+                    ws.Cells[$"A{lastStartingLine}"].StyleName = styles.GetStyleName(ExcelStyleNames.SimpleHeader);
                     lastStartingLine = lastStartingLine + itemGroup.ItemsTable.Rows.Count + 3;
                     pck.Save();
                 }

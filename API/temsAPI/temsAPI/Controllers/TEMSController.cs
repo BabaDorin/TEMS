@@ -37,9 +37,9 @@ namespace temsAPI.Controllers
             _userManager = userManager;
         }
 
-        protected JsonResult ReturnResponse(string message, ResponseStatus status)
+        protected JsonResult ReturnResponse(string message, ResponseStatus status, object additional = null)
         {
-            return Json(new { Message = message, Status = status });
+            return Json(new { Message = message, Status = status, Additional = additional});
         }
         
         public async Task<List<IArchiveable>> GetArchievedItems(IGenericRepository<IArchiveable> repository) 

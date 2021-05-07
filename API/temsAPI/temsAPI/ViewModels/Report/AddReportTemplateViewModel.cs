@@ -144,7 +144,7 @@ namespace temsAPI.ViewModels.Report
             if (Signatories != null)
                 foreach (var item in Signatories)
                     if (!await unitOfWork.Personnel.isExists(q => q.Id == item.Value))
-                        return $"{item.Label} is not a valid type";
+                        return $"{item.Label} is not a valid personnel";
 
             // Invalid SepparateBy
             if (new List<string>() { "none", "room", "personnel", "type", "definition" }

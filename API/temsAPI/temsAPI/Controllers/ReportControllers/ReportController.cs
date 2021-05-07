@@ -162,7 +162,7 @@ namespace temsAPI.Controllers.ReportControllers
                 await _unitOfWork.ReportTemplates.Create(model);
                 await _unitOfWork.Save();
 
-                return ReturnResponse("Success!", ResponseStatus.Success);
+                return ReturnResponse($"Success!", ResponseStatus.Success);
             }
             catch (Exception ex)
             {

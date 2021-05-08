@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Security.Claims;
@@ -9,6 +10,7 @@ using temsAPI.Contracts;
 using temsAPI.Data.Entities.EquipmentEntities;
 using temsAPI.Helpers;
 using temsAPI.ViewModels;
+using temsAPI.ViewModels.Allocation;
 using temsAPI.ViewModels.Equipment;
 
 namespace temsAPI.Data.Managers
@@ -232,6 +234,69 @@ namespace temsAPI.Data.Managers
                 .ToList();
 
             return filteredEquipment;
+        }
+
+        public async Task<string> CreateAllocation(AddAllocationViewModel viewModel)
+        {
+            string validationResult = await viewModel.Validate(_unitOfWork);
+            if (validationResult != null)
+                return validationResult;
+
+            if(viewModel.AllocateToType == "personnel")
+                if (!await _unitOfWork.Personnel.isExists(q => q.Id == viewModel.AllocateToId))
+                    return "Allocatee id seems invalid.";
+
+            if (viewModel.AllocateToType == "room")
+                if (!await _unitOfWork.Rooms.isExists(q => q.Id == viewModel.AllocateToId))
+                    return "Allocatee id seems invalid.";
+
+            List<string> equipmentsWhereFailed = new List<string>();
+
+            foreach (Option equipment in viewModel.Equipments)
+            {
+                try
+                {
+                    await ClosePreviousAllocations(equipment.Value);
+
+                    var model = new EquipmentAllocation
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        DateAllocated = DateTime.Now,
+                        EquipmentID = equipment.Value,
+                    };
+
+                    if (viewModel.AllocateToType == "personnel")
+                        model.PersonnelID = viewModel.AllocateToId;
+                    else
+                        model.RoomID = viewModel.AllocateToId;
+
+                    await _unitOfWork.EquipmentAllocations.Create(model);
+                    await _unitOfWork.Save();
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex);
+                    equipmentsWhereFailed.Add(equipment.Label);
+                }
+            }
+
+            if (equipmentsWhereFailed.Count > 0)
+                return "The following equipments have not been allocated due to unhandled error:"
+                        + string.Join(",", equipmentsWhereFailed);
+
+            return null;
+        }
+
+        private async Task ClosePreviousAllocations(string equipmentId)
+        {
+            if (await _unitOfWork.EquipmentAllocations
+                .isExists(q => q.EquipmentID == equipmentId && q.DateReturned == null))
+                (await _unitOfWork.EquipmentAllocations
+                    .FindAll<EquipmentAllocation>(q => q.EquipmentID == equipmentId))
+                    .ToList()
+                    .ForEach(q => q.DateReturned = DateTime.Now);
+
+            await _unitOfWork.Save();
         }
     }
 }

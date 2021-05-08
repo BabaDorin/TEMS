@@ -14,6 +14,7 @@ using temsAPI.Contracts;
 using temsAPI.Data.Entities.EquipmentEntities;
 using temsAPI.Data.Entities.OtherEntities;
 using temsAPI.Data.Entities.UserEntities;
+using temsAPI.Data.Managers;
 using temsAPI.Helpers;
 using temsAPI.System_Files;
 using temsAPI.ViewModels;
@@ -23,13 +24,18 @@ namespace temsAPI.Controllers.Allocation
 {
     public class AllocationController : TEMSController
     {
+
+        private EquipmentManager _equipmentManager;
+
         public AllocationController(
             IMapper mapper, 
             IUnitOfWork 
             unitOfWork, 
-            UserManager<TEMSUser> userManager) 
+            UserManager<TEMSUser> userManager,
+            EquipmentManager equipmentManager) 
             : base(mapper, unitOfWork, userManager)
         {
+            _equipmentManager = equipmentManager;
         }
 
         [HttpPost]
@@ -38,78 +44,11 @@ namespace temsAPI.Controllers.Allocation
         {
             try
             {
-                // Invalid equipments provided
-                foreach (Option equipment in viewModel.Equipments)
-                    if (!await _unitOfWork.Equipments.isExists(q => q.Id == equipment.Value))
-                        return ReturnResponse("One or more equipments are invalid.", ResponseStatus.Fail);
+                var result = await _equipmentManager.CreateAllocation(viewModel);
+                if (result != null)
+                    return ReturnResponse(result, ResponseStatus.Fail);
 
-                // No allocation type provided
-                if ((new List<string> { "personnel", "room" }).IndexOf(viewModel.AllocateToType) == -1)
-                    return ReturnResponse("Invalid type provided", ResponseStatus.Fail);
-
-                // No allocation id provided or the provided one is invalid
-                if (String.IsNullOrEmpty(viewModel.AllocateToType))
-                    return ReturnResponse("Please, provide a valid allocation object type", ResponseStatus.Fail);
-
-                List<string> equipmentsWhereFailed = new List<string>();
-                if (viewModel.AllocateToType == "personnel")
-                {
-                    if (!await _unitOfWork.Personnel.isExists(q => q.Id == viewModel.AllocateToId))
-                        return ReturnResponse("Allocatee id seems invalid.", ResponseStatus.Fail);
-
-                    foreach (Option equipment in viewModel.Equipments)
-                    {
-                        await ClosePreviousAllocations(equipment.Value);
-
-                        var model = new EquipmentAllocation
-                        {
-                            Id = Guid.NewGuid().ToString(),
-                            DateAllocated = DateTime.Now,
-                            EquipmentID = equipment.Value,
-                            PersonnelID = viewModel.AllocateToId
-                        };
-
-                        await _unitOfWork.EquipmentAllocations.Create(model);
-                        await _unitOfWork.Save();
-
-                        if (!await _unitOfWork.EquipmentAllocations.isExists(q => q.Id == model.Id))
-                            equipmentsWhereFailed.Add(equipment.Label);
-                    }
-                }
-
-
-                if (viewModel.AllocateToType == "room")
-                {
-                    if (!await _unitOfWork.Rooms.isExists(q => q.Id == viewModel.AllocateToId))
-                        return ReturnResponse("Allocatee id seems invalid.", ResponseStatus.Fail);
-
-                    foreach (Option equipment in viewModel.Equipments)
-                    {
-                        await ClosePreviousAllocations(equipment.Value);
-
-                        var model = new EquipmentAllocation
-                        {
-                            Id = Guid.NewGuid().ToString(),
-                            DateAllocated = DateTime.Now,
-                            EquipmentID = equipment.Value,
-                            RoomID = viewModel.AllocateToId
-                        };
-
-                        await _unitOfWork.EquipmentAllocations.Create(model);
-                        await _unitOfWork.Save();
-
-                        if (!await _unitOfWork.EquipmentAllocations.isExists(q => q.Id == model.Id))
-                            equipmentsWhereFailed.Add(equipment.Label);
-                    }
-                }
-
-                if (equipmentsWhereFailed.Count == 0)
-                    return ReturnResponse("Success!", ResponseStatus.Success);
-                else
-                    return ReturnResponse(
-                        "The following equipments have not been allocated due to unhandled error:" 
-                        + string.Join(",", equipmentsWhereFailed),
-                        ResponseStatus.Fail);
+                return ReturnResponse("Success", ResponseStatus.Success);
             }
             catch (Exception ex)
             {

@@ -63,6 +63,7 @@ namespace temsAPI
             // TEMS Services
             services.AddScoped<ReportingService>();
             services.AddSingleton<IdentityService>();
+            services.AddScoped<EmailService>();
 
             // TEMS Entity managers
             services.AddScoped<ReportManager>();

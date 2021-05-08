@@ -18,13 +18,17 @@ namespace temsAPI.Controllers.EmailControllers
     public class EmailController : TEMSController
     {
         private readonly AppSettings _appSettings;
+        private EmailService _emailService;
+
         public EmailController(
             IMapper mapper, 
             IUnitOfWork unitOfWork, 
             UserManager<TEMSUser> userManager,
-            IOptions<AppSettings> appSettings) : base(mapper, unitOfWork, userManager)
+            IOptions<AppSettings> appSettings,
+            EmailService emailService) : base(mapper, unitOfWork, userManager)
         {
             _appSettings = appSettings.Value;
+            _emailService = emailService;
         }
 
         [HttpPost]
@@ -33,8 +37,8 @@ namespace temsAPI.Controllers.EmailControllers
         {
             try
             {
-                var mailingResult = await (new EmailService(_unitOfWork, _appSettings)).SendEmail(viewModel);
-
+                var mailingResult = await _emailService.SendEmail(viewModel);
+                
                 int numbersOfEmailsSent = 0;
                 if (int.TryParse(mailingResult, out numbersOfEmailsSent))
                     return ReturnResponse(mailingResult + " mails have been sent.", ResponseStatus.Success);

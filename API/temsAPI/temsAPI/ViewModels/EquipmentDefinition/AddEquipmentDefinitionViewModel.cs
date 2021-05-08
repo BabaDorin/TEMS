@@ -102,5 +102,34 @@ namespace temsAPI.ViewModels.EquipmentDefinition
 
             return (stringBuilder.ToString() == "") ? null : stringBuilder.ToString();  
         }
+
+        /// <summary>
+        /// Converts an instance of EquipmentDefinition to an instance of AddDefinitionViewModel.
+        /// </summary>
+        /// <param name="definition"></param>
+        /// <returns></returns>
+        public static AddEquipmentDefinitionViewModel FromModel(Data.Entities.EquipmentEntities.EquipmentDefinition definition)
+        {
+            var viewModel = new AddEquipmentDefinitionViewModel
+            {
+                Id = definition.Id,
+                Currency = definition.Currency,
+                Description = definition.Description,
+                Identifier = definition.Identifier,
+                Price = definition.Price,
+                TypeId = definition.EquipmentTypeID,
+                Properties = definition.EquipmentSpecifications
+                .Select(q => new Option
+                {
+                    Label = q.Property.Name,
+                    Value = q.Value,
+                }).ToList()
+            };
+
+            foreach (var item in definition.Children)
+                viewModel.Children.Add(AddEquipmentDefinitionViewModel.FromModel(item));
+        
+            return viewModel;
+        }
     }
 }

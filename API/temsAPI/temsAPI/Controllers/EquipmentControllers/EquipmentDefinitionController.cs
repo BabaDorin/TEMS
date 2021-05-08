@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.EquipmentEntities;
 using temsAPI.Data.Entities.UserEntities;
+using temsAPI.Data.Managers;
 using temsAPI.Helpers;
 using temsAPI.System_Files;
 using temsAPI.Validation;
@@ -25,10 +26,15 @@ namespace temsAPI.Controllers.EquipmentControllers
 {
     public class EquipmentDefinitionController : TEMSController
     {
-        public EquipmentDefinitionController(IMapper mapper, IUnitOfWork unitOfWork, UserManager<TEMSUser> userManager)
+        private EquipmentDefinitionManager _eqDefManager;
+        public EquipmentDefinitionController(
+            IMapper mapper, 
+            IUnitOfWork unitOfWork, 
+            UserManager<TEMSUser> userManager,
+            EquipmentDefinitionManager equipmentDefinitionManager)
            : base(mapper, unitOfWork, userManager)
         {
-
+            _eqDefManager = equipmentDefinitionManager;
         }
 
         public IActionResult Index()
@@ -40,20 +46,19 @@ namespace temsAPI.Controllers.EquipmentControllers
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> Add([FromBody] AddEquipmentDefinitionViewModel viewModel)
         {
-            string validationResult = await AddEquipmentDefinitionViewModel.Validate(_unitOfWork, viewModel);
-            if (validationResult != null)
-                return ReturnResponse(validationResult, ResponseStatus.Fail);
+            try
+            {
+                string result = await _eqDefManager.Create(viewModel);
+                if (result != null)
+                    return ReturnResponse(result, ResponseStatus.Fail);
 
-            // If we got so far, it might be valid enough
-            var equipmentDefinition = await EquipmentDefinition.FromViewModel(_unitOfWork, viewModel);
-
-            await _unitOfWork.EquipmentDefinitions.Create(equipmentDefinition);
-            await _unitOfWork.Save();
-
-            if (!await _unitOfWork.EquipmentDefinitions.isExists(q => q.Id == equipmentDefinition.Id))
-                return ReturnResponse("Fail", ResponseStatus.Fail);
-            else
                 return ReturnResponse("Success", ResponseStatus.Success);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured while adding the definition", ResponseStatus.Fail);
+            }
         }
 
         [HttpPost]
@@ -62,29 +67,9 @@ namespace temsAPI.Controllers.EquipmentControllers
         {
             try
             {
-                string validationResult = await AddEquipmentDefinitionViewModel.Validate(_unitOfWork, viewModel);
-                if (validationResult != null)
-                    return ReturnResponse(validationResult, ResponseStatus.Fail);
-
-                EquipmentDefinition definition = (await _unitOfWork.EquipmentDefinitions
-                    .Find<EquipmentDefinition>(
-                        where: q => q.Id == viewModel.Id,
-                        include: q => q
-                        .Include(q => q.EquipmentSpecifications)
-                        .Include(q => q.Children)
-                    )).FirstOrDefault();
-
-                definition.Identifier = viewModel.Identifier;
-                definition.EquipmentTypeID = viewModel.TypeId;
-                definition.EquipmentTypeID = viewModel.TypeId;
-                definition.Price = viewModel.Price;
-                definition.Currency = viewModel.Currency;
-                definition.Description = viewModel.Description;
-
-                await AssignSpecifications(definition, viewModel);
-                definition.Children.Clear();
-                await EquipmentDefinition.SetDefinitionChildren(_unitOfWork, definition, viewModel.Children);
-                await _unitOfWork.Save();
+                var result = await _eqDefManager.Update(viewModel);
+                if (result != null)
+                    return ReturnResponse(result, ResponseStatus.Fail);
 
                 return ReturnResponse("Success!", ResponseStatus.Success);
             }
@@ -99,90 +84,33 @@ namespace temsAPI.Controllers.EquipmentControllers
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> GetDefinitionsOfType(string typeId)
         {
-            List<Option> options = new List<Option>();
             try
             {
-                (await _unitOfWork.EquipmentDefinitions
-                    .FindAll<EquipmentDefinition>(q => q.EquipmentTypeID == typeId && !q.IsArchieved))
-                .ToList()
-                .ForEach(q => options.Add(new Option
-                {
-                    Value = q.Id,
-                    Label = q.Identifier
-                }));
-
+                var options = await _eqDefManager.GetOfType(typeId);
                 return Json(options);
-            }
-            catch (Exception)
-            {
-                return ReturnResponse("Unknown error occured when fetching definitions", ResponseStatus.Fail);
-            }
-        }
-
-        // find a better sollution
-        public class DefinitionsOfTypesModel
-        {
-            public string Filter { get; set; }
-            public List<string> TypeIds { get; set; }
-        }
-
-        [HttpPost]
-        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
-        public async Task<JsonResult> GetDefinitionsOfTypes([FromBody] DefinitionsOfTypesModel viewModel)
-        {
-            try
-            {
-
-                Expression<Func<EquipmentDefinition, bool>> expression;
-
-                if (viewModel == null || viewModel.TypeIds == null)
-                {
-                    //return Json(new List<Option>());
-                    expression = q => !q.IsArchieved;
-                }
-                else
-                {
-                    if (viewModel.TypeIds == null)
-                        viewModel.TypeIds = new List<string>();
-
-                    if (viewModel.TypeIds != null && viewModel.TypeIds.Count > 0)
-                        expression = q => !q.IsArchieved && viewModel.TypeIds.Contains(q.EquipmentTypeID);
-                    else
-                        expression = q => !q.IsArchieved;
-
-                    if (viewModel.Filter != null)
-                    {
-                        Expression<Func<EquipmentDefinition, bool>> filterExpression =
-                            q => q.Identifier.Contains(viewModel.Filter);
-
-                        expression = ExpressionCombiner.CombineTwo(expression, filterExpression);
-                    }
-                }
-                
-
-                List<Option> resultViewModel = (await _unitOfWork.EquipmentDefinitions
-                    .FindAll<Option>(
-                        where: expression,
-                        take: 5,
-                        select: q => new Option
-                        {
-                            Value = q.Id,
-                            Label = q.Identifier,
-                            Additional = q.EquipmentTypeID
-                        }
-                    )).ToList();
-
-                return Json(resultViewModel);
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
-                return ReturnResponse("An error occured while fetching definitions", ResponseStatus.Fail);
+                return ReturnResponse("Unknown error occured when fetching definitions of specified type", ResponseStatus.Fail);
             }
         }
 
-        [HttpGet("equipmentdefinition/getdefinitionsautocompleteoptions")]
+        [HttpPost]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
+        public async Task<JsonResult> GetDefinitionsOfTypes([FromBody] DefinitionsOfTypesModel filter)
+        {
+            try
+            {
+                var options = await _eqDefManager.GetOfTypes(filter);
+                return Json(options);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured while fetching definitions of specified types", ResponseStatus.Fail);
+            }
+        }
 
         [HttpGet("equipmentdefinition/getsimplified")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
@@ -190,28 +118,8 @@ namespace temsAPI.Controllers.EquipmentControllers
         {
             try
             {
-                List<ViewEquipmentDefinitionSimplifiedViewModel> viewModel =
-                    (await _unitOfWork.EquipmentDefinitions
-                    .FindAll<ViewEquipmentDefinitionSimplifiedViewModel>(
-                        where: q => !q.IsArchieved,
-                        include: q => q
-                        .Include(q => q.Parent)
-                        .Include(q => q.Children.Where(q => !q.IsArchieved))
-                        .Include(q => q.EquipmentType),
-                        select: q => new ViewEquipmentDefinitionSimplifiedViewModel
-                        {
-                            Id = q.Id,
-                            Identifier = q.Identifier,
-                            Parent = q.Parent != null
-                                ? q.Parent.Identifier
-                                : null,
-                            Children = String.Join(", ", q.Children
-                                .Where(q => !q.IsArchieved).Select(q => q.Identifier)),
-                            EquipmentType = q.EquipmentType.Name
-                        }
-                    )).ToList();
-
-                return Json(viewModel);
+                var definitions = await _eqDefManager.GetSimplified();
+                return Json(definitions);
             }
             catch (Exception ex)
             {
@@ -226,28 +134,8 @@ namespace temsAPI.Controllers.EquipmentControllers
         {
             try
             {
-                ViewEquipmentDefinitionSimplifiedViewModel viewModel =
-                    (await _unitOfWork.EquipmentDefinitions
-                    .Find<ViewEquipmentDefinitionSimplifiedViewModel>(
-                        where: q => q.Id == definitionId,
-                        include: q => q
-                        .Include(q => q.Parent)
-                        .Include(q => q.Children.Where(q => !q.IsArchieved))
-                        .Include(q => q.EquipmentType),
-                        select: q => new ViewEquipmentDefinitionSimplifiedViewModel
-                        {
-                            Id = q.Id,
-                            Identifier = q.Identifier,
-                            Parent = q.Parent != null
-                                ? q.Parent.Identifier
-                                : null,
-                            Children = String.Join(", ", q.Children
-                                .Where(q => !q.IsArchieved).Select(q => q.Identifier)),
-                            EquipmentType = q.EquipmentType.Name
-                        }
-                    )).FirstOrDefault();
-
-                return Json(viewModel);
+                var definition = await _eqDefManager.GetSimplifiedById(definitionId);
+                return Json(definition);
             }
             catch (Exception ex)
             {
@@ -262,21 +150,11 @@ namespace temsAPI.Controllers.EquipmentControllers
         {
             try
             {
-                var definition = (await _unitOfWork.EquipmentDefinitions
-                    .Find<EquipmentDefinition>(
-                        where: q => q.Id == definitionId,
-                        include: q => q
-                        .Include(q => q.Children.Where(q => !q.IsArchieved))
-                        .Include(q => q.Parent)
-                        .Include(q => q.EquipmentType)
-                        .Include(q => q.EquipmentSpecifications).ThenInclude(q => q.Property)))
-                    .FirstOrDefault();
-
+                var definition = await _eqDefManager.GetFullById(definitionId);
                 if (definition == null)
                     return ReturnResponse("Invalid definition id provided", ResponseStatus.Fail);
 
-                var viewModel = DefinitionToAddDefinition(definition);
-
+                var viewModel = AddEquipmentDefinitionViewModel.FromModel(definition);
                 return Json(viewModel);
             }
             catch (Exception ex)
@@ -292,29 +170,17 @@ namespace temsAPI.Controllers.EquipmentControllers
         {
             try
             {
-                // Invalid definitionId
-                if (!await _unitOfWork.EquipmentDefinitions.isExists(q => q.Id == definitionId))
-                    return ReturnResponse("There is no definition having the specified id", ResponseStatus.Fail);
+                var definition = await _eqDefManager.GetFullById(definitionId);
+                if(definition == null)
+                    return ReturnResponse("Invalid definition Id", ResponseStatus.Fail);
 
-                var model = (await _unitOfWork.EquipmentDefinitions
-                    .Find<EquipmentDefinition>(
-                        where: q => q.Id == definitionId,
-                        include: q => q
-                        .Include(q => q.Children.Where(q => !q.IsArchieved))
-                        .ThenInclude(q => q.EquipmentType)
-                        .Include(q => q.EquipmentSpecifications)
-                        .ThenInclude(q => q.Property).ThenInclude(q => q.DataType)
-                        .Include(q => q.Parent)
-                        .Include(q => q.EquipmentType)
-                        )).FirstOrDefault();
-
-                var viewModel = EquipmentDefinitionViewModel.ParseEquipmentDefinition(model);
+                var viewModel = EquipmentDefinitionViewModel.FromModel(definition);
                 return Json(viewModel);
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
-                return ReturnResponse("Unknown error occured when fetching the full definition, " + ex.Message, ResponseStatus.Fail);
+                return ReturnResponse("An error occured when fetching defintion's data", ResponseStatus.Fail);
             }
         }
 
@@ -336,76 +202,6 @@ namespace temsAPI.Controllers.EquipmentControllers
             {
                 Debug.WriteLine(ex);
                 return ReturnResponse("An error occured while changing the archivation status.", ResponseStatus.Fail);
-            }
-        }
-
-        // --------------------------------------------------------------
-
-        private static ViewEquipmentTypeViewModel EquipmentTypeToEquipmentViewModel(EquipmentType type)
-        {
-            return new ViewEquipmentTypeViewModel
-            {
-                Id = type.Id,
-                Name = type.Name,
-            };
-        }
-
-        /// <summary>
-        /// Converts an instance of EquipmentDefinition to an instance of AddDefinitionViewModel.
-        /// </summary>
-        /// <param name="definition"></param>
-        /// <returns></returns>
-        private AddEquipmentDefinitionViewModel DefinitionToAddDefinition(EquipmentDefinition definition)
-        {
-            var viewModel = new AddEquipmentDefinitionViewModel
-            {
-                Id = definition.Id,
-                Currency = definition.Currency,
-                Description = definition.Description,
-                Identifier = definition.Identifier,
-                Price = definition.Price,
-                TypeId = definition.EquipmentTypeID,
-                Properties = definition.EquipmentSpecifications
-                .Select(q => new Option
-                {
-                    Label = q.Property.Name,
-                    Value = q.Value,
-                }).ToList()
-            };
-
-            foreach (var item in definition.Children)
-            {
-                viewModel.Children.Add(DefinitionToAddDefinition(item));
-            }
-
-            return viewModel;
-        }
-
-        /// <summary>
-        /// Assigns values for definition's properties according to the data being provided by the
-        /// DefinitionViewModel.
-        /// </summary>
-        /// <param name="model"></param>
-        /// <param name="viewModel"></param>
-        /// <returns></returns>
-        private async Task AssignSpecifications(EquipmentDefinition model, AddEquipmentDefinitionViewModel viewModel)
-        {
-            var specifications = model.EquipmentSpecifications?.ToList();
-            foreach (var item in specifications)
-            {
-                model.EquipmentSpecifications.Remove(item);
-            }
-
-            foreach (var property in viewModel.Properties)
-            {
-                model.EquipmentSpecifications.Add(new EquipmentSpecifications
-                {
-                    Id = Guid.NewGuid().ToString(),
-                    EquipmentDefinitionID = model.Id,
-                    PropertyID = (await _unitOfWork.Properties.Find<Property>(q => q.Name == property.Value))
-                        .FirstOrDefault().Id,
-                    Value = property.Label,
-                });
             }
         }
     }

@@ -44,7 +44,7 @@ namespace temsAPI.ViewModels.Equipment
             ViewEquipmentViewModel viewModel = new ViewEquipmentViewModel
             {
                 Id = model.Id,
-                Definition = EquipmentDefinitionViewModel.ParseEquipmentDefinition(model.EquipmentDefinition),
+                Definition = EquipmentDefinitionViewModel.FromModel(model.EquipmentDefinition),
                 IsDefect = model.IsDefect,
                 IsUsed = model.IsUsed,
                 IsArchieved = model.IsArchieved,

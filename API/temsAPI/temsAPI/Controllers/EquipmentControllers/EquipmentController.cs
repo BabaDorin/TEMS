@@ -229,7 +229,7 @@ namespace temsAPI.Controllers.EquipmentControllers
         {
             try
             {
-                var equipment = await _equipmentManager.GetFullEquipmentById(equipmentId);
+                var equipment = await _equipmentManager.GetById(equipmentId);
                 if (equipment == null)
                     return ReturnResponse("Invalid child ID provided.", ResponseStatus.Fail);
 
@@ -256,10 +256,10 @@ namespace temsAPI.Controllers.EquipmentControllers
                 if (validationResult != null)
                     return ReturnResponse(validationResult, ResponseStatus.Fail);
 
-                var parent = await _equipmentManager.GetFullEquipmentById(viewModel.ParentId);
+                var parent = await _equipmentManager.GetById(viewModel.ParentId);
                 foreach(var childId in viewModel.ChildrenIds)
                 {
-                    var child = await _equipmentManager.GetFullEquipmentById(childId);
+                    var child = await _equipmentManager.GetById(childId);
                     _equipmentManager.Attach(parent, child);
                 }
 

@@ -27,7 +27,7 @@ namespace temsAPI.ViewModels.EquipmentDefinition
             Children = new List<EquipmentDefinitionViewModel>();
         }
 
-        public static EquipmentDefinitionViewModel ParseEquipmentDefinition(Data.Entities.EquipmentEntities.EquipmentDefinition model)
+        public static EquipmentDefinitionViewModel FromModel(Data.Entities.EquipmentEntities.EquipmentDefinition model)
         {
             var viewModel = new EquipmentDefinitionViewModel
             {
@@ -51,7 +51,7 @@ namespace temsAPI.ViewModels.EquipmentDefinition
                     Value = q.Value,
                 })
                 .ToList(),
-                Children = model.Children?.Select(child => ParseEquipmentDefinition(child)).ToList()
+                Children = model.Children?.Select(child => FromModel(child)).ToList()
             };
 
             return viewModel;

@@ -242,7 +242,7 @@ export class EquipmentService extends TEMSService {
 
   getPropertiesOfType(typeId: string): Observable<IOption[]>{
     return this.http.get<IOption[]>(
-      API_PROP_URL + '/getpropertiesoftype/' + typeId,
+      API_EQTYPE_URL + '/getpropertiesoftype/' + typeId,
       this.httpOptions
     );
   }

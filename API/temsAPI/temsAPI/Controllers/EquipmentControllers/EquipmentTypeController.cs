@@ -151,5 +151,21 @@ namespace temsAPI.EquipmentControllers
                 return ReturnResponse("An error occured when removing the type", ResponseStatus.Fail);
             }
         }
+
+        [HttpGet("type/getpropertiesoftype/{typeId}")]
+        [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
+        public async Task<JsonResult> GetPropertiesOfType(string typeId)
+        {
+            try
+            {
+                var options = await _eqTypeManager.GetPropertiesOfType(typeId);
+                return Json(options);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured while fetching properties.", ResponseStatus.Fail);
+            }
+        }
     }
 }

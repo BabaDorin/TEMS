@@ -69,6 +69,7 @@ namespace temsAPI
             services.AddScoped<EquipmentManager>();
             services.AddScoped<EquipmentDefinitionManager>();
             services.AddScoped<EquipmentTypeManager>();
+            services.AddScoped<EquipmentPropertyManager>();
             
 
             services.AddHttpContextAccessor();

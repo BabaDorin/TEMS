@@ -151,6 +151,23 @@ namespace temsAPI.Data.Managers
             return null;
         }
 
+        public async Task<List<Option>> GetPropertiesOfType(string typeId)
+        {
+            List<Option> props = (await _unitOfWork.EquipmentTypes
+                .Find<List<Option>>(
+                    include: q => q.Include(q => q.Properties),
+                    where: q => q.Id == typeId,
+                    select: q => q.Properties.Select(q => new Option
+                    {
+                        Value = q.Id,
+                        Label = q.DisplayName,
+                        Additional = q.Name
+                    }).ToList()
+                )).FirstOrDefault();
+
+            return props;
+        }
+
         // Utilities
 
         /// <summary>

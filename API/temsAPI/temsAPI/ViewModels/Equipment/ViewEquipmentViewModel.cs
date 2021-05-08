@@ -50,7 +50,7 @@ namespace temsAPI.ViewModels.Equipment
                 IsArchieved = model.IsArchieved,
                 SerialNumber = model.SerialNumber,
                 TemsId = model.TEMSID,
-                Type = ViewEquipmentTypeViewModel.ParseEquipmentType(model.EquipmentDefinition.EquipmentType),
+                Type = ViewEquipmentTypeViewModel.FromModel(model.EquipmentDefinition.EquipmentType),
                 Personnnel = (activePersonnelAllocation == null)
                         ? null
                         : new Option

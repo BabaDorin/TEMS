@@ -68,6 +68,8 @@ namespace temsAPI
             services.AddScoped<ReportManager>();
             services.AddScoped<EquipmentManager>();
             services.AddScoped<EquipmentDefinitionManager>();
+            services.AddScoped<EquipmentTypeManager>();
+            
 
             services.AddHttpContextAccessor();
             services.AddAutoMapper(typeof(Maps));

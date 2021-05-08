@@ -16,7 +16,7 @@ namespace temsAPI.ViewModels.EquipmentType
         public virtual ICollection<Option> Parents { get; set; }
         public virtual ICollection<ViewEquipmentTypeViewModel> Children { get; set; }
 
-        public static ViewEquipmentTypeViewModel ParseEquipmentType(
+        public static ViewEquipmentTypeViewModel FromModel(
             Data.Entities.EquipmentEntities.EquipmentType equipmentType)
         {
             return new ViewEquipmentTypeViewModel
@@ -42,7 +42,7 @@ namespace temsAPI.ViewModels.EquipmentType
                     Value = q.Id,
                     Label = q.Name
                 }).ToList(),
-                Children = equipmentType.Children.Select(q => ParseEquipmentType(q))
+                Children = equipmentType.Children.Select(q => FromModel(q))
                 .ToList()
             };
         }

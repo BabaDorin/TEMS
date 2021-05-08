@@ -13,11 +13,11 @@
             <button mat-button (click)="edit()">Edit</button>
             <button *ngIf="equipment.isArchieved" mat-button (click)="archieve()" [disabled]="editing">Dearchieve</button>
             <button *ngIf="!equipment.isArchieved" mat-button (click)="archieve()" [disabled]="editing">Archieve</button>
-            <button mat-button (click)="changeState('isDefect')" [disabled]="editing">
+            <button mat-button (click)="changeWorkingState()" [disabled]="editing">
                 <p *ngIf="equipment.isDefect">Mark as working</p>
                 <p *ngIf="!equipment.isDefect">Mark as defect</p>
             </button>
-            <button mat-button (click)="changeState('isUsed')" [disabled]="editing">
+            <button mat-button (click)="changeUsingState()" [disabled]="editing">
                 <p *ngIf="equipment.isUsed">Mark as unused</p>
                 <p *ngIf="!equipment.isUsed">Mark as used</p>
             </button>

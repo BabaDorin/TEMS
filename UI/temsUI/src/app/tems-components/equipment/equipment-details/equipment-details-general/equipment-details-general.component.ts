@@ -97,21 +97,28 @@ export class EquipmentDetailsGeneralComponent extends TEMSComponent implements O
       this.dialogRef.close();
   }
 
-  changeState(attribute: string){
+  changeWorkingState(){
     this.subscriptions.push(
-      this.equipmentService.changeState(attribute, this.equipmentId)
+      this.equipmentService.changeWorkingState(this.equipmentId)
       .subscribe(result => {
-        console.log(result);
+        if(this.snackService.snackIfError(result))
+          return;
 
-        if(result.status == 1){
-          if(attribute == 'isDefect'){
-            this.equipment.isDefect = !this.equipment.isDefect;
-            this.generalProperties[this.generalProperties.length-1].value = this.equipment.isDefect;
-          }
-          else
-          this.equipment.isUsed = !this.equipment.isUsed;
-          this.generalProperties[this.generalProperties.length-2].value = this.equipment.isUsed;
-        }
+        this.equipment.isDefect = !this.equipment.isDefect;
+        this.generalProperties[this.generalProperties.length-1].value = this.equipment.isDefect;
+      })
+    )
+  }
+
+  changeUsingState(){
+    this.subscriptions.push(
+      this.equipmentService.changeUsingState(this.equipmentId)
+      .subscribe(result =>{
+        if(this.snackService.snackIfError(result))
+          return;
+      
+        this.equipment.isUsed = !this.equipment.isUsed;
+        this.generalProperties[this.generalProperties.length-2].value = this.equipment.isUsed;
       })
     )
   }

@@ -171,6 +171,28 @@ export class EquipmentService extends TEMSService {
     );
   }
 
+  changeWorkingState(equipmentId: string, isWorking?: boolean): Observable<any>{
+    let endPoint = API_EQ_URL + '/changeworkingstate/' + equipmentId;
+    if(isWorking != undefined) 
+      endPoint +='/' + isWorking;
+    
+    return this.http.get(
+      endPoint,
+      this.httpOptions
+    );
+  }
+
+  changeUsingState(equipmentId: string, isUsed?: boolean): Observable<any>{
+    let endPoint = API_EQ_URL + '/changeusingstate/' + equipmentId;
+    if(isUsed != undefined) 
+      endPoint +='/' + isUsed;
+
+    return this.http.get(
+      endPoint,
+      this.httpOptions
+    );
+  }
+
   updateEquipment(addEquipment: AddEquipment): Observable<any>{
     return this.http.post(
       API_EQ_URL + '/update',

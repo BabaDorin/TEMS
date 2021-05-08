@@ -115,11 +115,11 @@ namespace temsAPI.Controllers.EquipmentControllers
         {
             try
             {
-                var equipment = await _equipmentManager.GetEquipmentById(id);
+                var equipment = await _equipmentManager.GetFullEquipmentById(id);
                 if (equipment == null)
                     return ReturnResponse("Invalid equipment Id", ResponseStatus.Fail);
 
-                var viewModel = _equipmentManager.EquipmentToViewEquipmentSimplifiedViewModel(equipment);
+                var viewModel = ViewEquipmentSimplifiedViewModel.FromEquipment(equipment);
                 return Json(viewModel);
             }
             catch (Exception ex)
@@ -149,25 +149,7 @@ namespace temsAPI.Controllers.EquipmentControllers
         {
             try
             {
-                Equipment model = (await _unitOfWork.Equipments
-                    .Find<Equipment>(
-                        where: q => q.Id == id,
-                        include: q => q
-                        .Include(q => q.EquipmentDefinition).ThenInclude(q => q.Children)
-                        .Include(q => q.EquipmentDefinition).ThenInclude(q => q.EquipmentSpecifications)
-                        .ThenInclude(q => q.Property)
-                        .Include(q => q.EquipmentDefinition).ThenInclude(q => q.EquipmentType)
-                        .Include(q => q.EquipmentAllocations).ThenInclude(q => q.Room)
-                        .Include(q => q.EquipmentAllocations).ThenInclude(q => q.Personnel)
-                        .Include(q => q.Children)
-                        .ThenInclude(q => q.EquipmentDefinition)
-                        .ThenInclude(q => q.EquipmentType)
-                        .ThenInclude(q => q.Properties.Where(q => !q.IsArchieved))
-                        .Include(q => q.Parent)
-                        .ThenInclude(q => q.EquipmentDefinition)
-                      )).FirstOrDefault();
-
-                // Invalid id provided
+                var model = await _equipmentManager.GetFullEquipmentById(id);
                 if (model == null)
                     return ReturnResponse("Invalid equipment id provided", ResponseStatus.Fail);
 
@@ -184,32 +166,15 @@ namespace temsAPI.Controllers.EquipmentControllers
 
         [HttpGet("equipment/getequipmentofdefinitions")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
-        public async Task<JsonResult> GetEquipmentOfDefinitions(string[] definitionIds, bool onlyDeatachedEquipment = false)
+        public async Task<JsonResult> GetEquipmentOfDefinitions(List<string> definitionIds, bool onlyParents = false)
         {
             try
             {
                 if (definitionIds == null)
                     return ReturnResponse("Please, provide some definitions", ResponseStatus.Fail);
 
-                Expression<Func<Equipment, bool>> expression = q =>
-                    definitionIds.Contains(q.EquipmentDefinitionID) && !q.IsArchieved;
-
-                if (onlyDeatachedEquipment)
-                    expression = ExpressionCombiner.CombineTwo(expression, q => q.ParentID == null);
-
-                var viewModel = (await _unitOfWork.Equipments
-                    .Find<Option>(
-                        include: q => q.Include(q => q.EquipmentDefinition),
-                        where: expression,
-                        select: q => new Option
-                        {
-                            Value = q.Id,
-                            Label = q.Identifier,
-                            Additional = $"{q.Description} {q.EquipmentDefinition.Identifier}"
-                        }
-                    )).ToList();
-
-                return Json(viewModel);
+                var options = await _equipmentManager.GetEquipmentOfDefinitions(definitionIds, onlyParents);
+                return Json(options);
             }
             catch (Exception ex)
             {
@@ -225,14 +190,8 @@ namespace temsAPI.Controllers.EquipmentControllers
         {
             try
             {
-                var viewModel = (await _unitOfWork.Equipments
-                    .Find<AddEquipmentViewModel>(
-                        where: q => q.Id == equipmentId,
-                        include: q => q
-                        .Include(q => q.EquipmentDefinition)
-                        .ThenInclude(q => q.EquipmentType),
-                        select: q => _mapper.Map<AddEquipmentViewModel>(q)
-                      )).FirstOrDefault();
+                var equipment = await _equipmentManager.GetFullEquipmentById(equipmentId);
+                var viewModel = _mapper.Map<AddEquipmentViewModel>(equipment);
 
                 return Json(viewModel);
             }
@@ -249,11 +208,11 @@ namespace temsAPI.Controllers.EquipmentControllers
         {
             try
             {
-                string archievingResult = await (new ArchieveHelper(_userManager, _unitOfWork))
+                string archivationResult = await (new ArchieveHelper(_userManager, _unitOfWork))
                     .SetEquipmentArchivationStatus(equipmentId, archivationStatus);
 
-                if (archievingResult != null)
-                    return ReturnResponse(archievingResult, ResponseStatus.Fail);
+                if (archivationResult != null)
+                    return ReturnResponse(archivationResult, ResponseStatus.Fail);
 
                 return ReturnResponse("Success", ResponseStatus.Success);
             }
@@ -264,21 +223,20 @@ namespace temsAPI.Controllers.EquipmentControllers
             }
         }
 
-        [HttpGet("equipment/detach/{childId}")]
+        [HttpGet("equipment/detach/{equipmentId}")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
-        public async Task<JsonResult> Detach(string childId)
+        public async Task<JsonResult> Detach(string equipmentId)
         {
             try
             {
-                var equipment = (await _unitOfWork.Equipments
-                    .Find<Equipment>(q => q.Id == childId))
-                    .FirstOrDefault();
-
+                var equipment = await _equipmentManager.GetFullEquipmentById(equipmentId);
                 if (equipment == null)
                     return ReturnResponse("Invalid child ID provided.", ResponseStatus.Fail);
 
-                equipment.ParentID = null;
-                await _unitOfWork.Save();
+                string result = await _equipmentManager.DetachEquipment(equipment);
+                if (result != null)
+                    return ReturnResponse(result, ResponseStatus.Fail);
+
                 return ReturnResponse("Success", ResponseStatus.Success);
             }
             catch (Exception ex)
@@ -298,15 +256,11 @@ namespace temsAPI.Controllers.EquipmentControllers
                 if (validationResult != null)
                     return ReturnResponse(validationResult, ResponseStatus.Fail);
 
-                var parent = (await _unitOfWork.Equipments
-                    .Find<Equipment>(q => q.Id == viewModel.ParentId))
-                    .FirstOrDefault();
-
+                var parent = await _equipmentManager.GetFullEquipmentById(viewModel.ParentId);
                 foreach(var childId in viewModel.ChildrenIds)
                 {
-                    parent.Children.Add((await _unitOfWork.Equipments
-                        .Find<Equipment>(q => q.Id == childId))
-                        .FirstOrDefault());
+                    var child = await _equipmentManager.GetFullEquipmentById(childId);
+                    _equipmentManager.Attach(parent, child);
                 }
 
                 await _unitOfWork.Save();
@@ -319,32 +273,43 @@ namespace temsAPI.Controllers.EquipmentControllers
             }
         }
 
-        [HttpGet("equipment/changeworkingstate/{attribute}/{equipmentId}")]
-        [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
-        public async Task<JsonResult> ChangeWorkingState(string attribute, string equipmentId)
+        [HttpGet("equipment/changeworkingstate/{equipmentId}/{isWorking?}")]
+        public async Task<JsonResult> ChangeWorkingState(string equipmentId, bool? isWorking)
         {
             try
             {
-                var model = (await _unitOfWork.Equipments
-                    .Find<Equipment>(q => q.Id == equipmentId))
-                    .FirstOrDefault();
+                var equipment = await _equipmentManager.GetById(equipmentId);
+                if (equipment == null)
+                    return ReturnResponse("Invalid equipment ID", ResponseStatus.Fail);
 
-                if (model == null)
-                    return ReturnResponse("Invalid id provided", ResponseStatus.Fail);
-
-                if(attribute.ToLower() == "isdefect")
-                    model.IsDefect = !model.IsDefect;
-
-                if (attribute.ToLower() == "isused")
-                    model.IsUsed = !model.IsUsed;
-
-                await _unitOfWork.Save();
+                // by default it works like a toggler
+                await _equipmentManager.ChangeWorkingState(equipment, isWorking ?? !equipment.IsDefect);
                 return ReturnResponse("Success", ResponseStatus.Success);
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
-                return ReturnResponse("An error occured while change the equipment's work state", ResponseStatus.Fail);
+                return ReturnResponse("An error occured while changing equipment working state", ResponseStatus.Fail);
+            }
+        }
+
+        [HttpGet("equipment/changeusingstate/{equipmentId}/{isUsed?}")]
+        public async Task<JsonResult> ChangeUsingState(string equipmentId, bool? isUsed)
+        {
+            try
+            {
+                var equipment = await _equipmentManager.GetById(equipmentId);
+                if (equipmentId == null)
+                    return ReturnResponse("Invalid equipment id provided", ResponseStatus.Fail);
+
+                // by default it works like a toggler
+                await _equipmentManager.ChangeUsingState(equipment, isUsed ?? !equipment.IsUsed);
+                return ReturnResponse("Success", ResponseStatus.Success);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured while setting equipment's using state", ResponseStatus.Fail);
             }
         }
 
@@ -364,26 +329,6 @@ namespace temsAPI.Controllers.EquipmentControllers
                 Debug.WriteLine(ex);
                 return ReturnResponse("An error occured while uploading files", ResponseStatus.Fail);
             }
-        }
-        // -------------------------< Extract then to a separate file >--------------------------------
-        private static ViewEquipmentSimplifiedViewModel EquipmentToViewEquipmentSimplifiedViewModel(Equipment q)
-        {
-            return new ViewEquipmentSimplifiedViewModel
-            {
-                Id = q.Id,
-                IsDefect = q.IsDefect,
-                IsUsed = q.IsUsed,
-                TemsId = q.TEMSID,
-                SerialNumber = q.SerialNumber,
-                Type = q.EquipmentDefinition.EquipmentType.Name,
-                Definition = q.EquipmentDefinition.Identifier,
-                Assignee = (q.EquipmentAllocations.Count(q => q.DateReturned == null) > 0)
-                                ? q.EquipmentAllocations.First(q => q.DateReturned == null).Assignee
-                                : "Deposit",
-                TemsIdOrSerialNumber = String.IsNullOrEmpty(q.TEMSID)
-                                ? q.SerialNumber
-                                : q.TEMSID
-            };
         }
     }
 }

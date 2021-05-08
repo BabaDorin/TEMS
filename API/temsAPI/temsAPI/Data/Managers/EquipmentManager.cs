@@ -83,7 +83,7 @@ namespace temsAPI.Data.Managers
                     .ThenInclude(q => q.EquipmentType)
                     .Include(q => q.Room)
                     .Include(q => q.Personnel),
-                    select: q => EquipmentToViewEquipmentSimplifiedViewModel(q.Equipment)
+                    select: q => ViewEquipmentSimplifiedViewModel.FromEquipment(q.Equipment)
                     )).ToList();
 
             return equipment;
@@ -109,56 +109,95 @@ namespace temsAPI.Data.Managers
                     .ThenInclude(q => q.Personnel)
                     .Include(q => q.EquipmentDefinition)
                     .ThenInclude(q => q.EquipmentType),
-                    select: q => EquipmentToViewEquipmentSimplifiedViewModel(q)
+                    select: q => ViewEquipmentSimplifiedViewModel.FromEquipment(q)
                     )).ToList();
 
             return equipment;
         }
 
-        public async Task<Equipment> GetEquipmentById(string id)
+        public async Task<Equipment> GetFullEquipmentById(string id)
         {
-            Equipment equipment = (await _unitOfWork.Equipments
-                .Find<Equipment>(
-                where: q => q.Id == id,
-                include: q => q
-                            .Include(q => q.EquipmentDefinition)
-                            .ThenInclude(q => q.EquipmentType)))
+            var equipment = (await _unitOfWork.Equipments
+                    .Find<Equipment>(
+                        where: q => q.Id == id,
+                        include: q => q
+                        .Include(q => q.EquipmentDefinition)
+                        .ThenInclude(q => q.Children)
+                        .Include(q => q.EquipmentDefinition)
+                        .ThenInclude(q => q.EquipmentSpecifications.Where(q => !q.IsArchieved))?
+                        .ThenInclude(q => q.Property)
+                        .Include(q => q.EquipmentDefinition)
+                        .ThenInclude(q => q.EquipmentType)
+                        .Include(q => q.EquipmentAllocations)
+                        .ThenInclude(q => q.Room)
+                        .Include(q => q.EquipmentAllocations)
+                        .ThenInclude(q => q.Personnel)
+                        .Include(q => q.Children)
+                        .ThenInclude(q => q.EquipmentDefinition)
+                        .ThenInclude(q => q.EquipmentType)
+                        .ThenInclude(q => q.Properties.Where(q => !q.IsArchieved))
+                        .Include(q => q.Parent)
+                        .ThenInclude(q => q.EquipmentDefinition)
+                      )).FirstOrDefault();
+
+            return equipment;
+        }
+
+        public async Task<Equipment> GetById(string id)
+        {
+            var equipment = (await _unitOfWork.Equipments
+                .Find<Equipment>(q => q.Id == id))
                 .FirstOrDefault();
 
             return equipment;
         }
 
-        public ViewEquipmentSimplifiedViewModel EquipmentToViewEquipmentSimplifiedViewModel(Equipment eq)
+        public void Attach(Equipment parent, Equipment child)
         {
-            ViewEquipmentSimplifiedViewModel viewEquipmentSimplified = new ViewEquipmentSimplifiedViewModel
-            {
-                Id = eq.Id,
-                IsDefect = eq.IsDefect,
-                IsUsed = eq.IsUsed,
-                IsArchieved = eq.IsArchieved,
-                TemsId = eq.TEMSID,
-                SerialNumber = eq.SerialNumber,
-                Type = eq.EquipmentDefinition.EquipmentType.Name,
-                Definition = eq.EquipmentDefinition.Identifier,
-            };
+            parent.Children.Add(child);
+        }
 
-            var lastAllocation = eq.EquipmentAllocations
-                .FirstOrDefault(q => !q.IsArchieved && q.DateReturned == null);
-                
-            if (lastAllocation == null)
-                viewEquipmentSimplified.Assignee = "Deposit";
-            else
-                viewEquipmentSimplified.Assignee =
-                    (lastAllocation.Room != null)
-                    ? "Room: " + lastAllocation.Room.Identifier
-                    : "Personnel: " + lastAllocation.Personnel.Name;
+        public async Task ChangeWorkingState(Equipment equipment, bool isWorking)
+        {
+            equipment.IsDefect = !isWorking;
+            await _unitOfWork.Save();
+        }
 
-            viewEquipmentSimplified.TemsIdOrSerialNumber =
-                String.IsNullOrEmpty(viewEquipmentSimplified.TemsId)
-                ? viewEquipmentSimplified.SerialNumber
-                : viewEquipmentSimplified.TemsId;
+        public async Task ChangeUsingState(Equipment equipment, bool isUsed)
+        {
+            equipment.IsUsed = isUsed;
+            await _unitOfWork.Save();
+        }
 
-            return viewEquipmentSimplified;
+        public async Task<string> DetachEquipment(Equipment equipment)
+        {
+            equipment.ParentID = null;
+            await _unitOfWork.Save();
+
+            return null;
+        }
+
+        public async Task<List<Option>> GetEquipmentOfDefinitions(List<string> definitionIds, bool onlyParents)
+        {
+            Expression<Func<Equipment, bool>> expression = q =>
+                    definitionIds.Contains(q.EquipmentDefinitionID) && !q.IsArchieved;
+
+            if (onlyParents)
+                expression = ExpressionCombiner.CombineTwo(expression, q => q.ParentID == null);
+
+            var equipment = (await _unitOfWork.Equipments
+                .Find<Option>(
+                    include: q => q.Include(q => q.EquipmentDefinition),
+                    where: expression,
+                    select: q => new Option
+                    {
+                        Value = q.Id,
+                        Label = q.Identifier,
+                        Additional = $"{q.Description} {q.EquipmentDefinition.Identifier}"
+                    }
+                )).ToList();
+
+            return equipment;
         }
 
         public async Task<List<Option>> GetAutocompleteOptions(bool onlyParents, string filter)

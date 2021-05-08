@@ -19,6 +19,7 @@ using temsAPI.Contracts;
 using temsAPI.Data.Entities.EquipmentEntities;
 using temsAPI.Data.Entities.OtherEntities;
 using temsAPI.Data.Entities.UserEntities;
+using temsAPI.Data.Managers;
 using temsAPI.Helpers;
 using temsAPI.Services.SICServices;
 using temsAPI.System_Files;
@@ -31,11 +32,16 @@ namespace temsAPI.Controllers.EquipmentControllers
 {
     public class EquipmentController : TEMSController
     {
+        private EquipmentManager _equipmentManager;
 
-        public EquipmentController(IMapper mapper, IUnitOfWork unitOfWork, UserManager<TEMSUser> userManager)
+        public EquipmentController(
+            IMapper mapper, 
+            IUnitOfWork unitOfWork, 
+            UserManager<TEMSUser> userManager,
+            EquipmentManager equipmentManager)
            : base(mapper, unitOfWork, userManager)
         {
-
+            _equipmentManager = equipmentManager;
         }
 
         [HttpPost]
@@ -44,17 +50,9 @@ namespace temsAPI.Controllers.EquipmentControllers
         {
             try
             {
-                string validationResult = await AddEquipmentViewModel.Validate(_unitOfWork, viewModel);
-                if (validationResult != null)
-                    return ReturnResponse(validationResult, ResponseStatus.Fail);
-
-                // If we got so far, it might be valid
-                var equipment = Equipment.FromViewModel(User, viewModel);
-                await _unitOfWork.Equipments.Create(equipment);
-                await _unitOfWork.Save();
-                
-                if (!await _unitOfWork.Equipments.isExists(q => q.Id == equipment.Id))
-                    return ReturnResponse("Fail", ResponseStatus.Fail);
+                string result = await _equipmentManager.Create(viewModel);
+                if (result != null)
+                    return ReturnResponse(result, ResponseStatus.Fail);
 
                 return ReturnResponse("Success", ResponseStatus.Success);
             }
@@ -71,24 +69,9 @@ namespace temsAPI.Controllers.EquipmentControllers
         {
             try
             {
-                string validationResult = await AddEquipmentViewModel.Validate(_unitOfWork, viewModel);
-                if (validationResult != null)
-                    return ReturnResponse(validationResult, ResponseStatus.Fail);
-
-                var model = (await _unitOfWork.Equipments
-                    .Find<Equipment>(q => q.Id == viewModel.Id))
-                    .FirstOrDefault();
-
-                model.Currency = viewModel.Currency;
-                model.Description = viewModel.Description;
-                model.IsDefect = viewModel.IsDefect;
-                model.IsUsed = viewModel.IsUsed;
-                model.Price = viewModel.Price;
-                model.PurchaseDate = viewModel.PurchaseDate;
-                model.SerialNumber = viewModel.SerialNumber;
-                model.TEMSID = viewModel.Temsid;
-
-                await _unitOfWork.Save();
+                string result = await _equipmentManager.Update(viewModel);
+                if (result == null)
+                    return ReturnResponse(result, ResponseStatus.Fail);
 
                 return ReturnResponse("Success!", ResponseStatus.Success);
             }
@@ -110,29 +93,14 @@ namespace temsAPI.Controllers.EquipmentControllers
         {
             try
             {
-                DateTime start = DateTime.Now;
                 // Invalid parameters
                 if (pageNumber < 0 || equipmentsPerPage < 1)
                     return ReturnResponse("Invalid parameters", ResponseStatus.Fail);
 
                 if (rooms != null && rooms.Count > 0 || personnel != null && personnel.Count > 0)
-                    return Json(await GetEquipmentsOfEntities(rooms, personnel));
+                    return Json(await _equipmentManager.GetEquipmentOfEntities(rooms, personnel));
 
-                Expression<Func<Equipment, bool>> expression
-                    = (onlyParents) ? qu => qu.ParentID == null && !qu.IsArchieved : qu => !qu.IsArchieved;
-
-                var viewModel = (await _unitOfWork.Equipments.FindAll<ViewEquipmentSimplifiedViewModel>
-                        (expression,
-                        include: q => q
-                        .Include(q => q.EquipmentAllocations.Where(q => q.DateReturned == null))
-                        .ThenInclude(q => q.Room)
-                        .Include(q => q.EquipmentAllocations.Where(q => q.DateReturned == null))
-                        .ThenInclude(q => q.Personnel)
-                        .Include(q => q.EquipmentDefinition)
-                        .ThenInclude(q => q.EquipmentType),
-                        select: q => EquipmentToViewEquipmentSimplifiedViewModel(q))).ToList();
-
-                return Json(viewModel);
+                return Json(await _equipmentManager.GetEquipment(onlyParents));
             }
             catch (Exception ex)
             {
@@ -147,19 +115,12 @@ namespace temsAPI.Controllers.EquipmentControllers
         {
             try
             {
-                // Invalid Id provied
-                if (!await _unitOfWork.Equipments.isExists(q => q.Id == id))
-                    return ReturnResponse("We could not find any equipment having the specified id", ResponseStatus.Fail);
+                var equipment = await _equipmentManager.GetEquipmentById(id);
+                if (equipment == null)
+                    return ReturnResponse("Invalid equipment Id", ResponseStatus.Fail);
 
-                Equipment model = (await _unitOfWork.Equipments
-                    .Find<Equipment>(
-                    where: q => q.Id == id,
-                    include: q => q
-                                .Include(q => q.EquipmentDefinition)
-                                .ThenInclude(q => q.EquipmentType)))
-                    .FirstOrDefault();
-
-                return Json(await EquipmentToEquipmentSimplifiedMapping(model));
+                var viewModel = _equipmentManager.EquipmentToViewEquipmentSimplifiedViewModel(equipment);
+                return Json(viewModel);
             }
             catch (Exception ex)
             {
@@ -173,50 +134,8 @@ namespace temsAPI.Controllers.EquipmentControllers
         {
             try
             {
-                Expression<Func<Equipment, bool>> expression =
-                   (onlyParents)
-                   ? qu => qu.ParentID == null && !qu.IsArchieved
-                   : qu => !qu.IsArchieved;
-
-                if (filter != null)
-                {
-                    Expression<Func<Equipment, bool>> expression2 =
-                        q => q.TEMSID.Contains(filter);
-
-                    expression = ExpressionCombiner.CombineTwo(expression, expression2);
-                }
-
-                List<Option> autocompleteOptions = new List<Option>();
-
-                var filteresEquipments = (await _unitOfWork.Equipments
-                    .FindAll<Equipment>(
-                        where: expression,
-                        include: q => q.Include(q => q.EquipmentDefinition),
-                        take: 5
-                     ))
-                    .ToList();
-
-                filteresEquipments
-                    .ForEach(q =>
-                    {
-                        if (!String.IsNullOrEmpty(q.TEMSID))
-                            autocompleteOptions.Add(new Option
-                            {
-                                Value = q.Id,
-                                Label = q.TEMSID,
-                                Additional = q.EquipmentDefinition.Identifier
-                            });
-
-                        if (!String.IsNullOrEmpty(q.SerialNumber))
-                            autocompleteOptions.Add(new Option
-                            {
-                                Value = q.Id,
-                                Label = q.SerialNumber,
-                                Additional = q.EquipmentDefinition.Identifier
-                            });
-                    });
-
-                return Json(autocompleteOptions);
+                var viewModel = await _equipmentManager.GetAutocompleteOptions(onlyParents, filter);
+                return Json(viewModel);
             }
             catch (Exception)
             {
@@ -447,40 +366,6 @@ namespace temsAPI.Controllers.EquipmentControllers
             }
         }
         // -------------------------< Extract then to a separate file >--------------------------------
-        private async Task<ViewEquipmentSimplifiedViewModel> EquipmentToEquipmentSimplifiedMapping(Equipment eq)
-        {
-            ViewEquipmentSimplifiedViewModel viewEquipmentSimplified = new ViewEquipmentSimplifiedViewModel
-            {
-                Id = eq.Id,
-                IsDefect = eq.IsDefect,
-                IsUsed = eq.IsUsed,
-                IsArchieved = eq.IsArchieved,
-                TemsId = eq.TEMSID,
-                SerialNumber = eq.SerialNumber,
-                Type = eq.EquipmentDefinition.EquipmentType.Name,
-                Definition = eq.EquipmentDefinition.Identifier,
-            };
-
-            var lastAllocation = (await _unitOfWork.EquipmentAllocations
-                .Find<EquipmentAllocation>(q => q.EquipmentID == eq.Id && q.DateReturned == null,
-                include: q => q.Include(q => q.Room).Include(q => q.Personnel))).FirstOrDefault();
-
-            if (lastAllocation == null)
-                viewEquipmentSimplified.Assignee = "Deposit";
-            else
-                viewEquipmentSimplified.Assignee =
-                    (lastAllocation.Room != null)
-                    ? "Room: " + lastAllocation.Room.Identifier
-                    : "Personnel: " + lastAllocation.Personnel.Name;
-
-            viewEquipmentSimplified.TemsIdOrSerialNumber =
-                String.IsNullOrEmpty(viewEquipmentSimplified.TemsId)
-                ? viewEquipmentSimplified.SerialNumber
-                : viewEquipmentSimplified.TemsId;
-
-            return viewEquipmentSimplified;
-        }
-
         private static ViewEquipmentSimplifiedViewModel EquipmentToViewEquipmentSimplifiedViewModel(Equipment q)
         {
             return new ViewEquipmentSimplifiedViewModel
@@ -500,32 +385,5 @@ namespace temsAPI.Controllers.EquipmentControllers
                                 : q.TEMSID
             };
         }
-
-        private async Task<List<ViewEquipmentSimplifiedViewModel>> GetEquipmentsOfEntities(List<string> rooms, List<string> personnel)
-        {
-            Expression<Func<EquipmentAllocation, bool>> eqOfRoomsExpression = null;
-            if (rooms.Count > 0)
-                eqOfRoomsExpression = q => q.DateReturned == null && rooms.Contains(q.RoomID);
-
-            Expression<Func<EquipmentAllocation, bool>> eqOfPersonnelExpression = null;
-            if (personnel.Count > 0)
-                eqOfPersonnelExpression = q => q.DateReturned == null && personnel.Contains(q.PersonnelID);
-
-            Expression<Func<EquipmentAllocation, bool>> finalExpression =
-                ExpressionCombiner.CombineTwo(eqOfRoomsExpression, eqOfPersonnelExpression);
-
-            List<ViewEquipmentSimplifiedViewModel> viewModel = (await _unitOfWork.EquipmentAllocations
-                .FindAll<ViewEquipmentSimplifiedViewModel>(
-                    where: finalExpression,
-                    include: q => q.Include(q => q.Equipment)
-                    .ThenInclude(q => q.EquipmentDefinition)
-                    .ThenInclude(q => q.EquipmentType)
-                    .Include(q => q.Room)
-                    .Include(q => q.Personnel),
-                    select: q => EquipmentToViewEquipmentSimplifiedViewModel(q.Equipment)
-                    )).ToList();
-
-            return viewModel;
-        } 
     }
 }

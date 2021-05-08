@@ -39,4 +39,8 @@
     <ProjectReference Include="..\SIC-Parser\SIC-Parser.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Data\Entities\Analytics\" />
+  </ItemGroup>
+
 </Project>

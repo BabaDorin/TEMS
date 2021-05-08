@@ -82,6 +82,8 @@ namespace temsAPI
 
             services.AddCors();
 
+            services.AddTransient(s => s.GetService<HttpContext>().User);
+
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {

@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.LibraryEntities;
 using temsAPI.Data.Entities.UserEntities;
+using temsAPI.Data.Managers;
 using temsAPI.Helpers;
 using temsAPI.Helpers.StaticFileHelpers;
 using temsAPI.System_Files;
@@ -23,15 +24,17 @@ namespace temsAPI.Controllers.LibraryControllers
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
         private LibraryItemFileHandler fileHandler = new();
-        private ISession _session => _httpContextAccessor.HttpContext.Session;
+        private LibraryManager _libraryManager;
 
         public LibraryController(
             IMapper mapper,
             IUnitOfWork unitOfWork,
             UserManager<TEMSUser> userManager,
-            IHttpContextAccessor httpContextAccessor) : base(mapper, unitOfWork, userManager)
+            IHttpContextAccessor httpContextAccessor,
+            LibraryManager libraryManager) : base(mapper, unitOfWork, userManager)
         {
             _httpContextAccessor = httpContextAccessor;
+            _libraryManager = libraryManager;
         }
 
         [HttpPost, DisableRequestSizeLimit]
@@ -43,49 +46,14 @@ namespace temsAPI.Controllers.LibraryControllers
                 var formCollection = await Request.ReadFormAsync();
                 var file = formCollection.Files.First();
 
-                if (file == null)
-                {
-                    Debug.WriteLine("file null");
-                    throw new Exception("Null file ??");
-                }
+                var fileName = Request.Form["myName"];
+                var fileDescription = Request.Form["myDescription"];
+                var result = _libraryManager.UploadFile(file, fileName, fileDescription);
 
-                AddLibraryItemViewModel viewModel = new AddLibraryItemViewModel
-                {
-                    DisplayName = Request.Form["myName"],
-                    Description = Request.Form["myDescription"],
-                    ActualName = fileHandler.GetSanitarizedUniqueActualName(file),
-                };
+                if (result != null)
+                    return StatusCode(500, result);
 
-                string dbPath = fileHandler.CompressAndSave(file, viewModel.ActualName);
-
-                if(dbPath == null)
-                    return StatusCode(500, $"File could not be uploaded");
-
-                LibraryItem model = new LibraryItem
-                {
-                    Id = Guid.NewGuid().ToString(),
-                    ActualName = viewModel.ActualName,
-                    DateUploaded = DateTime.Now,
-                    DbPath = dbPath,
-                    Description = viewModel.Description,
-                    DisplayName = viewModel.DisplayName,
-                    FileSize = file.Length,
-                };
-
-                await _unitOfWork.LibraryItems.Create(model);
-                await _unitOfWork.Save();
-
-                if (await _unitOfWork.LibraryItems.isExists(q => q.Id == model.Id))
-                    return Ok();
-
-                // File has been saved to disk, but without any reference in db. Let's
-                // delete the file since we ca'nt access it.
-                await Task.Run(() =>
-                {
-                    fileHandler.DeleteFile(model.DbPath);
-                }).ConfigureAwait(false);
-                return StatusCode(500, $"An error occured when saving the file in database." +
-                    $" Consider uploading again.");
+                return Ok();
             }
             catch (ConnectionResetException ex)
             {
@@ -95,16 +63,12 @@ namespace temsAPI.Controllers.LibraryControllers
 
                 // This behaviour helps us to easily implement the "cancel upload" feature (kind of), without
                 // Third party Upload Controllers that cost money ;(
-                Debug.WriteLine("----------------------------");
                 Debug.WriteLine(ex);
-                Debug.WriteLine("----------------------------");
                 return Ok();
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("----------------------------");
                 Debug.WriteLine(ex);
-                Debug.WriteLine("----------------------------");
                 return StatusCode(500, $"Internal server error: {ex}");
             }
         }
@@ -114,14 +78,8 @@ namespace temsAPI.Controllers.LibraryControllers
         {
             try
             {
-                List<ViewLibraryItemViewModel> viewModel = (await _unitOfWork
-                    .LibraryItems
-                    .FindAll<ViewLibraryItemViewModel>(
-                        orderBy: q => q.OrderByDescending(q => q.Downloads),
-                        select: q => _mapper.Map<ViewLibraryItemViewModel>(q)
-                    )).ToList();
-
-                return Json(viewModel);
+                var items = await _libraryManager.GetItems();
+                return Json(items);
             }
             catch (Exception ex)
             {
@@ -136,22 +94,9 @@ namespace temsAPI.Controllers.LibraryControllers
         {
             try
             {
-                // Invalid id provided
-                if (!await _unitOfWork.LibraryItems.isExists(q => q.Id == itemId))
-                    return ReturnResponse("Invalid item provided", ResponseStatus.Fail);
-
-                LibraryItem libraryItem = (await _unitOfWork.LibraryItems
-                    .Find<LibraryItem>(
-                        q => q.Id == itemId
-                    )).FirstOrDefault();
-
-                fileHandler.DeleteFile(libraryItem.DbPath);
-
-                _unitOfWork.LibraryItems.Delete(libraryItem);
-                await _unitOfWork.Save();
-
-                if (await _unitOfWork.LibraryItems.isExists(q => q.Id == itemId))
-                    return ReturnResponse("The file has not been deleted, Please try again", ResponseStatus.Fail);
+                var result = await _libraryManager.Remove(itemId);
+                if (result != null)
+                    return ReturnResponse(result, ResponseStatus.Fail);
 
                 return ReturnResponse("Success", ResponseStatus.Success);
             }
@@ -165,32 +110,16 @@ namespace temsAPI.Controllers.LibraryControllers
         [HttpGet("library/download/{itemId}"), DisableRequestSizeLimit]
         public async Task<IActionResult> Download(string itemId)
         {
-            if(!await _unitOfWork.LibraryItems.isExists(q => q.Id == itemId))
-                return NotFound();
+            var item = await _libraryManager.GetById(itemId);
+            var memoryStream = await _libraryManager.GetLibraryItemMemoryStream(item);
 
-            LibraryItem item = (await _unitOfWork.LibraryItems.Find<LibraryItem>(q => q.Id == itemId))
-                .FirstOrDefault();
-
-            string filePath = Path.Combine(Directory.GetCurrentDirectory(), item.DbPath);
-
-            if (!System.IO.File.Exists(filePath))
-                return NotFound();
-
-            var memory = new MemoryStream();
-            await using (var stream = new FileStream(filePath, FileMode.Open))
-            {
-                await stream.CopyToAsync(memory);
-            }
-            memory.Position = 0;
-
-            var file = File(memory, fileHandler.GetContentType(filePath), item.ActualName + ".zip");
+            string filePath = _libraryManager.GetFilePath(item);
+            var file = File(memoryStream, fileHandler.GetContentType(filePath), item.ActualName + ".zip");
 
             // Update downloads counter
             await Task.Run(async () =>
             {
-                ++item.Downloads;
-                _unitOfWork.LibraryItems.Update(item);
-                await _unitOfWork.Save();
+                await _libraryManager.UpdateDownloadsCounter(item);
             }).ConfigureAwait(false);
 
             return file;

@@ -76,6 +76,7 @@ namespace temsAPI
             services.AddScoped<AnnouncementManager>();
             services.AddScoped<TEMSUserManager>();
             services.AddScoped<KeyManager>();
+            services.AddScoped<LibraryManager>();
 
             services.AddHttpContextAccessor();
             services.AddAutoMapper(typeof(Maps));

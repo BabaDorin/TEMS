@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using temsAPI.Data.Entities.LibraryEntities;
 
 namespace temsAPI.ViewModels.Library
 {
@@ -28,5 +29,25 @@ namespace temsAPI.ViewModels.Library
         public string DbPath { get; set; }
         public double FileSize { get; set; }
         public int Downloads { get; set; }
+
+        public static ViewLibraryItemViewModel FromModel(LibraryItem item)
+        {
+            return new ViewLibraryItemViewModel
+            {
+                Id = item.Id,
+                ActualName = item.ActualName,
+                DateUploaded = item.DateUploaded,
+                DbPath = item.DbPath,
+                Description = item.Description,
+                DisplayName = item.DisplayName,
+                Downloads = item.Downloads,
+                FileSize = item.FileSize,
+                UploadedBy = new Option
+                {
+                    Label = item.UploadedBy?.FullName ?? item.UploadedBy?.UserName,
+                    Value = item.UploadedById
+                }
+            };
+        }
     }
 }

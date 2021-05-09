@@ -13,6 +13,7 @@ using System.Text;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.UserEntities;
+using temsAPI.Data.Managers;
 using temsAPI.Helpers;
 using temsAPI.System_Files;
 using temsAPI.ViewModels.IdentityViewModels;
@@ -21,6 +22,7 @@ namespace temsAPI.Controllers.IdentityControllers
 {
     public class AuthController : TEMSController
     {
+        TEMSUserManager _temsUserManager;
         RoleManager<IdentityRole> _roleManager;
         readonly AppSettings _appSettings;
         public AuthController(
@@ -28,16 +30,12 @@ namespace temsAPI.Controllers.IdentityControllers
             IUnitOfWork unitOfWork, 
             UserManager<TEMSUser> userManager,
             RoleManager<IdentityRole> roleManager,
-            IOptions<AppSettings> appSettings) : base(mapper, unitOfWork, userManager)
+            IOptions<AppSettings> appSettings,
+            TEMSUserManager temsUserManager) : base(mapper, unitOfWork, userManager)
         {
             _roleManager = roleManager;
             _appSettings = appSettings.Value;
-        }
-
-        [HttpGet]
-        public JsonResult IsAuthenticated()
-        {
-            return ReturnResponse("yep", ResponseStatus.Success);
+            _temsUserManager = temsUserManager;
         }
 
         [HttpPost]
@@ -45,69 +43,29 @@ namespace temsAPI.Controllers.IdentityControllers
         {
             try
             {
-                // User's jwt is being blacklisted here.
-                await _unitOfWork.JWTBlacklist.Create(
-                    new TemsJWT
-                    {
-                        Id = Guid.NewGuid().ToString(),
-                        Content = token,
-                        ExpirationDate = (new JWTHelper()).GetExpiryTimestamp(token)
-                    });
-
-                await _unitOfWork.Save();
-
+                await _temsUserManager.BlacklistToken(token);
                 return ReturnResponse("Success", ResponseStatus.Success);
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
-                return ReturnResponse("An error occured when invalidating token", ResponseStatus.Fail);
+                return ReturnResponse("An error occured while blacklisting the token", ResponseStatus.Fail);
             }
         }
 
         [HttpPost]
         public async Task<IActionResult> LogIn([FromBody] LogInViewModel viewModel)
         {
-            var user = await _userManager.FindByNameAsync(viewModel.Username);
-            if(user == null) 
-                user = await _userManager.FindByEmailAsync(viewModel.Username);
-
-            if (user == null || !await _userManager.CheckPasswordAsync(user, viewModel.Password))
-                return ReturnResponse("Username or password is incorrect", ResponseStatus.Fail);
-
-            List<Claim> claims = new List<Claim>();
-            claims.Add(new Claim("UserID", user.Id.ToString()));
-            claims.Add(new Claim("Username", user.UserName.ToString()));
-
-            var userClaims = await _userManager.GetClaimsAsync(user);
-
-            List<string> userRoles = (await _userManager.GetRolesAsync(user)).ToList();
-            foreach (string role in userRoles)
+            try
             {
-                userClaims = userClaims.Union(await _roleManager
-                    .GetClaimsAsync(await _roleManager.FindByNameAsync(role)))
-                    .Select(q => new Claim(q.Type, q.Value))
-                    .ToList();
+                var token = await _temsUserManager.GenerateToken(viewModel);
+                return Ok(new { token });
             }
-
-            foreach (var claim in userClaims)
+            catch (Exception ex)
             {
-                claims.Add(new Claim(claim.Type, claim.Value));
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occcured while logging in", ResponseStatus.Fail);
             }
-
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.UtcNow.AddDays(10),
-                SigningCredentials = new SigningCredentials(
-                    new SymmetricSecurityKey(
-                        Encoding.UTF8.GetBytes(
-                            _appSettings.JWT_Secret)), SecurityAlgorithms.HmacSha256Signature)
-            };
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var securityToken = tokenHandler.CreateToken(tokenDescriptor);
-            var token = tokenHandler.WriteToken(securityToken);
-            return Ok(new { token });
         }
     }
 }

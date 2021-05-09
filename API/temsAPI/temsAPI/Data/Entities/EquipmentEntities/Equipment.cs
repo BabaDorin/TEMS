@@ -14,6 +14,7 @@ using temsAPI.Data.Entities.CommunicationEntities;
 using temsAPI.Data.Entities.OtherEntities;
 using temsAPI.Data.Entities.UserEntities;
 using temsAPI.Helpers;
+using temsAPI.Services;
 using temsAPI.ViewModels.Equipment;
 
 namespace temsAPI.Data.Entities.EquipmentEntities
@@ -100,7 +101,7 @@ namespace temsAPI.Data.Entities.EquipmentEntities
                 IsUsed = viewModel.IsUsed,
                 Price = viewModel.Price,
                 RegisterDate = DateTime.Now,
-                RegisteredByID = IdentityHelper.GetUserId(createdBy),
+                RegisteredByID = IdentityService.GetUserId(createdBy),
             };
 
             foreach(var child in viewModel.Children)

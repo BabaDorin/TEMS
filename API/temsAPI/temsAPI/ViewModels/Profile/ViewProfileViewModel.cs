@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AutoMapper;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -20,5 +21,27 @@ namespace temsAPI.ViewModels.Profile
         public List<string> Roles { get; set; }
         public DateTime DateArchieved { get; set; }
         public DateTime DateRegistered { get; set; }
+
+        public static ViewProfileViewModel FromModel(TEMSUser user)
+        {
+            return new ViewProfileViewModel
+            {
+                Id = user.Id,
+                FullName = user.FullName,
+                Username = user.UserName,
+                Email = user.Email,
+                IsArchieved = user.IsArchieved,
+                GetEmailNotifications = user.GetEmailNotifications,
+                //DateRegistered = q.DateRegistered,
+                PhoneNumber = user.PhoneNumber,
+                Personnel = (user.Personnel == null)
+                    ? null
+                    : new Option
+                    {
+                        Value = user.PersonnelId,
+                        Label = user.Personnel.Name,
+                    },
+            };
+        }
     }
 }

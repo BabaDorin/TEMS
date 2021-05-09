@@ -151,7 +151,7 @@ namespace temsAPI.Controllers.ReportControllers
                     return ReturnResponse(validationMessage, ResponseStatus.Fail);
 
                 var user = (await _unitOfWork.TEMSUsers
-                    .Find<TEMSUser>(q => q.Id == IdentityHelper.GetUserId(User)))
+                    .Find<TEMSUser>(q => q.Id == IdentityService.GetUserId(User)))
                     .FirstOrDefault();
 
                 if (user == null)
@@ -283,7 +283,7 @@ namespace temsAPI.Controllers.ReportControllers
                 Report report = new();
                 report.Id = Guid.NewGuid().ToString();
                 report.Template = reportTemplate.Name;
-                report.GeneratedByID = IdentityHelper.GetUserId(User);
+                report.GeneratedByID = IdentityService.GetUserId(User);
                 report.DateGenerated = DateTime.Now;
 
                 report.DBPath = fileHandler.GetDBPath();

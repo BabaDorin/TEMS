@@ -16,6 +16,7 @@ using temsAPI.Data.Entities.EquipmentEntities;
 using temsAPI.Data.Entities.OtherEntities;
 using temsAPI.Data.Entities.UserEntities;
 using temsAPI.Helpers;
+using temsAPI.Services;
 using temsAPI.System_Files;
 using temsAPI.ViewModels;
 using temsAPI.ViewModels.Ticket;
@@ -210,7 +211,7 @@ namespace temsAPI.Controllers.TicketControllers
                 if (ticket == null)
                     return ReturnResponse("Invalid ticket provided", ResponseStatus.Fail);
 
-                ticket.ClosedById = IdentityHelper.GetUserId(User);
+                ticket.ClosedById = IdentityService.GetUserId(User);
                 ticket.DateClosed = null;
 
                 await _unitOfWork.Save();
@@ -237,7 +238,7 @@ namespace temsAPI.Controllers.TicketControllers
                 if (ticket == null)
                     return ReturnResponse("Invalid ticket provided", ResponseStatus.Fail);
 
-                ticket.ClosedById = IdentityHelper.GetUserId(User);
+                ticket.ClosedById = IdentityService.GetUserId(User);
                 ticket.DateClosed = DateTime.Now;
 
                 await _unitOfWork.Save();
@@ -374,8 +375,8 @@ namespace temsAPI.Controllers.TicketControllers
                     Id = Guid.NewGuid().ToString(),
                     StatusId = viewModel.Status,
                     Problem = viewModel.Problem,
-                    CreatedBy = (IdentityHelper.isAuthenticated(User)) 
-                        ? await _userManager.FindByIdAsync(IdentityHelper.GetUserId(User)) 
+                    CreatedBy = (IdentityService.isAuthenticated(User)) 
+                        ? await _userManager.FindByIdAsync(IdentityService.GetUserId(User)) 
                         : null,
                     DateCreated = DateTime.Now,
                     Description = viewModel.ProblemDescription,

@@ -2,29 +2,28 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO.Pipes;
-using System.Linq;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
-using temsAPI.Controllers.CommunicationControllers;
 using temsAPI.Data.Entities.UserEntities;
+using temsAPI.Data.Managers;
 using temsAPI.System_Files;
-using temsAPI.ViewModels;
-using temsAPI.ViewModels.Profile;
-using temsAPI.ViewModels.Ticket;
 
 namespace temsAPI.Controllers.IdentityControllers
 {
     [Authorize]
     public class ProfileController : TEMSController
     {
-        public ProfileController(IMapper mapper, IUnitOfWork unitOfWork, UserManager<TEMSUser> userManager) : base(mapper, unitOfWork, userManager)
+        private TEMSUserManager _temsUserManager;
+
+        public ProfileController(
+            IMapper mapper, 
+            IUnitOfWork unitOfWork, 
+            UserManager<TEMSUser> userManager,
+            TEMSUserManager temsUserManager) : base(mapper, unitOfWork, userManager)
         {
+            _temsUserManager = temsUserManager;
         }
 
         [HttpGet("profile/get/{userId}")]
@@ -33,40 +32,8 @@ namespace temsAPI.Controllers.IdentityControllers
         {
             try
             {
-                var viewModel = (await _unitOfWork.TEMSUsers
-                    .Find<ViewProfileViewModel>(
-                        where: q => q.Id == userId,
-                        include: q => q
-                        .Include(q => q.AssignedTickets)
-                        .Include(q => q.ClosedTickets)
-                        .Include(q => q.CreatedTickets)
-                        .Include(q => q.Announcements),
-                        //.Include(q => q.Personnel).ThenInclude(q => q.KeyAllocations),
-                        select: q => new ViewProfileViewModel
-                        {
-                            Id = q.Id,
-                            FullName = q.FullName,
-                            Username = q.UserName,
-                            Email = q.Email,
-                            IsArchieved = q.IsArchieved,
-                            GetEmailNotifications = (q.GetEmailNotifications == null) ? false : q.GetEmailNotifications,
-                            //DateRegistered = q.DateRegistered,
-                            PhoneNumber = q.PhoneNumber,
-                            Personnel = (q.Personnel == null)
-                                ? null
-                                : new Option
-                                {
-                                    Value = q.PersonnelId,
-                                    Label = q.Personnel.Name,
-                                },
-                        }
-                    )).FirstOrDefault();
-
-                viewModel.Roles = (await _userManager
-                    .GetRolesAsync(await _userManager.FindByIdAsync(userId)))
-                    .ToList();
-                
-                return Json(viewModel);
+                var profileViewModel = await _temsUserManager.GetProfileInfo(userId);
+                return Json(profileViewModel);
             }
             catch (Exception ex)
             {

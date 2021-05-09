@@ -6,7 +6,6 @@ using System.ComponentModel.Design.Serialization;
 using System.Linq;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
-using temsAPI.Controllers.CommunicationControllers;
 using temsAPI.Data.Entities.CommunicationEntities;
 using temsAPI.Data.Entities.EquipmentEntities;
 using temsAPI.Data.Entities.OtherEntities;

@@ -62,8 +62,9 @@ namespace temsAPI
 
             // TEMS Services
             services.AddScoped<ReportingService>();
-            services.AddSingleton<IdentityService>();
+            services.AddSingleton<Services.IdentityService>();
             services.AddScoped<EmailService>();
+            services.AddScoped<IdentityService>();
 
             // TEMS Entity managers
             services.AddScoped<ReportManager>();
@@ -73,8 +74,8 @@ namespace temsAPI
             services.AddScoped<EquipmentPropertyManager>();
             services.AddScoped<ArchieveManager>();
             services.AddScoped<AnnouncementManager>();
-
-
+            services.AddScoped<TEMSUserManager>();
+            
             services.AddHttpContextAccessor();
             services.AddAutoMapper(typeof(Maps));
 

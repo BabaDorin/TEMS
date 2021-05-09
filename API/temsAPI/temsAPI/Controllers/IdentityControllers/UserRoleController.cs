@@ -9,6 +9,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.UserEntities;
+using temsAPI.Data.Managers;
 using temsAPI.System_Files;
 using temsAPI.ViewModels;
 
@@ -16,14 +17,15 @@ namespace temsAPI.Controllers.IdentityControllers
 {
     public class UserRoleController : TEMSController
     {
-        private RoleManager<IdentityRole> _roleManager;
+        TEMSUserManager _temsUserManager;
         public UserRoleController(
             IMapper mapper, 
             IUnitOfWork unitOfWork, 
             UserManager<TEMSUser> userManager,
-            RoleManager<IdentityRole> roleManager) : base(mapper, unitOfWork, userManager)
+            RoleManager<IdentityRole> roleManager,
+            TEMSUserManager temsUserManager) : base(mapper, unitOfWork, userManager)
         {
-            _roleManager = roleManager;
+            _temsUserManager = temsUserManager;
         }
 
         [HttpGet]
@@ -32,14 +34,7 @@ namespace temsAPI.Controllers.IdentityControllers
         {
             try
             {
-                List<Option> roles = await _roleManager
-                    .Roles
-                    .Select(q => new Option
-                    {
-                        Value = q.Id,
-                        Label = q.Name
-                    }).ToListAsync();
-
+                var roles = await _temsUserManager.GetRolesOptions();
                 return Json(roles);
             }
             catch (Exception ex)

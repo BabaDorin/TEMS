@@ -4,10 +4,12 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using System.Security.Policy;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.OtherEntities;
 using temsAPI.Data.Entities.UserEntities;
+using temsAPI.ViewModels.Key;
 
 namespace temsAPI.Data.Entities.KeyEntities
 {
@@ -46,5 +48,16 @@ namespace temsAPI.Data.Entities.KeyEntities
 #nullable disable
 
         public virtual ICollection<KeyAllocation> KeyAllocations { get; set; } = new List<KeyAllocation>();
+
+        public static Key FromAddKeyViewModel(AddKeyViewModel viewModel)
+        {
+            return new Key
+            {
+                Id = Guid.NewGuid().ToString(),
+                Identifier = viewModel.Identifier,
+                RoomId = viewModel.RoomId,
+                Description = viewModel.Description
+            };
+        }
     }
 }

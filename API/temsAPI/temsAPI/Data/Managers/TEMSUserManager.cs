@@ -11,6 +11,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Security.Claims;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
@@ -373,6 +374,19 @@ namespace temsAPI.Data.Managers
             await _unitOfWork.Save();
 
             return null;
+        }
+
+        public async Task<List<Option>> GetRolesOptions()
+        {
+            var roles = await _roleManager
+                .Roles
+                .Select(q => new Option
+                {
+                    Value = q.Id,
+                    Label = q.Name
+                }).ToListAsync();
+
+            return roles;
         }
     }
 }

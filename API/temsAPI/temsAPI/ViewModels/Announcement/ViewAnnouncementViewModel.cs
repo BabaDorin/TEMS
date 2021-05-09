@@ -12,5 +12,17 @@ namespace temsAPI.ViewModels.Announcement
         public string Text { get; set; }
         public Option CreatedBy { get; set; }
         public DateTime DateCreated { get; set; }
+
+        public static ViewAnnouncementViewModel FromModel(
+            Data.Entities.CommunicationEntities.Announcement announcement)
+        {
+            return new ViewAnnouncementViewModel
+            {
+                Id = announcement.Id,
+                Text = announcement.Message,
+                Title = announcement.Title,
+                DateCreated = announcement.DateCreated
+            };
+        }
     }
 }

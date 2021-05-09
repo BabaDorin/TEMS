@@ -138,7 +138,7 @@ namespace temsAPI.EquipmentControllers
                 if (type == null)
                     return ReturnResponse("The specified type does not exist", ResponseStatus.Fail);
 
-                string archivationResult = await new ArchieveHelper(_userManager, _unitOfWork)
+                string archivationResult = await new ArchieveHelper(_unitOfWork, User)
                     .SetTypeArchivationStatus(typeId, status);
                 if (archivationResult != null)
                     return ReturnResponse(archivationResult, ResponseStatus.Fail);

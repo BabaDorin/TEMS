@@ -20,7 +20,7 @@ using temsAPI.System_Files;
 using temsAPI.ViewModels;
 using temsAPI.ViewModels.Log;
 
-namespace temsAPI.Controllers.CommunicationControllers
+namespace temsAPI.Controllers.LogControllers
 {
     public class LogController : TEMSController
     {
@@ -95,7 +95,7 @@ namespace temsAPI.Controllers.CommunicationControllers
         {
             try
             {
-                string archievingResult = await (new ArchieveHelper(_userManager, _unitOfWork))
+                string archievingResult = await (new ArchieveHelper(_unitOfWork, User))
                     .SetLogArchivationStatus(logId, archivationStatus);
                 if (archievingResult != null)
                     return ReturnResponse(archievingResult, ResponseStatus.Fail);

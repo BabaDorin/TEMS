@@ -126,7 +126,7 @@ namespace temsAPI.Controllers.ReportControllers
         {
             try
             {
-                string archivationResult = await (new ArchieveHelper(_userManager, _unitOfWork))
+                string archivationResult = await (new ArchieveHelper(_unitOfWork, User))
                     .SetReportTemplateArchivationStatus(templateId, flag);
                 if (archivationResult != null)
                     return ReturnResponse(archivationResult, ResponseStatus.Fail);

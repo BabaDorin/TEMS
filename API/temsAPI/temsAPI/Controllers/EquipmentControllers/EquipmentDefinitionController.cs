@@ -190,7 +190,7 @@ namespace temsAPI.Controllers.EquipmentControllers
         {
             try
             {
-                var archievingResult = await (new ArchieveHelper(_userManager, _unitOfWork))
+                var archievingResult = await (new ArchieveHelper(_unitOfWork, User))
                     .SetDefinitionArchivationStatus(definitionId, archivationStatus);
 
                 if (archievingResult != null)

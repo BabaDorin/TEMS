@@ -367,7 +367,7 @@ namespace temsAPI.Data.Managers
                 .ToList();
         }
 
-        public async Task<List<ViewEquipmentSimplifiedViewModel>> GetAllocations(EntityCollection entityCollection)
+        public async Task<List<ViewAllocationSimplifiedViewModel>> GetAllocations(EntityCollection entityCollection)
         {
             Expression<Func<EquipmentAllocation, bool>> equipmentExpression = null;
             if (entityCollection.EquipmentIds != null && entityCollection.EquipmentIds.Count > 0)
@@ -414,7 +414,8 @@ namespace temsAPI.Data.Managers
                     orderBy: orderByExp,
                     //skip: skip,
                     //take: take,
-                    select: q => ViewAllocationSimplifiedViewModel.FromModel(q))).ToList();
+                    select: q => ViewAllocationSimplifiedViewModel.FromModel(q)))
+                    .ToList();
             
             return allocations;
         }

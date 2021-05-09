@@ -145,7 +145,7 @@ namespace temsAPI.EquipmentControllers
         {
             try
             {
-                var archievingResult = await (new ArchieveHelper(_userManager, _unitOfWork))
+                var archievingResult = await (new ArchieveHelper(_unitOfWork, User))
                      .SetPropertyArchivationStatus(propertyId, archivationStatus);
                 if (archievingResult != null)
                     return ReturnResponse(archievingResult, ResponseStatus.Fail);

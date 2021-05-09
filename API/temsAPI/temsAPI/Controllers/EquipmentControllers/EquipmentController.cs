@@ -33,7 +33,7 @@ namespace temsAPI.Controllers.EquipmentControllers
     public class EquipmentController : TEMSController
     {
         private EquipmentManager _equipmentManager;
-
+        
         public EquipmentController(
             IMapper mapper, 
             IUnitOfWork unitOfWork, 
@@ -208,7 +208,7 @@ namespace temsAPI.Controllers.EquipmentControllers
         {
             try
             {
-                string archivationResult = await (new ArchieveHelper(_userManager, _unitOfWork))
+                string archivationResult = await (new ArchieveHelper(_unitOfWork, User))
                     .SetEquipmentArchivationStatus(equipmentId, archivationStatus);
 
                 if (archivationResult != null)

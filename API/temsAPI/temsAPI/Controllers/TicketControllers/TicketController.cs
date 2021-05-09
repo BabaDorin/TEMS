@@ -20,7 +20,7 @@ using temsAPI.System_Files;
 using temsAPI.ViewModels;
 using temsAPI.ViewModels.Ticket;
 
-namespace temsAPI.Controllers.CommunicationControllers
+namespace temsAPI.Controllers.TicketControllers
 {
     public class TicketController : TEMSController
     {

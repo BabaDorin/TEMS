@@ -332,7 +332,7 @@ namespace temsAPI.Controllers.KeyControllers
         {
             try
             {
-                string archivationResult = await new ArchieveHelper(_userManager, _unitOfWork)
+                string archivationResult = await new ArchieveHelper(_unitOfWork, User)
                     .SetKeyArchivationStatus(keyId, true);
                 if (archivationResult != null)
                     return ReturnResponse(archivationResult, ResponseStatus.Fail);
@@ -353,7 +353,7 @@ namespace temsAPI.Controllers.KeyControllers
             {
                 if (archivationStatus == null) archivationStatus = true;
 
-                string archivationResult = await (new ArchieveHelper(_userManager, _unitOfWork)
+                string archivationResult = await (new ArchieveHelper(_unitOfWork, User)
                     .SetKeyAllocationArchivationStatus(allocationId, (bool)archivationStatus));
                 if (archivationResult != null)
                     return ReturnResponse(archivationResult, ResponseStatus.Fail);

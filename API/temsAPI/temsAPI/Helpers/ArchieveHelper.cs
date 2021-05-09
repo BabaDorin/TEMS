@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.CommunicationEntities;
@@ -19,16 +20,16 @@ namespace temsAPI.Helpers
 {
     public class ArchieveHelper
     {
-        private UserManager<TEMSUser> _userManager;
         private IUnitOfWork _unitOfWork;
+        private ClaimsPrincipal _user;
 
-        public ArchieveHelper(UserManager<TEMSUser> userManager, IUnitOfWork unitOfWork)
+        public ArchieveHelper(IUnitOfWork unitOfWork, ClaimsPrincipal user)
         {
-            _userManager = userManager;
             _unitOfWork = unitOfWork;
+            _user = user;
         }
 
-        public static async Task<List<ArchievedItemViewModel>> GetArchievedItemsFromRepo<T>(IGenericRepository<T> repo) where T : class, IArchiveableItem
+        public async Task<List<ArchievedItemViewModel>> GetArchievedItemsFromRepo<T>(IGenericRepository<T> repo) where T : class, IArchiveableItem
         {
             return (await repo.FindAll<ArchievedItemViewModel>(
                     where: q => q.IsArchieved,

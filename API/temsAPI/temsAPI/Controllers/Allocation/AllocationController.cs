@@ -99,7 +99,7 @@ namespace temsAPI.Controllers.Allocation
 
         [HttpGet("allocation/getofentity/{entityType}/{entityId}/{archieve?}")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
-        public async Task<JsonResult> GetOfEntity(string entityType, string entityId, int)
+        public async Task<JsonResult> GetOfEntity(string entityType, string entityId)
         {
             try
             {

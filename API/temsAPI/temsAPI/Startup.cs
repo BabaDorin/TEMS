@@ -17,6 +17,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
@@ -59,30 +60,6 @@ namespace temsAPI
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.AddTransient<IUnitOfWork, UnitOfWork>();
-
-            // TEMS Services
-            services.AddScoped<ReportingService>();
-            services.AddSingleton<Services.IdentityService>();
-            services.AddScoped<EmailService>();
-            services.AddScoped<IdentityService>();
-
-            // TEMS Entity managers
-            services.AddScoped<ReportManager>();
-            services.AddScoped<EquipmentManager>();
-            services.AddScoped<EquipmentDefinitionManager>();
-            services.AddScoped<EquipmentTypeManager>();
-            services.AddScoped<EquipmentPropertyManager>();
-            services.AddScoped<ArchieveManager>();
-            services.AddScoped<AnnouncementManager>();
-            services.AddScoped<TEMSUserManager>();
-            services.AddScoped<KeyManager>();
-            services.AddScoped<LibraryManager>();
-            services.AddScoped<LogManager>();
-            services.AddScoped<PersonnelManager>();
-            services.AddScoped<RoomManager>();
-            services.AddScoped<TicketManager>();
-
-            services.AddHttpContextAccessor();
             services.AddAutoMapper(typeof(Maps));
 
             services.AddDefaultIdentity<TEMSUser>()
@@ -96,8 +73,6 @@ namespace temsAPI
             });
 
             services.AddCors();
-
-            services.AddTransient(s => s.GetService<HttpContext>().User);
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
@@ -139,6 +114,30 @@ namespace temsAPI
             {
                 options.AddPolicy("CanSendEmails", policy => policy.RequireClaim("Can send emails"));
             });
+
+            services.AddTransient<ClaimsPrincipal>(s =>
+                s.GetService<IHttpContextAccessor>().HttpContext.User);
+
+            // TEMS Services
+            services.AddScoped<ReportingService>();
+            services.AddScoped<IdentityService>();
+            services.AddScoped<EmailService>();
+
+            // TEMS Entity managers
+            services.AddScoped<ReportManager>();
+            services.AddScoped<EquipmentManager>();
+            services.AddScoped<EquipmentDefinitionManager>();
+            services.AddScoped<EquipmentTypeManager>();
+            services.AddScoped<EquipmentPropertyManager>();
+            services.AddScoped<ArchieveManager>();
+            services.AddScoped<AnnouncementManager>();
+            services.AddScoped<TEMSUserManager>();
+            services.AddScoped<KeyManager>();
+            services.AddScoped<LibraryManager>();
+            services.AddScoped<LogManager>();
+            services.AddScoped<PersonnelManager>();
+            services.AddScoped<RoomManager>();
+            services.AddScoped<TicketManager>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -1,5 +1,6 @@
 ﻿using FluentEmail.Core;
 using FluentEmail.Smtp;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -24,10 +25,12 @@ namespace temsAPI.Services
 
         private IUnitOfWork _unitOfWork;
         private readonly AppSettings _appSettings;
-        public EmailService(IUnitOfWork unitOfWork, AppSettings appSettings)
+        public EmailService(
+            IUnitOfWork unitOfWork, 
+            IOptions<AppSettings> appSettings)
         {
             _unitOfWork = unitOfWork;
-            _appSettings = appSettings;
+            _appSettings = appSettings.Value;
         }
 
         /// <summary>

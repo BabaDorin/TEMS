@@ -217,9 +217,12 @@ namespace temsAPI.Services
 
             List<string> userRoles = (await _userManager.GetRolesAsync(user)).ToList();
             foreach (string role in userRoles)
-                userClaims = userClaims.Union(await _userManager.GetClaimsAsync(await _userManager.FindByNameAsync(role)))
+            {
+                userClaims = userClaims.Union(await _roleManager
+                    .GetClaimsAsync(await _roleManager.FindByNameAsync(role)))
                     .Select(q => new Claim(q.Type, q.Value))
                     .ToList();
+            }
 
             foreach (var claim in userClaims)
                 claims.Add(new Claim(claim.Type, claim.Value));

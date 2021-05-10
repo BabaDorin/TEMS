@@ -36,9 +36,9 @@ namespace temsAPI.ViewModels.Ticket
                 }).ToList(),
                 Label = new Option
                 {
-                    Value = ticket.Label.Id,
-                    Label = ticket.Label.Name,
-                    Additional = ticket.Label.ColorHex
+                    Value = ticket.Label?.Id,
+                    Label = ticket.Label?.Name,
+                    Additional = ticket?.Label?.ColorHex
                 },
                 Personnel = ticket.Personnel.Select(q => new Option
                 {

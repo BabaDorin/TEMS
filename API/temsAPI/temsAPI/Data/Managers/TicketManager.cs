@@ -198,13 +198,13 @@ namespace temsAPI.Data.Managers
                         viewModel.Rooms.Select(q => q.Value).Contains(q.Id)),
                 Equipments = await _unitOfWork.Equipments.FindAll<Equipment>(
                     where: q =>
-                        viewModel.Equipments.Any(p => p.Value == q.Id)),
+                        viewModel.Equipments.Select(q => q.Value).Contains(q.Id)),
                 Personnel = await _unitOfWork.Personnel.FindAll<Personnel>(
                     where: q =>
-                        viewModel.Personnel.Any(p => p.Value == q.Id)),
+                        viewModel.Personnel.Select(q => q.Value).Contains(q.Id)),
                 Assignees = await _unitOfWork.TEMSUsers.FindAll<TEMSUser>(
                     where: q =>
-                        viewModel.Assignees.Any(p => p.Value == q.Id)),
+                        viewModel.Assignees.Select(q => q.Value).Contains(q.Id)),
             };
 
             await _unitOfWork.Tickets.Create(model);

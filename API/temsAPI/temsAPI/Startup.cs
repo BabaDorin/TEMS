@@ -80,6 +80,7 @@ namespace temsAPI
             services.AddScoped<LogManager>();
             services.AddScoped<PersonnelManager>();
             services.AddScoped<RoomManager>();
+            services.AddScoped<TicketManager>();
 
             services.AddHttpContextAccessor();
             services.AddAutoMapper(typeof(Maps));

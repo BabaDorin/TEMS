@@ -23,6 +23,7 @@ namespace temsAPI.Services
         private RoleManager<IdentityRole> _roleManager;
         private AppSettings _appSettings;
         private ClaimsPrincipal _user;
+        public ClaimsPrincipal User => _user;
 
         public IdentityService(
             IUnitOfWork unitOfWork,

@@ -54,64 +54,12 @@ namespace temsAPI.Controllers.ReportControllers
         {
             try
             {
-                ReportTemplate model = (await _unitOfWork.ReportTemplates
-                    .FindAll<ReportTemplate>(
-                        where: q => q.Id == templateId,
-                        include: q => q
-                        .Include(q => q.EquipmentTypes)
-                        .Include(q => q.EquipmentDefinitions)
-                        .Include(q => q.Rooms)
-                        .Include(q => q.Personnel)
-                        .Include(q => q.Properties)
-                        .Include(q => q.Signatories)
-                    )).FirstOrDefault();
-
-                if (model == null)
+                var template = await _reportManager.GetFullTemplate(templateId);
+                if (template == null)
                     return ReturnResponse("Invalid id provided", ResponseStatus.Fail);
 
-                var viewModel = new AddReportTemplateViewModel
-                {
-                    Id = model.Id,
-                    Name = model.Name,
-                    Description = model.Description,
-                    Subject = model.Subject,
-                    Types = model.EquipmentTypes.Select(q => new Option
-                    {
-                        Value = q.Id,
-                        Label = q.Name
-                    }).ToList(),
-                    Definitions = model.EquipmentDefinitions.Select(q => new Option
-                    {
-                        Value = q.Id,
-                        Label = q.Identifier
-                    }).ToList(),
-                    Rooms = model.Rooms.Select(q => new Option
-                    {
-                        Value = q.Id,
-                        Label = q.Identifier
-                    }).ToList(),
-                    Personnel = model.Personnel.Select(q => new Option
-                    {
-                        Value = q.Id,
-                        Label = q.Name
-                    }).ToList(),
-                    Properties = model.Properties.Select(q => q.Name).ToList(),
-                    SeparateBy = model.SeparateBy,
-                    Header = model.Header,
-                    Footer = model.Footer,
-                    Signatories = model.Signatories.Select(q => new Option
-                    {
-                        Value = q.Id,
-                        Label = q.Name
-                    }).ToList(),
-                };
-
-                if (model.CommonProperties != null)
-                    viewModel.Properties = viewModel.Properties
-                        .Concat(model.CommonProperties.Split(' '))
-                        .ToList();
-
-                return Json(viewModel); // update it    
+                var viewModel = AddReportTemplateViewModel.FromModel(template);
+                return Json(viewModel);
             }
             catch (Exception ex)
             {
@@ -146,21 +94,9 @@ namespace temsAPI.Controllers.ReportControllers
         {
             try
             {
-                string validationMessage = await viewModel.Validate(_unitOfWork);
-                if (validationMessage != null)
-                    return ReturnResponse(validationMessage, ResponseStatus.Fail);
-
-                var user = (await _unitOfWork.TEMSUsers
-                    .Find<TEMSUser>(q => q.Id == IdentityService.GetUserId(User)))
-                    .FirstOrDefault();
-
-                if (user == null)
-                    return ReturnResponse("An error occured - Invalid user", ResponseStatus.Fail);
-
-                var model = await viewModel.ToReportTemplate(_unitOfWork, user);
-
-                await _unitOfWork.ReportTemplates.Create(model);
-                await _unitOfWork.Save();
+                var result = await _reportManager.CreateTemplate(viewModel);
+                if (result != null)
+                    return ReturnResponse(result, ResponseStatus.Fail);
 
                 return ReturnResponse($"Success!", ResponseStatus.Success);
             }
@@ -177,78 +113,10 @@ namespace temsAPI.Controllers.ReportControllers
         {
             try
             {
-                string validationMessage = await viewModel.Validate(_unitOfWork);
-                if (validationMessage != null)
-                    return ReturnResponse(validationMessage, ResponseStatus.Fail);
+                var result = await _reportManager.UpdateTemplate(viewModel);
+                if (result != null)
+                    return ReturnResponse(result, ResponseStatus.Fail);
 
-                List<string> typeIds = viewModel.Types?.Select(q => q.Value).ToList();
-                List<string> definitionIds = viewModel.Definitions?.Select(q => q.Value).ToList();
-                List<string> roomIds = viewModel.Rooms?.Select(q => q.Value).ToList();
-                List<string> personnelIds = viewModel.Personnel?.Select(q => q.Value).ToList();
-                List<string> specificProperties = viewModel.SpecificProperties?.SelectMany(q => q.Properties).ToList();
-                List<string> propertyIds = viewModel.CommonProperties?
-                    .Concat(specificProperties == null ? new List<string>() : specificProperties)
-                    .ToList();
-                List<string> universalProperties = viewModel.CommonProperties.Where(q => ReportHelper.CommonProperties.Contains(q)).ToList();
-                List<string> signatoriesIds = viewModel.Signatories?.Select(q => q.Value).ToList();
-
-                var model = (await _unitOfWork.ReportTemplates
-                    .Find<ReportTemplate>(
-                        where: q => q.Id == viewModel.Id,
-                        include: q => q
-                        .Include(q => q.EquipmentTypes)
-                        .Include(q => q.EquipmentDefinitions)
-                        .Include(q => q.Rooms)
-                        .Include(q => q.Personnel)
-                        .Include(q => q.Properties)
-                        .Include(q => q.Signatories)
-                    )).FirstOrDefault();
-
-                model.Name = viewModel.Name;
-                model.Description = viewModel.Description;
-                model.Subject = viewModel.Subject;
-                model.EquipmentTypes = (typeIds != null)
-                        ? (await _unitOfWork.EquipmentTypes
-                        .FindAll<EquipmentType>(q => typeIds.Contains(q.Id)))
-                        .ToList()
-                        : new List<EquipmentType>();
-                model.EquipmentDefinitions = (definitionIds != null)
-                        ? (await _unitOfWork.EquipmentDefinitions
-                        .FindAll<EquipmentDefinition>(q => definitionIds.Contains(q.Id)))
-                        .ToList()
-                        : new List<EquipmentDefinition>();
-                model.Rooms = (roomIds != null)
-                        ? (await _unitOfWork.Rooms
-                        .FindAll<Room>(q => roomIds.Contains(q.Id)))
-                        .ToList()
-                        : new List<Room>();
-                model.Personnel = (personnelIds != null)
-                        ? (await _unitOfWork.Personnel
-                        .FindAll<Personnel>(q => personnelIds.Contains(q.Id)))
-                        .ToList()
-                        : new List<Personnel>();
-                model.SeparateBy = viewModel.SeparateBy;
-                model.Properties = (propertyIds != null)
-                        ? (await _unitOfWork.Properties
-                        .FindAll<Property>(q => propertyIds.Contains(q.Name)))
-                        .ToList()
-                        : new List<Property>();
-                model.Header = viewModel.Header;
-                model.Footer = viewModel.Footer;
-                model.Signatories = (signatoriesIds != null)
-                        ? (await _unitOfWork.Personnel
-                        .FindAll<Personnel>(q => signatoriesIds.Contains(q.Id)))
-                        .ToList()
-                        : new List<Personnel>();
-                model.CreatedBy = (await _unitOfWork.TEMSUsers
-                        .Find<TEMSUser>(
-                            where: q => q.UserName == User.Identity.Name
-                        )).FirstOrDefault();
-                model.CommonProperties = (universalProperties.Count > 0)
-                        ? String.Join(" ", universalProperties)
-                        : null;
-
-                await _unitOfWork.Save();
                 return ReturnResponse("Success!", ResponseStatus.Success);
             }
             catch (Exception ex)
@@ -264,37 +132,12 @@ namespace temsAPI.Controllers.ReportControllers
         {
             try
             {
-                var reportTemplate = (await _unitOfWork.ReportTemplates
-                .Find<ReportTemplate>(
-                    where: q => q.Id == templateId,
-                    include: q => q
-                    .Include(q => q.CreatedBy)
-                    .Include(q => q.EquipmentDefinitions)
-                    .Include(q => q.EquipmentTypes)
-                    .Include(q => q.Personnel)
-                    .Include(q => q.Properties).ThenInclude(q => q.DataType)
-                    .Include(q => q.Rooms)
-                    .Include(q => q.Signatories)
-                    )).FirstOrDefault();
-
-                if (reportTemplate == null)
-                    return ReturnResponse("Invalid template ID provided", ResponseStatus.Fail);
-
-                Report report = new();
-                report.Id = Guid.NewGuid().ToString();
-                report.Template = reportTemplate.Name;
-                report.GeneratedByID = IdentityService.GetUserId(User);
-                report.DateGenerated = DateTime.Now;
-
-                report.DBPath = fileHandler.GetDBPath();
-
-                var excelReport = await _reportingService.GenerateReport(reportTemplate, report.DBPath);
+                var template = await _reportManager.GetFullTemplate(templateId);
+                if (template == null)
+                    return ReturnResponse("Invalid id provided", ResponseStatus.Fail);
                 
-                await _reportManager.CheckForReportsOverflow();
+                var report = await _reportManager.CreateReport(template);
                 
-                await _unitOfWork.Reports.Create(report);
-                await _unitOfWork.Save();
-
                 var memory = await _reportManager.GetReportMemoryStream(report.DBPath);
                 if (memory == null)
                     return NotFound();
@@ -314,27 +157,8 @@ namespace temsAPI.Controllers.ReportControllers
         {
             try
             {
-                var viewModel = (await _unitOfWork.ReportTemplates
-                    .FindAll<ViewReportTemplateSimplifiedViewModel>(
-                        where: q => !q.IsArchieved,
-                        include: q => q
-                        .Include(q => q.CreatedBy),
-                        select: q => new ViewReportTemplateSimplifiedViewModel
-                        {
-                            Id = q.Id,
-                            CreatedBy = new Option
-                            {
-                                Value = q.CreatedById,
-                                Label = q.CreatedBy.UserName,
-                            },
-                            DateCreated = q.DateCreated,
-                            Description = q.Description,
-                            IsDefault = q.CreatedById == null,
-                            Name = q.Name
-                        }
-                    )).ToList();
-
-                return Json(viewModel);
+                var reportTemplates = await _reportManager.GetReportTemplates();
+                return Json(reportTemplates);
             }
             catch (Exception ex)
             {
@@ -349,23 +173,8 @@ namespace temsAPI.Controllers.ReportControllers
         {
             try
             {
-                var viewModel = (await _unitOfWork.Reports
-                    .Find(
-                        include: q => q.Include(q => q.GeneratedBy),
-                        select: q => new ViewGeneratedReportViewModel
-                        {
-                            Id = q.Id,
-                            DateGenerated = q.DateGenerated,
-                            GeneratedBy = new Option
-                            {
-                                Value = q.GeneratedBy.Id,
-                                Label = q.GeneratedBy.FullName ?? q.GeneratedBy.UserName
-                            },
-                            Template = q.Template
-                        }
-                    )).ToList();
-
-                return Json(viewModel);
+                var reports = await _reportManager.GetLastGeneratedReports();
+                return Json(reports);
             }
             catch (Exception ex)
             {
@@ -407,7 +216,7 @@ namespace temsAPI.Controllers.ReportControllers
                 if (validationResult != null)
                     return ReturnResponse(validationResult, ResponseStatus.Fail);
 
-                var reportTemplate = await template.ToReportTemplate(_unitOfWork, new TEMSUser());
+                var reportTemplate = await template.ToModel(_unitOfWork, new TEMSUser());
                 
                 string filePath = fileHandler.GetTempDBPath();
                 var excelFile = await _reportingService.GenerateReport(reportTemplate, filePath);

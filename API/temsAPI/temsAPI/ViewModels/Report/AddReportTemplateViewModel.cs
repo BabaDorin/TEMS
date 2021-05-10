@@ -28,7 +28,7 @@ namespace temsAPI.ViewModels.Report
         public List<Option> Signatories { get; set; } = new List<Option>();
 
 
-        public async Task<ReportTemplate> ToReportTemplate(IUnitOfWork unitOfWork, TEMSUser author)
+        public async Task<ReportTemplate> ToModel(IUnitOfWork unitOfWork, TEMSUser author)
         {
             List<string> typeIds = Types?.Select(q => q.Value).ToList();
             List<string> definitionIds = Definitions?.Select(q => q.Value).ToList();
@@ -102,6 +102,53 @@ namespace temsAPI.ViewModels.Report
             }
 
             return model;
+        }
+        
+        public static AddReportTemplateViewModel FromModel(ReportTemplate template)
+        {
+            var viewModel = new AddReportTemplateViewModel
+            {
+                Id = template.Id,
+                Name = template.Name,
+                Description = template.Description,
+                Subject = template.Subject,
+                Types = template.EquipmentTypes.Select(q => new Option
+                {
+                    Value = q.Id,
+                    Label = q.Name
+                }).ToList(),
+                Definitions = template.EquipmentDefinitions.Select(q => new Option
+                {
+                    Value = q.Id,
+                    Label = q.Identifier
+                }).ToList(),
+                Rooms = template.Rooms.Select(q => new Option
+                {
+                    Value = q.Id,
+                    Label = q.Identifier
+                }).ToList(),
+                Personnel = template.Personnel.Select(q => new Option
+                {
+                    Value = q.Id,
+                    Label = q.Name
+                }).ToList(),
+                Properties = template.Properties.Select(q => q.Name).ToList(),
+                SeparateBy = template.SeparateBy,
+                Header = template.Header,
+                Footer = template.Footer,
+                Signatories = template.Signatories.Select(q => new Option
+                {
+                    Value = q.Id,
+                    Label = q.Name
+                }).ToList(),
+            };
+
+            if (template.CommonProperties != null)
+                viewModel.Properties = viewModel.Properties
+                    .Concat(template.CommonProperties.Split(' '))
+                    .ToList();
+
+            return viewModel;
         }
 
         public async Task<string> Validate(IUnitOfWork unitOfWork)

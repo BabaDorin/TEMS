@@ -79,6 +79,7 @@ namespace temsAPI
             services.AddScoped<LibraryManager>();
             services.AddScoped<LogManager>();
             services.AddScoped<PersonnelManager>();
+            services.AddScoped<RoomManager>();
 
             services.AddHttpContextAccessor();
             services.AddAutoMapper(typeof(Maps));

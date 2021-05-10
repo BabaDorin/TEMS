@@ -8,7 +8,8 @@ import { API_PROP_URL, API_EQTYPE_URL, API_EQDEF_URL, API_EQ_URL, IEntityCollect
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { IOption } from './../../models/option.model';
 import { CheckboxItem } from '../../models/checkboxItem.model';
-import { ViewEquipmentSimplified } from './../../models/equipment/view-equipment-simplified.model';
+import { ViewEquipmentSimplified } from './../../models/equipment/view-equipment-simplified.model' 
+;
 import { AddProperty } from './../../models/equipment/add-property.model';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';

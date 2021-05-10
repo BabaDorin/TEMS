@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.OtherEntities;
 using temsAPI.Data.Entities.UserEntities;
+using temsAPI.Data.Managers;
 using temsAPI.Helpers;
 using temsAPI.System_Files;
 using temsAPI.ViewModels;
@@ -22,43 +23,25 @@ namespace temsAPI.Controllers.RoomControllers
 {
     public class RoomController : TEMSController
     {
+        private RoomManager _roomManager;
+
         public RoomController(
             IMapper mapper, 
             IUnitOfWork unitOfWork, 
-            UserManager<TEMSUser> userManager
+            UserManager<TEMSUser> userManager,
+            RoomManager roomManager
             ) : base(mapper, unitOfWork, userManager)
         {
+            _roomManager = roomManager;
         }
 
         [HttpGet("room/getallautocompleteoptions/{filter?}")]
-        public async Task<JsonResult> GetAllAutocompleteOptions(string? filter)
+        public async Task<JsonResult> GetAllAutocompleteOptions(string filter)
         {
             try
             {
-                int take = 5;
-                Expression<Func<Room, bool>> expression = null;
-                if(filter == null)
-                {
-                    expression = q => !q.IsArchieved;
-                    take = int.MaxValue;
-                }
-                else
-                {
-                    expression = q => !q.IsArchieved && q.Identifier.Contains(filter);
-                }
-
-                List<Option> viewModel = (await _unitOfWork.Rooms.FindAll<Option>(
-                    where: expression,
-                    take: take,
-                    orderBy: q => q.OrderBy(q => q.Identifier),
-                    select: q => new Option
-                    {
-                        Value = q.Id,
-                        Label = q.Identifier,
-                        Additional = q.Description
-                    })).ToList();
-
-                return Json(viewModel);
+                var options = await _roomManager.GetAutocompleteOptions(filter);
+                return Json(options);
             }
             catch (Exception ex)
             {
@@ -73,29 +56,11 @@ namespace temsAPI.Controllers.RoomControllers
         {
             try
             {
-                string validationResult = await ValidateAddRoomViewModel(viewModel);
-                if (validationResult != null)
-                    return ReturnResponse(validationResult, ResponseStatus.Fail);
+                var result = await _roomManager.Create(viewModel);
+                if (result != null)
+                    return ReturnResponse(result, ResponseStatus.Fail);
 
-                // Might be valid
-                List<string> labelIds = viewModel.Labels.Select(q => q.Value).ToList();
-                Room model = new Room
-                {
-                    Id = Guid.NewGuid().ToString(),
-                    Description = viewModel.Description,
-                    Floor = viewModel.Floor,
-                    Identifier = viewModel.Identifier,
-                    Labels = await _unitOfWork.RoomLabels.FindAll<RoomLabel>(
-                        where: q => labelIds.Contains(q.Id))
-                };
-
-                await _unitOfWork.Rooms.Create(model);
-                await _unitOfWork.Save();
-
-                if (!await _unitOfWork.Rooms.isExists(q => q.Id == model.Id))
-                    return ReturnResponse("Fail", ResponseStatus.Fail);
-                else
-                    return ReturnResponse("Success!", ResponseStatus.Success);
+                return ReturnResponse("Success!", ResponseStatus.Success);
             }
             catch (Exception ex)
             {
@@ -110,23 +75,8 @@ namespace temsAPI.Controllers.RoomControllers
         {
             try
             {
-                var viewModel = (await _unitOfWork.Rooms
-                    .Find<AddRoomViewModel>(
-                        where: q => q.Id == roomId,
-                        include: q => q.Include(q => q.Labels),
-                        select: q => new AddRoomViewModel
-                        {
-                            Id = q.Id,
-                            Identifier = q.Identifier,
-                            Description = q.Description,
-                            Floor = q.Floor ?? 0,
-                            Labels = q.Labels.Select(q => new Option
-                            {
-                                Value = q.Id,
-                                Label = q.Name
-                            }).ToList(),
-                        })).FirstOrDefault();
-
+                var room = await _roomManager.GetById(roomId);
+                var viewModel = AddRoomViewModel.FromModel(room);
                 return Json(viewModel);
             }
             catch (Exception ex)
@@ -142,32 +92,10 @@ namespace temsAPI.Controllers.RoomControllers
         {
             try
             {
-                string validationResult = await ValidateAddRoomViewModel(viewModel);
-                if (validationResult != null)
-                    return ReturnResponse(validationResult, ResponseStatus.Fail);
+                var result = await _roomManager.Update(viewModel);
+                if (result != null)
+                    return ReturnResponse(result, ResponseStatus.Fail);
 
-                var model = (await _unitOfWork.Rooms
-                    .Find<Room>(
-                        where: q => q.Id == viewModel.Id,
-                        include: q => q.Include(q => q.Labels)
-                        )).FirstOrDefault();
-
-                if (model == null)
-                    return ReturnResponse("Invalid room id provided", ResponseStatus.Fail);
-
-                model.Identifier = viewModel.Identifier;
-                model.Floor = viewModel.Floor;
-                model.Description = viewModel.Description;
-
-                List<string> labelIds = viewModel.Labels.Select(q => q.Value).ToList();
-                model.Labels.Clear();
-                await _unitOfWork.Save();
-
-                model.Labels = (await _unitOfWork.RoomLabels
-                    .FindAll<RoomLabel>(q => labelIds.Contains(q.Id)
-                    )).ToList();
-
-                await _unitOfWork.Save();
                 return ReturnResponse("Success", ResponseStatus.Success);
             }
             catch (Exception ex)
@@ -176,7 +104,6 @@ namespace temsAPI.Controllers.RoomControllers
                 return ReturnResponse("An error occured while saving the room", ResponseStatus.Fail);
             }
         }
-
 
         [HttpGet("room/archieve/{roomId}/{archivationStatus?}")]
         public async Task<JsonResult> Archieve(string roomId, bool archivationStatus = true)
@@ -208,23 +135,8 @@ namespace temsAPI.Controllers.RoomControllers
                     return ReturnResponse("Invalid parameters, please provide real number representing page number" +
                         "and how many records are displayed per page", ResponseStatus.Fail);
 
-                List<ViewRoomSimplifiedViewModel> viewModel = (await _unitOfWork.Rooms.FindAll<ViewRoomSimplifiedViewModel>(
-                    where: q => !q.IsArchieved,
-                    include: q => q.Include(q => q.Labels)
-                                   .Include(q => q.EquipmentAllocations)
-                                   .Include(q => q.Tickets.Where(q => q.DateClosed == null)),
-                    select: q => new ViewRoomSimplifiedViewModel
-                    {
-                        Id = q.Id,
-                        Description = q.Description,
-                        AllocatedEquipments = q.EquipmentAllocations.Count(q => q.RoomID != null && q.DateReturned == null),
-                        Identifier = q.Identifier,
-                        Label = string.Join(", ", q.Labels.Select(q => q.Name)),
-                        ActiveTickets = q.Tickets.Count,
-                        IsArchieved = q.IsArchieved
-                    })).OrderBy(q => q.Identifier).ToList();
-
-                return Json(viewModel);
+                var rooms = await _roomManager.GetRoomsSimplified();
+                return Json(rooms);
             }
             catch (Exception ex)
             {
@@ -239,15 +151,8 @@ namespace temsAPI.Controllers.RoomControllers
         {
             try
             {
-                List<Option> viewModel = (await _unitOfWork.RoomLabels.FindAll<Option>(
-                    where: q => !q.IsArchieved,
-                    select: q => new Option
-                    {
-                        Value = q.Id,
-                        Label = q.Name
-                    })).ToList();
-
-                return Json(viewModel);
+                var options = await _roomManager.GetLabelOptions();
+                return Json(options);
             }
             catch (Exception ex)
             {
@@ -262,40 +167,11 @@ namespace temsAPI.Controllers.RoomControllers
         {
             try
             {
-                // Invalid id provided
-                if (String.IsNullOrEmpty(id) || !await _unitOfWork.Rooms.isExists(q => q.Id == id))
+                var room = await _roomManager.GetFullById(id);
+                if (room == null)
                     return ReturnResponse("Invalid id provided", ResponseStatus.Fail);
 
-                var viewModel = (await _unitOfWork.Rooms
-                    .Find<ViewRoomViewModel>(
-                        where: q => q.Id == id,
-                        include: q => q.Include(q => q.Labels)
-                                       .Include(q => q.PersonnelRoomSupervisories)
-                                            .ThenInclude(q => q.Personnel)
-                                            .ThenInclude(q => q.Positions)
-                                       .Include(q => q.Tickets),
-                        select: q => new ViewRoomViewModel
-                        {
-                            Id = q.Id,
-                            Description = q.Description,
-                            Identifier = q.Identifier,
-                            Floor = q.Floor ?? 0,
-                            IsArchieved = q.IsArchieved,
-                            ActiveTickets = q.Tickets.Count(q => q.DateClosed == null),
-                            Labels = q.Labels.Select(q => new Option
-                            {
-                                Value = q.Id,
-                                Label = q.Name
-                            }).ToList(),
-                            Supervisory = q.PersonnelRoomSupervisories.Select(q => new ViewPersonnelSimplifiedViewModel
-                            {
-                                Id = q.Id,
-                                Name = q.Personnel.Name,
-                                Positions = string.Join(", ", q.Personnel.Positions)
-                            }).ToList(),
-                        }
-                    )).FirstOrDefault();
-
+                var viewModel = ViewRoomViewModel.FromModel(room);
                 return Json(viewModel);
             }
             catch (Exception ex)
@@ -303,50 +179,6 @@ namespace temsAPI.Controllers.RoomControllers
                 Debug.WriteLine(ex);
                 return ReturnResponse("An error occured when fetching the room", ResponseStatus.Fail);
             }
-        }
-
-        // ------------------------------------------------
-
-        /// <summary>
-        /// Validates an instance of AddRoomViewModel. Returns null if everything is ok,
-        /// otherwise returns the error message.
-        /// </summary>
-        /// <param name="viewModel"></param>
-        /// <returns></returns>
-        private async Task<string> ValidateAddRoomViewModel(AddRoomViewModel viewModel)
-        {
-            // If it's the update case
-            Room roomToUpdate = null;
-            if (viewModel.Id != null)
-            {
-                roomToUpdate = (await _unitOfWork.Rooms
-                    .Find<Room>(q => q.Id == viewModel.Id))
-                    .FirstOrDefault();
-
-                if (roomToUpdate == null)
-                    return "Invalid id provided";
-            }
-
-            // Indentifier is not valid
-            if (String.IsNullOrEmpty(viewModel.Identifier = viewModel.Identifier.Trim()))
-                return "Please, provide a valid room identifier";
-
-            // This room already exists and it's not the udpate case
-            if(viewModel.Id == null)
-                if (await _unitOfWork.Rooms.isExists(q => q.Identifier == viewModel.Identifier && !q.IsArchieved))
-                    return $"This {viewModel.Identifier} room already exists";
-
-            // When it's the update case
-            if (viewModel.Id != null)
-                if (await _unitOfWork.Rooms.isExists(q => q.Identifier == viewModel.Identifier && !q.IsArchieved && q.Id != viewModel.Id))
-                    return $"This {viewModel.Identifier} room already exists";
-
-            // Invalid labels provided
-            foreach (Option label in viewModel.Labels)
-                if (!await _unitOfWork.RoomLabels.isExists(q => q.Id == label.Value && !q.IsArchieved))
-                    return "Invalid labels provided";
-
-            return null;
         }
     }
 }

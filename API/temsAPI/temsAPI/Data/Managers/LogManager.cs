@@ -64,7 +64,7 @@ namespace temsAPI.Data.Managers
             return logTypes;
         }
 
-        public async Task<ViewLogViewModel> GetEntityLogs(string entityType, string entityId)
+        public async Task<List<ViewLogViewModel>> GetEntityLogs(string entityType, string entityId)
         {
             if ((new List<string>() { "any", "equipment", "personnel", "room" }).IndexOf(entityType) == -1)
                 throw new Exception($"{entityType} is not a valid tems type, valid: any, equipment, personnel, room");

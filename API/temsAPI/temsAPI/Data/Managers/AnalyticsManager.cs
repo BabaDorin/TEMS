@@ -8,51 +8,50 @@ using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.EquipmentEntities;
 using temsAPI.Helpers;
+using temsAPI.Services;
 using temsAPI.System_Files;
 
 namespace temsAPI.Data.Managers
 {
     public class AnalyticsManager : EntityManager
     {
-        public AnalyticsManager(IUnitOfWork unitOfWork, ClaimsPrincipal user) : base(unitOfWork, user)
+        private EquipmentManager _equipmentManager;
+        private CurrencyConvertor _currencyConvertor;
+
+        public AnalyticsManager(
+            IUnitOfWork unitOfWork, 
+            ClaimsPrincipal user,
+            EquipmentManager equipmentManager,
+            CurrencyConvertor currencyConvertor) : base(unitOfWork, user)
         {
+            _equipmentManager = equipmentManager;
+            _currencyConvertor = currencyConvertor;
         }
 
         public async Task<int> GetEquipmentAmount(
             string entityType = null,
             string entityId = null)
         {
-            Expression<Func<Equipment, bool>> expression = q => !q.IsArchieved;
-            
-            if(entityType != null)
-            {
-                entityType = entityType.ToLower();
-                if (entityType != "equipment" 
-                    && HardCodedValues.EntityTypes.Contains(entityType)
-                    && entityId != null)
-                {
-                    Expression<Func<Equipment, bool>> secondaryExpression = null;
-                    switch (entityType)
-                    {
-                        case "room":
-                            secondaryExpression = q 
-                                => q.ActiveAllocation != null 
-                                && q.ActiveAllocation.RoomID == entityId;
-                            break;
-                        case "personnel":
-                            {
-                                secondaryExpression = q
-                                => q.ActiveAllocation != null
-                                && q.ActiveAllocation.RoomID == entityId;
-                            }
-                            break;
-                    }
+            Expression<Func<Equipment, bool>> filterByEntityExpression =
+                _equipmentManager.Eq_FilterByEntity(entityType, entityId);
 
-                    expression = ExpressionCombiner.CombineTwo(expression, secondaryExpression);
-                }
-            }
+            return await _unitOfWork.Equipments.Count(filterByEntityExpression);
+        }
 
-            return await _unitOfWork.Equipments.Count(expression);
+        public async Task<double> GetEquipmentTotalCost(
+            string entityType = null,
+            string entityId = null)
+        {
+            Expression<Func<Equipment, bool>> filterByEntityExpression =
+                _equipmentManager.Eq_FilterByEntity(entityType, entityId);
+
+            double sum = (double)(await _unitOfWork.Equipments
+                .FindAll(
+                    where: filterByEntityExpression,
+                    select: q => _equipmentManager.GetEquipmentPriceInLei(q)
+                )).Sum();
+
+            return sum;
         }
     }
 }

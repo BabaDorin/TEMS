@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO.Pipes;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Security.Claims;
@@ -9,6 +10,8 @@ using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.EquipmentEntities;
 using temsAPI.Helpers;
+using temsAPI.Services;
+using temsAPI.System_Files;
 using temsAPI.ViewModels;
 using temsAPI.ViewModels.Allocation;
 using temsAPI.ViewModels.Equipment;
@@ -17,8 +20,14 @@ namespace temsAPI.Data.Managers
 {
     public class EquipmentManager : EntityManager
     {
-        public EquipmentManager(IUnitOfWork unitOfWork, ClaimsPrincipal user) : base(unitOfWork, user)
+        private CurrencyConvertor _currencyConvertor;
+
+        public EquipmentManager(
+            IUnitOfWork unitOfWork, 
+            ClaimsPrincipal user,
+            CurrencyConvertor currencyConvertor) : base(unitOfWork, user)
         {
+            _currencyConvertor = currencyConvertor;
         }
 
         public async Task<string> Create(AddEquipmentViewModel viewModel)
@@ -349,6 +358,21 @@ namespace temsAPI.Data.Managers
             return allocations;
         }
 
+        public double GetEquipmentPriceInLei(Equipment equipment)
+        {
+            switch (equipment.Currency)
+            {
+                case "lei":
+                    return (double)equipment.Price;
+                case "eur":
+                    return (double)equipment.Price * _currencyConvertor.EUR_MDL_rate;
+                case "usd":
+                    return (double)equipment.Price * _currencyConvertor.USD_MDL_rate;
+                default:
+                    return 0;
+            }
+        }
+
         private async Task<List<ViewAllocationSimplifiedViewModel>> GetEntityAllocations(
             Expression<Func<EquipmentAllocation, bool>> whereExpression = null,
             int skip = 0,
@@ -453,5 +477,45 @@ namespace temsAPI.Data.Managers
 
             await _unitOfWork.Save();
         }
+
+        // Extract to sepparate classes
+        
+        public Expression<Func<Equipment, bool>> Eq_FilterByEntity(
+            string entityType = null, 
+            string entityId = null)
+        {
+            Expression<Func<Equipment, bool>> expression = q => !q.IsArchieved;
+
+            if (entityType != null)
+            {
+                entityType = entityType.ToLower();
+                if (entityType != "equipment"
+                    && HardCodedValues.EntityTypes.Contains(entityType)
+                    && entityId != null)
+                {
+                    Expression<Func<Equipment, bool>> secondaryExpression = null;
+                    switch (entityType)
+                    {
+                        case "room":
+                            secondaryExpression = q
+                                => q.ActiveAllocation != null
+                                && q.ActiveAllocation.RoomID == entityId;
+                            break;
+                        case "personnel":
+                            {
+                                secondaryExpression = q
+                                => q.ActiveAllocation != null
+                                && q.ActiveAllocation.RoomID == entityId;
+                            }
+                            break;
+                    }
+
+                    expression = ExpressionCombiner.CombineTwo(expression, secondaryExpression);
+                }
+            }
+
+            return expression;
+        }
+
     }
 }

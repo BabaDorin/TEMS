@@ -25,4 +25,15 @@ export class AnalyticsService extends TEMSService {
       this.httpOptions
     );
   }
+
+  getEquipmentTotalCost(entityType?: string, entityId?: string): Observable<number>{
+    let endPoint = API_ANALYTICS_URL+ '/getEquipmentTotalCost';
+    if(entityType != undefined)
+      endPoint += '/' + entityType + '/' + entityId;
+
+    return this.http.get<number>(
+      endPoint,
+      this.httpOptions
+    );
+  }
 }

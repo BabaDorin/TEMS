@@ -14,6 +14,7 @@ export class SummaryEquipmentAnalyticsComponent extends TEMSComponent implements
   @Input() personnelId: string;
 
   equipmentTotalAmount: number;
+  equipmentTotalCost: number;
 
   constructor(
     private analyticsService: AnalyticsService,
@@ -22,27 +23,50 @@ export class SummaryEquipmentAnalyticsComponent extends TEMSComponent implements
     super();
   }
 
+  getEntityType(){
+    if(this.roomId != undefined) return "room";
+    if(this.personnelId != undefined) return "personnel";
+    return undefined;
+  }
+
+  getEntityId(){
+    return this.roomId ?? this.personnelId;
+  }
+
   getEquipmentAmount(){
-    let serviceMethod = this.analyticsService.getEquipmentAmount();
-    
-    if(this.roomId != undefined)
-      serviceMethod = this.analyticsService.getEquipmentAmount('room', this.roomId);
-      
-    if(this.personnelId != undefined)
-      serviceMethod = this.analyticsService.getEquipmentAmount('personnel', this.personnelId);
+    let serviceMethod = this.analyticsService.getEquipmentAmount(
+      this.getEntityType(),
+      this.getEntityId()
+    );
 
     this.subscriptions.push(
       serviceMethod
       .subscribe(result => {
         if(this.snackService.snackIfError(result))
           return;
-        
         this.equipmentTotalAmount = result;
+      })
+    )  
+  }
+
+  getEquipmentTotalCost(){
+    let serviceMethod = this.analyticsService.getEquipmentTotalCost(
+      this.getEntityType(),
+      this.getEntityId()
+    );
+
+    this.subscriptions.push(
+      serviceMethod
+      .subscribe(result => {
+        if(this.snackService.snackIfError(result))
+          return;
+        this.equipmentTotalCost = result;
       })
     )  
   }
 
   ngOnInit(): void {
     this.getEquipmentAmount();
+    this.getEquipmentTotalCost();
   }
 }

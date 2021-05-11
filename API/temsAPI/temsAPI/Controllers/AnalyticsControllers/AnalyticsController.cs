@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.UserEntities;
 using temsAPI.Data.Managers;
+using temsAPI.Services;
 using temsAPI.System_Files;
 
 namespace temsAPI.Controllers.AnalyticsControllers
@@ -16,14 +17,17 @@ namespace temsAPI.Controllers.AnalyticsControllers
     public class AnalyticsController : TEMSController
     {
         private AnalyticsManager _analyticsManager;
+        private CurrencyConvertor _currencyConvertor;
 
         public AnalyticsController(
             IMapper mapper, 
             IUnitOfWork unitOfWork, 
             UserManager<TEMSUser> userManager,
-            AnalyticsManager analyticsManager) : base(mapper, unitOfWork, userManager)
+            AnalyticsManager analyticsManager,
+            CurrencyConvertor currencyConvertor) : base(mapper, unitOfWork, userManager)
         {
             _analyticsManager = analyticsManager;
+            _currencyConvertor = currencyConvertor;
         }
 
         public IActionResult Index()
@@ -51,5 +55,7 @@ namespace temsAPI.Controllers.AnalyticsControllers
                 return ReturnResponse("An error occured while getting equipment analytics", ResponseStatus.Fail);
             }
         } 
+
+
     }
 }

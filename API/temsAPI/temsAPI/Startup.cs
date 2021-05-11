@@ -122,6 +122,7 @@ namespace temsAPI
             services.AddScoped<ReportingService>();
             services.AddScoped<IdentityService>();
             services.AddScoped<EmailService>();
+            services.AddSingleton<CurrencyConvertor>();
 
             // TEMS Entity managers
             services.AddScoped<ReportManager>();

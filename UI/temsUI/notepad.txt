@@ -15,6 +15,13 @@ IMPORTANT NOTES:
 TODO
 ------------ As soon as possible >>>>
 
+study:
+async controller (factory)
+
+// Analytics:
+--> Check the 'getEquipmentAmount' of entities (rooms, equipment), there might be a problem with getting the 
+last allocation.
+
 // TD:
 --> Description property is always considered as desired specific property, idk why (report);
 --> Find a way to pass unitofwork to scheduler

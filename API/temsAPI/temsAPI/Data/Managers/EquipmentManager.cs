@@ -484,7 +484,7 @@ namespace temsAPI.Data.Managers
             string entityType = null, 
             string entityId = null)
         {
-            Expression<Func<Equipment, bool>> expression = q => !q.IsArchieved;
+            Expression<Func<Equipment, bool>> expression = q => !q.IsArchieved && q.ParentID == null;
 
             if (entityType != null)
             {

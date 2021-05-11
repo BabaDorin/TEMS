@@ -90,7 +90,6 @@ namespace temsAPI.Data.Managers
             Expression<Func<Equipment, bool>> filterByEntityExpression =
                 _equipmentManager.Eq_FilterByEntity(entityType, entityId);
 
-
             var rates = (await _unitOfWork.Equipments
                 .FindAll<Equipment>(
                     where: filterByEntityExpression,
@@ -103,6 +102,55 @@ namespace temsAPI.Data.Managers
             PieChartData pieChart = new()
             {
                 ChartName = "Equipment type rates",
+                Rates = rates
+            };
+
+            return pieChart;
+        }
+
+        public async Task<PieChartData> GetEquipmentWorkabilityRate(string entityType, string entityId)
+        {
+            Expression<Func<Equipment, bool>> filterByEntityExpression =
+                _equipmentManager.Eq_FilterByEntity(entityType, entityId);
+
+            int working = await _unitOfWork.Equipments.Count(
+               ExpressionCombiner.CombineTwo(filterByEntityExpression, q => !q.IsDefect));
+
+            int defect = await _unitOfWork.Equipments.Count(
+                ExpressionCombiner.CombineTwo(filterByEntityExpression, q => q.IsDefect));
+
+            PieChartData pieChart = new()
+            {
+                ChartName = "Equipment workability rate",
+                Rates = new List<Tuple<string, int>>()
+                {
+                    new Tuple<string, int>("Working", working),
+                    new Tuple<string, int>("Defect", defect),
+                }
+            };
+
+            return pieChart;
+        }
+
+        public async Task<PieChartData> GetEquipmentAllocationRate(
+            string entityType = null,
+            string entityId = null)
+        {
+            Expression<Func<Equipment, bool>> filterByEntityExpression =
+                _equipmentManager.Eq_FilterByEntity(entityType, entityId);
+
+            var rates = (await _unitOfWork.Equipments
+                .FindAll<Equipment>(
+                    where: filterByEntityExpression,
+                    include: q => q.Include(q => q.EquipmentAllocations)
+                    ))
+                .GroupBy(q => q.ActiveAllocation == null)
+                .Select(q => new Tuple<string, int>(q.Key ? "Allocated" : "unallocated", q.Count()))
+                .ToList();
+
+            PieChartData pieChart = new()
+            {
+                ChartName = "Equipment allocation rate",
                 Rates = rates
             };
 

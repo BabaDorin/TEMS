@@ -95,5 +95,31 @@ namespace temsAPI.Controllers.AnalyticsControllers
 
             return Json(pieChart);
         }
+
+        [HttpGet]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
+        public async Task<JsonResult> GetEquipmentAllocationRate(
+            string entityType = null,
+            string entityId = null)
+        {
+            var pieChart = await _analyticsManager.GetEquipmentAllocationRate(
+                entityType,
+                entityId);
+
+            return Json(pieChart);
+        }
+
+        [HttpGet]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
+        public async Task<JsonResult> GetEquipmentWorkabilityRate(
+            string entityType = null,
+            string entityId = null)
+        {
+            var pieChart = await _analyticsManager.GetEquipmentWorkabilityRate(
+                entityType,
+                entityId);
+
+            return Json(pieChart);
+        }
     }
 }

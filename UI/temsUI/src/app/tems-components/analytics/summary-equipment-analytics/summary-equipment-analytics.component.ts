@@ -18,6 +18,7 @@ export class SummaryEquipmentAnalyticsComponent extends TEMSComponent implements
   equipmentTotalCost: number;
   equipmentUtilizationRate: PieChartData;
   equipmentTypeRate: PieChartData;
+  equipmentAllocationRate: PieChartData;
 
   constructor(
     private analyticsService: AnalyticsService,
@@ -104,10 +105,48 @@ export class SummaryEquipmentAnalyticsComponent extends TEMSComponent implements
     )  
   }
 
+  getEquipmentAllocationRate(){
+    let serviceMethod = this.analyticsService.getEquipmentAllocationRate(
+      this.getEntityType(),
+      this.getEntityId()
+    );
+
+    this.subscriptions.push(
+      serviceMethod
+      .subscribe(result => {
+        if(this.snackService.snackIfError(result))
+          return;
+        this.equipmentAllocationRate = result;
+
+        console.log(result);
+      })
+    )  
+  }
+
+  getEquipmentWorkabilityRate(){
+    let serviceMethod = this.analyticsService.getEquipmentWorkabilityRate(
+      this.getEntityType(),
+      this.getEntityId()
+    );
+
+    this.subscriptions.push(
+      serviceMethod
+      .subscribe(result => {
+        if(this.snackService.snackIfError(result))
+          return;
+        this.equipmentAllocationRate = result;
+
+        console.log(result);
+      })
+    )  
+  }
+
   ngOnInit(): void {
     this.getEquipmentAmount();
     this.getEquipmentTotalCost();
     this.getEquipmentUtilizationRate();
     this.getEquipmentTypeRate();
+    this.getEquipmentAllocationRate();
+    this.getEquipmentWorkabilityRate();
   }
 }

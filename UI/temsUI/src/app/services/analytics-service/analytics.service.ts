@@ -59,4 +59,26 @@ export class AnalyticsService extends TEMSService {
       this.httpOptions
     );
   }
+
+  getEquipmentAllocationRate(entityType?: string, entityId?: string): Observable<PieChartData>{
+    let endPoint = API_ANALYTICS_URL+ '/getEquipmentAllocationRate';
+    if(entityType != undefined)
+      endPoint += '/' + entityType + '/' + entityId;
+
+    return this.http.get<PieChartData>(
+      endPoint,
+      this.httpOptions
+    );
+  }
+
+  getEquipmentWorkabilityRate(entityType?: string, entityId?: string): Observable<PieChartData>{
+    let endPoint = API_ANALYTICS_URL+ '/getEquipmentWorkabilityRate';
+    if(entityType != undefined)
+      endPoint += '/' + entityType + '/' + entityId;
+
+    return this.http.get<PieChartData>(
+      endPoint,
+      this.httpOptions
+    );
+  }
 }

@@ -23,6 +23,8 @@ async controller (factory)
 last allocation.
 
 // TD:
+--> Error when closing the allocation
+--> Make closing the active allocation easier (Ex. from equipment details page, like a quick action)
 --> Description property is always considered as desired specific property, idk why (report);
 --> Find a way to pass unitofwork to scheduler
 --> remove teamviewer id from definition, add it to item description

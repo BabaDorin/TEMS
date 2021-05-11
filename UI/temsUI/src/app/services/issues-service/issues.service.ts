@@ -81,16 +81,6 @@ export class IssuesService extends TEMSService {
       );
   }
 
-  // getIssues(includingClosed?: boolean, onlyClosed?: boolean):Observable<any>{
-  //   // all issues (tickets)
-  //   return this.getIssuesOfEntity(
-  //     'any',
-  //     'any',
-  //     includingClosed ?? false,
-  //     onlyClosed ?? false
-  //   )
-  // }
-
   getStatuses(): Observable<any>{
     return this.http.get(
       API_ISU_URL + '/getstatuses',

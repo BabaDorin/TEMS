@@ -16,17 +16,11 @@ TODO
 ------------ As soon as possible >>>>
 
 // TD:
---> ArchieveHelper => ArchieveService and DI
---> Report - frontend issues
---> Test Include equipment from rooms and personnel
 --> Description property is always considered as desired specific property, idk why (report);
 --> Find a way to pass unitofwork to scheduler
---> EquipmentManager
- --> remove teamviewer id from definition, add it to item description
+--> remove teamviewer id from definition, add it to item description
 --> Email confirmation + password reset via email
 --> Add generic AgGridItems Component
---> Learn about services in ASP.NET and build the IdentityService, which will provide data about the currently logged
-    in user.
 --> Better UX when dealing with reports (For ex >> Redirect to listing after adding a report and other).
 --> Add oncascadedeleete
 --> Forbid circular refference for types and definitions

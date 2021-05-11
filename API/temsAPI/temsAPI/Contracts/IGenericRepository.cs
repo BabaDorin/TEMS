@@ -30,7 +30,7 @@ namespace temsAPI.Contracts
            );
 
         Task<bool> isExists(Expression<Func<T, bool>> expression = null);
-        Task<int> Count();
+        Task<int> Count(Expression<Func<T, bool>> expression = null);
         Task Create(T entity);
         void Update(T entity);
         void Delete(T entity);

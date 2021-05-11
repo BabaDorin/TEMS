@@ -19,6 +19,8 @@ export const API_REP_URL = API_URL + '/report';
 export const API_EMAIL_URL = API_URL + '/email';
 export const API_ARCH_URL = API_URL + '/archieve';
 export const API_SYSCONF_URL = API_URL + '/system';
+export const API_ANALYTICS_URL = API_URL + '/analytics';
+
 
 
 export interface IEntityCollection{

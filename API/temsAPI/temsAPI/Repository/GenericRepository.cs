@@ -21,9 +21,9 @@ namespace temsAPI.Repository
             _db = _context.Set<T>();
         }
 
-        public async Task<int> Count()
+        public async Task<int> Count(Expression<Func<T, bool>> expression = null)
         {
-            return await _db.CountAsync();
+            return await _db.CountAsync(expression);
         }
 
         public async Task Create(T entity)

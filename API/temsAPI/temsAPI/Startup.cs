@@ -138,6 +138,7 @@ namespace temsAPI
             services.AddScoped<PersonnelManager>();
             services.AddScoped<RoomManager>();
             services.AddScoped<TicketManager>();
+            services.AddScoped<AnalyticsManager>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

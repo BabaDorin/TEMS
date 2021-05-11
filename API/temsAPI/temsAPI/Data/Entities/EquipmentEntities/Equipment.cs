@@ -81,6 +81,10 @@ namespace temsAPI.Data.Entities.EquipmentEntities
         [NotMapped]
         public string Identifier { get => this.TemsIdOrSerialNumber; }
 
+        [NotMapped]
+        public EquipmentAllocation ActiveAllocation
+            => EquipmentAllocations?.FirstOrDefault(q => q.DateReturned == null);
+
         public virtual ICollection<Log> Logs { get; set; } = new List<Log>();
         public virtual ICollection<Ticket> Tickets { get; set; } = new List<Ticket>();
         public virtual ICollection<Equipment> Children { get; set; } = new List<Equipment>();

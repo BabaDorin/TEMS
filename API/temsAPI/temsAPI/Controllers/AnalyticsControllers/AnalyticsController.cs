@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.UserEntities;
 using temsAPI.Data.Managers;
+using temsAPI.Helpers.AnalyticsHelpers.AnalyticsModels;
 using temsAPI.Services;
 using temsAPI.System_Files;
 
@@ -66,6 +67,33 @@ namespace temsAPI.Controllers.AnalyticsControllers
                 entityId);
 
             return Json(Math.Round(totalCost, 2));
+        }
+
+
+        [HttpGet]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
+        public async Task<JsonResult> GetEquipmentUtilizationRate(
+            string entityType = null,
+            string entityId = null)
+        {
+            var pieChart = await _analyticsManager.GetEquipmentUtilizationRate(
+                entityType,
+                entityId);
+
+            return Json(pieChart);
+        }
+
+        [HttpGet]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
+        public async Task<JsonResult> GetEquipmentTypeRate(
+            string entityType = null,
+            string entityId = null)
+        {
+            var pieChart = await _analyticsManager.GetEquipmentTypeRate(
+                entityType,
+                entityId);
+
+            return Json(pieChart);
         }
     }
 }

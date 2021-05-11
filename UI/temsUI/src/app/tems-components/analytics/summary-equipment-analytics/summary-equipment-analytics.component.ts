@@ -1,3 +1,4 @@
+import { PieChartData } from './../../../models/analytics/pieChart-model';
 import { TEMSComponent } from './../../../tems/tems.component';
 import { SnackService } from './../../../services/snack/snack.service';
 import { AnalyticsService } from './../../../services/analytics-service/analytics.service';
@@ -15,6 +16,8 @@ export class SummaryEquipmentAnalyticsComponent extends TEMSComponent implements
 
   equipmentTotalAmount: number;
   equipmentTotalCost: number;
+  equipmentUtilizationRate: PieChartData;
+  equipmentTypeRate: PieChartData;
 
   constructor(
     private analyticsService: AnalyticsService,
@@ -65,8 +68,46 @@ export class SummaryEquipmentAnalyticsComponent extends TEMSComponent implements
     )  
   }
 
+  getEquipmentUtilizationRate(){
+    let serviceMethod = this.analyticsService.getEquipmentUtilizationRate(
+      this.getEntityType(),
+      this.getEntityId()
+    );
+
+    this.subscriptions.push(
+      serviceMethod
+      .subscribe(result => {
+        if(this.snackService.snackIfError(result))
+          return;
+        this.equipmentUtilizationRate = result;
+
+        console.log(result);
+      })
+    )  
+  }
+
+  getEquipmentTypeRate(){
+    let serviceMethod = this.analyticsService.getEquipmentTypeRate(
+      this.getEntityType(),
+      this.getEntityId()
+    );
+
+    this.subscriptions.push(
+      serviceMethod
+      .subscribe(result => {
+        if(this.snackService.snackIfError(result))
+          return;
+        this.equipmentTypeRate = result;
+
+        console.log(result);
+      })
+    )  
+  }
+
   ngOnInit(): void {
     this.getEquipmentAmount();
     this.getEquipmentTotalCost();
+    this.getEquipmentUtilizationRate();
+    this.getEquipmentTypeRate();
   }
 }

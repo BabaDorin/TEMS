@@ -1,4 +1,5 @@
-﻿using OfficeOpenXml.FormulaParsing.ExpressionGraph;
+﻿using Microsoft.EntityFrameworkCore;
+using OfficeOpenXml.FormulaParsing.ExpressionGraph;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +9,7 @@ using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.EquipmentEntities;
 using temsAPI.Helpers;
+using temsAPI.Helpers.AnalyticsHelpers.AnalyticsModels;
 using temsAPI.Services;
 using temsAPI.System_Files;
 
@@ -52,6 +54,59 @@ namespace temsAPI.Data.Managers
                 )).Sum();
 
             return sum;
+        }
+
+        public async Task<PieChartData> GetEquipmentUtilizationRate(
+            string entityType, 
+            string entityId)
+        {
+            Expression<Func<Equipment, bool>> filterByEntityExpression =
+                _equipmentManager.Eq_FilterByEntity(entityType, entityId);
+
+            int currentlyInUse = await _unitOfWork.Equipments.Count(
+                ExpressionCombiner.CombineTwo(filterByEntityExpression, q => q.IsUsed));
+
+            int currentlyUnengaged = await _unitOfWork.Equipments.Count(
+                ExpressionCombiner.CombineTwo(filterByEntityExpression, q => !q.IsUsed));
+
+
+            var pieChart = new PieChartData
+            {
+                ChartName = "Equipment utilization rate",
+                Rates = new List<Tuple<string, int>>()
+                {
+                    new Tuple<string, int>("Currently in use", currentlyInUse),
+                    new Tuple<string, int>("Unengaged", currentlyUnengaged),
+                }
+            };
+
+            return pieChart;
+        }
+
+        public async Task<PieChartData> GetEquipmentTypeRate(
+            string entityType,
+            string entityId)
+        {
+            Expression<Func<Equipment, bool>> filterByEntityExpression =
+                _equipmentManager.Eq_FilterByEntity(entityType, entityId);
+
+
+            var rates = (await _unitOfWork.Equipments
+                .FindAll<Equipment>(
+                    where: filterByEntityExpression,
+                    include: q => q.Include(q => q.EquipmentDefinition).ThenInclude(q => q.EquipmentType)
+                    ))
+                .GroupBy(q => q.EquipmentDefinition.EquipmentType.Name)
+                .Select(q => new Tuple<string, int>(q.Key, q.Count()))
+                .ToList();
+
+            PieChartData pieChart = new()
+            {
+                ChartName = "Equipment type rates",
+                Rates = rates
+            };
+
+            return pieChart;
         }
     }
 }

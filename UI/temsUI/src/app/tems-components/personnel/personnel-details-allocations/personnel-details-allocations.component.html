@@ -1,6 +1,10 @@
 <br>
 <h2>Currently allocated equipment</h2>
 <hr>
+<app-summary-equipment-analytics
+[personnelId]="personnel.id">
+</app-summary-equipment-analytics>
+
 <app-ag-grid-equipment #agGridEquipment
     [personnel]="personnelParameter">
 </app-ag-grid-equipment>

@@ -169,10 +169,10 @@ namespace temsAPI.Data.Managers
                 _ticketManager.Eq_FilterByEntity(entityType, entityId);
 
             var openTickets = (await _unitOfWork.Tickets.Count(
-                ExpressionCombiner.CombineTwo(filterByEntityExpression, q => q.DateClosed != null)));
+                ExpressionCombiner.CombineTwo(filterByEntityExpression, q => q.DateClosed == null)));
             
             var closedTickets = (await _unitOfWork.Tickets.Count(
-                ExpressionCombiner.CombineTwo(filterByEntityExpression, q => q.DateClosed == null)));
+                ExpressionCombiner.CombineTwo(filterByEntityExpression, q => q.DateClosed != null)));
 
             PieChartData pieChart = new()
             {

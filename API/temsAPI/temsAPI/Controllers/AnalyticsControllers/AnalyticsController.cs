@@ -35,7 +35,7 @@ namespace temsAPI.Controllers.AnalyticsControllers
             return View();
         }
 
-        [HttpGet]
+        [HttpGet("analytics/getEquipmentAmount/{entityType?}/{entityId?}")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
         public async Task<JsonResult> GetEquipmentAmount(
             string entityType = null,
@@ -53,7 +53,7 @@ namespace temsAPI.Controllers.AnalyticsControllers
             }
         }
 
-        [HttpGet]
+        [HttpGet("analytics/getEquipmentTotalCost/{entityType?}/{entityId?}")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
         public async Task<JsonResult> GetEquipmentTotalCost(
             string entityType = null,
@@ -71,7 +71,7 @@ namespace temsAPI.Controllers.AnalyticsControllers
             }
         }
 
-        [HttpGet]
+        [HttpGet("analytics/getEquipmentUtilizationRate/{entityType?}/{entityId?}")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
         public async Task<JsonResult> GetEquipmentUtilizationRate(
             string entityType = null,
@@ -90,7 +90,7 @@ namespace temsAPI.Controllers.AnalyticsControllers
 
         }
 
-        [HttpGet]
+        [HttpGet("analytics/getEquipmentTypeRate/{entityType?}/{entityId?}")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
         public async Task<JsonResult> GetEquipmentTypeRate(
             string entityType = null,
@@ -109,7 +109,7 @@ namespace temsAPI.Controllers.AnalyticsControllers
 
         }
 
-        [HttpGet]
+        [HttpGet("analytics/getEquipmentAllocationRate/{entityType?}/{entityId?}")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
         public async Task<JsonResult> GetEquipmentAllocationRate(
             string entityType = null,
@@ -127,7 +127,7 @@ namespace temsAPI.Controllers.AnalyticsControllers
             }
         }
 
-        [HttpGet]
+        [HttpGet("analytics/getEquipmentWorkabilityRate/{entityType?}/{entityId?}")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
         public async Task<JsonResult> GetEquipmentWorkabilityRate(
             string entityType = null,
@@ -145,7 +145,7 @@ namespace temsAPI.Controllers.AnalyticsControllers
             }
         }
 
-        [HttpGet]
+        [HttpGet("analytics/getTicketClosingRate/{entityType?}/{entityId?}")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
         public async Task<JsonResult> GetTicketClosingRate(
             string entityType,
@@ -163,7 +163,7 @@ namespace temsAPI.Controllers.AnalyticsControllers
             }
         }
 
-        [HttpGet]
+        [HttpGet("analytics/getTicketClosingByRate/{entityType?}/{entityId?}")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
         public async Task<JsonResult> GetTicketClosingByRate(
             string entityType,
@@ -181,7 +181,7 @@ namespace temsAPI.Controllers.AnalyticsControllers
             }
         }
 
-        [HttpGet]
+        [HttpGet("analytics/getOpenTicketStatusRate/{entityType?}/{entityId?}")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
         public async Task<JsonResult> GetOpenTicketStatusRate(
             string entityType,

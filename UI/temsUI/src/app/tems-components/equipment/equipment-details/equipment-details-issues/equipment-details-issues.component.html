@@ -1,4 +1,7 @@
-<app-summary-issues-analytics></app-summary-issues-analytics>
+<app-summary-issues-analytics
+[equipmentId]="equipment.id"> 
+</app-summary-issues-analytics>
+
 <app-entity-issues-list [equipment]="[equipmentAlreadySelected]" [equipmentId]="equipment.id">
    Loading...
 </app-entity-issues-list>

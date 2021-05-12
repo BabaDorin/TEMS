@@ -19,10 +19,10 @@ import * as confetti from 'canvas-confetti';
 export class EntityIssuesListComponent extends TEMSComponent implements OnInit, OnChanges {
 
   // for ticket fetching
-  @Input() equipmentId: string = "any";
-  @Input() roomId: string = "any";
+  @Input() equipmentId;
+  @Input() personnelId;
+  @Input() roomId;
   @Input() addIssueEnabled: boolean = true;
-  @Input() personnelId: string = "any";
   @Input() endPoint;
 
   // for AddIssueComponent
@@ -76,9 +76,11 @@ export class EntityIssuesListComponent extends TEMSComponent implements OnInit, 
   getIssues(){
     this.loading = true;
 
-    if(this.endPoint == undefined)
-      this.endPoint =  this.issuesService.getIssues(
-        this.equipmentId, this.roomId, this.personnelId, this.includingClosed, this.onlyClosed);
+    this.endPoint =  this.issuesService.getIssues(
+      this.equipmentId ?? "any", 
+      this.roomId ?? "any", 
+      this.personnelId ?? "any", 
+      this.includingClosed, this.onlyClosed);
 
     this.subscriptions.push(
       this.endPoint

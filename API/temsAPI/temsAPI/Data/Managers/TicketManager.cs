@@ -13,6 +13,7 @@ using temsAPI.Data.Entities.OtherEntities;
 using temsAPI.Data.Entities.UserEntities;
 using temsAPI.Helpers;
 using temsAPI.Services;
+using temsAPI.System_Files;
 using temsAPI.ViewModels;
 using temsAPI.ViewModels.Ticket;
 
@@ -314,6 +315,37 @@ namespace temsAPI.Data.Managers
                 )).ToList();
 
             return tickets;
+        }
+
+        public Expression<Func<Ticket, bool>> Eq_FilterByEntity(string entityType, string entityId)
+        {
+            Expression<Func<Ticket, bool>> expression = q => !q.IsArchieved;
+            if (entityType == null)
+                return expression;
+
+            entityType = entityType.ToLower();
+            if (!HardCodedValues.EntityTypes.Contains(entityType) || entityId == null)
+                return expression;
+
+            Expression<Func<Ticket, bool>> secondaryExpression = null;
+            switch (entityType)
+            {
+                case "room":
+                    secondaryExpression = q
+                        => q.Rooms.Any(q => q.Id == entityId);
+                    break;
+                case "personnel":
+                    secondaryExpression = q
+                        => q.Personnel.Any(q => q.Id == entityId);
+                    break;
+                case "equipment":
+                    secondaryExpression = q
+                        => q.Equipments.Any(q => q.Id == entityId);
+                    break;
+            }
+
+            expression = ExpressionCombiner.CombineTwo(expression, secondaryExpression);
+            return expression;
         }
     }
 }

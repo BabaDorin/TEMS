@@ -16,10 +16,16 @@ export class AnalyticsService extends TEMSService {
     super();
   }
 
-  getEquipmentAmount(entityType?: string, entityId?: string): Observable<number>{
-    let endPoint = API_ANALYTICS_URL+ '/getequipmentamount';
+  private buildEndpointAddresWithEntity(uri: string, entityType: string, entityId: string){
+    let endPoint = uri;
     if(entityType != undefined)
       endPoint += '/' + entityType + '/' + entityId;
+
+    return endPoint;
+  }
+
+  getEquipmentAmount(entityType?: string, entityId?: string): Observable<number>{
+    let endPoint = this.buildEndpointAddresWithEntity(API_ANALYTICS_URL+ '/getequipmentamount', entityType, entityId);
 
     return this.http.get<number>(
       endPoint,
@@ -28,9 +34,7 @@ export class AnalyticsService extends TEMSService {
   }
 
   getEquipmentTotalCost(entityType?: string, entityId?: string): Observable<number>{
-    let endPoint = API_ANALYTICS_URL+ '/getEquipmentTotalCost';
-    if(entityType != undefined)
-      endPoint += '/' + entityType + '/' + entityId;
+    let endPoint = this.buildEndpointAddresWithEntity(API_ANALYTICS_URL+ '/getEquipmentTotalCost', entityType, entityId);
 
     return this.http.get<number>(
       endPoint,
@@ -39,9 +43,7 @@ export class AnalyticsService extends TEMSService {
   }
 
   getEquipmentUtilizationRate(entityType?: string, entityId?: string): Observable<PieChartData>{
-    let endPoint = API_ANALYTICS_URL+ '/getEquipmentUtilizationRate';
-    if(entityType != undefined)
-      endPoint += '/' + entityType + '/' + entityId;
+    let endPoint = this.buildEndpointAddresWithEntity(API_ANALYTICS_URL+ '/getEquipmentUtilizationRate', entityType, entityId);
 
     return this.http.get<PieChartData>(
       endPoint,
@@ -50,9 +52,7 @@ export class AnalyticsService extends TEMSService {
   }
 
   getEquipmentTypeRate(entityType?: string, entityId?: string): Observable<PieChartData>{
-    let endPoint = API_ANALYTICS_URL+ '/getequipmenttyperate';
-    if(entityType != undefined)
-      endPoint += '/' + entityType + '/' + entityId;
+    let endPoint = this.buildEndpointAddresWithEntity(API_ANALYTICS_URL+ '/getEquipmentUtilizationRate', entityType, entityId);
 
     return this.http.get<PieChartData>(
       endPoint,
@@ -61,9 +61,7 @@ export class AnalyticsService extends TEMSService {
   }
 
   getEquipmentAllocationRate(entityType?: string, entityId?: string): Observable<PieChartData>{
-    let endPoint = API_ANALYTICS_URL+ '/getEquipmentAllocationRate';
-    if(entityType != undefined)
-      endPoint += '/' + entityType + '/' + entityId;
+    let endPoint = this.buildEndpointAddresWithEntity(API_ANALYTICS_URL+ '/getEquipmentAllocationRate', entityType, entityId);
 
     return this.http.get<PieChartData>(
       endPoint,
@@ -72,10 +70,35 @@ export class AnalyticsService extends TEMSService {
   }
 
   getEquipmentWorkabilityRate(entityType?: string, entityId?: string): Observable<PieChartData>{
-    let endPoint = API_ANALYTICS_URL+ '/getEquipmentWorkabilityRate';
-    if(entityType != undefined)
-      endPoint += '/' + entityType + '/' + entityId;
+    let endPoint = this.buildEndpointAddresWithEntity(API_ANALYTICS_URL+ '/getEquipmentWorkabilityRate', entityType, entityId);
+    
+    return this.http.get<PieChartData>(
+      endPoint,
+      this.httpOptions
+    );
+  }
 
+  getTicketClosingRate(entityType?: string, entityId?: string): Observable<PieChartData>{
+    let endPoint = this.buildEndpointAddresWithEntity(API_ANALYTICS_URL+ '/getticketclosingrate', entityType, entityId);
+    
+    return this.http.get<PieChartData>(
+      endPoint,
+      this.httpOptions
+    );
+  }
+
+  getTicketClosingByRate(entityType?: string, entityId?: string): Observable<PieChartData>{
+    let endPoint = this.buildEndpointAddresWithEntity(API_ANALYTICS_URL+ '/getTicketClosingByRate', entityType, entityId);
+    
+    return this.http.get<PieChartData>(
+      endPoint,
+      this.httpOptions
+    );
+  }
+
+  getOpenTicketStatusRate(entityType?: string, entityId?: string): Observable<PieChartData>{
+    let endPoint = this.buildEndpointAddresWithEntity(API_ANALYTICS_URL+ '/getOpenTicketStatusRate', entityType, entityId);
+    
     return this.http.get<PieChartData>(
       endPoint,
       this.httpOptions

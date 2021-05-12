@@ -20,8 +20,8 @@ namespace temsAPI.Controllers.AnalyticsControllers
         private AnalyticsManager _analyticsManager;
 
         public AnalyticsController(
-            IMapper mapper, 
-            IUnitOfWork unitOfWork, 
+            IMapper mapper,
+            IUnitOfWork unitOfWork,
             UserManager<TEMSUser> userManager,
             AnalyticsManager analyticsManager,
             CurrencyConvertor currencyConvertor) : base(mapper, unitOfWork, userManager)
@@ -38,21 +38,18 @@ namespace temsAPI.Controllers.AnalyticsControllers
         [HttpGet]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
         public async Task<JsonResult> GetEquipmentAmount(
-            string entityType = null, 
+            string entityType = null,
             string entityId = null)
         {
             try
             {
-                var totalNumberOfEquipment = await _analyticsManager.GetEquipmentAmount(
-                entityType,
-                entityId);
-
+                var totalNumberOfEquipment = await _analyticsManager.GetEquipmentAmount(entityType, entityId);
                 return Json(totalNumberOfEquipment);
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
-                return ReturnResponse("An error occured while getting equipment analytics", ResponseStatus.Fail);
+                return ReturnResponse("An error occured while fetching analytics", ResponseStatus.Fail);
             }
         }
 
@@ -62,13 +59,17 @@ namespace temsAPI.Controllers.AnalyticsControllers
             string entityType = null,
             string entityId = null)
         {
-            double totalCost = await _analyticsManager.GetEquipmentTotalCost(
-                entityType,
-                entityId);
-
-            return Json(Math.Round(totalCost, 2));
+            try
+            {
+                double totalCost = await _analyticsManager.GetEquipmentTotalCost(entityType, entityId);
+                return Json(Math.Round(totalCost, 2));
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured while fetching analytics", ResponseStatus.Fail);
+            }
         }
-
 
         [HttpGet]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
@@ -76,11 +77,17 @@ namespace temsAPI.Controllers.AnalyticsControllers
             string entityType = null,
             string entityId = null)
         {
-            var pieChart = await _analyticsManager.GetEquipmentUtilizationRate(
-                entityType,
-                entityId);
+            try
+            {
+                var pieChart = await _analyticsManager.GetEquipmentUtilizationRate(entityType, entityId);
+                return Json(pieChart);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured while fetching analytics", ResponseStatus.Fail);
+            }
 
-            return Json(pieChart);
         }
 
         [HttpGet]
@@ -89,11 +96,17 @@ namespace temsAPI.Controllers.AnalyticsControllers
             string entityType = null,
             string entityId = null)
         {
-            var pieChart = await _analyticsManager.GetEquipmentTypeRate(
-                entityType,
-                entityId);
+            try
+            {
+                var pieChart = await _analyticsManager.GetEquipmentTypeRate(entityType, entityId);
+                return Json(pieChart);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured while fetching analytics", ResponseStatus.Fail);
+            }
 
-            return Json(pieChart);
         }
 
         [HttpGet]
@@ -102,11 +115,16 @@ namespace temsAPI.Controllers.AnalyticsControllers
             string entityType = null,
             string entityId = null)
         {
-            var pieChart = await _analyticsManager.GetEquipmentAllocationRate(
-                entityType,
-                entityId);
-
-            return Json(pieChart);
+            try
+            {
+                var pieChart = await _analyticsManager.GetEquipmentAllocationRate(entityType, entityId);
+                return Json(pieChart);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured while fetching analytics", ResponseStatus.Fail);
+            }
         }
 
         [HttpGet]
@@ -115,11 +133,70 @@ namespace temsAPI.Controllers.AnalyticsControllers
             string entityType = null,
             string entityId = null)
         {
-            var pieChart = await _analyticsManager.GetEquipmentWorkabilityRate(
-                entityType,
-                entityId);
+            try
+            {
+                var pieChart = await _analyticsManager.GetEquipmentWorkabilityRate(entityType, entityId);
+                return Json(pieChart);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured while fetching analytics", ResponseStatus.Fail);
+            }
+        }
 
-            return Json(pieChart);
+        [HttpGet]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
+        public async Task<JsonResult> GetTicketClosingRate(
+            string entityType,
+            string entityId)
+        {
+            try
+            {
+                var pieChart = await _analyticsManager.GetTicketClosingRate(entityType, entityId);
+                return Json(pieChart);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured while fetching analytics", ResponseStatus.Fail);
+            }
+        }
+
+        [HttpGet]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
+        public async Task<JsonResult> GetTicketClosingByRate(
+            string entityType,
+            string entityId)
+        {
+            try
+            {
+                var pieChart = await _analyticsManager.GetTicketClosingByRate(entityType, entityId);
+                return Json(pieChart);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured while fetching analytics", ResponseStatus.Fail);
+            }
+        }
+
+        [HttpGet]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
+        public async Task<JsonResult> GetOpenTicketStatusRate(
+            string entityType,
+            string entityId)
+        {
+            try
+            {
+                var pieChart = await _analyticsManager.GetOpenTicketStatusRate(entityType, entityId);
+                return Json(pieChart);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured while fetching analytics", ResponseStatus.Fail);
+            }
         }
     }
 }

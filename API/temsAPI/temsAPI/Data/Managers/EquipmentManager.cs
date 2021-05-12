@@ -486,36 +486,32 @@ namespace temsAPI.Data.Managers
         {
             Expression<Func<Equipment, bool>> expression = q => !q.IsArchieved && q.ParentID == null;
 
-            if (entityType != null)
-            {
-                entityType = entityType.ToLower();
-                if (entityType != "equipment"
-                    && HardCodedValues.EntityTypes.Contains(entityType)
-                    && entityId != null)
-                {
-                    Expression<Func<Equipment, bool>> secondaryExpression = null;
-                    switch (entityType)
-                    {
-                        case "room":
-                            secondaryExpression = q
-                                => q.ActiveAllocation != null
-                                && q.ActiveAllocation.RoomID == entityId;
-                            break;
-                        case "personnel":
-                            {
-                                secondaryExpression = q
-                                => q.ActiveAllocation != null
-                                && q.ActiveAllocation.RoomID == entityId;
-                            }
-                            break;
-                    }
+            if (entityType == null)
+                return expression;
 
-                    expression = ExpressionCombiner.CombineTwo(expression, secondaryExpression);
-                }
+            entityType = entityType.ToLower();
+            if (entityType == "equipment" || !HardCodedValues.EntityTypes.Contains(entityType) || entityId == null)
+                return expression;
+            
+            Expression<Func<Equipment, bool>> secondaryExpression = null;
+            switch (entityType)
+            {
+                case "room":
+                    secondaryExpression = q
+                        => q.ActiveAllocation != null
+                        && q.ActiveAllocation.RoomID == entityId;
+                    break;
+                case "personnel":
+                    {
+                        secondaryExpression = q
+                        => q.ActiveAllocation != null
+                        && q.ActiveAllocation.RoomID == entityId;
+                    }
+                    break;
             }
 
+            expression = ExpressionCombiner.CombineTwo(expression, secondaryExpression);
             return expression;
         }
-
     }
 }

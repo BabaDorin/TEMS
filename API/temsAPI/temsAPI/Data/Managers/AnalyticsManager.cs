@@ -253,7 +253,7 @@ namespace temsAPI.Data.Managers
             string entityId = null)
         {
             Expression<Func<Ticket, bool>> filterByEntityExpression =
-                _ticketManager.Eq_FilterByEntity(entityType, entityId);
+                _ticketManager.Eq_FilterByEntity(entityType, entityId, TicketManager.UserTicketAction.Create);
 
             var amount = (await _unitOfWork.Tickets.Count(filterByEntityExpression));
             return amount;
@@ -264,7 +264,7 @@ namespace temsAPI.Data.Managers
             string entityId = null)
         {
             Expression<Func<Ticket, bool>> filterByEntityExpression =
-                _ticketManager.Eq_FilterByEntity(entityType, entityId);
+                _ticketManager.Eq_FilterByEntity(entityType, entityId, TicketManager.UserTicketAction.Close);
 
             var finalExpression = ExpressionCombiner.CombineTwo(
                 filterByEntityExpression,
@@ -308,14 +308,18 @@ namespace temsAPI.Data.Managers
         // the one that were reopened afterwards
         public async Task<int> GetAmountOfTicketsEverClosedByUser(string userId)
         {
-            var amount = (await _unitOfWork.TEMSUsers
-                .Find<int>(
+            var user = (await _unitOfWork.TEMSUsers
+                .Find<TEMSUser>(
                     where: q => q.Id == userId,
                     include: q => q
                     .Include(q => q.ClosedTickets)
-                    .Include(q => q.ClosedAndThenReopenedTickets),
-                    select: q => q.ClosedTickets.Union(q.ClosedAndThenReopenedTickets).Count()
+                    .Include(q => q.ClosedAndThenReopenedTickets)
                 )).FirstOrDefault();
+
+            if (user == null)
+                throw new Exception("Invalid id provided");
+
+            var amount = user.ClosedTickets.Union(user.ClosedAndThenReopenedTickets).Count();
 
             return amount;
         }

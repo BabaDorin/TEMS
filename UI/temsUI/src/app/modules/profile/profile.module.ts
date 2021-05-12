@@ -1,3 +1,4 @@
+import { ProfileAnalyticsComponent } from './../../tems-components/profile/profile-analytics/profile-analytics.component';
 import { EntitySharedModule } from 'src/app/modules/entity-shared/entity-shared.module';
 import { ProfileSettingsComponent } from './../../tems-components/profile/profile-settings/profile-settings.component';
 import { ProfileTicketsComponent } from './../../tems-components/profile/profile-tickets/profile-tickets.component';
@@ -17,7 +18,8 @@ import { ProfileRoutingModule } from './profile-routing.module';
     ProfileGeneralComponent,
     ProfileAllocationsComponent,
     ProfileTicketsComponent,
-    ProfileSettingsComponent
+    ProfileSettingsComponent,
+    ProfileAnalyticsComponent
   ],
   imports: [
     CommonModule,

@@ -198,5 +198,91 @@ namespace temsAPI.Controllers.AnalyticsControllers
                 return ReturnResponse("An error occured while fetching analytics", ResponseStatus.Fail);
             }
         }
+        
+        [HttpGet("analytics/getAmountOfCreatedTickets/{entityType?}/{entityId?}")]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
+        public async Task<JsonResult> GetAmountOfCreatedTickets(
+            string entityType,
+            string entityId)
+        {
+            try
+            {
+                var amount = await _analyticsManager.GetAmountOfCreatedTickets(entityType, entityId);
+                return Json(amount);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured while fetching analytics", ResponseStatus.Fail);
+            }
+        }
+
+        [HttpGet("analytics/getAmountOfClosedTickets/{entityType?}/{entityId?}")]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
+        public async Task<JsonResult> GetAmountOfClosedTickets(
+            string entityType,
+            string entityId)
+        {
+            try
+            {
+                var amount = await _analyticsManager.GetAmountOfClosedTickets(entityType, entityId);
+                return Json(amount);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured while fetching analytics", ResponseStatus.Fail);
+            }
+        }
+
+        [HttpGet("analytics/getAmountOfOpenTickets/{entityType?}/{entityId?}")]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
+        public async Task<JsonResult> GetAmountOfOpenTickets(
+            string entityType,
+            string entityId)
+        {
+            try
+            {
+                var amount = await _analyticsManager.GetAmountOfOpenTickets(entityType, entityId);
+                return Json(amount);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured while fetching analytics", ResponseStatus.Fail);
+            }
+        }
+        
+        [HttpGet("analytics/getAmountOfTicketsClosedByUserThatWereReopenedAfterwards/{userId}")]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
+        public async Task<JsonResult> GetAmountOfTicketsClosedByUserThatWereReopenedAfterwards(string userId)
+        {
+            try
+            {
+                var amount = await _analyticsManager.GetAmountOfTicketsClosedByUserThatWereReopenedAfterwards(userId);
+                return Json(amount);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured while fetching analytics", ResponseStatus.Fail);
+            }
+        }
+        
+        [HttpGet("analytics/getAmountOfTicketsEverClosedByUser/{userId}")]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
+        public async Task<JsonResult> GetAmountOfTicketsEverClosedByUser(string userId)
+        {
+            try
+            {
+                var amount = await _analyticsManager.GetAmountOfTicketsEverClosedByUser(userId);
+                return Json(amount);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured while fetching analytics", ResponseStatus.Fail);
+            }
+        }
     }
 }

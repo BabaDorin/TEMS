@@ -11,12 +11,9 @@ export class ProfileGeneralComponent implements OnInit {
   @Input() profile;
 
   constructor(prof: ViewProfile) {
-    console.log(prof);
     this.profile = prof;
   }
 
   ngOnInit(): void {
-    console.log('eee');
-    console.log(this.profile);
   }
 }

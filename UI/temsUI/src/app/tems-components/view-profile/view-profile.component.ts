@@ -1,3 +1,4 @@
+import { ProfileAnalyticsComponent } from './../profile/profile-analytics/profile-analytics.component';
 import { ViewProfile } from 'src/app/models/profile/view-profile.model';
 import { ProfileTicketsComponent } from './../profile/profile-tickets/profile-tickets.component';
 import { ProfileGeneralComponent } from './../profile/profile-general/profile-general.component';
@@ -89,9 +90,9 @@ export class ViewProfileComponent extends TEMSComponent implements OnInit {
 
     switch(newPage){
       case 'general': this.activePage = ProfileGeneralComponent; break;
-      // case 'allocations': this.activePage = ProfileAllocationsComponent; break;
       case 'issues': this.activePage = ProfileTicketsComponent; break;
       case 'settings': this.activePage = ProfileSettingsComponent; break;
+      case 'analytics': this.activePage = ProfileAnalyticsComponent; break;
       default: this.activePage = ProfileGeneralComponent; break;
     }
   }

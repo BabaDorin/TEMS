@@ -104,4 +104,41 @@ export class AnalyticsService extends TEMSService {
       this.httpOptions
     );
   }
+
+  getAmountOfCreatedIssues(entityType?: string, entityId?: string): Observable<number>{
+    let endPoint = this.buildEndpointAddresWithEntity(API_ANALYTICS_URL+ '/getAmountOfCreatedTickets', entityType, entityId);
+
+    return this.http.get<number>(
+      endPoint,
+      this.httpOptions
+    );
+  }
+
+  getAmountOfClosedIssues(entityType: string, entityId: string): Observable<number>{
+    let endPoint = this.buildEndpointAddresWithEntity(API_ANALYTICS_URL+ '/getAmountOfClosedTickets', entityType, entityId);
+
+    return this.http.get<number>(
+      endPoint,
+      this.httpOptions
+    );
+  }
+
+  getAmountOfTicketsEverCreatedByUser(userId: string): Observable<number>{
+    let endPoint = API_ANALYTICS_URL+ '/getAmountOfTicketsEverClosedByUser/' + userId;
+
+    return this.http.get<number>(
+      endPoint,
+      this.httpOptions
+    );
+  }
+
+  getAmountOfTicketsClosedByUserThatWereReopenedAfterwards(userId: string){
+    let endPoint = API_ANALYTICS_URL+ 
+    '/getAmountOfTicketsClosedByUserThatWereReopenedAfterwards/' + userId;
+
+    return this.http.get<number>(
+      endPoint,
+      this.httpOptions
+    );
+  }
 }

@@ -50,6 +50,7 @@ namespace temsAPI.Data.Entities.UserEntities
         public virtual ICollection<Ticket> ClosedTickets { get; set; } = new List<Ticket>();
         public virtual ICollection<Ticket> AssignedTickets { get; set; } = new List<Ticket>();
         public virtual ICollection<Ticket> CreatedTickets { get; set; } = new List<Ticket>();
+        public virtual ICollection<Ticket> ClosedAndThenReopenedTickets { get; set; } = new List<Ticket>();
         public virtual ICollection<Equipment> RegisteredEquipments { get; set; } = new List<Equipment>();
 
         // Archieved stuff

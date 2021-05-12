@@ -71,6 +71,10 @@ namespace temsAPI.Data.Entities.CommunicationEntities
         public ICollection<Room> Rooms { get; set; } = new List<Room>();
         [InverseProperty("AssignedTickets")]
         public ICollection<TEMSUser> Assignees  { get; set; } = new List<TEMSUser>();
+        
+        // Used primarily for getting the Probability of reopening analytics
+        [InverseProperty("ClosedAndThenReopenedTickets")]
+        public ICollection<TEMSUser> PreviouslyClosedBy { get; set; } = new List<TEMSUser>(); 
 
         [NotMapped]
         public string Identifier => $"Problem: {Problem}, Description: {Description}, CreatedBy: {CreatedBy?.FullName ?? CreatedBy?.UserName}";

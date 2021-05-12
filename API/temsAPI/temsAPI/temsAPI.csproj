@@ -41,6 +41,7 @@
 
   <ItemGroup>
     <Folder Include="Data\Entities\Analytics\" />
+    <Folder Include="Services\Analytics\" />
   </ItemGroup>
 
 </Project>

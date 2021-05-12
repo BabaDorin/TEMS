@@ -39,6 +39,13 @@ namespace temsAPI.Data.Managers
             RecencyClosed
         }
 
+        public enum UserTicketAction
+        {
+            Create,
+            Close,
+            Assigned
+        }
+
         private UserManager<TEMSUser> _userManager;
         private IdentityService _identityService;
 
@@ -247,7 +254,17 @@ namespace temsAPI.Data.Managers
         
         public async Task ReopenTicket(Ticket ticket)
         {
-            ticket.ClosedById = _identityService.GetUserId();
+            var previouslyClosedBy = (await _unitOfWork.TEMSUsers
+                .Find<TEMSUser>(q => q.Id == ticket.ClosedById))
+                .FirstOrDefault();
+
+            if (previouslyClosedBy != null)
+            {
+                ticket.PreviouslyClosedBy.Remove(previouslyClosedBy);
+                ticket.PreviouslyClosedBy.Add(previouslyClosedBy);
+            }
+
+            ticket.ClosedById = null;
             ticket.DateClosed = null;
             await _unitOfWork.Save();
         }
@@ -317,7 +334,10 @@ namespace temsAPI.Data.Managers
             return tickets;
         }
 
-        public Expression<Func<Ticket, bool>> Eq_FilterByEntity(string entityType, string entityId)
+        public Expression<Func<Ticket, bool>> Eq_FilterByEntity(
+            string entityType, 
+            string entityId, 
+            UserTicketAction? userTicketAction = null)
         {
             Expression<Func<Ticket, bool>> expression = q => !q.IsArchieved;
             if (entityType == null)
@@ -341,6 +361,16 @@ namespace temsAPI.Data.Managers
                 case "equipment":
                     secondaryExpression = q
                         => q.Equipments.Any(q => q.Id == entityId);
+                    break;
+                case "user":
+                    if (userTicketAction == null)
+                        secondaryExpression = null;
+
+                    if(userTicketAction == UserTicketAction.Create)
+                        secondaryExpression = q => q.CreatedById == entityId;
+
+                    if (userTicketAction == UserTicketAction.Close)
+                        secondaryExpression = q => q.ClosedById == entityId;
                     break;
             }
 

@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.CommunicationEntities;
 using temsAPI.Data.Entities.EquipmentEntities;
+using temsAPI.Data.Entities.UserEntities;
 using temsAPI.Helpers;
 using temsAPI.Helpers.AnalyticsHelpers.AnalyticsModels;
 using temsAPI.Services;
@@ -33,6 +34,8 @@ namespace temsAPI.Data.Managers
             _currencyConvertor = currencyConvertor;
             _ticketManager = ticketManager;
         }
+
+        // ------------------< Equipment >--------------------
 
         public async Task<int> GetEquipmentAmount(
             string entityType = null,
@@ -161,6 +164,9 @@ namespace temsAPI.Data.Managers
             return pieChart;
         }
 
+
+        // ------------------< Ticket >--------------------
+
         public async Task<PieChartData> GetTicketClosingRate(
             string entityType = null,
             string entityId = null)
@@ -238,6 +244,80 @@ namespace temsAPI.Data.Managers
             };
 
             return pieChart;
+        }
+
+        // ------------------< User >--------------------
+
+        public async Task<double> GetAmountOfCreatedTickets(
+            string entityType = null,
+            string entityId = null)
+        {
+            Expression<Func<Ticket, bool>> filterByEntityExpression =
+                _ticketManager.Eq_FilterByEntity(entityType, entityId);
+
+            var amount = (await _unitOfWork.Tickets.Count(filterByEntityExpression));
+            return amount;
+        }
+
+        public async Task<double> GetAmountOfClosedTickets(
+            string entityType = null,
+            string entityId = null)
+        {
+            Expression<Func<Ticket, bool>> filterByEntityExpression =
+                _ticketManager.Eq_FilterByEntity(entityType, entityId);
+
+            var finalExpression = ExpressionCombiner.CombineTwo(
+                filterByEntityExpression,
+                q => q.DateClosed != null);
+
+            var amount = (await _unitOfWork.Tickets.Count(finalExpression));
+            return amount;
+        }
+
+        public async Task<double> GetAmountOfOpenTickets(
+            string entityType = null,
+            string entityId = null)
+        {
+            Expression<Func<Ticket, bool>> filterByEntityExpression =
+                _ticketManager.Eq_FilterByEntity(entityType, entityId);
+
+            var finalExpression = ExpressionCombiner.CombineTwo(
+                filterByEntityExpression,
+                q => q.DateClosed == null);
+
+            var amount = (await _unitOfWork.Tickets.Count(finalExpression));
+            return amount;
+        }
+
+        // very good indicator btw =) An user might superficially close many tickets,
+        // and if the problem has not been fully solved, those specific tickets will get reopened by 
+        // someone else or by the user himself afterwards.
+        public async Task<int> GetAmountOfTicketsClosedByUserThatWereReopenedAfterwards(string userId)
+        {
+            var amount = (await _unitOfWork.TEMSUsers
+                .Find<int>(
+                    where: q => q.Id == userId,
+                    include: q => q.Include(q => q.ClosedAndThenReopenedTickets),
+                    select: q => q.ClosedAndThenReopenedTickets.Count()))
+                .FirstOrDefault();
+
+            return amount;
+        }
+
+        // Get the amount of tickets ever closed by the specified user, including
+        // the one that were reopened afterwards
+        public async Task<int> GetAmountOfTicketsEverClosedByUser(string userId)
+        {
+            var amount = (await _unitOfWork.TEMSUsers
+                .Find<int>(
+                    where: q => q.Id == userId,
+                    include: q => q
+                    .Include(q => q.ClosedTickets)
+                    .Include(q => q.ClosedAndThenReopenedTickets),
+                    select: q => q.ClosedTickets.Union(q.ClosedAndThenReopenedTickets).Count()
+                )).FirstOrDefault();
+
+            return amount;
         }
     }
 }

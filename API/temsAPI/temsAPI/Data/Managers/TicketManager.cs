@@ -172,7 +172,9 @@ namespace temsAPI.Data.Managers
         public async Task<Ticket> GetById(string ticketId)
         {
             var ticket = (await _unitOfWork.Tickets
-                .Find<Ticket>(q => q.Id == ticketId))
+                .Find<Ticket>(
+                    where: q => q.Id == ticketId,
+                    include: q => q.Include(q => q.PreviouslyClosedBy)))
                 .FirstOrDefault();
 
             return ticket;
@@ -258,9 +260,9 @@ namespace temsAPI.Data.Managers
                 .Find<TEMSUser>(q => q.Id == ticket.ClosedById))
                 .FirstOrDefault();
 
-            if (previouslyClosedBy != null)
+            if (previouslyClosedBy != null 
+                && !ticket.PreviouslyClosedBy.Any(q => q.Id == previouslyClosedBy.Id))
             {
-                ticket.PreviouslyClosedBy.Remove(previouslyClosedBy);
                 ticket.PreviouslyClosedBy.Add(previouslyClosedBy);
             }
 

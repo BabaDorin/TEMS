@@ -1,5 +1,11 @@
-<h2>Equipment Analytics</h2>
-<div class="row">
+<!-- <h2>Equipment Analytics</h2> -->
+<div class="row" *ngIf="
+equipmentTotalAmount != undefined &&
+equipmentTotalCost != undefined &&
+equipmentUtilizationRate != undefined &&
+equipmentTypeRate != undefined &&
+equipmentAllocationRate != undefined
+">
     <div class="col-lg-3 col-md-6">
         <app-simple-info-card
         title="Total Equipment Amount"
@@ -9,14 +15,14 @@
     </div>
 
     <div class="col-lg-3 col-md-6">
-        <app-piechart-card *ngIf="equipmentUtilizationRate != undefined"
+        <app-piechart-card
         title="Equipment using rate"
         [rates]="equipmentUtilizationRate">
         </app-piechart-card>
     </div>
 
     <div class="col-lg-3 col-md-6">
-        <app-piechart-card *ngIf="equipmentTypeRate != undefined"
+        <app-piechart-card
         title="Equipment type rate"
         [rates]="equipmentTypeRate">
         </app-piechart-card>
@@ -24,7 +30,6 @@
 
     <div class="col-lg-3 col-md-6">
         <app-piechart-card
-        *ngIf="equipmentAllocationRate != undefined"
         title="Equipment allocation rate"
         [rates]="equipmentAllocationRate">
         </app-piechart-card>

@@ -18,6 +18,8 @@ export class SummaryIssuesAnalyticsComponent extends TEMSComponent implements On
   closingRate: PieChartData;
   closingByRate: PieChartData;
   openTicketStatusRate: PieChartData;
+  openTickets: number;
+  totalTickets: number;
 
   constructor(
     private analyticsService: AnalyticsService,
@@ -41,6 +43,34 @@ export class SummaryIssuesAnalyticsComponent extends TEMSComponent implements On
     this.getTicketClosingRate();
     this.getOpenTicketStatusRate();
     this.getTicketClosingByRate();
+    this.getTotalTickets();
+    this.getOpenTickets();
+  }
+
+  getTotalTickets(){
+    this.subscriptions.push(
+      this.analyticsService.getAmountOfCreatedIssues(this.getEntityType(), this.getEntityId())
+      .subscribe(result => {
+        console.log(result);
+        if(this.snackService.snackIfError(result))
+          return;
+
+        this.totalTickets = result;
+      })
+    )
+  }
+
+  getOpenTickets(){
+    this.subscriptions.push(
+      this.analyticsService.getAmountOfOpenTickets(this.getEntityType(), this.getEntityId())
+      .subscribe(result => {
+        console.log(result);
+        if(this.snackService.snackIfError(result))
+          return;
+
+        this.openTickets = result;
+      })
+    )
   }
 
   getTicketClosingRate(){

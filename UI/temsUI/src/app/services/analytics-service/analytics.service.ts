@@ -141,4 +141,13 @@ export class AnalyticsService extends TEMSService {
       this.httpOptions
     );
   }
+
+  getAmountOfOpenTickets(entityType: string, entityId: string): Observable<number>{
+    let endPoint = this.buildEndpointAddresWithEntity(API_ANALYTICS_URL+ '/getAmountOfOpenTickets', entityType, entityId);
+
+    return this.http.get<number>(
+      endPoint,
+      this.httpOptions
+    );
+  }
 }

@@ -15,6 +15,7 @@ export class SummaryEquipmentAnalyticsComponent extends TEMSComponent implements
   @Input() roomId: string;
   @Input() personnelId: string;
 
+  prepared: boolean = false;
   equipmentTotalAmount: number;
   equipmentTotalCost: string;
   equipmentUtilizationRate: PieChartData;
@@ -27,6 +28,15 @@ export class SummaryEquipmentAnalyticsComponent extends TEMSComponent implements
     private cp: CurrencyPipe
   ) {
     super();
+  }
+
+  ngOnInit(): void {
+    this.getEquipmentAmount();
+    this.getEquipmentTotalCost();
+    this.getEquipmentUtilizationRate();
+    this.getEquipmentTypeRate();
+    this.getEquipmentAllocationRate();
+    // this.getEquipmentWorkabilityRate();
   }
 
   getEntityType(){
@@ -123,30 +133,21 @@ export class SummaryEquipmentAnalyticsComponent extends TEMSComponent implements
     )  
   }
 
-  getEquipmentWorkabilityRate(){
-    let serviceMethod = this.analyticsService.getEquipmentWorkabilityRate(
-      this.getEntityType(),
-      this.getEntityId()
-    );
+  // getEquipmentWorkabilityRate(){
+  //   let serviceMethod = this.analyticsService.getEquipmentWorkabilityRate(
+  //     this.getEntityType(),
+  //     this.getEntityId()
+  //   );
 
-    this.subscriptions.push(
-      serviceMethod
-      .subscribe(result => {
-        if(this.snackService.snackIfError(result))
-          return;
-        this.equipmentAllocationRate = result;
+  //   this.subscriptions.push(
+  //     serviceMethod
+  //     .subscribe(result => {
+  //       if(this.snackService.snackIfError(result))
+  //         return;
+  //       this.equipmentwork = result;
 
-        console.log(result);
-      })
-    )  
-  }
-
-  ngOnInit(): void {
-    this.getEquipmentAmount();
-    this.getEquipmentTotalCost();
-    this.getEquipmentUtilizationRate();
-    this.getEquipmentTypeRate();
-    this.getEquipmentAllocationRate();
-    this.getEquipmentWorkabilityRate();
-  }
+  //       console.log(result);
+  //     })
+  //   )  
+  // }
 }

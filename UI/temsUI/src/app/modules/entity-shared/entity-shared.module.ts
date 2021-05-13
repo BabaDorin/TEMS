@@ -1,3 +1,4 @@
+import { AnalyticsModule } from 'src/app/modules/analytics/analytics.module';
 import { LoadingplaceholderModule } from './../loadingplaceholder/loadingplaceholder.module';
 import { PersonnelDetailsGeneralComponent } from './../../tems-components/personnel/personnel-details-general/personnel-details-general.component';
 import { RoomDetailsGeneralComponent } from './../../tems-components/room/room-details-general/room-details-general.component';
@@ -41,6 +42,7 @@ import { IssueContainerComponent } from 'src/app/tems-components/issues/issue-co
     TemsFormsModule,
     NgxPaginationModule,
     TemsAgGridModule,
+    AnalyticsModule,
     LoadingplaceholderModule,
   ],
   exports: [

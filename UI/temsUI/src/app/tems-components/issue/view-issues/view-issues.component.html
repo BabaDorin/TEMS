@@ -1,4 +1,14 @@
-<div class="card">
+<app-summary-issues-analytics>
+    Loading...
+</app-summary-issues-analytics>
+
+<div class="card mt-5">
+    <div class="card-body">
+        <div class="card-title">Pinned ticket</div>
+    </div>
+</div>
+
+<div class="card mt-5">
     <div class="card-body">
         <div class="card-title">View Issues</div>
         <form [formGroup]="filterIssueFormGroup">
@@ -34,9 +44,6 @@
         </form>
         <mat-tab-group [@.disabled]="true">
             <mat-tab label="Open">
-                <app-summary-issues-analytics>
-                    Loading...
-                </app-summary-issues-analytics>
                 <app-entity-issues-list
                     showIncludeClosed="false"
                     [equipmentId]="equipmentId"

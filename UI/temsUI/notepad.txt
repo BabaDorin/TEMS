@@ -22,6 +22,9 @@ async controller (factory)
 --> Check the 'getEquipmentAmount' of entities (rooms, equipment), there might be a problem with getting the 
 last allocation.
 
+// Tickets
+Add pinned ticket feature
+
 // TD:
 --> Error when closing the allocation
 --> Make closing the active allocation easier (Ex. from equipment details page, like a quick action)

@@ -1,4 +1,9 @@
 export class PieChartData{
     chartName: string;
-    rates: [string, number][]
+    rates: RateTuple[]
+}
+
+export class RateTuple{
+    item1: string;
+    item2: number;
 }

@@ -3,6 +3,7 @@ import { TEMSComponent } from './../../../tems/tems.component';
 import { SnackService } from './../../../services/snack/snack.service';
 import { AnalyticsService } from './../../../services/analytics-service/analytics.service';
 import { Component, Input, OnInit } from '@angular/core';
+import { CurrencyPipe } from '@angular/common';
 
 @Component({
   selector: 'app-summary-equipment-analytics',
@@ -15,14 +16,15 @@ export class SummaryEquipmentAnalyticsComponent extends TEMSComponent implements
   @Input() personnelId: string;
 
   equipmentTotalAmount: number;
-  equipmentTotalCost: number;
+  equipmentTotalCost: string;
   equipmentUtilizationRate: PieChartData;
   equipmentTypeRate: PieChartData;
   equipmentAllocationRate: PieChartData;
 
   constructor(
     private analyticsService: AnalyticsService,
-    private snackService: SnackService
+    private snackService: SnackService,
+    private cp: CurrencyPipe
   ) {
     super();
   }
@@ -64,7 +66,7 @@ export class SummaryEquipmentAnalyticsComponent extends TEMSComponent implements
       .subscribe(result => {
         if(this.snackService.snackIfError(result))
           return;
-        this.equipmentTotalCost = result;
+        this.equipmentTotalCost = this.cp.transform(result, 'MDL ');
       })
     )  
   }
@@ -99,8 +101,6 @@ export class SummaryEquipmentAnalyticsComponent extends TEMSComponent implements
         if(this.snackService.snackIfError(result))
           return;
         this.equipmentTypeRate = result;
-
-        console.log(result);
       })
     )  
   }

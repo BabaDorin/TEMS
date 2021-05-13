@@ -57,7 +57,7 @@ import { BulkUploadResultsComponent } from './bulk-upload-results/bulk-upload-re
     TemsAgGridModule,
     EntitySharedModule,
     AnalyticsModule,
-    FileUploadModule
+    FileUploadModule,
   ],
   exports: [
   ],

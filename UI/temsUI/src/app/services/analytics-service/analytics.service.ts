@@ -52,7 +52,7 @@ export class AnalyticsService extends TEMSService {
   }
 
   getEquipmentTypeRate(entityType?: string, entityId?: string): Observable<PieChartData>{
-    let endPoint = this.buildEndpointAddresWithEntity(API_ANALYTICS_URL+ '/getEquipmentUtilizationRate', entityType, entityId);
+    let endPoint = this.buildEndpointAddresWithEntity(API_ANALYTICS_URL+ '/getEquipmentTypeRate', entityType, entityId);
 
     return this.http.get<PieChartData>(
       endPoint,

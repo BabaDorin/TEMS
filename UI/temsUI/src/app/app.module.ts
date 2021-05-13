@@ -36,6 +36,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { SnackComponent } from './public/snack/snack.component';
 import { DefinitionService } from './services/definition-service/definition.service';
 import { ConnectPersonnelUserComponent } from './tems-components/connect-personnel-user/connect-personnel-user.component';
+import { CurrencyPipe } from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -88,6 +89,7 @@ import { ConnectPersonnelUserComponent } from './tems-components/connect-personn
     TypeService,
     DefinitionService,
     RoomLabelService,
+    CurrencyPipe,
   ],
   bootstrap: [AppComponent],
 })

@@ -213,5 +213,38 @@ namespace temsAPI.Controllers.TicketControllers
                 return ReturnResponse("An error occured when fetching tickets", ResponseStatus.Fail);
             }
         }
+
+        [HttpGet("/ticket/pinTicket/{ticketId}")]
+        public async Task<JsonResult> PinTicket(string ticketId)
+        {
+            try
+            {
+                string result = await _ticketManager.PinTicket(ticketId);
+                if (result != null)
+                    return ReturnResponse(result, ResponseStatus.Fail);
+
+                return ReturnResponse("Success", ResponseStatus.Success);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured while pinning the ticket", ResponseStatus.Fail);
+            }
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> GetPinnedTicket()
+        {
+            try
+            {
+                var ticket = await _ticketManager.GetPinnedTicket();
+                return Json(ticket);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured while fetching the pinned ticket id", ResponseStatus.Fail);
+            }
+        }
     }
 }

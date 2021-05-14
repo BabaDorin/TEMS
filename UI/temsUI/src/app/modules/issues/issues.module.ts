@@ -1,7 +1,6 @@
 import { TemsFormsModule } from './../tems-forms/tems-forms.module';
 import { MaterialModule } from 'src/app/modules/material/material.module';
 import { ViewIssuesComponent } from './../../tems-components/issue/view-issues/view-issues.component';
-import { CreateIssueComponent } from 'src/app/tems-components/issue/create-issue/create-issue.component';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
@@ -24,6 +23,6 @@ import { AnalyticsModule } from '../analytics/analytics.module';
     EntitySharedModule,
     AnalyticsModule,
     MaterialModule,
-  ]
+  ],
 })
 export class IssuesModule { }

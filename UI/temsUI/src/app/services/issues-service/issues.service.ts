@@ -116,4 +116,18 @@ export class IssuesService extends TEMSService {
       this.httpOptions
     );
   }
+
+  pinTicket(ticketId: string): Observable<any>{
+    return this.http.get(
+      API_ISU_URL + '/pinTicket/' + ticketId,
+      this.httpOptions
+    );
+  }
+
+  getPinnedTicket(): Observable<ViewIssueSimplified>{
+    return this.http.get<ViewIssueSimplified>(
+      API_ISU_URL + '/getpinnedticket',
+      this.httpOptions
+    );
+  }
 }

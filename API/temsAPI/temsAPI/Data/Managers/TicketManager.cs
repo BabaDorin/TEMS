@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -48,13 +49,16 @@ namespace temsAPI.Data.Managers
 
         private UserManager<TEMSUser> _userManager;
         private IdentityService _identityService;
+        private AppSettings _appSettings;
 
         public TicketManager(
             IUnitOfWork unitOfWork, 
             ClaimsPrincipal user,
             UserManager<TEMSUser> userManager,
-            IdentityService identityService) : base(unitOfWork, user)
+            IdentityService identityService,
+            IOptions<AppSettings> appSettings) : base(unitOfWork, user)
         {
+            _appSettings = appSettings.Value;
             _userManager = userManager;
             _identityService = identityService;
         }
@@ -176,6 +180,37 @@ namespace temsAPI.Data.Managers
                     where: q => q.Id == ticketId,
                     include: q => q.Include(q => q.PreviouslyClosedBy)))
                 .FirstOrDefault();
+
+            return ticket;
+        }
+
+        public async Task<string> PinTicket(string ticketId)
+        {
+            // Notification
+            if (!await _unitOfWork.Tickets.isExists(q => q.Id == ticketId))
+                return "Invalid id provided";
+
+            _appSettings.PinnedTicketId = ticketId;
+            return null;
+        }
+
+        public async Task<ViewTicketSimplifiedViewModel> GetPinnedTicket()
+        {
+            string ticketId = _appSettings.PinnedTicketId;
+            var ticket = (await _unitOfWork.Tickets
+                .Find<ViewTicketSimplifiedViewModel>(
+                    where: q => q.Id == ticketId,
+                    include: q => q.Include(q => q.Assignees)
+                                   .Include(q => q.ClosedBy)
+                                   .Include(q => q.CreatedBy)
+                                   .Include(q => q.Label)
+                                   .Include(q => q.Personnel)
+                                   .Include(q => q.Rooms)
+                                   .Include(q => q.Status)
+                                   .Include(q => q.Equipments)
+                                   .Include(q => q.Assignees),
+                    select: q => ViewTicketSimplifiedViewModel.FromModel(q)
+                )).FirstOrDefault();
 
             return ticket;
         }

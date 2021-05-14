@@ -17,5 +17,6 @@ namespace temsAPI.System_Files
         public string Client_Url { get; set; }
         public Email Email { get; set; }
         public int MaxGeneratedReportsStored { get; set; }
+        public string PinnedTicketId { get; set; }
     }
 }

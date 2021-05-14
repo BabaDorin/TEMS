@@ -5,24 +5,30 @@ import { SimpleInfoCardComponent } from './../../tems-components/analytics/simpl
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AnalyticsRoutingModule } from './analytics-routing.module';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { NgbProgressbarModule } from '@ng-bootstrap/ng-bootstrap';
 
 
 @NgModule({
   declarations: [
     SimpleInfoCardComponent,
     PiechartCardComponent,
-    FractionCardComponent
+    FractionCardComponent,
   ],
   imports: [
     CommonModule,
     AnalyticsRoutingModule,
-    ChartsModule
+    ChartsModule,
+    MatProgressBarModule,
+    NgbProgressbarModule
   ],
   exports:[
     SimpleInfoCardComponent,
     PiechartCardComponent,
     ChartsModule,
-    FractionCardComponent
+    FractionCardComponent,
+    MatProgressBarModule,
+    NgbProgressbarModule
   ]
 })
 export class AnalyticsModule { }

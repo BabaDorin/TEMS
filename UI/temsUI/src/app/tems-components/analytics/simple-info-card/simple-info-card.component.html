@@ -3,9 +3,14 @@
         <h4>{{ title }}</h4>
         <div class="text-center mt-2">
             <div class="display-4">
-                <span class="counter-anim">{{ mainText }}</span>
+                <span [ngClass]="'text-' + theme">{{ mainText }}</span>
             </div>
-            <p class=" medium-font-size d-block mt-2 text-success">{{ secondaryText }}</p>
+            <p *ngIf="secondaryText != undefined" class=" medium-font-size d-block mt-2 text-success">
+                {{ secondaryText }}
+            </p>
+            <small *ngIf="footNote != undefined" class="text-muted">
+                {{ footNote }}
+            </small>
         </div>
     </div>
 </div>

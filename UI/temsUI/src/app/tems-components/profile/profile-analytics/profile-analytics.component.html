@@ -1,9 +1,39 @@
-<div class="card">
-    <div class="card-title">Ticket analytics</div>
-    <hr>
-    <p><b>amOfCreatedIssues: </b> {{ amOfCreatedIssues }}</p>
-    <p><b>uamOfCreatedIssues: </b> {{ uamOfCreatedIssues }}</p>
-    <p><b>uamOfClosedIssues: </b> {{ uamOfClosedIssues }}</p>
-    <p><b>uamOfTicketsEverClosedByUser: </b> {{ uamOfTicketsEverClosedByUser }}</p>
-    <p><b>uamOfTicketsClosedByUserThatWereReopenedAfterwards: </b> {{ uamOfTicketsClosedByUserThatWereReopenedAfterwards }}</p>
+<h2>User analytics</h2>
+
+<!-- <h3>Issues</h3> -->
+<div class="row" *ngIf="
+amOfCreatedIssues != undefined &&
+uamOfCreatedIssues != undefined &&
+uamOfClosedIssues != undefined &&
+uamOfTicketsEverClosedByUser != undefined &&
+uamOfTicketsClosedByUserThatWereReopenedAfterwards != undefined
+">
+    <div class="col-lg-4 col-md-6">
+        <app-fraction-card
+        title="Issues created by the user"
+        [numerator]="uamOfCreatedIssues"
+        [denominator]="amOfCreatedIssues"
+        theme="info"
+        displayProgressBar="true">
+        </app-fraction-card>
+    </div>
+
+    <div class="col-lg-4 col-md-6">
+        <app-fraction-card
+        title="Issues closed by the user"
+        [numerator]="uamOfClosedIssues"
+        [denominator]="amOfCreatedIssues"
+        theme="success"
+        displayProgressBar="true">
+        </app-fraction-card>
+    </div>
+
+    <div class="col-lg-4 col-md-6">
+        <app-simple-info-card
+        title="Probability of reopening an issue closed by the user"
+        [theme]="info"
+        [mainText]="uamOfTicketsClosedByUserThatWereReopenedAfterwards * 100 / uamOfTicketsEverClosedByUser + '%'"
+        [footNote]="uamOfTicketsEverClosedByUser + ' tickets were closed by the user, from which ' + uamOfTicketsClosedByUserThatWereReopenedAfterwards + ' have been reopened afterwards'">
+        </app-simple-info-card>
+    </div>
 </div>

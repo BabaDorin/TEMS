@@ -8,8 +8,10 @@ import { Component, Input, OnInit } from '@angular/core';
 export class SimpleInfoCardComponent implements OnInit {
 
   @Input() title;
+  @Input() theme = "info";
   @Input() mainText;
   @Input() secondaryText;
+  @Input() footNote;
   
   constructor() { }
 

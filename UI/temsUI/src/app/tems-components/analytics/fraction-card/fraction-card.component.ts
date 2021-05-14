@@ -14,6 +14,8 @@ export class FractionCardComponent implements OnInit {
   @Input() theme = "success"; // success or danger (good or bad)
   @Input() displayProgressBar;
 
+  progressValueNow: number;
+
   constructor() { }
 
   ngOnInit(): void {

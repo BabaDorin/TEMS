@@ -6,15 +6,15 @@
                 <span [ngClass]="'display-4 text-' + theme">{{ numerator }}</span>
                 <span class="medium-font-size text-muted">/{{ denominator }}</span>
             </p>
-            <p *ngIf="footNote!=undefined" class="d-block mt-2">{{ footNote }}</p>
+
             <div 
-            *ngIf="displayProgressBar && numerator != undefined && denominator != undefined" 
-            class="progress progress-md mt-2">
+            *ngIf="displayProgressBar && numerator != undefined && denominator != undefined" class="card-text"> 
             <mat-progress-bar 
                 mode="determinate"
                 color="primary"
                 [value]="numerator * 100 / denominator"></mat-progress-bar>
             </div>
+            <p *ngIf="footNote!=undefined" class="d-block mt-2">{{ footNote }}</p>
         </div>
     </div>
 </div>

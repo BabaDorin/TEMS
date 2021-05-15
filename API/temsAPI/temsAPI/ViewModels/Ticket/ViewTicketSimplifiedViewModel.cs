@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore.Infrastructure;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -8,6 +9,8 @@ namespace temsAPI.ViewModels.Ticket
     public class ViewTicketSimplifiedViewModel
     {
         public string Id { get; set; }
+        public bool IsPinned { get; set; }
+        public DateTime? DatePinned { get; set; }
         public string Problem { get; set; }
         public Option Status { get; set; }
         public Option Label { get; set; }
@@ -25,6 +28,8 @@ namespace temsAPI.ViewModels.Ticket
             return new ViewTicketSimplifiedViewModel
             {
                 Id = ticket.Id,
+                IsPinned = ticket.IsPinned,
+                DatePinned = ticket.DatePinned,
                 Problem = ticket.Problem,
                 DateClosed = ticket.DateClosed,
                 DateCreated = ticket.DateCreated,

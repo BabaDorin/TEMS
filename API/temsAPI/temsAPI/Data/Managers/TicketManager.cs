@@ -52,7 +52,7 @@ namespace temsAPI.Data.Managers
         private AppSettings _appSettings;
 
         public TicketManager(
-            IUnitOfWork unitOfWork, 
+            IUnitOfWork unitOfWork,
             ClaimsPrincipal user,
             UserManager<TEMSUser> userManager,
             IdentityService identityService,
@@ -93,7 +93,7 @@ namespace temsAPI.Data.Managers
             if (onlyClosed)
                 expression = q => q.DateClosed.HasValue && !q.IsArchieved;
 
-            Expression<Func<Ticket, bool>> expression2 = null;
+            Expression<Func<Ticket, bool>> entityExpression = null;
 
             switch (entityType)
             {
@@ -101,42 +101,42 @@ namespace temsAPI.Data.Managers
                     if (!await _unitOfWork.TEMSUsers.isExists(q => q.Id == entityId))
                         throw new Exception("Invalid type or id provided");
 
-                    expression2 = q => q.ClosedById == entityId;
+                    entityExpression = q => q.ClosedById == entityId;
                     break;
                 case "user created":
                     if (!await _unitOfWork.TEMSUsers.isExists(q => q.Id == entityId))
                         throw new Exception("Invalid type or id provided");
 
-                    expression2 = q => q.CreatedById == entityId;
+                    entityExpression = q => q.CreatedById == entityId;
                     break;
                 case "user assigned":
                     var user = await _userManager.FindByIdAsync(entityId);
                     if (user == null)
                         throw new Exception("Invalid type or id provided");
 
-                    expression2 = q => q.Assignees.Contains(user);
+                    entityExpression = q => q.Assignees.Contains(user);
                     break;
                 case "equipment":
                     if (!await _unitOfWork.Equipments.isExists(q => q.Id == entityId))
                         throw new Exception("Invalid type or id provided");
 
-                    expression2 = q => q.Equipments.Any(q => q.Id == entityId);
+                    entityExpression = q => q.Equipments.Any(q => q.Id == entityId);
                     break;
                 case "room":
                     if (!await _unitOfWork.Rooms.isExists(q => q.Id == entityId))
                         throw new Exception("Invalid type or id provided");
 
-                    expression2 = q => q.Rooms.Any(q => q.Id == entityId);
+                    entityExpression = q => q.Rooms.Any(q => q.Id == entityId);
                     break;
                 case "personnel":
                     if (!await _unitOfWork.Personnel.isExists(q => q.Id == entityId))
                         throw new Exception("Invalid type or id provided");
 
-                    expression2 = q => q.Personnel.Any(q => q.Id == entityId);
+                    entityExpression = q => q.Personnel.Any(q => q.Id == entityId);
                     break;
             }
 
-            expression = ExpressionCombiner.CombineTwo(expression, expression2);
+            expression = ExpressionCombiner.And(expression, entityExpression);
 
             Func<IQueryable<Ticket>, IOrderedQueryable<Ticket>> orderByExpression = null;
             switch (orderBy)
@@ -184,41 +184,44 @@ namespace temsAPI.Data.Managers
             return ticket;
         }
 
-        public async Task<string> ChangePinStatus(string ticketId, bool status)
+        public async Task<string> ChangePinStatus(Ticket ticket, bool status)
         {
-            // Notification
-            if (!await _unitOfWork.Tickets.isExists(q => q.Id == ticketId))
-                return "Invalid id provided";
-
-            if (status)
-            {
-                _appSettings.PinnedTicketId = ticketId;
-                return null;
-            }
-
-            _appSettings.PinnedTicketId = null;
+            ticket.IsPinned = status;
+            ticket.DatePinned = (status) ? DateTime.Now : null;
+            await _unitOfWork.Save();
             return null;
         }
 
-        public async Task<ViewTicketSimplifiedViewModel> GetPinnedTicket()
+        public async Task<List<ViewTicketSimplifiedViewModel>> GetPinnedTickets()
         {
-            string ticketId = _appSettings.PinnedTicketId;
-            var ticket = (await _unitOfWork.Tickets
-                .Find<ViewTicketSimplifiedViewModel>(
-                    where: q => q.Id == ticketId,
-                    include: q => q.Include(q => q.Assignees)
-                                   .Include(q => q.ClosedBy)
-                                   .Include(q => q.CreatedBy)
-                                   .Include(q => q.Label)
-                                   .Include(q => q.Personnel)
-                                   .Include(q => q.Rooms)
-                                   .Include(q => q.Status)
-                                   .Include(q => q.Equipments)
-                                   .Include(q => q.Assignees),
-                    select: q => ViewTicketSimplifiedViewModel.FromModel(q)
-                )).FirstOrDefault();
+            var tickets = await GetFullTickets(q => q.IsPinned);
+            return tickets;
+        }
 
-            return ticket;
+        public async Task<List<ViewTicketSimplifiedViewModel>> GetFullTickets(
+            Expression<Func<Ticket, bool>> additionalFilter = null)
+        {
+            Expression<Func<Ticket, bool>> expression = ExpressionCombiner.CombineTwo(
+                additionalFilter,
+                q => !q.IsArchieved);
+
+            var tickets = (await _unitOfWork.Tickets
+                .FindAll<ViewTicketSimplifiedViewModel>(
+                    where: expression,
+                    include: q => q
+                    .Include(q => q.Assignees)
+                    .Include(q => q.ClosedBy)
+                    .Include(q => q.CreatedBy)
+                    .Include(q => q.Label)
+                    .Include(q => q.Personnel)
+                    .Include(q => q.Rooms)
+                    .Include(q => q.Status)
+                    .Include(q => q.Equipments)
+                    .Include(q => q.Assignees),
+                    select: q => ViewTicketSimplifiedViewModel.FromModel(q)
+                )).ToList();
+
+            return tickets;
         }
 
         public async Task CloseTicket(Ticket ticket)
@@ -233,7 +236,7 @@ namespace temsAPI.Data.Managers
             string validationResult = await viewModel.Validate(_unitOfWork);
             if (validationResult != null)
                 return validationResult;
-            
+
             Ticket model = new Ticket
             {
                 Id = Guid.NewGuid().ToString(),
@@ -294,14 +297,14 @@ namespace temsAPI.Data.Managers
 
             return status;
         }
-        
+
         public async Task ReopenTicket(Ticket ticket)
         {
             var previouslyClosedBy = (await _unitOfWork.TEMSUsers
                 .Find<TEMSUser>(q => q.Id == ticket.ClosedById))
                 .FirstOrDefault();
 
-            if (previouslyClosedBy != null 
+            if (previouslyClosedBy != null
                 && !ticket.PreviouslyClosedBy.Any(q => q.Id == previouslyClosedBy.Id))
             {
                 ticket.PreviouslyClosedBy.Add(previouslyClosedBy);
@@ -378,8 +381,8 @@ namespace temsAPI.Data.Managers
         }
 
         public Expression<Func<Ticket, bool>> Eq_FilterByEntity(
-            string entityType, 
-            string entityId, 
+            string entityType,
+            string entityId,
             UserTicketAction? userTicketAction = null)
         {
             Expression<Func<Ticket, bool>> expression = q => !q.IsArchieved;
@@ -409,7 +412,7 @@ namespace temsAPI.Data.Managers
                     if (userTicketAction == null)
                         secondaryExpression = null;
 
-                    if(userTicketAction == UserTicketAction.Create)
+                    if (userTicketAction == UserTicketAction.Create)
                         secondaryExpression = q => q.CreatedById == entityId;
 
                     if (userTicketAction == UserTicketAction.Close)

@@ -12,10 +12,12 @@ using temsAPI.Data.Entities.UserEntities;
 
 namespace temsAPI.Data.Entities.CommunicationEntities
 {
-    public class Ticket: IArchiveableItem
+    public class Ticket: IArchiveableItem, IPinable
     {
         [Key]
         public string Id { get; set; }
+        public bool IsPinned { get; set; }
+
 
         public DateTime DateCreated { get; set; }
 
@@ -47,6 +49,8 @@ namespace temsAPI.Data.Entities.CommunicationEntities
         [ForeignKey("ArchievedById")]
         public TEMSUser? ArchievedBy { get; set; }
         public string? ArchievedById { get; set; }
+
+        public DateTime? DatePinned { get; set; }
 #nullable disable
 
         private bool isArchieved;

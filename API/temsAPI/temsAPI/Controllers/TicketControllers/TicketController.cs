@@ -214,12 +214,16 @@ namespace temsAPI.Controllers.TicketControllers
             }
         }
 
-        [HttpGet("/ticket/pinTicket/{ticketId}/{status}")]
+        [HttpGet("/ticket/changePinStatus/{ticketId}/{status}")]
         public async Task<JsonResult> ChangePinStatus(string ticketId, bool status)
         {
             try
             {
-                string result = await _ticketManager.ChangePinStatus(ticketId, status);
+                var ticket = await _ticketManager.GetById(ticketId);
+                if (ticket == null)
+                    return ReturnResponse("Invalid ticket id", ResponseStatus.Fail);
+
+                string result = await _ticketManager.ChangePinStatus(ticket, status);
                 if (result != null)
                     return ReturnResponse(result, ResponseStatus.Fail);
 
@@ -233,11 +237,11 @@ namespace temsAPI.Controllers.TicketControllers
         }
 
         [HttpGet]
-        public async Task<JsonResult> GetPinnedTicket()
+        public async Task<JsonResult> GetPinnedTickets()
         {
             try
             {
-                var ticket = await _ticketManager.GetPinnedTicket();
+                var ticket = await _ticketManager.GetPinnedTickets();
                 return Json(ticket);
             }
             catch (Exception ex)

@@ -16,7 +16,6 @@ export class IssueContainerComponent extends TEMSComponent implements OnInit {
   @Input() issue: ViewIssueSimplified;
   @Input() statuses: IOption[];
   @Input() readonly: boolean = false;
-  @Input() isPinned: boolean = false;
  
   @Output() solve = new EventEmitter(); 
   @Output() reopen = new EventEmitter(); 
@@ -42,6 +41,8 @@ export class IssueContainerComponent extends TEMSComponent implements OnInit {
       .subscribe(result => {
         if(this.snackService.snackIfError(result))
           return;
+  
+        this.issue.dateClosed = new Date;
         this.solve.emit();
       })
     )
@@ -98,15 +99,16 @@ export class IssueContainerComponent extends TEMSComponent implements OnInit {
   }
 
   changePinStatus(){
-    let endPoint = this.issuesService.changePinStatus(this.issue.id, !this.isPinned);
+    let endPoint = this.issuesService.changePinStatus(this.issue.id, !this.issue.isPinned);
     this.subscriptions.push(
       endPoint
       .subscribe(result => {
         if(this.snackService.snackIfError(result))
           return;
-        this.isPinned = !this.isPinned;
+
+        this.issue.isPinned = !this.issue.isPinned;
         
-        if(this.isPinned)
+        if(this.issue.isPinned)
           this.pinned.emit(this.issue);
         else
           this.unPinned.emit(this.issue);

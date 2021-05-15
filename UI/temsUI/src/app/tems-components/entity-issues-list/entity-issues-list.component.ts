@@ -7,10 +7,9 @@ import { IOption } from 'src/app/models/option.model';
 import { TEMSComponent } from 'src/app/tems/tems.component';
 import { CreateIssueComponent } from './../issue/create-issue/create-issue.component';
 import { IssuesService } from './../../services/issues-service/issues.service';
-import { Component, Input, OnInit, OnChanges, ViewChild, Output } from '@angular/core';
+import { Component, Input, OnInit, OnChanges, ViewChild, Output, EventEmitter } from '@angular/core';
 import { ViewIssueSimplified } from 'src/app/models/communication/issues/view-issue-simplified.model';
 import * as confetti from 'canvas-confetti';
-import EventEmitter from 'events';
 
 @Component({
   selector: 'app-entity-issues-list',
@@ -18,6 +17,8 @@ import EventEmitter from 'events';
   styleUrls: ['./entity-issues-list.component.scss'],
 })
 export class EntityIssuesListComponent extends TEMSComponent implements OnInit, OnChanges {
+
+  @Input() issues: ViewIssueSimplified[];
 
   // for ticket fetching
   @Input() equipmentId;
@@ -41,7 +42,6 @@ export class EntityIssuesListComponent extends TEMSComponent implements OnInit, 
 
   @Output() pinned = new EventEmitter();
 
-  public issues: ViewIssueSimplified[];
   canManage = false;
   statuses: IOption[];
   loading = true;
@@ -73,7 +73,7 @@ export class EntityIssuesListComponent extends TEMSComponent implements OnInit, 
       this.cancelFirstOnChange = false;
       return;
     }
-    
+  
     this.getIssues();
   }
 
@@ -88,12 +88,18 @@ export class EntityIssuesListComponent extends TEMSComponent implements OnInit, 
 
     this.subscriptions.push(
       this.endPoint
-      .subscribe(result => {
+      .subscribe(result  => {
+        this.loading = false;
+
         if(this.snackService.snackIfError(this.issues))
           return;
         
-        this.issues = result;
-        this.loading = false;
+        let auxIssues: ViewIssueSimplified[] = result;
+
+        if(!this.includePinned)
+          this.issues = auxIssues.filter(q => !q.isPinned);
+        else
+          this.issues = auxIssues;
       }))
   }
 
@@ -117,7 +123,7 @@ export class EntityIssuesListComponent extends TEMSComponent implements OnInit, 
   }
 
   ticketPinned(eventData, index){
-    if(!this.includePinned)
+    if(this.includePinned)
       return;
 
     this.pinned.emit(eventData);
@@ -126,11 +132,10 @@ export class EntityIssuesListComponent extends TEMSComponent implements OnInit, 
 
   solve(index){
     let selectedIssue = this.issues[index];
-      selectedIssue.dateClosed = new Date;
-      let d1 = new Date(selectedIssue.dateClosed);
-      let d2 = new Date(selectedIssue.dateCreated);
-      let difference = Math.abs(d1.getTime() - d2.getTime()) / 36e5;
-      this.snackService.snack({message: "🎉🎉 Let's close them all!", status: 1}, 'default-snackbar')
+    let d1 = new Date(selectedIssue.dateClosed);
+    let d2 = new Date(selectedIssue.dateCreated);
+    let difference = Math.abs(d1.getTime() - d2.getTime()) / 36e5;
+    this.snackService.snack({message: "🎉🎉 Let's close them all!", status: 1}, 'default-snackbar')
 
     if(difference <= 24)
       this.launchConfetti();

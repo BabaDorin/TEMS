@@ -99,10 +99,10 @@
           <button mat-button (click)="removeIssue()">
             <mat-icon class="text-danger">delete</mat-icon>Remove
           </button>
-          <button *ngIf="isPinned" mat-button (click)="pin()">
-            <mat-icon class="text-danger">push_pin</mat-icon>Pin
+          <button *ngIf="!issue.isPinned" mat-button (click)="pin()">
+            <mat-icon class="text-info">push_pin</mat-icon>Pin
           </button>
-          <button *ngIf="!isPinned" mat-button (click)="unPin()">
+          <button *ngIf="issue.isPinned" mat-button (click)="unPin()">
             Unpin
           </button>
         </ng-container>

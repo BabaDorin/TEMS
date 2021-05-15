@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { PinnedIssueComponent } from './pinned-issue.component';
+import { PinnedIssuesComponent } from './pinned-issues.component';
 
-describe('PinnedIssueComponent', () => {
-  let component: PinnedIssueComponent;
-  let fixture: ComponentFixture<PinnedIssueComponent>;
+describe('PinnedIssuesComponent', () => {
+  let component: PinnedIssuesComponent;
+  let fixture: ComponentFixture<PinnedIssuesComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ PinnedIssueComponent ]
+      declarations: [ PinnedIssuesComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(PinnedIssueComponent);
+    fixture = TestBed.createComponent(PinnedIssuesComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

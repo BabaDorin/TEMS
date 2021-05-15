@@ -24,7 +24,7 @@
       [issue]="issue"
       [statuses]="statuses"
       (solve)="solve((pageNumber-1)*20 + i)"
-      (pinned)="pinned($event, (pageNumber-1)*20 + i)"
+      (pinned)="ticketPinned($event, (pageNumber-1)*20 + i)"
       (remove)="remove((pageNumber-1)*20 + i)">
       </app-issue-container>
     </div>

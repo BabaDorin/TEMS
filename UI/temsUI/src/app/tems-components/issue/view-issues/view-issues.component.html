@@ -2,16 +2,13 @@
     Loading...
 </app-summary-issues-analytics>
 
-<div class="card mt-5">
-    <div class="card-body">
-        <app-pinned-issue
-        (unPinned)="ticketUnpinned($event)">
-
-        </app-pinned-issue>
-    </div>
+<div class="mt-3">
+    <app-pinned-issues #pinnedIssues
+    (unPinned)="ticketUnpinned($event)">
+    </app-pinned-issues>
 </div>
 
-<div class="card mt-5">
+<div class="card mt-3">
     <div class="card-body">
         <div class="card-title">View Issues</div>
         <form [formGroup]="filterIssueFormGroup">
@@ -50,8 +47,10 @@
                 <app-entity-issues-list #entityOpenIssuesList
                     showIncludeClosed="false"
                     [equipmentId]="equipmentId"
+                    [includePinned]="false"
                     [roomId]="roomId"
-                    [personnelId]="personnelId">
+                    [personnelId]="personnelId"
+                    (pinned)="ticketPinned($event)">
                     Loading...
                 </app-entity-issues-list>
             </mat-tab>
@@ -60,10 +59,12 @@
                     <app-entity-issues-list #entityClosedIssuesList
                     showIncludeClosed="false"
                     [equipmentId]="equipmentId"
+                    [includePinned]="false"
                     [roomId]="roomId"
                     [personnelId]="personnelId"
                     onlyClosed="true"
-                    addIssueEnabled="false">
+                    addIssueEnabled="false"
+                    (pinned)="ticketPinned($event)">
                     Loading...
                 </app-entity-issues-list>
                 </ng-template>

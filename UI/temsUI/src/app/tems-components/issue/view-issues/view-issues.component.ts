@@ -1,3 +1,4 @@
+import { PinnedIssuesComponent } from './../pinned-issues/pinned-issues.component';
 import { ViewIssueSimplified } from 'src/app/models/communication/issues/view-issue-simplified.model';
 import { EntityIssuesListComponent } from './../../entity-issues-list/entity-issues-list.component';
 import { PersonnelService } from 'src/app/services/personnel-service/personnel.service';
@@ -38,6 +39,7 @@ export class ViewIssuesComponent extends TEMSComponent implements OnInit {
     personnel: new FormControl(),
   })
 
+  @ViewChild('pinnedIssues') pinnedIssues: PinnedIssuesComponent;
   @ViewChild('entityOpenIssuesList') entityOpenIssuesList: EntityIssuesListComponent;
   @ViewChild('entityClosedIssuesList') entityClosedIssuesList: EntityIssuesListComponent;
 
@@ -88,6 +90,11 @@ export class ViewIssuesComponent extends TEMSComponent implements OnInit {
       return;
     };
 
-    this.entityClosedIssuesList.issues.push(ticket);
+    if(this.entityClosedIssuesList != undefined)
+      this.entityClosedIssuesList.issues.push(ticket);
+  }
+
+  ticketPinned(ticket: ViewIssueSimplified){
+    this.pinnedIssues.issues.push(ticket);
   }
 }

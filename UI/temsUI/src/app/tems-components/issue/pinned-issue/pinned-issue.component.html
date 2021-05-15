@@ -1,0 +1,6 @@
+<app-issue-container 
+    [issue]="issue"
+    [statuses]="statuses"
+    (unPinned)="ticketUnpinned($event)"
+    (remove)="remove((pageNumber-1)*20 + i)">
+</app-issue-container>

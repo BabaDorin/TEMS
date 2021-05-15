@@ -7,9 +7,10 @@ import { IOption } from 'src/app/models/option.model';
 import { TEMSComponent } from 'src/app/tems/tems.component';
 import { CreateIssueComponent } from './../issue/create-issue/create-issue.component';
 import { IssuesService } from './../../services/issues-service/issues.service';
-import { Component, Input, OnInit, OnChanges, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, OnChanges, ViewChild, Output } from '@angular/core';
 import { ViewIssueSimplified } from 'src/app/models/communication/issues/view-issue-simplified.model';
 import * as confetti from 'canvas-confetti';
+import EventEmitter from 'events';
 
 @Component({
   selector: 'app-entity-issues-list',
@@ -33,11 +34,14 @@ export class EntityIssuesListComponent extends TEMSComponent implements OnInit, 
   @Input() onlyClosed: boolean = false;
   @Input() includingClosed: boolean = false;
   @Input() showIncludeClosed: boolean = true;
+  @Input() includePinned: boolean = true;
 
   @ViewChild('includeClosedToggle') includeClosedToggle;
   @ViewChild('issuesPanel', { static: true }) issuesPanel;
 
-  issues: ViewIssueSimplified[];
+  @Output() pinned = new EventEmitter();
+
+  public issues: ViewIssueSimplified[];
   canManage = false;
   statuses: IOption[];
   loading = true;
@@ -87,7 +91,7 @@ export class EntityIssuesListComponent extends TEMSComponent implements OnInit, 
       .subscribe(result => {
         if(this.snackService.snackIfError(this.issues))
           return;
-
+        
         this.issues = result;
         this.loading = false;
       }))
@@ -112,54 +116,24 @@ export class EntityIssuesListComponent extends TEMSComponent implements OnInit, 
     )
   }
 
-  statusChanged(eventData, issueId, index){
-    this.subscriptions.push(
-      this.issuesService.changeIssueStatus(issueId, eventData.value.value)
-      .subscribe(result => {
-        if(result.status == 0){
-          this.snackService.snack(result);
-          return;
-        }
+  ticketPinned(eventData, index){
+    if(!this.includePinned)
+      return;
 
-        this.issues[index].status = eventData.value;
-      })
-    )
+    this.pinned.emit(eventData);
+    this.issues.splice(index, 1);
   }
 
-  solve(issueId, index){
-    this.subscriptions.push(
-      this.issuesService.closeIssue(issueId)
-      .subscribe(result => {
-        if(result.status == 0){
-          this.snackService.snack(result);
-          return;
-        }
+  solve(index){
+    let selectedIssue = this.issues[index];
+      selectedIssue.dateClosed = new Date;
+      let d1 = new Date(selectedIssue.dateClosed);
+      let d2 = new Date(selectedIssue.dateCreated);
+      let difference = Math.abs(d1.getTime() - d2.getTime()) / 36e5;
+      this.snackService.snack({message: "🎉🎉 Let's close them all!", status: 1}, 'default-snackbar')
 
-        let selectedIssue = this.issues[index];
-        selectedIssue.dateClosed = new Date;
-        let d1 = new Date(selectedIssue.dateClosed);
-        let d2 = new Date(selectedIssue.dateCreated);
-        let difference = Math.abs(d1.getTime() - d2.getTime()) / 36e5;
-        this.snackService.snack({message: "🎉🎉 Let's close them all!", status: 1}, 'default-snackbar')
-
-        if(difference <= 24)
-          this.launchConfetti();
-      })
-    )
-  }
-
-  reopen(issueId, index){
-    this.subscriptions.push(
-      this.issuesService.reopenIssue(issueId)
-      .subscribe(result => {
-        if(result.status == 0){
-          this.snackService.snack(result);
-          return;
-        }
-
-        this.issues[index].dateClosed = undefined;
-      })
-    )
+    if(difference <= 24)
+      this.launchConfetti();
   }
 
   private addIssue(){
@@ -181,18 +155,8 @@ export class EntityIssuesListComponent extends TEMSComponent implements OnInit, 
     this.getIssues()
   }
 
-  remove(issueId, index){
-    if(!confirm("Are you sure you want to remove that issue?"))
-      return;
-
-    this.subscriptions.push(
-      this.issuesService.archieve(issueId)
-      .subscribe(result => {
-        this.snackService.snack(result);
-        if(result.status == 1)
-          this.issues.splice(index, 1);
-      })
-    )
+  remove(index){
+    this.issues.splice(index, 1);
   }
 
   launchConfetti(){

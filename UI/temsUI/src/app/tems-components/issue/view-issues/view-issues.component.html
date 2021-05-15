@@ -4,7 +4,10 @@
 
 <div class="card mt-5">
     <div class="card-body">
-        <app-pinned-issue></app-pinned-issue>
+        <app-pinned-issue
+        (unPinned)="ticketUnpinned($event)">
+
+        </app-pinned-issue>
     </div>
 </div>
 
@@ -44,7 +47,7 @@
         </form>
         <mat-tab-group [@.disabled]="true">
             <mat-tab label="Open">
-                <app-entity-issues-list
+                <app-entity-issues-list #entityOpenIssuesList
                     showIncludeClosed="false"
                     [equipmentId]="equipmentId"
                     [roomId]="roomId"
@@ -54,7 +57,7 @@
             </mat-tab>
             <mat-tab label="Closed">
                 <ng-template matTabContent>
-                    <app-entity-issues-list 
+                    <app-entity-issues-list #entityClosedIssuesList
                     showIncludeClosed="false"
                     [equipmentId]="equipmentId"
                     [roomId]="roomId"

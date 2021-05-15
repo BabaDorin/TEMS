@@ -117,9 +117,9 @@ export class IssuesService extends TEMSService {
     );
   }
 
-  pinTicket(ticketId: string): Observable<any>{
+  changePinStatus(ticketId: string, pinStatus: boolean): Observable<any>{
     return this.http.get(
-      API_ISU_URL + '/pinTicket/' + ticketId,
+      API_ISU_URL + '/changePinStatus/' + ticketId + '/' + status,
       this.httpOptions
     );
   }

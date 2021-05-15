@@ -214,12 +214,12 @@ namespace temsAPI.Controllers.TicketControllers
             }
         }
 
-        [HttpGet("/ticket/pinTicket/{ticketId}")]
-        public async Task<JsonResult> PinTicket(string ticketId)
+        [HttpGet("/ticket/pinTicket/{ticketId}/{status}")]
+        public async Task<JsonResult> ChangePinStatus(string ticketId, bool status)
         {
             try
             {
-                string result = await _ticketManager.PinTicket(ticketId);
+                string result = await _ticketManager.ChangePinStatus(ticketId, status);
                 if (result != null)
                     return ReturnResponse(result, ResponseStatus.Fail);
 

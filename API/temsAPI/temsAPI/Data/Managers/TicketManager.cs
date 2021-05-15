@@ -184,13 +184,19 @@ namespace temsAPI.Data.Managers
             return ticket;
         }
 
-        public async Task<string> PinTicket(string ticketId)
+        public async Task<string> ChangePinStatus(string ticketId, bool status)
         {
             // Notification
             if (!await _unitOfWork.Tickets.isExists(q => q.Id == ticketId))
                 return "Invalid id provided";
 
-            _appSettings.PinnedTicketId = ticketId;
+            if (status)
+            {
+                _appSettings.PinnedTicketId = ticketId;
+                return null;
+            }
+
+            _appSettings.PinnedTicketId = null;
             return null;
         }
 

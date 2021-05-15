@@ -29,7 +29,9 @@ Add pinned ticket feature
       Add support for getting issue statuses from both ways => from API or from input parameter
       Add pin icon and make api calls
 
+
 // TD:
+--> smart load mat tab
 --> Error when closing the allocation
 --> Make closing the active allocation easier (Ex. from equipment details page, like a quick action)
 --> Description property is always considered as desired specific property, idk why (report);

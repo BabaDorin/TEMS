@@ -40,6 +40,11 @@ namespace temsAPI.Services
             _user = user;
         }
 
+        public async Task<TEMSUser> GetCurrentUserAsync()
+        {
+            return await _userManager.FindByIdAsync(GetUserId());
+        }
+
         public static string GetUserId(ClaimsPrincipal user)
         {
             return user.Claims.Where(q => q.Type == "UserID").Select(q => q.Value).SingleOrDefault();

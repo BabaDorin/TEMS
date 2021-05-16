@@ -22,6 +22,9 @@ namespace temsAPI.Contracts
         IGenericRepository<LogType> LogTypes { get; }
         IGenericRepository<Ticket> Tickets { get; }
         IGenericRepository<ToDo> ToDos { get; }
+        IGenericRepository<CommonNotification> CommonNotifications { get; }
+        IGenericRepository<UserNotification> UserNotifications { get; }
+
 
         // Equipment entities
         IGenericRepository<Equipment> Equipments { get; }

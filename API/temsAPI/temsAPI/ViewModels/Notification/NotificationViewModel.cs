@@ -9,6 +9,7 @@ namespace temsAPI.ViewModels.Notification
     public class NotificationViewModel
     {
         public string Id { get; set; }
+        public string Title { get; set; }
         public string Message { get; set; }
         public DateTime DateCreated { get; set; }
 
@@ -18,6 +19,7 @@ namespace temsAPI.ViewModels.Notification
             {
                 Id = model.Id,
                 DateCreated = model.DateCreated,
+                Title = model.Title,
                 Message = model.Message
             };
         }

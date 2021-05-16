@@ -28,6 +28,7 @@ using temsAPI.Helpers;
 using temsAPI.Mappings;
 using temsAPI.Repository;
 using temsAPI.Services;
+using temsAPI.Services.Notification;
 using temsAPI.Services.Report;
 using temsAPI.System_Files;
 
@@ -123,6 +124,10 @@ namespace temsAPI
             services.AddScoped<IdentityService>();
             services.AddScoped<EmailService>();
             services.AddSingleton<CurrencyConvertor>();
+            services.AddScoped<EmailNotificationService>();
+            services.AddScoped<SMSNotificationService>();
+            services.AddScoped<BrowserNotificationService>();
+            services.AddScoped<NotificationService>();
 
             // TEMS Entity managers
             services.AddScoped<ReportManager>();
@@ -140,6 +145,7 @@ namespace temsAPI
             services.AddScoped<RoomManager>();
             services.AddScoped<TicketManager>();
             services.AddScoped<AnalyticsManager>();
+            services.AddScoped<NotificationManager>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

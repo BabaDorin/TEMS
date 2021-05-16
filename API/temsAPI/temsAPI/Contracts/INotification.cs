@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using temsAPI.Data.Entities.UserEntities;
 
 namespace temsAPI.Contracts
 {
-    interface INotification
+    public interface INotification
     {
         public DateTime DateCreated { get; set; }
         public string Message { get; set; }
@@ -13,5 +14,7 @@ namespace temsAPI.Contracts
         public bool SendSMS { get; set; }
         public bool SendPush { get; set; }
         public bool SendBrowser { get; set; }
+
+        public List<TEMSUser> GetUsers();
     }
 }

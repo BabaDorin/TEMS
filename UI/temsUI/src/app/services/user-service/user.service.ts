@@ -4,7 +4,7 @@ import { ChangePasswordModel } from './../../models/identity/change-password.mod
 import { IOption } from 'src/app/models/option.model';
 import { ViewUser, ViewUserSimplified } from './../../models/user/view-user.model';
 import { LoginModel } from './../../models/identity/login.model';
-import { API_USER_URL, API_AUTH_URL, API_URL, API_PROFILE_URL } from './../../models/backend.config';
+import { API_USER_URL, API_AUTH_URL, API_URL, API_PROFILE_URL, API_ALL_URL, API_NOTIF_URL } from './../../models/backend.config';
 import { TEMSService } from './../tems-service/tems.service';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
@@ -12,6 +12,7 @@ import { AddUser } from './../../models/identity/add-user.model';
 import { Role } from '../../models/role.model';
 import { Injectable } from '@angular/core';
 import { ViewProfile } from 'src/app/models/profile/view-profile.model';
+import { ViewNotification } from 'src/app/models/communication/notification/view-notification.model';
 
 @Injectable({
   providedIn: 'root'
@@ -141,6 +142,28 @@ export class UserService extends TEMSService {
     return this.http.post(
       API_USER_URL + '/editAccountGeneralInfo',
       JSON.stringify(accountGeneralInfoModel),
+      this.httpOptions
+    );
+  }
+
+  getLastNotifications(take?: number): Observable<ViewNotification[]>{
+    let endPoint = API_NOTIF_URL +  "/getlastnotifications";
+    if(take != undefined)
+      endPoint += '/' + take;
+    
+    return this.http.get<ViewNotification[]>(
+      endPoint,
+      this.httpOptions
+    );
+  }
+
+  getAllNotifications(skip?: number, take?: number): Observable<ViewNotification[]>{
+    let endPoint =  API_NOTIF_URL + "/getallnotifications";
+    if(skip != undefined && take != undefined)
+      endPoint += '/' + skip + '/' + take;
+
+    return this.http.get<ViewNotification[]>(
+      endPoint,
       this.httpOptions
     );
   }

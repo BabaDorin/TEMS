@@ -45,6 +45,9 @@ namespace temsAPI.Data.Entities.UserEntities
         public TEMSUser? ArchievedBy { get; set; }
         public string? ArchievedById { get; set; }
 #nullable disable
+        public virtual ICollection<UserNotification> UserNotifications { get; set; } = new List<UserNotification>();
+        public virtual ICollection<CommonNotification> CommonNotifications { get; set; } = new List<CommonNotification>();
+
         public virtual ICollection<Equipment> RegisteredEquipment { get; set; } = new List<Equipment>();
         public virtual ICollection<Announcement> Announcements { get; set; } = new List<Announcement>();
         public virtual ICollection<Ticket> ClosedTickets { get; set; } = new List<Ticket>();

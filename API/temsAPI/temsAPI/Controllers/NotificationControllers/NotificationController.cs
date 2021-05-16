@@ -56,8 +56,8 @@ namespace temsAPI.Controllers.NotificationControllers
         }
 
         [Authorize]
-        [HttpGet("notification/getAll/{skip?}/{take?}")]
-        public async Task<JsonResult> GetAll(int skip = 0, int take = int.MaxValue)
+        [HttpGet("notification/getallnotifications/{skip?}/{take?}")]
+        public async Task<JsonResult> GetAllNotifications(int skip = 0, int take = int.MaxValue)
         {
             try
             {

@@ -1,3 +1,6 @@
+import { SnackService } from './../../services/snack/snack.service';
+import { ViewNotification } from './../../models/communication/notification/view-notification.model';
+import { UserService } from './../../services/user-service/user.service';
 import { AuthService } from './../../services/auth.service';
 import { TEMSComponent } from './../../tems/tems.component';
 import { Component, OnInit } from '@angular/core';
@@ -15,11 +18,14 @@ export class NavbarComponent extends TEMSComponent implements OnInit {
   public sidebarToggled = false;
   public username: string;
   private loggedIn: boolean;
-  
+  notifications = [] as ViewNotification[];
+
   constructor(
     config: NgbDropdownConfig,
     private route: Router,
-    private authService: AuthService) {
+    private authService: AuthService,
+    private userService: UserService,
+    private snackService: SnackService) {
       super();
       config.placement = 'bottom-right';
   }
@@ -45,9 +51,21 @@ export class NavbarComponent extends TEMSComponent implements OnInit {
     let jwtData = token.split('.')[1]
     let decodedJwtJsonData = window.atob(jwtData)
     let decodedJwtData = JSON.parse(decodedJwtJsonData)
-    console.log(decodedJwtData);
     this.username = decodedJwtData.Username;
-    console.log(this.username);
+    this.fetchLastNotifications();
+  }
+
+  fetchLastNotifications(){
+    this.subscriptions.push(
+      this.userService.getLastNotifications()
+      .subscribe(result => {
+        console.log(result);
+        if(this.snackService.snackIfError(result))
+          return;
+        
+        this.notifications = result;
+      })
+    )
   }
 
   // toggle sidebar in small devices

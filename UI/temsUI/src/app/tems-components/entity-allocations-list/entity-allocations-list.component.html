@@ -12,7 +12,7 @@
     <app-loading-placeholder></app-loading-placeholder>
 </ng-container>
 <mat-card
-    *ngFor="let allocation of allocations | paginate: { itemsPerPage: 10, currentPage: p1, id: 'allocations' }; let i = index"
+    *ngFor="let allocation of allocations | paginate: { itemsPerPage: 10, currentPage: pageNumber, id: 'allocations' }; let i = index"
     class="mb-2 fade-in">
 
     <div class="text-center">
@@ -38,16 +38,16 @@
     </div>
 
     <ng-container *ngIf="canManage">
-        <button mat-button (click)="return(allocation.id, (p1-1)*10 + i)" *ngIf="allocation.dateReturned == undefined">
+        <button mat-button (click)="return(allocation.id, (pageNumber-1)*10 + i)" *ngIf="allocation.dateReturned == undefined">
             <mat-icon class="text-primary">assignment_returned</mat-icon>Mark as returned
         </button>
-        <button mat-button (click)="remove(allocation.id, (p1-1)*10 + i)">
+        <button mat-button (click)="remove(allocation.id, (pageNumber-1)*10 + i)">
             <mat-icon class="text-danger">delete</mat-icon>Remove
         </button>
     </ng-container>
 
 </mat-card>
-<pagination-controls (pageChange)="p1 = $event" id="allocations"
+<pagination-controls (pageChange)="pageNumber = $event" id="allocations"
     *ngIf="allocations != undefined && allocations.length > 0"></pagination-controls>
 
 <div *ngIf="loading == false && (allocations == undefined || allocations.length == 0)">

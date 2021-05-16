@@ -22,13 +22,6 @@ async constructor (factory)
 --> Check the 'getEquipmentAmount' of entities (rooms, equipment), there might be a problem with getting the 
 last allocation.
 
-// Tickets
-Add pinned ticket feature
-----> move ui logic of close, reopen, change issues status to issueContainer and emmit necessary events just for passing
-      indexes to the entity-issues-list.
-      Add support for getting issue statuses from both ways => from API or from input parameter
-      Add pin icon and make api calls
-
 
 // TD:
 --> smart load mat tab
@@ -83,6 +76,16 @@ Add pinned ticket feature
 -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
 -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+
+---- Requires testing
+
+// Tickets
+Add pinned ticket feature
+----> move ui logic of close, reopen, change issues status to issueContainer and emmit necessary events just for passing
+      indexes to the entity-issues-list.
+      Add support for getting issue statuses from both ways => from API or from input parameter
+      Add pin icon and make api calls
+      
 
 ------------ Solved >>>>
 

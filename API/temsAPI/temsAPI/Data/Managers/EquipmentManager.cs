@@ -308,17 +308,12 @@ namespace temsAPI.Data.Managers
             return null;
         }
 
-        public async Task<string> RemoveAllocation(string allocationId)
+        public async Task<string> ArchieveAllocation(string allocationId, bool archivationStatus = true)
         {
-            var allocation = (await _unitOfWork.EquipmentAllocations
-                    .Find<EquipmentAllocation>(q => q.Id == allocationId))
-                    .FirstOrDefault();
-
-            if (allocation == null)
-                return "Invalid allocation provided";
-
-            allocation.IsArchieved = true;
-            await _unitOfWork.Save();
+            string archivationResult = await new ArchieveHelper(_unitOfWork, _user)
+                .SetEquipmenAllocationtArchivationStatus(allocationId, archivationStatus);
+            if (archivationResult != null)
+                return archivationResult;
 
             return null;
         }

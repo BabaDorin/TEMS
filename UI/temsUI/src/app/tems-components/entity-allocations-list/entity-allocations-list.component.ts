@@ -34,6 +34,7 @@ export class EntityAllocationsListComponent extends TEMSComponent implements OnI
   
   @Output() allocationCreated = new EventEmitter();
   equipmentNotAllocated = false;
+  pageNumber = 1;
   
   allocations: ViewAllocationSimplified[];
   loading = true;

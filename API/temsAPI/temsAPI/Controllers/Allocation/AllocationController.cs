@@ -78,13 +78,13 @@ namespace temsAPI.Controllers.Allocation
             }
         }
 
-        [HttpGet("allocation/remove/{allocationId}")]
+        [HttpGet("allocation/archieve/{allocationId}/{status?}")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
-        public async Task<JsonResult> Remove(string allocationId)
+        public async Task<JsonResult> Archieve(string allocationId, bool status = true)
         {
             try
             {
-                string result = await _equipmentManager.RemoveAllocation(allocationId);
+                string result = await _equipmentManager.ArchieveAllocation(allocationId, status);
                 if (result != null)
                     return ReturnResponse(result, ResponseStatus.Fail);
 

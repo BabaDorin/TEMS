@@ -167,4 +167,11 @@ export class UserService extends TEMSService {
       this.httpOptions
     );
   }
+  
+  removeNotification(notificationId: string): Observable<any>{
+    return this.http.get(
+      API_NOTIF_URL + '/remove/' + notificationId,
+      this.httpOptions
+    );
+  }
 }

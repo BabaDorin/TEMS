@@ -25,7 +25,7 @@
         <li class="nav-item dropdown" ngbDropdown>
           <a class="nav-link count-indicator dropdown-toggle" id="notificationDropdown" ngbDropdownToggle>
             <i class="mdi mdi-bell-outline"></i>
-            <span class="count-symbol bg-danger"></span>
+            <span *ngIf="notifications != undefined && notifications.length > 0 " class="count-symbol bg-danger"></span>
           </a>
           <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list" ngbDropdownMenu
             aria-labelledby="notificationDropdown">
@@ -43,18 +43,16 @@
             
             <ng-container *ngIf="notifications != undefined && notifications.length > 0">
               <ng-container *ngFor="let noti of notifications">
-                <div class="dropdown-item preview-item">
-                  <!-- <div class="preview-thumbnail">
-                    <div class="preview-icon bg-success">
-                      <i class="mdi mdi-calendar"></i>
-                    </div>
-                  </div> -->
-                  <div class="preview-item-content d-flex align-items-start flex-column justify-content-center">
-                    <h6 class="preview-subject font-weight-normal mb-1">{{ noti.title }}</h6>
+                <div class="dropdown-item-simple">
+                    <p class="preview-subject mb-0"><b>Notification title {{ noti.title }}</b></p>
+                    <button type="button" class="close" (click)="removeNotification(noti.id)">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                    <small class="text-muted">{{ noti.dateCreated | date:'short' }}</small>
                     <p class="text-gray ellipsis mb-0">
                       {{ noti.message }}
                     </p>
-                  </div>
+                  <!-- </div> -->
                 </div>
               </ng-container>
             </ng-container>

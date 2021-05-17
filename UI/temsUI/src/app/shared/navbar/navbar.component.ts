@@ -39,6 +39,16 @@ export class NavbarComponent extends TEMSComponent implements OnInit {
     window.location.reload()
   }
 
+  removeNotification(notificationId: string){
+    this.subscriptions.push(
+      this.userService.removeNotification(notificationId)
+      .subscribe(result => {
+        if(this.snackService.snackIfError(result))
+          return;
+      })
+    )
+  }
+
   ngOnInit() {
     let token = localStorage.getItem('token');
     if(token == undefined)

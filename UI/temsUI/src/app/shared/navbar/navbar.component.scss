@@ -97,6 +97,12 @@
       }
     }
 
+    .ellipsis {
+      width: 300px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
     .search-field {
       .input-group {
         input {
@@ -197,28 +203,28 @@
               }
               padding: 0;
 
-              .dropdown-item {
-                @extend .d-flex;
-                @extend .align-items-center;
+              .dropdown-item-simple {
+                // @extend .d-flex;
+                // @extend .align-items-center;
                 margin-bottom: 0;
                 padding: 11px 13px;
-                cursor: pointer;
+                // cursor: pointer;
 
                 i {
                   font-size: 17px;
                 }
 
                 .ellipsis {
-                  max-width: 200px;
+                  width: 300px;
                   overflow: hidden;
                   text-overflow: ellipsis;
                 }
-                .rtl & {
-                  i{
-                    @extend .mr-0;
-                    margin-left: 10px;
-                  }
-                }
+                // .rtl & {
+                //   i{
+                //     @extend .mr-0;
+                //     margin-left: 10px;
+                //   }
+                // }
               }
 
               .dropdown-divider {

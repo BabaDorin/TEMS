@@ -18,6 +18,8 @@ namespace temsAPI.Contracts
         public bool SendPush { get; set; }
         public bool SendBrowser { get; set; }
 
-        public List<TEMSUser> GetUsers();
+        public IEnumerable<TEMSUser> GetUsers();
+        public void MarkSeen(TEMSUser user);
+        public bool IsSeen(TEMSUser user);
     }
 }

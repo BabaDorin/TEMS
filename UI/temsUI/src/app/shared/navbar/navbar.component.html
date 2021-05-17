@@ -23,9 +23,10 @@
       <ng-container *ngIf="loggedIn">
         <!-- notifications -->
         <li class="nav-item dropdown" ngbDropdown>
-          <a class="nav-link count-indicator dropdown-toggle" id="notificationDropdown" ngbDropdownToggle>
+          <a class="nav-link count-indicator dropdown-toggle" id="notificationDropdown" ngbDropdownToggle
+          (click)="markNotificationsAsSeen()">
             <i class="mdi mdi-bell-outline"></i>
-            <span *ngIf="notifications != undefined && notifications.length > 0 " class="count-symbol bg-danger"></span>
+            <span *ngIf="newNotifications != undefined && newNotifications.length > 0 " class="count-symbol bg-danger"></span>
           </a>
           <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list" ngbDropdownMenu
             aria-labelledby="notificationDropdown">
@@ -43,8 +44,8 @@
             
             <ng-container *ngIf="notifications != undefined && notifications.length > 0">
               <ng-container *ngFor="let noti of notifications">
-                <div class="dropdown-item-simple">
-                    <p class="preview-subject mb-0"><b>Notification title {{ noti.title }}</b></p>
+                <div class="dropdown-item-simple" [ngClass]="!noti.seen ? 'bg-info' : ''">
+                    <p class="preview-subject mb-0"><b>Notification title {{ noti.title }} [seen: {{ noti.seen }}]</b></p>
                     <button type="button" class="close" (click)="removeNotification(noti.id)">
                       <span aria-hidden="true">&times;</span>
                     </button>

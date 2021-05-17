@@ -24,18 +24,29 @@ namespace temsAPI.Data.Entities.CommunicationEntities
         public bool SendSMS { get; set; }
         public bool SendPush { get; set; }
         public bool SendBrowser { get; set; }
-        
+        public bool Seen { get; set; }
+
         [ForeignKey("UserID")]
         public TEMSUser User { get; set; }
         public string UserID { get; set; }
 
-        public List<TEMSUser> GetUsers()
+        public IEnumerable<TEMSUser> GetUsers()
         {
             List<TEMSUser> users = new();
             if (this.User != null)
                 users.Add(User);
 
             return users;
+        }
+
+        public bool IsSeen(TEMSUser user)
+        {
+            return Seen;
+        }
+
+        public void MarkSeen(TEMSUser user)
+        {
+            Seen = true;
         }
     }
 }

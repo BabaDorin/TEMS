@@ -3,4 +3,5 @@ export class ViewNotification{
     title: string;
     message: string;
     dateCreated: Date;
+    seen: boolean;
 }

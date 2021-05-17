@@ -20,8 +20,21 @@ namespace temsAPI.Data.Entities.CommunicationEntities
         public bool SendSMS { get; set; }
         public bool SendPush { get; set; }
         public bool SendBrowser { get; set; }
-        public List<TEMSUser> SendTo { get; set; } = new List<TEMSUser>();
+        public List<UserCommonNotification> UserCommonNotifications { get; set; } = new();
 
-        public List<TEMSUser> GetUsers() => SendTo;
+        public IEnumerable<TEMSUser> GetUsers() => UserCommonNotifications.Select(q => q.User);
+
+        public bool IsSeen(TEMSUser user)
+        {
+            var connection = UserCommonNotifications.Find(q => q.UserId == user.Id);
+            return connection?.Seen ?? false;
+        }
+
+        public void MarkSeen(TEMSUser user)
+        {
+            var connection = UserCommonNotifications.Find(q => q.UserId == user.Id);
+            if(connection != null)
+                connection.Seen = true;
+        }
     }
 }

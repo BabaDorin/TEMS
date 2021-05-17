@@ -3,7 +3,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Reflection.Metadata.Ecma335;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.UserEntities;
@@ -70,6 +72,28 @@ namespace temsAPI.Controllers.NotificationControllers
             {
                 Debug.WriteLine(ex);
                 return ReturnResponse("An error occured while fetching notifications", ResponseStatus.Fail);
+            }
+        }
+
+        [Authorize]
+        [HttpGet]
+        public async Task<JsonResult> MarkAsSeen(List<string> notificationIds)
+        {
+            try
+            {
+                if (notificationIds == null)
+                    return ReturnResponse("No notifications provided", ResponseStatus.Fail);
+
+                var result = await _notificationManager.MarkAsSeen(notificationIds);
+                if (result != null)
+                    return ReturnResponse(result, ResponseStatus.Fail);
+
+                return ReturnResponse("Success", ResponseStatus.Success);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured while marking notifications as seen", ResponseStatus.Fail);
             }
         }
     }

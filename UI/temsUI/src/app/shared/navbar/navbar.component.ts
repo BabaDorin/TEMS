@@ -19,6 +19,7 @@ export class NavbarComponent extends TEMSComponent implements OnInit {
   public username: string;
   private loggedIn: boolean;
   notifications = [] as ViewNotification[];
+  newNotifications = [] as ViewNotification[];
 
   constructor(
     config: NgbDropdownConfig,
@@ -49,6 +50,29 @@ export class NavbarComponent extends TEMSComponent implements OnInit {
     )
   }
 
+  markNotificationsAsSeen(){
+    this.newNotifications = this.notifications.filter(q => q.seen == false);
+    console.log('all notifs')
+    console.log(this.notifications);
+
+    console.log('new notifs');
+    console.log(this.newNotifications);
+    if(this.newNotifications == undefined || this.newNotifications.length == 0)
+      return;
+
+
+    this.subscriptions.push(
+      this.userService.markNotificationsAsSeen(this.newNotifications.map(q => q.id))
+      .subscribe(result => {
+        if(this.snackService.snackIfError(result))
+          return;
+
+          this.newNotifications.forEach(q => q.seen = true);
+          this.newNotifications = [];
+      })
+    )
+  }
+
   ngOnInit() {
     let token = localStorage.getItem('token');
     if(token == undefined)
@@ -74,6 +98,8 @@ export class NavbarComponent extends TEMSComponent implements OnInit {
           return;
         
         this.notifications = result;
+        this.newNotifications = this.notifications.filter(q => q.seen == false);
+        console.log(this.newNotifications);
       })
     )
   }

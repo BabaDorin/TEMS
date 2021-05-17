@@ -87,8 +87,11 @@ namespace temsAPI.Data
                 .Property(e => e.EditableTypeInfo)
                 .HasDefaultValue(true);
             base.OnModelCreating(modelBuilder);
-        }
 
+
+            modelBuilder.Entity<UserCommonNotification>()
+                .HasKey(c => new { c.UserId, c.NotificationId });
+        }
 
         // Equipment entities
         public DbSet<DataType> DataTypes { get; set; }

@@ -1,29 +1,155 @@
 <div class="row" id="proBanner">
-  <div class="col-12">
-    <span class="align-items-center purchase-popup">
-      <p>Get tons of UI components, Plugins, multiple layouts, 20+ sample pages, and more!</p>
-      <a href="https://www.bootstrapdash.com/product/purple-angular/?utm_source=organic&utm_medium=banner&utm_campaign=free-preview" target="_blank" class="btn download-button purchase-button btn-purple ml-auto btn-primary">Upgrade To Pro</a>
-      <i class="mdi mdi-close"  (click)="toggleProBanner($event)"  id="bannerClose"></i>
-    </span>
-  </div>
+
 </div>
+<!-- <div class="page-header">
+  <div class="page-title">
+    stanga
+  </div>
+  <span>dreapta</span>
+</div> -->
+
 <div class="page-header">
   <h3 class="page-title">
-    <span class="page-title-icon bg-gradient-primary text-white mr-2">
-      <i class="mdi mdi-home"></i>                 
-    </span>
     Dashboard
   </h3>
-  <nav aria-label="breadcrumb">
-    <ul class="breadcrumb">
-      <li class="breadcrumb-item active" aria-current="page">
-        <span></span>Overview
-        <i class="mdi mdi-alert-circle-outline icon-sm text-primary align-middle"></i>
-      </li>
-    </ul> 
-  </nav>
 </div>
-<div class="row">
+
+<div class="container">
+  <div class="text-center mt-5">
+    <h1 class="text-primary title">TEMS</h1>
+    <p class="text-muted mt-0">Technical Equipment Management System</p>
+    <p class="text-muted">CIH Cahul</p>
+  </div>
+</div>
+
+<!-- Last 5 announcements (Everyone)--> 
+<div class="container">
+  <div class="card">
+    <div class="card-body">
+      <div class="card-title">Last announcements</div>
+    </div>
+  </div>
+</div>
+
+<!-- Quick searches -->
+<div class="row mt-4">
+  <div class="col-md-4">
+    <div class="card" style="height: 200px;">
+      <div class="card-body">
+        <div class="card-title">
+          Search something
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card" style="height: 200px;">
+      <div class="card-body">
+        <div class="card-title">
+          Search something
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card" style="height: 200px;">
+      <div class="card-body">
+        <div class="card-title">
+          Search something
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Last 5 logs--> 
+<div class="container mt-4">
+  <div class="card">
+    <div class="card-body">
+      <div class="card-title">Last logs (Auto refreshing)</div>
+    </div>
+  </div>
+</div>
+
+<div class="page-header mt-5">
+  <h3 class="page-title">
+    Tickets
+  </h3>
+</div>
+
+<div class="row mt-4">
+  <div class="col-md-12 mb-4">
+    <div class="container">
+      <div class="card">
+        <div class="card-body">
+          <button class="btn bg-gradient-primary btn-block">
+            Create a ticket
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-7 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="card-title">Area chart</h4>
+        <canvas baseChart [chartType]="'line'" [datasets]="areaChartData" [labels]="areaChartLabels" [options]="areaChartOptions" [colors]="areaChartColors"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-5 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+        <div class="card-title">Last 2-3 tickets</div>
+        <a href="#">See more</a>
+      </div>
+    </div>
+  </div>  
+</div>
+
+<!-- CIH TEMS Team -->
+
+<div class="page-header mt-5">
+  <h3 class="page-title">
+    Our Technicians
+  </h3>
+</div>
+
+<div class="row justify-content-center">
+  <div class="col-md-3">
+    <div class="card" style="width: 18rem;">
+      <div class="card-image text-center">
+        <img class="card-img-top text-center" src="assets/svgs/default_avatar.svg" style="width: 80%; margin-top: 10px;">
+      </div>
+      <div class="card-body">
+        <h5 class="card-title">Card title</h5>
+        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+      </div>
+      <div class="card-body">
+        <a href="#" class="card-link">Card link</a>
+        <a href="#" class="card-link">Another link</a>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="card" style="width: 18rem;">
+      <div class="card-image text-center">
+        <img class="card-img-top text-center" src="assets/svgs/default_avatar.svg" style="width: 80%; margin-top: 10px;">
+      </div>
+      <div class="card-body">
+        <h5 class="card-title">Card title</h5>
+        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+      </div>
+      <div class="card-body">
+        <a href="#" class="card-link">Card link</a>
+        <a href="#" class="card-link">Another link</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row" style="margin-top: 1000px">
   <div class="col-md-4 stretch-card grid-margin">
     <div class="card bg-gradient-danger card-img-holder text-white">
       <div class="card-body">

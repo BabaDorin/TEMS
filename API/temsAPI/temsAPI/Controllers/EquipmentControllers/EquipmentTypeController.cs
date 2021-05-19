@@ -152,7 +152,7 @@ namespace temsAPI.EquipmentControllers
             }
         }
 
-        [HttpGet("type/getpropertiesoftype/{typeId}")]
+        [HttpGet("equipmenttype/getpropertiesoftype/{typeId}")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> GetPropertiesOfType(string typeId)
         {

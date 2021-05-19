@@ -1,5 +1,11 @@
 @import '../../../styles.scss';
 
+.title{
+  font-weight: bold;
+  font-size: 130px;
+  word-spacing: 4px;
+}
+
 .rounded-legend {
   ul {
     padding-left: 0;

@@ -40,8 +40,11 @@ namespace temsAPI.Data.Managers
             var announcements = (await _unitOfWork.Announcements
                     .FindAll<ViewAnnouncementViewModel>(
                         where: q => !q.IsArchieved,
+                        orderBy: q => q.OrderByDescending(q => q.DateCreated),
+                        skip: skip,
+                        take: take,
                         select: q => ViewAnnouncementViewModel.FromModel(q)
-                    )).OrderBy(q => q.DateCreated).ToList();
+                    )).ToList();
 
             return announcements;
         }

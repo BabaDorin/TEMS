@@ -1,3 +1,6 @@
+import { DatePipe } from '@angular/common';
+import { AnnouncementsListComponent } from 'src/app/announcements-list/announcements-list.component';
+import { ViewAnnouncementsComponent } from './tems-components/communication/view-announcements/view-announcements.component';
 import { RoomLabelService } from './services/room-label.service';
 import { TypeService } from './services/type-service/type.service';
 import { MenuService } from './services/menu-service/menu.service';
@@ -37,6 +40,7 @@ import { SnackComponent } from './public/snack/snack.component';
 import { DefinitionService } from './services/definition-service/definition.service';
 import { ConnectPersonnelUserComponent } from './tems-components/connect-personnel-user/connect-personnel-user.component';
 import { CurrencyPipe } from '@angular/common';
+import { LastCreatedTicketsChartComponent } from './tems-components/analytics/last-created-tickets-chart/last-created-tickets-chart.component';
 
 @NgModule({
   declarations: [
@@ -53,6 +57,9 @@ import { CurrencyPipe } from '@angular/common';
     TEMSComponent,
     SnackComponent,
     ConnectPersonnelUserComponent,
+    ViewAnnouncementsComponent,
+    AnnouncementsListComponent,
+    LastCreatedTicketsChartComponent
     ],
   imports: [
     BrowserModule,
@@ -90,6 +97,7 @@ import { CurrencyPipe } from '@angular/common';
     DefinitionService,
     RoomLabelService,
     CurrencyPipe,
+    DatePipe,
   ],
   bootstrap: [AppComponent],
 })

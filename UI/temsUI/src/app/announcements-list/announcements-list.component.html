@@ -1,6 +1,5 @@
-<br>
-<button class="btn btn-secondary btn-sm" (click)="addAnnouncement()">+ Create New</button>
-<br>
+<button *ngIf="displayCreateNew" class="btn btn-secondary btn-sm" (click)="addAnnouncement()">+ Create New
+</button>
 <mat-card *ngFor="let announcement of announcements" class="mb-2">
     <mat-card-header>
         <p>

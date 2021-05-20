@@ -8,6 +8,6 @@ namespace temsAPI.Helpers.AnalyticsHelpers.AnalyticsModels
     public class PieChartData
     {
         public string ChartName { get; set; }
-        public List<Tuple<string, int>> Rates { get; set; }
+        public List<Tuple<string, int>> Rates { get; set; } = new List<Tuple<string, int>>();
     }
 }

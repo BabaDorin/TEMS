@@ -20,23 +20,7 @@ export class DashboardComponent implements OnInit {
 
 
 
-  areaChartData = [{
-    label: '# of Votes',
-    data: [10, 19, 3, 5, 2, 3],
-    borderWidth: 1,
-    fill: true
-  }];
-
-  areaChartLabels = ["2013", "2014", "2014", "2015", "2016", "2017"];
-
-  areaChartOptions = {};
-
-  areaChartColors = [
-    {
-      borderColor: 'rgba(255,99,132,1)',
-      backgroundColor: 'rgba(255,99,132,.2)'
-    }
-  ];
+ 
 
 
 

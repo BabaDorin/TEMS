@@ -17,9 +17,13 @@ export class CommunicationService extends TEMSService {
     super();
   }
 
-  getAnnouncements(): Observable<ViewAnnouncement[]>{
+  getAnnouncements(skip?: number, take?: number): Observable<ViewAnnouncement[]>{
+    let endPoint = API_ANN_URL + '/get';
+    if(skip != undefined)
+      endPoint += '/' + skip + '/' + take;
+
     return this.http.get<ViewAnnouncement[]>(
-      API_ANN_URL + '/get',
+      endPoint,
       this.httpOptions
     );
   }

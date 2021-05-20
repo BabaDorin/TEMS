@@ -3,7 +3,7 @@ import { SnackService } from 'src/app/services/snack/snack.service';
 import { PersonnelService } from './../../../services/personnel-service/personnel.service';
 import { RoomsService } from './../../../services/rooms-service/rooms.service';
 import { EquipmentService } from 'src/app/services/equipment-service/equipment.service';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from "@angular/router"
 import { TEMSComponent } from 'src/app/tems/tems.component';
@@ -16,10 +16,10 @@ import { IOption } from 'src/app/models/option.model';
 })
 export class QuickAccessComponent extends TEMSComponent implements OnInit {
 
-  type: string; // equipment, room or personnel
-  header; 
-  label; 
-  placeholder; 
+  @Input() type: string; // equipment, room or personnel
+  header;
+  label;
+  placeholder;
   endPoint;
   @ViewChild('identifier') identifier: ChipsAutocompleteComponent;
 
@@ -40,53 +40,63 @@ export class QuickAccessComponent extends TEMSComponent implements OnInit {
 
   get selectedEntity() {
     let value = this.quickAccessFormGroup.controls.selectedEntities.value;
-    if(value == undefined || value.length == 0) return undefined;
+    if (value == undefined || value.length == 0) return undefined;
     return value[0]
   }
 
   ngOnInit() {
-    this.checkRoute();
+    if (this.identifier != undefined)
+      this.identifier.alreadySelected = [] as IOption[];
+
+    console.log('type = ' + this.type);
+    this.getType();
   }
 
-  private checkRoute() {
+  private getType() {
+    if (this.type != undefined) {
+      this.prepareUnderType();
+      return;
+    }
+
     this.activatedroute.params.subscribe(params => {
       if (params['type']) {
         this.type = this.activatedroute.snapshot.paramMap.get("type");
         if (['equipment', 'rooms', 'personnel'].indexOf(this.type) == -1) {
           this.router.navigate(['/error-pages/404']);
         }
-    
-        switch (this.type) {
-          case 'equipment':
-            this.endPoint = this.equipmentService;
-            this.header = "Find an equipment";
-            this.label = "Find equipment by it's TEMSID or Serial Number";
-            this.placeholder = "TEMSID or Serial Number";
-            break;
-    
-          case 'rooms':
-            this.endPoint = this.roomService;
-            this.header = "Find a room";
-            this.label = "Find room by identifier";
-            this.placeholder = "Room's identifier";
-            break;
-    
-          case 'personnel':
-            this.endPoint = this.personnelService;
-            this.header = "Find personnel";
-            this.label = "Find personnel by name";
-            this.placeholder = "Personnel's name";
-            break;
-        }
 
-        if(this.identifier != undefined)
-          this.identifier.alreadySelected = [] as IOption[];
+        this.prepareUnderType();
       }
     });
   }
 
+  prepareUnderType() {
+    switch (this.type) {
+      case 'equipment':
+        this.endPoint = this.equipmentService;
+        this.header = "Find an equipment";
+        this.label = "Find equipment by it's TEMSID or Serial Number";
+        this.placeholder = "TEMSID or Serial Number";
+        break;
+
+      case 'rooms':
+        this.endPoint = this.roomService;
+        this.header = "Find a room";
+        this.label = "Find room by identifier";
+        this.placeholder = "Room's identifier";
+        break;
+
+      case 'personnel':
+        this.endPoint = this.personnelService;
+        this.header = "Find personnel";
+        this.label = "Find personnel by name";
+        this.placeholder = "Personnel's name";
+        break;
+    }
+  }
+
   onSubmit() {
-    if(this.selectedEntity == undefined){
+    if (this.selectedEntity == undefined) {
       this.snackService.snack({
         message: "Please, choose an entity from the dropdown",
         status: 0

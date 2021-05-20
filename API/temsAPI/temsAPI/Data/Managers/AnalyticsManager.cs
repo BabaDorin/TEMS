@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualBasic;
 using OfficeOpenXml.FormulaParsing.ExpressionGraph;
 using System;
 using System.Collections.Generic;
@@ -287,6 +288,51 @@ namespace temsAPI.Data.Managers
 
             var amount = (await _unitOfWork.Tickets.Count(finalExpression));
             return amount;
+        }
+
+        public async Task<PieChartData> GetAmountOfLastCreatedTickets(DateTime start, DateTime end, string interval)
+        {
+            //Expression<Func<Ticket, Ticket>> exp = null;
+
+            var ticketGroups = (await _unitOfWork.Tickets
+                .FindAll<Ticket>(
+                    where: q => !q.IsArchieved && q.DateCreated >= start && q.DateClosed <= end,
+                    orderBy: q => q.OrderByDescending(q => q.DateCreated)))
+                .GroupBy(q =>
+                (interval == "daily")
+                ? q.DateCreated.Date
+                : new DateTime(q.DateCreated.Year, q.DateCreated.Month, 1))
+                .ToList();
+
+            PieChartData chartData = new PieChartData();
+
+            if(interval == "daily")
+            {
+                chartData.ChartName = "Number of tickets created in the last days";
+                for (var day = start.Date; day.Date <= end.Date; day = day.AddDays(1))
+                {
+                    var group = ticketGroups.FirstOrDefault(q => q.Key == day);
+                    chartData.Rates.Add(new Tuple<string, int>(
+                        day.Date.ToString(),
+                        (group == null) ? 0 : group.Count()));
+                }
+            }
+
+            if (interval == "monthly")
+            {
+                chartData.ChartName = "Number of tickets created in the last months";
+                for (var month = start.Date; month.Date <= end.Date; month = month.AddMonths(1))
+                {
+                    var group = ticketGroups.FirstOrDefault(q => q.Key == new DateTime(
+                        month.Year, month.Month, 1));
+
+                    chartData.Rates.Add(new Tuple<string, int>(
+                        month.Date.ToString("yyyy/MMM"),
+                        group?.Count() ?? 0));
+                }
+            }
+
+            return chartData;
         }
 
         // very good indicator btw =) An user might superficially close many tickets,

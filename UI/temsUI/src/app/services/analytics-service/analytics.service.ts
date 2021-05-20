@@ -1,6 +1,7 @@
+import { DatePipe } from '@angular/common';
 import { PieChartData } from './../../models/analytics/pieChart-model';
-import { API_ANALYTICS_URL } from './../../models/backend.config';
-import { HttpClient } from '@angular/common/http';
+import { API_ANALYTICS_URL, API_ANN_URL } from './../../models/backend.config';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { TEMSService } from './../tems-service/tems.service';
 import { Injectable } from '@angular/core';
@@ -11,7 +12,8 @@ import { Injectable } from '@angular/core';
 export class AnalyticsService extends TEMSService {
 
   constructor(
-    private http: HttpClient
+    private http: HttpClient,
+    private datePipe: DatePipe
   ) {
     super();
   }
@@ -106,7 +108,7 @@ export class AnalyticsService extends TEMSService {
   }
 
   getAmountOfCreatedIssues(entityType?: string, entityId?: string): Observable<number>{
-    let endPoint = this.buildEndpointAddresWithEntity(API_ANALYTICS_URL+ '/getAmountOfCreatedTickets', entityType, entityId);
+    let endPoint = this.buildEndpointAddresWithEntity(API_ANALYTICS_URL+ '/getAmountOfCreatedTicketsOfEntity', entityType, entityId);
 
     return this.http.get<number>(
       endPoint,
@@ -148,6 +150,21 @@ export class AnalyticsService extends TEMSService {
     return this.http.get<number>(
       endPoint,
       this.httpOptions
+    );
+  }
+
+  getAmountOfLastCreatedTickets(start: Date, end: Date, interval: string): Observable<PieChartData>{
+    let params = new HttpParams();
+
+    params = params.append('start', start.toDateString());
+    params = params.append('end', end.toDateString());
+    params = params.append('interval', interval);
+
+    console.log(params);
+
+    return this.http.get<PieChartData>(
+      API_ANALYTICS_URL + '/getAmountOfLastCreatedTickets', 
+      { params: params }
     );
   }
 }

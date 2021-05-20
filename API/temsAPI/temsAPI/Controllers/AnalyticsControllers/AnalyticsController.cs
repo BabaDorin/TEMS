@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.UserEntities;
@@ -199,9 +200,9 @@ namespace temsAPI.Controllers.AnalyticsControllers
             }
         }
         
-        [HttpGet("analytics/getAmountOfCreatedTickets/{entityType?}/{entityId?}")]
+        [HttpGet("analytics/getAmountOfCreatedTicketsOfEntity/{entityType?}/{entityId?}")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
-        public async Task<JsonResult> GetAmountOfCreatedTickets(
+        public async Task<JsonResult> GetAmountOfCreatedTicketsOfEntity(
             string entityType,
             string entityId)
         {
@@ -277,6 +278,20 @@ namespace temsAPI.Controllers.AnalyticsControllers
             {
                 var amount = await _analyticsManager.GetAmountOfTicketsEverClosedByUser(userId);
                 return Json(amount);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured while fetching analytics", ResponseStatus.Fail);
+            }
+        }
+
+        public async Task<JsonResult> GetAmountOfLastCreatedTickets(DateTime start, DateTime end, string interval)
+        {
+            try
+            {
+                PieChartData pieChart = await _analyticsManager.GetAmountOfLastCreatedTickets(start, end, interval);
+                return Json(pieChart);
             }
             catch (Exception ex)
             {

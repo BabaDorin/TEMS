@@ -49,12 +49,12 @@ namespace temsAPI.Controllers.AnnouncementControllers
             }
         }
 
-        [HttpGet]
-        public async Task<JsonResult> Get()
+        [HttpGet("announcement/get/{skip?}/{take?}")]
+        public async Task<JsonResult> Get(int skip = 0, int take = int.MaxValue)
         {
             try
             {
-                var announcements = await _announcementManager.GetAnnouncements();
+                var announcements = await _announcementManager.GetAnnouncements(skip, take);
                 return Json(announcements);
             }
             catch (Exception ex)

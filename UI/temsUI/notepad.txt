@@ -15,6 +15,11 @@ IMPORTANT NOTES:
 TODO
 ------------ As soon as possible >>>>
 
+// create modules:
+Announcemnet
+Quick Access
+
+
 // Nice to have
 Add some text animation (svg) when users stays on home page for more than 10 minutes straight
 

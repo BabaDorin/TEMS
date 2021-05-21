@@ -292,8 +292,6 @@ namespace temsAPI.Data.Managers
 
         public async Task<PieChartData> GetAmountOfLastCreatedTickets(DateTime start, DateTime end, string interval)
         {
-            //Expression<Func<Ticket, Ticket>> exp = null;
-
             var ticketGroups = (await _unitOfWork.Tickets
                 .FindAll<Ticket>(
                     where: q => !q.IsArchieved && q.DateCreated.Date >= start && q.DateCreated.Date <= end,
@@ -334,6 +332,54 @@ namespace temsAPI.Data.Managers
 
             return chartData;
         }
+
+        public async Task<PieChartData> GetAmountOfLastClosedTickets(DateTime start, DateTime end, string interval)
+        {
+            var ticketGroups = (await _unitOfWork.Tickets
+                .FindAll<Ticket>(
+                    where: q => 
+                    !q.IsArchieved 
+                    && q.DateClosed != null 
+                    && ((DateTime)q.DateClosed).Date >= start 
+                    && ((DateTime)q.DateClosed).Date <= end,
+                    orderBy: q => q.OrderByDescending(q => q.DateClosed)))
+                .GroupBy(q =>
+                (interval == "daily")
+                ? ((DateTime)q.DateClosed).Date
+                : new DateTime(((DateTime)q.DateClosed).Year, ((DateTime)q.DateClosed).Month, 1))
+                .ToList();
+
+            PieChartData chartData = new PieChartData();
+
+            if (interval == "daily")
+            {
+                chartData.ChartName = "Number of tickets closed in the last days";
+                for (var day = start.Date; day.Date <= end.Date; day = day.AddDays(1))
+                {
+                    var group = ticketGroups.FirstOrDefault(q => q.Key == day);
+                    chartData.Rates.Add(new Tuple<string, int>(
+                        day.Date.ToString("MMM dd yyyy"),
+                        (group == null) ? 0 : group.Count()));
+                }
+            }
+
+            if (interval == "monthly")
+            {
+                chartData.ChartName = "Number of tickets closed in the last months";
+                for (var month = start.Date; month.Date <= end.Date; month = month.AddMonths(1))
+                {
+                    var group = ticketGroups.FirstOrDefault(q => q.Key == new DateTime(
+                        month.Year, month.Month, 1));
+
+                    chartData.Rates.Add(new Tuple<string, int>(
+                        month.Date.ToString("yyyy/MMM"),
+                        group?.Count() ?? 0));
+                }
+            }
+
+            return chartData;
+        }
+
 
         // very good indicator btw =) An user might superficially close many tickets,
         // and if the problem has not been fully solved, those specific tickets will get reopened by 

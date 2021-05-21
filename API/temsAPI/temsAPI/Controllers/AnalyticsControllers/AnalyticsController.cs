@@ -286,11 +286,27 @@ namespace temsAPI.Controllers.AnalyticsControllers
             }
         }
 
+        [HttpGet]
         public async Task<JsonResult> GetAmountOfLastCreatedTickets(DateTime start, DateTime end, string interval)
         {
             try
             {
                 PieChartData pieChart = await _analyticsManager.GetAmountOfLastCreatedTickets(start, end, interval);
+                return Json(pieChart);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured while fetching analytics", ResponseStatus.Fail);
+            }
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> GetAmountOfLastClosedTickets(DateTime start, DateTime end, string interval)
+        {
+            try
+            {
+                PieChartData pieChart = await _analyticsManager.GetAmountOfLastClosedTickets(start, end, interval);
                 return Json(pieChart);
             }
             catch (Exception ex)

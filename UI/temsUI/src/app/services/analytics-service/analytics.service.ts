@@ -26,6 +26,16 @@ export class AnalyticsService extends TEMSService {
     return endPoint;
   }
 
+  private buildParamsWithIntervals(start: Date, end: Date, interval: string){
+    let params = new HttpParams();
+
+    params = params.append('start', start.toDateString());
+    params = params.append('end', end.toDateString());
+    params = params.append('interval', interval);
+
+    return params;
+  }
+
   getEquipmentAmount(entityType?: string, entityId?: string): Observable<number>{
     let endPoint = this.buildEndpointAddresWithEntity(API_ANALYTICS_URL+ '/getequipmentamount', entityType, entityId);
 
@@ -154,16 +164,17 @@ export class AnalyticsService extends TEMSService {
   }
 
   getAmountOfLastCreatedTickets(start: Date, end: Date, interval: string): Observable<PieChartData>{
-    let params = new HttpParams();
-
-    params = params.append('start', start.toDateString());
-    params = params.append('end', end.toDateString());
-    params = params.append('interval', interval);
-
-    console.log(params);
-
+    let params = this.buildParamsWithIntervals(start, end, interval);
     return this.http.get<PieChartData>(
       API_ANALYTICS_URL + '/getAmountOfLastCreatedTickets', 
+      { params: params }
+    );
+  }
+
+  getAmountOfLastClosedTickets(start: Date, end: Date, interval: string): Observable<PieChartData>{
+    let params = this.buildParamsWithIntervals(start, end, interval);
+    return this.http.get<PieChartData>(
+      API_ANALYTICS_URL + '/getAmountOfLastClosedTickets', 
       { params: params }
     );
   }

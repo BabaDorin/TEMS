@@ -15,7 +15,11 @@ export class LastCreatedTicketsChartComponent extends TEMSComponent implements O
   @Input() end: Date = new Date();
   @Input() start: Date = new Date(new Date().setDate(new Date().getDate() - 10));
   @Input() interval: string = "daily";
-  rates: PieChartData;
+  @Input() showCreatedIssues = true;
+  @Input() showClosedIssues = true;
+
+  ratesCreated: PieChartData;
+  ratesClosed: PieChartData;
 
   areaChartData = [];
   areaChartLabels = [];
@@ -31,13 +35,6 @@ export class LastCreatedTicketsChartComponent extends TEMSComponent implements O
     }
   };
 
-  areaChartColors = [
-    {
-      borderColor: 'rgba(255,99,132,1)',
-      backgroundColor: 'rgba(255,99,132,.2)'
-    }
-  ];
-
   constructor(
     private analyticsService: AnalyticsService,
     private snackService: SnackService,
@@ -47,36 +44,58 @@ export class LastCreatedTicketsChartComponent extends TEMSComponent implements O
   }
 
   ngOnInit(): void {
-    this.subscriptions.push(
-      this.analyticsService.getAmountOfLastCreatedTickets(this.start, this.end, this.interval)
-      .subscribe(result => {
-        console.log(result);
-        if(this.snackService.snackIfError(result))
-          return;
-        
-        this.rates = result;
-        this.createChartData();    
-      })
-    )
+    if(this.showCreatedIssues)
+      this.subscriptions.push(
+        this.analyticsService.getAmountOfLastCreatedTickets(this.start, this.end, this.interval)
+        .subscribe(result => {
+          console.log(result);
+          if(this.snackService.snackIfError(result))
+            return;
+          
+          this.ratesCreated = result;
+          this.createChartData();    
+        })
+      );
+
+    if(this.showClosedIssues)
+      this.subscriptions.push(
+        this.analyticsService.getAmountOfLastClosedTickets(this.start, this.end, this.interval)
+        .subscribe(result => {
+          if(this.snackService.snackIfError(result))
+            return;
+          
+          this.ratesClosed = result;
+          this.createChartData();    
+        })
+      )
   }
 
   createChartData(){
-    if(this.rates == undefined)
-      return;
-    
-    this.areaChartData = [{
-      label: '# of created tickets',
-      data: this.rates.rates.map(q => q.item2),
-      borderWidth: 1,
-      fill: false,
-    }];
+    this.areaChartData = [];
+    if(this.showCreatedIssues && this.ratesCreated != undefined){
+      this.areaChartData.push(
+        {
+          label: '# of created tickets',
+          data: this.ratesCreated.rates.map(q => q.item2),
+          borderWidth: 1,
+          fill: false,
+        }
+      )
+    }
 
-    // this.areaChartLabels = this.rates.rates.map(q => 
-    //   this.datePipe.transform(new Date(q.item1), "MMM d, y"));
+    if(this.showClosedIssues && this.ratesClosed != undefined){
+      this.areaChartData.push(
+        {
+          label: '# of closed tickets',
+          data: this.ratesClosed.rates.map(q => q.item2),
+          borderWidth: 1,
+          fill: false,
+        }
+      )
+    }
 
-    let date = new Date(this.rates.rates[0].item1);
-    console.log('date:');
-    console.log(date);
-    this.areaChartLabels = this.rates.rates.map(q => q.item1); 
+    let labels =  this.ratesCreated?.rates ?? this.ratesCreated?.rates;
+    if(labels != undefined)
+      this.areaChartLabels = labels.map(q => q.item1); 
   }
 }

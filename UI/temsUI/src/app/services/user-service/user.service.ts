@@ -78,9 +78,13 @@ export class UserService extends TEMSService {
     );
   }
 
-  getUsers(): Observable<ViewUserSimplified[]>{
+  getUsers(role?: string): Observable<ViewUserSimplified[]>{
+    let endPoint = API_USER_URL + '/getusers';
+    if(role != undefined)
+      endPoint += '/' + role; 
+    
     return this.http.get<ViewUserSimplified[]>(
-      API_USER_URL + '/getusers',
+      endPoint,
       this.httpOptions
     );
   }

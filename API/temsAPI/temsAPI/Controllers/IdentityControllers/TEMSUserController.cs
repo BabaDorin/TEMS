@@ -114,13 +114,13 @@ namespace temsAPI.Controllers.IdentityControllers
             }
         }
 
-        [HttpGet]
+        [HttpGet("temsuser/getusers/{role?}")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_SYSTEM_CONFIGURATION)]
-        public async Task<JsonResult> GetUsers()
+        public async Task<JsonResult> GetUsers(string role)
         {
             try
             {
-                var users = await _temsUserManager.GetUsers();
+                var users = await _temsUserManager.GetUsers(role);
                 return Json(users);
             }
             catch (Exception ex)

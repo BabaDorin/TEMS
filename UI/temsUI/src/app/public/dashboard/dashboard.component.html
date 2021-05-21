@@ -92,7 +92,7 @@
   <div class="col-lg-5 col-md-12 grid-margin stretch-card">
     <div class="card">
       <div class="card-body">
-        <div class="card-title">Last 2-3 tickets</div>
+        <div class="card-title">Most recent tickets</div>
         <a routerLink="/issues/all">See more</a>
         <app-last-issues-simplified>
         </app-last-issues-simplified>
@@ -109,41 +109,5 @@
   </h3>
 </div>
 
-<div class="container">
-  <div class="row justify-content-center">
-    <div class="col-md-6 col-lg-5 col-sm-12">
-      <div class="card" style="width: 18rem;">
-        <div class="card-image text-center">
-          <img class="card-img-top text-center" src="assets/svgs/default_avatar.svg"
-            style="width: 80%; margin-top: 10px;">
-        </div>
-        <div class="card-body">
-          <h5 class="card-title">Card title</h5>
-          <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's
-            content.</p>
-        </div>
-        <div class="card-body">
-          <a href="#" class="card-link">Card link</a>
-          <a href="#" class="card-link">Another link</a>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-6 col-lg-4 col-sm-12">
-      <div class="card" style="width: 18rem;">
-        <div class="card-image text-center">
-          <img class="card-img-top text-center" src="assets/svgs/default_avatar.svg"
-            style="width: 80%; margin-top: 10px;">
-        </div>
-        <div class="card-body">
-          <h5 class="card-title">Card title</h5>
-          <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's
-            content.</p>
-        </div>
-        <div class="card-body">
-          <a href="#" class="card-link">Card link</a>
-          <a href="#" class="card-link">Another link</a>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+<app-user-cards-list [ofRole]="technician">
+</app-user-cards-list>

@@ -1,3 +1,4 @@
+import { UserCardsModule } from './user-cards/user-cards.module';
 import { DatePipe } from '@angular/common';
 import { AnnouncementsListComponent } from 'src/app/announcements-list/announcements-list.component';
 import { ViewAnnouncementsComponent } from './tems-components/communication/view-announcements/view-announcements.component';
@@ -80,6 +81,7 @@ import { IssueContainerModule } from './modules/issues/issue-container/issue-con
     MatInputModule,
     MatFormFieldModule,
     TemsFormsModule,
+    UserCardsModule
   ],
   exports:[
     MatAutocompleteModule,

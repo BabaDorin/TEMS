@@ -232,11 +232,17 @@ namespace temsAPI.Data.Managers
             return options;
         }
 
-        public async Task<List<ViewUserSimplifiedViewModel>> GetUsers(int skip = 0, int take = int.MaxValue)
+        public async Task<List<ViewUserSimplifiedViewModel>> GetUsers(string role, int skip = 0, int take = int.MaxValue)
         {
+            Expression<Func<TEMSUser, bool>> expression = q => !q.IsArchieved && q.UserName != "tems@dmin";
+            if (role != null)
+                expression = ExpressionCombiner.CombineTwo(
+                    expression, 
+                    q => _userManager.GetRolesAsync(_userManager.FindByIdAsync(q.Id).Result).Result.Any(q => q == role));
+
             var users = (await _unitOfWork.TEMSUsers
                 .FindAll<ViewUserSimplifiedViewModel>(
-                    where: q => !q.IsArchieved && q.UserName != "tems@dmin",
+                    where: expression,
                     skip: skip,
                     take: take,
                     select: q => ViewUserSimplifiedViewModel.FromModel(q)))

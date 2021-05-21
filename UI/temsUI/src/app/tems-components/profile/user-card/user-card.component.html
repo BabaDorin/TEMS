@@ -1,0 +1,13 @@
+<div class="card" style="width: 18rem;">
+    <div class="card-image text-center">
+        <img class="card-img-top text-center" src="assets/svgs/default_avatar.svg"
+            style="width: 80%; margin-top: 10px;">
+    </div>
+    <div class="card-body">
+        <h5 class="card-title">{{ user.fullName }}</h5>
+        <p *ngIf="user.email != undefined" class="card-text"><b>Email: </b>{{ user.email }}</p>
+    </div>
+    <div class="card-body">
+        <a [routerLink]="'/profile/view/' + user.id" class="card-link">Visit profile</a>
+    </div>
+</div>

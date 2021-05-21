@@ -18,7 +18,7 @@ import { AnalyticsModule } from '../analytics/analytics.module';
   imports: [
     CommonModule,
     IssuesRoutingModule,
-
+    
     // Shared modules
     TemsFormsModule,
     EntitySharedModule,

@@ -44,8 +44,8 @@ namespace temsAPI.Controllers.TicketControllers
             bool includingClosed,
             bool onlyClosed,
             string orderBy = null, // "priority", "recency", "recency closed"
-            int? skip = null,
-            int? take = null)
+            int skip = 0,
+            int take = int.MaxValue)
         {
             try
             {
@@ -54,7 +54,8 @@ namespace temsAPI.Controllers.TicketControllers
                     entityId,
                     includingClosed,
                     onlyClosed,
-                    orderBy);
+                    orderBy,
+                    skip, take);
 
                 return Json(tickets);
             }

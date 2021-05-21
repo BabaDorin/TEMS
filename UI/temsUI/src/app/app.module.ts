@@ -41,6 +41,8 @@ import { DefinitionService } from './services/definition-service/definition.serv
 import { ConnectPersonnelUserComponent } from './tems-components/connect-personnel-user/connect-personnel-user.component';
 import { CurrencyPipe } from '@angular/common';
 import { LastCreatedTicketsChartComponent } from './tems-components/analytics/last-created-tickets-chart/last-created-tickets-chart.component';
+import { LastIssuesSimplifiedComponent } from './tems-components/analytics/last-issues-simplified/last-issues-simplified.component';
+import { IssueContainerModule } from './modules/issues/issue-container/issue-container.module';
 
 @NgModule({
   declarations: [
@@ -59,9 +61,11 @@ import { LastCreatedTicketsChartComponent } from './tems-components/analytics/la
     ConnectPersonnelUserComponent,
     ViewAnnouncementsComponent,
     AnnouncementsListComponent,
-    LastCreatedTicketsChartComponent
+    LastCreatedTicketsChartComponent,
+    LastIssuesSimplifiedComponent,
     ],
   imports: [
+    IssueContainerModule,
     BrowserModule,
     AppRoutingModule,
     NgbModule,

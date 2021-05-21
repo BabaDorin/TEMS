@@ -3,18 +3,7 @@
       hideToggle="true">
       <mat-expansion-panel-header>
         <mat-panel-title>
-          {{ issue.problem }}
-          <label *ngIf="issue.status.label == 'Urgent'" class="badge-pill badge-gradient-danger ml-3">{{
-            issue.status.label
-            }}</label>
-          <label *ngIf="issue.status.label == 'Medium'" class="badge-pill badge-gradient-warning ml-3">{{
-            issue.status.label
-            }}</label>
-          <label *ngIf="issue.status.label == 'Future'" class="badge-pill badge-gradient-info ml-3">{{ issue.status.label
-            }}</label>
-          <label *ngIf="issue.dateClosed != undefined" class="badge-pill badge-gradient-secondary ml-3">Closed</label>
-          <label *ngIf="issue.status.label == 'Progress'" class="badge-pill badge-gradient-primary ml-3">{{
-            issue.status.label }}</label>
+          <app-issue-status [issue]="issue"></app-issue-status>
         </mat-panel-title>
         <mat-panel-description>
           {{ issue.dateCreated | date:'medium' }}
@@ -25,7 +14,7 @@
           <div class="alert alert-warning">
             <p>Closed on {{ issue.dateClosed | date:'short' }} by
               <a mat-button [routerLink]="'/profile/view/' + issue.closedBy.value">
-                <mat-icon class="text-primary ml-3" (click)="wtf(issue)">person</mat-icon>
+                <mat-icon class="text-primary ml-3">person</mat-icon>
                 {{ issue.closedBy.label }}
               </a>
             </p>

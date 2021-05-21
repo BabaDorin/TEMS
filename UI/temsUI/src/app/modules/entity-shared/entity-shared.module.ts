@@ -18,7 +18,7 @@ import { CreateIssueComponent } from 'src/app/tems-components/issue/create-issue
 import { EntityLogsListComponent } from 'src/app/tems-components/entity-logs-list/entity-logs-list.component';
 import { SummaryIssuesAnalyticsComponent } from 'src/app/tems-components/analytics/summary-issues-analytics/summary-issues-analytics.component';
 import { EntityAllocationsListComponent } from 'src/app/tems-components/entity-allocations-list/entity-allocations-list.component';
-import { IssueContainerComponent } from 'src/app/tems-components/issues/issue-container/issue-container.component';
+import { IssueContainerModule } from '../issues/issue-container/issue-container.module';
 
 @NgModule({
   declarations: [
@@ -31,7 +31,6 @@ import { IssueContainerComponent } from 'src/app/tems-components/issues/issue-co
     EntityIssuesListComponent,
     SummaryIssuesAnalyticsComponent,
     EntityAllocationsListComponent,
-    IssueContainerComponent,
     RoomDetailsGeneralComponent,
     PersonnelDetailsGeneralComponent,
   ],
@@ -44,6 +43,7 @@ import { IssueContainerComponent } from 'src/app/tems-components/issues/issue-co
     TemsAgGridModule,
     AnalyticsModule,
     LoadingplaceholderModule,
+    IssueContainerModule
   ],
   exports: [
     TemsAgGridModule,
@@ -56,7 +56,7 @@ import { IssueContainerComponent } from 'src/app/tems-components/issues/issue-co
     EntityIssuesListComponent,
     SummaryIssuesAnalyticsComponent,
     EntityAllocationsListComponent,
-    IssueContainerComponent,
+    IssueContainerModule,
     PersonnelDetailsGeneralComponent,
     RoomDetailsGeneralComponent,
   ]

@@ -1,0 +1,12 @@
+<ng-container *ngIf="issues == undefined || issues.length == 0">
+    <p class="text-muted"> No data...</p>
+</ng-container>
+
+<ng-container *ngIf="issues != undefined && issues.length > 0">
+    <ng-container *ngFor="let issue of issues">
+        <div class="mt-1">
+            <app-issue-container-simplified [issue]="issue">
+            </app-issue-container-simplified>
+        </div>
+    </ng-container>
+</ng-container>

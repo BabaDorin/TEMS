@@ -85,15 +85,17 @@
 </div>
 
 <div class="row">
-  <div class="col-lg-7">
+  <div class="col-lg-7 col-md-12 grid-margin">
     <app-last-created-tickets-chart></app-last-created-tickets-chart>
   </div>
 
-  <div class="col-lg-5 grid-margin stretch-card">
+  <div class="col-lg-5 col-md-12 grid-margin stretch-card">
     <div class="card">
       <div class="card-body">
         <div class="card-title">Last 2-3 tickets</div>
-        <a href="#">See more</a>
+        <a routerLink="/issues/all">See more</a>
+        <app-last-issues-simplified>
+        </app-last-issues-simplified>
       </div>
     </div>
   </div>

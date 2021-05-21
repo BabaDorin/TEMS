@@ -19,7 +19,17 @@ export class LastCreatedTicketsChartComponent extends TEMSComponent implements O
 
   areaChartData = [];
   areaChartLabels = [];
-  areaChartOptions = {};
+  areaChartOptions = {
+    scales: {
+      yAxes: [{
+          display: true,
+          ticks: {
+            suggestedMin: 0,
+            stepSize: 1,
+          },
+      }]
+    }
+  };
 
   areaChartColors = [
     {
@@ -58,7 +68,7 @@ export class LastCreatedTicketsChartComponent extends TEMSComponent implements O
       label: '# of created tickets',
       data: this.rates.rates.map(q => q.item2),
       borderWidth: 1,
-      fill: false
+      fill: false,
     }];
 
     // this.areaChartLabels = this.rates.rates.map(q => 

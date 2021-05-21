@@ -296,7 +296,7 @@ namespace temsAPI.Data.Managers
 
             var ticketGroups = (await _unitOfWork.Tickets
                 .FindAll<Ticket>(
-                    where: q => !q.IsArchieved && q.DateCreated >= start && q.DateClosed <= end,
+                    where: q => !q.IsArchieved && q.DateCreated.Date >= start && q.DateCreated.Date <= end,
                     orderBy: q => q.OrderByDescending(q => q.DateCreated)))
                 .GroupBy(q =>
                 (interval == "daily")
@@ -313,7 +313,7 @@ namespace temsAPI.Data.Managers
                 {
                     var group = ticketGroups.FirstOrDefault(q => q.Key == day);
                     chartData.Rates.Add(new Tuple<string, int>(
-                        day.Date.ToString(),
+                        day.Date.ToString("MMM dd yyyy"),
                         (group == null) ? 0 : group.Count()));
                 }
             }

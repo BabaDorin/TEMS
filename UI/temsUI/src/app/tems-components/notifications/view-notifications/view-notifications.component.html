@@ -1,3 +1,11 @@
+<div class="container">
+  <h2>Your notifications</h2>
+  <hr class="mb-2">
+
+  <ng-container *ngIf="notification == undefined || notifications.length == 0">
+    <p class="text-muted text-center">Nothing to display...</p>
+  </ng-container>
+</div>
 <ng-container *ngIf="notifications != undefined">
     <div class="dropdown-item-simple" *ngFor="let noti of notifications| paginate: { itemsPerPage: 20, currentPage: pageNumber, id: 'issues' }; let i = index">
         <p class="preview-subject mb-0">

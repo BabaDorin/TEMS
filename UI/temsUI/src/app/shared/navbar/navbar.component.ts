@@ -103,10 +103,6 @@ export class NavbarComponent extends TEMSComponent implements OnInit {
     document.querySelector('.sidebar-offcanvas').classList.toggle('active');
   }
 
-  toggleNotifications(){
-    // this.notificationDropdown.close();
-  }
-
   // toggle sidebar
   toggleSidebar() {
     let body = document.querySelector('body');
@@ -133,8 +129,6 @@ export class NavbarComponent extends TEMSComponent implements OnInit {
   }
 
   displayAllNotifications(){
-    this.toggleNotifications();
-
     this.dialogService.openDialog(
       ViewNotificationsComponent,
       undefined,

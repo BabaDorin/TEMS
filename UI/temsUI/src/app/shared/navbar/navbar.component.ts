@@ -1,10 +1,12 @@
+import { ViewNotificationsComponent } from './../../tems-components/notifications/view-notifications/view-notifications.component';
+import { DialogService } from 'src/app/services/dialog-service/dialog.service';
 import { SnackService } from './../../services/snack/snack.service';
 import { ViewNotification } from './../../models/communication/notification/view-notification.model';
 import { UserService } from './../../services/user-service/user.service';
 import { AuthService } from './../../services/auth.service';
 import { TEMSComponent } from './../../tems/tems.component';
-import { Component, OnInit } from '@angular/core';
-import { NgbDropdownConfig } from '@ng-bootstrap/ng-bootstrap';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { NgbDropdown, NgbDropdownConfig } from '@ng-bootstrap/ng-bootstrap';
 import { Router } from '@angular/router';
 
 @Component({
@@ -20,12 +22,14 @@ export class NavbarComponent extends TEMSComponent implements OnInit {
   private loggedIn: boolean;
   notifications = [] as ViewNotification[];
   newNotifications = [] as ViewNotification[];
+  // @ViewChild('notificationDropdown') notificationDropdown: NgbDropdown; 
 
   constructor(
     config: NgbDropdownConfig,
     private route: Router,
     private authService: AuthService,
     private userService: UserService,
+    private dialogService: DialogService,
     private snackService: SnackService) {
       super();
       config.placement = 'bottom-right';
@@ -38,16 +42,6 @@ export class NavbarComponent extends TEMSComponent implements OnInit {
       .subscribe());
     this.route.navigateByUrl('');
     window.location.reload()
-  }
-
-  removeNotification(notificationId: string){
-    this.subscriptions.push(
-      this.userService.removeNotification(notificationId)
-      .subscribe(result => {
-        if(this.snackService.snackIfError(result))
-          return;
-      })
-    )
   }
 
   markNotificationsAsSeen(){
@@ -109,6 +103,10 @@ export class NavbarComponent extends TEMSComponent implements OnInit {
     document.querySelector('.sidebar-offcanvas').classList.toggle('active');
   }
 
+  toggleNotifications(){
+    // this.notificationDropdown.close();
+  }
+
   // toggle sidebar
   toggleSidebar() {
     let body = document.querySelector('body');
@@ -132,5 +130,17 @@ export class NavbarComponent extends TEMSComponent implements OnInit {
   // toggle right sidebar
   toggleRightSidebar() {
     document.querySelector('#right-sidebar').classList.toggle('open');
+  }
+
+  displayAllNotifications(){
+    this.toggleNotifications();
+
+    this.dialogService.openDialog(
+      ViewNotificationsComponent,
+      undefined,
+      () => {
+        this.fetchLastNotifications();
+      }
+    );
   }
 }

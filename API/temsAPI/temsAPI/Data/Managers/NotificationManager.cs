@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
+using System.Threading;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.CommunicationEntities;
@@ -87,6 +88,51 @@ namespace temsAPI.Data.Managers
                 notification.MarkSeen(user);
                 await _unitOfWork.Save();
             }
+
+            return null;
+        }
+        
+        public async Task<INotification> GetNotificationById(string notificationId)
+        {
+            INotification notification = await GetUserNotificationById(notificationId);
+            if (notification == null)
+                notification = await GetCommonNotificationById(notificationId);
+
+            return notification;
+        }
+
+        public async Task<UserNotification> GetUserNotificationById(string notificationId)
+        {
+            return (await _unitOfWork.UserNotifications
+                .Find<UserNotification>(q => q.Id == notificationId))
+                .FirstOrDefault();
+        }
+        
+        public async Task<CommonNotification> GetCommonNotificationById(string notificationId)
+        {
+            return (await _unitOfWork.CommonNotifications
+                .Find<CommonNotification>(q => q.Id == notificationId))
+                .FirstOrDefault();
+        }
+
+        public async Task RemoveUserNotification(INotification notification)
+        {
+            _unitOfWork.UserNotifications.Delete((UserNotification)notification);
+            await _unitOfWork.Save();
+        }
+
+        public async Task RemoveCommonNotification(INotification notification)
+        {
+            _unitOfWork.CommonNotifications.Delete((CommonNotification)notification);
+            await _unitOfWork.Save();
+        }
+
+        public async Task<string> RemoveNotification(INotification notification)
+        {
+            if (await _unitOfWork.UserNotifications.isExists(q => q.Id == notification.Id))
+                await RemoveUserNotification(notification);
+            else
+                await RemoveCommonNotification(notification);
 
             return null;
         }

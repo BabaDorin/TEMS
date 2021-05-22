@@ -1,3 +1,4 @@
+import { NgxPaginationModule } from 'ngx-pagination';
 import { RoomLabelService } from './services/room-label.service';
 import { TypeService } from './services/type-service/type.service';
 import { MenuService } from './services/menu-service/menu.service';
@@ -37,6 +38,7 @@ import { SnackComponent } from './public/snack/snack.component';
 import { DefinitionService } from './services/definition-service/definition.service';
 import { ConnectPersonnelUserComponent } from './tems-components/connect-personnel-user/connect-personnel-user.component';
 import { CurrencyPipe } from '@angular/common';
+import { ViewNotificationsComponent } from './tems-components/notifications/view-notifications/view-notifications.component';
 
 @NgModule({
   declarations: [
@@ -53,11 +55,13 @@ import { CurrencyPipe } from '@angular/common';
     TEMSComponent,
     SnackComponent,
     ConnectPersonnelUserComponent,
+    ViewNotificationsComponent,
     ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     NgbModule,
+    NgxPaginationModule,
     MatDialogModule,
     BrowserAnimationsModule,
     ChartsModule,

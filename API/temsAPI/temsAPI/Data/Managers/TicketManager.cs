@@ -12,6 +12,7 @@ using temsAPI.Data.Entities.CommunicationEntities;
 using temsAPI.Data.Entities.EquipmentEntities;
 using temsAPI.Data.Entities.OtherEntities;
 using temsAPI.Data.Entities.UserEntities;
+using temsAPI.Data.Factories.NotificationFactories;
 using temsAPI.Helpers;
 using temsAPI.Services;
 using temsAPI.System_Files;
@@ -50,17 +51,20 @@ namespace temsAPI.Data.Managers
         private UserManager<TEMSUser> _userManager;
         private IdentityService _identityService;
         private AppSettings _appSettings;
+        private NotificationManager _notificationManager;
 
         public TicketManager(
             IUnitOfWork unitOfWork,
             ClaimsPrincipal user,
             UserManager<TEMSUser> userManager,
             IdentityService identityService,
-            IOptions<AppSettings> appSettings) : base(unitOfWork, user)
+            IOptions<AppSettings> appSettings,
+            NotificationManager notificationManager) : base(unitOfWork, user)
         {
             _appSettings = appSettings.Value;
             _userManager = userManager;
             _identityService = identityService;
+            _notificationManager = notificationManager;
         }
 
         // BEFREE
@@ -189,6 +193,18 @@ namespace temsAPI.Data.Managers
             ticket.IsPinned = status;
             ticket.DatePinned = (status) ? DateTime.Now : null;
             await _unitOfWork.Save();
+
+            // Notify technicians if pinned == true
+            if (ticket.IsPinned)
+            {
+                var techIds = (await _userManager.GetUsersInRoleAsync("technician"))
+                    .Select(q => q.Id)
+                    .ToList();
+
+                var notification = new TicketPinnedNotiFactory().Create(ticket, techIds);
+                await _notificationManager.CreateCommonNotification(notification);
+            }
+
             return null;
         }
 
@@ -263,6 +279,8 @@ namespace temsAPI.Data.Managers
 
             await _unitOfWork.Tickets.Create(model);
             await _unitOfWork.Save();
+
+            await _notificationManager.NotifyTicketCreation(model);
 
             return null;
         }

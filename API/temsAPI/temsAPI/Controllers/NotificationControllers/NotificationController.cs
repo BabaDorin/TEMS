@@ -96,5 +96,28 @@ namespace temsAPI.Controllers.NotificationControllers
                 return ReturnResponse("An error occured while marking notifications as seen", ResponseStatus.Fail);
             }
         }
+
+        [Authorize]
+        [HttpGet("notification/remove/{notificationId}")]
+        public async Task<JsonResult> Remove(string notificationId)
+        {
+            try
+            {
+                var notification = await _notificationManager.GetNotificationById(notificationId);
+                if (notification == null)
+                    return ReturnResponse("Invalid id provided", ResponseStatus.Fail);
+
+                string result = await _notificationManager.RemoveNotification(notification);
+                if (result != null)
+                    return ReturnResponse(result, ResponseStatus.Fail);
+
+                return ReturnResponse("Success", ResponseStatus.Success);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured while removing the specified notification", ResponseStatus.Fail);
+            }
+        }
     }
 }

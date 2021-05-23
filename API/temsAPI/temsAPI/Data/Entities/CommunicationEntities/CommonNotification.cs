@@ -36,5 +36,39 @@ namespace temsAPI.Data.Entities.CommunicationEntities
             if(connection != null)
                 connection.Seen = true;
         }
+
+        public CommonNotification()
+        {
+
+        }
+
+        public CommonNotification(
+            string title,
+            string message,
+            List<string> userIds,
+            bool sendSMS = false,
+            bool sendEmail = false,
+            bool sendBrowser = false,
+            bool sendPush = false)
+        {
+            Id = Guid.NewGuid().ToString();
+            DateCreated = DateTime.Now;
+            Title = title;
+            Message = message;
+            SendSMS = sendSMS;
+            SendEmail = sendEmail;
+            SendBrowser = sendBrowser;
+            SendPush = sendPush;
+
+            if(userIds != null)
+                foreach(string id in userIds)
+                {
+                    UserCommonNotifications.Add(new UserCommonNotification()
+                    {
+                        NotificationId = Id,
+                        UserId = id,
+                    });
+                }
+        }
     }
 }

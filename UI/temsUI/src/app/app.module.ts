@@ -1,7 +1,11 @@
+<<<<<<< HEAD
 import { UserCardsModule } from './user-cards/user-cards.module';
 import { DatePipe } from '@angular/common';
 import { AnnouncementsListComponent } from 'src/app/announcements-list/announcements-list.component';
 import { ViewAnnouncementsComponent } from './tems-components/communication/view-announcements/view-announcements.component';
+=======
+import { NgxPaginationModule } from 'ngx-pagination';
+>>>>>>> notification-support
 import { RoomLabelService } from './services/room-label.service';
 import { TypeService } from './services/type-service/type.service';
 import { MenuService } from './services/menu-service/menu.service';
@@ -44,6 +48,7 @@ import { CurrencyPipe } from '@angular/common';
 import { LastCreatedTicketsChartComponent } from './tems-components/analytics/last-created-tickets-chart/last-created-tickets-chart.component';
 import { LastIssuesSimplifiedComponent } from './tems-components/analytics/last-issues-simplified/last-issues-simplified.component';
 import { IssueContainerModule } from './modules/issues/issue-container/issue-container.module';
+import { ViewNotificationsComponent } from './tems-components/notifications/view-notifications/view-notifications.component';
 
 @NgModule({
   declarations: [
@@ -64,12 +69,14 @@ import { IssueContainerModule } from './modules/issues/issue-container/issue-con
     AnnouncementsListComponent,
     LastCreatedTicketsChartComponent,
     LastIssuesSimplifiedComponent,
+    ViewNotificationsComponent,
     ],
   imports: [
     IssueContainerModule,
     BrowserModule,
     AppRoutingModule,
     NgbModule,
+    NgxPaginationModule,
     MatDialogModule,
     BrowserAnimationsModule,
     ChartsModule,

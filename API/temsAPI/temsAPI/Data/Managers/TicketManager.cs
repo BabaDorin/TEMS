@@ -50,17 +50,20 @@ namespace temsAPI.Data.Managers
         private UserManager<TEMSUser> _userManager;
         private IdentityService _identityService;
         private AppSettings _appSettings;
+        private NotificationManager _notificationManager;
 
         public TicketManager(
             IUnitOfWork unitOfWork,
             ClaimsPrincipal user,
             UserManager<TEMSUser> userManager,
             IdentityService identityService,
-            IOptions<AppSettings> appSettings) : base(unitOfWork, user)
+            IOptions<AppSettings> appSettings,
+            NotificationManager notificationManager) : base(unitOfWork, user)
         {
             _appSettings = appSettings.Value;
             _userManager = userManager;
             _identityService = identityService;
+            _notificationManager = notificationManager;
         }
 
         // BEFREE
@@ -263,6 +266,8 @@ namespace temsAPI.Data.Managers
 
             await _unitOfWork.Tickets.Create(model);
             await _unitOfWork.Save();
+
+            await _notificationManager.NotifyTicketCreation(model);
 
             return null;
         }

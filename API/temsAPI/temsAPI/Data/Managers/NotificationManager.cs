@@ -1,4 +1,5 @@
-﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -17,13 +18,19 @@ namespace temsAPI.Data.Managers
     public class NotificationManager : EntityManager
     {
         private IdentityService _identityService;
+        private UserManager<TEMSUser> _userManager;
+        private RoleManager<IdentityRole> _roleManager;
 
         public NotificationManager(
             IUnitOfWork unitOfWork, 
             ClaimsPrincipal user,
-            IdentityService identityService) : base(unitOfWork, user)
+            IdentityService identityService,
+            UserManager<TEMSUser> userManager,
+            RoleManager<IdentityRole> roleManager) : base(unitOfWork, user)
         {
             _identityService = identityService;
+            _userManager = userManager;
+            _roleManager = roleManager;
         }
 
         public async Task<List<NotificationViewModel>> GetLastNotifications(TEMSUser user, int skip = 0, int take = 7)
@@ -135,6 +142,55 @@ namespace temsAPI.Data.Managers
                 await RemoveCommonNotification(notification);
 
             return null;
+        }
+
+        public async Task CreateUserNotification(UserNotification notification)
+        {
+            await _unitOfWork.UserNotifications.Create(notification);
+            await _unitOfWork.Save();
+        }
+
+        public async Task CreateCommonNotification(CommonNotification notification)
+        {
+            await _unitOfWork.CommonNotifications.Create(notification);
+            await _unitOfWork.Save();
+        }
+
+        public async Task NotifyTicketCreation(Ticket ticket)
+        {
+            // Notify assignees
+            var assigneeIds = ticket.Assignees?.Select(q => q.Id).ToList();
+            if(assigneeIds != null)
+            {
+                await CreateCommonNotification(new CommonNotification(
+                        "You've been assigned a ticket",
+                        "A ticket has been created in which you figure as assignee",
+                        assigneeIds,
+                        sendEmail: true,
+                        sendPush: true,
+                        sendBrowser: true
+                        ));
+            }
+
+            // Notify technicians
+            var techIds = (await _userManager.GetUsersInRoleAsync("technician"))
+                ?.Select(q => q.Id)
+                .Except(assigneeIds)
+                .ToList();
+
+            if(techIds != null)
+            {
+                await CreateCommonNotification(new CommonNotification(
+                        "A ticket has been created",
+                        "Someone needs help, make sure to check out the newly created ticket",
+                        techIds,
+                        sendEmail: true,
+                        sendPush: true,
+                        sendBrowser: true
+                        ));
+            }
+
+            // BEFREE -> Notify supervisories
         }
     }
 }

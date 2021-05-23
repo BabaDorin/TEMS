@@ -20,6 +20,8 @@ export class NavbarComponent extends TEMSComponent implements OnInit {
   public sidebarToggled = false;
   public username: string;
   private loggedIn: boolean;
+  private refreshing: boolean = false;
+
   notifications = [] as ViewNotification[];
   newNotifications = [] as ViewNotification[];
   // @ViewChild('notificationDropdown') notificationDropdown: NgbDropdown; 
@@ -83,7 +85,10 @@ export class NavbarComponent extends TEMSComponent implements OnInit {
     this.fetchLastNotifications();
   }
 
-  fetchLastNotifications(){
+  fetchLastNotifications(refreshTriggered: boolean = false){
+    // If refreshTriggered == true => user fetched notifications manually, using the fresh button.
+    this.refreshing = true;
+
     this.subscriptions.push(
       this.userService.getLastNotifications()
       .subscribe(result => {
@@ -94,6 +99,10 @@ export class NavbarComponent extends TEMSComponent implements OnInit {
         this.notifications = result;
         this.newNotifications = this.notifications.filter(q => q.seen == false);
         console.log(this.newNotifications);
+        this.refreshing = false;
+
+        if(refreshTriggered)
+          this.markNotificationsAsSeen();
       })
     )
   }

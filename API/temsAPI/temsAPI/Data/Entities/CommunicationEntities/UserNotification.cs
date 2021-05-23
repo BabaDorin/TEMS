@@ -48,5 +48,30 @@ namespace temsAPI.Data.Entities.CommunicationEntities
         {
             Seen = true;
         }
+
+        public UserNotification()
+        {
+
+        }
+
+        public UserNotification(
+            string title,
+            string message,
+            string userId,
+            bool sendSMS = false,
+            bool sendEmail = false,
+            bool sendBrowser = false,
+            bool sendPush = false)
+        {
+            Id = Guid.NewGuid().ToString();
+            DateCreated = DateTime.Now;
+            Title = title;
+            Message = message;
+            UserID = userId;
+            SendSMS = sendSMS;
+            SendEmail = sendEmail;
+            SendBrowser = sendBrowser;
+            SendPush = sendPush;
+        }
     }
 }

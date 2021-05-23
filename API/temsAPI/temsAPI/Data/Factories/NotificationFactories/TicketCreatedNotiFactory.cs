@@ -13,7 +13,7 @@ namespace temsAPI.Data.Factories.NotificationFactories
         {
             return new CommonNotification(
                 "A ticket has been created",
-                "Someone needs help, make sure to check out the newly created ticket",
+                $"Someone needs help, make sure to check out the newly created ticket [Tr. No. {ticket.TrackingNumber}]",
                 userIds,
                 sendEmail: true,
                 sendPush: true,

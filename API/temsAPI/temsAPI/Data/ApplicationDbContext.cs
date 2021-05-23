@@ -91,6 +91,11 @@ namespace temsAPI.Data
 
             modelBuilder.Entity<UserCommonNotification>()
                 .HasKey(c => new { c.UserId, c.NotificationId });
+
+            modelBuilder.Entity<Ticket>(e =>
+            {
+                e.Property(e => e.TrackingNumber).ValueGeneratedOnAdd();
+            });
         }
 
         // Equipment entities

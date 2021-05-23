@@ -16,7 +16,7 @@ namespace temsAPI.Data.Factories.NotificationFactories
 
             return new CommonNotification(
                 "You've been assigned a ticket",
-                "A ticket has been created in which you figure as assignee",
+                $"A ticket [Tr. No. {ticket.TrackingNumber}] has been assigned to you, make sure to check it out.",
                 userIds,
                 sendEmail: true,
                 sendPush: true,

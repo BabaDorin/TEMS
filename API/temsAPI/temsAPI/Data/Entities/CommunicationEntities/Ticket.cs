@@ -17,6 +17,7 @@ namespace temsAPI.Data.Entities.CommunicationEntities
         [Key]
         public string Id { get; set; }
         public bool IsPinned { get; set; }
+        public int TrackingNumber { get; set; }
 
 
         public DateTime DateCreated { get; set; }

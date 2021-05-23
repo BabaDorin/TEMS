@@ -3,6 +3,7 @@
       hideToggle="true">
       <mat-expansion-panel-header>
         <mat-panel-title>
+          {{ issue.problem }} [Track No. {{ issue.trackingNumber }}]
           <app-issue-status [issue]="issue"></app-issue-status>
         </mat-panel-title>
         <mat-panel-description>

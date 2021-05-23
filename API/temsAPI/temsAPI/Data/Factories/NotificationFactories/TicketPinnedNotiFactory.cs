@@ -12,7 +12,7 @@ namespace temsAPI.Data.Factories.NotificationFactories
         {
             return new CommonNotification(
                     "A ticket has been pinned",
-                    "Someone pinned a ticket, make sure to check it out.",
+                    $"Someone pinned a ticket [Tr. No {ticket.TrackingNumber}], make sure to check it out.",
                    userIds,
                    sendEmail: false,
                    sendPush: false,

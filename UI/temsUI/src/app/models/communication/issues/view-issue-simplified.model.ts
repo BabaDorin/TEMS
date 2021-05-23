@@ -7,6 +7,7 @@ export interface IViewIssueSimplified{
     problem: string;
     status?: IOption;
     isPinned: boolean;
+    trackingNumber: number;
     label?: IOption;
     description?: string;
     personnel?: IOption[];
@@ -22,6 +23,7 @@ export class ViewIssueSimplified implements IViewIssueSimplified{
     id: string;
     problem: string;
     isPinned: boolean;
+    trackingNumber: number;
     description?: string;
     status?: IOption;
     label?: IOption;

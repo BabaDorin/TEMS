@@ -10,6 +10,7 @@ namespace temsAPI.ViewModels.Ticket
     {
         public string Id { get; set; }
         public bool IsPinned { get; set; }
+        public int TrackingNumber { get; set; }
         public DateTime? DatePinned { get; set; }
         public string Problem { get; set; }
         public Option Status { get; set; }
@@ -30,6 +31,7 @@ namespace temsAPI.ViewModels.Ticket
                 Id = ticket.Id,
                 IsPinned = ticket.IsPinned,
                 DatePinned = ticket.DatePinned,
+                TrackingNumber = ticket.TrackingNumber,
                 Problem = ticket.Problem,
                 DateClosed = ticket.DateClosed,
                 DateCreated = ticket.DateCreated,

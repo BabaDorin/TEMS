@@ -12,6 +12,7 @@ using temsAPI.Data.Entities.CommunicationEntities;
 using temsAPI.Data.Entities.EquipmentEntities;
 using temsAPI.Data.Entities.OtherEntities;
 using temsAPI.Data.Entities.UserEntities;
+using temsAPI.Data.Factories.NotificationFactories;
 using temsAPI.Helpers;
 using temsAPI.Services;
 using temsAPI.System_Files;
@@ -192,6 +193,18 @@ namespace temsAPI.Data.Managers
             ticket.IsPinned = status;
             ticket.DatePinned = (status) ? DateTime.Now : null;
             await _unitOfWork.Save();
+
+            // Notify technicians if pinned == true
+            if (ticket.IsPinned)
+            {
+                var techIds = (await _userManager.GetUsersInRoleAsync("technician"))
+                    .Select(q => q.Id)
+                    .ToList();
+
+                var notification = new TicketPinnedNotiFactory().Create(ticket, techIds);
+                await _notificationManager.CreateCommonNotification(notification);
+            }
+
             return null;
         }
 

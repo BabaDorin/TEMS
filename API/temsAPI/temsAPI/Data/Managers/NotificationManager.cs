@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.CommunicationEntities;
 using temsAPI.Data.Entities.UserEntities;
+using temsAPI.Data.Factories.NotificationFactories;
 using temsAPI.Services;
 using temsAPI.ViewModels.Notification;
 
@@ -162,14 +163,8 @@ namespace temsAPI.Data.Managers
             var assigneeIds = ticket.Assignees?.Select(q => q.Id).ToList();
             if(assigneeIds != null)
             {
-                await CreateCommonNotification(new CommonNotification(
-                        "You've been assigned a ticket",
-                        "A ticket has been created in which you figure as assignee",
-                        assigneeIds,
-                        sendEmail: true,
-                        sendPush: true,
-                        sendBrowser: true
-                        ));
+                var notification = (new TicketAssignedNotiFactory().Create(ticket));
+                await CreateCommonNotification(notification);
             }
 
             // Notify technicians
@@ -180,14 +175,8 @@ namespace temsAPI.Data.Managers
 
             if(techIds != null)
             {
-                await CreateCommonNotification(new CommonNotification(
-                        "A ticket has been created",
-                        "Someone needs help, make sure to check out the newly created ticket",
-                        techIds,
-                        sendEmail: true,
-                        sendPush: true,
-                        sendBrowser: true
-                        ));
+                var notification = new TicketCreatedNotiFactory().Create(ticket, techIds);
+                await CreateCommonNotification(notification);
             }
 
             // BEFREE -> Notify supervisories

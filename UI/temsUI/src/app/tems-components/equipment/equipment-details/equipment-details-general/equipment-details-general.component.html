@@ -6,8 +6,12 @@
     <div [class]="headerClass">
         <br>
         <h1>{{ equipment.identifier }}
-            <b *ngIf="equipment.temsID != undefined"> {{ equipment.temsID }}</b>
-            <b *ngIf="equipment.temsID == undefined && equipment.serialNumber != undefined">{{ equipment.serialNumber}}</b>
+            <div class="d-flex align-items-center d-flex">
+                <app-equipment-label *ngIf="equipment.temsId != undefined" [mainText]="equipment.temsId" class="mr-4">
+                </app-equipment-label>
+                <app-equipment-serial-number *ngIf="equipment.serialNumber != undefined" [mainText]="equipment.serialNumber">
+                </app-equipment-serial-number>
+            </div>
         </h1>
         <ng-container *ngIf="canManage">
             <button mat-button (click)="edit()">Edit</button>

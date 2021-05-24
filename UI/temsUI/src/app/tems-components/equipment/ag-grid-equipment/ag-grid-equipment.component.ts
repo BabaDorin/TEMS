@@ -65,7 +65,6 @@ export class AgGridEquipmentComponent extends TEMSComponent implements OnInit, O
         cellRenderer: 'btnCellRendererComponent',
         cellRendererParams: {
           onClick: this.details.bind(this),
-          label: 'Details',
           matIcon: 'more_horiz'
         }
       },

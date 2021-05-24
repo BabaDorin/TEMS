@@ -56,14 +56,15 @@ export class AgGridRoomsComponent extends TEMSComponent implements OnInit {
         cellRenderer: 'btnCellRendererComponent',
         cellRendererParams: {
           onClick: this.details.bind(this),
-          label: 'Details'
+          matIcon: 'more_horiz'
         }
       },
       {
         cellRenderer: 'btnCellRendererComponent',
         cellRendererParams: {
           onClick: this.archieve.bind(this),
-          label: 'Archieve'
+          matIcon: 'delete',
+          matIconClass: 'text-muted'
         }
       }
     ];

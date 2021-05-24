@@ -26,6 +26,8 @@ import { ViewPropertyComponent } from './view-property/view-property.component';
 import { AttachEquipmentComponent } from './attach-equipment/attach-equipment.component';
 import { BulkUploadComponent } from './bulk-upload/bulk-upload.component';
 import { BulkUploadResultsComponent } from './bulk-upload-results/bulk-upload-results.component';
+import { EquipmentLabelComponent } from './equipment-label/equipment-label.component';
+import { EquipmentSerialNumberComponent } from './equipment-serial-number/equipment-serial-number.component';
 
 @NgModule({
   declarations: [
@@ -47,6 +49,8 @@ import { BulkUploadResultsComponent } from './bulk-upload-results/bulk-upload-re
     AttachEquipmentComponent,
     BulkUploadComponent,
     BulkUploadResultsComponent,
+    EquipmentLabelComponent,
+    EquipmentSerialNumberComponent,
   ],
   imports: [
     CommonModule,

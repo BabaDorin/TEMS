@@ -63,10 +63,11 @@ export class AgGridKeysComponent extends TEMSComponent implements OnInit, OnChan
         {
           cellRenderer: 'btnCellRendererComponent',
           cellRendererParams: {
-            onClick: this.return.bind(this),
-            label: 'Return'
+            onClick: this.archieve.bind(this),
+            matIcon: 'delete',
+            matIconClass: 'text-muted'
           }
-        },
+        }
       ];  
     }
     else{

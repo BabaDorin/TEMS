@@ -1,0 +1,7 @@
+<button mat-icon-button *ngIf="matIcon != undefined" (click)="onClick($event)">
+    <mat-icon [ngClass]="matIconClass">{{ matIcon }}</mat-icon>
+</button>
+
+<button mat-button *ngIf="matIcon == undefined" (click)="onClick($event)">
+    {{ label }}
+</button>

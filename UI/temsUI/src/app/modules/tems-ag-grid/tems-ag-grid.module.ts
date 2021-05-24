@@ -1,3 +1,4 @@
+import { BooleanCellRendererComponent } from './../../public/ag-grid/boolean-cell-renderer/boolean-cell-renderer.component';
 import { BrowserModule } from '@angular/platform-browser';
 import { MaterialModule } from './../material/material.module';
 import { AgGridRoomsComponent } from './../../tems-components/room/ag-grid-rooms/ag-grid-rooms.component';
@@ -19,12 +20,13 @@ import { BtnCellRendererComponent } from 'src/app/public/ag-grid/btn-cell-render
     AgGridPersonnelComponent,
     AgGridTooltipComponent,
     AgGridRoomsComponent,
-    BtnCellRendererComponent
+    BtnCellRendererComponent,
+    BooleanCellRendererComponent
   ],
   imports: [
     CommonModule,
     CommonModule,
-    AgGridModule.withComponents([BtnCellRendererComponent]),
+    AgGridModule.withComponents([BtnCellRendererComponent, BooleanCellRendererComponent]),
     MaterialModule,
   ],
   exports: [

@@ -1,3 +1,4 @@
+import { BooleanCellRendererComponent } from './../../../public/ag-grid/boolean-cell-renderer/boolean-cell-renderer.component';
 import { EquipmentDetailsGeneralComponent } from './../equipment-details/equipment-details-general/equipment-details-general.component';
 import { DialogService } from './../../../services/dialog-service/dialog.service';
 import { SnackService } from './../../../services/snack/snack.service';
@@ -39,11 +40,11 @@ export class AgGridEquipmentComponent extends TEMSComponent implements OnInit, O
     // enables pagination in the grid
     this.pagination = true;
 
-    // sets 10 rows per page (default is 100)
     this.paginationPageSize = 20;
 
     this.frameworkComponents = {
-      btnCellRendererComponent: BtnCellRendererComponent
+      btnCellRendererComponent: BtnCellRendererComponent,
+      booleanCellRendererComponent: BooleanCellRendererComponent
     }
 
     this.columnDefs = [
@@ -52,20 +53,28 @@ export class AgGridEquipmentComponent extends TEMSComponent implements OnInit, O
       { field: 'definition', sortable: true, filter: true },
       { field: 'assignee', sortable: true, filter: true },
       { field: 'type', sortable: true, filter: true },
-      { field: 'isUsed', sortable: false, filter: true },
-      { field: 'isDefect', sortable: false, filter: true },
+      {
+        field: 'isUsed', sortable: false, filter: true,
+        cellRenderer: 'booleanCellRendererComponent',
+      },
+      {
+        field: 'isDefect', sortable: false, filter: true,
+        cellRenderer: 'booleanCellRendererComponent',
+      },
       {
         cellRenderer: 'btnCellRendererComponent',
         cellRendererParams: {
           onClick: this.details.bind(this),
-          label: 'Details'
+          label: 'Details',
+          matIcon: 'more_horiz'
         }
       },
       {
         cellRenderer: 'btnCellRendererComponent',
         cellRendererParams: {
           onClick: this.archieve.bind(this),
-          label: 'Archieve'
+          matIcon: 'delete',
+          matIconClass: 'text-muted'
         }
       }
     ];

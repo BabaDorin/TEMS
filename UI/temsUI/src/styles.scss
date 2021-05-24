@@ -196,3 +196,13 @@ formly-field-mat-radio {
 .clickable{
   cursor: pointer;
 }
+
+.option-button{
+  width: 250px;
+  text-overflow: ellipsis;
+  align-content: flex-start;
+}
+
+.mat-icon {
+  vertical-align: middle;
+}

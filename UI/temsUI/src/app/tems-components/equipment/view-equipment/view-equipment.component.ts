@@ -16,7 +16,7 @@ import { EquipmentAllocationComponent } from '../equipment-allocation/equipment-
 })
 export class ViewEquipmentComponent implements OnInit {
 
-  includeDerived = false;
+  includeDerived:boolean = true;
 
   @ViewChild('agGridEquipment') agGridEquipment: AgGridEquipmentComponent;
 
@@ -82,5 +82,9 @@ export class ViewEquipmentComponent implements OnInit {
 
   addNew(){
     this.router.navigate(["/equipment/add"]);
+  }
+
+  toggleIncludeDerived(){
+    this.includeDerived = !this.includeDerived;
   }
 }

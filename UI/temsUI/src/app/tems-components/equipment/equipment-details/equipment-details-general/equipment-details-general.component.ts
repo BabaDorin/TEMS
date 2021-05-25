@@ -20,7 +20,7 @@ export class EquipmentDetailsGeneralComponent extends TEMSComponent implements O
   @Input() displayViewMore: boolean = false;
   @Output() archivationStatusChanged = new EventEmitter();
   dialogRef;
-  headerClass;
+  headerClass; // muted when archieved
   canManage:boolean = false;
   equipment: ViewEquipment;
   generalProperties: Property[];

@@ -168,9 +168,9 @@ namespace temsAPI.Data.Managers
             parent.Children.Add(child);
         }
 
-        public async Task ChangeWorkingState(Equipment equipment, bool isWorking)
+        public async Task ChangeWorkingState(Equipment equipment, bool isDefect)
         {
-            equipment.IsDefect = !isWorking;
+            equipment.IsDefect = isDefect;
             await _unitOfWork.Save();
         }
 

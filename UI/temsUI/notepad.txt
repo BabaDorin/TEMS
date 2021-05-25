@@ -32,6 +32,7 @@ last allocation.
 
 
 // TD:
+--> Update equipment does not work!!!!!!!!!
 --> smart load mat tab
 --> Error when closing the allocation
 --> Make closing the active allocation easier (Ex. from equipment details page, like a quick action)

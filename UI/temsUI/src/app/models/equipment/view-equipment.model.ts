@@ -17,6 +17,7 @@ export interface IViewEquipment{
     temsId: string,
     serialNumber: string,
     room: IOption,
+    personnel: IOption,
     type: EquipmentType,
     specificProperties: Property[],
     children: IOption[],
@@ -33,6 +34,7 @@ export class ViewEquipment implements IViewEquipment{
     temsId: string;
     serialNumber: string;
     room: IOption;
+    personnel: IOption;
     type: EquipmentType;
     children: IOption[];
     parent: IOption;

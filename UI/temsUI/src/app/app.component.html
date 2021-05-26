@@ -4,7 +4,24 @@
     <app-sidebar *ngIf="showSidebar"></app-sidebar>
     <div class="main-panel" [ngClass]="{ 'main-panel-only' : !showSidebar }">
       <div class="content-wrapper">
-        <app-spinner *ngIf="isLoading"></app-spinner>
+
+        <ng-container *ngIf="isLoading">
+          <!-- Loading animation -->
+          <div class="main-spinner-wrapper">
+            <div class="spinner-wrapper">
+              <div class="load-wrapp">
+                <div class="load-6">
+                  <div class="letter-holder">
+                    <div class="l-1 letter">T</div>
+                    <div class="l-2 letter">E</div>
+                    <div class="l-3 letter">M</div>
+                    <div class="l-4 letter">S</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-container>
         <div contentAnimate *ngIf="!isLoading" class="h-100">
           <router-outlet></router-outlet>
         </div>

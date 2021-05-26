@@ -59,7 +59,7 @@ namespace temsAPI.ViewModels.Equipment
                             Label = activePersonnelAllocation.Personnel.Name
                         },
                 Room = (activeRoomAllocation == null)
-                        ? new Option { Value = "Deposit", Label = "Deposit" }
+                        ? null
                         : new Option
                         {
                             Value = activeRoomAllocation.RoomID,

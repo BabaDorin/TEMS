@@ -1,3 +1,4 @@
+import { TemsFormsModule } from './../../tems-forms/tems-forms.module';
 import { RouterModule } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { IssueStatusComponent } from './../../../issues/issue-status/issue-status.component';
@@ -24,6 +25,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
     MatExpansionModule,
     MatCardModule,
     MatIconModule,
+    TemsFormsModule,
   ],
   exports: [
     IssueContainerComponent,

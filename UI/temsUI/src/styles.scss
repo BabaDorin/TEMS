@@ -249,3 +249,10 @@ formly-field-mat-radio {
 }
 
 
+
+// Angular material components override
+.mat-expansion-panel-header{
+  height: auto !important;
+}
+
+

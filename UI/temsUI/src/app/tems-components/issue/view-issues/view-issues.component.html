@@ -1,74 +1,80 @@
-<app-summary-issues-analytics>
-    Loading...
-</app-summary-issues-analytics>
-
-<div class="mt-3">
-    <app-pinned-issues #pinnedIssues
-    (unPinned)="ticketUnpinned($event)">
-    </app-pinned-issues>
-</div>
-
-<div class="card mt-3">
-    <div class="card-body">
-        <div class="card-title">View Issues</div>
-        <form [formGroup]="filterIssueFormGroup">
-            <div class="row">
-                <div class="col-4">
-                    <app-chips-autocomplete label="Equipments' TEMSID or Serial Number..."
-                    formControlName="equipment"
-                    [endPoint]="equipmentService"
-                    (dataCollected)="equipmentSelected($value)"
-                    (dataRemoved)="equipmentSelected($value)"
-                    maxOptionsSelected="1">
-                    </app-chips-autocomplete>
-                </div>
-                <div class="col-4">
-                    <app-chips-autocomplete label="Room"
-                    formControlName="rooms"
-                    [endPoint]="roomService"
-                    (dataCollected)="roomSelected($value)"
-                    (dataRemoved)="roomSelected($value)"
-                    maxOptionsSelected="1">
-                    </app-chips-autocomplete>
-                </div>
-                <div class="col-4">
-                    <app-chips-autocomplete label="Personnel"
-                    formControlName="personnel"
-                    [endPoint]="personnelService"
-                    (dataCollected)="personnelSelected($value)"
-                    (dataRemoved)="personnelSelected($value)"
-                    maxOptionsSelected="1">
-                    </app-chips-autocomplete>
-                </div>
+<div class="flex-container">
+    <div class="col-md-12" id="section1">
+        <app-summary-issues-analytics>
+            Loading...
+        </app-summary-issues-analytics>
+    </div>
+    
+    <div class="col-md-12" id="section2">
+        <div class="mt-3">
+            <app-pinned-issues #pinnedIssues
+            (unPinned)="ticketUnpinned($event)">
+            </app-pinned-issues>
+        </div>
+        
+        <div class="card mt-3">
+            <div class="card-body">
+                <div class="card-title">View Issues</div>
+                <form [formGroup]="filterIssueFormGroup">
+                    <div class="row">
+                        <div class="col-md-4 col-sm-12">
+                            <app-chips-autocomplete label="Equipments' TEMSID or Serial Number..."
+                            formControlName="equipment"
+                            [endPoint]="equipmentService"
+                            (dataCollected)="equipmentSelected($value)"
+                            (dataRemoved)="equipmentSelected($value)"
+                            maxOptionsSelected="1">
+                            </app-chips-autocomplete>
+                        </div>
+                        <div class="col-md-4 col-sm-12">
+                            <app-chips-autocomplete label="Room"
+                            formControlName="rooms"
+                            [endPoint]="roomService"
+                            (dataCollected)="roomSelected($value)"
+                            (dataRemoved)="roomSelected($value)"
+                            maxOptionsSelected="1">
+                            </app-chips-autocomplete>
+                        </div>
+                        <div class="col-md-4 col-sm-12">
+                            <app-chips-autocomplete label="Personnel"
+                            formControlName="personnel"
+                            [endPoint]="personnelService"
+                            (dataCollected)="personnelSelected($value)"
+                            (dataRemoved)="personnelSelected($value)"
+                            maxOptionsSelected="1">
+                            </app-chips-autocomplete>
+                        </div>
+                    </div>
+                </form>
+                <mat-tab-group [@.disabled]="true">
+                    <mat-tab label="Open">
+                        <app-entity-issues-list #entityOpenIssuesList
+                            showIncludeClosed="false"
+                            [equipmentId]="equipmentId"
+                            [includePinned]="false"
+                            [roomId]="roomId"
+                            [personnelId]="personnelId"
+                            (pinned)="ticketPinned($event)">
+                            Loading...
+                        </app-entity-issues-list>
+                    </mat-tab>
+                    <mat-tab label="Closed">
+                        <ng-template matTabContent>
+                            <app-entity-issues-list #entityClosedIssuesList
+                            showIncludeClosed="false"
+                            [equipmentId]="equipmentId"
+                            [includePinned]="false"
+                            [roomId]="roomId"
+                            [personnelId]="personnelId"
+                            onlyClosed="true"
+                            addIssueEnabled="false"
+                            (pinned)="ticketPinned($event)">
+                            Loading...
+                        </app-entity-issues-list>
+                        </ng-template>
+                    </mat-tab>
+                </mat-tab-group>
             </div>
-        </form>
-        <mat-tab-group [@.disabled]="true">
-            <mat-tab label="Open">
-                <app-entity-issues-list #entityOpenIssuesList
-                    showIncludeClosed="false"
-                    [equipmentId]="equipmentId"
-                    [includePinned]="false"
-                    [roomId]="roomId"
-                    [personnelId]="personnelId"
-                    (pinned)="ticketPinned($event)">
-                    Loading...
-                </app-entity-issues-list>
-            </mat-tab>
-            <mat-tab label="Closed">
-                <ng-template matTabContent>
-                    <app-entity-issues-list #entityClosedIssuesList
-                    showIncludeClosed="false"
-                    [equipmentId]="equipmentId"
-                    [includePinned]="false"
-                    [roomId]="roomId"
-                    [personnelId]="personnelId"
-                    onlyClosed="true"
-                    addIssueEnabled="false"
-                    (pinned)="ticketPinned($event)">
-                    Loading...
-                </app-entity-issues-list>
-                </ng-template>
-            </mat-tab>
-        </mat-tab-group>
+        </div>
     </div>
 </div>

@@ -248,11 +248,38 @@ formly-field-mat-radio {
   }
 }
 
+@media screen and (max-width: 991px) {
+  .page-body-wrapper{
+    padding: 70px 7px 0px;
+  }
+}
+
+p{
+  text-align: justify;
+}
+
+
 
 
 // Angular material components override
 .mat-expansion-panel-header{
   height: auto !important;
 }
+
+
+
+
+
+
+
+
+// Bootstrap component styles overrides
+@media screen and (max-width: 991px) {
+  .card-body{
+    padding: 10px !important;
+  }
+}
+
+
 
 

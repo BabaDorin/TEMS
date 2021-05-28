@@ -6,7 +6,7 @@ openTicketStatusRate != undefined &&
 openTickets != undefined &&
 totalTickets != undefined
 ">
-    <div class="col-lg-3 col-md-6">
+    <div class="col-lg-3 col-md-6 p-1">
         <app-fraction-card
         title="Open issues"
         [numerator]="openTickets"
@@ -15,21 +15,21 @@ totalTickets != undefined
         </app-fraction-card>
     </div>
 
-    <div class="col-lg-3 col-md-6">
+    <div class="col-lg-3 col-md-6 p-1">
         <app-piechart-card
         title="Closing rate"
         [rates]="closingRate">
         </app-piechart-card>
     </div>
 
-    <div class="col-lg-3 col-md-6">
+    <div class="col-lg-3 col-md-6 p-1">
         <app-piechart-card
         title="Closing by rate"
         [rates]="closingByRate">
         </app-piechart-card>
     </div>
 
-    <div class="col-lg-3 col-md-6">
+    <div class="col-lg-3 col-md-6 p-1">
         <app-piechart-card
         title="Open ticket status rate"
         [rates]="openTicketStatusRate">

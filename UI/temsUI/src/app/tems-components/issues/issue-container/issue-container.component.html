@@ -9,10 +9,15 @@
                 <app-issue-status [issue]="issue"></app-issue-status>
               </div>
               <div class="col-md-7 col-sm-12">
-                <b>[{{ issue.trackingNumber }}] </b>{{ issue.problem }} 
+                <p>
+                  <span class="badge badge-pill badge-outline-primary d-inline mr-1">
+                    {{ issue.trackingNumber }}
+                  </span>
+                  {{ issue.problem }}
+                </p>
               </div>
               <div class="col-md-3 col-sm-12 d-sm-block text-center text-muted">
-                <small>{{ issue.dateCreated | date:'medium' }}</small>
+                <small class="mt-3"><mat-icon class="text-muted">event</mat-icon> {{ issue.dateCreated | date:'medium' }}</small>
               </div>
             </div>
           </div>

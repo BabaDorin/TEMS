@@ -34,10 +34,10 @@ namespace temsAPI.ViewModels.Personnel
                     Value = q.Id,
                     Label = q.Name
                 }).ToList(),
-                RoomSupervisories = personnel.PersonnelRoomSupervisories.Select(q => new Option
+                RoomSupervisories = personnel.RoomsSupervisoried.Select(q => new Option
                 {
-                    Value = q.RoomID,
-                    Label = q.Room.Identifier
+                    Value = q.Id,
+                    Label = q.Identifier
                 }).ToList(),
             };
         }

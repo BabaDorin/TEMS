@@ -12,9 +12,8 @@ namespace temsAPI.ViewModels.Room
         public string Identifier { get; set; }
         public int Floor { get; set; }
         public string Description { get; set; }
-        public List<ViewPersonnelSimplifiedViewModel> Supervisory { get; set; } 
-            = new List<ViewPersonnelSimplifiedViewModel>();
         public int ActiveTickets { get; set; }
+        public List<Option> Supervisories { get; set; } = new List<Option>();
         public List<Option> Labels { get; set; } = new List<Option>();
         public bool IsArchieved { get; set; }
 
@@ -33,11 +32,10 @@ namespace temsAPI.ViewModels.Room
                     Value = q.Id,
                     Label = q.Name
                 }).ToList(),
-                Supervisory = room.PersonnelRoomSupervisories.Select(q => new ViewPersonnelSimplifiedViewModel
+                Supervisories = room.Supervisories.Select(q => new Option
                 {
-                    Id = q.Id,
-                    Name = q.Personnel.Name,
-                    Positions = string.Join(", ", q.Personnel.Positions)
+                    Value = q.Id,
+                    Label = q.Name
                 }).ToList(),
             };
         }

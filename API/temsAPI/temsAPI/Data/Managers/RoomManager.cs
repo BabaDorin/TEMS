@@ -48,16 +48,19 @@ namespace temsAPI.Data.Managers
             if (validationResult != null)
                 return validationResult;
 
-            List<string> labelIds = viewModel.Labels.Select(q => q.Value).ToList();
             Room model = new Room
             {
                 Id = Guid.NewGuid().ToString(),
                 Description = viewModel.Description,
                 Floor = viewModel.Floor,
                 Identifier = viewModel.Identifier,
-                Labels = await _unitOfWork.RoomLabels.FindAll<RoomLabel>(
-                    where: q => labelIds.Contains(q.Id))
             };
+
+            List<string> labelIds = viewModel.Labels.Select(q => q.Value).ToList() ?? new();
+            List<string> supervisoriesIds = viewModel.Supervisories.Select(q => q.Value).ToList() ?? new();
+
+            await model.AssignLabels(labelIds, _unitOfWork);
+            await model.AssignSupervisories(supervisoriesIds, _unitOfWork);
 
             await _unitOfWork.Rooms.Create(model);
             await _unitOfWork.Save();
@@ -71,7 +74,8 @@ namespace temsAPI.Data.Managers
                 .Find<Room>(
                     where: q => q.Id == roomId,
                     include: q => q
-                    .Include(q => q.Labels)))
+                    .Include(q => q.Labels)
+                    .Include(q => q.Supervisories)))
                 .FirstOrDefault();
 
             return room;
@@ -84,8 +88,7 @@ namespace temsAPI.Data.Managers
                     where: q => q.Id == roomId,
                     include: q => q
                     .Include(q => q.Labels)
-                    .Include(q => q.PersonnelRoomSupervisories)
-                    .ThenInclude(q => q.Personnel)
+                    .Include(q => q.Supervisories)
                     .ThenInclude(q => q.Positions)
                     .Include(q => q.Tickets)))
                 .FirstOrDefault();
@@ -108,12 +111,10 @@ namespace temsAPI.Data.Managers
             room.Description = viewModel.Description;
 
             List<string> labelIds = viewModel.Labels.Select(q => q.Value).ToList();
-            room.Labels.Clear();
-            await _unitOfWork.Save();
+            List<string> supervisoriesIds = viewModel.Supervisories.Select(q => q.Value).ToList() ?? new();
 
-            room.Labels = (await _unitOfWork.RoomLabels
-                .FindAll<RoomLabel>(q => labelIds.Contains(q.Id)
-                )).ToList();
+            await room.AssignLabels(labelIds, _unitOfWork);
+            await room.AssignSupervisories(supervisoriesIds, _unitOfWork);
 
             await _unitOfWork.Save();
             return null;

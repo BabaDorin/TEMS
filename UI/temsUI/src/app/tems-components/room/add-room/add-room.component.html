@@ -9,6 +9,11 @@
                 label="Room labels"
                 [endPoint]="roomLabelService">
             </app-chips-autocomplete>
+            <app-chips-autocomplete
+                #supervisories
+                label="Room Supervisories"
+                [endPoint]="personnelService">
+            </app-chips-autocomplete>
             <br>
             <button 
                 type="submit" 

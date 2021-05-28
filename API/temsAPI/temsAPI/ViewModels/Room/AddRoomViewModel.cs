@@ -14,6 +14,7 @@ namespace temsAPI.ViewModels.Room
         public int Floor { get; set; }
         public string Description { get; set; }
         public List<Option> Labels { get; set; } = new List<Option>();
+        public List<Option> Supervisories { get; set; } = new List<Option>();
 
         /// <summary>
         /// Validates an instance of AddRoomViewModel. Returns null if everything is ok,
@@ -58,6 +59,12 @@ namespace temsAPI.ViewModels.Room
                     .isExists(q => q.Id == label.Value && !q.IsArchieved))
                     return "Invalid labels provided";
 
+            // Invalid supervisories provided
+            foreach (Option superv in Supervisories)
+                if (!await unitOfWork.Personnel
+                    .isExists(q => q.Id == superv.Value && !q.IsArchieved))
+                    return "Invalid personnel assigned as supervisor.";
+
             return null;
         }
 
@@ -69,6 +76,11 @@ namespace temsAPI.ViewModels.Room
                 Identifier = room.Identifier,
                 Description = room.Description,
                 Floor = room.Floor ?? 0,
+                Supervisories = room.Supervisories.Select(q => new Option
+                {
+                    Value = q.Id,
+                    Label = q.Name
+                }).ToList(),
                 Labels = room.Labels.Select(q => new Option
                 {
                     Value = q.Id,

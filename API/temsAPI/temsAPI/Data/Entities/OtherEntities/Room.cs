@@ -46,11 +46,27 @@ namespace temsAPI.Data.Entities.OtherEntities
             }
         }
         public virtual ICollection<EquipmentAllocation> EquipmentAllocations { get; set; } = new List<EquipmentAllocation>();
-        public virtual ICollection<PersonnelRoomSupervisory> PersonnelRoomSupervisories { get; set; } = new List<PersonnelRoomSupervisory>();
+        public virtual ICollection<Personnel> Supervisories { get; set; } = new List<Personnel>();
         public virtual ICollection<Log> Logs { get; set; } = new List<Log>();
         public virtual ICollection<Ticket> Tickets  { get; set; } = new List<Ticket>();
         public virtual ICollection<RoomLabel> Labels { get; set; } = new List<RoomLabel>();
         public virtual ICollection<Key> Keys { get; set; } = new List<Key>();
         public virtual ICollection<ReportTemplate> ReportTemplatesMemberOf { get; set; } = new List<ReportTemplate>();
+
+        public async Task AssignLabels(List<string> labelIds, IUnitOfWork unitOfWork)
+        {
+            Labels.Clear();
+            if (labelIds != null && labelIds.Count > 0)
+                Labels = await unitOfWork.RoomLabels.FindAll<RoomLabel>(
+                    where: q => labelIds.Contains(q.Id));
+        }
+
+        public async Task AssignSupervisories(List<string> supervisoriesIds, IUnitOfWork unitOfWork)
+        {
+            Supervisories.Clear();
+            if (supervisoriesIds != null && supervisoriesIds.Count > 0)
+                Supervisories = await unitOfWork.Personnel.FindAll<Personnel>(
+                    where: q => supervisoriesIds.Contains(q.Id));
+        }
     }
 }

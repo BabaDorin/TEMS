@@ -127,7 +127,6 @@ namespace temsAPI.Data
         public DbSet<PersonnelPosition> PersonnelPositions { get; set; }
         public DbSet<Room> Rooms { get; set; }
         public DbSet<EquipmentAllocation> EquipmentAllocations { get; set; }
-        public DbSet<PersonnelRoomSupervisory> PersonnelRoomSupervisories { get; set; }
         public DbSet<Label> Labels { get; set; }
         public DbSet<Status> Statuses { get; set; }
         public DbSet<RoomLabel> RoomLabels { get; set; }

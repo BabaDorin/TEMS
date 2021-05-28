@@ -118,7 +118,7 @@ namespace temsAPI.Helpers
                         where: q => q.Id == roomId,
                         include: q => q
                         .Include(q => q.EquipmentAllocations)
-                        .Include(q => q.PersonnelRoomSupervisories)
+                        .Include(q => q.Supervisories)
                         .Include(q => q.Keys)
                         .Include(q => q.Logs)))
                     .FirstOrDefault();
@@ -347,7 +347,7 @@ namespace temsAPI.Helpers
                     (
                         where: q => q.Id == personnelId,
                         include: q => q
-                        .Include(q => q.PersonnelRoomSupervisories)
+                        .Include(q => q.RoomsSupervisoried)
                     )).FirstOrDefault();
 
                 if (personnel == null)
@@ -357,7 +357,7 @@ namespace temsAPI.Helpers
 
                 personnel.IsArchieved = status;
 
-                foreach(var item in personnel.PersonnelRoomSupervisories)
+                foreach(var item in personnel.RoomsSupervisoried)
                 {
                     item.IsArchieved = status;
                 }

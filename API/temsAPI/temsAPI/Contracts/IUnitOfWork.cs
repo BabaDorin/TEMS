@@ -56,7 +56,6 @@ namespace temsAPI.Contracts
         // Other entities
         IGenericRepository<Personnel> Personnel { get; }
         IGenericRepository<EquipmentAllocation> EquipmentAllocations { get; }
-        IGenericRepository<PersonnelRoomSupervisory> PersonnelRoomSupervisories { get; }
         IGenericRepository<Room> Rooms { get; }
         IGenericRepository<Status> Statuses { get; }
         IGenericRepository<Label> Labels { get; }

@@ -1,3 +1,5 @@
+import { CAN_MANAGE_ENTITIES } from './../../../models/claims';
+import { TokenService } from './../../../services/token-service/token.service';
 import { AddRoomComponent } from './../add-room/add-room.component';
 import { SnackService } from './../../../services/snack/snack.service';
 import { RoomsService } from 'src/app/services/rooms-service/rooms.service';
@@ -23,18 +25,21 @@ export class RoomDetailsGeneralComponent extends TEMSComponent implements OnInit
   displayViewMore = false;
   dialogRef;
   headerClass;
+  canManage: boolean = false;
 
   constructor(
     private roomService: RoomsService,
     private route: Router,
     private dialogService: DialogService,
-    private snackService: SnackService
+    private snackService: SnackService,
+    private tokenService: TokenService
   ) { 
     super();
   }
 
   ngOnInit(): void {
     this.fetchRoom();
+    this.canManage = this.tokenService.hasClaim(CAN_MANAGE_ENTITIES);
   }
 
   fetchRoom(){

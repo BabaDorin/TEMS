@@ -5,6 +5,7 @@ export interface IAddRoom{
     floor: number,
     description: string,
     labels: IOption[],
+    supervisories: IOption[]
 }
 
 export class AddRoom implements IAddRoom{
@@ -13,4 +14,5 @@ export class AddRoom implements IAddRoom{
     floor: number;
     description: string;
     labels: IOption[];
+    supervisories: IOption[];
 }

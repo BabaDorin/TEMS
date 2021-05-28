@@ -12,26 +12,11 @@
                         {{ room.identifier }}
                     </h1>
                     <ng-container *ngIf="room.labels != undefined">
-                        <div *ngFor="let lb of room.labels" class="badge-pill badge-gradient-secondary ml-3 d-inline">
-                            {{ lb }}
+                        <div *ngFor="let lb of room.labels" class="badge-pill badge-gradient-primary ml-3 d-inline">
+                            {{ lb.label }}
                         </div>
                     </ng-container>
                 </div>
-                <hr>
-                
-                <ng-container *ngIf="room.supervisories != undefined && room.supervisories.length > 0">
-                    <h2>
-                        Supervisories:
-                    </h2>
-                    <div *ngFor="let supv of rooms.supervisories" class="badge-pill badge-gradient-primary ml-3 d-inline">
-                        <a mat-button [routerLink]="'/personnel/details/' + supv.value">
-                            <mat-icon class="text-primary">account_circle</mat-icon>
-                            {{ supv.label }} {{ supv.additional }}
-                        </a>
-                    </div>
-                    <hr>
-                </ng-container>
-                
                 <nav aria-label="breadcrumb">
                     <ul class="breadcrumb bg-transparent">
                         <ng-container *ngIf="canManage">
@@ -45,12 +30,14 @@
                                         <mat-icon class="text-muted float-right p-1">edit</mat-icon>
                                         Edit
                                     </button>
-                                    <button *ngIf="room.isArchieved" mat-button (click)="archieve()"
+                                    <button *ngIf="room.isArchieved" mat-button (click)="archieve()" 
+                                        class="btn-block"
                                         [disabled]="editing">
                                         <mat-icon class="text-muted float-right p-1">restore</mat-icon>
                                         Dearchieve
                                     </button>
-                                    <button *ngIf="!room.isArchieved" mat-button (click)="archieve()"
+                                    <button *ngIf="!room.isArchieved" mat-button (click)="archieve()" 
+                                        class="btn-block"
                                         [disabled]="editing">
                                         <mat-icon class="text-muted float-right p-1">auto_delete</mat-icon>
                                         Archieve
@@ -61,15 +48,22 @@
                     </ul>
                 </nav>
             </div>
-
             <hr>
-
+            <ng-container *ngIf="room.supervisories != undefined && room.supervisories.length > 0">
+                <h2>
+                    Supervisories:
+                </h2>
+                <a mat-button *ngFor="let supv of room.supervisories" [routerLink]="'/personnel/details/' + supv.value">
+                    <mat-icon class="text-primary">account_circle</mat-icon>
+                    {{ supv.label }} {{ supv.additional }}
+                </a>
+                <hr>
+            </ng-container>
             <div class="property-container">
                 <h2 class="text-muted text-bold">Room properties</h2>
                 <app-property-render [properties]="roomProperties">
-                </app-property-render>x
+                </app-property-render>
             </div>
-
             <a *ngIf="displayViewMore == true" mat-button [routerLink]="'/rooms/details/' + room.id"
                 (click)="viewMore()">View More</a>
         </div>

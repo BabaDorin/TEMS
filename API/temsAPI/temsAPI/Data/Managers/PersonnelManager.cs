@@ -153,7 +153,7 @@ namespace temsAPI.Data.Managers
                     where: q => q.Id == personnelId,
                     include: q => q
                     .Include(q => q.Logs)
-                    .Include(q => q.PersonnelRoomSupervisories)
+                    .Include(q => q.RoomsSupervisoried)
                     .Include(q => q.Positions)
                     .Include(q => q.EquipmentAllocations)
                     .Include(q => q.KeyAllocations)))

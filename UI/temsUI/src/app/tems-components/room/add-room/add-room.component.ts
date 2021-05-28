@@ -1,3 +1,4 @@
+import { PersonnelService } from './../../../services/personnel-service/personnel.service';
 import { RoomLabelService } from './../../../services/room-label.service';
 import { SnackService } from './../../../services/snack/snack.service';
 import { TEMSComponent } from './../../../tems/tems.component';
@@ -15,10 +16,12 @@ import { AddRoom } from 'src/app/models/room/add-room.model';
   templateUrl: './add-room.component.html',
   styleUrls: ['./add-room.component.scss']
 })
+
 export class AddRoomComponent extends TEMSComponent implements OnInit {
 
   roomId: string;
   @ViewChild('labels') labels: ChipsAutocompleteComponent;
+  @ViewChild('supervisories') supervisories: ChipsAutocompleteComponent;
 
   private formlyData = {
     form: new FormGroup({}),
@@ -33,7 +36,8 @@ export class AddRoomComponent extends TEMSComponent implements OnInit {
     private formlyParserService: FormlyParserService,
     private roomService: RoomsService,
     private snackService: SnackService,
-    private roomLabelService: RoomLabelService
+    private roomLabelService: RoomLabelService,
+    private personnelService: PersonnelService
   ) {
     super();
   }
@@ -49,10 +53,8 @@ export class AddRoomComponent extends TEMSComponent implements OnInit {
       this.roomService.getRoomToUpdate(this.roomId)
       .subscribe(result => {
         let roomToUpdate: AddRoom = result;
-        console.log('rm');
+        console.log('room to update');
         console.log(roomToUpdate);
-
-        console.log(result);
         this.formlyData.model = {};
 
         this.formlyData.model = {
@@ -64,6 +66,7 @@ export class AddRoomComponent extends TEMSComponent implements OnInit {
         }
 
         this.labels.options = roomToUpdate.labels;
+        this.supervisories.options = roomToUpdate.supervisories;
       })
     )
   }
@@ -74,7 +77,8 @@ export class AddRoomComponent extends TEMSComponent implements OnInit {
       identifier: model.identifier,
       description: model.description,
       floor: model.floor,
-      labels: this.labels.options
+      labels: this.labels.options,
+      supervisories: this.supervisories.options
     }
 
     let endPoint = this.roomService.createRoom(addRoomModel as AddRoom);
@@ -89,6 +93,8 @@ export class AddRoomComponent extends TEMSComponent implements OnInit {
         console.log(this.dialogRef);
         if(result.status == 1){
           this.formlyData.model = {};
+          this.labels.options = [];
+          this.supervisories.options = [];
 
           if(this.dialogRef != undefined)
             this.dialogRef.close();

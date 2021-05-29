@@ -39,7 +39,6 @@ import { TemsFormsModule } from './modules/tems-forms/tems-forms.module';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { SnackComponent } from './public/snack/snack.component';
 import { DefinitionService } from './services/definition-service/definition.service';
-import { ConnectPersonnelUserComponent } from './tems-components/connect-personnel-user/connect-personnel-user.component';
 import { CurrencyPipe } from '@angular/common';
 import { LastCreatedTicketsChartComponent } from './tems-components/analytics/last-created-tickets-chart/last-created-tickets-chart.component';
 import { LastIssuesSimplifiedComponent } from './tems-components/analytics/last-issues-simplified/last-issues-simplified.component';
@@ -61,7 +60,6 @@ import { NgxPaginationModule } from 'ngx-pagination';
     QuickAccessComponent,
     TEMSComponent,
     SnackComponent,
-    ConnectPersonnelUserComponent,
     ViewAnnouncementsComponent,
     AnnouncementsListComponent,
     LastCreatedTicketsChartComponent,

@@ -1,4 +1,5 @@
-import { ConnectPersonnelUserComponent } from './../../connect-personnel-user/connect-personnel-user.component';
+import { CAN_MANAGE_ENTITIES } from './../../../models/claims';
+import { TokenService } from './../../../services/token-service/token.service';
 import { SendEmailComponent } from './../../send-email/send-email.component';
 import { AddPersonnelComponent } from './../add-personnel/add-personnel.component';
 import { DialogService } from './../../../services/dialog-service/dialog.service';
@@ -23,13 +24,15 @@ export class PersonnelDetailsGeneralComponent extends TEMSComponent implements O
   @Input() displayViewMore: boolean = false;
   dialogRef;
   headerClass;
+  canManage: boolean = false;
 
   personnelProperties: Property[];
   constructor(
     private personnelService: PersonnelService,
     private route: Router,
     private snackService: SnackService,
-    private dialogService: DialogService
+    private dialogService: DialogService,
+    private tockenService: TokenService
   ) {
     super();
   }
@@ -52,7 +55,9 @@ export class PersonnelDetailsGeneralComponent extends TEMSComponent implements O
           { displayName: 'Room supervisories', value: "Display them in a fancy way" },
         ];
       })
-    )
+    );
+
+    this.canManage = this.tockenService.hasClaim(CAN_MANAGE_ENTITIES);
   }
 
   viewMore(){
@@ -93,13 +98,6 @@ export class PersonnelDetailsGeneralComponent extends TEMSComponent implements O
 
         this.archivationStatusChanged.emit(this.personnel.isArchieved);
       })
-    )
-  }
-
-  connectWithUser(){
-    this.dialogService.openDialog(
-      ConnectPersonnelUserComponent,
-      [{label: "personnelId", value: this.personnelId}],
     )
   }
 }

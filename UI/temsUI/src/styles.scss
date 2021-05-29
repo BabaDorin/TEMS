@@ -254,7 +254,7 @@ formly-field-mat-radio {
   }
 }
 
-p{
+.text-justify {
   text-align: justify;
 }
 
@@ -266,7 +266,9 @@ p{
   height: auto !important;
 }
 
-
+.property-container{
+  max-width: 800px;
+}
 
 
 

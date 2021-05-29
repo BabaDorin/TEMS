@@ -57,7 +57,6 @@ export class RoomDetailsGeneralComponent extends TEMSComponent implements OnInit
           { displayName: 'Description', value: this.room.description },
           { displayName: 'Floor', value: this.room.floor },
           { displayName: 'Active issues', value: this.room.activeTickets },
-          { displayName: 'Labels', value: "display them in a fancy way" },
         ]
       })
     )

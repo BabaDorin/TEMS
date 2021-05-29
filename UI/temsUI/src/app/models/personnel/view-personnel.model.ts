@@ -4,12 +4,12 @@ interface IViewPersonnel {
     name: string,
     phoneNumber?: string,
     email?: string,
-    positions?: IOption,
+    positions?: IOption[],
     roomSupervisories?: IOption[],
     activeTickets?: number,
     allocatedEquipments?: number,
     isArchieved: boolean,
-    // imagePath: string -- TO BE IMPLEMENTED LATER
+    user: IOption,
 }
 
 export class ViewPersonnel implements IViewPersonnel{
@@ -17,9 +17,10 @@ export class ViewPersonnel implements IViewPersonnel{
     name: string;
     phoneNumber?: string;
     email?: string;
-    positions?: IOption;
+    positions?: IOption[];
     roomSupervisories?: IOption[];
     activeTickets?: number;
     allocatedEquipments?: number;
     isArchieved: boolean;
+    user: IOption;
 }

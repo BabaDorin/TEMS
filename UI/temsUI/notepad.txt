@@ -4,6 +4,12 @@ https://blog.aspose.com/2020/04/22/create-zip-archives-add-files-or-folders-to-z
 Currently working on:
     Attach Detach feature.
 
+===>>> 29.05
+    Create personnel-user association within add-personnel view.
+    Style personnel
+    style allocations
+    style quick access
+
 IMPORTANT NOTES:
 --> EquipmentType => Children, EquipmentDefinition => children are not configured with DeleteBehaviour.Cascade.
     Therefore, this should be accomplished

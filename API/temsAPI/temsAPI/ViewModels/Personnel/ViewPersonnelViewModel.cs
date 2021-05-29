@@ -17,6 +17,7 @@ namespace temsAPI.ViewModels.Personnel
         public int ActiveTickets { get; set; }
         public int AllocatedEquipments { get; set; }
         public bool IsArchieved { get; set; }
+        public Option User { get; set; }
 
         public static ViewPersonnelViewModel FromModel(Data.Entities.OtherEntities.Personnel personnel)
         {
@@ -29,6 +30,13 @@ namespace temsAPI.ViewModels.Personnel
                 IsArchieved = personnel.IsArchieved,
                 ActiveTickets = personnel.Tickets.Count(q => q.DateClosed == null),
                 AllocatedEquipments = personnel.EquipmentAllocations.Count(q => q.DateReturned == null),
+                User = personnel.TEMSUser == null
+                ? null
+                : new Option
+                {
+                    Label = personnel.TEMSUser.FullName ?? personnel.TEMSUser.UserName,
+                    Value = personnel.TEMSUser.Id
+                },
                 Positions = personnel.Positions.Select(q => new Option
                 {
                     Value = q.Id,

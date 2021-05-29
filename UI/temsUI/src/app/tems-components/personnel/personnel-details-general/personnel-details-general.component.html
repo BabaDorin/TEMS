@@ -4,23 +4,65 @@
 
 <ng-container *ngIf="personnel != undefined">
     <div  [class]="headerClass">
-        <h1>
-            <b>{{ personnel.name }}</b>
-        </h1>
-        <ng-container *ngIf="!personnel.isArchieved">
-            <button *ngIf="!personnel.isArchieved" mat-button (click)="edit()">Edit</button>
-            <button *ngIf="!personnel.isArchieved" mat-button (click)="archieve()">Archieve</button>
-            <button *ngIf="!personnel.isArchieved" mat-button (click)="sendMail()">Send an email</button>
-            <button *ngIf="!personnel.isArchieved" mat-button (click)="connectWithUser()">Connect it with a user record</button>
-        </ng-container>
-        <ng-container *ngIf="personnel.isArchieved">
-            <button *ngIf="personnel.isArchieved" mat-button (click)="archieve()">Dearchieve</button>
-        </ng-container>
-        <hr>
-        <br>
-        <div class="container">
-            <app-property-render [properties]="personnelProperties"></app-property-render>
+        <div class="col-md-12">
+            <div class="page-header">
+                <div class="page-title mt-4 mb-0">
+                    <h1 class="font-weight-light">
+                        {{ personnel.name }} 
+                        <a mat-button [routerLink]="'/profile/view/' + personnel.user.value">
+                            <mat-icon class="text-primary ml-3">person</mat-icon>
+                            {{ personnel.user.label }}
+                        </a>
+                    </h1>
+                    <ng-container *ngIf="personnel.positions != undefined && personnel.positions.length > 0">
+                        <div *ngFor="let pos of personnel.positions" class="badge-pill badge-gradient-primary ml-3 d-inline">
+                            {{ pos.label }}
+                        </div>
+                    </ng-container>
+                </div>
+                <nav aria-label="breadcrumb">
+                    <ul class="breadcrumb bg-transparent">
+                        <ng-container *ngIf="canManage">
+                            <li class="breadcrumb-item" aria-current="page">
+                                <button mat-button [matMenuTriggerFor]="menu" aria-label="Add Equipment Menu"
+                                    class="float-right">
+                                    Actions <mat-icon class="text-primary">more_vert</mat-icon>
+                                </button>
+                                <mat-menu #menu="matMenu">
+                                    <ng-container *ngIf="!personnel.isArchieved">
+                                        <button mat-button (click)="edit()" class="btn-block">
+                                            <mat-icon class="text-muted float-right p-1">edit</mat-icon>
+                                            Edit
+                                        </button>
+                                        <button mat-button (click)="archieve()" class="btn-block">
+                                            <mat-icon class="text-muted float-right p-1">auto_delete</mat-icon>
+                                            Archieve
+                                        </button>
+                                        <button mat-button (click)="sendMail()" class="btn-block">
+                                            <mat-icon class="text-muted float-right p-1">mail</mat-icon>
+                                            Send an email
+                                        </button>
+                                    </ng-container>
+                                    <ng-container *ngIf="personnel.isArchieved">
+                                        <button mat-button (click)="archieve()">
+                                            <mat-icon class="text-muted float-right p-1">restore</mat-icon>
+                                            Dearchieve
+                                        </button>
+                                    </ng-container>
+                                </mat-menu>
+                            </li>
+                        </ng-container>
+                    </ul>
+                </nav>
+            </div>
+            <hr>
+            <div class="property-container">
+                <h2 class="text-muted text-bold">Personnel properties</h2>
+                <app-property-render [properties]="personnelProperties">
+                </app-property-render>
+            </div>
         </div>
+
         <a *ngIf="displayViewMore == true" mat-button [routerLink]="'/personnel/details/' + personnel.id" (click)="viewMore()">View More</a>
     </div>
 </ng-container>

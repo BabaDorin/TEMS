@@ -94,11 +94,4 @@ export class PersonnelService extends TEMSService {
       isArchieved: personnel.isArchieved
     }
   }
-
-  connectWithUser(personnelId: string, userId: string): Observable<any>{
-    return this.http.get(
-      API_PERS_URL + '/connectwithuser/' + personnelId + '/' + userId,
-      this.httpOptions
-    );
-  }
 }

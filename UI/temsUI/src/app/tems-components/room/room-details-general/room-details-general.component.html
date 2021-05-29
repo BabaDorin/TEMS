@@ -4,7 +4,7 @@
 
 <ng-container *ngIf="room != undefined">
     <div [class]="headerClass">
-    <div class="col-md-12">
+        <div class="col-md-12">
             <div class="page-header">
                 <div class="page-title mt-4 mb-0">
                     <h1 class="font-weight-light">
@@ -30,14 +30,12 @@
                                         <mat-icon class="text-muted float-right p-1">edit</mat-icon>
                                         Edit
                                     </button>
-                                    <button *ngIf="room.isArchieved" mat-button (click)="archieve()" 
-                                        class="btn-block"
+                                    <button *ngIf="room.isArchieved" mat-button (click)="archieve()" class="btn-block"
                                         [disabled]="editing">
                                         <mat-icon class="text-muted float-right p-1">restore</mat-icon>
                                         Dearchieve
                                     </button>
-                                    <button *ngIf="!room.isArchieved" mat-button (click)="archieve()" 
-                                        class="btn-block"
+                                    <button *ngIf="!room.isArchieved" mat-button (click)="archieve()" class="btn-block"
                                         [disabled]="editing">
                                         <mat-icon class="text-muted float-right p-1">auto_delete</mat-icon>
                                         Archieve

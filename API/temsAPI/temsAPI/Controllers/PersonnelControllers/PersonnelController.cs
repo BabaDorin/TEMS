@@ -52,30 +52,6 @@ namespace temsAPI.Controllers.PersonnelControllers
             }
         }
 
-        [HttpGet("/personnel/connectwithuser/{personnelId}/{userId}")]
-        [ClaimRequirement(TEMSClaims.CAN_MANAGE_SYSTEM_CONFIGURATION)]
-        public async Task<JsonResult> ConnectiWithUser(string personnelId, string userId)
-        {
-            try
-            {
-                var user = await _userManager.FindByIdAsync(userId);
-                if (user == null)
-                    return ReturnResponse("Invalid user provided", ResponseStatus.Fail);
-
-                var personnel = await _personnelManager.GetById(personnelId);
-                if (personnel == null)
-                    return ReturnResponse("Invalid personnel provided", ResponseStatus.Fail);
-
-                await _personnelManager.ConnectiWithUser(personnel, user);
-                return ReturnResponse("Success", ResponseStatus.Success);
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex);
-                return ReturnResponse("An error occured while creating the personnel - user connection.", ResponseStatus.Fail);
-            }
-        }
-
         [HttpPost]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> Create([FromBody] AddPersonnelViewModel viewModel)

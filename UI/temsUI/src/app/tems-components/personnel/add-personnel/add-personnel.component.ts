@@ -1,3 +1,4 @@
+import { UserService } from './../../../services/user-service/user.service';
 import { SnackService } from './../../../services/snack/snack.service';
 import { ChipsAutocompleteComponent } from './../../../public/formly/chips-autocomplete/chips-autocomplete.component';
 import { IOption } from './../../../models/option.model';
@@ -16,9 +17,17 @@ import { AddPersonnel } from 'src/app/models/personnel/add-personnel.model';
 })
 export class AddPersonnelComponent extends TEMSComponent implements OnInit {
 
-  personnelPositions: IOption[];
-  @ViewChild('personnelPositionsInput') personnelPositionsInput: ChipsAutocompleteComponent;
+  // The personnel to be edited
   personnelId: string;
+
+  // Aldready selected:
+  personnelPositions: IOption[];
+  user: IOption[];
+
+  // ChipsAutocomplete references
+  @ViewChild('personnelPositionsChips') personnelPositionsChips: ChipsAutocompleteComponent;
+  @ViewChild('userChips') userChips: ChipsAutocompleteComponent;
+  
   dialogRef;
 
   private formlyData = {
@@ -30,6 +39,7 @@ export class AddPersonnelComponent extends TEMSComponent implements OnInit {
   constructor(
     private formlyParserService: FormlyParserService,
     private personnelService: PersonnelService,
+    private userService: UserService,
     private snackService: SnackService
   ) {
     super();
@@ -38,13 +48,14 @@ export class AddPersonnelComponent extends TEMSComponent implements OnInit {
   ngOnInit(): void {
     this.formlyData.model = {};
     this.formlyData.fields = this.formlyParserService.parseAddPersonnel(new AddPersonnel());
+
     this.subscriptions.push(this.personnelService.getPersonnelPositions()
       .subscribe(result => {
-        console.log(result);
         this.personnelPositions = result;
       }))
 
-    if(this.personnelId == undefined) return;
+    if(this.personnelId == undefined) 
+      return;
 
     this.subscriptions.push(
       this.personnelService.getPersonnelToUpdate(this.personnelId)
@@ -59,7 +70,8 @@ export class AddPersonnelComponent extends TEMSComponent implements OnInit {
           positions: personnelToUpdate.positions
         };
 
-        this.personnelPositionsInput.options = personnelToUpdate.positions;
+        this.personnelPositionsChips.options = personnelToUpdate.positions;
+        this.user = (personnelToUpdate.user == undefined) ? [] : [personnelToUpdate.user];
       })
     )
   }
@@ -71,10 +83,13 @@ export class AddPersonnelComponent extends TEMSComponent implements OnInit {
     addPersonnel.name = model.name;
     addPersonnel.phoneNumber = model.phoneNumber;
     addPersonnel.email = model.email;
-    addPersonnel.positions = this.personnelPositionsInput.options;
-    console.log(addPersonnel);
+    addPersonnel.positions = this.personnelPositionsChips.options;
     
+    if(this.userChips.options != undefined)
+      addPersonnel.user = this.userChips.options[0];
+
     let endPoint = this.personnelService.createPersonnel(addPersonnel);
+
     if(addPersonnel.id != undefined)
       endPoint = this.personnelService.updatePersonnel(addPersonnel);
 
@@ -82,8 +97,10 @@ export class AddPersonnelComponent extends TEMSComponent implements OnInit {
       endPoint
       .subscribe(result => {
         this.snackService.snack(result);
-        if(this.dialogRef != undefined)
-          this.dialogRef.close();
+        
+        if(result.status == 1)
+          if(this.dialogRef != undefined)
+            this.dialogRef.close();
       }))
   }
 }

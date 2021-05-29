@@ -34,19 +34,14 @@ namespace temsAPI.Data.Managers
             return positions;
         }
 
-        public async Task ConnectiWithUser(Personnel personnel, TEMSUser user)
-        {
-            user.Personnel = personnel;
-            await _unitOfWork.Save();
-        }
-
         public async Task<Personnel> GetById(string personnelId)
         {
             var personnel = (await _unitOfWork.Personnel
                 .Find<Personnel>(
                     where: q => q.Id == personnelId,
                     include: q => q
-                    .Include(q => q.Positions)))
+                    .Include(q => q.Positions)
+                    .Include(q => q.TEMSUser)))
                 .FirstOrDefault();
 
             return personnel;
@@ -58,26 +53,21 @@ namespace temsAPI.Data.Managers
             if (validationResult != null)
                 return validationResult;
 
-            var personnel = (await _unitOfWork.Personnel
-                 .Find<Personnel>(
-                 where: q => q.Id == viewModel.Id,
-                 include: q => q.Include(q => q.Positions)
-                )).FirstOrDefault();
+            var personnel = await GetById(viewModel.Id);
 
             personnel.Name = viewModel.Name;
             personnel.Email = viewModel.Email;
             personnel.PhoneNumber = viewModel.PhoneNumber;
 
-            personnel.Positions.Clear();
             List<string> positionIds = viewModel.Positions.Select(q => q.Value).ToList();
-            personnel.Positions = (await _unitOfWork.PersonnelPositions
-                .FindAll<PersonnelPosition>
-                (
-                    where: q => positionIds.Contains(q.Id)
-                )).ToList();
+            await personnel.AssignPositions(positionIds, _unitOfWork);
+
+            if (viewModel.User != null)
+                await personnel.AssignUser(viewModel.User.Value, _unitOfWork);
+            else
+                personnel.CancelUserConnection();
 
             await _unitOfWork.Save();
-
             return null;
         }
 
@@ -87,15 +77,18 @@ namespace temsAPI.Data.Managers
             if (validationResult != null)
                 return validationResult;
 
-            List<string> positions = viewModel.Positions.Select(q => q.Value).ToList();
             Personnel model = new Personnel
             {
                 Id = Guid.NewGuid().ToString(),
                 Name = viewModel.Name,
                 Email = viewModel.Email,
-                Positions = await _unitOfWork.PersonnelPositions.FindAll<PersonnelPosition>(
-                    where: q => positions.Contains(q.Id))
             };
+
+            List<string> positionIds = viewModel.Positions.Select(q => q.Value).ToList();
+            await model.AssignPositions(positionIds, _unitOfWork);
+
+            if (viewModel.User != null)
+                await model.AssignUser(viewModel.User.Value, _unitOfWork);
 
             await _unitOfWork.Personnel.Create(model);
             await _unitOfWork.Save();
@@ -155,6 +148,7 @@ namespace temsAPI.Data.Managers
                     .Include(q => q.Logs)
                     .Include(q => q.RoomsSupervisoried)
                     .Include(q => q.Positions)
+                    .Include(q => q.TEMSUser)
                     .Include(q => q.EquipmentAllocations)
                     .Include(q => q.KeyAllocations)))
                 .FirstOrDefault();

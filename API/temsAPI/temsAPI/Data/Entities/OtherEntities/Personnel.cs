@@ -65,5 +65,25 @@ namespace temsAPI.Data.Entities.OtherEntities
         public string Identifier => Name;
 
         // BEFREE: Add multiple Emails and Phone numbers support later if needed.
+
+        public async Task AssignPositions(List<string> positionIds, IUnitOfWork unitOfWork)
+        {
+            Positions.Clear();
+            Positions = await unitOfWork.PersonnelPositions.FindAll<PersonnelPosition>(
+                   where: q => positionIds.Contains(q.Id));
+        }
+
+        public async Task AssignUser(string userId, IUnitOfWork unitOfWork)
+        {
+            TEMSUser = (await unitOfWork.TEMSUsers
+                .Find<TEMSUser>(
+                    where: q => q.Id == userId
+                )).FirstOrDefault();
+        }
+
+        public void CancelUserConnection()
+        {
+            TEMSUser = null;
+        }
     }
 }

@@ -1,3 +1,4 @@
+import { EquipmentAllocationContainerComponent } from './../../tems-components/equipment/equipment-allocation-container/equipment-allocation-container.component';
 import { AnalyticsModule } from 'src/app/modules/analytics/analytics.module';
 import { LoadingplaceholderModule } from './../loadingplaceholder/loadingplaceholder.module';
 import { PersonnelDetailsGeneralComponent } from './../../tems-components/personnel/personnel-details-general/personnel-details-general.component';
@@ -33,6 +34,7 @@ import { IssueContainerModule } from '../issues/issue-container/issue-container.
     EntityAllocationsListComponent,
     RoomDetailsGeneralComponent,
     PersonnelDetailsGeneralComponent,
+    EquipmentAllocationContainerComponent
   ],
   imports: [
     CommonModule,

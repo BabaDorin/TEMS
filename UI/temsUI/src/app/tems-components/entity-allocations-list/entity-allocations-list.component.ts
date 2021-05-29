@@ -1,3 +1,6 @@
+import { EquipmentDetailsGeneralComponent } from './../equipment/equipment-details/equipment-details-general/equipment-details-general.component';
+import { PersonnelDetailsGeneralComponent } from 'src/app/tems-components/personnel/personnel-details-general/personnel-details-general.component';
+import { RoomDetailsGeneralComponent } from './../room/room-details-general/room-details-general.component';
 import { CAN_MANAGE_ENTITIES } from './../../models/claims';
 import { TokenService } from './../../services/token-service/token.service';
 import { SnackService } from './../../services/snack/snack.service';
@@ -141,43 +144,12 @@ export class EntityAllocationsListComponent extends TEMSComponent implements OnI
     )
   }
 
-  viewRoom(roomId: string){
-    this.router.navigateByUrl('/', {skipLocationChange: true}).then(()=>
-    this.router.navigate(['/rooms/details/' + roomId]));
-  }
-  
-  viewPersonnel(personnelId: string){
-    this.router.navigateByUrl('/', {skipLocationChange: true}).then(()=>
-    this.router.navigate(['/personnel/details/' + personnelId]));
+  allocationReturned(index: number){
+    if(this.onlyActive)
+    this.allocations.splice(index, 1);
   }
 
-  return(allocationId: string, index: number){
-    this.subscriptions.push(
-      this.allocationService.markAsReturned(allocationId)
-      .subscribe(result => {
-        this.snackService.snack(result);
-
-        if(result.status == 1)
-          this.allocations[index].dateReturned = new Date;
-        
-        if(this.onlyActive)
-          this.allocations.splice(index, 1);
-      })
-    )
-  }
-
-  remove(allocationId: string, index:number){
-    if(!confirm('Are you sure you want to remove that allocation?'))
-      return;
-    
-    this.subscriptions.push(
-      this.allocationService.archieve(allocationId)
-      .subscribe(result => {
-        this.snackService.snack(result);
-
-        if(result.status == 1)
-          this.allocations.splice(index, 1);
-      })
-    )
+  allocationRemoved(index:number){
+    this.allocations.splice(index, 1);
   }
 }

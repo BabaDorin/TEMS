@@ -11,11 +11,19 @@
     <mat-progress-bar mode="indeterminate"></mat-progress-bar>
     <app-loading-placeholder></app-loading-placeholder>
 </ng-container>
-<mat-card
-    *ngFor="let allocation of allocations | paginate: { itemsPerPage: 10, currentPage: pageNumber, id: 'allocations' }; let i = index"
-    class="mb-2 fade-in">
+<ng-container *ngFor="let allocation of allocations | paginate: { itemsPerPage: 10, currentPage: pageNumber, id: 'allocations' }; let i = index">
+    <app-equipment-allocation-container 
+        [allocation]="allocation"
+        [canManage]="canManage"
+        (allocationRemoved)="allocationRemoved(i)"
+        (allocationReturned)="allocationReturned(i)">
+    </app-equipment-allocation-container>
+</ng-container>
+<!-- <mat-card -->
+    <!-- *ngFor="let allocation of allocations | paginate: { itemsPerPage: 10, currentPage: pageNumber, id: 'allocations' }; let i = index" -->
+    <!-- class="mb-2 fade-in"> -->
 
-    <div class="text-center">
+    <!-- <div class="text-center">
         <mat-icon class="text-primary">computer</mat-icon>
         {{ allocation.equipment.label }} ({{allocation.equipment.additional}})
         <mat-icon class="text-primary mr-3 ml-3">east</mat-icon>
@@ -44,9 +52,9 @@
         <button mat-button (click)="remove(allocation.id, (pageNumber-1)*10 + i)">
             <mat-icon class="text-danger">delete</mat-icon>Remove
         </button>
-    </ng-container>
+    </ng-container> -->
 
-</mat-card>
+<!-- </mat-card> -->
 <pagination-controls (pageChange)="pageNumber = $event" id="allocations"
     *ngIf="allocations != undefined && allocations.length > 0"></pagination-controls>
 

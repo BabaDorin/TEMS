@@ -1,0 +1,60 @@
+<mat-card class="mb-2" *ngIf="allocation != undefined">
+    <div class="text-center">
+        <ng-container class="d-block d-sm-inline">
+            <button mat-button (click)="viewEquipment(allocation.equipment.value)" >
+                <mat-icon class="text-primary">
+                    computer
+                </mat-icon>
+                {{ allocation.equipment.label }} ({{allocation.equipment.additional}})
+            </button>
+        </ng-container>
+       
+        <ng-container class="d-block d-sm-inline">
+            <mat-icon class="text-primary mr-3 ml-3 d-none d-sm-inline">east</mat-icon>
+            <mat-icon class="text-primary d-block d-sm-none text-center m-a">south</mat-icon>
+        </ng-container>
+        
+        <ng-container *ngIf="allocation.room != undefined" class="d-block d-sm-inline">
+            <button mat-button (click)="viewRoom(allocation.room.value)">
+                <mat-icon class="text-primary">
+                    pin_drop
+                </mat-icon> 
+                {{ allocation.room.label }}
+            </button>
+        </ng-container>
+
+        <ng-container *ngIf="allocation.personnel != undefined" class="d-block d-sm-inline">
+            <button mat-button (click)="viewPersonnel(allocation.personnel.value)">
+                <mat-icon class="text-primary" >
+                    account_circle
+                </mat-icon> 
+                {{ allocation.personnel.label }}
+            </button>
+        </ng-container>
+    </div>
+    
+    <div class="mt-2 mb-2 text-center">
+        
+        <p class="m-0">
+            <small class="text-muted">
+                Allocated: {{ allocation.dateAllocated | date:'medium' }}
+            </small>
+        </p>
+        <p *ngIf="allocation.dateReturned != undefined" class="m-0">
+            <small class="text-muted">
+                Returned: {{ allocation.dateReturned | date:'medium' }}
+            </small>
+        </p>
+        
+    </div>
+    
+    <ng-container *ngIf="canManage">
+        <button mat-button (click)="return()"
+            *ngIf="allocation.dateReturned == undefined">
+            <mat-icon class="text-primary">assignment_returned</mat-icon>Mark as returned
+        </button>
+        <button mat-button (click)="remove()">
+            <mat-icon class="text-danger">delete</mat-icon>Remove
+        </button>
+    </ng-container>
+</mat-card>

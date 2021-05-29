@@ -9,8 +9,12 @@
                 <div class="page-title mt-4 mb-0">
                     <h1 class="font-weight-light">
                         {{ personnel.name }} 
-                        <a mat-button [routerLink]="'/profile/view/' + personnel.user.value">
-                            <mat-icon class="text-primary ml-3">person</mat-icon>
+                        <a mat-button 
+                            *ngIf="personnel.user != undefined" 
+                            [routerLink]="'/profile/view/' + personnel.user.value">
+                            <mat-icon class="text-primary ml-3">
+                                person
+                            </mat-icon>
                             {{ personnel.user.label }}
                         </a>
                     </h1>

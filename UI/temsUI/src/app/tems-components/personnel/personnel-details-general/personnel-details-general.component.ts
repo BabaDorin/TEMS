@@ -47,12 +47,10 @@ export class PersonnelDetailsGeneralComponent extends TEMSComponent implements O
         
         this.personnelProperties = [
           { displayName: 'Name', value: this.personnel.name },
-          { displayName: 'Position', value: "display them in a fancy way" },
           { displayName: 'Phone Number', value: this.personnel.phoneNumber },
           { displayName: 'Email', value: this.personnel.email },
           { displayName: 'Active equipment allocations', value: this.personnel.allocatedEquipments },
           { displayName: 'Active tickets', value: this.personnel.activeTickets },
-          { displayName: 'Room supervisories', value: "Display them in a fancy way" },
         ];
       })
     );

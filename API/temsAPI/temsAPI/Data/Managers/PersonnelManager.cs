@@ -149,6 +149,7 @@ namespace temsAPI.Data.Managers
                     .Include(q => q.RoomsSupervisoried)
                     .Include(q => q.Positions)
                     .Include(q => q.TEMSUser)
+                    .Include(q => q.Tickets)
                     .Include(q => q.EquipmentAllocations)
                     .Include(q => q.KeyAllocations)))
                 .FirstOrDefault();

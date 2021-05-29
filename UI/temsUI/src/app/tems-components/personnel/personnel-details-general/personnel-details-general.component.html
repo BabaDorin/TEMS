@@ -56,6 +56,16 @@
                 </nav>
             </div>
             <hr>
+            <ng-container *ngIf="personnel.roomSupervisories != undefined && personnel.roomSupervisories.length > 0">
+                <h2 class="text-muted text-bold">
+                    Rooms supervised:
+                </h2>
+                <a mat-button *ngFor="let supv of personnel.roomSupervisories" [routerLink]="'/rooms/details/' + supv.value">
+                    <mat-icon class="text-primary">edit</mat-icon>
+                    {{ supv.label }} {{ supv.additional }}
+                </a>
+                <hr>
+            </ng-container>
             <div class="property-container">
                 <h2 class="text-muted text-bold">Personnel properties</h2>
                 <app-property-render [properties]="personnelProperties">

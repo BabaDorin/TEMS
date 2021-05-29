@@ -48,8 +48,8 @@
             </div>
             <hr>
             <ng-container *ngIf="room.supervisories != undefined && room.supervisories.length > 0">
-                <h2>
-                    Supervisories:
+                <h2 class="text-muted text-bold">
+                    Rooms supervised:
                 </h2>
                 <a mat-button *ngFor="let supv of room.supervisories" [routerLink]="'/personnel/details/' + supv.value">
                     <mat-icon class="text-primary">account_circle</mat-icon>

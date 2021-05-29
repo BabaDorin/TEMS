@@ -18,7 +18,13 @@
                         </app-personnel-details-logs>
                     </ng-template>
                 </mat-tab>
-                <mat-tab label="Issues">
+                <mat-tab>
+                    <ng-template mat-tab-label>
+                        <div [matBadge]="personnelSimplified.activeTickets" matBadgeOverlap="false">
+                            Issues
+                        </div>
+                    </ng-template>
+                    
                     <ng-template matTabContent>
                         <app-personnel-details-issues [personnel]="personnelSimplified">
                             Loading...

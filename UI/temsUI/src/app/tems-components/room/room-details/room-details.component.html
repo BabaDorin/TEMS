@@ -16,8 +16,8 @@
                         </app-room-details-logs>
                     </ng-template>
                 </mat-tab>
-                <mat-tab label="Issues" matBadge="1">
-                    <ng-container *ngIf="roomSimplified.activeIssues == 0">
+                <mat-tab label="Issues">
+                    <ng-container *ngIf="roomSimplified.activeIssues != 0">
                         <ng-template mat-tab-label>
                             <div [matBadge]="roomSimplified.activeIssues" matBadgeOverlap="false">
                                 Issues

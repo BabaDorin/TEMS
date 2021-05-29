@@ -1,38 +1,40 @@
 <!-- <h2>Equipment Analytics</h2> -->
-<div class="row" *ngIf="
-closingRate != undefined &&
-closingByRate != undefined &&
-openTicketStatusRate != undefined &&
-openTickets != undefined &&
-totalTickets != undefined
-">
-    <div class="col-lg-3 col-md-6 p-1">
-        <app-fraction-card
-        title="Open issues"
-        [numerator]="openTickets"
-        [denominator]="totalTickets"
-        theme="success">
-        </app-fraction-card>
-    </div>
 
-    <div class="col-lg-3 col-md-6 p-1">
-        <app-piechart-card
-        title="Closing rate"
-        [rates]="closingRate">
-        </app-piechart-card>
-    </div>
-
-    <div class="col-lg-3 col-md-6 p-1">
-        <app-piechart-card
-        title="Closing by rate"
-        [rates]="closingByRate">
-        </app-piechart-card>
-    </div>
-
-    <div class="col-lg-3 col-md-6 p-1">
-        <app-piechart-card
-        title="Open ticket status rate"
-        [rates]="openTicketStatusRate">
-        </app-piechart-card>
+<div class="col-md-12">
+    <div class="row" *ngIf="
+    closingRate != undefined &&
+    closingByRate != undefined &&
+    openTicketStatusRate != undefined &&
+    openTickets != undefined &&
+    totalTickets != undefined">
+        <div class="col-lg-3 col-md-6 p-1">
+            <app-fraction-card
+            title="Open issues"
+            [numerator]="openTickets"
+            [denominator]="totalTickets"
+            theme="success">
+            </app-fraction-card>
+        </div>
+    
+        <div class="col-lg-3 col-md-6 p-1">
+            <app-piechart-card
+            title="Closing rate"
+            [rates]="closingRate">
+            </app-piechart-card>
+        </div>
+    
+        <div class="col-lg-3 col-md-6 p-1">
+            <app-piechart-card
+            title="Closing by rate"
+            [rates]="closingByRate">
+            </app-piechart-card>
+        </div>
+    
+        <div class="col-lg-3 col-md-6 p-1">
+            <app-piechart-card
+            title="Open ticket status rate"
+            [rates]="openTicketStatusRate">
+            </app-piechart-card>
+        </div>
     </div>
 </div>

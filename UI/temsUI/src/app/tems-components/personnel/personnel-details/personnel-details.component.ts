@@ -3,7 +3,6 @@ import { PersonnelService } from './../../../services/personnel-service/personne
 import { ViewPersonnelSimplified } from './../../../models/personnel/view-personnel-simplified.model';
 import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { extend } from 'chartist';
 import { ViewPersonnel } from 'src/app/models/personnel/view-personnel.model';
 
 @Component({

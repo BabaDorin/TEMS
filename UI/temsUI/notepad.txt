@@ -4,6 +4,10 @@ https://blog.aspose.com/2020/04/22/create-zip-archives-add-files-or-folders-to-z
 Currently working on:
     Attach Detach feature.
 
+Major bugs to be solved:
+    1. Fix summary analytics data (some data are not correct);
+    
+
 ===>>> 29.05
     Create personnel-user association within add-personnel view.
     Style personnel

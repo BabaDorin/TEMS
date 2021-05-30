@@ -23,7 +23,7 @@ namespace temsAPI.Repository
 
         public async Task<int> Count(Expression<Func<T, bool>> expression = null)
         {
-            return await _db.CountAsync(expression);
+            return (expression != null) ? await _db.CountAsync(expression) : await _db.CountAsync();
         }
 
         public async Task Create(T entity)

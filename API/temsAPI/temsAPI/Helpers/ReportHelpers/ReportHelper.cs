@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using temsAPI.Data.Entities.EquipmentEntities;
 using temsAPI.Data.Entities.Report;
 using temsAPI.Helpers.ReportHelpers;
+using temsAPI.Helpers.ReportHelpers.CommonPropertyValueProviders;
 
 namespace temsAPI.Helpers
 {
@@ -72,6 +73,7 @@ namespace temsAPI.Helpers
                 case "definition": return new DefinitionValueProvider();
                 case "type": return new TypeValueProvider();
                 case "allocatee": return new AllocateeValueProvider();
+                case "purchasedate": return new DateOnlyValueProvider(commonPropName);
                 default: return new DefaultCommonPropertyValueProvider(commonPropName);
             }
         }

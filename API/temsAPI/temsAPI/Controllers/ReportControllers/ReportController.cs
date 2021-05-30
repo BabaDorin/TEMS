@@ -147,7 +147,7 @@ namespace temsAPI.Controllers.ReportControllers
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
-                return ReturnResponse("An error occured while preparing the report", ResponseStatus.Fail);
+                return StatusCode(500);
             }
         }
 

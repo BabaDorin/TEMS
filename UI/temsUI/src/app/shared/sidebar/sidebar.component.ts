@@ -46,9 +46,10 @@ export class SidebarComponent implements OnInit {
   }
 
   optionSelected(){
-    console.log('got here');
-    // Toggle sidebar automatically if the screen width is under 1150px
-    if(window.screen.width <= 1150){
+    let currentWidth = document.body.clientWidth 
+
+    // Toggle sidebar automatically if the document width is under 1150px
+    if(currentWidth <= 1150){
       if(this.sidebarManager == undefined)
         this.sidebarManager = new SidebarManager();
       

@@ -1,9 +1,48 @@
-.reportContainer{
-    transition: 0.4s;
-    width: 200px;
+// .reportContainer {
+//   transition: 0.4s;
+//   width: 200px;
+// }
+
+// .reportContainer:hover {
+//   background-color: gainsboro;
+//   cursor: pointer;
+// }
+@import '../../../../styles.scss';
+
+.reportContainer {
+  height: 330px;
+  transition: 0.3s;
+  background-color: $content-bg;
 }
 
-.reportContainer:hover{
-    background-color: gainsboro;
-    cursor: pointer;
+.mat-card {
+  box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.19);
+  border-radius: 2px;
+}
+
+.reportContainer:hover {
+  // background-image: $bg-gradient-primary;
+  background-color: white;
+  cursor: pointer;
+}
+
+.template-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  /* number of lines to show */
+  -webkit-box-orient: vertical;
+}
+
+.template-description {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  /* number of lines to show */
+  -webkit-box-orient: vertical;
+
+  height: 40%;
+  margin-top: 20px;
 }

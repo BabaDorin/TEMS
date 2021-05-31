@@ -1,3 +1,5 @@
+import { ViewTemplateComponent } from './../view-template/view-template.component';
+import { DialogService } from './../../../services/dialog-service/dialog.service';
 import { SnackService } from 'src/app/services/snack/snack.service';
 import { Report } from './../../../models/report/report.model';
 import { ReportService } from './../../../services/report-service/report.service';
@@ -20,7 +22,8 @@ export class ReportContainerComponent extends TEMSComponent implements OnInit {
   constructor(
     private router: Router,
     private reportService: ReportService,
-    private snackService: SnackService
+    private snackService: SnackService,
+    private dialogService: DialogService
   ) {
     super();
   }
@@ -49,5 +52,12 @@ export class ReportContainerComponent extends TEMSComponent implements OnInit {
 
   genReport(templateId: string){
     this.generateReport.emit(templateId);
+  }
+
+  viewTemplateDetails(){
+    this.dialogService.openDialog(
+      ViewTemplateComponent,
+      [{ label: "template", value: this.template }]
+    );
   }
 }

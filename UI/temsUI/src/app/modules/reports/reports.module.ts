@@ -1,6 +1,5 @@
+import { ViewTemplateComponent } from './../../tems-components/reports/view-template/view-template.component';
 import { NgxPaginationModule } from 'ngx-pagination';
-import { NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
-import { CheckboxGroupComponent } from './../../shared/forms/checkbox-group/checkbox-group.component';
 import { TemsFormsModule } from './../tems-forms/tems-forms.module';
 import { CreateReportTemplateComponent } from '../../tems-components/reports/create-report-template/create-report-template.component';
 import { MaterialModule } from 'src/app/modules/material/material.module';
@@ -10,15 +9,13 @@ import { CommonModule } from '@angular/common';
 
 import { ReportsRoutingModule } from './reports-routing.module';
 import { ReportContainerComponent } from 'src/app/tems-components/reports/report-container/report-container.component';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-
-
 
 @NgModule({
   declarations: [
     ReportsComponent,
     ReportContainerComponent,
     CreateReportTemplateComponent,
+    ViewTemplateComponent,
   ],
   imports: [
     CommonModule,

@@ -24,7 +24,7 @@
     width: $sidebar-width-lg;
     height: $navbar-height;
 
-    @media (max-width: 991px) {
+    @media (max-width: 1150px) {
       width: 55px;
     }
     .navbar-brand {
@@ -69,7 +69,7 @@
     padding-right: 24px;
     width: calc(100% - #{$sidebar-width-lg});
     height: $navbar-height;
-    @media (max-width: 991px) {
+    @media (max-width: 1150px) {
       width: auto;
       padding-left: 15px;
       padding-right: 15px;
@@ -84,12 +84,12 @@
       padding-right: 20px;
       &:not(.navbar-toggler-right) {
         font-size: 1.5rem;
-        @media (max-width: 991px) {
+        @media (max-width: 1150px) {
           display: none;
         }
       }
       &.navbar-toggler-right{
-        @media (max-width:991px){
+        @media (max-width:1150px){
           padding-left: 15px;
           padding-right: 11px;
           border-right: none;
@@ -233,7 +233,7 @@
               }
             }
           }
-          @media (max-width: 991px) {
+          @media (max-width: 1150px) {
             position: static;
             .navbar-dropdown {
               left: 20px;
@@ -304,7 +304,7 @@
         }
       }
       &.navbar-nav-right {
-        @media (min-width: 992px) {
+        @media (min-width: 1151px) {
           margin-left: auto;
           .rtl & {
             margin-left: 0;
@@ -315,7 +315,11 @@
     }
   }
 }
-@media (max-width:991px) {
+@media (max-width:1150px) {
+  .d-under-1150{
+    display: inline !important;
+  }
+
   .navbar {
     flex-direction: row;
     .navbar-brand-wrapper {
@@ -334,6 +338,12 @@
   .navbar-collapse {
     display: flex;
     margin-top: 0.5rem;
+  }
+}
+
+@media(min-width: 1151px) {
+  .d-under-1150{
+    display: none !important;
   }
 }
 
@@ -378,7 +388,7 @@
 }
 
 :host-context(.sidebar-icon-only) {
-  @media(min-width: 992px) {
+  @media(min-width: 1151px) {
     .navbar {
       .navbar-brand-wrapper {
         width: $sidebar-width-icon;

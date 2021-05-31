@@ -42,12 +42,14 @@
 -->
 <nav class="sidebar sidebar-offcanvas" id="sidebar">
   <ul class="nav">
-    <li class="nav-item" *ngFor="let sidebarNavItem of sidebarNavItems"  [class]="{ 'active' : sidebarNavItem.isActive }">
+    <li class="nav-item" *ngFor="let sidebarNavItem of sidebarNavItems"
+      [class]="{ 'active' : sidebarNavItem.isActive }">
 
       <!-- if it contains submenu -->
       <div *ngIf="sidebarNavItem.isShown && sidebarNavItem.submenu.length != 0">
-        <a class="nav-link" (click)="sidebarNavItem.showSubmenu = !sidebarNavItem.showSubmenu; sidebarNavItem.isActive = !sidebarNavItem.isActive"
-          [attr.aria-expanded]="sidebarNavItem.showSubmenu" aria-controls="ui-basic" >
+        <a class="nav-link"
+          (click)="sidebarNavItem.showSubmenu = !sidebarNavItem.showSubmenu; sidebarNavItem.isActive = !sidebarNavItem.isActive"
+          [attr.aria-expanded]="sidebarNavItem.showSubmenu" aria-controls="ui-basic">
           <span class="menu-title">{{ sidebarNavItem.title }}</span>
           <i class="menu-arrow"></i>
           <i [class]="sidebarNavItem.icon"></i>
@@ -55,14 +57,17 @@
         <div class="collapse" id="ui-basic" [ngbCollapse]="!sidebarNavItem.showSubmenu">
           <ul class="nav flex-column sub-menu">
             <li *ngFor="let submenu of sidebarNavItem.submenu" class="nav-item">
-              <a *ngIf="submenu.isShown" class="nav-link" [routerLink]="submenu.path">{{ submenu.title }} <i [class]="submenu.icon"></i></a>
+              <a *ngIf="submenu.isShown" class="nav-link" [routerLink]="submenu.path" (click)="optionSelected()">
+                {{ submenu.title }}
+                <i [class]="submenu.icon"></i>
+              </a>
             </li>
           </ul>
         </div>
       </div>
 
       <div *ngIf="sidebarNavItem.isShown && sidebarNavItem.submenu.length == 0">
-        <a class="nav-link" [routerLink]="sidebarNavItem.path" >
+        <a class="nav-link" [routerLink]="sidebarNavItem.path" (click)="optionSelected()">
           <span class="menu-title">{{ sidebarNavItem.title }}</span>
           <i [class]="sidebarNavItem.icon"></i>
         </a>

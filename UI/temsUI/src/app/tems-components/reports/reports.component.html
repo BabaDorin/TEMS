@@ -1,66 +1,76 @@
 <div class="card">
     <div class="card-body">
-        <div class="card-title">Generate Reports</div>
-        <hr>
-        <br>
-        <br>
-        <h2>TEMS Default report templates</h2>
-        <br>
-        <div class="row">
-            <div class="col-md-2" class="limitedWidth" *ngFor="let template of defaultTemplates; let i = index">
-                <app-report-container [template]="template" (editTemplate)="edit($event)"
-                    (removeTemplate)="remove($event, i)" (generateReport)="generateReport($event)">
-                </app-report-container>
-            </div>
-        </div>
-        <br>
-        <h2>Custom report templates</h2>
-        <br>
-        <div class="row">
-            <div class="col-md-3" class="limitedWidth" *ngFor="let template of customTemplates | paginate: { 
-                    itemsPerPage: 10, 
-                    currentPage: templatePageNumber, 
-                    id: 'reports' }; 
-                    let i = index">
-                <app-report-container 
-                    [template]="template" 
-                    [canManage]="canManage" 
-                    (templateRemoved)="templateRemoved($event)"
-                    (generateReport)="generateReport($event)">
-                </app-report-container>
-            </div>
+        <!-- Page header -->
+        <h2>
+            Generate reports
+        </h2>
+        <p class="text-muted">
+            Choose of the following templates in order to generate a report
+            <span *ngIf="canManage">or create a new template</span>
+            .
+        </p>
 
-            <div class="col-md-3" class="limitedWidth" *ngIf="canManage">
-                <div class="d-flex align-items-center d-flex justify-content-center" style="height: 100%;">
-                    <mat-card style="margin: auto" class="reportContainer" (click)="createTemplate()">
-                        <mat-card-content>
-                            <div class="text-center">
-                                <svg width="50px" height="50px" viewBox="0 0 24 24" id="_24x24_On_Light_Plus"
-                                    data-name="24x24/On Light/Plus" xmlns="http://www.w3.org/2000/svg">
-                                    <path id="Shape" class="text-center"
-                                        d="M5,10.75V6.5H.75A.75.75,0,0,1,.75,5H5V.75a.75.75,0,0,1,1.5,0V5h4.25a.75.75,0,1,1,0,1.5H6.5v4.25a.75.75,0,1,1-1.5,0Z"
-                                        transform="translate(6 6)" fill="#141124" />
-                                </svg>
-                            </div>
-                            <p class="text-center">Add custom template</p>
-                        </mat-card-content>
-                    </mat-card>
+        <div class="container m-0 p-0">
+            <!-- Default report templates container -->
+            <ng-container *ngIf="defaultTemplates != undefined && defaultTemplates.length > 0 " class="mt-3">
+                <h2>TEMS default templates</h2>
+                <hr>
+                <div class="row mt-3">
+                    <div class="col-md-2" class="limitedWidth" *ngFor="let template of defaultTemplates; let i = index">
+                        <app-report-container [template]="template" (editTemplate)="edit($event)"
+                            (removeTemplate)="remove($event, i)" (generateReport)="generateReport($event)">
+                        </app-report-container>
+                    </div>
                 </div>
+            </ng-container>
+
+            <!-- Custom report templates -->
+            <div>
+                <h2>Custom report templates</h2>
+                <hr>
+                <div class="row mt-3">
+                    <div class="col-xl-3 col-lg-4 col-sm-6 col-xs-12 p-3" *ngFor="let template of customTemplates | paginate: { 
+                        itemsPerPage: 10, 
+                        currentPage: templatePageNumber, 
+                        id: 'reports' }; 
+                        let i = index">
+                        <app-report-container [template]="template" [canManage]="canManage"
+                            (templateRemoved)="templateRemoved($event)" (generateReport)="generateReport($event)">
+                        </app-report-container>
+                    </div>
+
+                    <div class="col-md-3" class="limitedWidth" *ngIf="canManage">
+                        <div class="d-flex align-items-center d-flex justify-content-center" style="height: 100%;">
+                            <mat-card style="margin: auto" class="reportContainer" (click)="createTemplate()">
+                                <mat-card-content>
+                                    <div class="text-center">
+                                        <svg width="50px" height="50px" viewBox="0 0 24 24" id="_24x24_On_Light_Plus"
+                                            data-name="24x24/On Light/Plus" xmlns="http://www.w3.org/2000/svg">
+                                            <path id="Shape" class="text-center"
+                                                d="M5,10.75V6.5H.75A.75.75,0,0,1,.75,5H5V.75a.75.75,0,0,1,1.5,0V5h4.25a.75.75,0,1,1,0,1.5H6.5v4.25a.75.75,0,1,1-1.5,0Z"
+                                                transform="translate(6 6)" fill="#141124" />
+                                        </svg>
+                                    </div>
+                                    <p class="text-center">Add custom template</p>
+                                </mat-card-content>
+                            </mat-card>
+                        </div>
+                    </div>
+                </div>
+                <pagination-controls (pageChange)="templatePageNumber = $event" id="reports"
+                    *ngIf="customTemplates != undefined && customTemplates.length > 1">
+                </pagination-controls>
             </div>
         </div>
-        <pagination-controls (pageChange)="templatePageNumber = $event" id="reports"
-            *ngIf="customTemplates != undefined && customTemplates.length > 0">
-        </pagination-controls>
     </div>
 </div>
 <br>
 <div class="card">
     <div class="card-body">
         <div class="card-title align-text-center">
-            Last generated reports  
+            Last generated reports
             <mat-icon matSuffix class="mr-1">
-                <i class="mdi mdi-information-outline"
-                    matTooltip="These are references to generated report files, which means that data within these
+                <i class="mdi mdi-information-outline" matTooltip="These are references to generated report files, which means that data within these
                     reports is static and reflects the state at the moment of generation."></i>
             </mat-icon>
         </div>
@@ -75,13 +85,12 @@
             </mat-card-header>
             <p class="text-muted d-block">
                 Report generated on {{ report.dateGenerated | date: 'medium' }}
-                by 
+                by
                 <a class="text-muted" [routerLink]="'/profile/view/' + report.generatedBy.value">
                     {{ report.generatedBy.label }}
                 </a>
             </p>
-            <button mat-button class="text-primary"
-                (click)="printFromGeneratedReport(report.id)">Print</button>
+            <button mat-button class="text-primary" (click)="printFromGeneratedReport(report.id)">Print</button>
             <button mat-button class="text-primary" *ngIf="canManage"
                 (click)="removeGeneratedReport(report.id, (generatedReportsPageNumber-1)*10 + i)">Remove</button>
         </mat-card>

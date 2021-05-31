@@ -1,3 +1,4 @@
+import { SidebarManager } from './sidebar-shared-functionalities';
 import { MenuService } from './../../services/menu-service/menu.service';
 import { Role } from '../../models/role.model';
 import { Component, OnInit } from '@angular/core';
@@ -15,6 +16,7 @@ export class SidebarComponent implements OnInit {
   public uiBasicCollapsed = false;
   public samplePagesCollapsed = false;
   public sidebarNavItems: RouteInfo[] = [];
+  private sidebarManager: SidebarManager;
 
   constructor(
     private userservice: UserService,
@@ -43,4 +45,14 @@ export class SidebarComponent implements OnInit {
     });
   }
 
+  optionSelected(){
+    console.log('got here');
+    // Toggle sidebar automatically if the screen width is under 1150px
+    if(window.screen.width <= 1150){
+      if(this.sidebarManager == undefined)
+        this.sidebarManager = new SidebarManager();
+      
+      this.sidebarManager.toggleSidebar();
+    }
+  }
 }

@@ -232,7 +232,7 @@
 
 // Sidebar icon only layout start
 :host-context(.sidebar-icon-only) {
-  @media(min-width: 992px) {
+  @media(min-width: 1151px) {
     .sidebar {
       width: $sidebar-width-icon;
       .nav {
@@ -350,7 +350,7 @@
 
 
 /* style for off-canvas menu*/
-@media screen and (max-width: 991px) {
+@media screen and (max-width: 1150px) {
   .sidebar-offcanvas {
     position: fixed;
     max-height: calc(100vh - #{$navbar-height});

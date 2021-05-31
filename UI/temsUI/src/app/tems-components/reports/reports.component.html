@@ -65,7 +65,7 @@
     </div>
 </div>
 <br>
-<div class="card">
+<div class="card" *ngIf="lastGeneratedReports != undefined && lastGeneratedReports.length > 0">
     <div class="card-body">
         <div class="card-title align-text-center">
             Last generated reports
@@ -75,26 +75,17 @@
             </mat-icon>
         </div>
         <hr>
-        <mat-card *ngFor="let report of lastGeneratedReports | paginate: { 
-                itemsPerPage: 10, 
-                currentPage: generatedReportsPageNumber, 
-                id: 'generatedReports' }; 
-                let i = index" class="mb-2">
-            <mat-card-header>
-                <p class="d-block">Template: {{ report.template }}</p>
-            </mat-card-header>
-            <p class="text-muted d-block">
-                Report generated on {{ report.dateGenerated | date: 'medium' }}
-                by
-                <a class="text-muted" [routerLink]="'/profile/view/' + report.generatedBy.value">
-                    {{ report.generatedBy.label }}
-                </a>
-            </p>
-            <button mat-button class="text-primary" (click)="printFromGeneratedReport(report.id)">Print</button>
-            <button mat-button class="text-primary" *ngIf="canManage"
-                (click)="removeGeneratedReport(report.id, (generatedReportsPageNumber-1)*10 + i)">Remove</button>
-        </mat-card>
-
+        <div class="mb-2" *ngFor="let report of lastGeneratedReports | paginate: { 
+            itemsPerPage: 10, 
+            currentPage: generatedReportsPageNumber, 
+            id: 'generatedReports' }; 
+            let i = index">
+            <app-generated-report-container
+                [report]="report"
+                [canManage]="canManage"
+                (reportRemoved)="removeGeneratedReport((generatedReportsPageNumber-1)*10 + i)">
+            </app-generated-report-container>
+        </div>
         <pagination-controls (pageChange)="generatedReportsPageNumber = $event" id="generatedReports"
             *ngIf="lastGeneratedReports != undefined && lastGeneratedReports.length > 0">
         </pagination-controls>

@@ -1,3 +1,4 @@
+import { GeneratedReportContainerComponent } from './../../tems-components/reports/generated-report-container/generated-report-container.component';
 import { ViewTemplateComponent } from './../../tems-components/reports/view-template/view-template.component';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { TemsFormsModule } from './../tems-forms/tems-forms.module';
@@ -16,6 +17,7 @@ import { ReportContainerComponent } from 'src/app/tems-components/reports/report
     ReportContainerComponent,
     CreateReportTemplateComponent,
     ViewTemplateComponent,
+    GeneratedReportContainerComponent
   ],
   imports: [
     CommonModule,

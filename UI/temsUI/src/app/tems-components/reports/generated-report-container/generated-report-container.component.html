@@ -1,0 +1,24 @@
+<mat-card class="generated-report-container">
+    <mat-card-content>
+        <h4><b>{{ report.template }}</b></h4>
+        <small class="text-muted">
+            Report generated on {{ report.dateGenerated | date: 'medium' }}
+            by
+            <a class="text-muted" [routerLink]="'/profile/view/' + report.generatedBy.value">
+                {{ report.generatedBy.label }}
+            </a>
+        </small>
+    </mat-card-content>
+
+    <button mat-button (click)="printFromGeneratedReport()">
+        <mat-icon class="text-primary">
+            print
+        </mat-icon>
+    </button>
+    <button mat-button *ngIf="canManage"
+        (click)="removeGeneratedReport()">
+        <mat-icon class="text-muted">
+            delete
+        </mat-icon>
+    </button>
+</mat-card>

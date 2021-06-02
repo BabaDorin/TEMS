@@ -1,16 +1,25 @@
-<br>
-<button class="btn btn-secondary btn-sm" (click)="addAnnouncement()">+ Create New</button>
-<br>
-<mat-card *ngFor="let announcement of announcements" class="mb-2">
-    <mat-card-header>
-        <p>
-            <span>{{ announcement.title }}</span>
-            <span class="text-muted float-right">Created: {{ announcement.dateCreated | date:'medium' }}</span>
-        </p>
-        <hr>
-        <br>
-        <p>
-            {{ announcement.text }}
-        </p>
-    </mat-card-header>
-</mat-card>
+<button mat-button *ngIf="displayCreateNew && canManage" (click)="addAnnouncement()">
+    <mat-icon class="text-primary">
+        add
+    </mat-icon>
+    Create an announcement
+</button>
+
+<ng-container *ngIf="announcements != undefined && announcements.length > 0" class="mt-3">
+    <mat-card *ngFor="let announcement of announcements" class="mb-2">
+        <mat-card-content>
+            <div class="row">
+                <div class="col-md-3 col-xs-12">
+                    <app-date-time-display [date]="announcement.dateCreated">
+                    </app-date-time-display>
+                </div>
+                <div class="col-md-9 col-xs-12">
+                    {{announcement.title}}
+                    <p class="text-justify">
+                        {{ announcement.text }}
+                    </p>
+                </div>
+            </div>
+        </mat-card-content>
+    </mat-card>
+</ng-container>

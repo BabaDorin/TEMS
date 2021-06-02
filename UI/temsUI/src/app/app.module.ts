@@ -1,7 +1,5 @@
 import { UserCardsModule } from './user-cards/user-cards.module';
 import { DatePipe } from '@angular/common';
-import { AnnouncementsListComponent } from 'src/app/announcements-list/announcements-list.component';
-import { ViewAnnouncementsComponent } from './tems-components/communication/view-announcements/view-announcements.component';
 import { RoomLabelService } from './services/room-label.service';
 import { TypeService } from './services/type-service/type.service';
 import { MenuService } from './services/menu-service/menu.service';
@@ -45,6 +43,7 @@ import { LastIssuesSimplifiedComponent } from './tems-components/analytics/last-
 import { IssueContainerModule } from './modules/issues/issue-container/issue-container.module';
 import { ViewNotificationsComponent } from './tems-components/notifications/view-notifications/view-notifications.component';
 import { NgxPaginationModule } from 'ngx-pagination';
+import { AnnouncementModule } from './modules/announcement/announcement.module';
 
 @NgModule({
   declarations: [
@@ -60,8 +59,6 @@ import { NgxPaginationModule } from 'ngx-pagination';
     QuickAccessComponent,
     TEMSComponent,
     SnackComponent,
-    ViewAnnouncementsComponent,
-    AnnouncementsListComponent,
     LastCreatedTicketsChartComponent,
     LastIssuesSimplifiedComponent,
     ViewNotificationsComponent,
@@ -83,7 +80,8 @@ import { NgxPaginationModule } from 'ngx-pagination';
     MatInputModule,
     MatFormFieldModule,
     TemsFormsModule,
-    UserCardsModule
+    UserCardsModule,
+    AnnouncementModule
   ],
   exports:[
     MatAutocompleteModule,

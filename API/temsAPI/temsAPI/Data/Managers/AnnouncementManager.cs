@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
@@ -40,6 +41,7 @@ namespace temsAPI.Data.Managers
             var announcements = (await _unitOfWork.Announcements
                     .FindAll<ViewAnnouncementViewModel>(
                         where: q => !q.IsArchieved,
+                        include: q => q.Include(q => q.Author),
                         orderBy: q => q.OrderByDescending(q => q.DateCreated),
                         skip: skip,
                         take: take,

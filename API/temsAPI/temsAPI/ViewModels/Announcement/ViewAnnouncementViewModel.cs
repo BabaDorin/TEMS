@@ -21,7 +21,14 @@ namespace temsAPI.ViewModels.Announcement
                 Id = announcement.Id,
                 Text = announcement.Message,
                 Title = announcement.Title,
-                DateCreated = announcement.DateCreated
+                DateCreated = announcement.DateCreated,
+                CreatedBy = announcement.Author == null
+                ? null
+                : new Option
+                {
+                    Value = announcement.Author.Id,
+                    Label = announcement.Author.FullName ?? announcement.Author.UserName
+                }
             };
         }
     }

@@ -6,6 +6,12 @@ Currently working on:
 
 Major bugs to be solved:
     1. Fix summary analytics data (some data are not correct);
+    2. Archieved items should not prevent in any way creation of new items (for example, if an item is created with
+    a temsID which also belongs to an archieved item, there should not be any problem in created that item. To prevent 
+    temsid duplicates, when dearcheving an item, it's temsid is checked and if there is another, un-archieved item with the
+    same temsid, the temsid of the items that is being dearchieved will be suffixed by a [dearchieved] tag).
+    3. Upload to library does not work.4
+    4. Report Signatories => an invalid entry appears out of nowhere 
     
 
 ===>>> 29.05
@@ -42,6 +48,7 @@ last allocation.
 
 
 // TD:
+--> Add property length limits
 --> Update equipment does not work!!!!!!!!!
 --> smart load mat tab
 --> Error when closing the allocation

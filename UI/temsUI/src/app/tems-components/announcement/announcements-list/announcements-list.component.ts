@@ -41,6 +41,7 @@ export class AnnouncementsListComponent extends TEMSComponent implements OnInit 
     this.subscriptions.push(
       endPoint
       .subscribe(result => {
+        console.log(result);
         this.announcements = result;
       }));
 

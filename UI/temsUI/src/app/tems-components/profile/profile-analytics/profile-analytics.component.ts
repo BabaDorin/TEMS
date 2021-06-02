@@ -24,6 +24,8 @@ export class ProfileAnalyticsComponent extends TEMSComponent implements OnInit {
   uamOfTicketsEverClosedByUser = 0;
   uamOfTicketsClosedByUserThatWereReopenedAfterwards = 0;
 
+  probabilityOfTicketReopen = 0;
+
   constructor(
     prof: ViewProfile,
     private analyticsService: AnalyticsService,

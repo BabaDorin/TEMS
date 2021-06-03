@@ -9,31 +9,21 @@ uamOfTicketsEverClosedByUser != undefined &&
 uamOfTicketsClosedByUserThatWereReopenedAfterwards != undefined
 ">
     <div class="col-lg-4 col-md-6">
-        <app-fraction-card
-        title="Issues created by the user"
-        [numerator]="uamOfCreatedIssues"
-        [denominator]="amOfCreatedIssues"
-        theme="info"
-        displayProgressBar="true">
+        <app-fraction-card title="Issues created by the user" [numerator]="uamOfCreatedIssues"
+            [denominator]="amOfCreatedIssues" theme="info" displayProgressBar="true">
         </app-fraction-card>
     </div>
 
     <div class="col-lg-4 col-md-6">
-        <app-fraction-card
-        title="Issues closed by the user"
-        [numerator]="uamOfClosedIssues"
-        [denominator]="amOfCreatedIssues"
-        theme="success"
-        displayProgressBar="true">
+        <app-fraction-card title="Issues closed by the user" [numerator]="uamOfClosedIssues"
+            [denominator]="amOfCreatedIssues" theme="success" displayProgressBar="true">
         </app-fraction-card>
     </div>
 
     <div class="col-lg-4 col-md-6">
-        <app-simple-info-card
-        title="Probability of reopening an issue closed by the user"
-        [theme]="info"
-        [mainText]="(uamOfTicketsClosedByUserThatWereReopenedAfterwards * 100 / uamOfTicketsEverClosedByUser | number: '1.0-0') + '%'"
-        [footNote]="uamOfTicketsEverClosedByUser + ' tickets were closed by the user, from which ' + uamOfTicketsClosedByUserThatWereReopenedAfterwards + ' have been reopened afterwards'">
+        <app-simple-info-card title="Probability of reopening an issue closed by the user" [theme]="info"
+            [mainText]="(uamOfTicketsClosedByUserThatWereReopenedAfterwards * 100 / uamOfTicketsEverClosedByUser | number: '1.0-0') + '%'"
+            [footNote]="uamOfTicketsEverClosedByUser + ' tickets were closed by the user, from which ' + uamOfTicketsClosedByUserThatWereReopenedAfterwards + ' have been reopened afterwards'">
         </app-simple-info-card>
     </div>
 </div>

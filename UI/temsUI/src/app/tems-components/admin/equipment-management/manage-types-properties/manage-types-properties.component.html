@@ -1,8 +1,16 @@
-<br>
-<H1>Equipment Types:</H1>
-<button mat-button (click)="addType()">+ Add new type</button>
+<!-- move this to equipment-types-list -->
+
+<app-equipment-types-list>
+</app-equipment-types-list>
+
+<h2>
+    Equipment Types
+</h2>
 <hr>
-<br>
+<button mat-button (click)="addType()">
+    <mat-icon class="text-primary">add</mat-icon>
+    Add new type
+</button>
 
 <ul type="none" class="row">
     <li *ngFor="let item of types | paginate: { itemsPerPage: 10, currentPage: p1, id: 'types' }; let i = index" class="col-3">
@@ -23,9 +31,17 @@
     </li>
 </ul>
 <pagination-controls (pageChange)="p1 = $event" id="types"></pagination-controls>
+<!-- --- -->
 
-<br>
-<H1>Equipment Properties:</H1>
+
+<app-properties-list>
+</app-properties-list>
+
+<!-- move this to app-properties-list -->
+<h2 class="mt-5">
+    Equipment Properties:
+</h2>
+
 <button mat-button (click)="addProperty()">+ Add new property</button>
 <hr>
 <br>
@@ -48,3 +64,4 @@
     </li>
 </ul>
 <pagination-controls (pageChange)="p2 = $event" id="properties"></pagination-controls>
+<!-- --- -->

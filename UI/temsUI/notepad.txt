@@ -48,6 +48,9 @@ last allocation.
 
 
 // TD:
+--> integrate Qr
+--> Clean formlyservice
+--> Move type related methods to typeservice and definition related to definition and clean equipment service (clean all of them actually)
 --> Add property length limits
 --> Update equipment does not work!!!!!!!!!
 --> smart load mat tab

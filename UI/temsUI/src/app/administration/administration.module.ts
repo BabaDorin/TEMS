@@ -1,3 +1,7 @@
+import { EquipmentTypeContainerComponent } from './../tems-components/admin/equipment-management/equipment-type-container/equipment-type-container.component';
+import { EquipmentDefinitionsListComponent } from './../tems-components/admin/equipment-management/equipment-definitions-list/equipment-definitions-list.component';
+import { PropertiesListComponent } from './../tems-components/admin/equipment-management/properties-list/properties-list.component';
+import { EquipmentTypesListComponent } from './../tems-components/admin/equipment-management/equipment-types-list/equipment-types-list.component';
 import { PersonnelModule } from './../modules/personnel/personnel.module';
 import { EquipmentModule } from './../tems-components/equipment/equipment.module';
 import { RoleManagementComponent } from './../tems-components/admin/role-management/role-management.component';
@@ -16,6 +20,7 @@ import { ManageTypesPropertiesComponent } from '../tems-components/admin/equipme
 import { ManageDefinitionsComponent } from '../tems-components/admin/equipment-management/manage-definitions/manage-definitions.component';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { DialogModule } from '../modules/dialog/dialog.module';
+import { GenericContainerComponent } from '../shared/generic-container/generic-container.component';
 
 
 @NgModule({
@@ -27,7 +32,12 @@ declarations: [
     AddUserComponent,
     ViewUsersComponent,
     ManageTypesPropertiesComponent,
-    ManageDefinitionsComponent
+    ManageDefinitionsComponent,
+    EquipmentTypesListComponent,
+    PropertiesListComponent,
+    EquipmentDefinitionsListComponent,
+    EquipmentTypeContainerComponent,
+    GenericContainerComponent,
   ],
   imports: [
     CommonModule,

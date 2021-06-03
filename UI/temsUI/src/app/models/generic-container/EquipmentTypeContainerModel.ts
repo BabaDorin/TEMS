@@ -1,13 +1,17 @@
+import { emit } from 'process';
+import { EventEmitter, OnInit } from '@angular/core';
+import { Property } from './../equipment/view-property.model';
 import { ViewTypeSiplified } from './../equipment/view-type-simplified.model';
 import { EquipmentService } from './../../services/equipment-service/equipment.service';
 import { ViewType } from './../equipment/view-type.model';
 import { IContainerAction, IGenericContainerModel, ITagGroup } from './IGenericContainer.model';
 
-export class EquipmentTypeContainerModel implements IGenericContainerModel{
+export class EquipmentTypeContainerModel implements IGenericContainerModel, OnInit{
     title: string;
     tagGroups: ITagGroup[] = [];
     actions: IContainerAction[] = [];
     description: string;
+    eventEmitted = Function;
     
     constructor(
         private equipmentService: EquipmentService,
@@ -41,21 +45,27 @@ export class EquipmentTypeContainerModel implements IGenericContainerModel{
         this.actions.push({
             name: 'View',
             icon: 'eye',
-            action: this.edit
+            action: () => this.edit()
         });
 
         this.actions.push({
             name: 'Edit',
             icon: 'pencil',
-            action: this.edit
+            action: () => this.edit()
         });
 
         this.actions.push({
             name: 'Remvoe',
             icon: 'delete',
-            action: this.remove
+            action: () => this.remove()
         });
 
+
+        console.log(this.eventEmitted);
+        console.log(this.title);
+    }
+    ngOnInit(): void {
+        throw new Error('Method not implemented.');
     }
 
     edit(){
@@ -65,6 +75,7 @@ export class EquipmentTypeContainerModel implements IGenericContainerModel{
 
     remove(){
         alert('remove');
+        this.eventEmitted('1234');
         // remove logic
     }
 

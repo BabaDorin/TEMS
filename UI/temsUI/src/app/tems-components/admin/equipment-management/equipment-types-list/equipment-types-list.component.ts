@@ -25,6 +25,10 @@ export class EquipmentTypesListComponent extends TEMSComponent implements OnInit
     super();
   }
 
+  typeRemoved(eventData, index){
+    alert(eventData);
+  }
+
   ngOnInit(): void {
     this.subscriptions.push(
       this.equipmentService.getTypesSimplified()

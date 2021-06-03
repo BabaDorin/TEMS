@@ -3,6 +3,7 @@ export interface IGenericContainerModel{
     tagGroups: ITagGroup[];
     actions: IContainerAction[];
     description: string;
+    eventEmitted: Function;
 }   
 
 export interface ITagGroup{

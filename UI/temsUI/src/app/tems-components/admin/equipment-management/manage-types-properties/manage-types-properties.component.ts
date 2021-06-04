@@ -4,10 +4,10 @@ import { AddTypeComponent } from './../../../equipment/add-type/add-type.compone
 import { ViewTypeComponent } from './../../../equipment/view-type/view-type.component';
 import { ViewPropertySimplified } from './../../../../models/equipment/view-property-simplified.model';
 import { EquipmentService } from 'src/app/services/equipment-service/equipment.service';
-import { ViewTypeSiplified } from './../../../../models/equipment/view-type-simplified.model';
 import { TEMSComponent } from './../../../../tems/tems.component';
 import { Component, OnInit } from '@angular/core';
 import { ViewPropertyComponent } from 'src/app/tems-components/equipment/view-property/view-property.component';
+import { ViewTypeSimplified } from 'src/app/models/equipment/view-type-simplified.model';
 
 @Component({
   selector: 'app-manage-types-properties',
@@ -16,7 +16,7 @@ import { ViewPropertyComponent } from 'src/app/tems-components/equipment/view-pr
 })
 export class ManageTypesPropertiesComponent extends TEMSComponent implements OnInit {
 
-  types: ViewTypeSiplified[];
+  types: ViewTypeSimplified[];
   properties: ViewPropertySimplified[];
 
   constructor(
@@ -125,8 +125,6 @@ export class ManageTypesPropertiesComponent extends TEMSComponent implements OnI
   }
 
   removeType(typeId: string, index){
-
-    console.log(index);
     if(confirm("Do you realy want to remove that type?"  + index)){
       this.equipmentService.archieveType(typeId)
       .subscribe(result => {

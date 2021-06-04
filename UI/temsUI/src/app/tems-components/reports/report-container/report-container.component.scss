@@ -1,12 +1,3 @@
-// .reportContainer {
-//   transition: 0.4s;
-//   width: 200px;
-// }
-
-// .reportContainer:hover {
-//   background-color: gainsboro;
-//   cursor: pointer;
-// }
 @import '../../../../styles.scss';
 
 .reportContainer {
@@ -15,15 +6,15 @@
   background-color: $content-bg;
 }
 
-.mat-card {
-  box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.19);
-  border-radius: 2px;
-}
-
 .reportContainer:hover {
   // background-image: $bg-gradient-primary;
   background-color: white;
   cursor: pointer;
+}
+
+.mat-card {
+  box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.19);
+  border-radius: 2px;
 }
 
 .template-title {

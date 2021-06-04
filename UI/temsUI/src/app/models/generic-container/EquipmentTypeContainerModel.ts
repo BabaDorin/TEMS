@@ -1,46 +1,46 @@
-import { emit } from 'process';
-import { EventEmitter, OnInit } from '@angular/core';
-import { Property } from './../equipment/view-property.model';
-import { ViewTypeSiplified } from './../equipment/view-type-simplified.model';
+import { SnackService } from './../../services/snack/snack.service';
+import { TEMSComponent } from './../../tems/tems.component';
+import { DialogService } from './../../services/dialog-service/dialog.service';
+import { OnInit } from '@angular/core';
+import { ViewTypeSimplified } from './../equipment/view-type-simplified.model';
 import { EquipmentService } from './../../services/equipment-service/equipment.service';
-import { ViewType } from './../equipment/view-type.model';
 import { IContainerAction, IGenericContainerModel, ITagGroup } from './IGenericContainer.model';
+import { ViewTypeComponent } from 'src/app/tems-components/equipment/view-type/view-type.component';
+import { AddTypeComponent } from 'src/app/tems-components/equipment/add-type/add-type.component';
 
-export class EquipmentTypeContainerModel implements IGenericContainerModel, OnInit{
+export class EquipmentTypeContainerModel extends TEMSComponent implements IGenericContainerModel, OnInit {
     title: string;
     tagGroups: ITagGroup[] = [];
     actions: IContainerAction[] = [];
     description: string;
-    eventEmitted = Function;
-    
+    eventEmitted: Function;
+
     constructor(
         private equipmentService: EquipmentService,
-        equipmentType: ViewTypeSiplified){
-        this.title = equipmentType.name;
-        
-        this.tagGroups.push({
-            name: 'Parent',
-            tags: [equipmentType.parent]
-        });
+        private dialogService: DialogService,
+        private snackService: SnackService,
+        private equipmentType: ViewTypeSimplified) {
+        super();
 
-        this.tagGroups.push({
-            name: 'Children',
-            tags: [equipmentType.childrent]
-        });
+        this.buildContainerModel();
+    }
 
-        // if(equipmentType.parents != undefined && equipmentType.parents.length > 0){
-        //     this.tagGroups.push({
-        //         name: 'Parent Types',
-        //         tags: equipmentType.parents.map(q => q.label),
-        //     } as ITagGroup)
-        // }
-        
-        // if(equipmentType.children != undefined && equipmentType.children.length > 0){
-        //     this.tagGroups.push({
-        //         name: 'Children Types',
-        //         tags: equipmentType.children.map(q => q.label),
-        //     } as ITagGroup)
-        // }
+    buildContainerModel() {
+        this.title = this.equipmentType.name;
+
+        if (this.equipmentType.parents != undefined && this.equipmentType.parents.length > 0) {
+            this.tagGroups.push({
+                name: 'Parent Types',
+                tags: this.equipmentType.parents,
+            } as ITagGroup)
+        }
+
+        if (this.equipmentType.children != undefined && this.equipmentType.children.length > 0) {
+            this.tagGroups.push({
+                name: 'Children Types',
+                tags: this.equipmentType.children,
+            } as ITagGroup)
+        }
 
         this.actions.push({
             name: 'View',
@@ -59,29 +59,48 @@ export class EquipmentTypeContainerModel implements IGenericContainerModel, OnIn
             icon: 'delete',
             action: () => this.remove()
         });
-
-
-        console.log(this.eventEmitted);
-        console.log(this.title);
     }
+
     ngOnInit(): void {
         throw new Error('Method not implemented.');
     }
 
-    edit(){
-        alert('edit');
-        // edit logic
+    edit() {
+        this.dialogService.openDialog(
+            AddTypeComponent,
+            [{ value: this.equipmentType.id, label: "updateTypeId" }],
+            () => {
+                this.unsubscribeFromAll();
+                this.subscriptions.push(
+                    this.equipmentService.getTypeSimplifiedById(this.equipmentType.id)
+                        .subscribe(result => {
+                            this.equipmentType = result;
+                            this.buildContainerModel();
+                        })
+                )
+            }
+        );
     }
 
-    remove(){
-        alert('remove');
-        this.eventEmitted('1234');
-        // remove logic
+    remove() {
+        if (!confirm("Do you realy want to remove that type?"))
+            return;
+
+        this.equipmentService.archieveType(this.equipmentType.id)
+            .subscribe(result => {
+                if (this.snackService.snackIfError(result))
+                    return;
+
+                if (result.status == 1)
+                    this.eventEmitted('removed');
+            })
     }
 
-    view(){
-        alert('view');
-        // view logic
+    view() {
+        this.dialogService.openDialog(
+            ViewTypeComponent,
+            [{ value: this.equipmentType.id, label: "typeId" }],
+        );
     }
 
 }

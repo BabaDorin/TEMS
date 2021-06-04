@@ -2,14 +2,14 @@ export interface IViewTypeSimplified{
     id: string,
     name: string,
     properties: string,
-    parent: string,
-    childrent: string
+    parents: string[],
+    children: string[]
 }
 
-export class ViewTypeSiplified implements IViewTypeSimplified{
+export class ViewTypeSimplified implements IViewTypeSimplified{
     id: string;
     name: string;
     properties: string;
-    parent: string;
-    childrent: string;
+    parents: string[];
+    children: string[]
 }

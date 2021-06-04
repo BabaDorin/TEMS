@@ -1,15 +1,62 @@
-<div class="card m-3">
-    <div class="card-body">
-        <div class="card-title">
-            title: {{ model.title }}
-        </div>
-        <ng-container *ngIf="model.actions != undefined && model.actions.length > 0">
-            <button *ngFor="let action of model.actions" (click)="callAction(action)">
-                {{action.name}}
-            </button>
+<mat-card class="generic-container w-100 h-100">
+    <mat-card-content class="w-100 h-100">
+    
+        <!-- Header (card title + action buttons) -->
+        <ng-container *ngIf="model.actions != undefined && model.actions.length > 0; else elseBlock">
+            <div class="page-header">
+                <h4 class="page-title mb-0 container-title">
+                    <b>
+                        {{model.title}}
+                    </b>
+                </h4>
+                <nav aria-label="breadcrumb" (click)="$event.stopPropagation()">
+                    <ul class="breadcrumb bg-transparent m-1 p-0">
+                        <li class="breadcrumb-item" aria-current="page">
+                            <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Add Equipment Menu"
+                                class="float-right">
+                                <mat-icon>more_vert</mat-icon>
+                            </button>
+                            <mat-menu #menu="matMenu">
+                                <ng-container *ngFor="let action of model.actions">
+                                    <button mat-button (click)="action.action(action.actionParameters)" class="btn-block">
+                                        {{action.name}}
+                                        <!-- BEFREE does not work properly -->
+                                        <!-- <ng-container *ngIf="action.icon != undefined">
+                                            <mat-icon class="text-muted float-right">{{action.icon}}</mat-icon>
+                                        </ng-container> -->
+                                    </button>
+                                </ng-container>
+                            </mat-menu>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
         </ng-container>
-        <ng-container *ngIf="model.description != undefined">
-            {{model.description}}
+
+        <!-- Only title (if no actions) -->
+        <ng-template #elseBlock>
+            <h4 class="container-title">
+                <b>{{model.title}}</b>
+            </h4>
+        </ng-template>
+
+        <!-- display tag groups, if any -->
+        <ng-container *ngIf="model.tagGroups != undefined && model.tagGroups.length > 0" class="mt-1">
+            <ng-container *ngFor="let tg of model.tagGroups" class="mt-2 container-description">
+                <h5 class="text-weight-light">
+                    {{tg.name}}
+                </h5>
+                <label *ngFor="let tag of tg.tags" class="badge badge-gradient-info mr-2">
+                    {{ tag }}
+                </label>
+            </ng-container>
         </ng-container>
-    </div>
-</div>
+
+        <!-- Display description -->
+        <ng-container *ngIf="description != undefined">
+            <p class="container-description text-justify">
+                {{model.description}}
+            </p>
+        </ng-container>
+    </mat-card-content>
+</mat-card>

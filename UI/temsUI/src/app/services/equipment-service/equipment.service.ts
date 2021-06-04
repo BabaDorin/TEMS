@@ -1,5 +1,4 @@
 import { ViewPropertySimplified } from './../../models/equipment/view-property-simplified.model';
-import { ViewTypeSiplified } from './../../models/equipment/view-type-simplified.model';
 import { TEMSService } from './../tems-service/tems.service';
 import { AddEquipment } from 'src/app/models/equipment/add-equipment.model';
 import { AddType } from './../../models/equipment/add-type.model';
@@ -16,6 +15,7 @@ import { Observable } from 'rxjs';
 import { ViewDefinitionSimplified } from 'src/app/models/equipment/view-definition-simplified.model';
 import { Property } from 'src/app/models/equipment/view-property.model';
 import { AttachEquipment } from 'src/app/models/equipment/attach-equipment.model';
+import { ViewTypeSimplified } from 'src/app/models/equipment/view-type-simplified.model';
 
 @Injectable({
   providedIn: 'root'
@@ -29,15 +29,15 @@ export class EquipmentService extends TEMSService {
     super();
   }
 
-  getTypesSimplified(): Observable<ViewTypeSiplified[]>{
-    return this.http.get<ViewTypeSiplified[]>(
+  getTypesSimplified(): Observable<ViewTypeSimplified[]>{
+    return this.http.get<ViewTypeSimplified[]>(
       API_EQTYPE_URL + '/getsimplified',
       this.httpOptions
     );
   }
 
-  getTypeSimplifiedById(typeId: string): Observable<ViewTypeSiplified>{
-    return this.http.get<ViewTypeSiplified>(
+  getTypeSimplifiedById(typeId: string): Observable<ViewTypeSimplified>{
+    return this.http.get<ViewTypeSimplified>(
       API_EQTYPE_URL + '/getsimplifiedbyid/' + typeId,
       this.httpOptions
     );

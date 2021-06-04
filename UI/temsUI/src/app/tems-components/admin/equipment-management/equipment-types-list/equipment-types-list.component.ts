@@ -1,9 +1,10 @@
+import { DialogService } from './../../../../services/dialog-service/dialog.service';
 import { EquipmentTypeContainerModel } from './../../../../models/generic-container/EquipmentTypeContainerModel';
 import { SnackService } from './../../../../services/snack/snack.service';
 import { EquipmentService } from './../../../../services/equipment-service/equipment.service';
 import { TEMSComponent } from './../../../../tems/tems.component';
 import { Component, OnInit, Input } from '@angular/core';
-import { ViewTypeSiplified } from 'src/app/models/equipment/view-type-simplified.model';
+import { ViewTypeSimplified } from 'src/app/models/equipment/view-type-simplified.model';
 
 @Component({
   selector: 'app-equipment-types-list',
@@ -15,18 +16,24 @@ export class EquipmentTypesListComponent extends TEMSComponent implements OnInit
   @Input() canManage: boolean = false;
 
   pageNumber = 1;
-  types: ViewTypeSiplified[] = [];
+  types: ViewTypeSimplified[] = [];
   typeContainerModels: EquipmentTypeContainerModel[] = [];
   
   constructor(
     private equipmentService: EquipmentService,
+    private dialogService: DialogService,
     private snackService: SnackService,
   ) {
     super();
   }
 
+  eventEmitted(eventData, index){
+    if(eventData == 'removed')
+      this.typeContainerModels.splice(index, 1);
+  }
+
   typeRemoved(eventData, index){
-    alert(eventData);
+
   }
 
   ngOnInit(): void {
@@ -37,7 +44,11 @@ export class EquipmentTypesListComponent extends TEMSComponent implements OnInit
           return;
         
         this.types = result;
-        this.typeContainerModels = this.types.map(q => new EquipmentTypeContainerModel(this.equipmentService, q))
+        this.typeContainerModels = this.types.map(q => new EquipmentTypeContainerModel(
+          this.equipmentService,
+          this.dialogService,
+          this.snackService,
+          q))
       })
     );
   }

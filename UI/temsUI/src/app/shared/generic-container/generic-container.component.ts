@@ -14,15 +14,14 @@ export class GenericContainerComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
-    this.model.eventEmitted = (parameter?) => this.modelOutputEevent(parameter);
+    this.model.eventEmitted = (parameter?) => this.mdlOutputEevent(parameter);
   }
 
   callAction(action: IContainerAction){
     action.action();
   }
 
-  modelOutputEevent(parameter?){
-    console.log('skr ' + parameter);
+  mdlOutputEevent(parameter?){
     this.eventEmitted.emit(parameter);
   }
 }

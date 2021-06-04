@@ -42,16 +42,10 @@ namespace temsAPI.Data.Managers
             var types = (await _unitOfWork.EquipmentTypes
                 .FindAll<ViewEquipmentTypeSimplifiedViewModel>(
                     where: q => q.IsArchieved == false,
-                    include: q => q.Include(q => q.Children.Where(q => !q.IsArchieved)),
-                    select: q => new ViewEquipmentTypeSimplifiedViewModel
-                    {
-                        Id = q.Id,
-                        Name = q.Name,
-                        Editable = (bool)q.EditableTypeInfo,
-                        Children = String.Join(", ", q.Children
-                        .Where(q => !q.IsArchieved)
-                        .Select(q => q.Name))
-                    }
+                    include: q => q
+                    .Include(q => q.Children.Where(q => !q.IsArchieved))
+                    .Include(q => q.Parents.Where(q => !q.IsArchieved)),
+                    select: q => ViewEquipmentTypeSimplifiedViewModel.FromModel(q)
                     )).ToList();
 
             return types;
@@ -63,13 +57,7 @@ namespace temsAPI.Data.Managers
                 .Find<ViewEquipmentTypeSimplifiedViewModel>(
                     where: q => q.Id == typeId,
                     include: q => q.Include(q => q.Children.Where(q => !q.IsArchieved)),
-                    select: q => new ViewEquipmentTypeSimplifiedViewModel
-                    {
-                        Id = q.Id,
-                        Name = q.Name,
-                        Editable = (bool)q.EditableTypeInfo,
-                        Children = String.Join(", ", q.Children.Select(q => q.Name))
-                    }
+                    select: q => ViewEquipmentTypeSimplifiedViewModel.FromModel(q)
                     )).FirstOrDefault();
 
             return type;

@@ -1,12 +1,15 @@
 <div class="card">
     <div class="card-body">
         <mat-tab-group [@.disabled]="true">
-            <mat-tab label="Equipment Types & Properties">
-                <app-manage-types-properties></app-manage-types-properties>
+            <mat-tab label="Equipment Types">
+                <app-manage-types [canManage]="canManage"></app-manage-types>
             </mat-tab>
-            <mat-tab label="Equipment definitions">
+            <mat-tab label="Properties">
+                <app-manage-properties [canManage]="canManage"></app-manage-properties>
+            </mat-tab>
+            <mat-tab label="Definitions">
                 <ng-template matTabContent>
-                    <app-manage-definitions></app-manage-definitions>
+                    <app-manage-definitions [canManage]="canManage"></app-manage-definitions>
                 </ng-template>
             </mat-tab>
         </mat-tab-group>

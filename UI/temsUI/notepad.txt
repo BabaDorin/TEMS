@@ -48,6 +48,8 @@ last allocation.
 
 
 // TD:
+--> when adding or updating entities, the api should return the edited / added object via additional property of
+    reponse. Use this approach to display feedback
 --> integrate Qr
 --> Clean formlyservice
 --> Move type related methods to typeservice and definition related to definition and clean equipment service (clean all of them actually)

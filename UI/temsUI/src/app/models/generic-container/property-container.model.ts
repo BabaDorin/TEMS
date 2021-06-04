@@ -1,3 +1,4 @@
+import { ViewPropertySimplified } from './../equipment/view-property-simplified.model';
 import { SnackService } from './../../services/snack/snack.service';
 import { TEMSComponent } from './../../tems/tems.component';
 import { DialogService } from './../../services/dialog-service/dialog.service';
@@ -7,8 +8,10 @@ import { EquipmentService } from './../../services/equipment-service/equipment.s
 import { IContainerAction, IGenericContainerModel, ITagGroup } from './IGenericContainer.model';
 import { ViewTypeComponent } from 'src/app/tems-components/equipment/view-type/view-type.component';
 import { AddTypeComponent } from 'src/app/tems-components/equipment/add-type/add-type.component';
+import { ViewPropertyComponent } from 'src/app/tems-components/equipment/view-property/view-property.component';
+import { AddPropertyComponent } from 'src/app/tems-components/equipment/add-property/add-property.component';
 
-export class EquipmentTypeContainerModel extends TEMSComponent implements IGenericContainerModel, OnInit {
+export class PropertyContainerModel extends TEMSComponent implements IGenericContainerModel, OnInit {
     title: string;
     tagGroups: ITagGroup[] = [];
     actions: IContainerAction[] = [];
@@ -19,28 +22,22 @@ export class EquipmentTypeContainerModel extends TEMSComponent implements IGener
         private equipmentService: EquipmentService,
         private dialogService: DialogService,
         private snackService: SnackService,
-        private equipmentType: ViewTypeSimplified) {
+        private property: ViewPropertySimplified) {
         super();
 
         this.buildContainerModel();
     }
 
     buildContainerModel() {
-        this.title = this.equipmentType.name;
+        this.title = this.property.displayName;
 
-        if (this.equipmentType.parents != undefined && this.equipmentType.parents.length > 0) {
-            this.tagGroups.push({
-                name: 'Parent Types',
-                tags: this.equipmentType.parents,
-            } as ITagGroup)
-        }
+        // Might add datatype as tag kater
+        // this.tagGroups.push({
+        //     name: 'DataType',
+        //     tags: [this.property.]
+        // })
 
-        if (this.equipmentType.children != undefined && this.equipmentType.children.length > 0) {
-            this.tagGroups.push({
-                name: 'Children Types',
-                tags: this.equipmentType.children,
-            } as ITagGroup)
-        }
+        this.description = this.property.description;
 
         this.actions = [];
 
@@ -64,22 +61,19 @@ export class EquipmentTypeContainerModel extends TEMSComponent implements IGener
     }
 
     ngOnInit(): void {
-        throw new Error('Method not implemented.');
+
     }
 
     edit() {
         this.dialogService.openDialog(
-            AddTypeComponent,
-            [{ value: this.equipmentType.id, label: "updateTypeId" }],
+            AddPropertyComponent,
+            [{ value: this.property.id, label: "propertyId" }],
             () => {
                 this.unsubscribeFromAll();
                 this.subscriptions.push(
-                    this.equipmentService.getTypeSimplifiedById(this.equipmentType.id)
+                    this.equipmentService.getPropertySimplifiedById(this.property.id)
                         .subscribe(result => {
-                            if(this.equipmentType == result)
-                                return;
-
-                            this.equipmentType = result;
+                            this.property = result;
                             this.buildContainerModel();
                         })
                 )
@@ -88,14 +82,12 @@ export class EquipmentTypeContainerModel extends TEMSComponent implements IGener
     }
 
     remove() {
-        if (!confirm("Do you realy want to remove that type?"))
+        if (!confirm("Do you realy want to remove that property?"))
             return;
 
-        this.equipmentService.archieveType(this.equipmentType.id)
+        this.equipmentService.archieveProperty(this.property.id)
             .subscribe(result => {
-                if (this.snackService.snackIfError(result))
-                    return;
-
+                console.log(result);
                 if (result.status == 1)
                     this.eventEmitted('removed');
             })
@@ -103,8 +95,8 @@ export class EquipmentTypeContainerModel extends TEMSComponent implements IGener
 
     view() {
         this.dialogService.openDialog(
-            ViewTypeComponent,
-            [{ value: this.equipmentType.id, label: "typeId" }],
+            ViewPropertyComponent,
+            [{ value: this.property.id, label: "propertyId" }],
         );
     }
 

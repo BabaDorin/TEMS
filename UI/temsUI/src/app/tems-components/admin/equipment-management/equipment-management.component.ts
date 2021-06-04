@@ -1,3 +1,5 @@
+import { CAN_MANAGE_SYSTEM_CONFIGURATION } from './../../../models/claims';
+import { TokenService } from './../../../services/token-service/token.service';
 import { Component, OnInit } from '@angular/core';
 
 @Component({
@@ -7,7 +9,13 @@ import { Component, OnInit } from '@angular/core';
 })
 export class EquipmentManagementComponent implements OnInit {
 
-  constructor() { }
+  canManage: boolean;
+
+  constructor(
+    private tokenService: TokenService
+  ) {
+    this.canManage = this.tokenService.hasClaim(CAN_MANAGE_SYSTEM_CONFIGURATION);
+  }
 
   ngOnInit(): void {
   }

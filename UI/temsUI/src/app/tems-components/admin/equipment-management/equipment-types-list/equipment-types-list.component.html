@@ -1,17 +1,26 @@
-<h2>
-    <mat-icon class="text-primary">devices</mat-icon> Equipment Types
-</h2>
-<hr>
-
-<div class="container m-0 p-0">
-    <div class="row mt-3">
-        <div class="col-xl-3 col-lg-4 col-sm-6 col-xs-12 p-3" *ngFor="let type of typeContainerModels | paginate: { 
-            itemsPerPage: 10, 
-            currentPage: pageNumber, 
-            id: 'types' }; 
-            let i = index">
-            <app-generic-container [model]="type" (eventEmitted)="eventEmitted($event, i)">
-            </app-generic-container>
+<div class="col-md-12">
+    <h2>
+        <mat-icon class="text-primary">devices</mat-icon> Equipment Types
+    </h2>
+    <hr>
+    
+    <ng-container *ngIf="canManage">  
+        <button mat-button (click)="addType()">
+            <mat-icon class="text-primary">add</mat-icon>
+            Add new type
+        </button>
+    </ng-container>
+    
+    <div class="container m-0 p-0">
+        <div class="row mt-3">
+            <div class="col-xl-3 col-lg-4 col-sm-6 col-xs-12 p-3" *ngFor="let type of typeContainerModels | paginate: { 
+                itemsPerPage: 10, 
+                currentPage: pageNumber, 
+                id: 'types' }; 
+                let i = index">
+                <app-generic-container [model]="type" (eventEmitted)="eventEmitted($event, i)" [canManage]="canManage">
+                </app-generic-container>
+            </div>
         </div>
     </div>
 </div>

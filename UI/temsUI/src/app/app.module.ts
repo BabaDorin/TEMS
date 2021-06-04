@@ -44,9 +44,6 @@ import { IssueContainerModule } from './modules/issues/issue-container/issue-con
 import { ViewNotificationsComponent } from './tems-components/notifications/view-notifications/view-notifications.component';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { AnnouncementModule } from './modules/announcement/announcement.module';
-import { EquipmentTypeContainerComponent } from './tems-components/admin/equipment-management/equipment-type-container/equipment-type-container.component';
-import { GenericContainerComponent } from './shared/generic-container/generic-container.component';
-
 @NgModule({
   declarations: [
     AppComponent,

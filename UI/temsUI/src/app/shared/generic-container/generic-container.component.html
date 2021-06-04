@@ -2,7 +2,7 @@
     <mat-card-content class="w-100 h-100">
     
         <!-- Header (card title + action buttons) -->
-        <ng-container *ngIf="model.actions != undefined && model.actions.length > 0; else elseBlock">
+        <ng-container *ngIf="canManage && model.actions != undefined && model.actions.length > 0; else elseBlock">
             <div class="page-header">
                 <h4 class="page-title mb-0 container-title">
                     <b>

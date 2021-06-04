@@ -9,6 +9,8 @@ import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 export class GenericContainerComponent implements OnInit {
 
   @Input() model: IGenericContainerModel;
+  @Input() canManage: boolean = false;
+  
   @Output() eventEmitted = new EventEmitter();
 
   constructor() { }

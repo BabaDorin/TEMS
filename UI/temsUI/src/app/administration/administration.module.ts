@@ -21,6 +21,8 @@ import { ManageDefinitionsComponent } from '../tems-components/admin/equipment-m
 import { NgxPaginationModule } from 'ngx-pagination';
 import { DialogModule } from '../modules/dialog/dialog.module';
 import { GenericContainerComponent } from '../shared/generic-container/generic-container.component';
+import { ManageTypesComponent } from '../tems-components/admin/equipment-management/manage-types/manage-types.component';
+import { ManagePropertiesComponent } from '../tems-components/admin/equipment-management/manage-properties/manage-properties.component';
 
 
 @NgModule({
@@ -38,6 +40,8 @@ declarations: [
     EquipmentDefinitionsListComponent,
     EquipmentTypeContainerComponent,
     GenericContainerComponent,
+    ManageTypesComponent,
+    ManagePropertiesComponent,
   ],
   imports: [
     CommonModule,

@@ -1,1 +1,29 @@
-<p>equipment-definitions-list works!</p>
+<div class="col-md-12">
+    <h2>
+        <mat-icon class="text-primary">horizontal_split</mat-icon> Equipment Definitions
+    </h2>
+    <hr>
+    
+    <ng-container *ngIf="canManage">  
+        <button mat-button (click)="addDefinition()">
+            <mat-icon class="text-primary">add</mat-icon>
+            Add new definition
+        </button>
+    </ng-container>
+    
+    <div class="container m-0 p-0">
+        <div class="row mt-3">
+            <div class="col-xl-3 col-lg-4 col-sm-6 col-xs-12 p-3" *ngFor="let def of definitionContainerModels | paginate: { 
+                itemsPerPage: 10, 
+                currentPage: pageNumber, 
+                id: 'definitions' }; 
+                let i = index">
+                <app-generic-container [model]="def" (eventEmitted)="eventEmitted($event, i)" [canManage]="canManage">
+                </app-generic-container>
+            </div>
+        </div>
+        <pagination-controls (pageChange)="pageNumber = $event" id="definitions"
+        *ngIf="typeContainerModels != undefined && typeContainerModels.length > 1">
+        </pagination-controls>
+    </div>
+</div>

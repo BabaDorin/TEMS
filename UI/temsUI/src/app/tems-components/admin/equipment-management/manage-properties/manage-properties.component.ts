@@ -13,5 +13,4 @@ export class ManagePropertiesComponent implements OnInit {
 
   ngOnInit(): void {
   }
-
 }

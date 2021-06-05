@@ -16,11 +16,14 @@
             <div class="col-xl-3 col-lg-4 col-sm-6 col-xs-12 p-3" *ngFor="let prop of propContainerModels | paginate: { 
                 itemsPerPage: 10, 
                 currentPage: pageNumber, 
-                id: 'types' }; 
+                id: 'props' }; 
                 let i = index">
                 <app-generic-container [model]="prop" (eventEmitted)="eventEmitted($event, i)" [canManage]="canManage">
                 </app-generic-container>
             </div>
         </div>
+        <pagination-controls (pageChange)="pageNumber = $event" id="props"
+            *ngIf="propContainerModels != undefined && propContainerModels.length > 1">
+        </pagination-controls>
     </div>
 </div>

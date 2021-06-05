@@ -1,9 +1,9 @@
-import { SnackService } from './../../services/snack/snack.service';
-import { TEMSComponent } from './../../tems/tems.component';
-import { DialogService } from './../../services/dialog-service/dialog.service';
+import { SnackService } from '../../services/snack/snack.service';
+import { TEMSComponent } from '../../tems/tems.component';
+import { DialogService } from '../../services/dialog-service/dialog.service';
 import { OnInit } from '@angular/core';
-import { ViewTypeSimplified } from './../equipment/view-type-simplified.model';
-import { EquipmentService } from './../../services/equipment-service/equipment.service';
+import { ViewTypeSimplified } from '../equipment/view-type-simplified.model';
+import { EquipmentService } from '../../services/equipment-service/equipment.service';
 import { IContainerAction, IGenericContainerModel, ITagGroup } from './IGenericContainer.model';
 import { ViewTypeComponent } from 'src/app/tems-components/equipment/view-type/view-type.component';
 import { AddTypeComponent } from 'src/app/tems-components/equipment/add-type/add-type.component';
@@ -28,6 +28,9 @@ export class EquipmentTypeContainerModel extends TEMSComponent implements IGener
     buildContainerModel() {
         this.title = this.equipmentType.name;
 
+        // Set tags
+        this.tagGroups = [];
+
         if (this.equipmentType.parents != undefined && this.equipmentType.parents.length > 0) {
             this.tagGroups.push({
                 name: 'Parent Types',
@@ -42,6 +45,7 @@ export class EquipmentTypeContainerModel extends TEMSComponent implements IGener
             } as ITagGroup)
         }
 
+        // Set actions
         this.actions = [];
 
         this.actions.push({

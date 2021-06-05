@@ -49,12 +49,14 @@ export class PropertiesListComponent extends TEMSComponent implements OnInit {
   }
 
   fetchProperties(){
-    this.equipmentService.getPropertiesSimplified()
-    .subscribe(result => {
-      this.properties = result;
-
-      this.buildPropContainerModels();
-    })
+    this.subscriptions.push(
+      this.equipmentService.getPropertiesSimplified()
+      .subscribe(result => {
+        this.properties = result;
+  
+        this.buildPropContainerModels();
+      })
+    );
   }
 
   buildPropContainerModels(){

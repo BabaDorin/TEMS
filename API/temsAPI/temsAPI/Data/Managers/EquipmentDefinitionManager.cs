@@ -127,17 +127,7 @@ namespace temsAPI.Data.Managers
                         .Include(q => q.Parent)
                         .Include(q => q.Children.Where(q => !q.IsArchieved))
                         .Include(q => q.EquipmentType),
-                        select: q => new ViewEquipmentDefinitionSimplifiedViewModel
-                        {
-                            Id = q.Id,
-                            Identifier = q.Identifier,
-                            Parent = q.Parent != null
-                                ? q.Parent.Identifier
-                                : null,
-                            Children = String.Join(", ", q.Children
-                                .Where(q => !q.IsArchieved).Select(q => q.Identifier)),
-                            EquipmentType = q.EquipmentType.Name
-                        }
+                        select: q => ViewEquipmentDefinitionSimplifiedViewModel.FromModel(q)
                     )).ToList();
 
             return defs;
@@ -153,17 +143,7 @@ namespace temsAPI.Data.Managers
                         .Include(q => q.Parent)
                         .Include(q => q.Children.Where(q => !q.IsArchieved))
                         .Include(q => q.EquipmentType),
-                        select: q => new ViewEquipmentDefinitionSimplifiedViewModel
-                        {
-                            Id = q.Id,
-                            Identifier = q.Identifier,
-                            Parent = q.Parent != null
-                                ? q.Parent.Identifier
-                                : null,
-                            Children = String.Join(", ", q.Children
-                                .Where(q => !q.IsArchieved).Select(q => q.Identifier)),
-                            EquipmentType = q.EquipmentType.Name
-                        }
+                        select: q => ViewEquipmentDefinitionSimplifiedViewModel.FromModel(q)
                     )).FirstOrDefault();
 
             return def;

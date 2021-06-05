@@ -3,7 +3,7 @@ export interface IViewDefinitionSimplified{
     identifier: string,
     equipmentType: string,
     parent: string,
-    children: string
+    children: string[]
 }
 
 export class ViewDefinitionSimplified implements IViewDefinitionSimplified{
@@ -11,5 +11,5 @@ export class ViewDefinitionSimplified implements IViewDefinitionSimplified{
     identifier: string;
     equipmentType: string;
     parent: string;
-    children: string;
+    children: string[];
 }

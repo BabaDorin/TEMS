@@ -32,6 +32,7 @@ export class PropertyContainerModel extends TEMSComponent implements IGenericCon
         this.title = this.property.displayName;
 
         // Might add datatype as tag kater
+        // this.tagGroups = [];
         // this.tagGroups.push({
         //     name: 'DataType',
         //     tags: [this.property.]

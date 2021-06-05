@@ -1,7 +1,7 @@
 import { CAN_MANAGE_ENTITIES, CAN_MANAGE_SYSTEM_CONFIGURATION } from './../../../../models/claims';
 import { TokenService } from './../../../../services/token-service/token.service';
 import { DialogService } from './../../../../services/dialog-service/dialog.service';
-import { EquipmentTypeContainerModel } from './../../../../models/generic-container/EquipmentTypeContainerModel';
+import { EquipmentTypeContainerModel } from '../../../../models/generic-container/equipment-type-container.model';
 import { SnackService } from './../../../../services/snack/snack.service';
 import { EquipmentService } from './../../../../services/equipment-service/equipment.service';
 import { TEMSComponent } from './../../../../tems/tems.component';
@@ -41,16 +41,19 @@ export class EquipmentTypesListComponent extends TEMSComponent implements OnInit
       AddTypeComponent,
       undefined,
       () => {
-        this.unsubscribeFromAll();
-        this.subscriptions.push(
-          this.equipmentService.getTypesSimplified()
-          .subscribe(result => {
-            this.types = result;
-            this.buildCardModels();
-          })
-        )
+        this.fetchTypes();
       }
     );
+  }
+
+  fetchTypes(){
+    this.subscriptions.push(
+      this.equipmentService.getTypesSimplified()
+      .subscribe(result => {
+        this.types = result;
+        this.buildCardModels();
+      })
+    )
   }
 
   buildCardModels(){

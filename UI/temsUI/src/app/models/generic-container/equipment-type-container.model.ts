@@ -61,7 +61,7 @@ export class EquipmentTypeContainerModel extends TEMSComponent implements IGener
         });
 
         this.actions.push({
-            name: 'Remvoe',
+            name: 'Remove',
             icon: 'delete',
             action: () => this.remove()
         });
@@ -80,6 +80,7 @@ export class EquipmentTypeContainerModel extends TEMSComponent implements IGener
                 this.subscriptions.push(
                     this.equipmentService.getTypeSimplifiedById(this.equipmentType.id)
                         .subscribe(result => {
+                            console.log(result);
                             if(this.equipmentType == result)
                                 return;
 

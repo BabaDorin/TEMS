@@ -41,6 +41,9 @@ export class AddPropertyComponent extends TEMSComponent implements OnInit {
     this.subscriptions.push(
       this.equipmentService.getPropertyById(this.propertyId)
       .subscribe(result => {
+        if(this.snackService.snackIfError(result))
+          return;
+
         let model = this.formlyData.model; 
 
         console.log('model');

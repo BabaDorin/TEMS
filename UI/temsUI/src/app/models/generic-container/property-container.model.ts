@@ -55,7 +55,7 @@ export class PropertyContainerModel extends TEMSComponent implements IGenericCon
         });
 
         this.actions.push({
-            name: 'Remvoe',
+            name: 'Remove',
             icon: 'delete',
             action: () => this.remove()
         });

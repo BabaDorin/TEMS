@@ -58,7 +58,7 @@ export class DefinitionContainerModel extends TEMSComponent implements IGenericC
         });
 
         this.actions.push({
-            name: 'Remvoe',
+            name: 'Remove',
             icon: 'delete',
             action: () => this.remove()
         });

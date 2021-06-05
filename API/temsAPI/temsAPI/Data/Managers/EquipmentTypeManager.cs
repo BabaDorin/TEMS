@@ -56,7 +56,9 @@ namespace temsAPI.Data.Managers
             var type = (await _unitOfWork.EquipmentTypes
                 .Find<ViewEquipmentTypeSimplifiedViewModel>(
                     where: q => q.Id == typeId,
-                    include: q => q.Include(q => q.Children.Where(q => !q.IsArchieved)),
+                    include: q => q
+                    .Include(q => q.Children.Where(q => !q.IsArchieved))
+                    .Include(q => q.Parents.Where(q => !q.IsArchieved)),
                     select: q => ViewEquipmentTypeSimplifiedViewModel.FromModel(q)
                     )).FirstOrDefault();
 

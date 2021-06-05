@@ -100,7 +100,7 @@ export class ChipsAutocompleteComponent implements OnInit, ControlValueAccessor 
   getFromAutocompleteOptions() {
     this.subscription = this.formCtrl.valueChanges
       .subscribe(op => {
-        this.filteredOptions = this.autocompleteOptions.filter(q => q.label.toLowerCase().includes(op.toString().toLowerCase()) ?? []);
+        this.filteredOptions = this.autocompleteOptions.filter(q => q.label.toLowerCase().includes(op?.toString().toLowerCase()) ?? []);
       });
   }
 

@@ -28,8 +28,8 @@ namespace temsAPI.ViewModels.Property
                 DataType = property.DataType.Name.ToLower(),
                 Description = property.Description,
                 DisplayName = property.DisplayName,
-                Max = (int)property.Max,
-                Min = (int)property.Min,
+                Max = property.Max ?? 0,
+                Min = property.Min ?? 0,
                 Name = property.Name,
                 Required = property.Required,
             };

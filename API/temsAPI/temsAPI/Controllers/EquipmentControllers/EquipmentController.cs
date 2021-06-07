@@ -70,7 +70,7 @@ namespace temsAPI.Controllers.EquipmentControllers
             try
             {
                 string result = await _equipmentManager.Update(viewModel);
-                if (result == null)
+                if (result != null)
                     return ReturnResponse(result, ResponseStatus.Fail);
 
                 return ReturnResponse("Success!", ResponseStatus.Success);

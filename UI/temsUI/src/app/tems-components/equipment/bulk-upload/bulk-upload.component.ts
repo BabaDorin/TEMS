@@ -12,7 +12,7 @@ import { SICFileUploadResult } from 'src/app/models/equipment/bulk-upload-result
 export class BulkUploadComponent extends TEMSComponent implements OnInit {
 
   selectedFiles;
-  feedback='';
+  feedback;
   dialogRef;
   uploadResults = [] as SICFileUploadResult[]; // Referenced in AddEquipmentComponent
 

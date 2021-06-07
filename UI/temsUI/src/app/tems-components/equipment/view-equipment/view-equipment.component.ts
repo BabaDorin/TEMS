@@ -16,8 +16,8 @@ import { EquipmentAllocationComponent } from '../equipment-allocation/equipment-
 })
 export class ViewEquipmentComponent implements OnInit {
 
-  includeDerived:boolean = true;
-
+  includeDerived:boolean = false;
+  
   @ViewChild('agGridEquipment') agGridEquipment: AgGridEquipmentComponent;
 
   constructor(

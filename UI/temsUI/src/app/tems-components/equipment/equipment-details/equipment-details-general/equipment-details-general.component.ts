@@ -88,6 +88,8 @@ export class EquipmentDetailsGeneralComponent extends TEMSComponent implements O
           this.headerClass = (this.equipment.isArchieved) ? 'text-muted' : '';
 
         this.archivationStatusChanged.emit(this.equipment.isArchieved);
+
+        this.ngOnInit();
       })
     )
   }

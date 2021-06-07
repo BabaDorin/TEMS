@@ -48,7 +48,7 @@ namespace temsAPI.Helpers
             {
                 var model = (await _unitOfWork.Equipments
                     .Find<Equipment>(
-                        where: q => q.Id == equipmentId && q.ParentID == null,
+                        where: q => q.Id == equipmentId,
                         include: q => q
                         .Include(q => q.Children)
                         .Include(q => q.EquipmentAllocations)

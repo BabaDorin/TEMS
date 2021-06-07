@@ -55,10 +55,12 @@ namespace temsAPI.Services.SICServices
                     return validationResult;
 
                 // TEMSID or SerialNumber of this computer already exists
-                if (await _unitOfWork.Equipments.isExists(q => q.TEMSID == sicComputer.TEMSID))
+                if (await _unitOfWork.Equipments
+                    .isExists(q => q.TEMSID == sicComputer.TEMSID && !q.IsArchieved))
                     return $"An equipment with the [{sicComputer.TEMSID}] TEMSID already exists.";
 
-                if (await _unitOfWork.Equipments.isExists(q => q.SerialNumber == sicComputer.Motherboards[0].SerialNumber))
+                if (await _unitOfWork.Equipments
+                    .isExists(q => q.SerialNumber == sicComputer.Motherboards[0].SerialNumber && !q.IsArchieved))
                     return $"An equipment with the [{sicComputer.Motherboards[0].SerialNumber}] SerialNumber already exists.";
                 
                 var computerType = (await _unitOfWork.EquipmentTypes
@@ -209,7 +211,8 @@ namespace temsAPI.Services.SICServices
             for (int i = 0; i < sicComputer.Motherboards.Count; i++)
             {
                 serialNumber = "Motherboard" + i + " " + sicComputer.Motherboards[i].SerialNumber;
-                if (await _unitOfWork.Equipments.isExists(q => q.SerialNumber == serialNumber))
+                if (await _unitOfWork.Equipments
+                    .isExists(q => q.SerialNumber == serialNumber && !q.IsArchieved))
                     stringBuilder.Append($"A motherboard with the [{serialNumber}] serial number already exists.\n");
                 else
                     await AssignChildData(sicComputer.Motherboards[i], "Product", computer, serialNumber);
@@ -221,7 +224,8 @@ namespace temsAPI.Services.SICServices
             for (int i = 0; i < sicComputer.CPUs.Count; i++)
             {
                 serialNumber = "CPU" + i + " " + computer.SerialNumber;
-                if (await _unitOfWork.Equipments.isExists(q => q.SerialNumber == serialNumber))
+                if (await _unitOfWork.Equipments
+                    .isExists(q => q.SerialNumber == serialNumber && !q.IsArchieved))
                     stringBuilder.Append($"A CPU with the [{serialNumber}] serial number already exists.\n");
                 else
                     await AssignChildData(sicComputer.CPUs[i], "Name", computer, serialNumber);
@@ -231,7 +235,8 @@ namespace temsAPI.Services.SICServices
             for (int i = 0; i < sicComputer.GPUs.Count; i++)
             {
                 serialNumber = "GPU" + i + " " + computer.SerialNumber;
-                if (await _unitOfWork.Equipments.isExists(q => q.SerialNumber == serialNumber))
+                if (await _unitOfWork.Equipments
+                    .isExists(q => q.SerialNumber == serialNumber && !q.IsArchieved))
                     stringBuilder.Append($"A GPU with the [{serialNumber}] serial number already exists.\n");
                 else
                     await AssignChildData(sicComputer.GPUs[i], "Name", computer, "GPU" + i + " " + computer.SerialNumber);
@@ -245,17 +250,19 @@ namespace temsAPI.Services.SICServices
                     continue;
 
                 serialNumber = psu.SerialNumber;
-                if (await _unitOfWork.Equipments.isExists(q => q.SerialNumber == serialNumber))
+                if (await _unitOfWork.Equipments
+                    .isExists(q => q.SerialNumber == serialNumber && !q.IsArchieved))
                     stringBuilder.Append($"A PSU with the [{serialNumber}] serial number already exists.\n");
                 else
-                    await AssignChildData(psu, "Model", computer.Parent, serialNumber);
+                    await AssignChildData(psu, "Model", computer, serialNumber);
             }
 
             // Network Interfaces
             for (int i = 0; i < sicComputer.NetworkInterfaces.Count; i++)
             {
                 serialNumber = $"NetIntf{i}_{computer.SerialNumber}_{sicComputer.NetworkInterfaces[i].PhysicalAddress}";
-                if (await _unitOfWork.Equipments.isExists(q => q.SerialNumber == serialNumber))
+                if (await _unitOfWork.Equipments
+                    .isExists(q => q.SerialNumber == serialNumber && !q.IsArchieved))
                     stringBuilder.Append($"A Network Interface with the [{serialNumber}] serial number already exists.\n");
                 else
                     await AssignChildData(sicComputer.NetworkInterfaces[i], "Description", computer, serialNumber);
@@ -268,13 +275,15 @@ namespace temsAPI.Services.SICServices
                 temsId = sicComputer.Monitors[i].TEMSID;
                 bool ok = true;
 
-                if (await _unitOfWork.Equipments.isExists(q => q.SerialNumber == serialNumber))
+                if (await _unitOfWork.Equipments
+                    .isExists(q => q.SerialNumber == serialNumber && !q.IsArchieved))
                 {
                     ok = false;
                     stringBuilder.Append($"Monitor with the [{serialNumber}] serial number already exists.\n");
                 }
 
-                if(await _unitOfWork.Equipments.isExists(q => q.TEMSID == temsId))
+                if(await _unitOfWork.Equipments
+                    .isExists(q => q.TEMSID == temsId && !q.IsArchieved))
                 {
                     ok = false;
                     stringBuilder.Append($"An equipment with the [{temsId}] TEMSID already exists.\n");
@@ -288,7 +297,8 @@ namespace temsAPI.Services.SICServices
             for (int i = 0; i < sicComputer.RAMs.Count; i++)
             {
                 serialNumber = "RAM" + i + " " + computer.SerialNumber;
-                if (await _unitOfWork.Equipments.isExists(q => q.SerialNumber == serialNumber))
+                if (await _unitOfWork.Equipments
+                    .isExists(q => q.SerialNumber == serialNumber && !q.IsArchieved))
                     stringBuilder.Append($"A RAM chip with the [{serialNumber}] serial number already exists.\n");
                 else
                     await AssignChildData(sicComputer.RAMs[i], "PartNumber", computer, serialNumber);
@@ -298,7 +308,8 @@ namespace temsAPI.Services.SICServices
             for (int i = 0; i < sicComputer.Storages.Count; i++)
             {
                 serialNumber = $"Storage{i}_{computer.SerialNumber}_{sicComputer.Storages[i].SerialNumber}";
-                if (await _unitOfWork.Equipments.isExists(q => q.SerialNumber == serialNumber))
+                if (await _unitOfWork.Equipments
+                    .isExists(q => q.SerialNumber == serialNumber && !q.IsArchieved))
                     stringBuilder.Append($"A storage device with the [{serialNumber}] serial number already exists.\n");
                 else
                     await AssignChildData(sicComputer.Storages[i], "Caption", computer, serialNumber);

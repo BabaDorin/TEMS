@@ -36,7 +36,9 @@ namespace temsAPI.ViewModels.Equipment
             if (viewModel.Id != null)
             {
                 updateModel = (await unitOfWork.Equipments
-                    .Find<Data.Entities.EquipmentEntities.Equipment>(q => q.Id == viewModel.Id)).FirstOrDefault();
+                    .Find<Data.Entities.EquipmentEntities.Equipment>(
+                        where: q => q.Id == viewModel.Id))
+                    .FirstOrDefault();
 
                 if (updateModel == null)
                     return "Invalid id provided";
@@ -60,11 +62,15 @@ namespace temsAPI.ViewModels.Equipment
             else
             {
                 if (viewModel.Temsid != updateModel.TEMSID
-                    && await unitOfWork.Equipments.isExists(q => q.TEMSID == viewModel.Temsid))
+                    && 
+                    await unitOfWork.Equipments
+                    .isExists(q => q.TEMSID == viewModel.Temsid && !q.IsArchieved))
                     return "An equipment with the specified TEMSID already exists";
 
                 if (viewModel.SerialNumber != updateModel.SerialNumber
-                    && await unitOfWork.Equipments.isExists(q => q.SerialNumber == viewModel.SerialNumber))
+                    && 
+                    await unitOfWork.Equipments
+                    .isExists(q => q.SerialNumber == viewModel.SerialNumber && !q.IsArchieved))
                     return "An equipment with the specified Serial number already exists";
             }
 

@@ -1,12 +1,18 @@
-<ng-container *ngFor="let result of bulkUploadResults">
-    <div class="alert alert-danger" role="alert" *ngIf="result.status == 0">
-        <p><b> {{ result.fileName }}</b> - Failed.</p>
-        <p>Message: {{ result.message }}</p>
-        <p class="mt-1 text-muted">Ellapsed miliseconds: {{ result.ellapsedMiliseconds }}</p>
-    </div>
-    <div class="alert alert-danger" role="alert" *ngIf="result.status == 1">
-        <p><b> {{ result.fileName }}</b> - Success!</p>
-        <p>Message: {{ result.message }}</p>
-        <p class="mt-1 text-muted">Ellapsed miliseconds: {{ result.ellapsedMiliseconds }}</p>
-    </div>
+<ng-container *ngIf="bulkUploadResults != undefined && bulkUploadResults.length > 0; else elseBlock">
+    <ng-container *ngFor="let result of bulkUploadResults">
+        <div class="alert alert-danger" role="alert" *ngIf="result.status == 0">
+            <p><b> {{ result.fileName }}</b> - Failed.</p>
+            <p>Message: {{ result.message }}</p>
+            <p class="mt-1 text-muted">Ellapsed miliseconds: {{ result.ellapsedMiliseconds }}</p>
+        </div>
+        <div class="alert alert-success" role="alert" *ngIf="result.status == 1">
+            <p><b> {{ result.fileName }}</b> - Success!</p>
+            <p>Message: {{ result.message }}</p>
+            <small>Ellapsed miliseconds: {{ result.ellapsedMiliseconds }}</small>
+        </div>
+    </ng-container>
 </ng-container>
+
+<ng-template #elseBlock>
+    <p class="mt-3 text-center text-muted">No data to be displayed...</p>
+</ng-template>

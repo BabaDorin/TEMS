@@ -1,3 +1,4 @@
+import { ChildEquipmentContainerComponent } from './../../tems-component/equipment/child-equipment-container/child-equipment-container.component';
 import { FileUploadModule } from './../../modules/file-upload/file-upload.module';
 import { EquipmentDetailsGeneralComponent } from './equipment-details/equipment-details-general/equipment-details-general.component';
 import { ViewDefinitionComponent } from './view-definition/view-definition.component';
@@ -51,6 +52,7 @@ import { EquipmentSerialNumberComponent } from './equipment-serial-number/equipm
     BulkUploadResultsComponent,
     EquipmentLabelComponent,
     EquipmentSerialNumberComponent,
+    ChildEquipmentContainerComponent
   ],
   imports: [
     CommonModule,

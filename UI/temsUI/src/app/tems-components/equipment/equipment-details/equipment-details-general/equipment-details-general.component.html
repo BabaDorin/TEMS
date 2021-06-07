@@ -97,54 +97,64 @@
                     </app-equipment-serial-number>
                 </div>
 
-                <div class="row mt-5">
-                    <div class="col-lg-6 col-sm-12">
-                        <!-- Common properties for each equipment go here -->
-                        <h2 class="text-muted text-bold">Common properties</h2>
-                        <app-property-render [(properties)]="generalProperties"></app-property-render>
+                <!-- Case 1: Equipment has only common properties -->
+                <ng-container 
+                    *ngIf="equipment.definition.properties == undefined 
+                    || equipment.definition.properties.length == 0;
+                    else propertyElseBlock">
+                    <div class="property-container mt-5">
+                        <h2 class="text-muted text-bold">Room properties</h2>
+                        <app-property-render [properties]="generalProperties">
+                        </app-property-render>
                     </div>
-                    <div class="col-lg-6 col-sm-12">
-                        <!-- Speciic properties for current equipment go here -->
-                        <h2 class="text-muted text-bold">Specific properties</h2>
-                        <app-property-render [properties]="equipment.definition.properties"></app-property-render>
+                </ng-container>
+
+                <!-- Case 2: Equipment has both common and specific properties to be displayed -->
+                <ng-template #propertyElseBlock>
+                    <div class="row mt-5">
+                        <div class="col-lg-6 col-sm-12">
+                            <!-- Common properties for each equipment go here -->
+                            <h2 class="text-muted text-bold">Common properties</h2>
+                            <app-property-render [properties]="generalProperties">
+                            </app-property-render>
+                        </div>
+                        <div class="col-lg-6 col-sm-12">
+                            <!-- Speciic properties for current equipment go here -->
+                            <h2 class="text-muted text-bold">Specific properties</h2>
+                            <app-property-render [properties]="equipment.definition.properties">
+                            </app-property-render>
+                        </div>    
                     </div>
-                </div>
+                </ng-template>
+
                 <ng-container *ngIf="canAttach" class="mt-3">
-                    <h2>Equipment's Children</h2>
+                    <h2 class="text-muted text-bold">
+                        Equipment's Children
+                    </h2>
+                    <hr>
                     <button *ngIf="canManage" mat-button (click)="attach()">
                         <mat-icon class="text-primary">add</mat-icon> Attach
                     </button>
                     <ng-container *ngIf="equipment.children != undefined && equipment.children.length > 0">
                         <div *ngFor="let child of equipment.children; let i = index">
-                            <mat-expansion-panel>
-                                <mat-expansion-panel-header>
-                                    <b>{{ child.additional }}: </b> {{ child.label }}
-                                    <button mat-button (click)="detach(child.value, i)">
-                                        <mat-icon class="text-danger">exclude</mat-icon> Detach
-                                    </button>
-                                </mat-expansion-panel-header>
-
-                                <ng-container matExpansionPanelContent class="mat-exp-panel-content">
-                                    <app-equipment-details [equipmentId]="child.value"></app-equipment-details>
-                                </ng-container>
-                            </mat-expansion-panel>
-                            <br>
+                            <app-child-equipment-container 
+                                [childEquipment]="child" 
+                                [canManage]="canManage"
+                                (detached)="detached(i)">
+                            </app-child-equipment-container>
                         </div>
                     </ng-container>
                 </ng-container>
-                <ng-container *ngIf="detachedEquipments.length > 0">
-                    <h2 class="text-muted">Detached equipments (These will dissapear after a refresh)</h2>
-                    <div *ngFor="let detachedEq of detachedEquipments">
-                        <mat-expansion-panel>
-                            <mat-expansion-panel-header>
-                                <b>{{ detachedEq.additional }}: </b> {{ detachedEq.label }}
-                            </mat-expansion-panel-header>
 
-                            <ng-template matExpansionPanelContent class="mat-exp-panel-content">
-                                <app-equipment-details [equipmentId]="detachedEq.value"></app-equipment-details>
-                            </ng-template>
-                        </mat-expansion-panel>
-                        <br>
+                <ng-container *ngIf="detachedEquipments.length > 0">
+                    <h2 class="text-muted text-bold mt-5">
+                        Detached equipments (These will dissapear after a refresh)
+                    </h2>
+                    <div *ngFor="let detachedEq of detachedEquipments">
+                        <app-child-equipment-container 
+                        [childEquipment]="detachedEq" 
+                        canManage="false">
+                        </app-child-equipment-container>
                     </div>
                 </ng-container>
 

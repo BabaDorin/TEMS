@@ -135,19 +135,8 @@ export class EquipmentDetailsGeneralComponent extends TEMSComponent implements O
     )
   }
 
-  detach(childId: string, index: number){
-    if(!confirm("Are you sure you want to detach this equipment from it's parent?"))
-      return;
-
-    this.subscriptions.push(
-      this.equipmentService.detach(childId)
-      .subscribe(result => {
-        if(this.snackService.snackIfError(result))
-          return;
-
-        this.detachedEquipments.push(this.equipment.children[index]);
-        this.equipment.children.splice(index, 1);
-      })
-    )
+  detached(index: number){
+    this.detachedEquipments.push(this.equipment.children[index]);
+    this.equipment.children.splice(index, 1);
   }
 }

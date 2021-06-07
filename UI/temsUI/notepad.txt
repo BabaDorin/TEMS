@@ -48,6 +48,7 @@ last allocation.
 
 
 // TD:
+--> Detached a child equipment and could not attach it back (error snackbar), but then it worked. Idk why
 --> when adding or updating entities, the api should return the edited / added object via additional property of
     reponse. Use this approach to display feedback
 --> integrate Qr

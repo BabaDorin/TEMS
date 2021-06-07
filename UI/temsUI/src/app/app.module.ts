@@ -44,6 +44,7 @@ import { IssueContainerModule } from './modules/issues/issue-container/issue-con
 import { ViewNotificationsComponent } from './tems-components/notifications/view-notifications/view-notifications.component';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { AnnouncementModule } from './modules/announcement/announcement.module';
+
 @NgModule({
   declarations: [
     AppComponent,

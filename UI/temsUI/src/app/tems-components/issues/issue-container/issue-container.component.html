@@ -1,114 +1,114 @@
-<mat-expansion-panel
-      class="m-2 mat-elevation-z0 border"
-      hideToggle="true">
-      <mat-expansion-panel-header>
-        <mat-panel-title>
-          <div class="container m-0 p-0">
-            <div class="row p-3">
-              <div class="col-md-2 col-sm-12 text-center">
-                <app-issue-status [issue]="issue"></app-issue-status>
-              </div>
-              <div class="col-md-7 col-sm-12">
-                <p>
-                  <span class="badge badge-pill badge-outline-primary d-inline mr-1">
-                    {{ issue.trackingNumber }}
-                  </span>
-                  {{ issue.problem }}
-                </p>
-              </div>
-              <div class="col-md-3 col-sm-12 d-sm-block text-center text-muted">
-                <small class="mt-3"><mat-icon class="text-muted">event</mat-icon> {{ issue.dateCreated | date:'medium' }}</small>
-              </div>
-            </div>
+<mat-expansion-panel class="m-2 mat-elevation-z0 border" hideToggle="true">
+  <mat-expansion-panel-header>
+    <mat-panel-title>
+      <div class="container m-0 p-0">
+        <div class="row p-3">
+          <div class="col-md-2 col-sm-12 text-center">
+            <app-issue-status [issue]="issue"></app-issue-status>
           </div>
-          
-        </mat-panel-title>
-      </mat-expansion-panel-header>
-      <ng-template matExpansionPanelContent>
-        <ng-container *ngIf="issue.dateClosed != undefined && issue.closedBy != undefined">
-          <div class="alert alert-warning">
-            <p>Closed on {{ issue.dateClosed | date:'short' }} by
-              <a mat-button [routerLink]="'/profile/view/' + issue.closedBy.value">
-                <mat-icon class="text-primary ml-3">person</mat-icon>
-                {{ issue.closedBy.label }}
-              </a>
+          <div class="col-md-7 col-sm-12">
+            <p>
+              <span class="badge badge-pill badge-outline-primary d-inline mr-1">
+                {{ issue.trackingNumber }}
+              </span>
+              {{ issue.problem }}
             </p>
           </div>
-        </ng-container>
-        <ng-container *ngIf="!readonly && issue.dateClosed == undefined">
-          <mat-form-field appearance="fill">
-            <mat-label>Change issue status</mat-label>
-            <mat-select (selectionChange)="issueStatusChanged($event)">
-              <mat-option *ngFor="let status of statuses" [value]="status">
-                {{ status.label }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-        </ng-container>
-        <div *ngIf="issue.description != undefined">
-          <h4>Description:</h4>
-          <hr>
-          <p>{{ issue.description }}</p>
-        </div>
-        <br>
-        <div *ngIf="issue.equipments != undefined && issue.equipments.length > 0" class="mb-4">
-          <h4>Equipments involved:</h4>
-          <hr>
-          <div class="alert alert-info">
-            <a mat-button *ngFor="let eq of issue.equipments" [routerLink]="'/equipment/details/' + eq.value">
-              <mat-icon class="text-primary">computer</mat-icon>
-              {{ eq.label }} {{ eq.additional }}
-            </a>
+          <div class="col-md-3 col-sm-12 d-sm-block text-center text-muted">
+            <small class="mt-3">
+              <mat-icon class="text-muted">event</mat-icon> {{ issue.dateCreated | date:'medium' }}
+            </small>
           </div>
         </div>
-        <div *ngIf="issue.rooms != undefined && issue.rooms.length > 0" class="mb-4">
-          <h4>Rooms involved:</h4>
-          <hr>
-          <div class="alert alert-info">
-            <a mat-button *ngFor="let rm of issue.rooms" [routerLink]="'/rooms/details/' + rm.value">
-              <mat-icon class="text-primary">pin_drop</mat-icon>
-              {{ rm.label }} {{ rm.additional }}
-            </a>
-          </div>
-        </div>
-        <div *ngIf="issue.personnel != undefined && issue.personnel.length > 0" class="mb-4">
-          <h4>Personnel involved:</h4>
-          <hr>
-          <div class="alert alert-info">
-            <a mat-button *ngFor="let pr of issue.personnel" [routerLink]="'/personnel/details/' + pr.value">
-              <mat-icon class="text-primary">account_circle</mat-icon>
-              {{ pr.label }} {{ pr.additional }}
-            </a>
-          </div>
-        </div>
-        <div *ngIf="issue.assignees != undefined && issue.assignees.length > 0" class="mb-4">
-          <h4>Assigned to:</h4>
-          <hr>
-          <div class="alert alert-warning">
-            <a mat-button *ngFor="let assignee of issue.assignees" [routerLink]="'/profile/view/' + assignee.value">
-              <mat-icon class="text-primary">account_circle</mat-icon>
-              {{ assignee.label }}
-            </a>
-          </div>
-        </div>
-        <br>
-        
-        <ng-container *ngIf="!readonly">
-          <button mat-button (click)="solveIssue()" *ngIf="issue.dateClosed == undefined">
-            <mat-icon class="text-primary">done</mat-icon>Mark as solved
-          </button>
-          <button mat-button (click)="reopenIssue()" *ngIf="issue.dateClosed != undefined">
-            <mat-icon class="text-secondary">restore</mat-icon>Reopen
-          </button>
-          <button mat-button (click)="removeIssue()">
-            <mat-icon class="text-danger">delete</mat-icon>Remove
-          </button>
-          <button *ngIf="!issue.isPinned" mat-button (click)="pin()">
-            <mat-icon class="text-info">push_pin</mat-icon>Pin
-          </button>
-          <button *ngIf="issue.isPinned" mat-button (click)="unPin()">
-            Unpin
-          </button>
-        </ng-container>
-      </ng-template>
-    </mat-expansion-panel>
+      </div>
+
+    </mat-panel-title>
+  </mat-expansion-panel-header>
+  <ng-template matExpansionPanelContent>
+    <ng-container *ngIf="issue.dateClosed != undefined && issue.closedBy != undefined">
+      <div class="alert alert-warning">
+        <p>Closed on {{ issue.dateClosed | date:'short' }} by
+          <a mat-button [routerLink]="'/profile/view/' + issue.closedBy.value">
+            <mat-icon class="text-primary ml-3">person</mat-icon>
+            {{ issue.closedBy.label }}
+          </a>
+        </p>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="!readonly && issue.dateClosed == undefined">
+      <mat-form-field appearance="fill">
+        <mat-label>Change issue status</mat-label>
+        <mat-select (selectionChange)="issueStatusChanged($event)">
+          <mat-option *ngFor="let status of statuses" [value]="status">
+            {{ status.label }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-container>
+    <div *ngIf="issue.description != undefined">
+      <h4>Description:</h4>
+      <hr>
+      <p>{{ issue.description }}</p>
+    </div>
+    <br>
+    <div *ngIf="issue.equipments != undefined && issue.equipments.length > 0" class="mb-4">
+      <h4>Equipments involved:</h4>
+      <hr>
+      <div class="alert alert-info">
+        <a mat-button *ngFor="let eq of issue.equipments" [routerLink]="'/equipment/details/' + eq.value">
+          <mat-icon class="text-primary">computer</mat-icon>
+          {{ eq.label }} {{ eq.additional }}
+        </a>
+      </div>
+    </div>
+    <div *ngIf="issue.rooms != undefined && issue.rooms.length > 0" class="mb-4">
+      <h4>Rooms involved:</h4>
+      <hr>
+      <div class="alert alert-info">
+        <a mat-button *ngFor="let rm of issue.rooms" [routerLink]="'/rooms/details/' + rm.value">
+          <mat-icon class="text-primary">pin_drop</mat-icon>
+          {{ rm.label }} {{ rm.additional }}
+        </a>
+      </div>
+    </div>
+    <div *ngIf="issue.personnel != undefined && issue.personnel.length > 0" class="mb-4">
+      <h4>Personnel involved:</h4>
+      <hr>
+      <div class="alert alert-info">
+        <a mat-button *ngFor="let pr of issue.personnel" [routerLink]="'/personnel/details/' + pr.value">
+          <mat-icon class="text-primary">account_circle</mat-icon>
+          {{ pr.label }} {{ pr.additional }}
+        </a>
+      </div>
+    </div>
+    <div *ngIf="issue.assignees != undefined && issue.assignees.length > 0" class="mb-4">
+      <h4>Assigned to:</h4>
+      <hr>
+      <div class="alert alert-warning">
+        <a mat-button *ngFor="let assignee of issue.assignees" [routerLink]="'/profile/view/' + assignee.value">
+          <mat-icon class="text-primary">account_circle</mat-icon>
+          {{ assignee.label }}
+        </a>
+      </div>
+    </div>
+    <br>
+
+    <ng-container *ngIf="!readonly">
+      <button mat-button (click)="solveIssue()" *ngIf="issue.dateClosed == undefined">
+        <mat-icon class="text-primary">done</mat-icon>Mark as solved
+      </button>
+      <button mat-button (click)="reopenIssue()" *ngIf="issue.dateClosed != undefined">
+        <mat-icon class="text-secondary">restore</mat-icon>Reopen
+      </button>
+      <button mat-button (click)="removeIssue()">
+        <mat-icon class="text-danger">delete</mat-icon>Remove
+      </button>
+      <button *ngIf="!issue.isPinned" mat-button (click)="pin()">
+        <mat-icon class="text-info">push_pin</mat-icon>Pin
+      </button>
+      <button *ngIf="issue.isPinned" mat-button (click)="unPin()">
+        Unpin
+      </button>
+    </ng-container>
+  </ng-template>
+</mat-expansion-panel>

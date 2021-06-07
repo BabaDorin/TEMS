@@ -1,0 +1,33 @@
+<ng-container *ngIf="childEquipment != undefined; else elseBlock">
+    <mat-expansion-panel class="m-2 mat-elevation-z0 border" hideToggle="true">
+        <mat-expansion-panel-header>
+            <mat-panel-title>
+                <div class="page-header col-md-12 p-0 m-0">
+                    <div class="page-title mt-4 mb-0">
+                        <h3>
+                            <b>{{ childEquipment.additional }}: </b> {{ childEquipment.label }}
+                        </h3>
+                    </div>
+                    <nav aria-label="breadcrumb" (click)="$event.stopPropagation()">
+                        <ng-container>
+                            <button mat-button (click)="detach()">
+                                <mat-icon class="text-muted">link_off</mat-icon>
+                                Deatach
+                            </button>
+                        </ng-container>
+                    </nav>
+                </div>
+            </mat-panel-title>
+        </mat-expansion-panel-header>
+    
+        <ng-template matExpansionPanelContent>
+            <app-equipment-details [equipmentId]="childEquipment.value"></app-equipment-details>
+        </ng-template>
+    </mat-expansion-panel>
+</ng-container>
+
+<ng-template #elseBlock>
+    <p class="mt-3 text-muted text-center">
+        No data to display...
+    </p>
+</ng-template>

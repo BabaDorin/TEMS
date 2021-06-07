@@ -63,34 +63,40 @@
                     </ul>
                 </nav>
             </div>
-            <h2 class="text-muted text-bold">
-                <mat-icon class="text-primary">double_arrow</mat-icon> Allocated to:
-            </h2>
-            <hr>
-            <a mat-button *ngIf="equipment.room != undefined" [routerLink]="'/rooms/details/' + equipment.room.value">
-                <mat-icon class="text-primary">pin_drop</mat-icon> {{ equipment.room.label }}
-            </a>
-            <a mat-button *ngIf="equipment.personnel != undefined"
-                [routerLink]="'/personnel/details/' + equipment.personnel.value">
-                <mat-icon class="text-primary">account_circle</mat-icon> {{ equipment.personnel.label }}
-            </a>
-            <ng-container *ngIf="equipment.room == undefined && equipment.personnel == undefined">
-                <mat-icon class="text-muted">storage</mat-icon> Deposit
-            </ng-container>
 
-            <h2 class="text-muted text-bold mt-5">
-                <mat-icon class="text-primary">sell</mat-icon> Indexed by:
-            </h2>
-            <hr>
-            <div class="d-flex align-items-center d-flex">
-                <app-equipment-label *ngIf="equipment.temsId != undefined" [mainText]="equipment.temsId" class="mr-4"
-                    matTooltip="TEMS ID">
-                </app-equipment-label>
-                <app-equipment-serial-number *ngIf="equipment.serialNumber != undefined"
-                    [mainText]="equipment.serialNumber" matTooltip="Serial Number">
-                </app-equipment-serial-number>
-            </div>
-            <ng-container *ngIf="!editing">
+            <!-- If not editing, display equipment information -->
+            <ng-container *ngIf="!editing; else elseBlock">
+
+                <!-- Actual equipment information -->
+                <h2 class="text-muted text-bold">
+                    <mat-icon class="text-primary">double_arrow</mat-icon> Allocated to:
+                </h2>
+                <hr>
+                <a mat-button *ngIf="equipment.room != undefined"
+                    [routerLink]="'/rooms/details/' + equipment.room.value">
+                    <mat-icon class="text-primary">pin_drop</mat-icon> {{ equipment.room.label }}
+                </a>
+                <a mat-button *ngIf="equipment.personnel != undefined"
+                    [routerLink]="'/personnel/details/' + equipment.personnel.value">
+                    <mat-icon class="text-primary">account_circle</mat-icon> {{ equipment.personnel.label }}
+                </a>
+                <ng-container *ngIf="equipment.room == undefined && equipment.personnel == undefined">
+                    <mat-icon class="text-muted">storage</mat-icon> Deposit
+                </ng-container>
+
+                <h2 class="text-muted text-bold mt-5">
+                    <mat-icon class="text-primary">sell</mat-icon> Indexed by:
+                </h2>
+                <hr>
+                <div class="d-flex align-items-center d-flex">
+                    <app-equipment-label *ngIf="equipment.temsId != undefined" [mainText]="equipment.temsId"
+                        class="mr-4" matTooltip="TEMS ID">
+                    </app-equipment-label>
+                    <app-equipment-serial-number *ngIf="equipment.serialNumber != undefined"
+                        [mainText]="equipment.serialNumber" matTooltip="Serial Number">
+                    </app-equipment-serial-number>
+                </div>
+
                 <div class="row mt-5">
                     <div class="col-lg-6 col-sm-12">
                         <!-- Common properties for each equipment go here -->
@@ -141,18 +147,20 @@
                         <br>
                     </div>
                 </ng-container>
-                <!-- <div class="container" *ngIf="equipment.photos.length > 0">
-                    <h4>Equipment Images</h4>
-                    <app-image-carousel></app-image-carousel>
-                </div> -->
+
+                <!-- Image carousel might appear here in the future -->
+                
                 <br>
             </ng-container>
-        </div>
 
-        <app-add-equipment *ngIf="editing==true" [updateEquipmentId]="equipment.id"
-            (goBack)="ngOnInit(); editing = false;" [updateEquipmentDefinitionId]="equipment.definition.id">
-            Loading...
-        </app-add-equipment>
+            <!-- If editing, display add-equipment-component -->
+            <ng-template #elseBlock>
+                <app-add-equipment *ngIf="editing==true" [updateEquipmentId]="equipment.id"
+                    (goBack)="ngOnInit(); editing = false;" [updateEquipmentDefinitionId]="equipment.definition.id">
+                    Loading...
+                </app-add-equipment>
+            </ng-template>
+        </div>
 
         <a *ngIf="displayViewMore == true" mat-button [routerLink]="'/equipment/details/' + equipment.id"
             (click)="viewMore()">View More</a>

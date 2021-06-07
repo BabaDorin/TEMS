@@ -14,7 +14,7 @@ export class BulkUploadComponent extends TEMSComponent implements OnInit {
   selectedFiles;
   feedback='';
   dialogRef;
-  uploadResults = [] as SICFileUploadResult[];
+  uploadResults = [] as SICFileUploadResult[]; // Referenced in AddEquipmentComponent
 
   constructor(
     private equipmentService: EquipmentService,

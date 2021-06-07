@@ -14,5 +14,5 @@
 </div>
 <form class="add-items d-flex mb-0 mt-2" [formGroup]="form" (ngSubmit)="addTodo()">
   <input type="text" class="form-control todo-list-input" formControlName="todoitem" placeholder="Add new task">
-  <button class="add btn btn-primary todo-list-add-btn py-2" type="submit" [disabled]="form.invalid">Add</button>
+  <button class="add btn btn-gradient-primary todo-list-add-btn py-2" type="submit" [disabled]="form.invalid">Add</button>
 </form>

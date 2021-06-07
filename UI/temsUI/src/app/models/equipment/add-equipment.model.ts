@@ -24,7 +24,7 @@ export class AddEquipment implements IAddEquipment {
     description: string;
     definition?: Definition;
     equipmentDefinitionID?: string;
-    purchaseDate: Date;
+    purchaseDate: Date = new Date();
     isDefect: boolean;
     isUsed: boolean;
     currency: string;

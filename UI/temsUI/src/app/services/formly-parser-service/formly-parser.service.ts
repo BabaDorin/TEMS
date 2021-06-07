@@ -188,7 +188,7 @@ export class FormlyParserService extends TEMSComponent {
     return [
       {
         className: 'section-label',
-        template: '<h3 class="alert alert-info">' + addEquipment.definition.equipmentType.label + '</h3>'
+        template: '<h3 class="alert alert-primary">' + addEquipment.definition.equipmentType.label + '</h3>'
       },
       {
         key: 'identifier',

@@ -7,7 +7,7 @@
             <formly-form [form]="accountGeneralInfoFormlyData.form" [fields]="accountGeneralInfoFormlyData.fields"
                 [model]="accountGeneralInfoFormlyData.model"></formly-form>
             <br>
-            <button mat-button type="submit" class="btn-primary"
+            <button mat-button type="submit" class="btn-gradient-primary"
                 [disabled]="accountGeneralInfoFormlyData.form.status == 'INVALID'">
                 Submit changes
             </button>
@@ -18,7 +18,7 @@
             <formly-form [form]="changePasswordFormlyData.form" [fields]="changePasswordFormlyData.fields"
                 [model]="changePasswordFormlyData.model"></formly-form>
             <br>
-            <button mat-button type="submit" class="btn-primary"
+            <button mat-button type="submit" class="btn-gradient-primary"
                 [disabled]="changePasswordFormlyData.form.status == 'INVALID'">
                 Change my password
             </button>
@@ -29,7 +29,7 @@
             <formly-form [form]="emailPreferencesFormlyData.form" [fields]="emailPreferencesFormlyData.fields"
                 [model]="emailPreferencesFormlyData.model"></formly-form>
             <p class="text-muted">Tech support team is advised to activate email notifications in order to be notified when someone reports an issue.</p>
-            <button mat-button type="submit" class="btn-primary"
+            <button mat-button type="submit" class="btn-gradient-primary"
                 [disabled]="emailPreferencesFormlyData.form.status == 'INVALID'">
                 Save email preferences
             </button>

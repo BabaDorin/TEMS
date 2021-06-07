@@ -1,11 +1,10 @@
 .container {
-  width: 450px;
-  height: 230px;
   padding: 2rem;
   text-align: center;
-  border: dashed 1px #979797;
+  box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.19);
   position: relative;
   margin: 0 auto;
+  transition: 0.3s;
 
   input {
     opacity: 0;
@@ -19,8 +18,13 @@
   }
 }
 
+.container:hover{
+  box-shadow: 5px 5px 15px 5px #bdb9eb;
+}
+
 .fileover {
-  animation: shake 1s;
+  box-shadow: 5px 5px 15px 5px #bdb9eb;
+  animation: shake 10s;
   animation-iteration-count: infinite;
 }
 

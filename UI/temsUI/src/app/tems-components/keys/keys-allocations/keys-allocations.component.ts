@@ -7,8 +7,9 @@ import { TEMSComponent } from './../../../tems/tems.component';
 import { PersonnelService } from './../../../services/personnel-service/personnel.service';
 import { KeysService } from 'src/app/services/keys-service/keys.service';
 import { IOption } from './../../../models/option.model';
-import { Component, OnInit, Input, ViewChild } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, Inject, Optional } from '@angular/core';
 import { ChipsAutocompleteComponent } from 'src/app/public/formly/chips-autocomplete/chips-autocomplete.component';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-keys-allocations',
@@ -31,8 +32,13 @@ export class KeysAllocationsComponent extends TEMSComponent implements OnInit {
     private personnelService: PersonnelService,
     private snackService: SnackService,
     private tokenService: TokenService,
+    @Optional() @Inject(MAT_DIALOG_DATA) public dialogData: any
   ) { 
     super();
+
+    if(dialogData != undefined){
+      this.keysAlreadySelectedOptions = dialogData.keysAlreadySelectedOptions;
+    }
   }
 
   keyAllocationFormGroup: FormGroup;

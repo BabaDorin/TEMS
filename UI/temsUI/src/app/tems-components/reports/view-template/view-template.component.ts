@@ -1,4 +1,5 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Inject, Optional } from '@angular/core';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Report } from 'src/app/models/report/report.model';
 
 @Component({
@@ -11,7 +12,13 @@ export class ViewTemplateComponent implements OnInit {
   @Input() template;
   dialogRef;
   
-  constructor() { }
+  constructor(
+    @Optional() @Inject(MAT_DIALOG_DATA) public dialogData: any
+  ) { 
+    if(dialogData != undefined){
+      this.template = dialogData.template;
+    }
+  }
 
   ngOnInit(): void {
   }

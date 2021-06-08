@@ -2,9 +2,10 @@ import { DialogService } from './../../../services/dialog-service/dialog.service
 import { Definition } from './../../../models/equipment/add-definition.model';
 import { TEMSComponent } from 'src/app/tems/tems.component';
 import { EquipmentService } from 'src/app/services/equipment-service/equipment.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, Optional } from '@angular/core';
 import { ViewTypeComponent } from '../view-type/view-type.component';
 import { ViewPropertyComponent } from '../view-property/view-property.component';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-view-definition',
@@ -18,9 +19,14 @@ export class ViewDefinitionComponent extends TEMSComponent implements OnInit {
 
   constructor(
     private equipmentService: EquipmentService,
-    private dialogService: DialogService
+    private dialogService: DialogService,
+    @Optional() @Inject(MAT_DIALOG_DATA) public dialogData: any
   ) { 
     super();
+
+    if(dialogData != undefined){
+      this.definitionId = dialogData.definitionId;
+    }
   }
 
   ngOnInit(): void {

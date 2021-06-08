@@ -8,10 +8,11 @@ import { EquipmentService } from 'src/app/services/equipment-service/equipment.s
 import { PersonnelService } from './../../../services/personnel-service/personnel.service';
 import { RoomsService } from './../../../services/rooms-service/rooms.service';
 import { FormlyParserService } from 'src/app/services/formly-parser-service/formly-parser.service';
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, Inject, Input, OnInit, Optional, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { AddIssue } from 'src/app/models/communication/issues/add-issue.model';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-create-issue',
@@ -51,9 +52,17 @@ export class CreateIssueComponent extends TEMSComponent implements OnInit {
     private personnelService: PersonnelService,
     private equipmentService: EquipmentService,
     private issueService: IssuesService,
-    private snackService: SnackService
+    private snackService: SnackService,
+    @Optional() @Inject(MAT_DIALOG_DATA) public dialogData: any
   ) {
     super();
+
+    if(dialogData != undefined){
+      this.equipmentAlreadySelected = dialogData.equipmentAlreadySelected;
+      this.personnelAlreadySelected = dialogData.personnelAlreadySelected;
+      this.roomsAlreadySelected = dialogData.roomsAlreadySelected;
+      this.assigneesAlreadySelected = dialogData.assigneesAlreadySelected;
+    }
   }
 
   ngOnInit(): void {

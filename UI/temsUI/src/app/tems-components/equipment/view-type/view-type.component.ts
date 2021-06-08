@@ -1,8 +1,8 @@
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ViewType, EquipmentType } from './../../../models/equipment/view-type.model';
 import { TEMSComponent } from './../../../tems/tems.component';
 import { EquipmentService } from './../../../services/equipment-service/equipment.service';
-import { Component, Input, OnInit, Output } from '@angular/core';
+import { Component, Inject, Input, OnInit, Optional, Output } from '@angular/core';
 import EventEmitter from 'events';
 import { ViewPropertyComponent } from '../view-property/view-property.component';
 
@@ -20,8 +20,13 @@ export class ViewTypeComponent extends TEMSComponent implements OnInit {
   constructor(
     private equipmentService: EquipmentService,
     private dialog: MatDialog,
+    @Optional() @Inject(MAT_DIALOG_DATA) public dialogData: any
   ) {
     super();
+    
+    if(this.dialogData != undefined){
+      this.typeId = dialogData.typeId;
+    }
    }
 
   ngOnInit(): void {

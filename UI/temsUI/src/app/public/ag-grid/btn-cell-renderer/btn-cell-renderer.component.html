@@ -1,7 +1,13 @@
-<button mat-icon-button *ngIf="matIcon != undefined" (click)="onClick($event)">
-    <mat-icon [ngClass]="matIconClass">{{ matIcon }}</mat-icon>
-</button>
+<ng-container *ngIf="matIcon != undefined; else elseBlock">
+    <button mat-icon-button (click)="onClick($event)">
+        <mat-icon [ngClass]="matIconClass">{{ matIcon }}</mat-icon>
+    </button>
+</ng-container>
 
-<button mat-button *ngIf="matIcon == undefined" (click)="onClick($event)">
-    {{ label }}
-</button>
+<ng-template #elseBlock>
+    <button mat-button (click)="onClick($event)">
+        {{ label }}
+    </button>
+</ng-template>
+
+

@@ -107,7 +107,7 @@ namespace temsAPI.Services.Report
                 // Add values for universal properties
                 foreach (string prop in reportCommonPropertiesList)
                 {
-                    row[prop] = ReportHelper.GetCommonPropertyValueProvider(prop, eq).GetValue(eq);
+                    row[prop] = ReportHelper.GetCommonPropertyValueProvider(prop, eq).GetValue(eq) ?? DBNull.Value;
                 }
 
                 // Add values for specific properties

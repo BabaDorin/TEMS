@@ -7,9 +7,10 @@ import { SnackService } from './../../../../services/snack/snack.service';
 import { TEMSComponent } from './../../../../tems/tems.component';
 import { Property } from './../../../../models/equipment/view-property.model';
 import { EquipmentService } from 'src/app/services/equipment-service/equipment.service';
-import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, Input, OnInit, Output, EventEmitter, OnChanges, SimpleChanges, Inject, Optional } from '@angular/core';
 import { ViewEquipment } from 'src/app/models/equipment/view-equipment.model';
 import { PersonnelDetailsGeneralComponent } from 'src/app/tems-components/personnel/personnel-details-general/personnel-details-general.component';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-equipment-details-general',
@@ -21,6 +22,7 @@ export class EquipmentDetailsGeneralComponent extends TEMSComponent implements O
   @Input() equipmentId: string;
   @Input() displayViewMore: boolean = false;
   @Output() archivationStatusChanged = new EventEmitter();
+  
   dialogRef;
   headerClass; // muted when archieved
   canManage:boolean = false;
@@ -38,8 +40,14 @@ export class EquipmentDetailsGeneralComponent extends TEMSComponent implements O
     private equipmentService: EquipmentService,
     private tokenService: TokenService,
     private dialogService: DialogService,
-    private snackService: SnackService) {
+    private snackService: SnackService,
+    @Optional() @Inject(MAT_DIALOG_DATA) public dialogData: any) {
     super();
+
+    if(dialogData != undefined){
+      this.equipmentId = this.dialogData.equipmentId;
+      this.displayViewMore = this.dialogData.displayViewMore;
+    }
   }
 
   ngOnInit(): void {

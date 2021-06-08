@@ -7,9 +7,10 @@ import { AddType } from './../../../models/equipment/add-type.model';
 import { IOption } from './../../../models/option.model';
 import { EquipmentService } from './../../../services/equipment-service/equipment.service';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Inject, Optional } from '@angular/core';
 import { AddPropertyComponent } from '../add-property/add-property.component';
 import { Observable } from 'rxjs';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 
 @Component({
@@ -42,9 +43,11 @@ export class AddTypeComponent extends TEMSComponent implements OnInit {
     private equipmentService: EquipmentService,
     private dialogService: DialogService,
     private typeService: TypeService,
-    private snackService: SnackService
+    private snackService: SnackService,
+    @Optional() @Inject(MAT_DIALOG_DATA) public dialogData: any
     ) {
     super();
+    this.updateTypeId = this.updateTypeId ?? this.dialogData?.updateTypeId;
   }
 
   ngOnInit(): void {

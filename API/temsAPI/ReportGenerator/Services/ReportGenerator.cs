@@ -56,7 +56,7 @@ namespace ReportGenerator.Services
                     ReportItemGroup itemGroup = reportData.ReportItemGroups[i];
 
                     // Write report item group name (delimitator)
-                    ws.Cells[$"B{lastRowTracker}"].Value = "🔖 " + itemGroup.Name;
+                    ws.Cells[$"B{lastRowTracker}"].Value = itemGroup.Name == null ? "" : "🔖 " + itemGroup.Name;
                     ws.Cells[$"B{lastRowTracker}"].StyleName = styles.GetStyleName(ExcelStyleNames.SecondaryHeader);
                     lastRowTracker += 2;
 

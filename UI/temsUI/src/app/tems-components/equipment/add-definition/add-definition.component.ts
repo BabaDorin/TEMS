@@ -5,7 +5,7 @@ import { EquipmentType } from './../../../models/equipment/view-type.model';
 import { IOption } from './../../../models/option.model';
 import { AddDefinition, Definition } from './../../../models/equipment/add-definition.model';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Component, OnInit, Input, Inject, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, Inject, OnDestroy, Optional } from '@angular/core';
 import { EquipmentService } from 'src/app/services/equipment-service/equipment.service';
 import { FormlyParserService } from 'src/app/services/formly-parser-service/formly-parser.service';
 import { FormlyFieldConfig } from '@ngx-formly/core';
@@ -41,8 +41,13 @@ export class AddDefinitionComponent extends TEMSComponent implements OnInit {
     private formlyParserService: FormlyParserService,
     private equipmentService: EquipmentService,
     private typeService: TypeService,
-    private snackService: SnackService) {
+    private snackService: SnackService,
+    @Optional() @Inject(MAT_DIALOG_DATA) public dialogData: any) {
     super();
+    
+    if(dialogData != undefined){
+      this.updateDefinitionId = dialogData.updateDefinitionId;
+    }
   }
 
   ngOnInit(): void {

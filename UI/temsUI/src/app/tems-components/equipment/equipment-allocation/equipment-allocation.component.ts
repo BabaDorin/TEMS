@@ -4,11 +4,12 @@ import { RoomsService } from './../../../services/rooms-service/rooms.service';
 import { EquipmentService } from 'src/app/services/equipment-service/equipment.service';
 import { AddAllocation } from './../../../models/allocation/add-allocation.model';
 import { TEMSComponent } from './../../../tems/tems.component';
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, Inject, Input, OnInit, Optional, ViewChild } from '@angular/core';
 import { ChipsAutocompleteComponent } from 'src/app/public/formly/chips-autocomplete/chips-autocomplete.component';
 import { IOption } from 'src/app/models/option.model';
 import { AllocationService } from 'src/app/services/allocation-service/allocation.service';
 import { SnackService } from 'src/app/services/snack/snack.service';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-equipment-allocation',
@@ -37,22 +38,30 @@ export class EquipmentAllocationComponent extends TEMSComponent implements OnIni
 
   // Alocate to [select]
   selectedAllocateToType: string;
+  alocateeEndPoint;
   allocateToTypes = [
     { value: 'room', viewValue: 'Room' },
     { value: 'personnel', viewValue: 'Personnel' }
   ];
-  alocateeEndPoint;
 
-  equipmentAllocationFormGroup: FormGroup; 
+  equipmentAllocationFormGroup: FormGroup;
+  dialogRef;
 
   constructor(
     private equipmentService: EquipmentService,
     private roomService: RoomsService,
     private snackService: SnackService,
     private personnelService: PersonnelService,
-    private allocationService: AllocationService
+    private allocationService: AllocationService,
+    @Optional() @Inject(MAT_DIALOG_DATA) public dialogData: any
   ) {
     super();
+
+    if(this.dialogData != undefined){
+      this.equipment = dialogData.equipment;
+      this.room = dialogData.room;
+      this.personnel = dialogData.personnel;
+    }
   }
 
   ngOnInit(): void {
@@ -99,8 +108,6 @@ export class EquipmentAllocationComponent extends TEMSComponent implements OnIni
   }
 
   submit(model) {
-    console.log(model);
-
     if (model.equipment.value.length == 0 || model.allocateTo.value.length != 1) {
       this.snackService.snack({
         message: "Please, provide at least one equipment and one allocatee",
@@ -116,11 +123,12 @@ export class EquipmentAllocationComponent extends TEMSComponent implements OnIni
       allocateToId: model.allocateTo.value[0].value,
     }
 
-    console.log(addAllocation);
-
     this.subscriptions.push(this.allocationService.createAllocation(addAllocation)
       .subscribe(result => {
         this.snackService.snack(result);
+
+        if(result.status == 1 && this.dialogRef != undefined)
+          this.dialogRef.close();
       }))
   }
 }

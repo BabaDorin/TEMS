@@ -5,12 +5,13 @@ import { LogsService } from 'src/app/services/logs-service/logs.service';
 import { PersonnelService } from './../../../services/personnel-service/personnel.service';
 import { RoomsService } from './../../../services/rooms-service/rooms.service';
 import { EquipmentService } from './../../../services/equipment-service/equipment.service';
-import { Component, OnInit, Input, ViewChild } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, Inject, Optional } from '@angular/core';
 import { ChipsAutocompleteComponent } from 'src/app/public/formly/chips-autocomplete/chips-autocomplete.component';
 import { FormlyParserService } from 'src/app/services/formly-parser-service/formly-parser.service';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { FormGroup } from '@angular/forms';
 import { TEMSComponent } from 'src/app/tems/tems.component';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-add-log',
@@ -53,8 +54,13 @@ export class AddLogComponent extends TEMSComponent implements OnInit {
     private roomService: RoomsService,
     private logsService: LogsService,
     private snackService: SnackService,
-    private personnelService: PersonnelService) {
+    private personnelService: PersonnelService,
+    @Optional() @Inject(MAT_DIALOG_DATA) public dialogData: any) {
     super();
+
+    if(this.dialogData != undefined){
+      this.equipment = dialogData.equipment;
+    }
   }
 
   ngOnInit(): void {

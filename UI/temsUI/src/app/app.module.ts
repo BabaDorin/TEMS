@@ -31,7 +31,7 @@ import { SpinnerComponent } from './shared/spinner/spinner.component';
 import { ContentAnimateDirective } from './shared/directives/content-animate.directive';
 import { TodoListComponent } from './public/apps/todo-list/todo-list.component';
 import { TagInputModule } from 'ngx-chips';
-import { MatDialogModule } from '@angular/material/dialog';
+import { MatDialogModule, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { TEMSComponent } from './tems/tems.component';
 import { TemsFormsModule } from './modules/tems-forms/tems-forms.module';
 import { MatSnackBar } from '@angular/material/snack-bar';

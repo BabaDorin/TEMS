@@ -1,7 +1,8 @@
 import { Property } from './../../../models/equipment/view-property.model';
 import { TEMSComponent } from 'src/app/tems/tems.component';
 import { EquipmentService } from 'src/app/services/equipment-service/equipment.service';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Inject, Input, OnInit, Optional } from '@angular/core';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-view-property',
@@ -14,9 +15,14 @@ export class ViewPropertyComponent extends TEMSComponent implements OnInit {
   property: Property = new Property();
 
   constructor(
-    private equipmentService: EquipmentService
+    private equipmentService: EquipmentService,
+    @Optional() @Inject(MAT_DIALOG_DATA) public dialogData: any
   ) { 
     super();
+    
+    if(dialogData != undefined){
+      this.propertyId = this.dialogData.propertyId;
+    }
   }
 
   ngOnInit(): void {

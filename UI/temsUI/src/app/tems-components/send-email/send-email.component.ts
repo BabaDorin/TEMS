@@ -4,9 +4,10 @@ import { EmailService } from './../../services/email.service';
 import { TEMSComponent } from './../../tems/tems.component';
 import { SnackService } from './../../services/snack/snack.service';
 import { FormlyParserService } from './../../services/formly-parser-service/formly-parser.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, Optional } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { FormlyFieldConfig } from '@ngx-formly/core';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-send-email',
@@ -29,8 +30,13 @@ export class SendEmailComponent extends TEMSComponent implements OnInit {
     private formlyParser: FormlyParserService,
     private snackService: SnackService,
     private emailService: EmailService,
+    @Optional() @Inject(MAT_DIALOG_DATA) public dialogData: any
   ) { 
     super();
+
+    if(dialogData != undefined){
+      this.personnel = dialogData.personnel;
+    }
   }
 
   ngOnInit(): void {

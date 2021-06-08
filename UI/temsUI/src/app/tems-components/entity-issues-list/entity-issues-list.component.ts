@@ -56,7 +56,7 @@ export class EntityIssuesListComponent extends TEMSComponent implements OnInit, 
     private dialogService: DialogService,
     private snackService: SnackService,
     private router: Router,
-    private tokenService: TokenService
+    private tokenService: TokenService,
   ) { 
     super();
   }

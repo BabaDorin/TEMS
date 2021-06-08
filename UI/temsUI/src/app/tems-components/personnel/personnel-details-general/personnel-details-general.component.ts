@@ -6,10 +6,11 @@ import { DialogService } from './../../../services/dialog-service/dialog.service
 import { PersonnelService } from './../../../services/personnel-service/personnel.service';
 import { TEMSComponent } from './../../../tems/tems.component';
 import { ViewPersonnel } from './../../../models/personnel/view-personnel.model';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Inject, Input, OnInit, Optional, Output } from '@angular/core';
 import { Property } from 'src/app/models/equipment/view-property.model';
 import { Router } from '@angular/router';
 import { SnackService } from 'src/app/services/snack/snack.service';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-personnel-details-general',
@@ -32,9 +33,15 @@ export class PersonnelDetailsGeneralComponent extends TEMSComponent implements O
     private route: Router,
     private snackService: SnackService,
     private dialogService: DialogService,
-    private tockenService: TokenService
+    private tockenService: TokenService,
+    @Optional() @Inject(MAT_DIALOG_DATA) public dialogData: any
   ) {
     super();
+
+    if(dialogData != undefined){
+      this.personnelId = dialogData.personnelId;
+      this.displayViewMore = dialogData.displayViewMore;
+    }
   }
 
   ngOnInit(): void {

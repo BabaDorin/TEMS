@@ -6,10 +6,11 @@ import { ChipsAutocompleteComponent } from './../../../public/formly/chips-autoc
 import { IOption } from '../../../models/option.model';
 import { RoomsService } from '../../../services/rooms-service/rooms.service';
 import { FormlyParserService } from '../../../services/formly-parser-service/formly-parser.service';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, Inject, OnInit, Optional, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { AddRoom } from 'src/app/models/room/add-room.model';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-add-room',
@@ -37,9 +38,14 @@ export class AddRoomComponent extends TEMSComponent implements OnInit {
     private roomService: RoomsService,
     private snackService: SnackService,
     private roomLabelService: RoomLabelService,
-    private personnelService: PersonnelService
+    private personnelService: PersonnelService,
+    @Optional() @Inject(MAT_DIALOG_DATA) public dialogData: any
   ) {
     super();
+
+    if(dialogData != undefined){
+      this.roomId = dialogData.roomId;
+    }
   }
   
   ngOnInit(): void {

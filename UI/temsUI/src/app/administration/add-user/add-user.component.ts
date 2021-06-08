@@ -8,10 +8,10 @@ import { UserService } from 'src/app/services/user-service/user.service';
 import { PersonnelService } from 'src/app/services/personnel-service/personnel.service';
 import { IOption } from 'src/app/models/option.model';
 import { TEMSComponent } from 'src/app/tems/tems.component';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, Inject, OnInit, Optional, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { FormlyFieldConfig } from '@ngx-formly/core';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-add-user',
@@ -42,8 +42,10 @@ export class AddUserComponent extends TEMSComponent implements OnInit {
     private userService: UserService,
     private roleService: RoleService,
     private formlyParserService: FormlyParserService,
+    @Optional() @Inject(MAT_DIALOG_DATA) public dialogData: any
   ) { 
     super();
+    this.userIdToUpdate = this.userIdToUpdate ?? this.dialogData?.userIdToUpdate;
   }
 
   ngOnInit(): void {

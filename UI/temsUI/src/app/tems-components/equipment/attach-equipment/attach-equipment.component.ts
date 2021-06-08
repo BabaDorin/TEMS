@@ -4,8 +4,10 @@ import { FormGroup, FormControl } from '@angular/forms';
 import { TEMSComponent } from './../../../tems/tems.component';
 import { SnackService } from './../../../services/snack/snack.service';
 import { EquipmentService } from 'src/app/services/equipment-service/equipment.service';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Inject, Input, OnInit } from '@angular/core';
 import { AttachEquipment } from 'src/app/models/equipment/attach-equipment.model';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Optional } from '@angular/core';
 
 @Component({
   selector: 'app-attach-equipment',
@@ -27,8 +29,13 @@ export class AttachEquipmentComponent extends TEMSComponent implements OnInit {
   constructor(
     private equipmentService: EquipmentService,
     private snackService: SnackService,
+    @Optional() @Inject(MAT_DIALOG_DATA) public dialogData: any
   ) {
     super();
+
+    if(dialogData != undefined){
+      this.equipment = dialogData.equipment;
+    }
   }
 
   onDefinitionChanged(newDefinition){

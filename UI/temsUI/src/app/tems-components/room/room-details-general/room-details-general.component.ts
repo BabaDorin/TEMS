@@ -6,9 +6,10 @@ import { RoomsService } from 'src/app/services/rooms-service/rooms.service';
 import { TEMSComponent } from 'src/app/tems/tems.component';
 import { DialogService } from './../../../services/dialog-service/dialog.service';
 import { ViewRoom } from './../../../models/room/view-room.model';
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Inject, Input, OnChanges, OnInit, Optional, Output } from '@angular/core';
 import { Property } from 'src/app/models/equipment/view-property.model';
 import { Router } from '@angular/router';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-room-details-general',
@@ -32,9 +33,15 @@ export class RoomDetailsGeneralComponent extends TEMSComponent implements OnInit
     private route: Router,
     private dialogService: DialogService,
     private snackService: SnackService,
-    private tokenService: TokenService
+    private tokenService: TokenService,
+    @Optional() @Inject(MAT_DIALOG_DATA) public dialogData: any
   ) { 
     super();
+
+    if(dialogData != undefined){
+      this.roomId = dialogData.roomId;
+      this.displayViewMore = dialogData.displayViewMore;
+    }
   }
 
   ngOnInit(): void {

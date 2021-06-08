@@ -3,10 +3,11 @@ import { TEMSComponent } from 'src/app/tems/tems.component';
 import { AddProperty } from './../../../models/equipment/add-property.model';
 import { FormlyParserService } from 'src/app/services/formly-parser-service/formly-parser.service';
 import { EquipmentService } from 'src/app/services/equipment-service/equipment.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, Optional } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { Property } from 'src/app/models/equipment/view-property.model';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-add-property',
@@ -27,9 +28,11 @@ export class AddPropertyComponent extends TEMSComponent implements OnInit {
   constructor(
     private equipmentService: EquipmentService,
     private formlyParser: FormlyParserService,
-    private snackService: SnackService
+    private snackService: SnackService,
+    @Optional() @Inject(MAT_DIALOG_DATA) public dialogData: any
   ) { 
-    super(); 
+    super();
+    this.propertyId = this.propertyId ?? this.dialogData?.propertyId; 
   }
 
   ngOnInit(): void {

@@ -31,15 +31,13 @@ export class BtnCellRendererComponent implements ICellRendererAngularComp, OnDes
   }
 
   onClick($event) {
-    if (this.params.onClick instanceof Function) {
-      // put anything into params u want pass into parents component
-      const params = {
-        event: $event,
-        rowData: this.params.node.data
-        // ...something
-      }
-      this.params.onClick(params);
+    const params = {
+      event: $event,
+      rowData: this.params.node.data
     }
+
+    console.log(params);
+    this.params.onClick(params);
   }
 
   ngOnDestroy() {

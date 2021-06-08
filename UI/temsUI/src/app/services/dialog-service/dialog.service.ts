@@ -16,28 +16,31 @@ export class DialogService {
 
   }
 
-  openDialog(component: ComponentType<any>, keyValue?: IOption[], afterClosed?: Function, beforeClosed?: Function){
-    this.dialogRef = this.dialog.open(component,
-      {
-        maxHeight: '80vh',
-        autoFocus: false
-      });
+  openDialog(component: ComponentType<any>, keyValue?: IOption[], afterClosed?: Function){
+    
+    let data = {
+      dialogRef: this.dialogRef, 
+    };
 
     if(keyValue != undefined){
       keyValue.forEach(element => {
-        this.dialogRef.componentInstance[element.label] = element.value;
+        data[element.label] = element.value;
       });
     }
 
+    this.dialogRef = this.dialog.open(component,
+    {
+      maxHeight: '80vh',
+      autoFocus: false,
+      data: data
+    });
+
     this.dialogRef.componentInstance["dialogRef"] = this.dialogRef;
-
-    // this.dialogRef.beforeClosed().subscribe(result => {
-    //   beforeClosed();
-    // })
-
-    this.dialogRef.afterClosed().subscribe(result => {
-      if(afterClosed != undefined)
+    
+    if(afterClosed != undefined){
+      this.dialogRef.afterClosed().subscribe(result => {
         afterClosed();
-    })
+      })
+    }
   }
 }

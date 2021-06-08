@@ -4,11 +4,12 @@ import { ChipsAutocompleteComponent } from './../../../public/formly/chips-autoc
 import { IOption } from './../../../models/option.model';
 import { TEMSComponent } from './../../../tems/tems.component';
 import { PersonnelService } from 'src/app/services/personnel-service/personnel.service';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, Inject, OnInit, Optional, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { FormlyParserService } from 'src/app/services/formly-parser-service/formly-parser.service';
 import { AddPersonnel } from 'src/app/models/personnel/add-personnel.model';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-add-personnel',
@@ -40,9 +41,14 @@ export class AddPersonnelComponent extends TEMSComponent implements OnInit {
     private formlyParserService: FormlyParserService,
     private personnelService: PersonnelService,
     private userService: UserService,
-    private snackService: SnackService
+    private snackService: SnackService,
+    @Optional() @Inject(MAT_DIALOG_DATA) public dialogData: any
   ) {
     super();
+
+    if(dialogData != undefined){
+      this.personnelId = dialogData.personnelId;
+    }
   }
 
   ngOnInit(): void {

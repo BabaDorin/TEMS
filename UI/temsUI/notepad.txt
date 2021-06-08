@@ -46,7 +46,6 @@ async constructor (factory)
 --> Check the 'getEquipmentAmount' of entities (rooms, equipment), there might be a problem with getting the 
 last allocation.
 
-
 // TD:
 --> Detached a child equipment and could not attach it back (error snackbar), but then it worked. Idk why
 --> when adding or updating entities, the api should return the edited / added object via additional property of

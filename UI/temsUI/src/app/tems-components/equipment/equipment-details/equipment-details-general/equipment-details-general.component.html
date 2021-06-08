@@ -21,39 +21,38 @@
                                     Actions <mat-icon class="text-primary">more_vert</mat-icon>
                                 </button>
                                 <mat-menu #menu="matMenu">
-                                    <button mat-button (click)="edit()" class="btn-block">
-                                        <mat-icon class="text-muted float-right p-1">edit</mat-icon>
+                                    <button mat-menu-item (click)="edit()">
+                                        <mat-icon class="text-muted">edit</mat-icon>
                                         Edit
                                     </button>
-                                    <button mat-button *ngIf="equipment.isArchieved" (click)="archieve()"
-                                        [disabled]="editing" class="btn-block">
-                                        <mat-icon class="text-muted float-right p-1">restore</mat-icon>
+                                    <button mat-menu-item *ngIf="equipment.isArchieved" (click)="archieve()"
+                                        [disabled]="editing">
+                                        <mat-icon class="text-muted">restore</mat-icon>
                                         Dearchieve
                                     </button>
-                                    <button mat-button *ngIf="!equipment.isArchieved" (click)="archieve()"
-                                        [disabled]="editing" class="btn-block">
-                                        <mat-icon class="text-muted float-right p-1">auto_delete</mat-icon>
+                                    <button mat-menu-item *ngIf="!equipment.isArchieved" (click)="archieve()"
+                                        [disabled]="editing">
+                                        <mat-icon class="text-muted">auto_delete</mat-icon>
                                         Archieve
                                     </button>
-                                    <button mat-button (click)="changeWorkingState()" [disabled]="editing"
-                                        class="btn-block">
+                                    <button mat-menu-item (click)="changeWorkingState()" [disabled]="editing">
                                         <ng-container *ngIf="equipment.isDefect">
-                                            <mat-icon class="text-success float-right p-1">done</mat-icon>
+                                            <mat-icon class="text-success">done</mat-icon>
                                             Mark as working
                                         </ng-container>
                                         <ng-container *ngIf="!equipment.isDefect">
-                                            <mat-icon class="text-muted float-right p-1">error</mat-icon>
+                                            <mat-icon class="text-muted">error</mat-icon>
                                             Mark as defect
                                         </ng-container>
                                     </button>
-                                    <button mat-button (click)="changeUsingState()" [disabled]="editing"
+                                    <button mat-menu-item (click)="changeUsingState()" [disabled]="editing"
                                         class="btn-block">
                                         <ng-container *ngIf="equipment.isUsed">
-                                            <mat-icon class="text-muted float-right p-1">pause</mat-icon>
+                                            <mat-icon class="text-muted">pause</mat-icon>
                                             Mark as unused
                                         </ng-container>
                                         <ng-container *ngIf="!equipment.isUsed">
-                                            <mat-icon class="text-success float-right p-1">play_arrow</mat-icon>
+                                            <mat-icon class="text-success">play_arrow</mat-icon>
                                             Mark as used
                                         </ng-container>
                                     </button>

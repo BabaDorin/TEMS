@@ -64,7 +64,11 @@ namespace temsAPI.Data.Managers
             return logTypes;
         }
 
-        public async Task<List<ViewLogViewModel>> GetEntityLogs(string entityType, string entityId)
+        public async Task<List<ViewLogViewModel>> GetEntityLogs(
+            string entityType, 
+            string entityId, 
+            int skip = 0, 
+            int take = int.MaxValue)
         {
             if ((new List<string>() { "any", "equipment", "personnel", "room" }).IndexOf(entityType) == -1)
                 throw new Exception($"{entityType} is not a valid tems type, valid: any, equipment, personnel, room");
@@ -95,6 +99,9 @@ namespace temsAPI.Data.Managers
                     .Include(q => q.Personnel)
                     .Include(q => q.Room)
                     .Include(q => q.LogType),
+                    orderBy: q => q.OrderByDescending(q => q.DateCreated),
+                    skip: skip,
+                    take: take,
                     select: q => ViewLogViewModel.FromModel(q)
                 )).ToList();
 

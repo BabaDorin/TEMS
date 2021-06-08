@@ -22,6 +22,8 @@ export class EntityLogsListComponent extends TEMSComponent implements OnInit {
   logs: ViewLog[];
   loading: boolean = true;  
 
+  pageNumber: 1;
+
   constructor(
     private logsService: LogsService,
     private dialoService: DialogService,
@@ -102,19 +104,7 @@ export class EntityLogsListComponent extends TEMSComponent implements OnInit {
     )
   }
 
-  remove(logId: string, index: number){
-    if(!confirm("Are you sure you want to remove this log?"))
-      return;
-
-    this.subscriptions.push(
-      this.logsService.archieve(logId)
-      .subscribe(result => {
-        console.log(result);
-        this.snackService.snack(result);
-
-        if(result.status == 1)
-          this.logs.splice(index, 1);
-      })
-    )
+  logRemoved(index: number){
+    this.logs.splice(index, 1);
   }
 }

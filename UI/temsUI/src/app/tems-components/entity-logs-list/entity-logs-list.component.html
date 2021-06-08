@@ -1,27 +1,42 @@
-<h2 class="mt-3">Logs</h2>
-<button mat-button (click)="addLog()"><mat-icon class="text-primary">add</mat-icon> Add Log</button>
-<br>
-<hr>
-<ng-container *ngIf="loading == true">
+<div class="col-md-12">
+  <h2 class="mt-3">
+    Logs
+  </h2>
+  <button mat-button (click)="addLog()">
+    <mat-icon class="text-primary">add</mat-icon> Add Log
+  </button>
+  <hr>
+
+  <!-- Loading bar + placeholder -->
+  <ng-container *ngIf="loading == true">
     <mat-progress-bar mode="indeterminate"></mat-progress-bar>
     <app-loading-placeholder></app-loading-placeholder>
-</ng-container>
-<mat-expansion-panel *ngFor="let log of logs | paginate: { itemsPerPage: 10, currentPage: p1, id: 'logs' }; let i = index" 
-class="m-2 mat-elevation-z0" hideToggle="true">
-    <mat-expansion-panel-header>
-      <mat-panel-title>
-        {{ log.logType.label }}
-      </mat-panel-title>
-      <mat-panel-description>
-        {{ log.dateCreated | date:'medium' }}
-      </mat-panel-description>
-    </mat-expansion-panel-header>
-    {{ log.text }}
-    <br>
-    <br>
-    <button mat-button class="btn-danger" (click)="remove(log.id, ((p1-1)*10) + i)">Remove</button>
-  </mat-expansion-panel>
-<pagination-controls (pageChange)="p1 = $event" id="logs" *ngIf="logs != undefined && logs.length > 0"></pagination-controls>
-<div *ngIf="loading == false && (logs == undefined || logs.length == 0)">
-  <img class="centerSvg fade-in" style="width: 300px;" src="assets/svgs/no-data.svg">
+  </ng-container>
+
+  <!-- Issues list -->
+  <ng-container *ngIf="logs != undefined && logs.length > 0">
+    <ul id="progress">
+      <ng-container
+        *ngFor="let log of logs | paginate: { itemsPerPage: 20, currentPage: pageNumber, id: 'logs' }; let i = index">
+        <li>
+          <div class="node">
+          </div>
+        </li>
+        <li>
+          <div class="divider">
+            <app-log-container 
+              [log]="log" 
+              (removed)="logRemoved((pageNumber-1)*20 + i)">
+            </app-log-container>
+          </div>
+      </ng-container>
+    </ul>
+    <pagination-controls (pageChange)="pageNumber = $event" id="logs" *ngIf="logs != undefined && logs.length > 0">
+    </pagination-controls>
+  </ng-container>
+
+  <!-- 'No data' svg -->
+  <div *ngIf="loading == false && (logs == undefined || logs.length == 0)">
+    <img class="centerSvg fade-in" style="width: 300px;" src="assets/svgs/no-data.svg">
+  </div>
 </div>

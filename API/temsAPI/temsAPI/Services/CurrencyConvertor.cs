@@ -53,22 +53,30 @@ namespace temsAPI.Services
         {
             using (var client = new HttpClient())
             {
-                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                client.DefaultRequestHeaders.Accept.Clear();
+                try
+                {
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    client.DefaultRequestHeaders.Accept.Clear();
 
-                HttpResponseMessage response = client.GetAsync(mdl_eur_uri).Result;
-                if (response.IsSuccessStatusCode)
-                    EUR_MDL_rate = response.Content.ReadFromJsonAsync<CurrencyRate>().Result.Mdl;
+                    HttpResponseMessage response = client.GetAsync(mdl_eur_uri).Result;
+                    if (response.IsSuccessStatusCode)
+                        EUR_MDL_rate = response.Content.ReadFromJsonAsync<CurrencyRate>().Result.Mdl;
 
-                response = client.GetAsync(mdl_usd_uri).Result;
-                if (response.IsSuccessStatusCode)
-                    USD_MDL_rate = response.Content.ReadFromJsonAsync<CurrencyRate>().Result.Mdl;
+                    response = client.GetAsync(mdl_usd_uri).Result;
+                    if (response.IsSuccessStatusCode)
+                        USD_MDL_rate = response.Content.ReadFromJsonAsync<CurrencyRate>().Result.Mdl;
+                }
+                catch (Exception ex)
+                {
+                    // Most probably there is no internet connection
+                    Debug.WriteLine(ex);
+
+                    // Here we set at least an aproximative value for each rate.
+                    // (08.06.2021)
+                    USD_MDL_rate = 18;
+                    EUR_MDL_rate = 21;
+                }
             }
-
-            Debug.WriteLine("----------------------------");
-            Debug.WriteLine(USD_MDL_rate);
-            Debug.WriteLine(EUR_MDL_rate);
-            Debug.WriteLine("----------------------------");
         }
     }
 }

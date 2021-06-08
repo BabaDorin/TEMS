@@ -1,3 +1,5 @@
+@import '../../../styles.scss';
+
 .example-action-buttons {
   padding-bottom: 20px;
 }
@@ -20,4 +22,32 @@
   -webkit-box-shadow: 0px 0px 16px 0px rgba(44, 50, 50, 0.14);
   -moz-box-shadow: 0px 0px 16px 0px rgba(44, 50, 50, 0.14);
   box-shadow: 0px 0px 16px 0px rgba(44, 50, 50, 0.14);
+}
+
+input[type="button"] {
+  margin-top: 20px;
+}
+
+.node {
+  height: 10px;
+  width: 10px;
+  border-radius: 50%;
+  display: inline-block;
+  background-color: theme-color(primary);
+}
+
+.divider {
+  padding: 10px;
+  margin-left: 3px;
+  border-left: 4px solid theme-color(secondary);
+}
+
+li p {
+  display: inline-block;
+  margin-left: 25px;
+}
+
+li {
+  list-style: none;
+  line-height: 1px;
 }

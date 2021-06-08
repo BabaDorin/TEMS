@@ -1,7 +1,7 @@
 <div class="card card-sm h-100">
     <div class="card-body pt-2 px-3 pb-1">
         <h4>{{ title }}</h4>
-        <ng-container *ngIf="chartData != undefined">
+        <ng-container *ngIf="chartData != undefined && total > 0; else elseBlock">
             <canvas baseChart
             [chartType]="'doughnut'" 
             [datasets]="chartData" 
@@ -17,5 +17,9 @@
                 </ul>
               </div>    
         </ng-container>
+
+        <ng-template #elseBlock>
+          <p class="text-muted text-center mt-3">No data to display...</p>
+        </ng-template>
     </div>
 </div>

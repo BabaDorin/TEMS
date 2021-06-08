@@ -14,7 +14,7 @@ namespace temsAPI.ViewModels.Equipment
         public string TemsId { get; set; }
         public string SerialNumber { get; set; }
         public IOption Room { get; set; }
-        public IOption Personnnel { get; set; }
+        public IOption Personnel { get; set; }
         public ViewEquipmentTypeViewModel Type { get; set; }
         public List<ViewPropertyViewModel> SpecificProperties { get; set; }
         public List<Option> Children { get; set; }
@@ -51,7 +51,7 @@ namespace temsAPI.ViewModels.Equipment
                 SerialNumber = model.SerialNumber,
                 TemsId = model.TEMSID,
                 Type = ViewEquipmentTypeViewModel.FromModel(model.EquipmentDefinition.EquipmentType),
-                Personnnel = (activePersonnelAllocation == null)
+                Personnel = (activePersonnelAllocation == null)
                         ? null
                         : new Option
                         {

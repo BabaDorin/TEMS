@@ -71,14 +71,14 @@
                     <mat-icon class="text-primary">double_arrow</mat-icon> Allocated to:
                 </h2>
                 <hr>
-                <a mat-button *ngIf="equipment.room != undefined"
-                    [routerLink]="'/rooms/details/' + equipment.room.value">
+                <button mat-button *ngIf="equipment.room != undefined"
+                    (click)="viewAllocatee()">
                     <mat-icon class="text-primary">pin_drop</mat-icon> {{ equipment.room.label }}
-                </a>
-                <a mat-button *ngIf="equipment.personnel != undefined"
-                    [routerLink]="'/personnel/details/' + equipment.personnel.value">
+                </button>
+                <button mat-button *ngIf="equipment.personnel != undefined"
+                    (click)="viewAllocatee()">
                     <mat-icon class="text-primary">account_circle</mat-icon> {{ equipment.personnel.label }}
-                </a>
+                </button>
                 <ng-container *ngIf="equipment.room == undefined && equipment.personnel == undefined">
                     <mat-icon class="text-muted">storage</mat-icon> Deposit
                 </ng-container>

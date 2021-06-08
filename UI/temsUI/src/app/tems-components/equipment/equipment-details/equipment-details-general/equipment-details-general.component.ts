@@ -1,3 +1,4 @@
+import { RoomDetailsGeneralComponent } from './../../../room/room-details-general/room-details-general.component';
 import { AttachEquipmentComponent } from './../../attach-equipment/attach-equipment.component';
 import { DialogService } from './../../../../services/dialog-service/dialog.service';
 import { CAN_MANAGE_ENTITIES } from './../../../../models/claims';
@@ -8,6 +9,7 @@ import { Property } from './../../../../models/equipment/view-property.model';
 import { EquipmentService } from 'src/app/services/equipment-service/equipment.service';
 import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import { ViewEquipment } from 'src/app/models/equipment/view-equipment.model';
+import { PersonnelDetailsGeneralComponent } from 'src/app/tems-components/personnel/personnel-details-general/personnel-details-general.component';
 
 @Component({
   selector: 'app-equipment-details-general',
@@ -138,5 +140,29 @@ export class EquipmentDetailsGeneralComponent extends TEMSComponent implements O
   detached(index: number){
     this.detachedEquipments.push(this.equipment.children[index]);
     this.equipment.children.splice(index, 1);
+  }
+
+  viewAllocatee(){
+    // Allocated to personnel
+    if(this.equipment.personnel != undefined){
+      this.dialogService.openDialog(
+        PersonnelDetailsGeneralComponent,
+        [
+          { label: "personnelId", value: this.equipment.personnel.value },
+          { label: "displayViewMore", value: true }
+        ]
+      );
+    }
+
+    // Allocated to room
+    if(this.equipment.room != undefined){
+      this.dialogService.openDialog(
+        RoomDetailsGeneralComponent,
+        [
+          { label: "roomId", value: this.equipment.room.value },
+          { label: "displayViewMore", value: true }
+        ]
+      );
+    }
   }
 }

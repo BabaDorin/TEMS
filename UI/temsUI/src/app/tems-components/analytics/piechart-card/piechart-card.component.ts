@@ -41,8 +41,6 @@ export class PiechartCardComponent implements OnInit{
     this.rates.rates.forEach(rate => {
       this.total += rate.item2;
     });
-    
-    console.log('total: ' + this.total);
 
     this.chartData = [
       {

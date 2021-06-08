@@ -21,8 +21,11 @@ namespace temsAPI.Helpers.ReportHelpers.CommonPropertyValueProviders
             if (properties == null)
                 properties = typeof(Equipment).GetProperties();
 
-            return ((DateTime)properties.FirstOrDefault(q => q.Name.ToLower() == propName.ToLower())?
-                    .GetValue(equipment)).ToShortDateString();
+            var propertyValue = properties
+                .FirstOrDefault(q => q.Name.ToLower() == propName.ToLower())
+                ?.GetValue(equipment);
+          
+            return propertyValue == null ? DBNull.Value : ((DateTime)propertyValue).ToShortDateString();
         }
     }
 }

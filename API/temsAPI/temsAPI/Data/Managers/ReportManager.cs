@@ -185,7 +185,7 @@ namespace temsAPI.Data.Managers
                     .Include(q => q.EquipmentDefinitions)
                     .Include(q => q.Rooms)
                     .Include(q => q.Personnel)
-                    .Include(q => q.Properties)
+                    .Include(q => q.Properties).ThenInclude(q => q.DataType)
                     .Include(q => q.Signatories)
                 )).FirstOrDefault();
 

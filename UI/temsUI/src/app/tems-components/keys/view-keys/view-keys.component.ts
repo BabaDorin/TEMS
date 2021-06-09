@@ -16,7 +16,9 @@ import { AddKeyComponent } from '../add-key/add-key.component';
 })
 export class ViewKeysComponent extends TEMSComponent implements OnInit {
 
-  @ViewChild('agGridKeys') agGridKeys: AgGridKeysComponent;
+  @ViewChild('unallocated') agGridUnallocatedKeys: AgGridKeysComponent;
+  @ViewChild('allocated') agGridAllocatedKeys: AgGridKeysComponent;
+
   unallocatedKeys: ViewKeySimplified[] = [];
   allocatedKeys: ViewKeySimplified[] = [];
   loading: boolean = true;
@@ -30,14 +32,16 @@ export class ViewKeysComponent extends TEMSComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.getKeys();
+    this.getAndDistributeKeys();
   }
 
-  getKeys(){
+  getAndDistributeKeys(){
     let keys = [] as ViewKeySimplified[];
     
     this.loading = true;
-    this.subscriptions.push(this.keysService.getKeys()
+
+    this.subscriptions.push(
+      this.keysService.getKeys()
       .subscribe(result => {
         this.loading = false;
         if(this.snackService.snackIfError(result))
@@ -51,23 +55,19 @@ export class ViewKeysComponent extends TEMSComponent implements OnInit {
   }
 
   allocateSelectedKeys(){
-    let selectedNodes = (this.agGridKeys.getSelectedNodes() as ViewKeySimplified[])
+    let selectedNodes = (this.agGridUnallocatedKeys.getSelectedNodes() as ViewKeySimplified[])
       .map(node => ({value: node.id, label: node.identifier} as IOption));
 
     if (selectedNodes.length == 0)
       return;
 
-    this.allocateKeys(selectedNodes);
+    this.agGridUnallocatedKeys.allocateKeys(selectedNodes);
   }
 
-  allocateKeys(keys: IOption[]){
-    this.dialogService.openDialog(
-      KeysAllocationsComponent,
-      [{label: "keysAlreadySelectedOptions", value: keys }],
-      () => {
-        this.getKeys();
-      }
-    )
+  keyAllocated(key: ViewKeySimplified){
+    key.timePassed = 'recently allocated';
+    // this.allocatedKeys = [key, ...this.agGridAllocatedKeys.keys];
+    this.agGridAllocatedKeys.pushKey(key);
   }
 
   addKey(){
@@ -75,12 +75,21 @@ export class ViewKeysComponent extends TEMSComponent implements OnInit {
       AddKeyComponent,
       undefined,
       () => {
-        this.getKeys();
+        this.getAndDistributeKeys();
       }
     )
   }
 
-  keyReturned(keyData){
-    this.getKeys(); // NO!
+  singleKeyReturned(returnedKey: ViewKeySimplified){
+    this.agGridUnallocatedKeys.pushKey(returnedKey);
+  }
+
+  returnMultipleKeys(){
+    let selectedKeys = this.agGridAllocatedKeys.getSelectedNodes();
+
+    if (selectedKeys.length == 0)
+      return;
+
+    this.agGridAllocatedKeys.returnKeys(selectedKeys);
   }
 }

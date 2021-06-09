@@ -24,9 +24,7 @@
         </li>
         <li>
           <div class="divider">
-            <app-log-container 
-              [log]="log" 
-              (removed)="logRemoved((pageNumber-1)*20 + i)">
+            <app-log-container [log]="log" (removed)="logRemoved((pageNumber-1)*20 + i)">
             </app-log-container>
           </div>
       </ng-container>

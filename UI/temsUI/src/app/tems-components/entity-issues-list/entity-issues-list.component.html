@@ -30,7 +30,7 @@
       </div>
     </mat-accordion>
   </div>
-  
+
   <pagination-controls (pageChange)="pageNumber = $event" id="issues" *ngIf="issues != undefined && issues.length > 0">
   </pagination-controls>
   <div *ngIf="loading == false && (issues == undefined || issues.length == 0)">

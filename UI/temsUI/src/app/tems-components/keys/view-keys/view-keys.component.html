@@ -3,18 +3,38 @@
     <div class="card-body">
         <mat-tab-group>
             <mat-tab label="Unallocated">
-                <br>
-                <br>
-                <button mat-button (click)="addKey()"><mat-icon class="text-primary">add</mat-icon>Add new</button>
-                <button mat-button (click)="allocateSelectedKeys()"><mat-icon class="text-primary">double_arrow</mat-icon>Allocate selected</button>
-                <app-ag-grid-keys #agGridKeys [loading]="loading" [keys]="unallocatedKeys" (allocateKey)="allocateKeys($event)">
-                </app-ag-grid-keys>
+                <div class="col-md-12 mt-3">
+                    <h2>
+                        Unallocated keys
+                    </h2>
+                    <button mat-button (click)="addKey()">
+                        <mat-icon class="text-primary">add</mat-icon>
+                        Add new
+                    </button>
+                    <button mat-button (click)="allocateSelectedKeys()">
+                        <mat-icon class="text-primary">double_arrow</mat-icon>
+                        Allocate selected
+                    </button>
+                    <hr>
+                    <app-ag-grid-keys #unallocated [loading]="loading" [keys]="unallocatedKeys"
+                        (keyAllocated)="keyAllocated($event)">
+                    </app-ag-grid-keys>
+                </div>
             </mat-tab>
             <mat-tab label="Allocated">
-                <br>
-                <br>
-                <app-ag-grid-keys [keys]="allocatedKeys" [loading]="loading" displayAsAllocated="true" (keyReturned)="keyReturned($event)">
-                </app-ag-grid-keys>
+                <div class="col-md-12 mt-3">
+                    <h2>
+                        Allocated keys
+                    </h2>
+                    <button mat-button (click)="returnMultipleKeys()">
+                        <mat-icon class="text-primary">done</mat-icon>
+                        Mark selected as returned
+                    </button>
+                    <hr>
+                    <app-ag-grid-keys #allocated [keys]="allocatedKeys" [loading]="loading" displayAsAllocated="true"
+                        (keyReturned)="singleKeyReturned($event)">
+                    </app-ag-grid-keys>
+                </div>
             </mat-tab>
         </mat-tab-group>
     </div>

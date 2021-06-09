@@ -1,11 +1,14 @@
+import { IOption } from './../../../models/option.model';
+import { DialogService } from './../../../services/dialog-service/dialog.service';
 import { SnackService } from 'src/app/services/snack/snack.service';
 import { CAN_MANAGE_ENTITIES } from './../../../models/claims';
 import { TokenService } from './../../../services/token-service/token.service';
-import { IViewKeySimplified } from './../../../models/key/view-key.model';
+import { IViewKeySimplified, ViewKeySimplified } from './../../../models/key/view-key.model';
 import { TEMSComponent } from './../../../tems/tems.component';
 import { KeysService } from './../../../services/keys-service/keys.service';
-import { Component, Input, OnInit, OnChanges, Output, EventEmitter } from '@angular/core';
+import { Component, Input, OnInit, OnChanges, Output, EventEmitter, SimpleChange } from '@angular/core';
 import { BtnCellRendererComponent } from 'src/app/public/ag-grid/btn-cell-renderer/btn-cell-renderer.component';
+import { KeysAllocationsComponent } from '../keys-allocations/keys-allocations.component';
 
 @Component({
   selector: 'app-ag-grid-keys',
@@ -19,7 +22,7 @@ export class AgGridKeysComponent extends TEMSComponent implements OnInit, OnChan
   @Input() loading: boolean = false;
   
   @Output() keyReturned = new EventEmitter();
-  @Output() allocateKey = new EventEmitter();
+  @Output() keyAllocated = new EventEmitter();
 
   private gridApi;
   private gridColumnApi;
@@ -36,6 +39,7 @@ export class AgGridKeysComponent extends TEMSComponent implements OnInit, OnChan
     private keysService: KeysService,
     private tokenService: TokenService,
     private snackService: SnackService,
+    private dialogService: DialogService
   ) { 
     super();
     // enables pagination in the grid
@@ -49,8 +53,10 @@ export class AgGridKeysComponent extends TEMSComponent implements OnInit, OnChan
     }
   }
 
-  ngOnChanges(changes): void {
-    this.rowData = this.keys;
+  ngOnChanges(changes: { [propName: string]: SimpleChange }): void {
+    if (changes['keys'] && changes['keys'].previousValue != changes['keys'].currentValue) {
+      this.rowData = this.keys;
+    }
   }
 
   ngOnInit(): void {
@@ -60,6 +66,13 @@ export class AgGridKeysComponent extends TEMSComponent implements OnInit, OnChan
         { headerName: 'Room', field: 'room.label', sortable: true, filter: true },
         { headerName: 'Allocated to', field: 'allocatedTo.label', sortable: true, filter: true },
         { headerName: 'Time', field: 'timePassed', sortable: true, filter: true },
+        {
+          cellRenderer: 'btnCellRendererComponent',
+          cellRendererParams: {
+            onClick: this.return.bind(this),
+            label: 'Return'
+          }
+        },
         {
           cellRenderer: 'btnCellRendererComponent',
           cellRendererParams: {
@@ -106,21 +119,70 @@ export class AgGridKeysComponent extends TEMSComponent implements OnInit, OnChan
   }
 
   return(e){
-    this.subscriptions.push(
-      this.keysService.markAsReturned(e.rowData.id)
-      .subscribe(result => {
-        if(this.snackService.snackIfError(result))
-          this.return;
+    this.returnKeys([e.rowData]);
+  }
 
-        this.keyReturned.emit(e.rowData);
-        this.gridApi.applyTransaction({ remove: [e.rowData] });
-      })
-    )
+  returnKeys(keys: ViewKeySimplified[]){
+    if(this.keys == undefined)
+      return;
+    
+    keys.forEach(key => {
+      this.subscriptions.push(
+        this.keysService.markAsReturned(key.id)
+        .subscribe(result => {
+          if(this.snackService.snackIfError(result))
+            return;
+
+          this.removeKey(key);
+          this.keyReturned.emit(key);
+        })
+      )
+    })
   }
 
   allocate(e){
-    this.allocateKey.emit([{value: e.rowData.id, label: e.rowData.identifier}]);
+    this.allocateKeys([{value: e.rowData.id, label: e.rowData.identifier}]);
   }
+
+  allocateKeys(keys: IOption[]){
+    this.dialogService.openDialog(
+      KeysAllocationsComponent,
+      [{label: "keysAlreadySelectedOptions", value: keys }],
+      () => {
+        // send an event to parent component to flag one key's allocation
+        // First we select the successfuly allocated keys (from the list of keys being provided as parameter)
+        // and then get the actual keys.
+        // After that, for each identified key, an 'keyAllocated' event is emiited, the key itself being
+        // passed as parameter.
+        let successfulyAllocatedKeys = keys.filter(q => q.additional != undefined);
+        if(successfulyAllocatedKeys == undefined || successfulyAllocatedKeys.length == 0)
+          return;
+
+        let allocatedKeys = this.keys.filter(k => successfulyAllocatedKeys.findIndex(q => q.value == k.id) != -1);
+        allocatedKeys.forEach(key => {
+          key.allocatedTo = successfulyAllocatedKeys.find(q => q.value == key.id).additional;
+          this.removeKey(key);
+          this.keyAllocated.emit(key);
+        });
+      }
+    )
+  }
+
+  removeKey(key: ViewKeySimplified){
+    this.gridApi.applyTransaction({ remove: [key] });
+
+    let index = this.keys.indexOf(key);
+    this.keys.splice(index, 1);
+    this.rowData = this.keys;
+  }
+
+  pushKey(key: ViewKeySimplified){
+    this.keys.push(key);
+    this.rowData = this.keys;
+    this.gridApi.applyTransaction({ add: [key] });
+  }
+
+  
 
   archieve(e){
     if(!confirm("Are you sure you want to archive this key? It will result in archieving all of it's allocations"))

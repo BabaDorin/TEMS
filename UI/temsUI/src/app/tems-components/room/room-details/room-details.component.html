@@ -14,19 +14,19 @@ a<div class="card">
                         <app-room-details-logs [room]="roomSimplified">
                             Loading...
                         </app-room-details-logs>
-                    </ng-template>
                 </mat-tab>
                 <mat-tab label="Issues">
-                    <ng-container *ngIf="roomSimplified.activeIssues != 0">
+                    <ng-container *ngIf="roomSimplified.activeIssues != 0; else elseIssueHeader">
                         <ng-template mat-tab-label>
                             <div [matBadge]="roomSimplified.activeIssues" matBadgeOverlap="false">
                                 Issues
                             </div>
                           </ng-template>
                     </ng-container>
-                    <ng-container *ngIf="roomSimplified.activeIssues == 0">
+
+                    <ng-template #elseIssueHeader>
                         Issues
-                    </ng-container>
+                    </ng-template>
                     <ng-template matTabContent>
                         <app-room-details-issues [room]="roomSimplified">
                             Loading...

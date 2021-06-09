@@ -26,18 +26,18 @@
                                     Actions <mat-icon class="text-primary">more_vert</mat-icon>
                                 </button>
                                 <mat-menu #menu="matMenu">
-                                    <button mat-button (click)="edit()" class="btn-block">
-                                        <mat-icon class="text-muted float-right p-1">edit</mat-icon>
+                                    <button mat-menu-item (click)="edit()">
+                                        <mat-icon class="text-muted">edit</mat-icon>
                                         Edit
                                     </button>
-                                    <button *ngIf="room.isArchieved" mat-button (click)="archieve()" class="btn-block"
+                                    <button mat-menu-item *ngIf="room.isArchieved" (click)="archieve()"
                                         [disabled]="editing">
-                                        <mat-icon class="text-muted float-right p-1">restore</mat-icon>
+                                        <mat-icon class="text-muted">restore</mat-icon>
                                         Dearchieve
                                     </button>
-                                    <button *ngIf="!room.isArchieved" mat-button (click)="archieve()" class="btn-block"
+                                    <button mat-menu-item *ngIf="!room.isArchieved" (click)="archieve()"
                                         [disabled]="editing">
-                                        <mat-icon class="text-muted float-right p-1">auto_delete</mat-icon>
+                                        <mat-icon class="text-muted">auto_delete</mat-icon>
                                         Archieve
                                     </button>
                                 </mat-menu>
@@ -49,7 +49,7 @@
             <hr>
             <ng-container *ngIf="room.supervisories != undefined && room.supervisories.length > 0">
                 <h2 class="text-muted text-bold">
-                    Rooms supervised:
+                    Room's supervisors:
                 </h2>
                 <a mat-button *ngFor="let supv of room.supervisories" [routerLink]="'/personnel/details/' + supv.value">
                     <mat-icon class="text-primary">account_circle</mat-icon>
@@ -58,7 +58,7 @@
                 <hr>
             </ng-container>
             <div class="property-container">
-                <h2 class="text-muted text-bold">Room properties</h2>
+                <h2 class="text-muted text-bold">Properties</h2>
                 <app-property-render [properties]="roomProperties">
                 </app-property-render>
             </div>

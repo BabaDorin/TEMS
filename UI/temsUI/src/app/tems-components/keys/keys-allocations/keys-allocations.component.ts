@@ -76,8 +76,12 @@ export class KeysAllocationsComponent extends TEMSComponent implements OnInit {
       .subscribe(result => {
         this.snackService.snack(result);
 
-        if(result.status == 1 && this.dialogRef != undefined)
+        if(result.status == 1 && this.dialogRef != undefined){
+          model.keys.value .forEach(key => {
+            key.additional = model.personnel.value[0];
+          });
           this.dialogRef.close();
+        }
       }));
   }
 }

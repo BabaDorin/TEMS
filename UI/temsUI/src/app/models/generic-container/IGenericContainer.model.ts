@@ -21,5 +21,6 @@ export interface IContainerAction{
     name: string,
     icon: string,
     action: Function,
+    disabled?: boolean,
     actionParameters?: any;
 }

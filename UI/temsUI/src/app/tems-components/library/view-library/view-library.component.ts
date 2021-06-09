@@ -1,3 +1,6 @@
+import { TokenService } from './../../../services/token-service/token.service';
+import { SnackService } from './../../../services/snack/snack.service';
+import { UploadedFileContainerModel } from './../../../models/generic-container/uploaded-file-container.model';
 import { Downloader } from './../../../shared/downloader/fileDownloader';
 import { DialogService } from 'src/app/services/dialog-service/dialog.service';
 import { UploadLibraryItemComponent } from 'src/app/tems-components/library/upload-library-item/upload-library-item.component';
@@ -14,12 +17,15 @@ import { Component, OnInit } from '@angular/core';
 export class ViewLibraryComponent extends TEMSComponent implements OnInit {
 
   libraryItems: ViewLibraryItem[];
+  libraryContainerModels: UploadedFileContainerModel[];
   pageNumber = 1;
   downloader = new Downloader();
 
   constructor(
     private libraryService: LibraryService,
-    private dialogService: DialogService
+    private dialogService: DialogService,
+    private snackService: SnackService,
+    private tokenService: TokenService
   ) {
     super();
   }
@@ -27,32 +33,18 @@ export class ViewLibraryComponent extends TEMSComponent implements OnInit {
   ngOnInit(): void {
     this.subscriptions.push(this.libraryService.getItems()
       .subscribe(result => {
-        console.log(result);
-        this.libraryItems = result;
+        if(this.snackService.snackIfError(result))
+          return;
+        
+        this.libraryContainerModels = (result as ViewLibraryItem[])
+          .map(q => new UploadedFileContainerModel(this.libraryService, this.snackService, this.tokenService, q));
       }));
   }
 
-  downloadItem(eventData, item) {
-    let button = eventData.target;
-    button.innerHTML = "Preparing... Please wait";
-    button.disabled = true;
-
-    this.subscriptions.push(this.libraryService.downloadItem(item.id)
-      .subscribe((event) => {
-        this.downloader.downloadFile(event, item.actualName);
-        button.disabled = false;
-        button.innerHTML = "Download";
-        item.downloads++;
-      }));
-  }
-
-  removeItem(item: ViewLibraryItem){
-    this.subscriptions.push(this.libraryService.removeItem(item.id)
-      .subscribe(result => {
-        if(result.status == 1)
-          this.libraryItems.splice(this.libraryItems.indexOf(item), 1);
-        console.log(result);
-      }))
+  eventEmitted($event, i){
+    if($event == 'removed'){
+      this.libraryItems.splice(i, 1);
+    }
   }
 
   openUploadItems(){

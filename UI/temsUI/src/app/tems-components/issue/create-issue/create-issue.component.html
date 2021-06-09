@@ -1,5 +1,5 @@
 <div class="card">
-    <div class="card-body" *ngIf="sent==true">
+    <div class="card-body" *ngIf="sent">
         <h2 class="text-center text-muted" >
             Your ticket has been sent! Our technicians will help you as soon as possible.
         </h2>
@@ -9,10 +9,9 @@
     
     <div class="card-body animate__bounce" *ngIf="sent==false">
         <div class="card-title">Report a problem</div>
-        <form [formGroup]="formlyData.form" (ngSubmit)="onSubmit(formlyData.model)">
+        <form *ngIf="formlyData.isVisible" [formGroup]="formlyData.form" (ngSubmit)="onSubmit(formlyData.model)">
             <formly-form [form]="formlyData.form" [fields]="formlyData.fields" [model]="formlyData.model"></formly-form>
-            <br>
-            <div class="container">
+            <div class="container mt-3">
                 <div class="row">
                     <div class="col-md-12 col-lg-4 col-sm-12">
                         <app-chips-autocomplete #equipment label="Equipments' TEMSID or Serial Number..."
@@ -41,7 +40,7 @@
                     [alreadySelected]="assigneesAlreadySelected">
                 </app-chips-autocomplete>
             </div>
-            <!-- 3 chips go here -->
+
             <button 
                 mat-button
                 type="submit" 

@@ -73,6 +73,7 @@ export class CreateIssueComponent extends TEMSComponent implements OnInit {
           return;
           
         this.formlyData.fields = this.formlyParserService.parseAddIssue(new AddIssue, this.frequentProblems, result);
+        this.formlyData.isVisible = true;
       }))
   }
 

@@ -1,3 +1,4 @@
+import { GenericContainerModule } from './shared/generic-container/generic-container.module';
 import { UserCardsModule } from './user-cards/user-cards.module';
 import { DatePipe } from '@angular/common';
 import { RoomLabelService } from './services/room-label.service';
@@ -65,6 +66,7 @@ import { AnnouncementModule } from './modules/announcement/announcement.module';
     ],
   imports: [
     IssueContainerModule,
+    GenericContainerModule,
     BrowserModule,
     AppRoutingModule,
     NgbModule,

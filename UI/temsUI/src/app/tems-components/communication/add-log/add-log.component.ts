@@ -38,6 +38,7 @@ export class AddLogComponent extends TEMSComponent implements OnInit {
   ];
 
   private formlyData = {
+    isVisible: false,
     form: new FormGroup({}),
     model: {} as any,
     fields: [] as FormlyFieldConfig[],
@@ -87,18 +88,16 @@ export class AddLogComponent extends TEMSComponent implements OnInit {
 
       this.selectedAddresseeType = implicitAddressees.type;
 
-      this.subscriptions.push(this.logsService.getLogTypes()
-        .subscribe(response => {
-          this.formlyData.fields = this.formlyParserService.parseAddLog(response);
-          this.onAddresseeSelection(implicitAddressees.entities);
-        }))
+      this.onAddresseeSelection(implicitAddressees.entities);
     }
+
+    this.subscriptions.push(this.logsService.getLogTypes()
+    .subscribe(response => {
+      this.formlyData.fields = this.formlyParserService.parseAddLog(response);
+    }));
   }
 
   onAddresseeSelection(alreadySelected?: IOption[]) {
-
-    super.unsubscribeFromAll();
-
     switch (this.selectedAddresseeType) {
 
       case 'equipment':

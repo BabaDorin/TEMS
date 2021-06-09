@@ -2,7 +2,7 @@
     <mat-card-content class="w-100 h-100">
     
         <!-- Header (card title + action buttons) -->
-        <ng-container *ngIf="canManage && model.actions != undefined && model.actions.length > 0; else elseBlock">
+        <ng-container *ngIf="model.actions != undefined && model.actions.length > 0">
             <div class="page-header">
                 <h4 class="page-title mb-0 container-title">
                     <b>
@@ -18,7 +18,7 @@
                             </button>
                             <mat-menu #menu="matMenu">
                                 <ng-container *ngFor="let action of model.actions">
-                                    <button mat-button (click)="action.action(action.actionParameters)" class="btn-block">
+                                    <button [disabled]="action.disabled" mat-button (click)="action.action(action.actionParameters)" class="btn-block">
                                         {{action.name}}
                                         <!-- BEFREE does not work properly -->
                                         <!-- <ng-container *ngIf="action.icon != undefined">
@@ -33,12 +33,12 @@
             </div>
         </ng-container>
 
-        <!-- Only title (if no actions) -->
+        <!-- Only title (if no actions)
         <ng-template #elseBlock>
             <h4 class="container-title">
                 <b>{{model.title}}</b>
             </h4>
-        </ng-template>
+        </ng-template> -->
 
         <!-- display tag groups, if any -->
         <ng-container *ngIf="model.tagGroups != undefined && model.tagGroups.length > 0" class="mt-1">

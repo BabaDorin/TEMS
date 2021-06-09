@@ -1,27 +1,21 @@
 <div class="card">
     <div class="card-body">
-        <div class="card-title">View library items</div>
-        <button class="btn btn-secondary" (click)="openUploadItems()">Upload</button>
+        <h2>
+            View library items
+        </h2>
+        <button mat-button *ngIf="canManage" (click)="openUploadItems()">
+            <mat-icon class="text-primary">add</mat-icon>
+            Upload new file
+        </button>
         <hr>
-        <br>
-        <br>
-        <div class="row">
+        <div class="row mt-3">
             <div 
-                *ngFor="let item of libraryItems | paginate: { itemsPerPage: 12, currentPage: pageNumber, id: 'lbItems' }; let i = index" 
-                class="col-3 mb-1" >
-                <mat-card >
-                    <mat-card-header>
-                        <p><b>{{ item.displayName }}</b></p>
-                    </mat-card-header>
-                    <mat-card-content>
-                        <p>{{ item.description }}</p>
-                        <p class="text-muted">Size: {{ libraryService.formatBytes(item.fileSize) }}</p>
-                        <p class="text-muted">Downloads: {{ item.downloads }}</p>
-                        <p class="text-muted float-right">{{ item.dateUploaded | date:'medium' }}</p>
-                        <button (click)="downloadItem($event, item)" class="btn btn-gradient-primary">Download</button>
-                        <button (click)="removeItem(item)" class="btn btn-info">Remove</button>
-                    </mat-card-content>
-                </mat-card>
+                *ngFor="let model of libraryContainerModels | paginate: { itemsPerPage: 12, currentPage: pageNumber, id: 'lbItems' }; let i = index" 
+                class="col-md-3 mb-3">
+                <app-generic-container 
+                    [model]="model" 
+                    (eventEmitted)="eventEmitted($event, i)">
+                </app-generic-container>
             </div>
         </div>
         <pagination-controls 

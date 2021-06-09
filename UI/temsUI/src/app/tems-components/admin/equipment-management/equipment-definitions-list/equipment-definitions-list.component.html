@@ -18,12 +18,12 @@
                 currentPage: pageNumber, 
                 id: 'definitions' }; 
                 let i = index">
-                <app-generic-container [model]="def" (eventEmitted)="eventEmitted($event, i)" [canManage]="canManage">
+                <app-generic-container [model]="def" (eventEmitted)="eventEmitted($event, i)">
                 </app-generic-container>
             </div>
         </div>
         <pagination-controls (pageChange)="pageNumber = $event" id="definitions"
-        *ngIf="definitionContainerModels != undefined && definitionContainerModels.length > 1">
+            *ngIf="definitionContainerModels != undefined && definitionContainerModels.length > 1">
         </pagination-controls>
     </div>
 </div>

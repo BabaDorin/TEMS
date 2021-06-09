@@ -20,14 +20,6 @@ export class ViewLog implements IViewLog {
     personnel?: IOption;
     logType: IOption;
     isImportant: boolean;
-
-    constructor() {
-        this.id = '1';
-        this.dateCreated = new Date();
-        this.text = 'Equipment has been repaired';
-        this.logType = { value: '1', label: 'Simple Log Type' };
-        this.isImportant = true;
-    }
 }
 
 

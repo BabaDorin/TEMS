@@ -1,3 +1,4 @@
+import { GenericContainerModule } from './../shared/generic-container/generic-container.module';
 import { EquipmentTypeContainerComponent } from './../tems-components/admin/equipment-management/equipment-type-container/equipment-type-container.component';
 import { EquipmentDefinitionsListComponent } from './../tems-components/admin/equipment-management/equipment-definitions-list/equipment-definitions-list.component';
 import { PropertiesListComponent } from './../tems-components/admin/equipment-management/properties-list/properties-list.component';
@@ -20,7 +21,6 @@ import { ManageTypesPropertiesComponent } from '../tems-components/admin/equipme
 import { ManageDefinitionsComponent } from '../tems-components/admin/equipment-management/manage-definitions/manage-definitions.component';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { DialogModule } from '../modules/dialog/dialog.module';
-import { GenericContainerComponent } from '../shared/generic-container/generic-container.component';
 import { ManageTypesComponent } from '../tems-components/admin/equipment-management/manage-types/manage-types.component';
 import { ManagePropertiesComponent } from '../tems-components/admin/equipment-management/manage-properties/manage-properties.component';
 
@@ -39,12 +39,12 @@ declarations: [
     PropertiesListComponent,
     EquipmentDefinitionsListComponent,
     EquipmentTypeContainerComponent,
-    GenericContainerComponent,
     ManageTypesComponent,
     ManagePropertiesComponent,
   ],
   imports: [
     CommonModule,
+    GenericContainerModule,
     AdministrationRoutingModule,
     TemsFormsModule,
     MaterialModule,

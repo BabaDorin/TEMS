@@ -1,3 +1,4 @@
+import { GenericContainerModule } from './../../shared/generic-container/generic-container.module';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { FileUploadModule } from './../file-upload/file-upload.module';
 import { TemsFormsModule } from './../tems-forms/tems-forms.module';
@@ -22,6 +23,7 @@ import { FileIconComponent } from 'src/app/tems-components/tems-icons/file-icon/
     FileIconComponent
   ],
   imports: [
+    GenericContainerModule,
     CommonModule,
     MaterialModule,
     LibraryRoutingModule,

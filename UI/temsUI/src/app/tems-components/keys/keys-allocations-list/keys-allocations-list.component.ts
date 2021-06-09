@@ -22,6 +22,7 @@ export class KeysAllocationsListComponent extends TEMSComponent implements OnIni
   allocations: ViewKeyAllocation[];
   cancelOnChange: boolean = true;
   loading: boolean = true;
+  pageNumber = 1;
 
   constructor(
     private keyService: KeysService,

@@ -1,54 +1,53 @@
 <div class="card">
   <div class="card-body">
-    <div class="card-title">
-      <h1>View Keys Allocations</h1>
-    </div>
-    <hr>
-    <br>
-    <form>
-      <div class="row">
-        <div class="col-4">
-          <mat-form-field appearance="fill">
-            <mat-label>Key</mat-label>
-            <mat-select (selectionChange)="keySelected($event.value)">
-              <mat-option value="any">Any</mat-option>
-              <mat-option *ngFor="let key of filteredKeys | async"
-               [value]="key.value">{{ key.label }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
+    <div class="col-md-12">
+      <h2>
+        Last key allocations
+      </h2>
+      <hr>
+      <h3>
+        Filter conditions
+      </h3>
+      <form class="container">
+        <div class="row">
+          <div class="col-md-4 text-center">
+            <mat-form-field appearance="fill">
+              <mat-label>Key</mat-label>
+              <mat-select (selectionChange)="keySelected($event.value)">
+                <mat-option value="any">Any</mat-option>
+                <mat-option *ngFor="let key of filteredKeys | async" [value]="key.value">{{ key.label }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col-md-4 text-center">
+            <mat-form-field appearance="fill">
+              <mat-label>Room</mat-label>
+              <mat-select (selectionChange)="roomSelected($event.value)">
+                <mat-option value="any">Any</mat-option>
+                <mat-option *ngFor="let room of rooms | async" [value]="room.value">{{ room.label }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col-md-4 text-center">
+            <mat-form-field appearance="fill">
+              <mat-label>Personnel</mat-label>
+              <mat-select (selectionChange)="personnelSelected($event.value)">
+                <mat-option value="any">Any</mat-option>
+                <mat-option *ngFor="let pers of personnel | async" [value]="pers.value">{{ pers.label }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
         </div>
-        <div class="col-4">
-          <mat-form-field appearance="fill">
-            <mat-label>Room</mat-label>
-            <mat-select (selectionChange)="roomSelected($event.value)">
-              <mat-option value="any">Any</mat-option>
-              <mat-option *ngFor="let room of rooms | async"
-               [value]="room.value">{{ room.label }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-        </div>
-        <div class="col-4">
-          <mat-form-field appearance="fill">
-            <mat-label>Personnel</mat-label>
-            <mat-select (selectionChange)="personnelSelected($event.value)">
-              <mat-option value="any">Any</mat-option>
-              <mat-option *ngFor="let pers of personnel | async"
-               [value]="pers.value">{{ pers.label }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-        </div>
+      </form>
+
+      <div class="mt-3">
+        <app-keys-allocations-list #viewKeysAllocationsList [keyId]="keyId" [roomId]="roomId"
+          [personnelId]="personnelId" [canManage]="canManage">
+        </app-keys-allocations-list>
       </div>
-    </form>
-    <br>
-    <app-keys-allocations-list 
-      #viewKeysAllocationsList 
-      [keyId]="keyId"
-      [roomId]="roomId"
-      [personnelId]="personnelId"
-      [canManage]="canManage">
-    </app-keys-allocations-list>
+    </div>
   </div>
 </div>

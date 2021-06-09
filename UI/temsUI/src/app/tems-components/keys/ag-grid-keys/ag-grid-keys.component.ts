@@ -35,6 +35,8 @@ export class AgGridKeysComponent extends TEMSComponent implements OnInit, OnChan
   private pagination
   private paginationPageSize;
 
+  canManageEntities: boolean = false;
+
   constructor(
     private keysService: KeysService,
     private tokenService: TokenService,
@@ -60,51 +62,18 @@ export class AgGridKeysComponent extends TEMSComponent implements OnInit, OnChan
   }
 
   ngOnInit(): void {
-    if(this.displayAsAllocated){
-      this.columnDefs = [
-        { headerName: 'Identifier',  field: 'identifier', sortable: true, filter: true, checkboxSelection: true, headerCheckboxSelection: true},
-        { headerName: 'Room', field: 'room.label', sortable: true, filter: true },
-        { headerName: 'Allocated to', field: 'allocatedTo.label', sortable: true, filter: true },
-        { headerName: 'Time', field: 'timePassed', sortable: true, filter: true },
-        {
-          cellRenderer: 'btnCellRendererComponent',
-          cellRendererParams: {
-            onClick: this.return.bind(this),
-            label: 'Return'
-          }
-        },
-        {
-          cellRenderer: 'btnCellRendererComponent',
-          cellRendererParams: {
-            onClick: this.archieve.bind(this),
-            matIcon: 'delete',
-            matIconClass: 'text-muted'
-          }
-        }
-      ];  
-    }
-    else{
-      this.columnDefs = [
-        { headerName: 'Indentifier',  field: 'identifier', sortable: true, filter: true, checkboxSelection: true, headerCheckboxSelection: true},
-        { headerName: 'Room', field: 'room.label', sortable: true, filter: true },
-        {
-          cellRenderer: 'btnCellRendererComponent',
-          cellRendererParams: {
-            onClick: this.allocate.bind(this),
-            label: 'Allocate'
-          }
-        },
-      ];
-    }
+    this.canManageEntities = this.tokenService.hasClaim(CAN_MANAGE_ENTITIES);
+    this.displayAsAllocated ? this.buildColumnDefsAsAllocated() : this.buildColumnDefsAsUnallocated();
 
-    if(this.tokenService.hasClaim(CAN_MANAGE_ENTITIES)){
+    if(this.canManageEntities){
       this.columnDefs.push({
         cellRenderer: 'btnCellRendererComponent',
         cellRendererParams: {
           onClick: this.archieve.bind(this),
-          label: 'Archieve'
+          matIcon: 'delete',
+          matIconClass: 'text-muted'
         }
-      })
+      });
     }
 
     this.defaultColDef = {
@@ -118,10 +87,63 @@ export class AgGridKeysComponent extends TEMSComponent implements OnInit, OnChan
     this.rowSelection = 'multiple';
   }
 
+  onGridReady(params) {
+    this.gridApi = params.api;
+    this.gridColumnApi = params.columnApi;
+
+    if(this.keys == undefined)
+      this.subscriptions.push(this.keysService.getKeys()
+        .subscribe(result => {
+          console.log(result);
+          this.rowData = result;
+        }));
+    else
+      this.rowData = this.keys;
+  }
+
+  buildColumnDefsAsAllocated(){
+    this.columnDefs = [
+      { headerName: 'Identifier',  field: 'identifier', sortable: true, filter: true, checkboxSelection: true, headerCheckboxSelection: true},
+      { headerName: 'Room', field: 'room.label', sortable: true, filter: true },
+      { headerName: 'Allocated to', field: 'allocatedTo.label', sortable: true, filter: true },
+      { headerName: 'Time', field: 'timePassed', sortable: true, filter: true }
+    ];
+
+    if(this.canManageEntities){
+      this.columnDefs.push({
+        cellRenderer: 'btnCellRendererComponent',
+        cellRendererParams: {
+          onClick: this.return.bind(this),
+          label: 'Return'
+        }
+      });
+    }
+  }
+
+  buildColumnDefsAsUnallocated(){
+    this.columnDefs = [
+      { headerName: 'Indentifier',  field: 'identifier', sortable: true, filter: true, checkboxSelection: true, headerCheckboxSelection: true},
+      { headerName: 'Room', field: 'room.label', sortable: true, filter: true }
+    ];
+    
+    if(this.canManageEntities){
+      this.columnDefs.push({
+        cellRenderer: 'btnCellRendererComponent',
+        cellRendererParams: {
+          onClick: this.allocate.bind(this),
+          label: 'Allocate'
+        }
+      });
+    }
+  }
+
+  // Binded to the return button
   return(e){
     this.returnKeys([e.rowData]);
   }
 
+  // Marks a collection of keys as returned, removed them from ag-grid and emits an keyReturned event for
+  // each key that has been returned;
   returnKeys(keys: ViewKeySimplified[]){
     if(this.keys == undefined)
       return;
@@ -140,10 +162,13 @@ export class AgGridKeysComponent extends TEMSComponent implements OnInit, OnChan
     })
   }
 
+  // Binded to allocate button
   allocate(e){
     this.allocateKeys([{value: e.rowData.id, label: e.rowData.identifier}]);
   }
 
+  // Allocates an instance of keys (via displaying the KeysAllocationComponent)
+  // Emits an keyAllocated event for each allocated key.
   allocateKeys(keys: IOption[]){
     this.dialogService.openDialog(
       KeysAllocationsComponent,
@@ -182,42 +207,29 @@ export class AgGridKeysComponent extends TEMSComponent implements OnInit, OnChan
     this.gridApi.applyTransaction({ add: [key] });
   }
 
-  
-
+  // Binded to the archieve button
   archieve(e){
     if(!confirm("Are you sure you want to archive this key? It will result in archieving all of it's allocations"))
     return;
 
     this.subscriptions.push(
-      this.keysService.archieveKey(e.rowData.id) // HERE
+      this.keysService.archieveKey(e.rowData.id)
       .subscribe(result => {
         if(this.snackService.snack(result)){
           this.gridApi.applyTransaction({ remove: [e.rowData] });
         }
       })
-    )
+    );
   }
 
-  onGridReady(params) {
-    this.gridApi = params.api;
-    this.gridColumnApi = params.columnApi;
-
-    if(this.keys == undefined)
-      this.subscriptions.push(this.keysService.getKeys()
-        .subscribe(result => {
-          console.log(result);
-          this.rowData = result;
-        }));
-    else
-      this.rowData = this.keys;
-  }
-
+  // Ag-grid helper method
   isFirstColumn(params) {
     var displayedColumns = params.columnApi.getAllDisplayedColumns();
     var thisIsFirstColumn = displayedColumns[0] === params.column;
     return thisIsFirstColumn;
   }
 
+  // Ag-grid helper method
   getSelectedNodes(){
     return this.gridApi.getSelectedNodes().map(q => q.data);
   }

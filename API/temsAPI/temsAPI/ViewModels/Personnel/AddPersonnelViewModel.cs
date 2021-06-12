@@ -26,7 +26,7 @@ namespace temsAPI.ViewModels.Personnel
         /// <returns></returns>
         public async Task<string> Validate(IUnitOfWork unitOfWork)
         {
-            // It's the udpate case and the provided is is invalid
+            // It's the udpate case and the provided id is invalid
             Data.Entities.OtherEntities.Personnel personnelToUpdate = null;
             if (Id != null)
             {

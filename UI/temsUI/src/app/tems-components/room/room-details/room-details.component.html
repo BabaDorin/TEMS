@@ -2,9 +2,7 @@ a<div class="card">
     <div class="card-body">
         <mat-tab-group [@.disabled]="true">
             <mat-tab [label]="mainHeaderLabel">
-                <app-room-details-general 
-                [roomId]="roomId" 
-                (archivationStatusChanged)="archivationStatusChanged()">
+                <app-room-details-general [roomId]="roomId" (archivationStatusChanged)="archivationStatusChanged()">
                     Loading...
                 </app-room-details-general>
             </mat-tab>
@@ -14,6 +12,7 @@ a<div class="card">
                         <app-room-details-logs [room]="roomSimplified">
                             Loading...
                         </app-room-details-logs>
+                    </ng-template>
                 </mat-tab>
                 <mat-tab label="Issues">
                     <ng-container *ngIf="roomSimplified.activeIssues != 0; else elseIssueHeader">
@@ -21,7 +20,7 @@ a<div class="card">
                             <div [matBadge]="roomSimplified.activeIssues" matBadgeOverlap="false">
                                 Issues
                             </div>
-                          </ng-template>
+                        </ng-template>
                     </ng-container>
 
                     <ng-template #elseIssueHeader>

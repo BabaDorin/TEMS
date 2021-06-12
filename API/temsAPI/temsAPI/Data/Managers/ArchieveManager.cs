@@ -56,6 +56,9 @@ namespace temsAPI.Data.Managers
 
         public async Task<string> SetArchivationStatus(string itemType, string itemId, bool status)
         {
+            // BEFREE: Add Archieve and Dearchive as parts of IArchievable interface and receive the item as 
+            // an IArchievablem (Call Archieve or Dearchive depdending on status).
+
             ArchieveHelper archieveHelper = new ArchieveHelper(_unitOfWork, _user);
             switch (itemType.ToLower())
             {

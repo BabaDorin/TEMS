@@ -1,3 +1,4 @@
+import { UserContainerComponent } from './../tems-components/identity/user-container/user-container.component';
 import { GenericContainerModule } from './../shared/generic-container/generic-container.module';
 import { EquipmentTypeContainerComponent } from './../tems-components/admin/equipment-management/equipment-type-container/equipment-type-container.component';
 import { EquipmentDefinitionsListComponent } from './../tems-components/admin/equipment-management/equipment-definitions-list/equipment-definitions-list.component';
@@ -41,6 +42,7 @@ declarations: [
     EquipmentTypeContainerComponent,
     ManageTypesComponent,
     ManagePropertiesComponent,
+    UserContainerComponent
   ],
   imports: [
     CommonModule,

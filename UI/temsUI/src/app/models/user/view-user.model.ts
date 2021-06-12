@@ -4,7 +4,7 @@ export interface IViewUserSimplified{
     username: string,
     fullName: string,
     email: string,
-    roles: string
+    roles: string[]
 }
 
 export class ViewUserSimplified implements IViewUserSimplified{
@@ -12,7 +12,7 @@ export class ViewUserSimplified implements IViewUserSimplified{
     username: string;
     fullName: string;
     email: string;
-    roles: string;
+    roles: string[];
 }
 
 export interface IViewUser{

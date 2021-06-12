@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Identity;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,9 +13,9 @@ namespace temsAPI.ViewModels.IdentityViewModels
         public string Username { get; set; }
         public string FullName { get; set; }
         public string Email { get; set; }
-        public string Roles { get; set; }
+        public List<string> Roles { get; set; }
 
-        public static ViewUserSimplifiedViewModel FromModel(TEMSUser user)
+        public static ViewUserSimplifiedViewModel FromModel(TEMSUser user, UserManager<TEMSUser> userManager)
         {
             return new ViewUserSimplifiedViewModel
             {
@@ -22,6 +23,7 @@ namespace temsAPI.ViewModels.IdentityViewModels
                 Username = user.UserName,
                 Email = user.Email,
                 FullName = user.FullName,
+                Roles = userManager.GetRolesAsync(user).Result.ToList()
             };
         }
     }

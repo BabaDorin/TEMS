@@ -14,6 +14,7 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 export class ViewUsersComponent extends TEMSComponent implements OnInit {
 
   users: ViewUserSimplified[];
+  pageNumber: 1;
 
   constructor(
     private userService: UserService,
@@ -27,33 +28,6 @@ export class ViewUsersComponent extends TEMSComponent implements OnInit {
     this.fetchUsers();
   }
 
-  edit(userId: string, index: number){
-    this.dialogService.openDialog(
-      AddUserComponent,
-      [{value: userId, label: "userIdToUpdate"}],
-      () => {
-        this.userService.getUserSimplifiedById(userId)
-        .subscribe(result => {
-          this.users[index] = result;
-        })
-      }
-    )
-  }
-
-  remove(userId: string, index: number){
-    if(!confirm("Are you sure you want to remove that user?"))
-      return;
-
-    console.log(index);
-    this.subscriptions.push(
-      this.userService.archieveUser(userId)
-      .subscribe(result => {
-        if(result.status == 1)
-          this.users.splice(index, 1);
-      })
-    )
-  }
-
   fetchUsers(){
     this.unsubscribeFromAll();
     this.subscriptions.push(
@@ -63,5 +37,9 @@ export class ViewUsersComponent extends TEMSComponent implements OnInit {
         this.users = result;
       })
     )
+  }
+
+  userRemoved(index){
+    this.users.splice(index, 1);
   }
 }

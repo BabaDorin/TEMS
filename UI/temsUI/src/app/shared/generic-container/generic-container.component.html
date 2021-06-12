@@ -18,7 +18,11 @@
                             </button>
                             <mat-menu #menu="matMenu">
                                 <ng-container *ngFor="let action of model.actions">
-                                    <button [disabled]="action.disabled" mat-button (click)="action.action(action.actionParameters)" class="btn-block">
+                                    <button 
+                                        [disabled]="action.disabled" 
+                                        mat-menu-item 
+                                        (click)="action.action(action.actionParameters)" 
+                                        class="btn-block">
                                         {{action.name}}
                                         <!-- BEFREE does not work properly -->
                                         <!-- <ng-container *ngIf="action.icon != undefined">

@@ -59,8 +59,12 @@ namespace temsAPI.Helpers
                     return "Invalid id provided";
 
                 model.IsArchieved = status;
-                model.TEMSID = model.TEMSID + " [Dearchieved]";
-                model.SerialNumber = model.SerialNumber + " [Dearchieved]";
+                
+                if (model.TEMSID.IndexOf("[Dearchieved]") > -1)
+                    model.TEMSID = model.TEMSID+ " [Dearchieved]";
+
+                if (model.SerialNumber.IndexOf("[Dearchieved]") > -1)
+                    model.SerialNumber = model.SerialNumber + " [Dearchieved]";
 
                 foreach (var child in model.Children)
                 {
@@ -129,7 +133,9 @@ namespace temsAPI.Helpers
                     return "Invalid id provided";
 
                 model.IsArchieved = status;
-                model.Identifier = model.Identifier + " [Dearchieved]";
+    
+                if(model.Identifier.IndexOf("[Dearchieved]") > -1)
+                    model.Identifier = model.Identifier + " [Dearchieved]";
 
                 foreach (var allocation in model.EquipmentAllocations)
                 {

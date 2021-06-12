@@ -245,7 +245,7 @@ namespace temsAPI.Data.Managers
                     where: expression,
                     skip: skip,
                     take: take,
-                    select: q => ViewUserSimplifiedViewModel.FromModel(q)))
+                    select: q => ViewUserSimplifiedViewModel.FromModel(q, _userManager)))
                 .ToList();
 
             return users;

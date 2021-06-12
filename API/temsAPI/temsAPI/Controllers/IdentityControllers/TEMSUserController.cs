@@ -209,7 +209,7 @@ namespace temsAPI.Controllers.IdentityControllers
             try
             {
                 var user = await _userManager.FindByIdAsync(userId);
-                return Json(ViewUserSimplifiedViewModel.FromModel(user));
+                return Json(ViewUserSimplifiedViewModel.FromModel(user, _userManager));
             }
             catch (Exception ex)
             {

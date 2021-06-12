@@ -1,0 +1,44 @@
+<mat-card class="mt-1">
+    <div class="page-header p-1">
+        <div class="page-title mt-4 mb-0">
+            <ng-container *ngIf="user.fullName != undefined; else elseBlock">
+                <h3 class="mb-0">{{user.fullName}}</h3>
+                <p class="text-muted mt-0">{{user.username}}</p>
+            </ng-container>
+            <ng-template #elseBlock>
+                <h3>{{user.username}}</h3>
+            </ng-template>
+    
+            <ng-container *ngIf="user.email != undefined">
+                <p>Email: {{user.email}}</p>
+            </ng-container>
+
+            <ng-container *ngIf="user.roles != undefined">
+                <ng-container *ngFor="let role of user.roles">
+                    <p class="d-inline">
+                        <label class="badge badge-gradient-info mr-2">{{ role }}</label>
+                    </p>
+                </ng-container>
+            </ng-container>
+        </div>
+        <nav aria-label="breadcrumb">
+            <ul class="breadcrumb bg-transparent">
+                <li class="breadcrumb-item" aria-current="page">
+                    <button mat-button [matMenuTriggerFor]="menu" aria-label="Add Equipment Menu" class="float-right">
+                        Actions <mat-icon class="text-primary">more_vert</mat-icon>
+                    </button>
+                    <mat-menu #menu="matMenu">
+                        <button mat-menu-item (click)="edit()">
+                            <mat-icon class="text-muted">edit</mat-icon>
+                            Edit
+                        </button>
+                        <button mat-menu-item (click)="remove()" [disabled]="editing">
+                            <mat-icon class="text-muted">delete</mat-icon>
+                            Remove
+                        </button>
+                    </mat-menu>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</mat-card>

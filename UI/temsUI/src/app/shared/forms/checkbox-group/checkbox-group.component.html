@@ -2,7 +2,7 @@
 <hr>
 <section>
     <div *ngFor="let item of options">
-        <mat-checkbox  [(ngModel)]="item.checked" (change)="onToggle()">
+        <mat-checkbox  [(ngModel)]="item.checked" (change)="onToggle()" [disabled]="item.disabled">
             {{ item.label }}
             <ng-container *ngIf="item.description != undefined">
                 <mat-icon matSuffix>

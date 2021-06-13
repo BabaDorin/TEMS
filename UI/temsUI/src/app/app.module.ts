@@ -45,6 +45,7 @@ import { IssueContainerModule } from './modules/issues/issue-container/issue-con
 import { ViewNotificationsComponent } from './tems-components/notifications/view-notifications/view-notifications.component';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { AnnouncementModule } from './modules/announcement/announcement.module';
+import { RoleService } from './services/role-service/role.service';
 
 @NgModule({
   declarations: [
@@ -94,6 +95,7 @@ import { AnnouncementModule } from './modules/announcement/announcement.module';
       useClass: AuthInterceptor,
       multi: true
     },
+    RoleService,
     ThemeService,
     RoomsService,
     PersonnelService,

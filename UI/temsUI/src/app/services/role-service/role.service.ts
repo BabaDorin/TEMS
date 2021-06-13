@@ -1,9 +1,9 @@
-import { API_ROLE_URL } from './../../models/backend.config';
-import { IOption } from './../../models/option.model';
-import { Observable } from 'rxjs';
+import { ViewRole } from './../../models/roles/role.model';
 import { HttpClient } from '@angular/common/http';
-import { TEMSService } from './../tems-service/tems.service';
 import { Injectable } from '@angular/core';
+import { TEMSService } from '../tems-service/tems.service';
+import { Observable } from 'rxjs';
+import { API_ROLE_URL } from 'src/app/models/backend.config';
 
 @Injectable({
   providedIn: 'root'
@@ -12,13 +12,14 @@ export class RoleService extends TEMSService {
 
   constructor(
     private http: HttpClient
-  ) { 
+  ) {
     super();
   }
 
-  getAllAutocompleteOptions(): Observable<IOption[]>{
-    return this.http.get<IOption[]>(
-      API_ROLE_URL + '/getallautocompleteoptions', 
+  getRoles(): Observable<ViewRole[]>
+  {
+    return this.http.get<ViewRole[]>(
+      API_ROLE_URL + '/getRoles',
       this.httpOptions
     );
   }

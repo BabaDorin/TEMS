@@ -1,6 +1,6 @@
 import { IOption } from './../../../models/option.model';
 import { COMMA, ENTER, SPACE } from '@angular/cdk/keycodes';
-import { Component, ElementRef, Input, ViewChild, EventEmitter, Output, OnInit, forwardRef, SimpleChanges, SimpleChange } from '@angular/core';
+import { Component, ElementRef, Input, ViewChild, EventEmitter, Output, OnInit, forwardRef, SimpleChanges, SimpleChange, OnChanges } from '@angular/core';
 import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { MatAutocompleteSelectedEvent, MatAutocomplete } from '@angular/material/autocomplete';
 import { MatChipInputEvent } from '@angular/material/chips';
@@ -20,9 +20,9 @@ import { debounceTime, map, startWith, switchMap } from 'rxjs/operators';
     }
   ]
 })
-export class ChipsAutocompleteComponent implements OnInit, ControlValueAccessor {
+export class ChipsAutocompleteComponent implements OnInit, ControlValueAccessor, OnChanges {
 
-  // ISSUES: 1) DISPLAY AUTOCOMPLETE LIST ON CLICK
+  // BEFREE: 1) DISPLAY AUTOCOMPLETE LIST ON CLICK
   @Input() alreadySelected: IOption[] = [];
   @Input() label: string;
   @Input() disabled: boolean = false;
@@ -79,6 +79,10 @@ export class ChipsAutocompleteComponent implements OnInit, ControlValueAccessor 
       this.selectedOptions = [];
       this.value = [];
       this.onChange(this.selectedOptions);
+    }
+
+    if (changes['autocompleteOptions'] && changes['autocompleteOptions'].previousValue != changes['autocompleteOptions'].currentValue) {
+      this.getFromAutocompleteOptions();
     }
 
     this.filteredOptions = [];

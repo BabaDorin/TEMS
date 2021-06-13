@@ -3,6 +3,7 @@ export class CheckboxItem {
     label: string;
     checked: boolean;
     description?: string;
+    disabled: boolean = false;
 
     constructor(value: any, label: any, checked: boolean = false, description?: string) {
         this.value = value;

@@ -1,3 +1,4 @@
+import { SystemConfigComponent } from './../tems-components/admin/system-config/system-config.component';
 import { MatButtonModule } from '@angular/material/button';
 import { UserContainerComponent } from './../tems-components/identity/user-container/user-container.component';
 import { GenericContainerModule } from './../shared/generic-container/generic-container.module';
@@ -43,7 +44,8 @@ declarations: [
     EquipmentTypeContainerComponent,
     ManageTypesComponent,
     ManagePropertiesComponent,
-    UserContainerComponent
+    UserContainerComponent,
+    SystemConfigComponent,
   ],
   imports: [
     CommonModule,

@@ -311,15 +311,15 @@ export class MenuService {
           showSubmenu: false,
           submenu: []
         },
-        {
-          path: '/administration/roles',
-          title: 'Roles',
-          icon: 'mdi mdi-account-convert menu-icon',
-          isActive: false,
-          isShown: this.hasClaim(CAN_MANAGE_SYSTEM_CONFIGURATION),
-          showSubmenu: false,
-          submenu: []
-        },
+        // {
+        //   path: '/administration/roles',
+        //   title: 'Roles',
+        //   icon: 'mdi mdi-account-convert menu-icon',
+        //   isActive: false,
+        //   isShown: this.hasClaim(CAN_MANAGE_SYSTEM_CONFIGURATION),
+        //   showSubmenu: false,
+        //   submenu: []
+        // },
         {
           path: '/administration/system-configuration',
           title: 'Configuration',

@@ -1,11 +1,112 @@
 <div class="card">
     <div class="card-body">
-        <div class="card-title">System configuration settings</div>
+        <h2>
+            System configuration settings
+        </h2>
         <hr>
-        <h3>SIC Integration</h3>
+
+        <!-- 1st section: SIC Integration -->
+        <div class="config-section mt-3">
+            <h3>
+                <mat-icon class="text-primary">
+                    chevron_right
+                </mat-icon>
+                SIC Integration
+            </h3>
+            <p class="text-muted">
+                Creates all of SIC (System Info Collector) types and properties. <br>
+                Note: These will get created anyways at the first valid SIC .JSON file uploaded and processed.
+            </p>
+            <button mat-button (click)="integrateSIC()" class="btn-gradient-primary">
+                Integrate System Info Collector
+            </button>
+        </div>
         <hr>
-        <button mat-button (click)="integrateSIC()">Integrate System Info Collector</button>
-        <p class="text-muted"><mat-icon>info</mat-icon>SIC entities (types and properties) will get added to
-        database.</p>
+
+        <!-- 2nd Section: Storage constrains -->
+        <div class="config-section mt-3">
+            <h3>
+                <mat-icon class="text-primary">
+                    chevron_right
+                </mat-icon>
+                Storage constraints
+            </h3>
+            <p class="text-muted">
+                Set space limits (in Gigabytes) for the following subjects:
+            </p>
+            <form [formGroup]="spaceConstraintsFormGroup" (ngSubmit)="onSubmit_spaceConstraints()" class="config-form">
+                <mat-form-field class="d-block">
+                    <mat-label>Maximum space allocated for storing library items:</mat-label>
+                    <input matInput formControlName="libraryLimit" type="number" min="0">
+                </mat-form-field>
+
+                <mat-form-field class="d-block mt-2">
+                    <mat-label>Maximum space allocated for storing generated reports:</mat-label>
+                    <input matInput formControlName="generatedReportsLimit" type="number" min="0">
+                </mat-form-field>
+                <button mat-button type="submit" class="btn-gradient-primary mt-2">
+                    Submit
+                </button>
+            </form>
+        </div>
+        <hr>
+
+        <!-- 3rd Section: Email configuration -->
+        <div class="config-section mt-3">
+            <h3>
+                <mat-icon class="text-primary">
+                    chevron_right
+                </mat-icon>
+                Email configuration
+            </h3>
+            <p class="text-muted">
+                Specify the email sender
+            </p>
+            <form [formGroup]="emailConfigFormGroup" (ngSubmit)="onSubmit_emailConfigFormGroup()" class="config-form">
+                <mat-form-field class="d-block">
+                    <mat-label>Sender Address:</mat-label>
+                    <input matInput formControlName="senderAddress" type="email">
+                </mat-form-field>
+
+                <mat-form-field class="d-block mt-2">
+                    <mat-label>Sender password:</mat-label>
+                    <input matInput formControlName="senderPassword" type="password">
+                </mat-form-field>
+                <button mat-button type="submit" class="btn-gradient-primary mt-2">
+                    Submit
+                </button>
+            </form>
+        </div>
+        <hr>
+
+        <!-- 3rd Section: Time intervals configuration -->
+        <div class="config-section mt-3">
+            <h3>
+                <mat-icon class="text-primary">
+                    chevron_right
+                </mat-icon>
+                Time intervals
+            </h3>
+            <p class="text-muted">
+                Indicate interval values in hours for the following actions
+            </p>
+            <form [formGroup]="timeConfigFormGroup" (ngSubmit)="onSubmit_timeConfigFormGroup()" class="config-form">
+                <mat-form-field class="d-block">
+                    <mat-label>Routine check interval (recommended: up to 5 days):</mat-label>
+                    <input matInput formControlName="routineInterval" type="number" min="1">
+                </mat-form-field>
+
+                <mat-form-field class="d-block mt-2">
+                    <mat-label>Archieve period (recommended: up to 30 days):</mat-label>
+                    <input matInput formControlName="archievePeriod" type="number" min="1">
+                </mat-form-field>
+                <button mat-button type="submit" class="btn-gradient-primary mt-2">
+                    Submit
+                </button>
+            </form>
+        </div>
+        <hr>
+
+
     </div>
 </div>

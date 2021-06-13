@@ -207,8 +207,6 @@ export class AddUserComponent extends TEMSComponent implements OnInit {
       claims: userModel.claims
     }
 
-    let apiResponse;
-
     let subscribeTo: Observable<any> = this.userIdToUpdate == undefined
       ? this.userService.addUser(addUser)
       : this.userService.updateUser(addUser)
@@ -216,10 +214,12 @@ export class AddUserComponent extends TEMSComponent implements OnInit {
     this.subscriptions.push(
       subscribeTo
         .subscribe(result => {
-          console.log(result);
-          apiResponse = result;
-          if (apiResponse.status == 1) {
+          if(this.snackService.snackIfError(result))
+            return;
+          
+          if (result.status == 1) {
             this.clearForm();
+            this.snackService.snack(result);
           }
         })
     )

@@ -86,6 +86,8 @@ namespace temsAPI.Data.Managers
                     return await archieveHelper.SetTypeArchivationStatus(itemId, status);
                 case "equipment definitions":
                     return await archieveHelper.SetDefinitionArchivationStatus(itemId, status);
+                case "user":
+                    return await archieveHelper.SetUserArchivationStatus(itemId, status);
                 default:
                     throw new Exception("Unknown item type");
             }

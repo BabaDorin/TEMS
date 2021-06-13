@@ -141,21 +141,6 @@ namespace temsAPI.Data.Managers
             return null;
         }
 
-        public async Task<string> RemoveUser(string userId)
-        {
-            var user = (await _unitOfWork.TEMSUsers.Find<TEMSUser>(q => q.Id == userId))
-                    .FirstOrDefault();
-
-            if (user == null || user.UserName == "tems@dmin")
-                return "Invalid user id provided";
-
-            user.IsArchieved = true;
-            user.DateArchieved = DateTime.Now;
-            await _unitOfWork.Save();
-
-            return null;
-        }
-
         public async Task<string> UpdateUser(AddUserViewModel viewModel)
         {
             string result = null;

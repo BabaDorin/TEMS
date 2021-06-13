@@ -429,5 +429,28 @@ namespace temsAPI.Helpers
                 return "An error occured while archieving template's related data";
             }
         }
+
+        public async Task<string> SetUserArchivationStatus(string userId, bool status)
+        {
+            try
+            {
+                var user = (await _unitOfWork.TEMSUsers
+                    .Find<TEMSUser>(q => q.Id == userId))
+                    .FirstOrDefault();
+
+                if(user == null)
+                    return "Invalid id provided";
+
+                user.IsArchieved = status;
+                await _unitOfWork.Save();
+
+                return null;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return "An error occured while archieving template's related data";
+            }
+        }
     }
 }

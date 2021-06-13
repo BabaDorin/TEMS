@@ -107,7 +107,7 @@ export class UserService extends TEMSService {
     if(archivationStatus == undefined) archivationStatus = true; // to be archieved
 
     return this.http.get(
-      API_USER_URL + '/archieveUser/' + userId + '/' + archivationStatus,
+      API_USER_URL + '/archieve/' + userId + '/' + archivationStatus,
       this.httpOptions 
     );
   }

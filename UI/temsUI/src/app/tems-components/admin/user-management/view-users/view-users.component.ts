@@ -33,8 +33,8 @@ export class ViewUsersComponent extends TEMSComponent implements OnInit {
     this.subscriptions.push(
       this.userService.getUsers()
       .subscribe(result => {
-        console.log(result);
-        this.users = result;
+        if(result != this.users)
+          this.users = result;
       })
     )
   }

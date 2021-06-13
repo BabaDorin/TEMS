@@ -44,12 +44,12 @@ export class UserContainerComponent extends TEMSComponent implements OnInit {
     )
   }
 
-  remove(userId: string, index: number){
+  remove(){
     if(!confirm("Are you sure you want to remove that user?"))
       return;
 
     this.subscriptions.push(
-      this.userService.archieveUser(userId)
+      this.userService.archieveUser(this.user.id)
       .subscribe(result => {
         if(this.snackService.snackIfError(result))
           return;

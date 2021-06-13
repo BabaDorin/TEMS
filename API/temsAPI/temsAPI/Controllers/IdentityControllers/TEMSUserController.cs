@@ -26,6 +26,7 @@ namespace temsAPI.Controllers.IdentityControllers
         private RoleManager<IdentityRole> _roleManager;
         private IdentityService _identityService;
         TEMSUserManager _temsUserManager;
+        private ArchieveManager _archieveManager;
 
         public TEMSUserController(
             IMapper mapper,
@@ -33,9 +34,11 @@ namespace temsAPI.Controllers.IdentityControllers
             UserManager<TEMSUser> userManager,
             RoleManager<IdentityRole> roleManager,
             TEMSUserManager temsUserManager,
-            IdentityService identityService) : base(mapper, unitOfWork, userManager)
+            IdentityService identityService,
+            ArchieveManager archieveManager) : base(mapper, unitOfWork, userManager)
         {
             _roleManager = roleManager;
+            _archieveManager = archieveManager;
             _temsUserManager = temsUserManager;
             _identityService = identityService;
         }
@@ -61,14 +64,14 @@ namespace temsAPI.Controllers.IdentityControllers
             }
         }
 
-        [HttpGet("temsuser/removeUser/{userId}")]
+        [HttpGet("temsuser/archieve/{userId}/{status}")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_SYSTEM_CONFIGURATION)]
-        public async Task<JsonResult> RemoveUser(string userId)
+        public async Task<JsonResult> Archieve(string userId, bool status = true)
         {
             try
             {
-                var result = await _temsUserManager.RemoveUser(userId);
-                if(result != null)
+                string result = await _archieveManager.SetArchivationStatus("user", userId, true);
+                if (result != null)
                     return ReturnResponse(result, ResponseStatus.Fail);
 
                 return ReturnResponse("Success", ResponseStatus.Success);
@@ -76,7 +79,7 @@ namespace temsAPI.Controllers.IdentityControllers
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
-                return ReturnResponse("An error occured while removing the user", ResponseStatus.Fail);
+                return ReturnResponse("An error occured while archieving the user.", ResponseStatus.Fail);
             }
         }
 

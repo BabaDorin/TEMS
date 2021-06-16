@@ -22,13 +22,13 @@ namespace temsAPI.System_Files
 {
     public class ClaimRequirementFilter : IAuthorizationFilter
     {
-        readonly Claim _claim;
+        readonly Claim[] _claims;
         UserManager<TEMSUser> _userManager;
         IUnitOfWork _unitOfWork;
 
-        public ClaimRequirementFilter(Claim claim, UserManager<TEMSUser> userManager, IUnitOfWork unitOfWork)
+        public ClaimRequirementFilter(string[] claims, UserManager<TEMSUser> userManager, IUnitOfWork unitOfWork)
         {
-            _claim = claim;
+            _claims = claims.Select(q => new Claim(q, "ye")).ToArray();
             _userManager = userManager;
             _unitOfWork = unitOfWork;
         }
@@ -41,7 +41,7 @@ namespace temsAPI.System_Files
                 return;
             }
 
-            //// Validating token (If it has not been blacklisted)
+            //// token validation (If it has not been blacklisted)
             string token = context.HttpContext.Request.Headers[HeaderNames.Authorization].ToString().Split(' ')[1];
             if (_unitOfWork.JWTBlacklist.isExists(q => q.Content == token).Result)
             {
@@ -49,7 +49,9 @@ namespace temsAPI.System_Files
                 return;
             }
 
-            var hasClaim = context.HttpContext.User.Claims.Any(c => c.Type == _claim.Type);
+            // If user has at leas one claim that is present in _claims
+            var hasClaim = context.HttpContext.User.Claims.Any(c => _claims.Any(c1 => c1.Type == c.Type));
+
             if (!hasClaim)
                 context.Result = new ForbidResult();
         }
@@ -57,9 +59,9 @@ namespace temsAPI.System_Files
 
     public class ClaimRequirementAttribute : TypeFilterAttribute
     {
-        public ClaimRequirementAttribute(string claimType) : base(typeof(ClaimRequirementFilter))
+        public ClaimRequirementAttribute(params string[] claimTypes) : base(typeof(ClaimRequirementFilter))
         {
-            Arguments = new object[] { new Claim(claimType, "ye") };
+            Arguments = new object[] { claimTypes };
         }
     }
 }

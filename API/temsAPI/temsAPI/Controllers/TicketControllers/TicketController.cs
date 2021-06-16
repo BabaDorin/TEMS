@@ -37,7 +37,7 @@ namespace temsAPI.Controllers.TicketControllers
         }
 
         [HttpGet("/ticket/getticketsofentity/{entityType}/{entityId}/{includingClosed}/{onlyClosed}/{orderBy?}/{skip?}/{take?}")]
-        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> GetTicketsOfEntity(
             string entityType, // "any", "user closed", "user created", "user assigned", "equipment", "room", "personnel"  
             string entityId,

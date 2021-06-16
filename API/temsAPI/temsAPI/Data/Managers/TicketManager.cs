@@ -145,12 +145,13 @@ namespace temsAPI.Data.Managers
             Func<IQueryable<Ticket>, IOrderedQueryable<Ticket>> orderByExpression = null;
             switch (orderBy)
             {
-                case "recency":
+                case "priority":
                     orderByExpression = q => q.OrderByDescending(q => q.Status.ImportanceIndex);
                     break;
                 case "recency closed":
                     orderByExpression = q => q.OrderByDescending(q => q.DateClosed);
                     break;
+                case "recency":
                 default:
                     orderByExpression = q => q.OrderByDescending(q => q.DateCreated);
                     break;

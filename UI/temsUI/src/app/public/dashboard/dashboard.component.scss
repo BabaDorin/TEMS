@@ -97,7 +97,8 @@
 }
 
 .dashboard-logo{
-  height: 200px;
+  max-height: 200px;
+  min-width: 50%;
 }
 
 .dashboard-ticket{

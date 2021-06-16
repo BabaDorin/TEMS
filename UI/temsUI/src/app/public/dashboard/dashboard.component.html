@@ -10,7 +10,7 @@
     </div>
   </div>
 
-  <h3>
+  <h3 class="text-muted">
     <mat-icon class="text-primary">campaign</mat-icon> Last announcements
   </h3>
 
@@ -19,10 +19,10 @@
     </app-announcements-list>
   </div>
 
-  <hr class="m-4">
+  <hr class="m-5 m-5">
 
   <ng-container *ngIf="canView || canManage">
-    <h3>
+    <h3 class="text-muted">
       <mat-icon class="text-primary">read_more</mat-icon>
       Quick entity access
     </h3>
@@ -41,17 +41,17 @@
         </app-quick-access>
       </div>
     </div>
-    <hr class="m-4">
+    <hr class="m-5 m-5">
   </ng-container>
 
-  <h4>
+  <h3 class="text-muted">
     <mat-icon class="text-primary">error</mat-icon>
     Tickets
-  </h4>
+  </h3>
   <div class="container mb-4">
     <div class="row">
       <div class="col-md-4">
-        <div class="text-center">
+        <div class="text-center mb-3">
           <div class="d-block">
             <mat-icon class="text-primary icon-large mb-3">
               support_agent
@@ -74,29 +74,27 @@
   </div>
 
   <ng-container *ngIf="canManage">
-    <div class="row">
+    <div class="row mt-5">
       <div class="col-lg-7 col-md-12 grid-margin">
         <app-last-created-tickets-chart></app-last-created-tickets-chart>
       </div>
 
-      <div class="col-lg-5 col-md-12 grid-margin stretch-card">
-        <div class="card">
-          <div class="card-body">
-            <div class="card-title">Most recent tickets</div>
-            <a routerLink="/issues/all">See more</a>
-            <app-last-issues-simplified>
-            </app-last-issues-simplified>
-          </div>
-        </div>
+      <div class="col-lg-5 col-md-12">
+        <h4 class="d-block">
+          Most recent tickets
+        </h4>
+        <a routerLink="/issues/all">See more</a>
+        <app-last-issues-simplified>
+        </app-last-issues-simplified>
       </div>
     </div>
   </ng-container>
 
-  <hr class="m-4">
-  <h5>
+  <hr class="m-5 m-5">
+  <h3 class="text-muted">
     <mat-icon class="text-primary">engineering</mat-icon>
     Our Technicians
-  </h5>
+  </h3>
   <app-user-cards-list [ofRole]="technician" [canManage]="canManage" [canView]="canView">
   </app-user-cards-list>
 </div>

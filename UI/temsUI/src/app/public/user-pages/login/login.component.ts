@@ -54,4 +54,8 @@ export class LoginComponent extends TEMSComponent implements OnInit {
       })
     )
   }
+
+  forgotPassword(){
+    this.snackService.snack({message: 'Ask system administrator to provide you a new password', status: 1}, 'default-snackbar');
+  }
 }

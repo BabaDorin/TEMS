@@ -11,7 +11,9 @@
           <button type="submit" class="btn btn-block btn-gradient-primary btn-lg font-weight-medium auth-form-btn"
           [disabled]="formlyData.form.status == 'INVALID'">SIGN IN</button>
           <div class="text-center mt-4">
-            <a href="#">Forgot password?</a>
+            <button (click)="forgotPassword()">
+              Forgot password?
+            </button>
           </div>
         </form>
         <h4 class="text-muted text-center mt-4">If you don't have an account, ask system administrator.</h4>

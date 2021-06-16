@@ -64,7 +64,7 @@ namespace temsAPI.Controllers.IdentityControllers
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
-                return ReturnResponse("An error occcured while logging in", ResponseStatus.Fail);
+                return ReturnResponse("Invalid credentials", ResponseStatus.Fail);
             }
         }
     }

@@ -118,7 +118,6 @@ namespace temsAPI.Controllers.IdentityControllers
         }
 
         [HttpGet("temsuser/getusers/{role?}")]
-        [ClaimRequirement(TEMSClaims.CAN_MANAGE_SYSTEM_CONFIGURATION)]
         public async Task<JsonResult> GetUsers(string role)
         {
             try

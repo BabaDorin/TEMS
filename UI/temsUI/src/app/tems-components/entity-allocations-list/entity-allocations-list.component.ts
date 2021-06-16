@@ -1,6 +1,3 @@
-import { EquipmentDetailsGeneralComponent } from './../equipment/equipment-details/equipment-details-general/equipment-details-general.component';
-import { PersonnelDetailsGeneralComponent } from 'src/app/tems-components/personnel/personnel-details-general/personnel-details-general.component';
-import { RoomDetailsGeneralComponent } from './../room/room-details-general/room-details-general.component';
 import { CAN_MANAGE_ENTITIES } from './../../models/claims';
 import { TokenService } from './../../services/token-service/token.service';
 import { SnackService } from './../../services/snack/snack.service';
@@ -8,7 +5,6 @@ import { TEMSComponent } from './../../tems/tems.component';
 import { AllocationService } from './../../services/allocation-service/allocation.service';
 import { ViewPersonnelSimplified } from './../../models/personnel/view-personnel-simplified.model';
 import { ViewRoomSimplified } from './../../models/room/view-room-simplified.model';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Component, OnInit, Input, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
 import { ViewAllocationSimplified,} from 'src/app/models/equipment/view-equipment-allocation.model';
 import { ViewEquipmentSimplified } from 'src/app/models/equipment/view-equipment-simplified.model';

@@ -8,14 +8,16 @@
                             <b>{{ childEquipment.additional }}: </b> {{ childEquipment.label }}
                         </h3>
                     </div>
-                    <nav aria-label="breadcrumb" (click)="$event.stopPropagation()">
-                        <ng-container>
-                            <button mat-button (click)="detach()">
-                                <mat-icon class="text-muted">link_off</mat-icon>
-                                Deatach
-                            </button>
-                        </ng-container>
-                    </nav>
+                    <ng-container *ngIf="canManage">
+                        <nav aria-label="breadcrumb" (click)="$event.stopPropagation()">
+                            <ng-container>
+                                <button mat-button (click)="detach()">
+                                    <mat-icon class="text-muted">link_off</mat-icon>
+                                    Deatach
+                                </button>
+                            </ng-container>
+                        </nav>
+                    </ng-container>
                 </div>
             </mat-panel-title>
         </mat-expansion-panel-header>

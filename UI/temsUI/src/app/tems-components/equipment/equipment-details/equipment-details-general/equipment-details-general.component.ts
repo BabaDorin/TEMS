@@ -1,3 +1,4 @@
+import { ClaimService } from './../../../../services/claim.service';
 import { RoomDetailsGeneralComponent } from './../../../room/room-details-general/room-details-general.component';
 import { AttachEquipmentComponent } from './../../attach-equipment/attach-equipment.component';
 import { DialogService } from './../../../../services/dialog-service/dialog.service';
@@ -25,7 +26,6 @@ export class EquipmentDetailsGeneralComponent extends TEMSComponent implements O
   
   dialogRef;
   headerClass; // muted when archieved
-  canManage:boolean = false;
   equipment: ViewEquipment;
   generalProperties: Property[];
   detachedEquipments = [];
@@ -38,7 +38,7 @@ export class EquipmentDetailsGeneralComponent extends TEMSComponent implements O
 
   constructor(
     private equipmentService: EquipmentService,
-    private tokenService: TokenService,
+    private claims: ClaimService,
     private dialogService: DialogService,
     private snackService: SnackService,
     @Optional() @Inject(MAT_DIALOG_DATA) public dialogData: any) {
@@ -51,8 +51,6 @@ export class EquipmentDetailsGeneralComponent extends TEMSComponent implements O
   }
 
   ngOnInit(): void {
-    this.canManage = this.tokenService.hasClaim(CAN_MANAGE_ENTITIES);
-
     this.subscriptions.push(this.equipmentService.getEquipmentByID(this.equipmentId)
       .subscribe(response => {
         if(this.snackService.snackIfError(response))

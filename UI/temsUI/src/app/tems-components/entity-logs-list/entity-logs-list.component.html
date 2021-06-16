@@ -1,40 +1,50 @@
-<div class="col-md-12">
-  <h2 class="mt-3">
-    Last logs
-  </h2>
-  <button mat-button (click)="addLog()">
-    <mat-icon class="text-primary">add</mat-icon> Add Log
-  </button>
-  <hr>
-
-  <!-- Loading bar + placeholder -->
-  <ng-container *ngIf="loading == true">
-    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
-    <app-loading-placeholder></app-loading-placeholder>
-  </ng-container>
-
-  <!-- Issues list -->
-  <ng-container *ngIf="logs != undefined && logs.length > 0">
-    <ul id="progress">
-      <ng-container
-        *ngFor="let log of logs | paginate: { itemsPerPage: 20, currentPage: pageNumber, id: 'logs' }; let i = index">
-        <li>
-          <div class="node">
-          </div>
-        </li>
-        <li>
-          <div class="divider">
-            <app-log-container [log]="log" (removed)="logRemoved((pageNumber-1)*20 + i)">
-            </app-log-container>
-          </div>
-      </ng-container>
-    </ul>
-    <pagination-controls (pageChange)="pageNumber = $event" id="logs" *ngIf="logs != undefined && logs.length > 0">
-    </pagination-controls>
-  </ng-container>
-
-  <!-- 'No data' svg -->
-  <div *ngIf="loading == false && (logs == undefined || logs.length == 0)">
-    <img class="centerSvg fade-in" style="width: 300px;" src="assets/svgs/no-data.svg">
+<ng-container *ngIf="claims.canManage || claims.canView; else elseBlock">
+  <div class="col-md-12">
+    <h2 class="mt-3">
+      Last logs
+    </h2>
+    <ng-container *ngIf="claims.canManage">
+      <button mat-button (click)="addLog()">
+        <mat-icon class="text-primary">add</mat-icon> Add Log
+      </button>
+      <hr>
+    </ng-container>
+  
+    <!-- Loading bar + placeholder -->
+    <ng-container *ngIf="loading == true">
+      <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+      <app-loading-placeholder></app-loading-placeholder>
+    </ng-container>
+  
+    <!-- Issues list -->
+    <ng-container *ngIf="logs != undefined && logs.length > 0">
+      <ul id="progress">
+        <ng-container
+          *ngFor="let log of logs | paginate: { itemsPerPage: 20, currentPage: pageNumber, id: 'logs' }; let i = index">
+          <li>
+            <div class="node">
+            </div>
+          </li>
+          <li>
+            <div class="divider">
+              <app-log-container [log]="log" [canManage]="claims.canManage" (removed)="logRemoved((pageNumber-1)*20 + i)">
+              </app-log-container>
+            </div>
+        </ng-container>
+      </ul>
+      <pagination-controls (pageChange)="pageNumber = $event" id="logs" *ngIf="logs != undefined && logs.length > 0">
+      </pagination-controls>
+    </ng-container>
+  
+    <!-- 'No data' svg -->
+    <div *ngIf="loading == false && (logs == undefined || logs.length == 0)">
+      <img class="centerSvg fade-in" style="width: 300px;" src="assets/svgs/no-data.svg">
+    </div>
   </div>
-</div>
+</ng-container>
+
+<ng-template #elseBlock>
+  <p class="text-center text-muted">
+    Insuficient permissions.
+  </p>
+</ng-template>

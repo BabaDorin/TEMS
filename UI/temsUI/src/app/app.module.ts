@@ -1,3 +1,4 @@
+import { ClaimService } from './services/claim.service';
 import { GenericContainerModule } from './shared/generic-container/generic-container.module';
 import { UserCardsModule } from './user-cards/user-cards.module';
 import { DatePipe } from '@angular/common';
@@ -101,6 +102,7 @@ import { RoleService } from './services/role-service/role.service';
     PersonnelService,
     EquipmentService,
     TokenService,
+    ClaimService,
     MenuService,
     MatSnackBar,
     TypeService,

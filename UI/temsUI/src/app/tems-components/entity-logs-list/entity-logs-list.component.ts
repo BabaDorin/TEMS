@@ -1,3 +1,4 @@
+import { ClaimService } from './../../services/claim.service';
 import { SnackService } from './../../services/snack/snack.service';
 import { DialogService } from './../../services/dialog-service/dialog.service';
 import { TEMSComponent } from './../../tems/tems.component';
@@ -27,7 +28,8 @@ export class EntityLogsListComponent extends TEMSComponent implements OnInit {
   constructor(
     private logsService: LogsService,
     private dialoService: DialogService,
-    private snackService: SnackService
+    private snackService: SnackService,
+    private claims: ClaimService
   ) { 
     super();
   }

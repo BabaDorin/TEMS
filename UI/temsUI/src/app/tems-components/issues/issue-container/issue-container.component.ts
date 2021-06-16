@@ -16,6 +16,7 @@ export class IssueContainerComponent extends TEMSComponent implements OnInit {
   @Input() issue: ViewIssueSimplified;
   @Input() statuses: IOption[];
   @Input() readonly: boolean = false;
+  @Input() canManage: boolean = false;
  
   @Output() solve = new EventEmitter(); 
   @Output() reopen = new EventEmitter(); 

@@ -1,3 +1,4 @@
+import { ClaimService } from './../../services/claim.service';
 import { CAN_MANAGE_ENTITIES } from './../../models/claims';
 import { TokenService } from './../../services/token-service/token.service';
 import { SnackService } from './../../services/snack/snack.service';
@@ -42,7 +43,6 @@ export class EntityIssuesListComponent extends TEMSComponent implements OnInit, 
 
   @Output() pinned = new EventEmitter();
 
-  canManage = false;
   statuses: IOption[];
   loading = true;
   pageNumber = 1;
@@ -55,15 +55,13 @@ export class EntityIssuesListComponent extends TEMSComponent implements OnInit, 
     private issuesService: IssuesService,
     private dialogService: DialogService,
     private snackService: SnackService,
-    private router: Router,
-    private tokenService: TokenService,
+    private claims: ClaimService,
   ) { 
     super();
   }
  
   ngOnInit(): void {
     this.loading = true;
-    this.canManage = this.tokenService.hasClaim(CAN_MANAGE_ENTITIES);
     this.getStatuses();
     this.getIssues();  
   }

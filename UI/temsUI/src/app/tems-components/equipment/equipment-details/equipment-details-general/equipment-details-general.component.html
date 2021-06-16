@@ -12,9 +12,10 @@
                         {{ equipment.definition.identifier }}
                     </h1>
                 </div>
-                <nav aria-label="breadcrumb">
-                    <ul class="breadcrumb bg-transparent">
-                        <ng-container *ngIf="canManage">
+                <ng-container *ngIf="claims.canManage">
+                    <nav aria-label="breadcrumb">
+                        <ul class="breadcrumb bg-transparent">
+
                             <li class="breadcrumb-item" aria-current="page">
                                 <button mat-button [matMenuTriggerFor]="menu" aria-label="Add Equipment Menu"
                                     class="float-right">
@@ -54,13 +55,12 @@
                                         <ng-container *ngIf="!equipment.isUsed">
                                             <mat-icon class="text-success">play_arrow</mat-icon>
                                             Mark as used
-                                        </ng-container>
                                     </button>
                                 </mat-menu>
                             </li>
-                        </ng-container>
-                    </ul>
-                </nav>
+                        </ul>
+                    </nav>
+                </ng-container>
             </div>
 
             <!-- If not editing, display equipment information -->
@@ -71,12 +71,10 @@
                     <mat-icon class="text-primary">double_arrow</mat-icon> Allocated to:
                 </h2>
                 <hr>
-                <button mat-button *ngIf="equipment.room != undefined"
-                    (click)="viewAllocatee()">
+                <button mat-button *ngIf="equipment.room != undefined" (click)="viewAllocatee()">
                     <mat-icon class="text-primary">pin_drop</mat-icon> {{ equipment.room.label }}
                 </button>
-                <button mat-button *ngIf="equipment.personnel != undefined"
-                    (click)="viewAllocatee()">
+                <button mat-button *ngIf="equipment.personnel != undefined" (click)="viewAllocatee()">
                     <mat-icon class="text-primary">account_circle</mat-icon> {{ equipment.personnel.label }}
                 </button>
                 <ng-container *ngIf="equipment.room == undefined && equipment.personnel == undefined">
@@ -97,12 +95,11 @@
                 </div>
 
                 <!-- Case 1: Equipment has only common properties -->
-                <ng-container 
-                    *ngIf="equipment.definition.properties == undefined 
+                <ng-container *ngIf="equipment.definition.properties == undefined 
                     || equipment.definition.properties.length == 0;
                     else propertyElseBlock">
                     <div class="property-container mt-5">
-                        <h2 class="text-muted text-bold">Room properties</h2>
+                        <h2 class="text-muted text-bold">Equipment properties</h2>
                         <app-property-render [properties]="generalProperties">
                         </app-property-render>
                     </div>
@@ -122,7 +119,7 @@
                             <h2 class="text-muted text-bold">Specific properties</h2>
                             <app-property-render [properties]="equipment.definition.properties">
                             </app-property-render>
-                        </div>    
+                        </div>
                     </div>
                 </ng-template>
 
@@ -131,14 +128,12 @@
                         Equipment's Children
                     </h2>
                     <hr>
-                    <button *ngIf="canManage" mat-button (click)="attach()">
+                    <button *ngIf="claims.canManage" mat-button (click)="attach()">
                         <mat-icon class="text-primary">add</mat-icon> Attach
                     </button>
                     <ng-container *ngIf="equipment.children != undefined && equipment.children.length > 0">
                         <div *ngFor="let child of equipment.children; let i = index">
-                            <app-child-equipment-container 
-                                [childEquipment]="child" 
-                                [canManage]="canManage"
+                            <app-child-equipment-container [childEquipment]="child" [canManage]="claims.canManage"
                                 (detached)="detached(i)">
                             </app-child-equipment-container>
                         </div>
@@ -150,15 +145,13 @@
                         Detached equipments (These will dissapear after a refresh)
                     </h2>
                     <div *ngFor="let detachedEq of detachedEquipments">
-                        <app-child-equipment-container 
-                        [childEquipment]="detachedEq" 
-                        canManage="false">
+                        <app-child-equipment-container [childEquipment]="detachedEq" canManage="false">
                         </app-child-equipment-container>
                     </div>
                 </ng-container>
 
                 <!-- Image carousel might appear here in the future -->
-                
+
                 <br>
             </ng-container>
 

@@ -37,7 +37,7 @@ namespace temsAPI.Controllers.AnalyticsControllers
         }
 
         [HttpGet("analytics/getEquipmentAmount/{entityType?}/{entityId?}")]
-        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> GetEquipmentAmount(
             string entityType = null,
             string entityId = null)
@@ -55,7 +55,7 @@ namespace temsAPI.Controllers.AnalyticsControllers
         }
 
         [HttpGet("analytics/getEquipmentTotalCost/{entityType?}/{entityId?}")]
-        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> GetEquipmentTotalCost(
             string entityType = null,
             string entityId = null)
@@ -73,7 +73,7 @@ namespace temsAPI.Controllers.AnalyticsControllers
         }
 
         [HttpGet("analytics/getEquipmentUtilizationRate/{entityType?}/{entityId?}")]
-        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> GetEquipmentUtilizationRate(
             string entityType = null,
             string entityId = null)
@@ -92,7 +92,7 @@ namespace temsAPI.Controllers.AnalyticsControllers
         }
 
         [HttpGet("analytics/getEquipmentTypeRate/{entityType?}/{entityId?}")]
-        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> GetEquipmentTypeRate(
             string entityType = null,
             string entityId = null)
@@ -111,7 +111,7 @@ namespace temsAPI.Controllers.AnalyticsControllers
         }
 
         [HttpGet("analytics/getEquipmentAllocationRate/{entityType?}/{entityId?}")]
-        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> GetEquipmentAllocationRate(
             string entityType = null,
             string entityId = null)
@@ -129,7 +129,7 @@ namespace temsAPI.Controllers.AnalyticsControllers
         }
 
         [HttpGet("analytics/getEquipmentWorkabilityRate/{entityType?}/{entityId?}")]
-        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> GetEquipmentWorkabilityRate(
             string entityType = null,
             string entityId = null)
@@ -147,7 +147,7 @@ namespace temsAPI.Controllers.AnalyticsControllers
         }
 
         [HttpGet("analytics/getTicketClosingRate/{entityType?}/{entityId?}")]
-        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> GetTicketClosingRate(
             string entityType,
             string entityId)
@@ -165,7 +165,7 @@ namespace temsAPI.Controllers.AnalyticsControllers
         }
 
         [HttpGet("analytics/getTicketClosingByRate/{entityType?}/{entityId?}")]
-        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> GetTicketClosingByRate(
             string entityType,
             string entityId)
@@ -183,7 +183,7 @@ namespace temsAPI.Controllers.AnalyticsControllers
         }
 
         [HttpGet("analytics/getOpenTicketStatusRate/{entityType?}/{entityId?}")]
-        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> GetOpenTicketStatusRate(
             string entityType,
             string entityId)
@@ -201,7 +201,7 @@ namespace temsAPI.Controllers.AnalyticsControllers
         }
         
         [HttpGet("analytics/getAmountOfCreatedTicketsOfEntity/{entityType?}/{entityId?}")]
-        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> GetAmountOfCreatedTicketsOfEntity(
             string entityType,
             string entityId)
@@ -219,7 +219,7 @@ namespace temsAPI.Controllers.AnalyticsControllers
         }
 
         [HttpGet("analytics/getAmountOfClosedTickets/{entityType?}/{entityId?}")]
-        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> GetAmountOfClosedTickets(
             string entityType,
             string entityId)
@@ -237,7 +237,7 @@ namespace temsAPI.Controllers.AnalyticsControllers
         }
 
         [HttpGet("analytics/getAmountOfOpenTickets/{entityType?}/{entityId?}")]
-        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> GetAmountOfOpenTickets(
             string entityType,
             string entityId)
@@ -255,7 +255,7 @@ namespace temsAPI.Controllers.AnalyticsControllers
         }
         
         [HttpGet("analytics/getAmountOfTicketsClosedByUserThatWereReopenedAfterwards/{userId}")]
-        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> GetAmountOfTicketsClosedByUserThatWereReopenedAfterwards(string userId)
         {
             try
@@ -271,7 +271,7 @@ namespace temsAPI.Controllers.AnalyticsControllers
         }
         
         [HttpGet("analytics/getAmountOfTicketsEverClosedByUser/{userId}")]
-        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> GetAmountOfTicketsEverClosedByUser(string userId)
         {
             try

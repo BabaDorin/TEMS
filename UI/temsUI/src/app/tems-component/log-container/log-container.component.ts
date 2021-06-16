@@ -13,6 +13,7 @@ import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 export class LogContainerComponent extends TEMSComponent implements OnInit {
 
   @Input() log: ViewLog;
+  @Input() canManage: boolean = false;
   @Output() removed = new EventEmitter();
 
   constructor(
@@ -26,6 +27,9 @@ export class LogContainerComponent extends TEMSComponent implements OnInit {
   }
 
   remove(){
+    if(!this.canManage)
+      return;
+
     this.subscriptions.push(
       this.logService.archieve(this.log.id, true)
       .subscribe(result => {

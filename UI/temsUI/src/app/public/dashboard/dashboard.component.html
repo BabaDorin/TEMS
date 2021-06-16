@@ -21,7 +21,7 @@
 
   <hr class="m-5 m-5">
 
-  <ng-container *ngIf="canView || canManage">
+  <ng-container *ngIf="claims.canView || claims.canManage">
     <h3 class="text-muted">
       <mat-icon class="text-primary">read_more</mat-icon>
       Quick entity access
@@ -73,7 +73,7 @@
     </div>
   </div>
 
-  <ng-container *ngIf="canManage">
+  <ng-container *ngIf="claims.canManage">
     <div class="row mt-5">
       <div class="col-lg-7 col-md-12 grid-margin">
         <app-last-created-tickets-chart></app-last-created-tickets-chart>
@@ -95,6 +95,6 @@
     <mat-icon class="text-primary">engineering</mat-icon>
     Our Technicians
   </h3>
-  <app-user-cards-list [ofRole]="technician" [canManage]="canManage" [canView]="canView">
+  <app-user-cards-list [ofRole]="technician" [canManage]="claims.canManage" [canView]="claims.canView">
   </app-user-cards-list>
 </div>

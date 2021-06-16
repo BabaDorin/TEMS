@@ -35,7 +35,7 @@
         </p>
       </div>
     </ng-container>
-    <ng-container *ngIf="!readonly && issue.dateClosed == undefined">
+    <ng-container *ngIf="!readonly && canManage && issue.dateClosed == undefined">
       <mat-form-field appearance="fill">
         <mat-label>Change issue status</mat-label>
         <mat-select (selectionChange)="issueStatusChanged($event)">
@@ -93,7 +93,7 @@
     </div>
     <br>
 
-    <ng-container *ngIf="!readonly">
+    <ng-container *ngIf="!readonly && canManage">
       <button mat-button (click)="solveIssue()" *ngIf="issue.dateClosed == undefined">
         <mat-icon class="text-primary">done</mat-icon>Mark as solved
       </button>

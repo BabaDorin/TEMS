@@ -1,3 +1,4 @@
+import { ClaimService } from './../../../services/claim.service';
 import { CreateIssueComponent } from 'src/app/tems-components/issue/create-issue/create-issue.component';
 import { AddLogComponent } from 'src/app/tems-components/communication/add-log/add-log.component';
 import { SnackService } from './../../../services/snack/snack.service';
@@ -16,21 +17,26 @@ import { EquipmentAllocationComponent } from '../equipment-allocation/equipment-
 })
 export class ViewEquipmentComponent implements OnInit {
 
-  includeDerived:boolean = false;
-  
   @ViewChild('agGridEquipment') agGridEquipment: AgGridEquipmentComponent;
+
+  includeDerived:boolean = false;
 
   constructor(
     public dialogService: DialogService,
     public router: Router,
-    private snackService: SnackService
+    private snackService: SnackService,
+    private claims: ClaimService
   ) {
+
   }
 
   ngOnInit(): void {
   }
 
   addLogSelected(){
+    if(!this.claims.canManage)
+      return;
+
     let selectedNodes = this.getSelectedNodes()
     if(selectedNodes == undefined)
       return;
@@ -42,6 +48,9 @@ export class ViewEquipmentComponent implements OnInit {
   }
 
   addIssue(){
+    if(!this.claims.canManage)
+      return;
+
     let selectedNodes = this.getSelectedNodes()
     if(selectedNodes == undefined)
       return;
@@ -53,6 +62,9 @@ export class ViewEquipmentComponent implements OnInit {
   }
 
   allocateSelected() {
+    if(!this.claims.canManage)
+      return;
+
     let selectedNodes = this.getSelectedNodes()
     if(selectedNodes == undefined)
       return;
@@ -81,6 +93,9 @@ export class ViewEquipmentComponent implements OnInit {
   }
 
   addNew(){
+    if(!this.claims.canManage)
+      return;
+
     this.router.navigate(["/equipment/add"]);
   }
 

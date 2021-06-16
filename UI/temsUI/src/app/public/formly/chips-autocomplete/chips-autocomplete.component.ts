@@ -45,7 +45,7 @@ export class ChipsAutocompleteComponent implements OnInit, ControlValueAccessor,
   subscription = new Subscription();
   formCtrl = new FormControl();
   filteredOptions: IOption[];
-  selectedOptions: IOption[];
+  selectedOptions: IOption[] = [];
   selectable = true;
   removable = true;
   visible = true;
@@ -64,7 +64,7 @@ export class ChipsAutocompleteComponent implements OnInit, ControlValueAccessor,
   }
 
   ngOnInit() {
-    this.selectedOptions = this.alreadySelected;
+    this.selectedOptions = this.alreadySelected ?? [];
     this.onChange(this.selectedOptions);
     this.listenToServer();
   }
@@ -82,7 +82,8 @@ export class ChipsAutocompleteComponent implements OnInit, ControlValueAccessor,
     }
 
     if (changes['autocompleteOptions'] && changes['autocompleteOptions'].previousValue != changes['autocompleteOptions'].currentValue) {
-      this.getFromAutocompleteOptions();
+      if(this.autocompleteOptions != undefined)
+        this.getFromAutocompleteOptions();
     }
 
     this.filteredOptions = [];

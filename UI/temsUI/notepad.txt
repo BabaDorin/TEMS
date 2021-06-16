@@ -35,6 +35,7 @@ TODO
 Announcemnet
 Quick Access
 
+when updating the report template, no columns are displayed.
 
 // Nice to have
 Add some text animation (svg) when users stays on home page for more than 10 minutes straight

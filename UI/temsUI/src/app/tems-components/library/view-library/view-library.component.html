@@ -19,10 +19,9 @@
             </div>
         </div>
         <pagination-controls 
-            class="text-center"
             (pageChange)="pageNumber = $event" 
             id="lbItems" 
-            *ngIf="libraryItems != undefined && libraryItems.length > 0">
+            *ngIf="libraryContainerModels != undefined && libraryContainerModels.length > 0">
         </pagination-controls>
     </div>
 </div>

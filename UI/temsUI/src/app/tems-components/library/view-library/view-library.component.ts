@@ -8,6 +8,7 @@ import { TEMSComponent } from './../../../tems/tems.component';
 import { ViewLibraryItem } from './../../../models/library/view-library-item.model';
 import { LibraryService } from './../../../services/library-service/library.service';
 import { Component, OnInit } from '@angular/core';
+import { CAN_MANAGE_ENTITIES } from 'src/app/models/claims';
 
 @Component({
   selector: 'app-view-library',
@@ -20,6 +21,7 @@ export class ViewLibraryComponent extends TEMSComponent implements OnInit {
   libraryContainerModels: UploadedFileContainerModel[];
   pageNumber = 1;
   downloader = new Downloader();
+  canManage: boolean = false;
 
   constructor(
     private libraryService: LibraryService,
@@ -31,6 +33,8 @@ export class ViewLibraryComponent extends TEMSComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.canManage = this.tokenService.hasClaim(CAN_MANAGE_ENTITIES);
+
     this.subscriptions.push(this.libraryService.getItems()
       .subscribe(result => {
         if(this.snackService.snackIfError(result))
@@ -43,7 +47,7 @@ export class ViewLibraryComponent extends TEMSComponent implements OnInit {
 
   eventEmitted($event, i){
     if($event == 'removed'){
-      this.libraryItems.splice(i, 1);
+      this.libraryContainerModels.splice(i, 1);
     }
   }
 

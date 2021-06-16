@@ -25,8 +25,8 @@ export class UploadedFileContainerModel extends TEMSComponent implements IGeneri
     ) {
         super();
 
-        this.buildContainerModel();
         this.canManage = this.tokenService.hasClaim(CAN_MANAGE_ENTITIES);
+        this.buildContainerModel();
     }
 
     buildContainerModel() {

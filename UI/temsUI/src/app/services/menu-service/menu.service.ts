@@ -12,17 +12,13 @@ export class MenuService {
     private tokenService: TokenService
   ) { }
 
-  hasClaim(claim: string): boolean{
-    return this.tokenService.hasClaim(claim);
-  }
-
   ROUTES: RouteInfo[] = [
     {
       path: '',
       title: 'Equipment',
       icon: 'mdi mdi-desktop-mac menu-icon',
       isActive: false,
-      isShown: this.hasClaim(CAN_VIEW_ENTITIES) || this.hasClaim(CAN_MANAGE_ENTITIES),  
+      isShown: this.tokenService.canViewEntities(),  
       showSubmenu: false,
       submenu: [
         {
@@ -30,7 +26,7 @@ export class MenuService {
           title: 'View',
           icon: 'mdi mdi-view-list menu-icon',
           isActive: false,
-          isShown: this.hasClaim(CAN_VIEW_ENTITIES) || this.hasClaim(CAN_MANAGE_ENTITIES),  
+          isShown:this.tokenService.canViewEntities(),  
           showSubmenu: false,
           submenu: []
         },
@@ -39,7 +35,7 @@ export class MenuService {
           title: 'Add',
           icon: 'mdi mdi-plus menu-icon',
           isActive: false,
-          isShown: this.hasClaim(CAN_MANAGE_ENTITIES),  
+          isShown: this.tokenService.canManageEntities(),  
           showSubmenu: false,
           submenu: []
         },
@@ -47,7 +43,7 @@ export class MenuService {
           path: '/quick-access/equipment',
           title: 'Quick Access',
           icon: 'mdi mdi-format-horizontal-align-right menu-icon',
-          isShown: this.hasClaim(CAN_VIEW_ENTITIES),
+          isShown: this.tokenService.canViewEntities(),
           isActive: false,
           showSubmenu: false,
           submenu: []
@@ -57,7 +53,7 @@ export class MenuService {
           title: 'Allocate',
           icon: 'mdi mdi-transfer menu-icon',
           isActive: false,
-          isShown: this.hasClaim(CAN_VIEW_ENTITIES),
+          isShown: this.tokenService.canManageEntities(),
           showSubmenu: false,
           submenu: []
         },
@@ -66,7 +62,7 @@ export class MenuService {
           title: 'Allocations',
           icon: 'mdi mdi-transfer menu-icon',
           isActive: false,
-          isShown: this.hasClaim(CAN_VIEW_ENTITIES),
+          isShown: this.tokenService.canViewEntities(),
           showSubmenu: false,
           submenu: []
         },
@@ -77,7 +73,7 @@ export class MenuService {
       title: 'Rooms',
       icon: 'mdi mdi-panorama-wide-angle menu-icon',
       isActive: false,
-      isShown: this.hasClaim(CAN_VIEW_ENTITIES) || this.hasClaim(CAN_MANAGE_ENTITIES),  
+      isShown: this.tokenService.canViewEntities(),  
       showSubmenu: false,
       submenu: [
         {
@@ -85,7 +81,7 @@ export class MenuService {
           title: 'View',
           icon: 'mdi mdi-view-list menu-icon',
           isActive: false,
-          isShown: this.hasClaim(CAN_VIEW_ENTITIES),
+          isShown: this.tokenService.canViewEntities(),
           showSubmenu: false,
           submenu: []
         },
@@ -94,7 +90,7 @@ export class MenuService {
           title: 'Add',
           icon: 'mdi mdi-plus menu-icon',
           isActive: false,
-          isShown: this.hasClaim(CAN_MANAGE_ENTITIES),  
+          isShown: this.tokenService.canManageEntities(),  
           showSubmenu: false,
           submenu: []
         },
@@ -102,27 +98,27 @@ export class MenuService {
           path: '/quick-access/rooms',
           title: 'Quick Access',
           icon: 'mdi mdi-format-horizontal-align-right menu-icon',
-          isShown: this.hasClaim(CAN_VIEW_ENTITIES),
+          isShown: this.tokenService.canViewEntities(),
           isActive: false,
           showSubmenu: false,
           submenu: []
         },
-        {
-          path: '/rooms/map',
-          title: 'College Map',
-          icon: 'mdi mdi-map menu-icon',
-          isActive: false,
-          isShown: this.hasClaim(CAN_VIEW_ENTITIES),
-          showSubmenu: false,
-          submenu: []
-        },
+        // {
+        //   path: '/rooms/map',
+        //   title: 'College Map',
+        //   icon: 'mdi mdi-map menu-icon',
+        //   isActive: false,
+        //   isShown: this.hasClaim(CAN_VIEW_ENTITIES),
+        //   showSubmenu: false,
+        //   submenu: []
+        // },
       ]
     },
     {
       path: '',
       title: 'Personnel',
       icon: 'mdi mdi-account-multiple menu-icon',
-      isShown: this.hasClaim(CAN_VIEW_ENTITIES) || this.hasClaim(CAN_MANAGE_ENTITIES),  
+      isShown: this.tokenService.canViewEntities(),  
       isActive: false,
       showSubmenu: false,
       submenu: [
@@ -131,7 +127,7 @@ export class MenuService {
           title: 'View',
           icon: 'mdi mdi-view-list menu-icon',
           isActive: false,
-          isShown: this.hasClaim(CAN_VIEW_ENTITIES) || this.hasClaim(CAN_MANAGE_ENTITIES),  
+          isShown: this.tokenService.canViewEntities(),  
           showSubmenu: false,
           submenu: []
         },
@@ -140,7 +136,7 @@ export class MenuService {
           title: 'Add',
           icon: 'mdi mdi-plus menu-icon',
           isActive: false,
-          isShown: this.hasClaim(CAN_MANAGE_ENTITIES),  
+          isShown: this.tokenService.canManageEntities(),  
           showSubmenu: false,
           submenu: []
         },
@@ -148,7 +144,7 @@ export class MenuService {
           path: '/quick-access/personnel',
           title: 'Quick Access',
           icon: 'mdi mdi-format-horizontal-align-right menu-icon',
-          isShown: this.hasClaim(CAN_VIEW_ENTITIES),
+          isShown: this.tokenService.canViewEntities(),
           isActive: false,
           showSubmenu: false,
           submenu: []
@@ -160,7 +156,7 @@ export class MenuService {
       title: 'Keys',
       icon: 'mdi mdi-key-variant menu-icon',
       isActive: false,
-      isShown: this.hasClaim(CAN_VIEW_ENTITIES) || this.hasClaim(CAN_MANAGE_ENTITIES) || this.hasClaim(CAN_ALLOCATE_KEYS),
+      isShown: this.tokenService.canAllocateKeys() || this.tokenService.canViewEntities(),
       showSubmenu: false,
       submenu: [
         {
@@ -168,7 +164,7 @@ export class MenuService {
           title: 'View',
           icon: 'mdi mdi-key-change menu-icon',
           isActive: false,
-          isShown: this.hasClaim(CAN_VIEW_ENTITIES) || this.hasClaim(CAN_MANAGE_ENTITIES) || this.hasClaim(CAN_ALLOCATE_KEYS),
+          isShown: this.tokenService.canAllocateKeys() || this.tokenService.canViewEntities(),
           showSubmenu: false,
           submenu: []
         },
@@ -177,7 +173,7 @@ export class MenuService {
           title: 'View Allocations',
           icon: 'mdi mdi-account-search menu-icon',
           isActive: false,
-          isShown: this.hasClaim(CAN_VIEW_ENTITIES) || this.hasClaim(CAN_MANAGE_ENTITIES) || this.hasClaim(CAN_ALLOCATE_KEYS),
+          isShown: this.tokenService.canAllocateKeys() || this.tokenService.canViewEntities(),
           showSubmenu: false,
           submenu: []
         },
@@ -186,7 +182,7 @@ export class MenuService {
           title: 'Allocate',
           icon: 'mdi mdi-account-key menu-icon',
           isActive: false,
-          isShown: this.hasClaim(CAN_MANAGE_ENTITIES) || this.hasClaim(CAN_ALLOCATE_KEYS),
+          isShown: this.tokenService.canAllocateKeys(),
           showSubmenu: false,
           submenu: []
         },
@@ -205,7 +201,7 @@ export class MenuService {
           title: 'View',
           icon: 'mdi mdi-alert menu-icon',
           isActive: false,
-          isShown: this.hasClaim(CAN_VIEW_ENTITIES) || this.hasClaim(CAN_MANAGE_ENTITIES),
+          isShown: this.tokenService.canViewEntities(),
           showSubmenu: false,
           submenu: []
         },
@@ -242,7 +238,7 @@ export class MenuService {
           title: 'Logs',
           icon: 'mdi mdi-format-align-center menu-icon',
           isActive: false,
-          isShown: this.hasClaim(CAN_VIEW_ENTITIES) || this.hasClaim(CAN_MANAGE_ENTITIES),
+          isShown: this.tokenService.canViewEntities(),
           showSubmenu: false,
           submenu: []
         },
@@ -253,7 +249,7 @@ export class MenuService {
       title: 'Library',
       icon: 'mdi mdi-microsoft menu-icon',
       isActive: false,
-      isShown: this.hasClaim(CAN_VIEW_ENTITIES) || this.hasClaim(CAN_MANAGE_ENTITIES),
+      isShown: this.tokenService.canViewEntities(),
       showSubmenu: false,
       submenu: [
         {
@@ -261,7 +257,7 @@ export class MenuService {
           title: 'View library',
           icon: 'mdi mdi-view-list menu-icon',
           isActive: false,
-          isShown: this.hasClaim(CAN_VIEW_ENTITIES) || this.hasClaim(CAN_MANAGE_ENTITIES),
+          isShown: this.tokenService.canViewEntities(),
           showSubmenu: false,
           submenu: []
         },
@@ -270,7 +266,7 @@ export class MenuService {
           title: 'Upload item',
           icon: 'mdi mdi-plus menu-icon',
           isActive: false,
-          isShown: this.hasClaim(CAN_VIEW_ENTITIES) || this.hasClaim(CAN_MANAGE_ENTITIES),
+          isShown: this.tokenService.canManageEntities(),
           showSubmenu: false,
           submenu: []
         },
@@ -281,7 +277,7 @@ export class MenuService {
       title: 'Report Printing',
       icon: 'mdi mdi-printer menu-icon',
       isActive: false,
-      isShown: this.hasClaim(CAN_VIEW_ENTITIES) || this.hasClaim(CAN_MANAGE_ENTITIES),
+      isShown: this.tokenService.canViewEntities(),
       showSubmenu: false,
       submenu: []
     },
@@ -290,7 +286,7 @@ export class MenuService {
       title: 'Administration',
       icon: 'mdi mdi-account-star menu-icon',
       isActive: false,
-      isShown: this.hasClaim(CAN_MANAGE_SYSTEM_CONFIGURATION),
+      isShown: this.tokenService.canManageSystemConfiguration(),
       showSubmenu: false,
       submenu: [
         {
@@ -298,7 +294,7 @@ export class MenuService {
           title: 'Equipment',
           icon: 'mdi mdi-database-plus menu-icon',
           isActive: false,
-          isShown: this.hasClaim(CAN_MANAGE_SYSTEM_CONFIGURATION),
+          isShown: this.tokenService.canManageSystemConfiguration(),
           showSubmenu: false,
           submenu: []
         },
@@ -306,46 +302,36 @@ export class MenuService {
           path: '/administration/users',
           title: 'Users',
           icon: 'mdi mdi-account-multiple-outline menu-icon',
-          isShown: this.hasClaim(CAN_MANAGE_SYSTEM_CONFIGURATION),
+          isShown: this.tokenService.canManageSystemConfiguration(),
           isActive: false,
           showSubmenu: false,
           submenu: []
         },
-        // {
-        //   path: '/administration/roles',
-        //   title: 'Roles',
-        //   icon: 'mdi mdi-account-convert menu-icon',
-        //   isActive: false,
-        //   isShown: this.hasClaim(CAN_MANAGE_SYSTEM_CONFIGURATION),
-        //   showSubmenu: false,
-        //   submenu: []
-        // },
         {
           path: '/administration/system-configuration',
           title: 'Configuration',
           icon: 'mdi mdi-sitemap menu-icon',
           isActive: false,
-          isShown: this.hasClaim(CAN_MANAGE_SYSTEM_CONFIGURATION),
+          isShown: this.tokenService.canManageSystemConfiguration(),
           showSubmenu: false,
           submenu: []
         }
       ]
     },
-    {
-      path: '/analytics',
-      title: 'Analytics',
-      icon: 'mdi mdi-chart-bar menu-icon',
-      isActive: false,
-      isShown: this.hasClaim(CAN_VIEW_ENTITIES) || this.hasClaim(CAN_MANAGE_ENTITIES),
-      showSubmenu: false,
-      submenu: []
-    },
+    //   path: '/analytics',
+    //   title: 'Analytics',
+    //   icon: 'mdi mdi-chart-bar menu-icon',
+    //   isActive: false,
+    //   isShown: this.hasClaim(CAN_VIEW_ENTITIES) || this.hasClaim(CAN_MANAGE_ENTITIES),
+    //   showSubmenu: false,
+    //   submenu: []
+    // },
     {
       path: '/archieve',
       title: 'Archieve',
       icon: 'mdi mdi-chart-bar menu-icon',
       isActive: false,
-      isShown: this.hasClaim(CAN_MANAGE_ENTITIES),
+      isShown: this.tokenService.canManageEntities(),
       showSubmenu: false,
       submenu: []
     }

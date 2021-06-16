@@ -16,7 +16,7 @@ const routes: Routes = [
   { path: 'all', component: ViewEquipmentComponent, canActivate: [ CanViewEntitiesGuard ] },
   { path: 'quick-access', component: QuickAccessComponent, canActivate: [ CanViewEntitiesGuard ] },
   { path: 'allocate', component: EquipmentAllocationComponent, canActivate: [ CanManageEntitiesGuard ] },
-  { path: 'allocations', component: ViewEquipmentAllocationsComponent, canActivate: [ CanManageEntitiesGuard ] },
+  { path: 'allocations', component: ViewEquipmentAllocationsComponent, canActivate: [ CanViewEntitiesGuard ] },
 ];
 
 @NgModule({

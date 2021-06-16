@@ -15,6 +15,9 @@ export class UserCardsListComponent extends TEMSComponent implements OnInit {
   @Input() users: ViewUserSimplified[];
   @Input() ofRole: string;
 
+  @Input() canView: boolean = false;
+  @Input() canManage: boolean = false;
+
   constructor(
     private userService: UserService,
     private snackService: SnackService
@@ -31,8 +34,6 @@ export class UserCardsListComponent extends TEMSComponent implements OnInit {
     this.subscriptions.push(
       this.userService.getUsers(this.ofRole)
       .subscribe(result => {
-        console.log('result: ');
-        console.log(result);
         if(this.snackService.snackIfError(result))
           return;
         

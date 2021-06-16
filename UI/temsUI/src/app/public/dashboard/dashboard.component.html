@@ -1,98 +1,102 @@
-<div class="row">
-  <div class="col-md-12">
-    <div class="text-center mt-5">
-      <img src="assets/images/logo.svg" alt="logo" class="dashboard-logo fade-in"/>
-      <!-- <h1 class="text-primary title">TEMS</h1> -->
-      <h4>Technical Equipment Management System</h4>
-      <h5 class="text-muted">CIH Cahul</h5>
-    </div>
-  </div>
-</div>
-
-<!-- Last 5 announcements (Everyone)-->
-<div class="row mt-4">
-  <div class="col-md-12">
-    <div class="card">
-      <div class="card-body">
-        <div class="card-title">
-          <mat-icon class="text-primary">campaign</mat-icon> Last announcements
-        </div>
-        <app-announcements-list skip="0" take="5">
-        </app-announcements-list>
+<div class="col-md-12">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="text-center mt-5">
+        <img src="assets/images/logo.svg" alt="logo" class="dashboard-logo fade-in" />
+        <!-- <h1 class="text-primary title">TEMS</h1> -->
+        <h4>Technical Equipment Management System</h4>
+        <h5 class="text-muted">CIH Cahul</h5>
       </div>
     </div>
   </div>
-</div>
 
-<!-- Quick searches -->
-<div class="row mt-4">
-  <div class="col-md-4">
-    <app-quick-access type="equipment">
-    </app-quick-access>
-  </div>
-  <div class="col-md-4">
-    <app-quick-access type="rooms">
-    </app-quick-access>
-  </div>
-  <div class="col-md-4">
-    <app-quick-access type="personnel">
-    </app-quick-access>
-  </div>
-</div>
+  <h3>
+    <mat-icon class="text-primary">campaign</mat-icon> Last announcements
+  </h3>
 
-<!-- Last 5 logs-->
-<div class="row mt-4">
-  <div class="col-md-12">
-    <div class="card">
-      <div class="card-body">
-        <div class="card-title">Last logs (Auto refreshing)</div>
+  <div class="container mt-3">
+    <app-announcements-list skip="0" take="5">
+    </app-announcements-list>
+  </div>
+
+  <hr class="m-4">
+
+  <ng-container *ngIf="canView || canManage">
+    <h3>
+      <mat-icon class="text-primary">read_more</mat-icon>
+      Quick entity access
+    </h3>
+    <!-- Quick searches -->
+    <div class="row">
+      <div class="col-md-4">
+        <app-quick-access type="equipment">
+        </app-quick-access>
+      </div>
+      <div class="col-md-4">
+        <app-quick-access type="rooms">
+        </app-quick-access>
+      </div>
+      <div class="col-md-4">
+        <app-quick-access type="personnel">
+        </app-quick-access>
       </div>
     </div>
-  </div>
-</div>
+    <hr class="m-4">
+  </ng-container>
 
-<div class="page-header mt-5">
-  <h3 class="page-title">
+  <h4>
+    <mat-icon class="text-primary">error</mat-icon>
     Tickets
-  </h3>
-</div>
-
-<div class="row mt-4">
-  <div class="col-md-12 mb-4">
-    <div class="card">
-      <div class="card-body">
-        <a mat-button class="text-primary btn-block" routerLink="/issues/create/">
-          Create a ticket
-        </a>
+  </h4>
+  <div class="container mb-4">
+    <div class="row">
+      <div class="col-md-4">
+        <div class="text-center">
+          <div class="d-block">
+            <mat-icon class="text-primary icon-large mb-3">
+              support_agent
+            </mat-icon>
+          </div>
+          <h4>
+            Encountered any problems or need some technical support?
+          </h4>
+          <a mat-button class="btn-gradient-primary" routerLink="/issues/create/">
+            Create a ticket!
+          </a>
+        </div>
+      </div>
+      <div class="col-md-8">
+        <div class="text-center">
+          <img src="assets/svgs/dashboard-ticket.svg" class="dashboard-ticket fade-in" />
+        </div>
       </div>
     </div>
   </div>
-</div>
 
-<div class="row">
-  <div class="col-lg-7 col-md-12 grid-margin">
-    <app-last-created-tickets-chart></app-last-created-tickets-chart>
-  </div>
+  <ng-container *ngIf="canManage">
+    <div class="row">
+      <div class="col-lg-7 col-md-12 grid-margin">
+        <app-last-created-tickets-chart></app-last-created-tickets-chart>
+      </div>
 
-  <div class="col-lg-5 col-md-12 grid-margin stretch-card">
-    <div class="card">
-      <div class="card-body">
-        <div class="card-title">Most recent tickets</div>
-        <a routerLink="/issues/all">See more</a>
-        <app-last-issues-simplified>
-        </app-last-issues-simplified>
+      <div class="col-lg-5 col-md-12 grid-margin stretch-card">
+        <div class="card">
+          <div class="card-body">
+            <div class="card-title">Most recent tickets</div>
+            <a routerLink="/issues/all">See more</a>
+            <app-last-issues-simplified>
+            </app-last-issues-simplified>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-</div>
+  </ng-container>
 
-<!-- CIH TEMS Team -->
-
-<div class="page-header mt-5">
-  <h3 class="page-title">
+  <hr class="m-4">
+  <h5>
+    <mat-icon class="text-primary">engineering</mat-icon>
     Our Technicians
-  </h3>
-</div>
-
-<app-user-cards-list [ofRole]="technician">
-</app-user-cards-list>
+  </h5>
+  <app-user-cards-list [ofRole]="technician" [canManage]="canManage" [canView]="canView">
+  </app-user-cards-list>
+</hr>

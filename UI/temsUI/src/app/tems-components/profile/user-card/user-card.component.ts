@@ -9,6 +9,9 @@ import { Component, Input, OnInit } from '@angular/core';
 export class UserCardComponent implements OnInit {
 
   @Input() user: ViewUserSimplified;
+  @Input() canView: boolean = false;
+  @Input() canManage: boolean = false;
+  
   constructor() { }
 
   ngOnInit(): void {

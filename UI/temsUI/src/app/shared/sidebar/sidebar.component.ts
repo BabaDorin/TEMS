@@ -10,7 +10,6 @@ import { UserService } from 'src/app/services/user-service/user.service';
   selector: 'app-sidebar',
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.scss'],
-  providers: [UserService]
 })
 export class SidebarComponent implements OnInit {
   public uiBasicCollapsed = false;
@@ -19,7 +18,6 @@ export class SidebarComponent implements OnInit {
   private sidebarManager: SidebarManager;
 
   constructor(
-    private userservice: UserService,
     private menuService: MenuService
   ) {
 

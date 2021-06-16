@@ -7,7 +7,9 @@
         <h5 class="card-title">{{ user.fullName }}</h5>
         <p *ngIf="user.email != undefined" class="card-text"><b>Email: </b>{{ user.email }}</p>
     </div>
-    <div class="card-body">
-        <a [routerLink]="'/profile/view/' + user.id" class="card-link">Visit profile</a>
-    </div>
+    <ng-container *ngIf="canManage || canView">
+        <div class="card-body">
+            <a [routerLink]="'/profile/view/' + user.id" class="card-link">Visit profile</a>
+        </div>
+    </ng-container>
 </div>

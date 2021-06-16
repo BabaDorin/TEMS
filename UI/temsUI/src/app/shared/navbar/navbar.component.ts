@@ -38,10 +38,10 @@ export class NavbarComponent extends TEMSComponent implements OnInit {
   }
 
   signOut(){
-    console.log('got here');
     this.subscriptions.push(
       this.authService.signOut()
       .subscribe());
+      
     this.route.navigateByUrl('');
     window.location.reload()
   }

@@ -48,13 +48,14 @@
                                     </button>
                                     <button mat-menu-item (click)="changeUsingState()" [disabled]="editing"
                                         class="btn-block">
-                                        <ng-container *ngIf="equipment.isUsed">
+                                        <ng-container *ngIf="equipment.isUsed; else eqUnused">
                                             <mat-icon class="text-muted">pause</mat-icon>
                                             Mark as unused
                                         </ng-container>
-                                        <ng-container *ngIf="!equipment.isUsed">
+                                        <ng-template #eqUnused>
                                             <mat-icon class="text-success">play_arrow</mat-icon>
                                             Mark as used
+                                        </ng-template>
                                     </button>
                                 </mat-menu>
                             </li>

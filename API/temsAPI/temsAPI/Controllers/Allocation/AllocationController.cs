@@ -1,23 +1,14 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
-using Microsoft.OpenApi.Any;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
-using temsAPI.Data.Entities.EquipmentEntities;
-using temsAPI.Data.Entities.OtherEntities;
 using temsAPI.Data.Entities.UserEntities;
 using temsAPI.Data.Managers;
-using temsAPI.Helpers;
 using temsAPI.System_Files;
-using temsAPI.ViewModels;
 using temsAPI.ViewModels.Allocation;
 using static temsAPI.Data.Managers.EquipmentManager;
 
@@ -58,7 +49,6 @@ namespace temsAPI.Controllers.Allocation
             }
         }
 
-
         [HttpGet("allocation/markasreturned/{allocationId}")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> MarkAsReturned(string allocationId)
@@ -98,7 +88,7 @@ namespace temsAPI.Controllers.Allocation
         }
 
         [HttpGet("allocation/getofentity/{entityType}/{entityId}/{archieve?}")]
-        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> GetOfEntity(string entityType, string entityId)
         {
             try
@@ -136,7 +126,7 @@ namespace temsAPI.Controllers.Allocation
         }
         
         [HttpPost]
-        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> GetAllocations([FromBody] EntityCollection entityCollection)
         {
             try

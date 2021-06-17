@@ -189,7 +189,7 @@ namespace temsAPI.Controllers.TicketControllers
         }
 
         [HttpGet("/ticket/gettickets/{equipmentId}/{roomId}/{personnelId}/{includingClosed}/{onlyClosed}")]
-        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> GetTickets(
             string equipmentId,
             string roomId,
@@ -216,6 +216,7 @@ namespace temsAPI.Controllers.TicketControllers
         }
 
         [HttpGet("/ticket/changePinStatus/{ticketId}/{status}")]
+        [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> ChangePinStatus(string ticketId, bool status)
         {
             try
@@ -238,6 +239,7 @@ namespace temsAPI.Controllers.TicketControllers
         }
 
         [HttpGet]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> GetPinnedTickets()
         {
             try

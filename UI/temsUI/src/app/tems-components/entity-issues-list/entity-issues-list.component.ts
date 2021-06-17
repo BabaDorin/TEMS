@@ -129,6 +129,9 @@ export class EntityIssuesListComponent extends TEMSComponent implements OnInit, 
   }
 
   solve(index){
+    if(!this.claims.canManage)
+      return;
+
     let selectedIssue = this.issues[index];
     let d1 = new Date(selectedIssue.dateClosed);
     let d2 = new Date(selectedIssue.dateCreated);
@@ -162,6 +165,7 @@ export class EntityIssuesListComponent extends TEMSComponent implements OnInit, 
     this.issues.splice(index, 1);
   }
 
+  // BEFREE - Needs improvement
   launchConfetti(){
     if(this.confettiCanceled)
       return;
@@ -180,7 +184,7 @@ export class EntityIssuesListComponent extends TEMSComponent implements OnInit, 
 
 
     if(this.confettiCanceled){
-      this.snackService.snack({message: "Țajiunji.", status: 0});
+      this.snackService.snack({message: ":)", status: 0});
       return;
     }
   

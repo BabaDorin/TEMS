@@ -28,7 +28,13 @@ namespace temsAPI.System_Files
 
         public ClaimRequirementFilter(string[] claims, UserManager<TEMSUser> userManager, IUnitOfWork unitOfWork)
         {
-            _claims = claims.Select(q => new Claim(q, "ye")).ToArray();
+            // Store claims & append the "Can Manage system configration"
+            // (The last one should give access to everything).
+            _claims = claims
+                .Select(q => new Claim(q, "ye"))
+                .Append(new Claim(TEMSClaims.CAN_MANAGE_SYSTEM_CONFIGURATION, "ye"))
+                .ToArray();
+            
             _userManager = userManager;
             _unitOfWork = unitOfWork;
         }

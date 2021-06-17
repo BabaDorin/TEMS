@@ -81,7 +81,7 @@ namespace temsAPI.Controllers.EquipmentControllers
         }
 
         [HttpGet("equipmentdefinition/getdefinitionsoftype/{typeId}")]
-        [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> GetDefinitionsOfType(string typeId)
         {
             try
@@ -97,7 +97,7 @@ namespace temsAPI.Controllers.EquipmentControllers
         }
 
         [HttpPost]
-        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> GetDefinitionsOfTypes([FromBody] DefinitionsOfTypesModel filter)
         {
             try
@@ -113,7 +113,7 @@ namespace temsAPI.Controllers.EquipmentControllers
         }
 
         [HttpGet("equipmentdefinition/getsimplified")]
-        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> GetSimplified()
         {
             try
@@ -129,7 +129,7 @@ namespace temsAPI.Controllers.EquipmentControllers
         }
 
         [HttpGet("equipmentdefinition/getsimplifiedbyid/{definitionId}")]
-        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> GetSimplifiedById(string definitionId)
         {
             try
@@ -165,7 +165,7 @@ namespace temsAPI.Controllers.EquipmentControllers
         }
 
         [HttpGet("equipmentdefinition/getfulldefinition/{definitionId}")]
-        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> GetFullDefinition(string definitionId)
         {
             try

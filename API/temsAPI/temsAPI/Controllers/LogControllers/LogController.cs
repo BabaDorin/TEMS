@@ -66,7 +66,7 @@ namespace temsAPI.Controllers.LogControllers
         }
 
         [HttpGet]
-        [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
+        [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES, TEMSClaims.CAN_VIEW_ENTITIES)]
         public async Task<JsonResult> GetLogTypes()
         {
             try
@@ -82,7 +82,7 @@ namespace temsAPI.Controllers.LogControllers
         }
 
         [HttpGet("/log/getentitylogs/{entityType}/{entityId}")]
-        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> GetEntityLogs(string entityType, string entityId)
         {
             try

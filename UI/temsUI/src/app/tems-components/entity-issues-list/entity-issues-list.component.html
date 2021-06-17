@@ -1,10 +1,32 @@
 <ng-container *ngIf="claims.canManage || claims.canView; else elseBlock">
   <div class="col-md-12">
-    <h2 class="mt-3">
-      Issues
-    </h2>
+    <div class="page-header">
+      <div class="page-title mt-4 mb-0">
+        <h2>
+          Issues
+        </h2>
+      </div>
+      <nav aria-label="breadcrumb">
+        <ul class="breadcrumb bg-transparent">
 
-    <ng-container *ngIf="claims.canManage">
+          <li class="breadcrumb-item" aria-current="page">
+            <button mat-button [matMenuTriggerFor]="menu" aria-label="Add Equipment Menu" class="float-right">
+              Actions <mat-icon class="text-primary">more_vert</mat-icon>
+            </button>
+            <mat-menu #menu="matMenu">
+              <div class="p-2 text-center">
+                <mat-slide-toggle *ngIf="showIncludeClosed == true" class="float-right"
+                  (click)="includeClosedChanged()">
+                  Include Closed
+                </mat-slide-toggle>
+              </div>
+            </mat-menu>
+          </li>
+        </ul>
+      </nav>
+    </div>
+
+    <div class="button-container">
       <button *ngIf="addIssueEnabled == true" mat-button (click)="addIssue()" class="d-xs-block">
         <mat-icon class="text-primary">add</mat-icon>Create issue
       </button>
@@ -14,25 +36,22 @@
       <button mat-button (click)="sortBy('date')" class="d-xs-block">
         <mat-icon class="text-primary">import_export</mat-icon>Sort by date
       </button>
-    </ng-container>
-    
-    <mat-slide-toggle *ngIf="showIncludeClosed == true" class="float-right" (click)="includeClosedChanged()">
-      Include Closed
-    </mat-slide-toggle>
-    
+    </div>
+
     <hr class="mt-3">
-    
+
     <ng-container *ngIf="loading == true">
       <mat-progress-bar mode="indeterminate"></mat-progress-bar>
       <app-loading-placeholder></app-loading-placeholder>
     </ng-container>
-    
+
     <div #issuesPanel>
       <mat-accordion>
         <div
           *ngFor="let issue of issues | paginate: { itemsPerPage: 20, currentPage: pageNumber, id: 'issues' }; let i = index">
-          <app-issue-container [canManage]="claims.canManage" [issue]="issue" [statuses]="statuses" (solve)="solve((pageNumber-1)*20 + i)"
-            (pinned)="ticketPinned($event, (pageNumber-1)*20 + i)" (remove)="remove((pageNumber-1)*20 + i)">
+          <app-issue-container [canManage]="claims.canManage" [issue]="issue" [statuses]="statuses"
+            (solve)="solve((pageNumber-1)*20 + i)" (pinned)="ticketPinned($event, (pageNumber-1)*20 + i)"
+            (remove)="remove((pageNumber-1)*20 + i)">
           </app-issue-container>
         </div>
       </mat-accordion>

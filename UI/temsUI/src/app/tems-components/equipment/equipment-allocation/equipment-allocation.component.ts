@@ -1,3 +1,4 @@
+import { ClaimService } from './../../../services/claim.service';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { PersonnelService } from './../../../services/personnel-service/personnel.service';
 import { RoomsService } from './../../../services/rooms-service/rooms.service';
@@ -53,6 +54,7 @@ export class EquipmentAllocationComponent extends TEMSComponent implements OnIni
     private snackService: SnackService,
     private personnelService: PersonnelService,
     private allocationService: AllocationService,
+    private claims: ClaimService,
     @Optional() @Inject(MAT_DIALOG_DATA) public dialogData: any
   ) {
     super();

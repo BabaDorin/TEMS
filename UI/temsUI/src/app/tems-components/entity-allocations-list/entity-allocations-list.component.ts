@@ -1,3 +1,4 @@
+import { ClaimService } from './../../services/claim.service';
 import { CAN_MANAGE_ENTITIES } from './../../models/claims';
 import { TokenService } from './../../services/token-service/token.service';
 import { SnackService } from './../../services/snack/snack.service';
@@ -44,7 +45,8 @@ export class EntityAllocationsListComponent extends TEMSComponent implements OnI
     private dialogService: DialogService,
     private snackService: SnackService,
     private tokenService: TokenService,
-    private router: Router
+    private router: Router,
+    private claims: ClaimService
   ) {
     super();
   }

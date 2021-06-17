@@ -6,18 +6,19 @@
         </p>
         <div class="mt-3"></div>
         <form [formGroup]="formlyData.form" (ngSubmit)="onSubmit(formlyData.model)">
-            <!-- <formly-form [form]="formlyData.form" [fields]="formlyData.fields" [model]="formlyData.model">
-            </formly-form> -->
+            <formly-form [form]="formlyData.form" [fields]="formlyData.fields" [model]="formlyData.model">
+            </formly-form>
 
+            <app-chips-autocomplete #recievers [endPoint]="personnelService" label="Send this email to..."
+                [alreadySelected]="personnel">
+            </app-chips-autocomplete>
 
             <button mat-button type="submit" class="btn-gradient-primary"
                 [disabled]="formlyData.form.status == 'INVALID'">
                 Send email
             </button>
         </form>
-        <app-chips-autocomplete-component #recievers [endPoint]="personnelService" label="Send this email to..."
-            [alreadySelected]="personnel">
-        </app-chips-autocomplete-component>
+
         <!-- <p class="text-muted">
             Recievers: {{ personnelNames }}
         </p> -->

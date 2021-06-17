@@ -1,5 +1,5 @@
+import { PersonnelService } from 'src/app/services/personnel-service/personnel.service';
 import { ChipsAutocompleteComponent } from 'src/app/public/formly/chips-autocomplete/chips-autocomplete.component';
-import { EquipmentService } from 'src/app/services/equipment-service/equipment.service';
 import { IOption } from './../../models/option.model';
 import { SendEmail } from './../../models/email/send-email.model';
 import { EmailService } from './../../services/email.service';
@@ -18,6 +18,8 @@ import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 })
 export class SendEmailComponent extends TEMSComponent implements OnInit {
   
+  // BEFREE: Reactive forms
+
   @ViewChild('recievers') recieversChipsAutocomplete: ChipsAutocompleteComponent;
 
   private formlyData = {
@@ -34,7 +36,7 @@ export class SendEmailComponent extends TEMSComponent implements OnInit {
     private formlyParser: FormlyParserService,
     private snackService: SnackService,
     private emailService: EmailService,
-    private equipmentService: EquipmentService,
+    private personnelService: PersonnelService,
     @Optional() @Inject(MAT_DIALOG_DATA) public dialogData: any
   ) { 
     super();
@@ -50,7 +52,7 @@ export class SendEmailComponent extends TEMSComponent implements OnInit {
   }
 
   onSubmit(model){
-    this.personnel = this.recieversChipsAutocomplete.value;
+    this.personnel = this.recieversChipsAutocomplete.options;
 
     if(this.personnel == undefined || this.personnel.length == 0)
     {

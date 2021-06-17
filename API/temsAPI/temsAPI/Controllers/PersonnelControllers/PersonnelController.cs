@@ -1,24 +1,14 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Validations;
-using Newtonsoft.Json.Schema;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Reflection.Metadata.Ecma335;
-using System.Text;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
-using temsAPI.Data.Entities.OtherEntities;
 using temsAPI.Data.Entities.UserEntities;
 using temsAPI.Data.Managers;
 using temsAPI.Helpers;
 using temsAPI.System_Files;
-using temsAPI.ViewModels;
 using temsAPI.ViewModels.Personnel;
 
 namespace temsAPI.Controllers.PersonnelControllers
@@ -90,7 +80,7 @@ namespace temsAPI.Controllers.PersonnelControllers
 
 
         [HttpGet("/personnel/getsimplified/{pageNumber}/{recordsPerPage}")]
-        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> GetSimplified(int pageNumber, int recordsPerPage)
         {
             try
@@ -163,7 +153,7 @@ namespace temsAPI.Controllers.PersonnelControllers
         }
 
         [HttpGet("personnel/getbyid/{id}")]
-        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> GetById(string id)
         {
             try

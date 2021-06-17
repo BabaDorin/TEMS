@@ -43,7 +43,7 @@ namespace temsAPI.EquipmentControllers
         }
 
         [HttpGet]
-        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> GetSimplified()
         {
             try
@@ -59,7 +59,7 @@ namespace temsAPI.EquipmentControllers
         }
 
         [HttpGet("equipmenttype/getsimplifiedbyid/{typeId}")]
-        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> GetSimplifiedById(string typeId)
         {
             try
@@ -78,7 +78,7 @@ namespace temsAPI.EquipmentControllers
         }
 
         [HttpPost]
-        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> FullType([FromBody] string typeId)
         {
             try

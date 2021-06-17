@@ -1,32 +1,17 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Diagnostics;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.EntityFrameworkCore;
-using SIC_Parser;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
-using System.Threading.Tasks.Dataflow;
 using temsAPI.Contracts;
-using temsAPI.Data.Entities.EquipmentEntities;
-using temsAPI.Data.Entities.OtherEntities;
 using temsAPI.Data.Entities.UserEntities;
 using temsAPI.Data.Managers;
 using temsAPI.Helpers;
 using temsAPI.Services.SICServices;
 using temsAPI.System_Files;
-using temsAPI.ViewModels;
 using temsAPI.ViewModels.Equipment;
-using temsAPI.ViewModels.EquipmentType;
-using temsAPI.ViewModels.Property;
 
 namespace temsAPI.Controllers.EquipmentControllers
 {

@@ -1,30 +1,17 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Rewrite;
-using Microsoft.AspNetCore.Routing.Constraints;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
-using System.IO;
-using System.Linq;
-using System.Net;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
-using temsAPI.Data.Entities.EquipmentEntities;
-using temsAPI.Data.Entities.OtherEntities;
-using temsAPI.Data.Entities.Report;
 using temsAPI.Data.Entities.UserEntities;
 using temsAPI.Data.Managers;
 using temsAPI.Helpers;
 using temsAPI.Helpers.StaticFileHelpers;
-using temsAPI.Services;
 using temsAPI.Services.Report;
 using temsAPI.System_Files;
-using temsAPI.ViewModels;
 using temsAPI.ViewModels.Report;
 
 namespace temsAPI.Controllers.ReportControllers
@@ -127,7 +114,7 @@ namespace temsAPI.Controllers.ReportControllers
         }
 
         [HttpGet("report/generatereport/{templateId}"), DisableRequestSizeLimit]
-        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<IActionResult> GenerateReport(string templateId)
         {
             try
@@ -152,7 +139,7 @@ namespace temsAPI.Controllers.ReportControllers
         }
 
         [HttpGet]
-        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> GetTemplates()
         {
             try
@@ -168,7 +155,7 @@ namespace temsAPI.Controllers.ReportControllers
         }
 
         [HttpGet]
-        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> GetLastGeneratedReports()
         {
             try
@@ -207,7 +194,7 @@ namespace temsAPI.Controllers.ReportControllers
         }
 
         [HttpPost("report/generatereportfromrawtemplate")]
-        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<IActionResult> GenerateReportFromRawTemplate([FromBody] AddReportTemplateViewModel template)
         {
             try
@@ -232,7 +219,7 @@ namespace temsAPI.Controllers.ReportControllers
         }
 
         [HttpGet("report/getreport/{reportId}")]
-        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<IActionResult> GetReport(string reportId)
         {
             try

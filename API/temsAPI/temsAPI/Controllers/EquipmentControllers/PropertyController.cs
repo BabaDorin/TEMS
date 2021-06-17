@@ -1,24 +1,15 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
-using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Controllers;
-using temsAPI.Data.Entities.EquipmentEntities;
 using temsAPI.Data.Entities.UserEntities;
 using temsAPI.Data.Managers;
 using temsAPI.Helpers;
 using temsAPI.System_Files;
-using temsAPI.Validation;
-using temsAPI.ViewModels;
 using temsAPI.ViewModels.Property;
 
 namespace temsAPI.EquipmentControllers
@@ -37,7 +28,7 @@ namespace temsAPI.EquipmentControllers
         }
 
         [HttpGet]
-        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> Get()
         {
             try
@@ -53,7 +44,7 @@ namespace temsAPI.EquipmentControllers
         }
 
         [HttpGet]
-        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> GetSimplified()
         {
             try
@@ -69,7 +60,7 @@ namespace temsAPI.EquipmentControllers
         }
 
         [HttpGet("property/getsimplifiedbyid/{propertyId}")]
-        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> GetSimplifiedById(string propertyId)
         {
             try
@@ -85,7 +76,7 @@ namespace temsAPI.EquipmentControllers
         }
 
         [HttpGet("property/getbyid/{propertyId}")]
-        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> GetById(string propertyId)
         {
             try

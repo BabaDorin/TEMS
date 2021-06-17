@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.UserEntities;
 using temsAPI.System_Files;
-using temsAPI.ViewModels;
 using temsAPI.ViewModels.IdentityViewModels;
 
 namespace temsAPI.Controllers.IdentityControllers

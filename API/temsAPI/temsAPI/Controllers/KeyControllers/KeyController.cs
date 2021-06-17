@@ -1,22 +1,14 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Runtime.InteropServices;
-using System.Security.Cryptography;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
-using temsAPI.Data.Entities.KeyEntities;
 using temsAPI.Data.Entities.UserEntities;
 using temsAPI.Data.Managers;
 using temsAPI.Helpers;
 using temsAPI.System_Files;
-using temsAPI.ViewModels;
 using temsAPI.ViewModels.Key;
 
 namespace temsAPI.Controllers.KeyControllers
@@ -34,7 +26,7 @@ namespace temsAPI.Controllers.KeyControllers
         }
 
         [HttpGet]
-        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> Get()
         {
             try
@@ -50,7 +42,7 @@ namespace temsAPI.Controllers.KeyControllers
         }
 
         [HttpGet]
-        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> GetAllAutocompleteOptions()
         {
             try
@@ -104,7 +96,7 @@ namespace temsAPI.Controllers.KeyControllers
         }
 
         [HttpGet("key/getallocations/{keyId}/{roomId}/{personnelId}")]
-        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> GetAllocations(string keyId, string roomId, string personnelId)
         {
             try

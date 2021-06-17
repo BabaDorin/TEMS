@@ -2,21 +2,16 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.UserEntities;
 using temsAPI.Data.Managers;
-using temsAPI.Helpers;
 using temsAPI.Services;
 using temsAPI.System_Files;
-using temsAPI.ViewModels;
 using temsAPI.ViewModels.IdentityViewModels;
 
 namespace temsAPI.Controllers.IdentityControllers
@@ -189,7 +184,7 @@ namespace temsAPI.Controllers.IdentityControllers
         }
 
         [HttpGet("temsuser/getuser/{userId}")]
-        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> GetUser(string userId)
         {
             try
@@ -205,7 +200,7 @@ namespace temsAPI.Controllers.IdentityControllers
         }
 
         [HttpGet("temsuser/getsimplifiedbyid/{userId}")]
-        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> GetSimplifiedById(string userId)
         {
             try

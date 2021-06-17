@@ -1,22 +1,14 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
-using temsAPI.Data.Entities.OtherEntities;
 using temsAPI.Data.Entities.UserEntities;
 using temsAPI.Data.Managers;
 using temsAPI.Helpers;
 using temsAPI.System_Files;
-using temsAPI.ViewModels;
-using temsAPI.ViewModels.Personnel;
 using temsAPI.ViewModels.Room;
 
 namespace temsAPI.Controllers.RoomControllers
@@ -125,7 +117,7 @@ namespace temsAPI.Controllers.RoomControllers
         }
 
         [HttpGet("/room/getsimplified/{pageNumber}/{recordsPerPage}")]
-        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> GetSimplified(int pageNumber, int recordsPerPage)
         {
             try
@@ -146,7 +138,7 @@ namespace temsAPI.Controllers.RoomControllers
         }
 
         [HttpGet]
-        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> GetLabels()
         {
             try
@@ -162,7 +154,7 @@ namespace temsAPI.Controllers.RoomControllers
         }
 
         [HttpGet("/room/getbyid/{id}")]
-        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> GetById(string id)
         {
             try

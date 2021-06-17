@@ -4,19 +4,14 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
-using temsAPI.Data.Entities.LibraryEntities;
 using temsAPI.Data.Entities.UserEntities;
 using temsAPI.Data.Managers;
-using temsAPI.Helpers;
 using temsAPI.Helpers.StaticFileHelpers;
 using temsAPI.System_Files;
-using temsAPI.ViewModels.Library;
 
 namespace temsAPI.Controllers.LibraryControllers
 {

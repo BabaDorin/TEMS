@@ -27,7 +27,7 @@ namespace temsAPI.Controllers.IdentityControllers
         }
 
         [HttpGet("profile/get/{userId}")]
-        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES)]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> Get(string userId)
         {
             try

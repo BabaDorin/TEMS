@@ -1,5 +1,5 @@
+import { ChipsAutocompleteModule } from './../chips-autocomplete/chips-autocomplete.module';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { ChipsAutocompleteComponent } from 'src/app/public/formly/chips-autocomplete/chips-autocomplete.component';
 import { MatInputModule } from '@angular/material/input';
 import { SelectTooltipComponent } from './../../public/formly/select-tooltip/select-tooltip.component';
 import { TagInputModule } from 'ngx-chips';
@@ -28,12 +28,12 @@ import { CheckboxGroupComponent } from 'src/app/shared/forms/checkbox-group/chec
     ButtonTypeComponent,                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
     RepeatTypeComponent,
     AddEquipmentRepeatComponent,
-    ChipsAutocompleteComponent,
     CheckboxGroupComponent
   ],
   imports: [
     MatInputModule,
     MatFormFieldModule,
+    ChipsAutocompleteModule,
     FormlyModule.forRoot({
       wrappers: [
         { name: 'formly-wrapper', component: FormlyWrapperComponent },
@@ -93,7 +93,6 @@ import { CheckboxGroupComponent } from 'src/app/shared/forms/checkbox-group/chec
     // Other
     MaterialModule,
     TagInputModule,
-    ChipsAutocompleteComponent,
     CheckboxGroupComponent
   ]
 })

@@ -1,3 +1,4 @@
+import { EmailModule } from './../email/email/email.module';
 import { EquipmentModule } from './../../tems-components/equipment/equipment.module';
 import { BrowserModule } from '@angular/platform-browser';
 import { TemsFormsModule } from './../tems-forms/tems-forms.module';
@@ -17,7 +18,6 @@ import { PersonnelDetailsGeneralComponent } from 'src/app/tems-components/person
 import { PersonnelDetailsIssuesComponent } from 'src/app/tems-components/personnel/personnel-details-issues/personnel-details-issues.component';
 import { PersonnelDetailsAllocationsComponent } from 'src/app/tems-components/personnel/personnel-details-allocations/personnel-details-allocations.component';
 import { AnalyticsModule } from '../analytics/analytics.module';
-import { SendEmailComponent } from 'src/app/tems-components/send-email/send-email.component';
 import { TemsAgGridModule } from '../tems-ag-grid/tems-ag-grid.module';
 
 @NgModule({
@@ -29,7 +29,6 @@ import { TemsAgGridModule } from '../tems-ag-grid/tems-ag-grid.module';
     SummaryPersonnelAnalyticsComponent,
     PersonnelDetailsIssuesComponent,
     PersonnelDetailsAllocationsComponent,
-    SendEmailComponent,
   ],
 
   imports: [
@@ -39,6 +38,7 @@ import { TemsAgGridModule } from '../tems-ag-grid/tems-ag-grid.module';
     TemsFormsModule,
     ReactiveFormsModule,
 
+    EmailModule,
     // Shared modules
     EntitySharedModule,
     EquipmentModule,

@@ -1,3 +1,4 @@
+import { QuickAccessModule } from './modules/quick-access/quick-access.module';
 import { ClaimService } from './services/claim.service';
 import { GenericContainerModule } from './shared/generic-container/generic-container.module';
 import { UserCardsModule } from './user-cards/user-cards.module';
@@ -13,7 +14,6 @@ import { MatInputModule } from '@angular/material/input';
 import { PersonnelService } from './services/personnel-service/personnel.service';
 import { RoomsService } from './services/rooms-service/rooms.service';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { QuickAccessComponent } from './tems-components/equipment/quick-access/quick-access.component';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
@@ -59,7 +59,6 @@ import { RoleService } from './services/role-service/role.service';
     TodoComponent,
     SpinnerComponent,
     ContentAnimateDirective,
-    QuickAccessComponent,
     TEMSComponent,
     SnackComponent,
     LastCreatedTicketsChartComponent,
@@ -85,7 +84,9 @@ import { RoleService } from './services/role-service/role.service';
     MatFormFieldModule,
     TemsFormsModule,
     UserCardsModule,
-    AnnouncementModule
+    AnnouncementModule,
+
+    QuickAccessModule
   ],
   exports:[
     MatAutocompleteModule,

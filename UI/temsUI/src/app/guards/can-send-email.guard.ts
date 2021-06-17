@@ -17,7 +17,7 @@ export class CanSendEmailGuard implements CanActivate {
   canActivate(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-    return this.tokenService.hasClaim(CAN_SEND_EMAILS); 
+    return this.tokenService.canSendEmails(); 
   }
   
 }

@@ -1,10 +1,12 @@
+import { ChipsAutocompleteComponent } from 'src/app/public/formly/chips-autocomplete/chips-autocomplete.component';
+import { EquipmentService } from 'src/app/services/equipment-service/equipment.service';
 import { IOption } from './../../models/option.model';
 import { SendEmail } from './../../models/email/send-email.model';
 import { EmailService } from './../../services/email.service';
 import { TEMSComponent } from './../../tems/tems.component';
 import { SnackService } from './../../services/snack/snack.service';
 import { FormlyParserService } from './../../services/formly-parser-service/formly-parser.service';
-import { Component, Inject, OnInit, Optional } from '@angular/core';
+import { Component, Inject, Input, OnInit, Optional, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
@@ -16,13 +18,15 @@ import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 })
 export class SendEmailComponent extends TEMSComponent implements OnInit {
   
+  @ViewChild('recievers') recieversChipsAutocomplete: ChipsAutocompleteComponent;
+
   private formlyData = {
     form: new FormGroup({}),
     model: {} as any,
     fields: [] as FormlyFieldConfig[],
   }
 
-  personnel: IOption[];
+  @Input() personnel: IOption[] = [];
   personnelNames: string;
   dialogRef;
 
@@ -30,6 +34,7 @@ export class SendEmailComponent extends TEMSComponent implements OnInit {
     private formlyParser: FormlyParserService,
     private snackService: SnackService,
     private emailService: EmailService,
+    private equipmentService: EquipmentService,
     @Optional() @Inject(MAT_DIALOG_DATA) public dialogData: any
   ) { 
     super();
@@ -45,9 +50,11 @@ export class SendEmailComponent extends TEMSComponent implements OnInit {
   }
 
   onSubmit(model){
+    this.personnel = this.recieversChipsAutocomplete.value;
+
     if(this.personnel == undefined || this.personnel.length == 0)
     {
-      this.snackService.snack({message: "You want me to send your email to... Whom?", status: 0});
+      this.snackService.snack({message: "What about specifiying some recievers? :)", status: 0});
       return;  
     }
 

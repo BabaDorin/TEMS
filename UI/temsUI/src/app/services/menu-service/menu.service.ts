@@ -242,6 +242,15 @@ export class MenuService {
           showSubmenu: false,
           submenu: []
         },
+        {
+          path: '/communication/sendemail',
+          title: 'Send E-mails',
+          icon: 'mdi mdi-email menu-icon',
+          isActive: false,
+          isShown: this.tokenService.canSendEmails(),
+          showSubmenu: false,
+          submenu: []
+        },
       ]
     },
     {

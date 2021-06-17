@@ -2,7 +2,6 @@ import { SidebarManager } from './sidebar-shared-functionalities';
 import { MenuService } from './../../services/menu-service/menu.service';
 import { Role } from '../../models/role.model';
 import { Component, OnInit } from '@angular/core';
-import { menuItems } from './menu-items';
 import { RouteInfo } from './sidebar.metadata';
 import { UserService } from 'src/app/services/user-service/user.service';
 

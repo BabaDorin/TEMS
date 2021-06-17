@@ -1,3 +1,4 @@
+import { ClaimService } from './../../../services/claim.service';
 import { AgGridPersonnelComponent } from './../ag-grid-personnel/ag-grid-personnel.component';
 import { AddPersonnelComponent } from './../add-personnel/add-personnel.component';
 import { DialogService } from './../../../services/dialog-service/dialog.service';
@@ -20,13 +21,17 @@ export class ViewPersonnelComponent implements OnInit {
   constructor(
     private snackService: SnackService,
     private emaiService: EmailService,
-    private dialogService: DialogService
+    private dialogService: DialogService,
+    private claims: ClaimService
   ) { }
 
   ngOnInit(): void {
   }
 
   sendEmail(){
+    if(!this.claims.canSendEmails)
+      return;
+      
     let selectedNodes = this.getSelectedNodes()
     if(selectedNodes == undefined)
       return;
@@ -55,6 +60,9 @@ export class ViewPersonnelComponent implements OnInit {
   }
 
   addNew(){
+    if(!this.claims.canManage)
+      return;
+
     this.dialogService.openDialog(
       AddPersonnelComponent,
       undefined,

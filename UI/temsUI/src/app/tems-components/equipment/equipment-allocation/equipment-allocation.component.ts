@@ -131,6 +131,13 @@ export class EquipmentAllocationComponent extends TEMSComponent implements OnIni
 
         if(result.status == 1 && this.dialogRef != undefined)
           this.dialogRef.close();
+        
+        this.clearModel();
       }))
+  }
+
+  clearModel(){
+    this.equipmentIdentifierChips.options = [];
+    this.allocatedTo.options = [];
   }
 }

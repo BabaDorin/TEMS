@@ -1,20 +1,31 @@
-<div class="card">
+
+<!-- BEFREE: [FUTURE] Implement summary room analytics -->
+<!-- <div class="card">
     <div class="card-body">
         <app-summary-rooms-analytics></app-summary-rooms-analytics>
     </div>
 </div>
-<br>
-<div class="card">
+<br> -->
+<div class="card pt-3">
     <div class="card-body">
-        <button mat-button (click)="addNew()">
-            <mat-icon class="text-primary">add</mat-icon>Add new
-        </button>
-        <button mat-button (click)="addLogSelected()">
-            <mat-icon class="text-primary">timeline</mat-icon>Add a log for selected
-        </button>
-        <button mat-button (click)="addIssue()">
-            <mat-icon class="text-primary">feedback</mat-icon>Include selected in an issue
-        </button>
+        <h2>
+            Rooms
+        </h2>
+
+        <ng-container *ngIf="claims.canManage">
+            <button mat-button (click)="addNew()">
+                <mat-icon class="text-primary">add</mat-icon>Add new
+            </button>
+            <button mat-button (click)="addLogSelected()">
+                <mat-icon class="text-primary">timeline</mat-icon>Add a log for selected
+            </button>
+
+        </ng-container>
+        <ng-container *ngIf="claims.canView">
+            <button mat-button (click)="addIssue()">
+                <mat-icon class="text-primary">feedback</mat-icon>Include selected in an issue
+            </button>
+        </ng-container>
         <app-ag-grid-rooms #agGrid></app-ag-grid-rooms>
     </div>
 </div>

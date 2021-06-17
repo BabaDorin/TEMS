@@ -1,14 +1,34 @@
-<div class="card">
+
+<!-- BEFREE: [FUTURE] Implement summary room analytics -->
+
+<!-- <div class="card">
     <div class="card-body">
         <app-summary-personnel-analytics></app-summary-personnel-analytics>
     </div>
-</div>
-<br>
-<div class="card">
+</div> -->
+
+<div class="card pt-3">
     <div class="card-body">
-    <button mat-button (click)="addNew()"><mat-icon class="text-primary">add</mat-icon>Add new</button>
-    <button mat-button (click)="sendEmail()"><mat-icon class="text-primary">mail</mat-icon>Send E-mail to selected</button>
-    <button mat-button (click)="addIssue()"><mat-icon class="text-primary">feedback</mat-icon>Include selected in an issue</button>
-    <app-ag-grid-personnel #agGridPersonnel></app-ag-grid-personnel>
+        <h2>
+            Personnel
+        </h2>
+        <ng-container *ngIf="claims.canManage">
+            <button mat-button (click)="addNew()">
+                <mat-icon class="text-primary">add</mat-icon>Add new
+            </button>
+        </ng-container>
+
+        <ng-container *ngIf="claims.canView">
+            <button mat-button (click)="addIssue()">
+                <mat-icon class="text-primary">feedback</mat-icon>Include selected in an issue
+            </button>
+        </ng-container>
+
+        <ng-container *ngIf="claims.canSendEmails">
+            <button mat-button (click)="sendEmail()">
+                <mat-icon class="text-primary">mail</mat-icon>Send E-mail to selected
+            </button>
+        </ng-container>
+        <app-ag-grid-personnel #agGridPersonnel></app-ag-grid-personnel>
     </div>
 </div>

@@ -61,6 +61,8 @@ export class AddLogComponent extends TEMSComponent implements OnInit {
 
     if(this.dialogData != undefined){
       this.equipment = dialogData.equipment;
+      this.room = dialogData.room;
+      this.personnel = dialogData.personnel;
     }
   }
 

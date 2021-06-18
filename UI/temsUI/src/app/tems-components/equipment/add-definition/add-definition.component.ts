@@ -47,6 +47,7 @@ export class AddDefinitionComponent extends TEMSComponent implements OnInit {
     
     if(dialogData != undefined){
       this.updateDefinitionId = dialogData.updateDefinitionId;
+      this.typeId = dialogData.typeId;
     }
   }
 

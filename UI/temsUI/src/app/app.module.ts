@@ -1,3 +1,4 @@
+import { ChipsAutocompleteModule } from './modules/chips-autocomplete/chips-autocomplete.module';
 import { QuickAccessModule } from './modules/quick-access/quick-access.module';
 import { ClaimService } from './services/claim.service';
 import { GenericContainerModule } from './shared/generic-container/generic-container.module';
@@ -85,7 +86,7 @@ import { RoleService } from './services/role-service/role.service';
     TemsFormsModule,
     UserCardsModule,
     AnnouncementModule,
-
+    ChipsAutocompleteModule,
     QuickAccessModule
   ],
   exports:[

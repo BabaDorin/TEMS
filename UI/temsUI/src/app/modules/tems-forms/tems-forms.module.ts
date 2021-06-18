@@ -93,7 +93,8 @@ import { CheckboxGroupComponent } from 'src/app/shared/forms/checkbox-group/chec
     // Other
     MaterialModule,
     TagInputModule,
-    CheckboxGroupComponent
+    CheckboxGroupComponent,
+    ChipsAutocompleteModule,
   ]
 })
 export class TemsFormsModule { }

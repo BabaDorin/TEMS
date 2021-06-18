@@ -3,6 +3,7 @@ export interface IViewUserSimplified{
     id: string,
     username: string,
     fullName: string,
+    phoneNumber: string,
     email: string,
     roles: string[]
 }
@@ -11,6 +12,7 @@ export class ViewUserSimplified implements IViewUserSimplified{
     id: string;
     username: string;
     fullName: string;
+    phoneNumber: string;
     email: string;
     roles: string[];
 }

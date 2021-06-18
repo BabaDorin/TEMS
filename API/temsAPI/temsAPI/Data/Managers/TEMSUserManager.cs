@@ -219,21 +219,32 @@ namespace temsAPI.Data.Managers
 
         public async Task<List<ViewUserSimplifiedViewModel>> GetUsers(string role, int skip = 0, int take = int.MaxValue)
         {
-            Expression<Func<TEMSUser, bool>> expression = q => !q.IsArchieved && q.UserName != "tems@dmin";
-            if (role != null)
-                expression = ExpressionCombiner.CombineTwo(
-                    expression, 
-                    q => _userManager.GetRolesAsync(_userManager.FindByIdAsync(q.Id).Result).Result.Any(q => q == role));
+            IEnumerable<TEMSUser> users;
 
-            var users = (await _unitOfWork.TEMSUsers
-                .FindAll<ViewUserSimplifiedViewModel>(
+            if(role == null)
+            {
+                Expression<Func<TEMSUser, bool>> expression = q => !q.IsArchieved && q.UserName != "tems@dmin";
+
+                users = (await _unitOfWork.TEMSUsers
+                .FindAll<TEMSUser>(
                     where: expression,
                     skip: skip,
-                    take: take,
-                    select: q => ViewUserSimplifiedViewModel.FromModel(q, _userManager)))
-                .ToList();
+                    take: take));
+            }
+            else
+            {
+                users = await GetUsersOfRole(role, skip, take);
+            }
 
-            return users;
+            return users.Select(q => ViewUserSimplifiedViewModel.FromModel(q, _userManager)).ToList();
+        }
+
+        public async Task<IEnumerable<TEMSUser>> GetUsersOfRole(string role, int skip = 0, int take = int.MaxValue)
+        {
+            return (await _userManager.GetUsersInRoleAsync(role))
+                    .Where(q => !q.IsArchieved && q.UserName != "tems@dmin")
+                    .Skip(skip)
+                    .Take(take);
         }
 
         public async Task<List<Option>> GetClaims()
@@ -295,8 +306,8 @@ namespace temsAPI.Data.Managers
 
         public async Task<string> ChangePassword(ChangePasswordViewModel viewModel)
         {
-            if (viewModel.UserId != _identityService.GetUserId());
-                return "You don't have enough privilleges to change this user's password ;)";
+            if (viewModel.UserId != _identityService.GetUserId()) ;
+            return "You don't have enough privilleges to change this user's password ;)";
 
             string validationResult = viewModel.Validate();
             if (validationResult != null)

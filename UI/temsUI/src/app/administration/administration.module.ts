@@ -1,3 +1,4 @@
+import { ChipsAutocompleteModule } from './../modules/chips-autocomplete/chips-autocomplete.module';
 import { SystemConfigComponent } from './../tems-components/admin/system-config/system-config.component';
 import { MatButtonModule } from '@angular/material/button';
 import { UserContainerComponent } from './../tems-components/identity/user-container/user-container.component';
@@ -57,7 +58,8 @@ declarations: [
     EquipmentModule,
     DialogModule,
     PersonnelModule,
-    NgxPaginationModule
+    NgxPaginationModule,
+    ChipsAutocompleteModule,
   ]
 })
 export class AdministrationModule { }

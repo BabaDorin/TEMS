@@ -123,7 +123,7 @@ namespace temsAPI.Controllers.IdentityControllers
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
-                return ReturnResponse("An error occured when fetching users", ResponseStatus.Fail);
+                return ReturnResponse("An error occured while fetching users", ResponseStatus.Fail);
             }
         }
 

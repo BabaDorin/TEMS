@@ -12,6 +12,7 @@ namespace temsAPI.ViewModels.IdentityViewModels
         public string Id { get; set; }
         public string Username { get; set; }
         public string FullName { get; set; }
+        public string PhoneNumber { get; set; }
         public string Email { get; set; }
         public List<string> Roles { get; set; }
 
@@ -23,6 +24,7 @@ namespace temsAPI.ViewModels.IdentityViewModels
                 Username = user.UserName,
                 Email = user.Email,
                 FullName = user.FullName,
+                PhoneNumber = user.PhoneNumber,
                 Roles = userManager.GetRolesAsync(user).Result.ToList()
             };
         }

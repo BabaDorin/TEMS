@@ -98,7 +98,7 @@ namespace temsAPI.Data.Entities.EquipmentEntities
                 TEMSID = viewModel.Temsid,
                 SerialNumber = viewModel.SerialNumber,
                 Currency = viewModel.Currency,
-                PurchaseDate = viewModel.PurchaseDate,
+                PurchaseDate = viewModel.PurchaseDate != DateTime.MinValue ? viewModel.PurchaseDate : DateTime.Now,
                 Description = viewModel.Description,
                 EquipmentDefinitionID = viewModel.EquipmentDefinitionID,
                 IsDefect = viewModel.IsDefect,

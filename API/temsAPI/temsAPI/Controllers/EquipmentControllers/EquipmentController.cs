@@ -176,7 +176,7 @@ namespace temsAPI.Controllers.EquipmentControllers
             try
             {
                 var equipment = await _equipmentManager.GetFullEquipmentById(equipmentId);
-                var viewModel = _mapper.Map<AddEquipmentViewModel>(equipment);
+                var viewModel = AddEquipmentViewModel.FromModel(equipment);
 
                 return Json(viewModel);
             }

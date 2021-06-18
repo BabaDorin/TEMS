@@ -22,7 +22,7 @@ uamOfTicketsClosedByUserThatWereReopenedAfterwards != undefined
 
     <div class="col-lg-4 col-md-6">
         <app-simple-info-card title="Probability of reopening an issue closed by the user" [theme]="info"
-            [mainText]="(uamOfTicketsClosedByUserThatWereReopenedAfterwards * 100 / uamOfTicketsEverClosedByUser | number: '1.0-0') + '%'"
+            [mainText]="uamOfTicketsEverClosedByUser == 0 ? '0%' : (uamOfTicketsClosedByUserThatWereReopenedAfterwards * 100 / uamOfTicketsEverClosedByUser | number: '1.0-0') + '%'"
             [footNote]="uamOfTicketsEverClosedByUser + ' tickets were closed by the user, from which ' + uamOfTicketsClosedByUserThatWereReopenedAfterwards + ' have been reopened afterwards'">
         </app-simple-info-card>
     </div>

@@ -31,6 +31,7 @@ namespace temsAPI.ViewModels.Profile
                 Username = user.UserName,
                 Email = user.Email,
                 IsArchieved = user.IsArchieved,
+                DateRegistered = user.DateRegistered,
                 GetEmailNotifications = user.GetEmailNotifications,
                 //DateRegistered = q.DateRegistered,
                 PhoneNumber = user.PhoneNumber,

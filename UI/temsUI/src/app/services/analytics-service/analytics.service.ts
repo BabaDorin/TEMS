@@ -119,7 +119,6 @@ export class AnalyticsService extends TEMSService {
 
   getAmountOfCreatedIssues(entityType?: string, entityId?: string): Observable<number>{
     let endPoint = this.buildEndpointAddresWithEntity(API_ANALYTICS_URL+ '/getAmountOfCreatedTicketsOfEntity', entityType, entityId);
-
     return this.http.get<number>(
       endPoint,
       this.httpOptions

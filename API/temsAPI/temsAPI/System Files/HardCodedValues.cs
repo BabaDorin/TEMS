@@ -15,7 +15,7 @@ namespace temsAPI.System_Files
     public static class HardCodedValues
     {
         public static List<string> EntityTypes 
-            => new List<string>() { "room", "personnel", "equipment" };
+            => new List<string>() { "room", "personnel", "equipment", "user" };
 
     }
 }

@@ -102,5 +102,25 @@ namespace temsAPI.ViewModels.Equipment
 
             return (stringBuilder.ToString() == "") ? null : stringBuilder.ToString();
         }
+
+        public static AddEquipmentViewModel FromModel(Data.Entities.EquipmentEntities.Equipment model)
+        {
+            return new AddEquipmentViewModel()
+            {
+                Id = model.Id,
+                Children = model.Children == null
+                    ? null
+                    : model.Children.Select(q => AddEquipmentViewModel.FromModel(q)).ToList(),
+                Currency = model.Currency,
+                Description = model.Description,
+                EquipmentDefinitionID = model.EquipmentDefinitionID,
+                IsDefect = model.IsDefect,
+                IsUsed = model.IsUsed,
+                Price = model.Price ?? 0,
+                PurchaseDate = model.PurchaseDate ?? DateTime.MinValue,
+                SerialNumber = model.SerialNumber,
+                Temsid = model.TEMSID
+            };
+        }
     }
 }

@@ -1,15 +1,23 @@
-<br>
-<h2>Currently allocated equipment</h2>
-<hr>
-<!-- <app-summary-equipment-analytics
-[personnelId]="personnel.id">
-</app-summary-equipment-analytics> -->
+<div class="col-md-12 flex-container">
+    <h2 class="mt-3">
+        Currently allocated equipment
+    </h2>
+    <hr>
 
-<app-ag-grid-equipment #agGridEquipment
-    [personnel]="personnelParameter">
-</app-ag-grid-equipment>
-<br>
-<br>
-<app-entity-allocations-list [personnel]="personnel" (allocationCreated)="refreshAgGrid()">
-    Loading...
-</app-entity-allocations-list>
+    <div id="section1">
+        <app-summary-equipment-analytics [personnelId]="personnel.id">
+        </app-summary-equipment-analytics>
+    </div>
+
+    <div id="section2">
+        <app-ag-grid-equipment #agGridEquipment [personnel]="personnelParameter">
+        </app-ag-grid-equipment>
+    </div>
+
+    <div id="section3" class="mt-5">
+        <app-entity-allocations-list [personnel]="personnel" (allocationCreated)="refreshAgGrid()">
+            Loading...
+        </app-entity-allocations-list>
+    </div>
+
+</div>

@@ -1,15 +1,21 @@
-<br>
-<h2>Currently allocated equipment</h2>
-<hr>
-<app-summary-equipment-analytics
-[roomId]="room.id">
-</app-summary-equipment-analytics>
+<div class="col-md-12 flex-container">
+    <h2 class="mt-3">
+        Currently allocated equipment
+    </h2>
+    <hr>
+    <div id="section1">
+        <app-summary-equipment-analytics [roomId]="room.id">
+        </app-summary-equipment-analytics>
+    </div>
 
-<app-ag-grid-equipment #agGridEquipment
-    [rooms]="roomsParameter">
-</app-ag-grid-equipment>
-<br>
-<br>
-<app-entity-allocations-list [room]="room">
-    Loading...
-</app-entity-allocations-list>
+    <div id="section2">
+        <app-ag-grid-equipment #agGridEquipment [rooms]="roomsParameter">
+        </app-ag-grid-equipment>
+    </div>
+
+    <div id="section3" class="mt-5">
+        <app-entity-allocations-list [room]="room">
+            Loading...
+        </app-entity-allocations-list>
+    </div>
+</div>

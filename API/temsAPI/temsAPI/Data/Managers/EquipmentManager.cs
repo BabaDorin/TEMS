@@ -489,19 +489,17 @@ namespace temsAPI.Data.Managers
                 return expression;
             
             Expression<Func<Equipment, bool>> secondaryExpression = null;
+
+            // BEFREE: Not good at all! (store the active allocation in a var).
             switch (entityType)
             {
                 case "room":
-                    secondaryExpression = q
-                        => q.ActiveAllocation != null
-                        && q.ActiveAllocation.RoomID == entityId;
+                    secondaryExpression = q => q.EquipmentAllocations.FirstOrDefault(q => q.DateReturned == null) != null
+                    && q.EquipmentAllocations.FirstOrDefault(q => q.DateReturned == null).RoomID == entityId;
                     break;
                 case "personnel":
-                    {
-                        secondaryExpression = q
-                        => q.ActiveAllocation != null
-                        && q.ActiveAllocation.RoomID == entityId;
-                    }
+                    secondaryExpression = q => q.EquipmentAllocations.FirstOrDefault(q => q.DateReturned == null) != null
+                     && q.EquipmentAllocations.FirstOrDefault(q => q.DateReturned == null).PersonnelID == entityId;
                     break;
             }
 

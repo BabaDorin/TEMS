@@ -45,7 +45,11 @@ namespace temsAPI.Data.Managers
             Expression<Func<Equipment, bool>> filterByEntityExpression =
                 _equipmentManager.Eq_FilterByEntity(entityType, entityId);
 
-            return await _unitOfWork.Equipments.Count(filterByEntityExpression);
+            return (await _unitOfWork.Equipments
+                .FindAll<Equipment>(
+                    include: q => q.Include(q => q.EquipmentAllocations),
+                    where: filterByEntityExpression))
+                .Count;
         }
 
         public async Task<double> GetEquipmentTotalCost(
@@ -57,6 +61,7 @@ namespace temsAPI.Data.Managers
 
             double sum = (double)(await _unitOfWork.Equipments
                 .FindAll(
+                    include: q => q.Include(q => q.EquipmentAllocations),
                     where: filterByEntityExpression,
                     select: q => _equipmentManager.GetEquipmentPriceInLei(q)
                 )).Sum();
@@ -71,12 +76,14 @@ namespace temsAPI.Data.Managers
             Expression<Func<Equipment, bool>> filterByEntityExpression =
                 _equipmentManager.Eq_FilterByEntity(entityType, entityId);
 
-            int currentlyInUse = await _unitOfWork.Equipments.Count(
-                ExpressionCombiner.CombineTwo(filterByEntityExpression, q => q.IsUsed));
+            var equipment = (await _unitOfWork.Equipments.FindAll<Equipment>
+                (
+                    include: q => q.Include(q => q.EquipmentAllocations),
+                    where: ExpressionCombiner.CombineTwo(filterByEntityExpression, q => q.IsUsed)
+                ));
 
-            int currentlyUnengaged = await _unitOfWork.Equipments.Count(
-                ExpressionCombiner.CombineTwo(filterByEntityExpression, q => !q.IsUsed));
-
+            int currentlyInUse = equipment.Count(q => q.IsUsed);
+            int currentlyUnengaged = equipment.Count(q => !q.IsUsed);
 
             var pieChart = new PieChartData
             {
@@ -100,8 +107,10 @@ namespace temsAPI.Data.Managers
 
             var rates = (await _unitOfWork.Equipments
                 .FindAll<Equipment>(
-                    where: filterByEntityExpression,
-                    include: q => q.Include(q => q.EquipmentDefinition).ThenInclude(q => q.EquipmentType)
+                    include: q => q
+                    .Include(q => q.EquipmentDefinition).ThenInclude(q => q.EquipmentType)
+                    .Include(q => q.EquipmentAllocations),
+                    where: filterByEntityExpression
                     ))
                 .GroupBy(q => q.EquipmentDefinition.EquipmentType.Name)
                 .Select(q => new Tuple<string, int>(q.Key, q.Count()))
@@ -121,11 +130,12 @@ namespace temsAPI.Data.Managers
             Expression<Func<Equipment, bool>> filterByEntityExpression =
                 _equipmentManager.Eq_FilterByEntity(entityType, entityId);
 
-            int working = await _unitOfWork.Equipments.Count(
-               ExpressionCombiner.CombineTwo(filterByEntityExpression, q => !q.IsDefect));
+            var equipment = (await _unitOfWork.Equipments.FindAll<Equipment>(
+                    include: q => q.Include(q => q.EquipmentAllocations),
+                    where: filterByEntityExpression));
 
-            int defect = await _unitOfWork.Equipments.Count(
-                ExpressionCombiner.CombineTwo(filterByEntityExpression, q => q.IsDefect));
+            int working = equipment.Count(q => !q.IsDefect);
+            int defect = equipment.Count(q => q.IsDefect);
 
             PieChartData pieChart = new()
             {
@@ -149,8 +159,8 @@ namespace temsAPI.Data.Managers
 
             var rates = (await _unitOfWork.Equipments
                 .FindAll<Equipment>(
-                    where: filterByEntityExpression,
-                    include: q => q.Include(q => q.EquipmentAllocations)
+                    include: q => q.Include(q => q.EquipmentAllocations),
+                    where: filterByEntityExpression
                     ))
                 .GroupBy(q => q.ActiveAllocation == null)
                 .Select(q => new Tuple<string, int>(q.Key ? "Allocated" : "unallocated", q.Count()))

@@ -1,3 +1,4 @@
+import { ClaimService } from './../../../services/claim.service';
 import { ViewRoomSimplified } from './../../../models/room/view-room-simplified.model';
 import { AddRoomComponent } from './../add-room/add-room.component';
 import { SnackService } from './../../../services/snack/snack.service';
@@ -18,7 +19,8 @@ export class ViewRoomsComponent implements OnInit {
   
   constructor(
     private dialogService: DialogService,
-    private snackService: SnackService
+    private snackService: SnackService,
+    private claims: ClaimService
   ) { 
 
   }

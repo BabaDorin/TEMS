@@ -1,3 +1,4 @@
+import { EquipmentSummaryAnalyticsModule } from './../../modules/summary-analytics/equipment-summary-analytics/equipment-summary-analytics.module';
 import { ChildEquipmentContainerComponent } from './../../tems-component/equipment/child-equipment-container/child-equipment-container.component';
 import { FileUploadModule } from './../../modules/file-upload/file-upload.module';
 import { EquipmentDetailsGeneralComponent } from './equipment-details/equipment-details-general/equipment-details-general.component';
@@ -10,7 +11,6 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
 import { AddDefinitionComponent } from './add-definition/add-definition.component';
 import { AddTypeComponent } from './add-type/add-type.component';
 import { ViewEquipmentComponent } from './view-equipment/view-equipment.component';
-import { SummaryEquipmentAnalyticsComponent } from './../analytics/summary-equipment-analytics/summary-equipment-analytics.component';
 import { AddEquipmentComponent } from './add-equipment/add-equipment.component';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -38,7 +38,6 @@ import { EquipmentSerialNumberComponent } from './equipment-serial-number/equipm
     AddEquipmentComponent,
     AddTypeComponent,
     AddDefinitionComponent,
-    SummaryEquipmentAnalyticsComponent,
     EquipmentDetailsIssuesComponent,
     AddPropertyComponent,
     ViewTypeComponent,
@@ -64,6 +63,7 @@ import { EquipmentSerialNumberComponent } from './equipment-serial-number/equipm
     EntitySharedModule,
     AnalyticsModule,
     FileUploadModule,
+    EquipmentSummaryAnalyticsModule,
   ],
   exports: [
   ],

@@ -3,7 +3,7 @@
         <h2>
             View library items
         </h2>
-        <button mat-button *ngIf="canManage" (click)="openUploadItems()">
+        <button mat-button *ngIf="claims.canManage" (click)="openUploadItems()">
             <mat-icon class="text-primary">add</mat-icon>
             Upload new file
         </button>

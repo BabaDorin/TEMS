@@ -2,7 +2,7 @@
     <div class="card-body">
         <div class="card-title">Upload file</div>
         <hr>
-        <br>
+        <div class="mt-5"></div>
         <app-file-upload (filesSelected)="filesSelected($event)"></app-file-upload>
         <div class="files-list">
             <ng-container  *ngFor="let file of files; let i = index">

@@ -1,3 +1,4 @@
+import { ClaimService } from './../../../services/claim.service';
 import { TokenService } from './../../../services/token-service/token.service';
 import { SnackService } from './../../../services/snack/snack.service';
 import { UploadedFileContainerModel } from './../../../models/generic-container/uploaded-file-container.model';
@@ -21,27 +22,24 @@ export class ViewLibraryComponent extends TEMSComponent implements OnInit {
   libraryContainerModels: UploadedFileContainerModel[];
   pageNumber = 1;
   downloader = new Downloader();
-  canManage: boolean = false;
 
   constructor(
     private libraryService: LibraryService,
     private dialogService: DialogService,
     private snackService: SnackService,
-    private tokenService: TokenService
+    private claims: ClaimService
   ) {
     super();
   }
 
   ngOnInit(): void {
-    this.canManage = this.tokenService.hasClaim(CAN_MANAGE_ENTITIES);
-
     this.subscriptions.push(this.libraryService.getItems()
       .subscribe(result => {
         if(this.snackService.snackIfError(result))
           return;
         
         this.libraryContainerModels = (result as ViewLibraryItem[])
-          .map(q => new UploadedFileContainerModel(this.libraryService, this.snackService, this.tokenService, q));
+          .map(q => new UploadedFileContainerModel(this.libraryService, this.snackService, this.claims, q));
       }));
   }
 

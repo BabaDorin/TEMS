@@ -43,7 +43,7 @@ namespace temsAPI.Controllers.LibraryControllers
 
                 var fileName = Request.Form["myName"];
                 var fileDescription = Request.Form["myDescription"];
-                var result = _libraryManager.UploadFile(file, fileName, fileDescription);
+                var result = await _libraryManager.UploadFile(file, fileName, fileDescription);
 
                 if (result != null)
                     return StatusCode(500, result);

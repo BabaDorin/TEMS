@@ -6,24 +6,26 @@
           Issues
         </h2>
       </div>
-      <nav aria-label="breadcrumb">
-        <ul class="breadcrumb bg-transparent">
-
-          <li class="breadcrumb-item" aria-current="page">
-            <button mat-button [matMenuTriggerFor]="menu" aria-label="Add Equipment Menu" class="float-right">
-              Actions <mat-icon class="text-primary">more_vert</mat-icon>
-            </button>
-            <mat-menu #menu="matMenu">
-              <div class="p-2 text-center">
-                <mat-slide-toggle *ngIf="showIncludeClosed == true" class="float-right"
-                  (click)="includeClosedChanged()">
-                  Include Closed
-                </mat-slide-toggle>
-              </div>
-            </mat-menu>
-          </li>
-        </ul>
-      </nav>
+      <ng-container *ngIf="showIncludeClosed">
+        <nav aria-label="breadcrumb">
+          <ul class="breadcrumb bg-transparent">
+  
+            <li class="breadcrumb-item" aria-current="page">
+              <button mat-button [matMenuTriggerFor]="menu" aria-label="Add Equipment Menu" class="float-right">
+                Actions <mat-icon class="text-primary">more_vert</mat-icon>
+              </button>
+              <mat-menu #menu="matMenu">
+                <div class="p-2 text-center">
+                  <mat-slide-toggle class="float-right"
+                    (click)="includeClosedChanged()">
+                    Include Closed
+                  </mat-slide-toggle>
+                </div>
+              </mat-menu>
+            </li>
+          </ul>
+        </nav>
+      </ng-container>
     </div>
 
     <div class="button-container">

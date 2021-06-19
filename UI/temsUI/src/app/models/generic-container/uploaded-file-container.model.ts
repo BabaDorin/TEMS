@@ -1,3 +1,4 @@
+import { ClaimService } from './../../services/claim.service';
 import { TokenService } from './../../services/token-service/token.service';
 import { ViewLibraryItem } from './../library/view-library-item.model';
 import { SnackService } from './../../services/snack/snack.service';
@@ -15,17 +16,15 @@ export class UploadedFileContainerModel extends TEMSComponent implements IGeneri
     eventEmitted: Function;
 
     downloader = new Downloader();
-    canManage: boolean = false;
 
     constructor(
         private libraryService: LibraryService,
         private snackService: SnackService,
-        private tokenService: TokenService,
+        private claims: ClaimService,
         private libraryItem: ViewLibraryItem
     ) {
         super();
 
-        this.canManage = this.tokenService.hasClaim(CAN_MANAGE_ENTITIES);
         this.buildContainerModel();
     }
 
@@ -56,7 +55,7 @@ export class UploadedFileContainerModel extends TEMSComponent implements IGeneri
             action: () => this.download()
         });
 
-        if(this.canManage){
+        if(this.claims.canManage){
             this.actions.push(
                 {
                     name: 'Remove',

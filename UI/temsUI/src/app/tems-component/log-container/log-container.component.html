@@ -9,6 +9,20 @@
                     {{ log.dateCreated | date:'medium' }}
                 </small>
             </p>
+            <p class="text-muted">
+                <ng-container *ngIf="log.room != undefined">
+                    Room: {{ log.room.label }}
+                </ng-container>
+                <ng-container *ngIf="log.personnel != undefined">
+                    Personnel: {{ log.personnel.label }}
+                </ng-container>
+                <ng-container *ngIf="log.equipment != undefined">
+                    Equipment: {{ log.equipment.label }}
+                </ng-container>
+                <ng-container *ngIf="log.createdBy != undefined">
+                    , created by {{ log.createdBy.label }}
+                </ng-container>
+            </p>
         </div>
         <ng-container *ngIf="canManage">
             <nav aria-label="breadcrumb">

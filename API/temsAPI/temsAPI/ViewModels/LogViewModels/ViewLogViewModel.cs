@@ -10,6 +10,7 @@ namespace temsAPI.ViewModels.Log
     {
         public string Id { get; set; }
         public DateTime DateCreated { get; set; }
+        public IOption CreatedBy { get; set; }
         public string Text { get; set; }
         public IOption Equipment { get; set; }
         public IOption Room { get; set; }
@@ -23,6 +24,13 @@ namespace temsAPI.ViewModels.Log
             {
                 Id = log.Id,
                 DateCreated = log.DateCreated,
+                CreatedBy = log.CreatedBy == null
+                ? null
+                : new Option
+                {
+                    Value = log.CreatedByID,
+                    Label = log.CreatedBy.FullName ?? log.CreatedBy.UserName
+                },
                 Text = log.Text,
                 LogType = (log.LogType == null)
                 ? null

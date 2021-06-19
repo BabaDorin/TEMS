@@ -15,10 +15,16 @@ namespace temsAPI.Data.Entities.CommunicationEntities
     {
         [Key]
         public string Id { get; set; }
+        
+        public string Text { get; set; }
 
         public DateTime DateCreated { get; set; }
+
 #nullable enable
-        public string? Text { get; set; }
+
+        [ForeignKey("CreatedByID")]
+        public TEMSUser? CreatedBy { get; set; }
+        public string? CreatedByID { get; set; }
 
         [ForeignKey("EquipmentID")]
         public Equipment? Equipment { get; set; }

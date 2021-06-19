@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.CommunicationEntities;
 using temsAPI.Helpers;
+using temsAPI.Services;
 using temsAPI.ViewModels;
 using temsAPI.ViewModels.Log;
 
@@ -15,8 +16,14 @@ namespace temsAPI.Data.Managers
 {
     public class LogManager : EntityManager
     {
-        public LogManager(IUnitOfWork unitOfWork, ClaimsPrincipal user) : base(unitOfWork, user)
+        private IdentityService _identityService;
+
+        public LogManager(
+            IUnitOfWork unitOfWork, 
+            ClaimsPrincipal user,
+            IdentityService identityService) : base(unitOfWork, user)
         {
+            _identityService = identityService;
         }
 
         public async Task<string> Create(AddLogViewModel viewModel)
@@ -31,6 +38,7 @@ namespace temsAPI.Data.Managers
                 {
                     Id = Guid.NewGuid().ToString(),
                     DateCreated = DateTime.Now,
+                    CreatedByID = _identityService.GetUserId(),
                     IsImportant = viewModel.IsImportant,
                     LogTypeID = viewModel.LogTypeId,
                     Text = viewModel.Text,
@@ -98,7 +106,8 @@ namespace temsAPI.Data.Managers
                     .Include(q => q.Equipment)
                     .Include(q => q.Personnel)
                     .Include(q => q.Room)
-                    .Include(q => q.LogType),
+                    .Include(q => q.LogType)
+                    .Include(q => q.CreatedBy),
                     orderBy: q => q.OrderByDescending(q => q.DateCreated),
                     skip: skip,
                     take: take,

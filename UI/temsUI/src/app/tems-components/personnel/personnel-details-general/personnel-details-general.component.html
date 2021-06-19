@@ -42,7 +42,7 @@
                                             <mat-icon class="text-muted float-right p-1">auto_delete</mat-icon>
                                             Archieve
                                         </button>
-                                        <button mat-button (click)="sendMail()" class="btn-block">
+                                        <button *ngIf="claims.canSendEmails" mat-button (click)="sendMail()" class="btn-block">
                                             <mat-icon class="text-muted float-right p-1">mail</mat-icon>
                                             Send an email
                                         </button>

@@ -1,3 +1,4 @@
+import { ClaimService } from './../../../services/claim.service';
 import { CAN_MANAGE_ENTITIES } from './../../../models/claims';
 import { TokenService } from './../../../services/token-service/token.service';
 import { SendEmailComponent } from './../../send-email/send-email.component';
@@ -34,6 +35,7 @@ export class PersonnelDetailsGeneralComponent extends TEMSComponent implements O
     private snackService: SnackService,
     private dialogService: DialogService,
     private tockenService: TokenService,
+    private claims: ClaimService,
     @Optional() @Inject(MAT_DIALOG_DATA) public dialogData: any
   ) {
     super();
@@ -81,6 +83,9 @@ export class PersonnelDetailsGeneralComponent extends TEMSComponent implements O
   }
 
   sendMail(){
+    if(!this.claims.canSendEmails)
+      return;
+
     this.dialogService.openDialog(
       SendEmailComponent,
       [{label: "personnel", value: [{label: this.personnel.name, value: this.personnel.id}]}]

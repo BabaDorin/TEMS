@@ -26,7 +26,7 @@ namespace temsAPI.Controllers.KeyControllers
         }
 
         [HttpGet]
-        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES, TEMSClaims.CAN_ALLOCATE_KEYS)]
         public async Task<JsonResult> Get()
         {
             try
@@ -42,7 +42,7 @@ namespace temsAPI.Controllers.KeyControllers
         }
 
         [HttpGet]
-        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES, TEMSClaims.CAN_ALLOCATE_KEYS)]
         public async Task<JsonResult> GetAllAutocompleteOptions()
         {
             try
@@ -58,7 +58,7 @@ namespace temsAPI.Controllers.KeyControllers
         }
 
         [HttpPost]
-        [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
+        [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES, TEMSClaims.CAN_ALLOCATE_KEYS)]
         public async Task<JsonResult> Create([FromBody] AddKeyViewModel viewModel)
         {
             try
@@ -96,7 +96,7 @@ namespace temsAPI.Controllers.KeyControllers
         }
 
         [HttpGet("key/getallocations/{keyId}/{roomId}/{personnelId}")]
-        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES, TEMSClaims.CAN_ALLOCATE_KEYS)]
         public async Task<JsonResult> GetAllocations(string keyId, string roomId, string personnelId)
         {
             try
@@ -131,7 +131,7 @@ namespace temsAPI.Controllers.KeyControllers
         }
 
         [HttpGet("key/archieve/{keyId}")]
-        [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
+        [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES, TEMSClaims.CAN_ALLOCATE_KEYS)]
         public async Task<JsonResult> Archieve(string keyId)
         {
             try
@@ -151,6 +151,7 @@ namespace temsAPI.Controllers.KeyControllers
         }
 
         [HttpGet("key/archieveallocation/{allocationId}/{archivationStatus?}")]
+        [ClaimRequirement(TEMSClaims.CAN_ALLOCATE_KEYS)]
         public async Task<JsonResult> ArchieveAllocation(string allocationId, bool? archivationStatus)
         {
             try

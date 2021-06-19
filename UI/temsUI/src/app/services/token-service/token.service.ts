@@ -35,7 +35,7 @@ export class TokenService {
   }
 
   canAllocateKeys() {
-    return this.hasClaim(CAN_MANAGE_SYSTEM_CONFIGURATION) || this.hasClaim(CAN_ALLOCATE_KEYS) || this.hasClaim(CAN_MANAGE_SYSTEM_CONFIGURATION);
+    return this.hasClaim(CAN_MANAGE_SYSTEM_CONFIGURATION) || this.hasClaim(CAN_ALLOCATE_KEYS);
   }
 
   canSendEmails() {

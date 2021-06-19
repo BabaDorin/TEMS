@@ -7,11 +7,11 @@
                     <h2>
                         Unallocated keys
                     </h2>
-                    <button mat-button (click)="addKey()">
+                    <button *ngIf="claims.canManage || claims.canAllocateKeys" mat-button (click)="addKey()">
                         <mat-icon class="text-primary">add</mat-icon>
                         Add new
                     </button>
-                    <button mat-button (click)="allocateSelectedKeys()">
+                    <button *ngIf="claims.canAllocateKeys" mat-button (click)="allocateSelectedKeys()">
                         <mat-icon class="text-primary">double_arrow</mat-icon>
                         Allocate selected
                     </button>
@@ -26,7 +26,7 @@
                     <h2>
                         Allocated keys
                     </h2>
-                    <button mat-button (click)="returnMultipleKeys()">
+                    <button *ngIf="claims.canAllocateKeys" mat-button (click)="returnMultipleKeys()">
                         <mat-icon class="text-primary">done</mat-icon>
                         Mark selected as returned
                     </button>

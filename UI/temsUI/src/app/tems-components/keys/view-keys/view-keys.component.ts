@@ -1,3 +1,4 @@
+import { ClaimService } from './../../../services/claim.service';
 import { SnackService } from 'src/app/services/snack/snack.service';
 import { DialogService } from 'src/app/services/dialog-service/dialog.service';
 import { KeysAllocationsComponent } from 'src/app/tems-components/keys/keys-allocations/keys-allocations.component';
@@ -26,7 +27,8 @@ export class ViewKeysComponent extends TEMSComponent implements OnInit {
   constructor(
     private keysService: KeysService,
     private dialogService: DialogService,
-    private snackService: SnackService
+    private snackService: SnackService,
+    private claims: ClaimService
   ) { 
     super();
   }

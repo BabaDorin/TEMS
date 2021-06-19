@@ -1,3 +1,4 @@
+import { ClaimService } from './../../../services/claim.service';
 import { IOption } from './../../../models/option.model';
 import { DialogService } from './../../../services/dialog-service/dialog.service';
 import { SnackService } from 'src/app/services/snack/snack.service';
@@ -35,13 +36,11 @@ export class AgGridKeysComponent extends TEMSComponent implements OnInit, OnChan
   private pagination
   private paginationPageSize;
 
-  canManageEntities: boolean = false;
-
   constructor(
     private keysService: KeysService,
-    private tokenService: TokenService,
     private snackService: SnackService,
-    private dialogService: DialogService
+    private dialogService: DialogService,
+    private claims: ClaimService
   ) { 
     super();
     // enables pagination in the grid
@@ -62,10 +61,9 @@ export class AgGridKeysComponent extends TEMSComponent implements OnInit, OnChan
   }
 
   ngOnInit(): void {
-    this.canManageEntities = this.tokenService.hasClaim(CAN_MANAGE_ENTITIES);
     this.displayAsAllocated ? this.buildColumnDefsAsAllocated() : this.buildColumnDefsAsUnallocated();
 
-    if(this.canManageEntities){
+    if(this.claims.canManage || this.claims.canAllocateKeys){
       this.columnDefs.push({
         cellRenderer: 'btnCellRendererComponent',
         cellRendererParams: {
@@ -109,7 +107,7 @@ export class AgGridKeysComponent extends TEMSComponent implements OnInit, OnChan
       { headerName: 'Time', field: 'timePassed', sortable: true, filter: true }
     ];
 
-    if(this.canManageEntities){
+    if(this.claims.canAllocateKeys){
       this.columnDefs.push({
         cellRenderer: 'btnCellRendererComponent',
         cellRendererParams: {
@@ -126,7 +124,7 @@ export class AgGridKeysComponent extends TEMSComponent implements OnInit, OnChan
       { headerName: 'Room', field: 'room.label', sortable: true, filter: true }
     ];
     
-    if(this.canManageEntities){
+    if(this.claims.canAllocateKeys){
       this.columnDefs.push({
         cellRenderer: 'btnCellRendererComponent',
         cellRendererParams: {

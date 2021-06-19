@@ -1,3 +1,4 @@
+import { EmailSenderCredentials } from './../../../models/system-configuration/emai-sender.model';
 import { SnackService } from './../../../services/snack/snack.service';
 import { TEMSComponent } from './../../../tems/tems.component';
 import { Component, OnInit } from '@angular/core';
@@ -12,7 +13,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 export class SystemConfigComponent extends TEMSComponent implements OnInit {
 
   spaceConstraintsFormGroup = new FormGroup({
-    libraryLimit: new FormControl(),
+    libraryAllocatedStorageSpace: new FormControl(),
     generatedReportsLimit: new FormControl(),
   });
   
@@ -23,7 +24,11 @@ export class SystemConfigComponent extends TEMSComponent implements OnInit {
 
   timeConfigFormGroup = new FormGroup({
     routineInterval: new FormControl(),
-    archievePeriod: new FormControl()
+    archieveInterval: new FormControl()
+  });
+
+  guestTicketConfigFormGroup = new FormGroup({
+    creationAllowance: new FormControl(),
   });
 
   constructor(
@@ -47,14 +52,48 @@ export class SystemConfigComponent extends TEMSComponent implements OnInit {
   }
 
   onSubmit_spaceConstraints(){
-    console.log(this.spaceConstraintsFormGroup);
+    let space = this.spaceConstraintsFormGroup.controls.libraryAllocatedStorageSpace.value;
+
+    this.subscriptions.push(
+      this.systemConfigurationService.setLibraryAllocateStorageSpace(space)
+      .subscribe(result => {
+        this.snackService.snack(result);
+      })
+    );
   }
 
   onSubmit_emailConfigFormGroup(){
-    console.log(this.emailConfigFormGroup);
+    let emailSenderCredentialsModel = new EmailSenderCredentials;
+    emailSenderCredentialsModel.address = this.emailConfigFormGroup.controls.senderAddress.value;
+    emailSenderCredentialsModel.password = this.emailConfigFormGroup.controls.senderPassword.value;
+
+    this.subscriptions.push(
+      this.systemConfigurationService.setEmailSender(emailSenderCredentialsModel)
+      .subscribe(result => {
+        this.snackService.snack(result);
+      })
+    );
   }
 
-  onSubmit_timeConfigFormGroup(){
-    console.log(this.timeConfigFormGroup);
+  setRoutineCheckInterval(){
+    let routineCheckInterval = this.timeConfigFormGroup.controls.routineInterval.value;
+
+    this.subscriptions.push(
+      this.systemConfigurationService.setRoutineCheckInterval(routineCheckInterval)
+      .subscribe(result => {
+        this.snackService.snack(result);
+      })
+    )
+  }
+
+  setArchieveInterval(){
+    let archieveInterval = this.timeConfigFormGroup.controls.archieveInterval.value;
+
+    this.subscriptions.push(
+      this.systemConfigurationService.setArchieveInterval(archieveInterval)
+      .subscribe(result => {
+        this.snackService.snack(result);
+      })
+    )
   }
 }

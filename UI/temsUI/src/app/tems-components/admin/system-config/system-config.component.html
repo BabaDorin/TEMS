@@ -36,14 +36,14 @@
             </p>
             <form [formGroup]="spaceConstraintsFormGroup" (ngSubmit)="onSubmit_spaceConstraints()" class="config-form">
                 <mat-form-field class="d-block">
-                    <mat-label>Maximum space allocated for storing library items:</mat-label>
-                    <input matInput formControlName="libraryLimit" type="number" min="0">
+                    <mat-label>GB of storage space allocated for storing library items:</mat-label>
+                    <input matInput formControlName="libraryAllocatedStorageSpace" type="number" min="0">
                 </mat-form-field>
 
-                <mat-form-field class="d-block mt-2">
+                <!-- <mat-form-field class="d-block mt-2">
                     <mat-label>Maximum space allocated for storing generated reports:</mat-label>
                     <input matInput formControlName="generatedReportsLimit" type="number" min="0">
-                </mat-form-field>
+                </mat-form-field> -->
                 <button mat-button type="submit" class="btn-gradient-primary mt-2">
                     Submit
                 </button>
@@ -95,18 +95,28 @@
                     <mat-label>Routine check interval (recommended: up to 5 days):</mat-label>
                     <input matInput formControlName="routineInterval" type="number" min="1">
                 </mat-form-field>
+                <button mat-button (click)="setRoutineCheckInterval()" class="btn-gradient-primary mt-2">
+                    Submit
+                </button>
 
                 <mat-form-field class="d-block mt-2">
-                    <mat-label>Archieve period (recommended: up to 30 days):</mat-label>
-                    <input matInput formControlName="archievePeriod" type="number" min="1">
+                    <mat-label>Archieve interval (recommended: up to 30 days):</mat-label>
+                    <input matInput formControlName="archieveInterval" type="number" min="1">
                 </mat-form-field>
-                <button mat-button type="submit" class="btn-gradient-primary mt-2">
+                <button mat-button (click)="setArchieveInterval()" class="btn-gradient-primary mt-2">
                     Submit
                 </button>
             </form>
         </div>
         <hr>
-
-
+        <h3>
+            <mat-icon class="text-primary">
+                chevron_right
+            </mat-icon>
+            Ticket creating allowance for guests
+        </h3>
+        <section [formGroup]="guestTicketConfigFormGroup">
+            <p><mat-checkbox formControlName="creationAllowance">Allow guests to create tickets</mat-checkbox></p>
+        </section>
     </div>
 </div>

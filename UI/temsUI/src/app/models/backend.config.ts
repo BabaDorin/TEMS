@@ -18,7 +18,7 @@ export const API_PROFILE_URL = API_URL + '/profile';
 export const API_REP_URL = API_URL + '/report';
 export const API_EMAIL_URL = API_URL + '/email';
 export const API_ARCH_URL = API_URL + '/archieve';
-export const API_SYSCONF_URL = API_URL + '/system';
+export const API_SYSCONF_URL = API_URL + '/systemconfiguration';
 export const API_ANALYTICS_URL = API_URL + '/analytics';
 export const API_NOTIF_URL = API_URL + '/notification';
 

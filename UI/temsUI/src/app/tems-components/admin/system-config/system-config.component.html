@@ -90,20 +90,20 @@
             <p class="text-muted">
                 Indicate interval values in hours for the following actions
             </p>
-            <form [formGroup]="timeConfigFormGroup" (ngSubmit)="onSubmit_timeConfigFormGroup()" class="config-form">
+            <form [formGroup]="timeConfigFormGroup" class="config-form">
                 <mat-form-field class="d-block">
                     <mat-label>Routine check interval (recommended: up to 5 days):</mat-label>
                     <input matInput formControlName="routineInterval" type="number" min="1">
                 </mat-form-field>
-                <button mat-button (click)="setRoutineCheckInterval()" class="btn-gradient-primary mt-2">
+                <button mat-button (click)="setRoutineCheckInterval()" class="btn-gradient-primary">
                     Submit
                 </button>
 
                 <mat-form-field class="d-block mt-2">
                     <mat-label>Archieve interval (recommended: up to 30 days):</mat-label>
-                    <input matInput formControlName="archieveInterval" type="number" min="1">
+                    <input matInput formControlName="archiveInterval" type="number" min="1">
                 </mat-form-field>
-                <button mat-button (click)="setArchieveInterval()" class="btn-gradient-primary mt-2">
+                <button mat-button (click)="setArchiveInterval()" class="btn-gradient-primary">
                     Submit
                 </button>
             </form>
@@ -113,10 +113,21 @@
             <mat-icon class="text-primary">
                 chevron_right
             </mat-icon>
-            Ticket creating allowance for guests
+            Guests
         </h3>
         <section [formGroup]="guestTicketConfigFormGroup">
-            <p><mat-checkbox formControlName="creationAllowance">Allow guests to create tickets</mat-checkbox></p>
+            <mat-checkbox (change)="guestTicketCreationAllowanceChanged()" formControlName="creationAllowance">
+                Allow guests to create tickets
+            </mat-checkbox>
         </section>
+        <form [formGroup]="libraryPassFormGroup" (ngSubmit)="onSubmit_libraryPassFormGroup()" class="config-form">
+            <mat-form-field class="d-block">
+                <mat-label>Library access password (for guests):</mat-label>
+                <input matInput formControlName="libraryPassword" type="text" minlength="1">
+            </mat-form-field>
+            <button mat-button type="submit" class="btn-gradient-primary">
+                Submit
+            </button>
+        </form>
     </div>
 </div>

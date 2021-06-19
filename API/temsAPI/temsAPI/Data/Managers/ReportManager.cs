@@ -227,7 +227,7 @@ namespace temsAPI.Data.Managers
         public async Task CheckForReportsOverflow()
         {
             int totalReports = await _unitOfWork.Reports.Count();
-            while (totalReports >= _appSettings.MaxGeneratedReportsStored)
+            while (totalReports >= _appSettings.GeneratedReportsHistoryLength)
             {
                 var toBeRemoved = (await _unitOfWork.Reports
                     .FindAll<Report>(

@@ -10,11 +10,11 @@ namespace temsAPI.Services
 {
     public class SystemConfigurationService
     {
-        private AppSettings _appSettings;
-
+        public AppSettings AppSettings { get; private set; }
+        
         public SystemConfigurationService(IOptions<AppSettings> appSettingsOptions)
         {
-            _appSettings = appSettingsOptions.Value;
+            AppSettings = appSettingsOptions.Value;
         }
 
         public string SetEmailSender(string address, string password)
@@ -22,20 +22,20 @@ namespace temsAPI.Services
             if (string.IsNullOrEmpty(address) || string.IsNullOrEmpty(password))
                 return "Invalid e-mail address or password";
 
-            _appSettings.Email.EmailSenderAddress = address;
-            _appSettings.Email.EmailSenderAddressPassword = password;
+            AppSettings.Email.EmailSenderAddress = address;
+            AppSettings.Email.EmailSenderAddressPassword = password;
             
             return null;
         }
 
         public void SetClientUrl(string clientUrl)
         {
-            _appSettings.Client_Url = clientUrl;
+            AppSettings.Client_Url = clientUrl;
         }
 
         public void SetJWTSecret(string newJwtSecret)
         {
-            _appSettings.JWT_Secret = newJwtSecret;
+            AppSettings.JWT_Secret = newJwtSecret;
         }
 
         public string SetRoutineCheckInterval(int hours)
@@ -43,7 +43,7 @@ namespace temsAPI.Services
             if (hours <= 0)
                 return "Invalid value provided for hours.";
 
-            _appSettings.RoutineCheckIntervalHr = hours;
+            AppSettings.RoutineCheckIntervalHr = hours;
             return null;
         }
 
@@ -52,7 +52,7 @@ namespace temsAPI.Services
             if (hours <= 0)
                 return "Invalid value provided for hours.";
 
-            _appSettings.ArchiveIntervalHr = hours;
+            AppSettings.ArchiveIntervalHr = hours;
             return null;
         }
 
@@ -61,13 +61,13 @@ namespace temsAPI.Services
             if (gb <= 0)
                 return "Invalid value provided for gb.";
 
-            _appSettings.ArchiveIntervalHr = gb;
+            AppSettings.ArchiveIntervalHr = gb;
             return null;
         }
 
         public void SetLibraryGuestPass(string newPass)
         {
-            _appSettings.LibraryGuestPass = newPass;
+            AppSettings.LibraryGuestPassword = newPass;
         }
 
         public string SetGeneratedReportsHistoryLength(int length)
@@ -75,18 +75,18 @@ namespace temsAPI.Services
             if (length <= 0)
                 return "Invalid value provided for length";
 
-            _appSettings.GeneratedReportsHistoryLength = length;
+            AppSettings.GeneratedReportsHistoryLength = length;
             return null;
         }
 
         public void AllowGuestsToCreateTickets()
         {
-            _appSettings.AllowGuestsToCreateTickets = true;
+            AppSettings.AllowGuestsToCreateTickets = true;
         }
 
         public void ForbidGuestsToCreateTickets()
         {
-            _appSettings.AllowGuestsToCreateTickets = false;
+            AppSettings.AllowGuestsToCreateTickets = false;
         }
     }
 }

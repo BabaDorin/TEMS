@@ -1,3 +1,4 @@
+import { AppSettings } from './../../../models/system-configuration/app-settings.model';
 import { EmailSenderCredentials } from './../../../models/system-configuration/emai-sender.model';
 import { SnackService } from './../../../services/snack/snack.service';
 import { TEMSComponent } from './../../../tems/tems.component';
@@ -12,9 +13,11 @@ import { FormControl, FormGroup } from '@angular/forms';
 })
 export class SystemConfigComponent extends TEMSComponent implements OnInit {
 
+  appSettingsModel: AppSettings;
+
   spaceConstraintsFormGroup = new FormGroup({
     libraryAllocatedStorageSpace: new FormControl(),
-    generatedReportsLimit: new FormControl(),
+    // generatedReportsLimit: new FormControl(),
   });
   
   emailConfigFormGroup = new FormGroup({
@@ -24,11 +27,15 @@ export class SystemConfigComponent extends TEMSComponent implements OnInit {
 
   timeConfigFormGroup = new FormGroup({
     routineInterval: new FormControl(),
-    archieveInterval: new FormControl()
+    archiveInterval: new FormControl()
   });
 
   guestTicketConfigFormGroup = new FormGroup({
     creationAllowance: new FormControl(),
+  });
+
+  libraryPassFormGroup = new FormGroup({
+    libraryPassword: new FormControl()
   });
 
   constructor(
@@ -39,7 +46,27 @@ export class SystemConfigComponent extends TEMSComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.fetchAppSettings();
+  }
 
+  fetchAppSettings(){
+    this.subscriptions.push(
+      this.systemConfigurationService.getAppSettingsModel()
+      .subscribe(result => {
+        if(this.snackService.snackIfError(result))
+          return;
+
+        console.log('settings fetched');
+        console.log(result);
+
+        this.appSettingsModel = result;
+
+        this.spaceConstraintsFormGroup.setValue({libraryAllocatedStorageSpace: result.libraryAllocatedStorageSpace});
+        this.timeConfigFormGroup.setValue({routineInterval: result.routineCheckInterval, archiveInterval: result.archiveInterval});
+        this.guestTicketConfigFormGroup.setValue({creationAllowance: result.allowGuestsToCreateTickets});
+        this.libraryPassFormGroup.setValue({libraryPassword: result.libraryGuestPassword});
+      })
+    )
   }
 
   integrateSIC(){
@@ -86,13 +113,35 @@ export class SystemConfigComponent extends TEMSComponent implements OnInit {
     )
   }
 
-  setArchieveInterval(){
-    let archieveInterval = this.timeConfigFormGroup.controls.archieveInterval.value;
+  setArchiveInterval(){
+    let archieveInterval = this.timeConfigFormGroup.controls.archiveInterval.value;
 
     this.subscriptions.push(
       this.systemConfigurationService.setArchieveInterval(archieveInterval)
       .subscribe(result => {
         this.snackService.snack(result);
+      })
+    )
+  }
+
+  onSubmit_libraryPassFormGroup(){
+    let newPass = this.libraryPassFormGroup.controls.libraryPassword.value;
+
+    this.subscriptions.push(
+      this.systemConfigurationService.setLibraryPassword(newPass)
+      .subscribe(result => {
+        this.snackService.snack(result);
+      })
+    );
+  }
+
+  guestTicketCreationAllowanceChanged(){
+    let flag = this.guestTicketConfigFormGroup.controls.creationAllowance.value
+
+    this.subscriptions.push(
+      this.systemConfigurationService.guestTicketCreationAllowanceChanged(flag)
+      .subscribe(result => {
+        
       })
     )
   }

@@ -141,5 +141,38 @@ namespace temsAPI.Controllers.SystemConfigurationControllers
                 return ReturnResponse("An error occured while setting the allowance status.", ResponseStatus.Fail);
             }
         }
+
+        [HttpGet]
+        [ClaimRequirement(TEMSClaims.CAN_MANAGE_SYSTEM_CONFIGURATION)]
+        public JsonResult GetAppSettingsModel()
+        {
+            try
+            {
+                var viewModel = AppSettingsViewModel.FromModel(_configService.AppSettings);
+                return Json(viewModel);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured while getting the system configuration", ResponseStatus.Fail);
+            }
+        }
+
+        [HttpGet("systemconfiguration/setlibrarypassword/{password}")]
+        [ClaimRequirement(TEMSClaims.CAN_MANAGE_SYSTEM_CONFIGURATION)]
+        public JsonResult SetLibraryPassword(string password)
+        {
+            try
+            {
+                _configService.SetLibraryGuestPass(password);
+                return ReturnResponse("Success", ResponseStatus.Success);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured while setting the library password", ResponseStatus.Fail);
+            }
+        }
+
     }
 }

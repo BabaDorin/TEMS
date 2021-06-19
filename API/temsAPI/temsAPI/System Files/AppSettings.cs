@@ -21,7 +21,7 @@ namespace temsAPI.System_Files
         public int RoutineCheckIntervalHr { get; set; }
         public int ArchiveIntervalHr { get; set; }
         public int LibraryAllocatedStorageSpaceGb { get; set; }
-        public string LibraryGuestPass { get; set; }
+        public string LibraryGuestPassword { get; set; }
         public bool AllowGuestsToCreateTickets { get; set; }
     }
 }

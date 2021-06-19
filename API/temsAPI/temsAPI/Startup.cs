@@ -44,7 +44,6 @@ namespace temsAPI
 
         public IConfiguration Configuration { get; }
 
-        readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
@@ -129,6 +128,7 @@ namespace temsAPI
             services.AddScoped<SMSNotificationService>();
             services.AddScoped<BrowserNotificationService>();
             services.AddScoped<NotificationService>();
+            services.AddScoped<SystemConfigurationService>();
 
             // TEMS Entity managers
             services.AddScoped<ReportManager>();

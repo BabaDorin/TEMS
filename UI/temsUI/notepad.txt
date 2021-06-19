@@ -31,9 +31,7 @@ IMPORTANT NOTES:
 TODO
 ------------ As soon as possible >>>>
 
-// create modules:
-Announcemnet
-Quick Access
+archieve => archive
 
 when updating the report template, no columns are displayed.
 

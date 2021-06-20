@@ -4,6 +4,7 @@ import { TEMSService } from './../tems-service/tems.service';
 import { Observable } from 'rxjs';
 import { ViewLibraryItem } from './../../models/library/view-library-item.model';
 import { Injectable } from '@angular/core';
+import { Fraction } from 'src/app/models/analytics/fraction.model';
 
 @Injectable({
   providedIn: 'root'
@@ -66,5 +67,16 @@ export class LibraryService extends TEMSService {
     const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+  }
+
+  getSpaceUsageData(accessPassword): Observable<Fraction>{
+    let endPoint = API_LBR_URL + '/GetSpaceUsageData';
+    if(accessPassword != undefined) 
+      endPoint += "/" + accessPassword;
+
+    return this.http.get<Fraction>(
+      endPoint,
+      this.httpOptions
+    );
   }
 }

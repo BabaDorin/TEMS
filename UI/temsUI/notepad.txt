@@ -32,6 +32,7 @@ TODO
 ------------ As soon as possible >>>>
 
 archieve => archive
+values not updating in appsettings.
 
 when updating the report template, no columns are displayed.
 

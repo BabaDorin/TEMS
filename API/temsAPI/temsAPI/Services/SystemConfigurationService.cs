@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using temsAPI.Helpers.StaticFileHelpers;
 using temsAPI.System_Files;
 
 namespace temsAPI.Services
@@ -60,6 +61,10 @@ namespace temsAPI.Services
         {
             if (gb <= 0)
                 return "Invalid value provided for gb.";
+
+            var libraryFileHanler = StaticFileHelper.GetFileHandler(StaticFileHandlers.LibraryItem);
+            if (gb <= StaticFileHelper.DirSizeBytes(new System.IO.DirectoryInfo(libraryFileHanler.FolderPath)))
+                return "The indicated value is less than the storage space which is already used";
 
             AppSettings.ArchiveIntervalHr = gb;
             return null;

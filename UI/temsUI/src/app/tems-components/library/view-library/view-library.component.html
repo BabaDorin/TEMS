@@ -8,19 +8,27 @@
             Upload new file
         </button>
         <hr>
+        <ng-container *ngIf="spaceUsageData != undefined">
+            <div class="row">
+                <div class="col-md-6 col-xs-12">
+                    <h3 class="text-muted">Used space:</h3>
+                    <small>{{spaceUsageData.numerator | number : '1.1-1'}} used out of {{ spaceUsageData.denominator | number :
+                        '1.1'}} GB allocated</small>
+                    <mat-progress-bar mode="determinate"
+                        value="spaceUsageData.numerator * 100 / spaceUsageData.denominator ">
+                    </mat-progress-bar>
+                </div>
+            </div>
+        </ng-container>
+
         <div class="row mt-3">
-            <div 
-                *ngFor="let model of libraryContainerModels | paginate: { itemsPerPage: 12, currentPage: pageNumber, id: 'lbItems' }; let i = index" 
+            <div *ngFor="let model of libraryContainerModels | paginate: { itemsPerPage: 12, currentPage: pageNumber, id: 'lbItems' }; let i = index"
                 class="col-md-3 mb-3">
-                <app-generic-container 
-                    [model]="model" 
-                    (eventEmitted)="eventEmitted($event, i)">
+                <app-generic-container [model]="model" (eventEmitted)="eventEmitted($event, i)">
                 </app-generic-container>
             </div>
         </div>
-        <pagination-controls 
-            (pageChange)="pageNumber = $event" 
-            id="lbItems" 
+        <pagination-controls (pageChange)="pageNumber = $event" id="lbItems"
             *ngIf="libraryContainerModels != undefined && libraryContainerModels.length > 0">
         </pagination-controls>
     </div>

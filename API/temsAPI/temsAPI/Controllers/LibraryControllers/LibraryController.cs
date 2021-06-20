@@ -10,7 +10,9 @@ using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.UserEntities;
 using temsAPI.Data.Managers;
+using temsAPI.Helpers.AnalyticsHelpers.AnalyticsModels;
 using temsAPI.Helpers.StaticFileHelpers;
+using temsAPI.Services;
 using temsAPI.System_Files;
 
 namespace temsAPI.Controllers.LibraryControllers
@@ -20,16 +22,22 @@ namespace temsAPI.Controllers.LibraryControllers
         private readonly IHttpContextAccessor _httpContextAccessor;
         private LibraryItemFileHandler fileHandler = new();
         private LibraryManager _libraryManager;
+        private IdentityService _identityService;
+        private SystemConfigurationService _systemConfigurationService;
 
         public LibraryController(
             IMapper mapper,
             IUnitOfWork unitOfWork,
             UserManager<TEMSUser> userManager,
             IHttpContextAccessor httpContextAccessor,
+            IdentityService identityService,
+            SystemConfigurationService systemConfigurationService,
             LibraryManager libraryManager) : base(mapper, unitOfWork, userManager)
         {
             _httpContextAccessor = httpContextAccessor;
             _libraryManager = libraryManager;
+            _identityService = identityService;
+            _systemConfigurationService = systemConfigurationService;
         }
 
         [HttpPost, DisableRequestSizeLimit]
@@ -69,10 +77,13 @@ namespace temsAPI.Controllers.LibraryControllers
         }
 
         [HttpGet]
-        public async Task<JsonResult> GetLibraryItems()
+        public async Task<JsonResult> GetLibraryItems(string accessPassword)
         {
             try
             {
+                if (!_identityService.IsAuthenticated() && accessPassword != _systemConfigurationService.AppSettings.LibraryGuestPassword)
+                    return ReturnResponse("Incorrect password.", ResponseStatus.Fail);
+
                 var items = await _libraryManager.GetItems();
                 return Json(items);
             }
@@ -118,6 +129,30 @@ namespace temsAPI.Controllers.LibraryControllers
             }).ConfigureAwait(false);
 
             return file;
+        }
+
+        [HttpGet]
+        public JsonResult GetSpaceUsageData(string accessPassword)
+        {
+            try
+            {
+                if (!_identityService.IsAuthenticated() && accessPassword != _systemConfigurationService.AppSettings.LibraryGuestPassword)
+                    return ReturnResponse("Incorrect password.", ResponseStatus.Fail);
+
+                double usedSpaceBytes = StaticFileHelper.DirSizeBytes(new System.IO.DirectoryInfo(fileHandler.FolderPath));
+                double usedSpaceGb = usedSpaceBytes / 1073741824;
+                
+                Fraction fraction = new();
+                fraction.Numerator = usedSpaceGb;
+                fraction.Denominator = _systemConfigurationService.AppSettings.LibraryAllocatedStorageSpaceGb;
+
+                return Json(fraction);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured while fetching space usage data.", ResponseStatus.Fail);
+            }
         }
     }
 }

@@ -33,7 +33,7 @@ namespace temsAPI.Controllers.IdentityControllers
         }
 
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_SYSTEM_CONFIGURATION)]
-        public async Task<JsonResult> GetRoles()
+        public JsonResult GetRoles()
         {
             try
             {

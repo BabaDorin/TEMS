@@ -1,3 +1,4 @@
+import { Fraction } from './../../../models/analytics/fraction.model';
 import { ClaimService } from './../../../services/claim.service';
 import { TokenService } from './../../../services/token-service/token.service';
 import { SnackService } from './../../../services/snack/snack.service';
@@ -22,6 +23,8 @@ export class ViewLibraryComponent extends TEMSComponent implements OnInit {
   libraryContainerModels: UploadedFileContainerModel[];
   pageNumber = 1;
   downloader = new Downloader();
+  accessPass;
+  spaceUsageData: Fraction;
 
   constructor(
     private libraryService: LibraryService,
@@ -41,6 +44,8 @@ export class ViewLibraryComponent extends TEMSComponent implements OnInit {
         this.libraryContainerModels = (result as ViewLibraryItem[])
           .map(q => new UploadedFileContainerModel(this.libraryService, this.snackService, this.claims, q));
       }));
+
+    this.fetchSpaceUsageData();
   }
 
   eventEmitted($event, i){
@@ -60,6 +65,18 @@ export class ViewLibraryComponent extends TEMSComponent implements OnInit {
             this.libraryItems = response;
           }));
       }
+    )
+  }
+
+  fetchSpaceUsageData(){
+    this.subscriptions.push(
+      this.libraryService.getSpaceUsageData(this.accessPass)
+      .subscribe(result => {
+        if(this.snackService.snackIfError(result))
+          return;
+
+        this.spaceUsageData = result;
+      })
     )
   }
 }

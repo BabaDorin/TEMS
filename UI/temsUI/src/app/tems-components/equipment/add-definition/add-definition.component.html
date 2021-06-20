@@ -1,17 +1,18 @@
-<ng-container *ngIf="typeId == undefined">
+<div class="col-md-12">
+  <ng-container *ngIf="typeId == undefined">
     <mat-form-field class="form-field">
-        <mat-label>Equipment Type</mat-label>
-        <mat-select (selectionChange)="onSelectionChanged($event)">
-          <mat-option *ngFor="let option of equipmentTypes" [value]="option.value">
-            {{ option.label }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-</ng-container>
+      <mat-label>Equipment Type</mat-label>
+      <mat-select (selectionChange)="onSelectionChanged($event)">
+        <mat-option *ngFor="let option of equipmentTypes" [value]="option.value">
+          {{ option.label }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </ng-container>
 
-<form *ngIf="formlyData.isVisible" [formGroup]="formlyData.form" (ngSubmit)="onSubmit(formlyData.model)">
+  <form *ngIf="formlyData.isVisible" [formGroup]="formlyData.form" (ngSubmit)="onSubmit(formlyData.model)">
     <formly-form [form]="formlyData.form" [fields]="formlyData.fields" [model]="formlyData.model"></formly-form>
-    <br>
-    <button type="submit" class="btn btn-gradient-primary mr-2"
-    [disabled]="formlyData.form.status=='INVALID'">Submit</button>
-</form>
+    <button type="submit" class="btn btn-gradient-primary mt-3"
+      [disabled]="formlyData.form.status=='INVALID'">Submit</button>
+  </form>
+</div>

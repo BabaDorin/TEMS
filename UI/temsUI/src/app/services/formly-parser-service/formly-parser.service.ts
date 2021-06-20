@@ -167,14 +167,13 @@ export class FormlyParserService extends TEMSComponent {
 
     let index = 0;
     addEquipment.children.forEach(childAddEquipment => {
-      console.log(childAddEquipment);
       formlyFieldsAddEquipment[formlyFieldsAddEquipment.length - 1].fieldGroup.push({
         key: childAddEquipment.definition.id + '---' + index++, // in reality - the index of child definition
         type: 'eq-repeat',
         wrappers: ['formly-wrapper'],
         fieldArray: {
           templateOptions: {
-            btnText: '+ ' + childAddEquipment.definition.identifier,
+            btnText: childAddEquipment.definition.identifier,
           },
           fieldGroup: this.generateAddEquipmentFields(childAddEquipment)
         }
@@ -425,15 +424,12 @@ export class FormlyParserService extends TEMSComponent {
           }
         },
       ];
-    // Adding inputs for parent's properties
+
+    // Add inputs for parent's properties
     addDefinition.properties.forEach(property => {
-      console.log('property')
-      console.log(property);
       fields.push(this.generatePropertyFieldGroup(property))
     });
-    console.log('back');
 
-    console.log('price and description');
     fields.push(
       {
         key: 'description',
@@ -461,7 +457,7 @@ export class FormlyParserService extends TEMSComponent {
           wrappers: ['formly-wrapper'],
           fieldArray: {
             templateOptions: {
-              btnText: '+ ' + childDefinition.equipmentType.label,
+              btnText: childDefinition.equipmentType.label,
             },
             fieldGroup: [
               {
@@ -497,8 +493,10 @@ export class FormlyParserService extends TEMSComponent {
       let destination = fields[fields.length - 1].fieldArray.fieldGroup;
 
       childDefinition.properties.forEach(property => {
-        destination.push(this.generatePropertyFieldGroup(property));
+        destination.push(this.generatePropertyFieldGroup(property, property.value));
       });
+
+      // price and descriptions => mandatory properties
       destination.push(
         {
           key: 'description',
@@ -507,7 +505,7 @@ export class FormlyParserService extends TEMSComponent {
             label: 'Description',
           }
         },
-        this.generatePriceFields(),
+        this.generatePriceFields(childDefinition.price, childDefinition.currency),
       );
     });
     return fields;
@@ -570,14 +568,14 @@ export class FormlyParserService extends TEMSComponent {
     )
   }
 
-  generatePriceFields() {
+  generatePriceFields(defaultPrice?: number, defaultCurrency?: string) {
     return {
       fieldGroupClassName: 'row',
       fieldGroup: [
         {
           className: 'col-4',
           key: 'price',
-          defaultValue: 0,
+          defaultValue: defaultPrice ?? 0,
           type: 'input-tooltip',
           templateOptions: {
             type: 'number',
@@ -590,7 +588,7 @@ export class FormlyParserService extends TEMSComponent {
           className: 'col-4',
           key: 'currency',
           type: 'select',
-          defaultValue: 'lei',
+          defaultValue: defaultCurrency ?? 'lei',
           templateOptions: {
             label: 'Currency',
             options: [
@@ -645,13 +643,15 @@ export class FormlyParserService extends TEMSComponent {
     return fields;
   }
 
-  generatePropertyFieldGroup(addProperty: Property): FormlyFieldConfig {
+  generatePropertyFieldGroup(addProperty: Property, value?): FormlyFieldConfig {
     // When the formly form is used for updating,
     let propertyFieldGroup: FormlyFieldConfig;
+  
+    if(value != undefined)
+      propertyFieldGroup.defaultValue = value;
+
     switch (addProperty.dataType.toLowerCase()) {
       case 'text':
-        console.log('add ');
-        console.log(addProperty);
         propertyFieldGroup = {
           key: addProperty.name,
           type: 'input-tooltip',
@@ -729,9 +729,7 @@ export class FormlyParserService extends TEMSComponent {
         break;
     }
 
-    console.log('return ' + addProperty.name);
     return propertyFieldGroup;
-
   }
 
   parseAddPersonnel(addPersonnel: AddPersonnel) {

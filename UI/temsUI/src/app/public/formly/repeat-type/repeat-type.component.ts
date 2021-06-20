@@ -6,7 +6,10 @@ import { FieldArrayType, FormlyFieldConfig } from '@ngx-formly/core';
   template: `
   <div *ngFor="let field of field.fieldGroup; let i = index;">
         <div style="margin-bottom:5px;">
-          <button class="btn btn-danger btn-sm" type="button" (click)="remove(i)">Remov3e</button>
+          <button mat-button (click)="remove(i)">
+            <mat-icon class="text-danger">remove</mat-icon>
+            Remove
+          </button>
         </div>
       <formly-group
         [model]="model[i]"
@@ -16,7 +19,10 @@ import { FieldArrayType, FormlyFieldConfig } from '@ngx-formly/core';
       </formly-group>
     </div>
     <div style="margin:10px 0;">
-      <button class="btn btn-secondary btn-sm" type="button" (click)="add()">{{field.fieldArray.templateOptions.btnText}}</button>
+      <button mat-button (click)="add()">
+        <mat-icon class="text-primary">add</mat-icon>
+        {{field.fieldArray.templateOptions.btnText}}
+      </button>
     </div>
 `,
 })

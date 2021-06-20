@@ -128,7 +128,8 @@ namespace temsAPI
             services.AddScoped<SMSNotificationService>();
             services.AddScoped<BrowserNotificationService>();
             services.AddScoped<NotificationService>();
-            services.AddScoped<SystemConfigurationService>();
+            services.AddSingleton<SystemConfigurationService>();
+            services.ConfigureWritable<AppSettings>(Configuration.GetSection("AppSettings"));
 
             // TEMS Entity managers
             services.AddScoped<ReportManager>();

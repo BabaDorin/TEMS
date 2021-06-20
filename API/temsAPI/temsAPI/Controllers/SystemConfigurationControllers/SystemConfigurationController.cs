@@ -122,7 +122,7 @@ namespace temsAPI.Controllers.SystemConfigurationControllers
             }
         }
 
-        [HttpGet]
+        [HttpGet("systemconfiguration/setguestticketcreationallowance/{flag}")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_SYSTEM_CONFIGURATION)]
         public JsonResult SetGuestTicketCreationAllowance(bool flag)
         {

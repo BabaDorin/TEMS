@@ -11,6 +11,7 @@ import { ViewLibraryItem } from './../../../models/library/view-library-item.mod
 import { LibraryService } from './../../../services/library-service/library.service';
 import { Component, OnInit } from '@angular/core';
 import { CAN_MANAGE_ENTITIES } from 'src/app/models/claims';
+import { DecimalPipe } from '@angular/common';
 
 @Component({
   selector: 'app-view-library',
@@ -30,7 +31,8 @@ export class ViewLibraryComponent extends TEMSComponent implements OnInit {
     private libraryService: LibraryService,
     private dialogService: DialogService,
     private snackService: SnackService,
-    private claims: ClaimService
+    private claims: ClaimService,
+    private _decimalPipe: DecimalPipe
   ) {
     super();
   }
@@ -42,7 +44,7 @@ export class ViewLibraryComponent extends TEMSComponent implements OnInit {
           return;
         
         this.libraryContainerModels = (result as ViewLibraryItem[])
-          .map(q => new UploadedFileContainerModel(this.libraryService, this.snackService, this.claims, q));
+          .map(q => new UploadedFileContainerModel(this.libraryService, this.snackService, this.claims, this._decimalPipe, q));
       }));
 
     this.fetchSpaceUsageData();
@@ -74,7 +76,6 @@ export class ViewLibraryComponent extends TEMSComponent implements OnInit {
       .subscribe(result => {
         if(this.snackService.snackIfError(result))
           return;
-
         this.spaceUsageData = result;
       })
     )

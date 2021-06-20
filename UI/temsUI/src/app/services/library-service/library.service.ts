@@ -79,4 +79,11 @@ export class LibraryService extends TEMSService {
       this.httpOptions
     );
   }
+
+  getAvailableLibraryStorageSpace(): Observable<number>{
+    return this.http.get<number>(
+      API_LBR_URL + '/getavailablelibrarystoragespace',
+      this.httpOptions
+    );
+  }
 }

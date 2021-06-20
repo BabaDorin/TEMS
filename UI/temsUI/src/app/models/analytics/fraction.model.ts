@@ -1,4 +1,4 @@
 export class Fraction{
     numerator;
-    denominator
+    denominator;
 }

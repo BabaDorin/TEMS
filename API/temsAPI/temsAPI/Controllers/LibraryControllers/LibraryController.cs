@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
@@ -46,8 +47,18 @@ namespace temsAPI.Controllers.LibraryControllers
         {
             try
             {
+                // 1: Check if there some space available
+
+                var availableSpace = _libraryManager.GetAvailableSpace_bytes();
+                if (availableSpace <= 0)
+                    return StatusCode(500, "There is no more available space allocated for library storage. Free up some space first.");
+
                 var formCollection = await Request.ReadFormAsync();
                 var file = formCollection.Files.First();
+
+                // 2: Check if the current file size won't overflow available library storage space
+                if (availableSpace - file.Length <= 0)
+                    return StatusCode(500, "Free up some space first.");
 
                 var fileName = Request.Form["myName"];
                 var fileDescription = Request.Form["myDescription"];
@@ -154,5 +165,20 @@ namespace temsAPI.Controllers.LibraryControllers
                 return ReturnResponse("An error occured while fetching space usage data.", ResponseStatus.Fail);
             }
         }
+       
+        [HttpGet]
+        public JsonResult GetAvailableLibraryStorageSpace()
+        {
+            try
+            {
+                return Json(_libraryManager.GetAvailableSpace_bytes());
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured while fetching available library storage space.", ResponseStatus.Fail);
+            }
+        }
+        
     }
 }

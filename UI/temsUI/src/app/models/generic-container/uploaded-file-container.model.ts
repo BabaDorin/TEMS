@@ -7,6 +7,7 @@ import { IContainerAction, IGenericContainerModel, ITagGroup } from './IGenericC
 import { TEMSComponent } from './../../tems/tems.component';
 import { Downloader } from 'src/app/shared/downloader/fileDownloader';
 import { CAN_MANAGE_ENTITIES } from '../claims';
+import { DecimalPipe } from '@angular/common';
 
 export class UploadedFileContainerModel extends TEMSComponent implements IGenericContainerModel {
     title: string;
@@ -21,7 +22,8 @@ export class UploadedFileContainerModel extends TEMSComponent implements IGeneri
         private libraryService: LibraryService,
         private snackService: SnackService,
         private claims: ClaimService,
-        private libraryItem: ViewLibraryItem
+        private _decimalPipe: DecimalPipe,
+        private libraryItem: ViewLibraryItem,
     ) {
         super();
 
@@ -37,12 +39,8 @@ export class UploadedFileContainerModel extends TEMSComponent implements IGeneri
             tags: [this.libraryItem.downloads.toString()]
         },
             {
-                name: 'DateUploaded',
-                tags: [new Date(this.libraryItem.dateUploaded).toDateString()]
-            },
-            {
                 name: 'File size',
-                tags: [this.libraryItem.fileSize.toString()]
+                tags: [this._decimalPipe.transform(this.libraryItem.fileSize / 1024 / 1024 / 1024, '1.1-1') + ' GB']
             }
         )
 
@@ -55,7 +53,7 @@ export class UploadedFileContainerModel extends TEMSComponent implements IGeneri
             action: () => this.download()
         });
 
-        if(this.claims.canManage){
+        if (this.claims.canManage) {
             this.actions.push(
                 {
                     name: 'Remove',
@@ -83,7 +81,7 @@ export class UploadedFileContainerModel extends TEMSComponent implements IGeneri
 
     download() {
         this.description = "Preparing... Please wait";
-        let downloadButton = this.actions.find(q => q.name == 'Download'); 
+        let downloadButton = this.actions.find(q => q.name == 'Download');
         downloadButton.disabled = true;
 
         this.subscriptions.push(this.libraryService.downloadItem(this.libraryItem.id)

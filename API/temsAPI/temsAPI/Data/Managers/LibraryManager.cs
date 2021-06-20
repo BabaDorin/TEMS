@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.LibraryEntities;
 using temsAPI.Helpers.StaticFileHelpers;
+using temsAPI.Services;
 using temsAPI.ViewModels.Library;
 
 namespace temsAPI.Data.Managers
@@ -16,9 +17,15 @@ namespace temsAPI.Data.Managers
     public class LibraryManager : EntityManager
     {
         private LibraryItemFileHandler _fileHandler;
-        public LibraryManager(IUnitOfWork unitOfWork, ClaimsPrincipal user) : base(unitOfWork, user)
+        private SystemConfigurationService _systemConfigurationService;
+
+        public LibraryManager(
+            IUnitOfWork unitOfWork, 
+            ClaimsPrincipal user,
+            SystemConfigurationService systemConfigurationService) : base(unitOfWork, user)
         {
             _fileHandler = new LibraryItemFileHandler();
+            _systemConfigurationService = systemConfigurationService;
         }
 
         public async Task<string> UploadFile(IFormFile file, string name, string description)
@@ -122,5 +129,13 @@ namespace temsAPI.Data.Managers
             _unitOfWork.LibraryItems.Update(item);
             await _unitOfWork.Save();
         } 
+
+        public long GetAvailableSpace_bytes()
+        {
+            long usedLibraryStorageSpace_bytes = StaticFileHelper.DirSizeBytes(new DirectoryInfo(_fileHandler.FolderPath));
+            long freeLibraryStorageSpace_bytes = _systemConfigurationService.AppSettings.LibraryAllocatedStorageSpaceGb * (long)Math.Pow(1024, 3);
+
+            return freeLibraryStorageSpace_bytes;
+        }
     }
 }

@@ -3,7 +3,7 @@ import { QuickAccessModule } from './modules/quick-access/quick-access.module';
 import { ClaimService } from './services/claim.service';
 import { GenericContainerModule } from './shared/generic-container/generic-container.module';
 import { UserCardsModule } from './user-cards/user-cards.module';
-import { DatePipe } from '@angular/common';
+import { DatePipe, DecimalPipe } from '@angular/common';
 import { RoomLabelService } from './services/room-label.service';
 import { TypeService } from './services/type-service/type.service';
 import { MenuService } from './services/menu-service/menu.service';
@@ -112,6 +112,7 @@ import { RoleService } from './services/role-service/role.service';
     RoomLabelService,
     CurrencyPipe,
     DatePipe,
+    DecimalPipe
   ],
   bootstrap: [AppComponent],
 })

@@ -1,3 +1,5 @@
+import { SnackService } from './../../../services/snack/snack.service';
+import { resolve } from '@angular-devkit/core';
 import { LibraryService } from './../../../services/library-service/library.service';
 import { TEMSComponent } from 'src/app/tems/tems.component';
 import { Component, OnInit } from '@angular/core';
@@ -17,6 +19,7 @@ export class UploadLibraryItemComponent extends TEMSComponent implements OnInit 
 
   constructor(
     private libraryService: LibraryService,
+    private snackService: SnackService,
   ) {
     super();
   }
@@ -53,32 +56,44 @@ export class UploadLibraryItemComponent extends TEMSComponent implements OnInit 
     
     let timer = null;
 
-    this.subscriptions.push(
-      this.libraryService.uploadFile(this.formDatas[index])
-      .subscribe(event => {
-        if (event.type === HttpEventType.UploadProgress){
-          
-          if(fileToUpload)
-            fileToUpload.progress = Math.round(100 * event.loaded / event.total);
-          
-          // If we haven't got any response for 1 second or so, it might mean
-          // that the file has been uploaded and now it is being compressed on the server
-          if(timer) clearTimeout(timer);
-          timer = setTimeout(() => {
-            fileToUpload.message = "Compressing... Please wait, It might take a while."
-          }, 1000);
-        }
-        else if (event.type === HttpEventType.Response) {
-          // The file has been uploaded
-          clearTimeout(timer);
-          fileToUpload.message = 'Success';
-          fileToUpload.status = "uploaded";
-
-          // Go to the next file, if it exists
-          if(++index < this.files.length)
-            return this.uploadFile(index);
-        }
-      }));
+    new Promise<void>((resolve)=> {
+      this.subscriptions.push(
+        this.libraryService.getAvailableLibraryStorageSpace()
+        .subscribe(result => {
+          if(result - this.files[index].size > 0 )
+            resolve();
+          else
+            this.snackService.snack({message: "Free up some space", status: 0});
+        })
+      )
+    }).then(() => {
+      this.subscriptions.push(
+        this.libraryService.uploadFile(this.formDatas[index])
+        .subscribe(event => {
+          if (event.type === HttpEventType.UploadProgress){
+            
+            if(fileToUpload)
+              fileToUpload.progress = Math.round(100 * event.loaded / event.total);
+            
+            // If we haven't got any response for 1 second or so, it might mean
+            // that the file has been uploaded and now it is being compressed on the server
+            if(timer) clearTimeout(timer);
+            timer = setTimeout(() => {
+              fileToUpload.message = "Compressing... Please wait, It might take a while."
+            }, 1000);
+          }
+          else if (event.type === HttpEventType.Response) {
+            // The file has been uploaded
+            clearTimeout(timer);
+            fileToUpload.message = 'Success';
+            fileToUpload.status = "uploaded";
+  
+            // Go to the next file, if it exists
+            if(++index < this.files.length)
+              return this.uploadFile(index);
+          }
+        }));
+    })
   }
 
   //  Convert Files list to normal array list

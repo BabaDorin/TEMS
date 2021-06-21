@@ -78,45 +78,125 @@ namespace temsAPI.Data
                 .WithOne(e => e.DataType)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            //modelBuilder.Entity<TEMSUser>()
-            //    .HasMany(e => e.Announcements)
-            //    .WithOne(e => e.Author)
-            //    .OnDelete(DeleteBehavior.SetNull);
+            modelBuilder.Entity<TEMSUser>()
+                .HasMany(e => e.Announcements)
+                .WithOne(e => e.Author)
+                .OnDelete(DeleteBehavior.SetNull);
 
-            //modelBuilder.Entity<TEMSUser>()
-            //    .HasMany(e => e.ArchievedEquipment)
-            //    .WithOne(e => e.ArchievedBy)
-            //    .OnDelete(DeleteBehavior.NoAction);
+            modelBuilder.Entity<TEMSUser>()
+                .HasMany(e => e.ArchievedEquipment)
+                .WithOne(e => e.ArchievedBy)
+                .OnDelete(DeleteBehavior.NoAction);
 
-            //modelBuilder.Entity<TEMSUser>()
-            //    .HasMany(e => e.RegisteredEquipment)
-            //    .WithOne(e => e.RegisteredBy)
-            //    .OnDelete(DeleteBehavior.NoAction);
+            modelBuilder.Entity<TEMSUser>()
+                .HasMany(e => e.RegisteredEquipment)
+                .WithOne(e => e.RegisteredBy)
+                .OnDelete(DeleteBehavior.NoAction);
 
-            //modelBuilder.Entity<TEMSUser>()
-            //    .HasMany(e => e.UserNotifications)
-            //    .WithOne(e => e.User)
-            //    .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<TEMSUser>()
+                .HasMany(e => e.UserNotifications)
+                .WithOne(e => e.User)
+                .OnDelete(DeleteBehavior.Cascade);
 
-            //modelBuilder.Entity<TEMSUser>()
-            //    .HasMany(e => e.ArchievedTickets)
-            //    .WithOne(e => e.ArchievedBy)
-            //    .OnDelete(DeleteBehavior.NoAction);
+            modelBuilder.Entity<TEMSUser>()
+                .HasMany(e => e.ArchievedTickets)
+                .WithOne(e => e.ArchievedBy)
+                .OnDelete(DeleteBehavior.NoAction);
 
-            //modelBuilder.Entity<TEMSUser>()
-            //    .HasMany(e => e.CreatedTickets)
-            //    .WithOne(e => e.CreatedBy)
-            //    .OnDelete(DeleteBehavior.NoAction);
+            modelBuilder.Entity<TEMSUser>()
+                .HasMany(e => e.CreatedTickets)
+                .WithOne(e => e.CreatedBy)
+                .OnDelete(DeleteBehavior.NoAction);
 
-            //modelBuilder.Entity<TEMSUser>()
-            //    .HasMany(e => e.ClosedTickets)
-            //    .WithOne(e => e.ClosedBy)
-            //    .OnDelete(DeleteBehavior.NoAction);
+            modelBuilder.Entity<TEMSUser>()
+                .HasMany(e => e.ClosedTickets)
+                .WithOne(e => e.ClosedBy)
+                .OnDelete(DeleteBehavior.NoAction);
 
-            //modelBuilder.Entity<TEMSUser>()
-            //    .HasMany(e => e.GeneratedReports)
-            //    .WithOne(e => e.GeneratedBy)
-            //    .OnDelete(DeleteBehavior.NoAction);
+            modelBuilder.Entity<TEMSUser>()
+                .HasMany(e => e.GeneratedReports)
+                .WithOne(e => e.GeneratedBy)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<TEMSUser>()
+                .HasMany(e => e.CreatedLogs)
+                .WithOne(e => e.CreatedBy)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<TEMSUser>()
+                .HasMany(e => e.ArchivedLogs)
+                .WithOne(e => e.ArchievedBy)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<TEMSUser>()
+                .HasMany(e => e.ArchivedAllocations)
+                .WithOne(e => e.ArchievedBy)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<TEMSUser>()
+                .HasMany(e => e.ArchivedDefinitions)
+                .WithOne(e => e.ArchievedBy)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<TEMSUser>()
+                .HasMany(e => e.ArchivedSpecifications)
+                .WithOne(e => e.ArchievedBy)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<TEMSUser>()
+                .HasMany(e => e.ArchivedTypes)
+                .WithOne(e => e.ArchievedBy)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<TEMSUser>()
+                .HasMany(e => e.ArchivedProperties)
+                .WithOne(e => e.ArchievedBy)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<TEMSUser>()
+                .HasMany(e => e.ArchivedKeys)
+                .WithOne(e => e.ArchievedBy)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<TEMSUser>()
+                .HasMany(e => e.ArchivedKeyAllocations)
+                .WithOne(e => e.ArchievedBy)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<TEMSUser>()
+                .HasMany(e => e.UploadedLibraryItems)
+                .WithOne(e => e.UploadedBy)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<TEMSUser>()
+                .HasMany(e => e.ArchivedPersonnel)
+                .WithOne(e => e.ArchievedBy)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<TEMSUser>()
+                .HasMany(e => e.ArchivedPersonnelPositions)
+                .WithOne(e => e.ArchievedBy)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<TEMSUser>()
+                .HasMany(e => e.ArchivedRooms)
+                .WithOne(e => e.ArchievedBy)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<TEMSUser>()
+                .HasMany(e => e.ArchivedRoomLabels)
+                .WithOne(e => e.ArchievedBy)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<TEMSUser>()
+                .HasMany(e => e.CreatedReportTemplates)
+                .WithOne(e => e.CreatedBy)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<TEMSUser>()
+                .HasMany(e => e.ArchivedReportTemplates)
+                .WithOne(e => e.ArchievedBy)
+                .OnDelete(DeleteBehavior.NoAction);
 
             // Default values:
             modelBuilder.Entity<Property>()

@@ -32,6 +32,7 @@ namespace temsAPI.Data.Entities.OtherEntities
         }
 
 #nullable enable
+        [InverseProperty("ArchivedRoomLabels")]
         [ForeignKey("ArchievedById")]
         public TEMSUser? ArchievedBy { get; set; }
         public string? ArchievedById { get; set; }

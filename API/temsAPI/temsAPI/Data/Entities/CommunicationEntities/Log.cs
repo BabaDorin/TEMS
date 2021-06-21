@@ -22,6 +22,7 @@ namespace temsAPI.Data.Entities.CommunicationEntities
 
 #nullable enable
 
+        [InverseProperty("CreatedLogs")]
         [ForeignKey("CreatedByID")]
         public TEMSUser? CreatedBy { get; set; }
         public string? CreatedByID { get; set; }
@@ -44,6 +45,7 @@ namespace temsAPI.Data.Entities.CommunicationEntities
         public LogType? LogType { get; set; }
         public string? LogTypeID { get; set; }
 
+        [InverseProperty("ArchivedLogs")]
         [ForeignKey("ArchievedById")]
         public TEMSUser? ArchievedBy { get; set; }
         public string? ArchievedById { get; set; }

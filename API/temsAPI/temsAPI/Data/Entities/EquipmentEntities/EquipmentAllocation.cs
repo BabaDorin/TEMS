@@ -56,7 +56,8 @@ namespace temsAPI.Data.Entities.EquipmentEntities
         public string Identifier => $"Identifier: {Equipment?.TemsIdOrSerialNumber} (${Equipment?.Identifier}): ${Assignee ?? "No assignee found"}";
 
         public DateTime? DateReturned { get; set; }
-
+        
+        [InverseProperty("ArchivedAllocations")]
         [ForeignKey("ArchievedById")]
         public TEMSUser? ArchievedBy { get; set; }
         public string? ArchievedById { get; set; }

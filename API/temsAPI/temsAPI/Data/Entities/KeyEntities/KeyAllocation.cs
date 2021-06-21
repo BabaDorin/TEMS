@@ -47,6 +47,7 @@ namespace temsAPI.Data.Entities.KeyEntities
 #nullable enable
         public DateTime? DateReturned { get; set; }
 
+        [InverseProperty("ArchivedKeyAllocations")]
         [ForeignKey("ArchievedById")]
         public TEMSUser? ArchievedBy { get; set; }
         public string? ArchievedById { get; set; }

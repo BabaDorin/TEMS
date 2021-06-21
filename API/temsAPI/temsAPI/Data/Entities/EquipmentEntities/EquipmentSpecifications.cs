@@ -47,6 +47,7 @@ namespace temsAPI.Data.Entities.EquipmentEntities
 #nullable enable
         public string? Value { get; set; }
 
+        [InverseProperty("ArchivedSpecifications")]
         [ForeignKey("ArchievedById")]
         public TEMSUser? ArchievedBy { get; set; }
         public string? ArchievedById { get; set; }

@@ -42,6 +42,7 @@ namespace temsAPI.Data.Entities.KeyEntities
         public Room? Room { get; set; }
         public string? RoomId { get; set; }
 
+        [InverseProperty("ArchivedKeys")]
         [ForeignKey("ArchievedById")]
         public TEMSUser? ArchievedBy { get; set; }
         public string? ArchievedById { get; set; }

@@ -48,6 +48,7 @@ namespace temsAPI.Data.Entities.EquipmentEntities
         public DataType? DataType { get; set; }
         public string? DataTypeID { get; set; }
 
+        [InverseProperty("ArchivedProperties")]
         [ForeignKey("ArchievedById")]
         public TEMSUser? ArchievedBy { get; set; }
         public string? ArchievedById { get; set; }

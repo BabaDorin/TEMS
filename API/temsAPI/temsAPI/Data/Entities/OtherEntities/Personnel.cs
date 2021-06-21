@@ -27,6 +27,7 @@ namespace temsAPI.Data.Entities.OtherEntities
 
         public TEMSUser? TEMSUser { get; set; }
 
+        [InverseProperty("ArchivedPersonnel")]
         [ForeignKey("ArchievedById")]
         public TEMSUser? ArchievedBy { get; set; }
         public string? ArchievedById { get; set; }

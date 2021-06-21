@@ -28,6 +28,7 @@ namespace temsAPI.Data.Entities.LibraryEntities
         public LibraryFolder? LibraryFolder { get; set; }
         public string? LibraryFolderId { get; set; }
 
+        [InverseProperty("UploadedLibraryItems")]
         [ForeignKey("UploadedById")]
         public TEMSUser? UploadedBy { get; set; }
         public string? UploadedById { get; set; }

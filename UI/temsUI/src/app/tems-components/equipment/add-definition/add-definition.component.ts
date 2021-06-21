@@ -212,7 +212,7 @@ export class AddDefinitionComponent extends TEMSComponent implements OnInit {
       return addDefinition;
     }
     
-      addDefinition.typeId = typeId;
+    addDefinition.typeId = typeId;
     addDefinition.identifier = model.identifier;
     addDefinition.price = model.price;
     addDefinition.description = model.description;
@@ -222,7 +222,7 @@ export class AddDefinitionComponent extends TEMSComponent implements OnInit {
     propNames.forEach(propName => {
       if(!Array.isArray(model[propName])
         && this.commonDefinitionProperties.findIndex(q => q.toLowerCase() == propName.toLowerCase()) == -1){
-          addDefinition.properties.push({ value: propName, label: model[propName] } as IOption)
+          addDefinition.properties.push({ value: propName, label: model[propName].toString() } as IOption)
         }
 
       if(Array.isArray(model[propName])){

@@ -820,9 +820,6 @@ namespace temsAPI.Migrations
                     b.Property<string>("TEMSID")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("TEMSUserId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("Id");
 
                     b.HasIndex("ArchievedById");
@@ -836,8 +833,6 @@ namespace temsAPI.Migrations
                     b.HasIndex("SerialNumber");
 
                     b.HasIndex("TEMSID");
-
-                    b.HasIndex("TEMSUserId");
 
                     b.ToTable("Equipments");
                 });
@@ -1931,10 +1926,6 @@ namespace temsAPI.Migrations
                         .WithMany("RegisteredEquipment")
                         .HasForeignKey("RegisteredByID");
 
-                    b.HasOne("temsAPI.Data.Entities.UserEntities.TEMSUser", null)
-                        .WithMany("RegisteredEquipments")
-                        .HasForeignKey("TEMSUserId");
-
                     b.Navigation("ArchievedBy");
 
                     b.Navigation("EquipmentDefinition");
@@ -2156,7 +2147,7 @@ namespace temsAPI.Migrations
             modelBuilder.Entity("temsAPI.Data.Entities.Report.Report", b =>
                 {
                     b.HasOne("temsAPI.Data.Entities.UserEntities.TEMSUser", "GeneratedBy")
-                        .WithMany()
+                        .WithMany("GeneratedReports")
                         .HasForeignKey("GeneratedByID");
 
                     b.Navigation("GeneratedBy");
@@ -2297,9 +2288,9 @@ namespace temsAPI.Migrations
 
                     b.Navigation("CreatedTickets");
 
-                    b.Navigation("RegisteredEquipment");
+                    b.Navigation("GeneratedReports");
 
-                    b.Navigation("RegisteredEquipments");
+                    b.Navigation("RegisteredEquipment");
 
                     b.Navigation("UserCommonNotifications");
 

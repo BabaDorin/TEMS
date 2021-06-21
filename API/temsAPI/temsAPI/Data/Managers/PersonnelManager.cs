@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.OtherEntities;
 using temsAPI.Data.Entities.UserEntities;
-using temsAPI.Migrations;
+//using temsAPI.Migrations;
 using temsAPI.ViewModels;
 using temsAPI.ViewModels.Personnel;
 

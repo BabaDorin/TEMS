@@ -49,13 +49,14 @@ namespace temsAPI.Data.Entities.UserEntities
         public virtual ICollection<UserNotification> UserNotifications { get; set; } = new List<UserNotification>();
         public virtual ICollection<UserCommonNotification> UserCommonNotifications { get; set; } = new List<UserCommonNotification>();
 
-        public virtual ICollection<Equipment> RegisteredEquipment { get; set; } = new List<Equipment>();
         public virtual ICollection<Announcement> Announcements { get; set; } = new List<Announcement>();
         public virtual ICollection<Ticket> ClosedTickets { get; set; } = new List<Ticket>();
         public virtual ICollection<Ticket> AssignedTickets { get; set; } = new List<Ticket>();
         public virtual ICollection<Ticket> CreatedTickets { get; set; } = new List<Ticket>();
         public virtual ICollection<Ticket> ClosedAndThenReopenedTickets { get; set; } = new List<Ticket>();
-        public virtual ICollection<Equipment> RegisteredEquipments { get; set; } = new List<Equipment>();
+        public virtual ICollection<Equipment> RegisteredEquipment { get; set; } = new List<Equipment>();
+        public virtual ICollection<Report.Report> GeneratedReports { get; set; } = new List<Report.Report>();
+
 
         // Archieved stuff
         public virtual ICollection<Ticket> ArchievedTickets { get; set; } = new List<Ticket>();

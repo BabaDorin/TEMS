@@ -3,18 +3,7 @@ import { EquipmentType } from './view-type.model';
 import { AddProperty } from './add-property.model';
 import { Property } from './view-property.model';
 
-export interface IAddDefinition{
-    id: string,
-    typeId: string;
-    identifier: string;
-    description?: string;
-    price: number;
-    currency: string;
-    properties: IOption[],
-    children: AddDefinition[];
-}
-
-export class AddDefinition implements IAddDefinition{
+export class AddDefinition {
     id: string;
     typeId: string;
     identifier: string;

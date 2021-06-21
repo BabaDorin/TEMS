@@ -13,8 +13,12 @@ namespace temsAPI.Data.Entities.Report
         public string Template { get; set; } // The name of the template when the report has been generated
         public DateTime DateGenerated { get; set; }
         public string DBPath { get; set; }
+
+#nullable enable
+        [InverseProperty("GeneratedReports")]
         [ForeignKey("GeneratedByID")]
-        public TEMSUser GeneratedBy { get; set; }
-        public string GeneratedByID { get; set; }
+        public TEMSUser? GeneratedBy { get; set; }
+        public string? GeneratedByID { get; set; }
+#nullable disable
     }
 }

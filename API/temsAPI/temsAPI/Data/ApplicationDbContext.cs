@@ -91,7 +91,7 @@ namespace temsAPI.Data
             modelBuilder.Entity<TEMSUser>()
                 .HasMany(e => e.RegisteredEquipment)
                 .WithOne(e => e.RegisteredBy)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.ClientNoAction);
 
             modelBuilder.Entity<TEMSUser>()
                 .HasMany(e => e.UserNotifications)

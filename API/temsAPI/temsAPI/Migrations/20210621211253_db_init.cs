@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace temsAPI.Migrations
 {
-    public partial class DB_Init : Migration
+    public partial class db_init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -571,8 +571,7 @@ namespace temsAPI.Migrations
                         name: "FK_PersonnelPositions_AspNetUsers_ArchievedById",
                         column: x => x.ArchievedById,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -600,8 +599,7 @@ namespace temsAPI.Migrations
                         name: "FK_Properties_AspNetUsers_ArchievedById",
                         column: x => x.ArchievedById,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Properties_DataTypes_DataTypeID",
                         column: x => x.DataTypeID,
@@ -655,14 +653,12 @@ namespace temsAPI.Migrations
                         name: "FK_ReportTemplates_AspNetUsers_ArchievedById",
                         column: x => x.ArchievedById,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_ReportTemplates_AspNetUsers_CreatedById",
                         column: x => x.CreatedById,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -682,8 +678,7 @@ namespace temsAPI.Migrations
                         name: "FK_RoomLabels_AspNetUsers_ArchievedById",
                         column: x => x.ArchievedById,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -705,8 +700,7 @@ namespace temsAPI.Migrations
                         name: "FK_Rooms_AspNetUsers_ArchievedById",
                         column: x => x.ArchievedById,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -1693,8 +1687,7 @@ namespace temsAPI.Migrations
                 table: "EquipmentAllocations",
                 column: "ArchievedById",
                 principalTable: "AspNetUsers",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Restrict);
+                principalColumn: "Id");
 
             migrationBuilder.AddForeignKey(
                 name: "FK_EquipmentAllocations_Equipments_EquipmentID",
@@ -1725,8 +1718,7 @@ namespace temsAPI.Migrations
                 table: "EquipmentDefinitions",
                 column: "ArchievedById",
                 principalTable: "AspNetUsers",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Restrict);
+                principalColumn: "Id");
 
             migrationBuilder.AddForeignKey(
                 name: "FK_EquipmentDefinitions_EquipmentTypes_EquipmentTypeID",
@@ -1755,8 +1747,7 @@ namespace temsAPI.Migrations
                 table: "EquipmentSpecifications",
                 column: "ArchievedById",
                 principalTable: "AspNetUsers",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Restrict);
+                principalColumn: "Id");
 
             migrationBuilder.AddForeignKey(
                 name: "FK_EquipmentSpecifications_Properties_PropertyID",
@@ -1771,16 +1762,14 @@ namespace temsAPI.Migrations
                 table: "EquipmentTypes",
                 column: "ArchievedById",
                 principalTable: "AspNetUsers",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Restrict);
+                principalColumn: "Id");
 
             migrationBuilder.AddForeignKey(
                 name: "FK_KeyAllocations_AspNetUsers_ArchievedById",
                 table: "KeyAllocations",
                 column: "ArchievedById",
                 principalTable: "AspNetUsers",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Restrict);
+                principalColumn: "Id");
 
             migrationBuilder.AddForeignKey(
                 name: "FK_KeyAllocations_Keys_KeyID",
@@ -1803,8 +1792,7 @@ namespace temsAPI.Migrations
                 table: "Keys",
                 column: "ArchievedById",
                 principalTable: "AspNetUsers",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Restrict);
+                principalColumn: "Id");
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Keys_Rooms_RoomId",
@@ -1819,24 +1807,21 @@ namespace temsAPI.Migrations
                 table: "LibraryItems",
                 column: "UploadedById",
                 principalTable: "AspNetUsers",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Restrict);
+                principalColumn: "Id");
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Logs_AspNetUsers_ArchievedById",
                 table: "Logs",
                 column: "ArchievedById",
                 principalTable: "AspNetUsers",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Restrict);
+                principalColumn: "Id");
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Logs_AspNetUsers_CreatedByID",
                 table: "Logs",
                 column: "CreatedByID",
                 principalTable: "AspNetUsers",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Restrict);
+                principalColumn: "Id");
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Logs_Personnel_PersonnelID",
@@ -1859,8 +1844,7 @@ namespace temsAPI.Migrations
                 table: "Personnel",
                 column: "ArchievedById",
                 principalTable: "AspNetUsers",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Restrict);
+                principalColumn: "Id");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

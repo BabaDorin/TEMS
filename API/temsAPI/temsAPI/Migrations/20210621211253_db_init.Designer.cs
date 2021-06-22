@@ -10,8 +10,8 @@ using temsAPI.Data;
 namespace temsAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210621161752_DB_Init")]
-    partial class DB_Init
+    [Migration("20210621211253_db_init")]
+    partial class db_init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -1802,12 +1802,14 @@ namespace temsAPI.Migrations
             modelBuilder.Entity("temsAPI.Data.Entities.CommunicationEntities.Log", b =>
                 {
                     b.HasOne("temsAPI.Data.Entities.UserEntities.TEMSUser", "ArchievedBy")
-                        .WithMany()
-                        .HasForeignKey("ArchievedById");
+                        .WithMany("ArchivedLogs")
+                        .HasForeignKey("ArchievedById")
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("temsAPI.Data.Entities.UserEntities.TEMSUser", "CreatedBy")
-                        .WithMany()
-                        .HasForeignKey("CreatedByID");
+                        .WithMany("CreatedLogs")
+                        .HasForeignKey("CreatedByID")
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("temsAPI.Data.Entities.EquipmentEntities.Equipment", "Equipment")
                         .WithMany("Logs")
@@ -1947,8 +1949,9 @@ namespace temsAPI.Migrations
             modelBuilder.Entity("temsAPI.Data.Entities.EquipmentEntities.EquipmentAllocation", b =>
                 {
                     b.HasOne("temsAPI.Data.Entities.UserEntities.TEMSUser", "ArchievedBy")
-                        .WithMany()
-                        .HasForeignKey("ArchievedById");
+                        .WithMany("ArchivedAllocations")
+                        .HasForeignKey("ArchievedById")
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("temsAPI.Data.Entities.EquipmentEntities.Equipment", "Equipment")
                         .WithMany("EquipmentAllocations")
@@ -1975,8 +1978,9 @@ namespace temsAPI.Migrations
             modelBuilder.Entity("temsAPI.Data.Entities.EquipmentEntities.EquipmentDefinition", b =>
                 {
                     b.HasOne("temsAPI.Data.Entities.UserEntities.TEMSUser", "ArchievedBy")
-                        .WithMany()
-                        .HasForeignKey("ArchievedById");
+                        .WithMany("ArchivedDefinitions")
+                        .HasForeignKey("ArchievedById")
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("temsAPI.Data.Entities.EquipmentEntities.EquipmentType", "EquipmentType")
                         .WithMany("EquipmentDefinitions")
@@ -1997,8 +2001,9 @@ namespace temsAPI.Migrations
             modelBuilder.Entity("temsAPI.Data.Entities.EquipmentEntities.EquipmentSpecifications", b =>
                 {
                     b.HasOne("temsAPI.Data.Entities.UserEntities.TEMSUser", "ArchievedBy")
-                        .WithMany()
-                        .HasForeignKey("ArchievedById");
+                        .WithMany("ArchivedSpecifications")
+                        .HasForeignKey("ArchievedById")
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("temsAPI.Data.Entities.EquipmentEntities.EquipmentDefinition", "EquipmentDefinition")
                         .WithMany("EquipmentSpecifications")
@@ -2020,8 +2025,9 @@ namespace temsAPI.Migrations
             modelBuilder.Entity("temsAPI.Data.Entities.EquipmentEntities.EquipmentType", b =>
                 {
                     b.HasOne("temsAPI.Data.Entities.UserEntities.TEMSUser", "ArchievedBy")
-                        .WithMany()
-                        .HasForeignKey("ArchievedById");
+                        .WithMany("ArchivedTypes")
+                        .HasForeignKey("ArchievedById")
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.Navigation("ArchievedBy");
                 });
@@ -2029,8 +2035,9 @@ namespace temsAPI.Migrations
             modelBuilder.Entity("temsAPI.Data.Entities.EquipmentEntities.Property", b =>
                 {
                     b.HasOne("temsAPI.Data.Entities.UserEntities.TEMSUser", "ArchievedBy")
-                        .WithMany()
-                        .HasForeignKey("ArchievedById");
+                        .WithMany("ArchivedProperties")
+                        .HasForeignKey("ArchievedById")
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("temsAPI.Data.Entities.EquipmentEntities.DataType", "DataType")
                         .WithMany("DataTypeProperties")
@@ -2060,8 +2067,9 @@ namespace temsAPI.Migrations
             modelBuilder.Entity("temsAPI.Data.Entities.KeyEntities.Key", b =>
                 {
                     b.HasOne("temsAPI.Data.Entities.UserEntities.TEMSUser", "ArchievedBy")
-                        .WithMany()
-                        .HasForeignKey("ArchievedById");
+                        .WithMany("ArchivedKeys")
+                        .HasForeignKey("ArchievedById")
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("temsAPI.Data.Entities.OtherEntities.Room", "Room")
                         .WithMany("Keys")
@@ -2075,8 +2083,9 @@ namespace temsAPI.Migrations
             modelBuilder.Entity("temsAPI.Data.Entities.KeyEntities.KeyAllocation", b =>
                 {
                     b.HasOne("temsAPI.Data.Entities.UserEntities.TEMSUser", "ArchievedBy")
-                        .WithMany()
-                        .HasForeignKey("ArchievedById");
+                        .WithMany("ArchivedKeyAllocations")
+                        .HasForeignKey("ArchievedById")
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("temsAPI.Data.Entities.KeyEntities.Key", "Key")
                         .WithMany("KeyAllocations")
@@ -2100,8 +2109,9 @@ namespace temsAPI.Migrations
                         .HasForeignKey("LibraryFolderId");
 
                     b.HasOne("temsAPI.Data.Entities.UserEntities.TEMSUser", "UploadedBy")
-                        .WithMany()
-                        .HasForeignKey("UploadedById");
+                        .WithMany("UploadedLibraryItems")
+                        .HasForeignKey("UploadedById")
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.Navigation("LibraryFolder");
 
@@ -2111,8 +2121,9 @@ namespace temsAPI.Migrations
             modelBuilder.Entity("temsAPI.Data.Entities.OtherEntities.Personnel", b =>
                 {
                     b.HasOne("temsAPI.Data.Entities.UserEntities.TEMSUser", "ArchievedBy")
-                        .WithMany()
-                        .HasForeignKey("ArchievedById");
+                        .WithMany("ArchivedPersonnel")
+                        .HasForeignKey("ArchievedById")
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.Navigation("ArchievedBy");
                 });
@@ -2120,8 +2131,9 @@ namespace temsAPI.Migrations
             modelBuilder.Entity("temsAPI.Data.Entities.OtherEntities.PersonnelPosition", b =>
                 {
                     b.HasOne("temsAPI.Data.Entities.UserEntities.TEMSUser", "ArchievedBy")
-                        .WithMany()
-                        .HasForeignKey("ArchievedById");
+                        .WithMany("ArchivedPersonnelPositions")
+                        .HasForeignKey("ArchievedById")
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.Navigation("ArchievedBy");
                 });
@@ -2129,8 +2141,9 @@ namespace temsAPI.Migrations
             modelBuilder.Entity("temsAPI.Data.Entities.OtherEntities.Room", b =>
                 {
                     b.HasOne("temsAPI.Data.Entities.UserEntities.TEMSUser", "ArchievedBy")
-                        .WithMany()
-                        .HasForeignKey("ArchievedById");
+                        .WithMany("ArchivedRooms")
+                        .HasForeignKey("ArchievedById")
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.Navigation("ArchievedBy");
                 });
@@ -2138,8 +2151,9 @@ namespace temsAPI.Migrations
             modelBuilder.Entity("temsAPI.Data.Entities.OtherEntities.RoomLabel", b =>
                 {
                     b.HasOne("temsAPI.Data.Entities.UserEntities.TEMSUser", "ArchievedBy")
-                        .WithMany()
-                        .HasForeignKey("ArchievedById");
+                        .WithMany("ArchivedRoomLabels")
+                        .HasForeignKey("ArchievedById")
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.Navigation("ArchievedBy");
                 });
@@ -2147,7 +2161,7 @@ namespace temsAPI.Migrations
             modelBuilder.Entity("temsAPI.Data.Entities.OtherEntities.Status", b =>
                 {
                     b.HasOne("temsAPI.Data.Entities.UserEntities.TEMSUser", "ArchievedBy")
-                        .WithMany()
+                        .WithMany("ArchivedStatuses")
                         .HasForeignKey("ArchievedById");
 
                     b.Navigation("ArchievedBy");
@@ -2166,12 +2180,14 @@ namespace temsAPI.Migrations
             modelBuilder.Entity("temsAPI.Data.Entities.Report.ReportTemplate", b =>
                 {
                     b.HasOne("temsAPI.Data.Entities.UserEntities.TEMSUser", "ArchievedBy")
-                        .WithMany()
-                        .HasForeignKey("ArchievedById");
+                        .WithMany("ArchivedReportTemplates")
+                        .HasForeignKey("ArchievedById")
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("temsAPI.Data.Entities.UserEntities.TEMSUser", "CreatedBy")
-                        .WithMany()
-                        .HasForeignKey("CreatedById");
+                        .WithMany("CreatedReportTemplates")
+                        .HasForeignKey("CreatedById")
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.Navigation("ArchievedBy");
 
@@ -2294,13 +2310,47 @@ namespace temsAPI.Migrations
 
                     b.Navigation("ArchievedTickets");
 
+                    b.Navigation("ArchivedAllocations");
+
+                    b.Navigation("ArchivedDefinitions");
+
+                    b.Navigation("ArchivedKeyAllocations");
+
+                    b.Navigation("ArchivedKeys");
+
+                    b.Navigation("ArchivedLogs");
+
+                    b.Navigation("ArchivedPersonnel");
+
+                    b.Navigation("ArchivedPersonnelPositions");
+
+                    b.Navigation("ArchivedProperties");
+
+                    b.Navigation("ArchivedReportTemplates");
+
+                    b.Navigation("ArchivedRoomLabels");
+
+                    b.Navigation("ArchivedRooms");
+
+                    b.Navigation("ArchivedSpecifications");
+
+                    b.Navigation("ArchivedStatuses");
+
+                    b.Navigation("ArchivedTypes");
+
                     b.Navigation("ClosedTickets");
+
+                    b.Navigation("CreatedLogs");
+
+                    b.Navigation("CreatedReportTemplates");
 
                     b.Navigation("CreatedTickets");
 
                     b.Navigation("GeneratedReports");
 
                     b.Navigation("RegisteredEquipment");
+
+                    b.Navigation("UploadedLibraryItems");
 
                     b.Navigation("UserCommonNotifications");
 

@@ -43,6 +43,25 @@ namespace temsAPI.Controllers.AnnouncementControllers
             }
         }
 
+        [HttpGet("announcement/remove/{announcementId}")]
+        [ClaimRequirement(TEMSClaims.CAN_MANAGE_SYSTEM_CONFIGURATION)]
+        public async Task<JsonResult> Remove(string announcementId)
+        {
+            try
+            {
+                string result = await _announcementManager.Remove(announcementId);
+                if (result != null)
+                    return ReturnResponse(result, ResponseStatus.Fail);
+
+                return ReturnResponse("Success", ResponseStatus.Success);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured when removing the announcement", ResponseStatus.Fail);
+            }
+        }
+
         [HttpGet("announcement/get/{skip?}/{take?}")]
         public async Task<JsonResult> Get(int skip = 0, int take = int.MaxValue)
         {

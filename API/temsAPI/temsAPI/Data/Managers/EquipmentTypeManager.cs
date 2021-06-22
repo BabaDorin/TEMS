@@ -115,6 +115,17 @@ namespace temsAPI.Data.Managers
             return null;
         }
 
+        public async Task<string> Remove(string typeId)
+        {
+            var type = await GetFullById(typeId);
+            if (type == null)
+                return "Invalid Id provided";
+
+            _unitOfWork.EquipmentTypes.Delete(type);
+            await _unitOfWork.Save();
+            return null;
+        }
+
         public async Task<string> Update(AddEquipmentTypeViewModel viewModel)
         {
             string validationResult = await viewModel.Validate(_unitOfWork);

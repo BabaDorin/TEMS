@@ -58,6 +58,24 @@ namespace temsAPI.Data.Managers
             return null;
         }
 
+        public async Task<string> Remove(string logId)
+        {
+            var log = await GetById(logId);
+            if (log == null)
+                return "Invalid id provided";
+
+            _unitOfWork.Logs.Delete(log);
+            await _unitOfWork.Save();
+            return null;
+        }
+
+        public async Task<Log> GetById(string logId)
+        {
+            return (await _unitOfWork.Logs
+                .Find<Log>(q => q.Id == logId))
+                .FirstOrDefault();
+        }
+
         public async Task<List<Option>> GetLogTypes()
         {
             var logTypes = (await _unitOfWork.LogTypes

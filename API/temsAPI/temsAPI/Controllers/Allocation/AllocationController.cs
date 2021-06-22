@@ -87,6 +87,25 @@ namespace temsAPI.Controllers.Allocation
             }
         }
 
+        [HttpGet("allocation/remove/{allocationId}")]
+        [ClaimRequirement(TEMSClaims.CAN_MANAGE_SYSTEM_CONFIGURATION)]
+        public async Task<JsonResult> Remove(string allocationId)
+        {
+            try
+            {
+                string result = await _equipmentManager.RemoveAllocation(allocationId);
+                if (result != null)
+                    return ReturnResponse(result, ResponseStatus.Fail);
+
+                return ReturnResponse("Success", ResponseStatus.Success);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured while removing the allocation", ResponseStatus.Fail);
+            }
+        }
+
         [HttpGet("allocation/getofentity/{entityType}/{entityId}/{archieve?}")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> GetOfEntity(string entityType, string entityId)

@@ -44,6 +44,35 @@ namespace temsAPI.Data.Managers
             return null;
         }
 
+        public async Task<string> Remove(string equipmentId)
+        {
+            var equipment = await GetFullEquipmentById(equipmentId);
+            if (equipment == null)
+                return "Invalid Id provided";
+
+            // Remove equipment children first
+            foreach(Equipment eq in equipment.Children)
+            {
+                _unitOfWork.Equipments.Delete(eq);
+                await _unitOfWork.Save();
+            }
+
+            _unitOfWork.Equipments.Delete(equipment);
+            await _unitOfWork.Save();
+            return null;
+        }
+
+        public async Task<string> RemoveAllocation(string allocationId)
+        {
+            var allocation = await GetAllocationById(allocationId);
+            if (allocation == null)
+                return "Invalid id provided";
+
+            _unitOfWork.EquipmentAllocations.Delete(allocation);
+            await _unitOfWork.Save();
+            return null;
+        }   
+
         public async Task<string> Update(AddEquipmentViewModel viewModel)
         {
             string validationResult = await AddEquipmentViewModel.Validate(_unitOfWork, viewModel);

@@ -96,6 +96,17 @@ namespace temsAPI.Data.Managers
             return null;
         }
 
+        public async Task<string> Remove(string personnelId)
+        {
+            var personnel = await GetById(personnelId);
+            if (personnel == null)
+                return "Invalid id provided";
+
+            _unitOfWork.Personnel.Delete(personnel);
+            await _unitOfWork.Save();
+            return null;
+        }
+
         public async Task<List<ViewPersonnelSimplifiedViewModel>> GetSimplified(
             int skip = 0,
             int take = int.MaxValue)

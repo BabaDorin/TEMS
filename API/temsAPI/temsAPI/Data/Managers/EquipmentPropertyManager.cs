@@ -126,6 +126,17 @@ namespace temsAPI.Data.Managers
             return null;
         }
 
+        public async Task<string> Remove(string propertyId)
+        {
+            var property = await GetFullById(propertyId);
+            if (property == null)
+                return "Invalid Id provided";
+
+            _unitOfWork.Properties.Delete(property);
+            await _unitOfWork.Save();
+            return null;
+        }
+
         public async Task<String> Update(AddPropertyViewModel viewModel)
         {
             string validationResult = await viewModel.Validate(_unitOfWork);

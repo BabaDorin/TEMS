@@ -36,6 +36,24 @@ namespace temsAPI.Data.Managers
             return null;
         }
 
+        public async Task<string> Remove(string announcementId)
+        {
+            var announcement = await GetById(announcementId);
+            if (announcement == null)
+                return "Invalid id provided";
+
+            _unitOfWork.Announcements.Delete(announcement);
+            await _unitOfWork.Save();
+            return null;
+        }
+
+        public async Task<Announcement> GetById(string announcementId)
+        {
+            return (await _unitOfWork.Announcements
+                .Find<Announcement>(q => q.Id == announcementId))
+                .FirstOrDefault();
+        }
+
         public async Task<List<ViewAnnouncementViewModel>> GetAnnouncements(int skip = 0, int take = int.MaxValue)
         {
             var announcements = (await _unitOfWork.Announcements

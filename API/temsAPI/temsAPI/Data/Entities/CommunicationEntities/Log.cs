@@ -31,10 +31,12 @@ namespace temsAPI.Data.Entities.CommunicationEntities
         public Equipment? Equipment { get; set; }
         public string? EquipmentID { get; set; }
 
+        [InverseProperty("Logs")]
         [ForeignKey("RoomID")]
         public Room? Room { get; set; }
         public string? RoomID { get; set; }
 
+        [InverseProperty("Logs")]
         [ForeignKey("PersonnelID")]
         public Personnel? Personnel { get; set; }
         public string? PersonnelID { get; set; }

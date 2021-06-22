@@ -16,6 +16,7 @@ namespace temsAPI.Data.Entities.KeyEntities
         [Key]
         public string Id { get; set; }
 
+        [InverseProperty("KeyAllocations")]
         [ForeignKey("PersonnelID")]
         public Personnel Personnel { get; set; }
         public string PersonnelID { get; set; }

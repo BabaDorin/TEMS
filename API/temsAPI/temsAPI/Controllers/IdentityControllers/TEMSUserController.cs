@@ -59,6 +59,25 @@ namespace temsAPI.Controllers.IdentityControllers
             }
         }
 
+        [HttpGet("temsuser/remove/{userId}")]
+        [ClaimRequirement(TEMSClaims.CAN_MANAGE_SYSTEM_CONFIGURATION)]
+        public async Task<JsonResult> Remove(string userId)
+        {
+            try
+            {
+                string result = await _temsUserManager.RemoveUser(userId);
+                if (result != null)
+                    return ReturnResponse(result, ResponseStatus.Fail);
+
+                return ReturnResponse("Success", ResponseStatus.Success);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured while removing the user.", ResponseStatus.Fail);
+            }
+        }
+
         [HttpGet("temsuser/archieve/{userId}/{status}")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_SYSTEM_CONFIGURATION)]
         public async Task<JsonResult> Archieve(string userId, bool status = true)

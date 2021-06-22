@@ -39,6 +39,17 @@ namespace temsAPI.Data.Managers
             return null;
         }
 
+        public async Task<string> Remove(string definitionId)
+        {
+            var definition = await GetFullById(definitionId);
+            if (definition == null)
+                return "Invalid id provided";
+
+            _unitOfWork.EquipmentDefinitions.Delete(definition);
+            await _unitOfWork.Save();
+            return null;
+        }
+
         public async Task<string> Update(AddEquipmentDefinitionViewModel viewModel)
         {
             string validationResult = await AddEquipmentDefinitionViewModel.Validate(_unitOfWork, viewModel);

@@ -65,6 +65,25 @@ namespace temsAPI.Controllers.LogControllers
             }
         }
 
+        [HttpGet("log/remove/{logId}")]
+        [ClaimRequirement(TEMSClaims.CAN_MANAGE_SYSTEM_CONFIGURATION)]
+        public async Task<JsonResult> Remove(string logId)
+        {
+            try
+            {
+                string result = await _logManager.Remove(logId);
+                if (result != null)
+                    return ReturnResponse(result, ResponseStatus.Fail);
+
+                return ReturnResponse("Success", ResponseStatus.Success);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured while removing the log", ResponseStatus.Fail);
+            }
+        }
+
         [HttpGet]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES, TEMSClaims.CAN_VIEW_ENTITIES)]
         public async Task<JsonResult> GetLogTypes()

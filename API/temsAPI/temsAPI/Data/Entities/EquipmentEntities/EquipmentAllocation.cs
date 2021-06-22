@@ -38,10 +38,12 @@ namespace temsAPI.Data.Entities.EquipmentEntities
 
 
 #nullable enable
+        [InverseProperty("EquipmentAllocations")]
         [ForeignKey("PersonnelID")]
         public Personnel? Personnel { get; set; }
         public string? PersonnelID { get; set; }
 
+        [InverseProperty("EquipmentAllocations")]
         [ForeignKey("RoomID")]
         public Room? Room { get; set; }
         public string? RoomID { get; set; }

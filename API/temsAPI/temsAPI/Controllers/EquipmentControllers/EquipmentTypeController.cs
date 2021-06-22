@@ -16,7 +16,7 @@ namespace temsAPI.EquipmentControllers
 {
     public class EquipmentTypeController : TEMSController
     {
-        EquipmentTypeManager _eqTypeManager;
+        EquipmentTypeManager _equipmentTypeManager;
         public EquipmentTypeController(
             IMapper mapper, 
             IUnitOfWork unitOfWork, 
@@ -24,7 +24,7 @@ namespace temsAPI.EquipmentControllers
             EquipmentTypeManager eqTypeManager)
             : base(mapper, unitOfWork, userManager)
         {
-            _eqTypeManager = eqTypeManager;
+            _equipmentTypeManager = eqTypeManager;
         }
 
         [HttpGet("equipmenttype/getallautocompleteoptions/{filter?}")]
@@ -32,7 +32,7 @@ namespace temsAPI.EquipmentControllers
         {
             try
             {
-                var options = await _eqTypeManager.GetAutocompleteOptions(filter);
+                var options = await _equipmentTypeManager.GetAutocompleteOptions(filter);
                 return Json(options);
             }
             catch (Exception ex)
@@ -48,7 +48,7 @@ namespace temsAPI.EquipmentControllers
         {
             try
             {
-                var simplifiedType = await _eqTypeManager.GetSimplified();
+                var simplifiedType = await _equipmentTypeManager.GetSimplified();
                 return Json(simplifiedType);
             }
             catch (Exception ex)
@@ -64,7 +64,7 @@ namespace temsAPI.EquipmentControllers
         {
             try
             {
-                var type = await _eqTypeManager.GetSimplifiedById(typeId);
+                var type = await _equipmentTypeManager.GetSimplifiedById(typeId);
                 if (type == null)
                     return ReturnResponse("Invalid id provided", ResponseStatus.Fail);
 
@@ -83,7 +83,7 @@ namespace temsAPI.EquipmentControllers
         {
             try
             {
-                var type = await _eqTypeManager.GetFullById(typeId);
+                var type = await _equipmentTypeManager.GetFullById(typeId);
                 if (type == null)
                     return ReturnResponse("Invalid id provided", ResponseStatus.Fail);
 
@@ -101,11 +101,30 @@ namespace temsAPI.EquipmentControllers
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> Add([FromBody] AddEquipmentTypeViewModel viewModel)
         {
-            string result = await _eqTypeManager.Create(viewModel);
+            string result = await _equipmentTypeManager.Create(viewModel);
             if (result != null)
                 return ReturnResponse(result, ResponseStatus.Fail);
 
             return ReturnResponse($"Success", ResponseStatus.Success);
+        }
+
+        [HttpGet("equipmentType/remove/{typeId}")]
+        [ClaimRequirement(TEMSClaims.CAN_MANAGE_SYSTEM_CONFIGURATION)]
+        public async Task<JsonResult> Remove(string definitionId)
+        {
+            try
+            {
+                string result = await _equipmentTypeManager.Remove(definitionId);
+                if (result != null)
+                    return ReturnResponse(result, ResponseStatus.Fail);
+
+                return ReturnResponse("Success", ResponseStatus.Success);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured while removing the type.", ResponseStatus.Fail);
+            }
         }
 
         [HttpPost]
@@ -114,7 +133,7 @@ namespace temsAPI.EquipmentControllers
         {
             try
             {
-                string result = await _eqTypeManager.Update(viewModel);
+                string result = await _equipmentTypeManager.Update(viewModel);
                 if (result != null)
                     return ReturnResponse(result, ResponseStatus.Fail);
 
@@ -134,7 +153,7 @@ namespace temsAPI.EquipmentControllers
             try
             {
                 // check if type exists
-                var type = await _eqTypeManager.GetById(typeId);
+                var type = await _equipmentTypeManager.GetById(typeId);
                 if (type == null)
                     return ReturnResponse("The specified type does not exist", ResponseStatus.Fail);
 
@@ -158,7 +177,7 @@ namespace temsAPI.EquipmentControllers
         {
             try
             {
-                var options = await _eqTypeManager.GetPropertiesOfType(typeId);
+                var options = await _equipmentTypeManager.GetPropertiesOfType(typeId);
                 return Json(options);
             }
             catch (Exception ex)

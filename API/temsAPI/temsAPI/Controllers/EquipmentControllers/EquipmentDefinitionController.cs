@@ -15,7 +15,7 @@ namespace temsAPI.Controllers.EquipmentControllers
 {
     public class EquipmentDefinitionController : TEMSController
     {
-        private EquipmentDefinitionManager _eqDefManager;
+        private EquipmentDefinitionManager _equipmentDefinitionManager;
         public EquipmentDefinitionController(
             IMapper mapper, 
             IUnitOfWork unitOfWork, 
@@ -23,7 +23,7 @@ namespace temsAPI.Controllers.EquipmentControllers
             EquipmentDefinitionManager equipmentDefinitionManager)
            : base(mapper, unitOfWork, userManager)
         {
-            _eqDefManager = equipmentDefinitionManager;
+            _equipmentDefinitionManager = equipmentDefinitionManager;
         }
 
         public IActionResult Index()
@@ -37,7 +37,7 @@ namespace temsAPI.Controllers.EquipmentControllers
         {
             try
             {
-                string result = await _eqDefManager.Create(viewModel);
+                string result = await _equipmentDefinitionManager.Create(viewModel);
                 if (result != null)
                     return ReturnResponse(result, ResponseStatus.Fail);
 
@@ -56,7 +56,7 @@ namespace temsAPI.Controllers.EquipmentControllers
         {
             try
             {
-                var result = await _eqDefManager.Update(viewModel);
+                var result = await _equipmentDefinitionManager.Update(viewModel);
                 if (result != null)
                     return ReturnResponse(result, ResponseStatus.Fail);
 
@@ -75,7 +75,7 @@ namespace temsAPI.Controllers.EquipmentControllers
         {
             try
             {
-                var options = await _eqDefManager.GetOfType(typeId);
+                var options = await _equipmentDefinitionManager.GetOfType(typeId);
                 return Json(options);
             }
             catch (Exception ex)
@@ -91,7 +91,7 @@ namespace temsAPI.Controllers.EquipmentControllers
         {
             try
             {
-                var options = await _eqDefManager.GetOfTypes(filter);
+                var options = await _equipmentDefinitionManager.GetOfTypes(filter);
                 return Json(options);
             }
             catch (Exception ex)
@@ -107,7 +107,7 @@ namespace temsAPI.Controllers.EquipmentControllers
         {
             try
             {
-                var definitions = await _eqDefManager.GetSimplified();
+                var definitions = await _equipmentDefinitionManager.GetSimplified();
                 return Json(definitions);
             }
             catch (Exception ex)
@@ -123,7 +123,7 @@ namespace temsAPI.Controllers.EquipmentControllers
         {
             try
             {
-                var definition = await _eqDefManager.GetSimplifiedById(definitionId);
+                var definition = await _equipmentDefinitionManager.GetSimplifiedById(definitionId);
                 return Json(definition);
             }
             catch (Exception ex)
@@ -139,7 +139,7 @@ namespace temsAPI.Controllers.EquipmentControllers
         {
             try
             {
-                var definition = await _eqDefManager.GetFullById(definitionId);
+                var definition = await _equipmentDefinitionManager.GetFullById(definitionId);
                 if (definition == null)
                     return ReturnResponse("Invalid definition id provided", ResponseStatus.Fail);
 
@@ -159,7 +159,7 @@ namespace temsAPI.Controllers.EquipmentControllers
         {
             try
             {
-                var definition = await _eqDefManager.GetFullById(definitionId);
+                var definition = await _equipmentDefinitionManager.GetFullById(definitionId);
                 if(definition == null)
                     return ReturnResponse("Invalid definition Id", ResponseStatus.Fail);
 
@@ -191,6 +191,25 @@ namespace temsAPI.Controllers.EquipmentControllers
             {
                 Debug.WriteLine(ex);
                 return ReturnResponse("An error occured while changing the archivation status.", ResponseStatus.Fail);
+            }
+        }
+
+        [HttpGet("equipmentdefinition/remove/{definitionId}")]
+        [ClaimRequirement(TEMSClaims.CAN_MANAGE_SYSTEM_CONFIGURATION)]
+        public async Task<JsonResult> Remove(string definitionId)
+        {
+            try
+            {
+                string result = await _equipmentDefinitionManager.Remove(definitionId);
+                if (result != null)
+                    return ReturnResponse(result, ResponseStatus.Fail);
+
+                return ReturnResponse("Success", ResponseStatus.Success);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured while removing the definition", ResponseStatus.Fail);
             }
         }
     }

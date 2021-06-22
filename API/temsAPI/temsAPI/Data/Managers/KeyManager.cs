@@ -69,6 +69,26 @@ namespace temsAPI.Data.Managers
             return null;
         }
 
+        public async Task<string> Remove(string keyId)
+        {
+            var key = await GetFullById(keyId);
+            if (key == null)
+                return "Invalid id provided";
+
+            _unitOfWork.Keys.Delete(key);
+            await _unitOfWork.Save();
+            return null;
+        }
+
+        public async Task<Key> GetFullById(string keyId)
+        {
+            return (await _unitOfWork.Keys
+                .Find<Key>(
+                    where: q => q.Id == keyId,
+                    include: q => q.Include(q => q.Room)))
+                .FirstOrDefault();
+        }
+
         public async Task<string> CreateAllocation(AddKeyAllocation allocation)
         {
             string validationResult = await allocation.Validate(_unitOfWork);

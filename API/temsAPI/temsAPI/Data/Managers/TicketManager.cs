@@ -286,6 +286,17 @@ namespace temsAPI.Data.Managers
             return null;
         }
 
+        public async Task<string> Remove(string ticketId)
+        {
+            var ticket = await GetById(ticketId);
+            if (ticket == null)
+                return "Invalid Id provided";
+
+            _unitOfWork.Tickets.Delete(ticket);
+            await _unitOfWork.Save();
+            return null;
+        }
+
         public async Task ChangeTicketStatus(Ticket ticket, Status newStatus)
         {
             ticket.Status = newStatus;

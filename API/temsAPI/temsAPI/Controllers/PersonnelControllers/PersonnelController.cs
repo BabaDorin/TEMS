@@ -58,6 +58,25 @@ namespace temsAPI.Controllers.PersonnelControllers
             }
         }
 
+        [HttpGet("personnel/remove/{personnelId}")]
+        [ClaimRequirement(TEMSClaims.CAN_MANAGE_SYSTEM_CONFIGURATION)]
+        public async Task<JsonResult> Remove(string personnelId)
+        {
+            try
+            {
+                string result = await _personnelManager.Remove(personnelId);
+                if (result != null)
+                    return ReturnResponse(result, ResponseStatus.Fail);
+
+                return ReturnResponse("Success", ResponseStatus.Success);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured while removing the personnel", ResponseStatus.Fail);
+            }
+        }
+
         [HttpGet("/personnel/archieve/{personnelId}/{archivationStatus?}")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> Archieve(string personnelId, bool archivationStatus = true)

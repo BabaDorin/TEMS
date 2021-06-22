@@ -61,6 +61,24 @@ namespace temsAPI.Controllers.RoomControllers
             }
         }
 
+        [HttpGet("room/remove/{roomId}")]
+        public async Task<JsonResult> Remove(string roomId)
+        {
+            try
+            {
+                string result = await _roomManager.Remove(roomId);
+                if (result != null)
+                    return ReturnResponse(result, ResponseStatus.Fail);
+
+                return ReturnResponse("Success", ResponseStatus.Success);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured while removing the room", ResponseStatus.Fail);
+            }
+        }
+
         [HttpGet("room/getroomtoupdate/{roomId}")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> GetRoomToUpdate(string roomId)

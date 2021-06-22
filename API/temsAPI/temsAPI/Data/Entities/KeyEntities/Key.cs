@@ -38,6 +38,8 @@ namespace temsAPI.Data.Entities.KeyEntities
 
 #nullable enable
         public string? Description { get; set; }
+
+        [InverseProperty("Keys")]
         [ForeignKey("RoomId")]
         public Room? Room { get; set; }
         public string? RoomId { get; set; }

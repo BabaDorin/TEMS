@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -65,6 +66,17 @@ namespace temsAPI.Data.Managers
             await _unitOfWork.Rooms.Create(model);
             await _unitOfWork.Save();
 
+            return null;
+        }
+
+        public async Task<string> Remove(string roomId)
+        {
+            var room = await GetById(roomId);
+            if (room == null)
+                return "Invalid id provided";
+
+            _unitOfWork.Rooms.Delete(room);
+            await _unitOfWork.Save();
             return null;
         }
 

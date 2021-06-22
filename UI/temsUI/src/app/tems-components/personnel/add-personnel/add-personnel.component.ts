@@ -107,6 +107,14 @@ export class AddPersonnelComponent extends TEMSComponent implements OnInit {
         if(result.status == 1)
           if(this.dialogRef != undefined)
             this.dialogRef.close();
+
+          this.clearForm();
       }))
+  }
+
+  clearForm(){
+    this.formlyData.model = {};
+    this.personnelPositionsChips.options = [];
+    this.userChips.options = [];
   }
 }

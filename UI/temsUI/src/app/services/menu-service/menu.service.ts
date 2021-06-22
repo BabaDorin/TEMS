@@ -337,8 +337,8 @@ export class MenuService {
     // },
     {
       path: '/archieve',
-      title: 'Archieve',
-      icon: 'mdi mdi-chart-bar menu-icon',
+      title: 'Archive',
+      icon: 'mdi mdi-file-sync menu-icon',
       isActive: false,
       isShown: this.tokenService.canManageEntities(),
       showSubmenu: false,

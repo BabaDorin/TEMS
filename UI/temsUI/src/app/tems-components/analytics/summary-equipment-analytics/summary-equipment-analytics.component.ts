@@ -1,3 +1,4 @@
+import { ClaimService } from './../../../services/claim.service';
 import { PieChartData } from './../../../models/analytics/pieChart-model';
 import { TEMSComponent } from './../../../tems/tems.component';
 import { SnackService } from './../../../services/snack/snack.service';
@@ -25,7 +26,7 @@ export class SummaryEquipmentAnalyticsComponent extends TEMSComponent implements
   constructor(
     private analyticsService: AnalyticsService,
     private snackService: SnackService,
-    private cp: CurrencyPipe
+    private cp: CurrencyPipe,
   ) {
     super();
   }

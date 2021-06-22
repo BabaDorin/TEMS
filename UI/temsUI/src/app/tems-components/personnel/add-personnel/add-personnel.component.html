@@ -3,17 +3,14 @@
         <div class="card-title">Add Personnel</div>
         <form [formGroup]="formlyData.form" (ngSubmit)="onSubmit(formlyData.model)">
             <formly-form [form]="formlyData.form" [fields]="formlyData.fields" [model]="formlyData.model"></formly-form>
-            <app-chips-autocomplete
-                #personnelPositionsChips
-                label="Personnel Positions"
-                [autocompleteOptions]="personnelPositions">
-            </app-chips-autocomplete>
-            <app-chips-autocomplete
-                #userChips
-                label="Personnel - User association"
-                [endPoint]="userService"
-                [alreadySelected]="user"
-                maxOptionsSelected="1">
+            <ng-container *ngIf="personnelPositions != undefined">
+                <app-chips-autocomplete #personnelPositionsChips label="Personnel Positions"
+                    [autocompleteOptions]="personnelPositions">
+                </app-chips-autocomplete>
+            </ng-container>
+
+            <app-chips-autocomplete #userChips label="Personnel - User association" [endPoint]="userService"
+                [alreadySelected]="user" maxOptionsSelected="1">
             </app-chips-autocomplete>
             <small class="text-muted text-justify">
                 If this personnel record is here to represent someone who already has an account,
@@ -21,9 +18,7 @@
                 sure the indicated user does not have another personnel association.
             </small>
             <br><br>
-            <button 
-                type="submit" 
-                class="btn btn-gradient-primary mr-2"
+            <button type="submit" class="btn btn-gradient-primary mr-2"
                 [disabled]="formlyData.form.status=='INVALID'">Submit</button>
         </form>
     </div>

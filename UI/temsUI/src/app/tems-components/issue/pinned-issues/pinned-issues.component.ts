@@ -1,3 +1,4 @@
+import { ClaimService } from './../../../services/claim.service';
 import { ViewIssueSimplified } from 'src/app/models/communication/issues/view-issue-simplified.model';
 import { TEMSComponent } from 'src/app/tems/tems.component';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
@@ -18,7 +19,8 @@ export class PinnedIssuesComponent extends TEMSComponent implements OnInit {
 
   constructor(
     private issuesService: IssuesService,
-    private snackService: SnackService
+    private snackService: SnackService,
+    private claims: ClaimService
   ) {
     super();
   }

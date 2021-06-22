@@ -6,6 +6,7 @@
         <ng-container class="mt-3">
             <app-issue-container *ngFor="let issue of issues; let i = index" 
             [issue]="issue" 
+            [canManage]="claims.canManage"
             [statuses]="statuses"
             (unPinned)="ticketUnpinned($event, i)" 
             (remove)="remove(i)">

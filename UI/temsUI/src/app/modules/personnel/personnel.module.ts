@@ -1,3 +1,4 @@
+import { EquipmentSummaryAnalyticsModule } from './../summary-analytics/equipment-summary-analytics/equipment-summary-analytics.module';
 import { EmailModule } from './../email/email/email.module';
 import { EquipmentModule } from './../../tems-components/equipment/equipment.module';
 import { BrowserModule } from '@angular/platform-browser';
@@ -38,6 +39,7 @@ import { TemsAgGridModule } from '../tems-ag-grid/tems-ag-grid.module';
     TemsFormsModule,
     ReactiveFormsModule,
 
+    EquipmentSummaryAnalyticsModule,
     EmailModule,
     // Shared modules
     EntitySharedModule,

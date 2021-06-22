@@ -304,6 +304,55 @@ namespace temsAPI.Data.Managers
             return user;
         }
 
+        public async Task<TEMSUser> GetFullUser(string userId)
+        {
+            var user = (await _unitOfWork.TEMSUsers
+                    .Find<TEMSUser>(
+                        where: q => q.Id == userId,
+                        include: q => q
+                        .Include(q => q.Personnel)
+                        .Include(q => q.Announcements)
+                        .Include(q => q.ArchievedEquipment)
+                        .Include(q => q.ArchievedTickets)
+                        .Include(q => q.ArchivedAllocations)
+                        .Include(q => q.ArchivedDefinitions)
+                        .Include(q => q.ArchivedKeyAllocations)
+                        .Include(q => q.ArchivedKeys)
+                        .Include(q => q.ArchivedLogs)
+                        .Include(q => q.ArchivedPersonnel)
+                        .Include(q => q.ArchivedPersonnelPositions)
+                        .Include(q => q.ArchivedProperties)
+                        .Include(q => q.ArchivedReportTemplates)
+                        .Include(q => q.ArchivedRoomLabels)
+                        .Include(q => q.ArchivedRooms)
+                        .Include(q => q.ArchivedSpecifications)
+                        .Include(q => q.ArchivedStatuses)
+                        .Include(q => q.ArchivedTypes)
+                        .Include(q => q.AssignedTickets)
+                        .Include(q => q.ClosedTickets)
+                        .Include(q => q.RegisteredEquipment)
+                        .Include(q => q.CreatedLogs)
+                        .Include(q => q.CreatedReportTemplates)
+                        .Include(q => q.CreatedTickets)
+                        .Include(q => q.UserNotifications)
+                    )).FirstOrDefault();
+
+            return user;
+        }
+
+        public async Task<string> RemoveUser(string userId)
+        {
+            var user = await GetFullUser(userId);
+
+            user.ChildrenSetNull();
+            await _unitOfWork.Save();
+
+            _unitOfWork.TEMSUsers.Delete(user);
+            await _unitOfWork.Save();
+
+            return null;
+        }
+
         public async Task<string> ChangePassword(ChangePasswordViewModel viewModel)
         {
             if (viewModel.UserId != _identityService.GetUserId()) ;
@@ -390,5 +439,7 @@ namespace temsAPI.Data.Managers
 
             return roles;
         }
+
+
     }
 }

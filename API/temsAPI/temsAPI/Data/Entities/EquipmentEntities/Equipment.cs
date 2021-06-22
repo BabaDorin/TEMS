@@ -115,5 +115,10 @@ namespace temsAPI.Data.Entities.EquipmentEntities
 
             return model;
         }
+
+        public static implicit operator Equipment(TEMSUser v)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

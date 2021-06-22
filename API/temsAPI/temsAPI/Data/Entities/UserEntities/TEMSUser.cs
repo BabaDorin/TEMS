@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using FluentEmail.Core;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -12,6 +13,7 @@ using temsAPI.Data.Entities.KeyEntities;
 using temsAPI.Data.Entities.LibraryEntities;
 using temsAPI.Data.Entities.OtherEntities;
 using temsAPI.Data.Entities.Report;
+using temsAPI.Data.Managers;
 
 namespace temsAPI.Data.Entities.UserEntities
 {
@@ -51,7 +53,6 @@ namespace temsAPI.Data.Entities.UserEntities
 
         public virtual ICollection<UserNotification> UserNotifications { get; set; } = new List<UserNotification>();
         public virtual ICollection<UserCommonNotification> UserCommonNotifications { get; set; } = new List<UserCommonNotification>();
-
         public virtual ICollection<Announcement> Announcements { get; set; } = new List<Announcement>();
         public virtual ICollection<Ticket> ClosedTickets { get; set; } = new List<Ticket>();
         public virtual ICollection<Ticket> AssignedTickets { get; set; } = new List<Ticket>();
@@ -79,6 +80,37 @@ namespace temsAPI.Data.Entities.UserEntities
         public virtual ICollection<ReportTemplate> ArchivedReportTemplates { get; set; } = new List<ReportTemplate>();
         public virtual ICollection<Status> ArchivedStatuses { get; set; } = new List<Status>();
 
+        /// <summary>
+        /// Simultates the OnDeleteBehaviour: SetNull, which does not seem to be supported by default by entityframeworkcore.
+        /// </summary>
+        /// <returns></returns>
+        public void ChildrenSetNull()
+        {
+            CreatedTickets.ForEach(q => q.CreatedById = null);
+            ClosedTickets.ForEach(q => q.ClosedById = null);
+            RegisteredEquipment.ForEach(q => q.RegisteredByID = null);
+            GeneratedReports.ForEach(q => q.GeneratedByID = null);
+            ArchievedTickets.ForEach(q => q.ArchievedById = null);
+            ArchievedEquipment.ForEach(q => q.ArchievedById = null);
+            CreatedLogs.ForEach(q => q.CreatedByID = null);
+            ArchivedLogs.ForEach(q => q.ArchievedById = null);
+            ArchivedAllocations.ForEach(q => q.ArchievedById = null);
+            ArchivedDefinitions.ForEach(q => q.ArchievedById = null);
+            ArchivedSpecifications.ForEach(q => q.ArchievedById = null);
+            ArchivedTypes.ForEach(q => q.ArchievedById = null);
+            ArchivedProperties.ForEach(q => q.ArchievedById = null);
+            ArchivedKeys.ForEach(q => q.ArchievedById = null);
+            ArchivedKeyAllocations.ForEach(q => q.ArchievedById = null);
+            UploadedLibraryItems.ForEach(q => q.UploadedById = null);
+            ArchivedPersonnel.ForEach(q => q.ArchievedById = null);
+            ArchivedPersonnelPositions.ForEach(q => q.ArchievedById = null);
+            ArchivedRooms.ForEach(q => q.ArchievedById = null);
+            ArchivedRoomLabels.ForEach(q => q.ArchievedById = null);
+            CreatedReportTemplates.ForEach(q => q.CreatedById = null);
+            ArchivedReportTemplates.ForEach(q => q.ArchievedById = null);
+            ArchivedStatuses.ForEach(q => q.ArchievedById = null);
+            Announcements.ForEach(q => q.AuthorID = null);
+        }
 
         [NotMapped]
         public string Identifier => FullName ?? UserName;

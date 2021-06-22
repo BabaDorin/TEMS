@@ -4,8 +4,7 @@
         <form [formGroup]="formlyData.form" (ngSubmit)="onSubmit()">
             <formly-form [form]="formlyData.form" [fields]="formlyData.fields" [model]="formlyData.model">
             </formly-form>
-            <br>
-            <button type="submit" class="btn btn-gradient-primary mr-2" [disabled]="!formlyData.form.valid">Submit</button>
+            <button type="submit" class="btn btn-gradient-primary mt-3" [disabled]="!formlyData.form.valid">Submit</button>
         </form>
     </div>
 </div>

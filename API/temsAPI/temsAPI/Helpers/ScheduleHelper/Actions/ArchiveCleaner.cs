@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
+using temsAPI.Data.Managers;
 
 namespace temsAPI.Helpers.ScheduleHelper.Actions
 {
@@ -14,12 +15,10 @@ namespace temsAPI.Helpers.ScheduleHelper.Actions
             _unitOfWork = unitOfWork;
         }
 
-        /// <summary>
-        /// Completely wipes data about items that were archieved for more than 30 days
-        /// </summary>
         public async Task Start()
         {
-            throw new NotImplementedException();
+            //Will be implemented after a major testion session on delete behaviour
+            //await _unitOfWork.FindAndRemoveOverArchivedItems();
         }
     }
 }

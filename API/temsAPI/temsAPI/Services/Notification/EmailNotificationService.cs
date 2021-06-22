@@ -3,14 +3,30 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
+using temsAPI.ViewModels.Email;
 
 namespace temsAPI.Services.Notification
 {
     public class EmailNotificationService : INotificationService
     {
+        private EmailService _emailService;
+        public EmailNotificationService(EmailService emailService)
+        {
+            _emailService = emailService;
+        }
+
         public async Task<string> SendNotification(INotification notification)
         {
-            throw new NotImplementedException();
+            SendEmailViewModel emailViewModel = new()
+            {
+                From = "TEMS CIH Cahul",
+                Addressees = notification.GetUsers().Select(q => q.Email).Distinct().ToList(),
+                Subject = notification.Title,
+                Text = notification.Message
+            };
+
+            await _emailService.SendEmail(emailViewModel);
+            return null;
         }
     }
 }

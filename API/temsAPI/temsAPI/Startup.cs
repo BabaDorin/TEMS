@@ -11,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Protocols;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -129,6 +130,7 @@ namespace temsAPI
             services.AddScoped<BrowserNotificationService>();
             services.AddScoped<NotificationService>();
             services.AddSingleton<SystemConfigurationService>();
+            services.AddScoped<RoutineCheckService>();
             services.ConfigureWritable<AppSettings>(Configuration.GetSection("AppSettings"));
 
             // TEMS Entity managers
@@ -156,7 +158,10 @@ namespace temsAPI
             IWebHostEnvironment env,
             UserManager<TEMSUser> userManager,
             RoleManager<IdentityRole> roleManager,
-            ApplicationDbContext dbContext)
+            ApplicationDbContext dbContext,
+            SystemConfigurationService systemConfigurationService,
+            RoutineCheckService routineCheckService,
+            IUnitOfWork unitOfWork)
         {
 
             if (env.IsDevelopment())
@@ -191,7 +196,8 @@ namespace temsAPI
                     pattern: "{controller=Home}/{action=Index}/{id?}");
             });
 
-            //(new Scheduler(unitOfWork)).Start();
+            //var unitOfWork = (IUnitOfWork)serviceProvider.GetService(typeof(IFooService));
+            //(new Scheduler(unitOfWork, systemConfigurationService, routineCheckService)).Start();
         }
     }
 }

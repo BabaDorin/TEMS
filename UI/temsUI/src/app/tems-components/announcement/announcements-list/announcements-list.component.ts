@@ -1,3 +1,4 @@
+import { ClaimService } from './../../../services/claim.service';
 import { DialogService } from './../../../services/dialog-service/dialog.service';
 import { CAN_MANAGE_SYSTEM_CONFIGURATION } from './../../../models/claims';
 import { TokenService } from './../../../services/token-service/token.service';
@@ -20,38 +21,41 @@ export class AnnouncementsListComponent extends TEMSComponent implements OnInit 
   @Input() take: number;
   @Input() displayCreateNew: boolean = false;
 
-  canManage: boolean = false;
-
   announcements: ViewAnnouncement[];
   constructor(
     private communicationService: CommunicationService,
     public dialog: MatDialog,
-    private tokenService: TokenService,
+    private claims: ClaimService,
     private dialogService: DialogService
   ) { 
     super();
   }
 
   ngOnInit(): void {
+    this.fetchAnnouncements();
+  }
+
+  fetchAnnouncements(){
     let endPoint = 
-      (this.skip != undefined && this.take != undefined)
-      ? this.communicationService.getAnnouncements(this.skip, this.take)
-      : this.communicationService.getAnnouncements();
+    (this.skip != undefined && this.take != undefined)
+    ? this.communicationService.getAnnouncements(this.skip, this.take)
+    : this.communicationService.getAnnouncements();
 
-    this.subscriptions.push(
-      endPoint
-      .subscribe(result => {
-        console.log(result);
-        this.announcements = result;
-      }));
-
-    this.canManage = this.tokenService.hasClaim(CAN_MANAGE_ANNOUNCEMENTS) 
-      || this.tokenService.hasClaim(CAN_MANAGE_SYSTEM_CONFIGURATION); 
+  this.subscriptions.push(
+    endPoint
+    .subscribe(result => {
+      console.log(result);
+      this.announcements = result;
+    }));
   }
 
   addAnnouncement(){
     this.dialogService.openDialog(
-      AddAnnouncementComponent
+      AddAnnouncementComponent,
+      undefined,
+      () => {
+        this.fetchAnnouncements();
+      }
     );
   }
 }

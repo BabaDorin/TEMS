@@ -5,6 +5,7 @@ using System.Timers;
 using temsAPI.Contracts;
 using temsAPI.Helpers.ScheduleHelper.Actions;
 using temsAPI.Helpers.StaticFileHelpers;
+using temsAPI.Services;
 
 namespace temsAPI.Helpers
 {
@@ -12,20 +13,18 @@ namespace temsAPI.Helpers
     {
         private Timer timer;
         IUnitOfWork _unitOfWork;
-        List<IScheduledAction> scheduledActions;
+        SystemConfigurationService _systemConfigurationService;
+        RoutineCheckService _routineCheckService;
 
-        public Scheduler(IUnitOfWork unitOfWork)
+        public Scheduler(IUnitOfWork unitOfWork, SystemConfigurationService systemConfigurationService, RoutineCheckService routineCheckService)
         {
             _unitOfWork = unitOfWork;
+            _systemConfigurationService = systemConfigurationService;
+            _routineCheckService = routineCheckService;
 
             timer = new Timer();
-            timer.Interval = 2 * 86400 * 1000; // Fires ones every 2 days
+            timer.Interval = _systemConfigurationService.AppSettings.RoutineCheckIntervalHr * 60 * 60 * 1000;
             timer.Elapsed += Timer_Elapsed;
-
-            scheduledActions = new()
-            {
-                new ArchiveCleaner(_unitOfWork)
-            };
         }
 
         public void Start()
@@ -35,10 +34,7 @@ namespace temsAPI.Helpers
 
         private async void Timer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            foreach(var action in scheduledActions)
-            {
-                await action.Start();   
-            }
+            await _routineCheckService.RoutineCheck();
         }
     }
 }

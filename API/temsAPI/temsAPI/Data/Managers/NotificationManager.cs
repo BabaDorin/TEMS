@@ -12,6 +12,7 @@ using temsAPI.Data.Entities.CommunicationEntities;
 using temsAPI.Data.Entities.UserEntities;
 using temsAPI.Data.Factories.NotificationFactories;
 using temsAPI.Services;
+using temsAPI.Services.Notification;
 using temsAPI.ViewModels.Notification;
 
 namespace temsAPI.Data.Managers
@@ -21,17 +22,20 @@ namespace temsAPI.Data.Managers
         private IdentityService _identityService;
         private UserManager<TEMSUser> _userManager;
         private RoleManager<IdentityRole> _roleManager;
+        EmailNotificationService _emailNotificationService;
 
         public NotificationManager(
             IUnitOfWork unitOfWork, 
             ClaimsPrincipal user,
             IdentityService identityService,
             UserManager<TEMSUser> userManager,
-            RoleManager<IdentityRole> roleManager) : base(unitOfWork, user)
+            RoleManager<IdentityRole> roleManager,
+            EmailNotificationService emailNotificationService) : base(unitOfWork, user)
         {
             _identityService = identityService;
             _userManager = userManager;
             _roleManager = roleManager;
+            _emailNotificationService = emailNotificationService;
         }
 
         public async Task<List<NotificationViewModel>> GetLastNotifications(TEMSUser user, int skip = 0, int take = 7)
@@ -165,6 +169,7 @@ namespace temsAPI.Data.Managers
             {
                 var notification = (new TicketAssignedNotiFactory().Create(ticket));
                 await CreateCommonNotification(notification);
+                await _emailNotificationService.SendNotification(notification);
             }
 
             // Notify technicians
@@ -177,6 +182,7 @@ namespace temsAPI.Data.Managers
             {
                 var notification = new TicketCreatedNotiFactory().Create(ticket, techIds);
                 await CreateCommonNotification(notification);
+                await _emailNotificationService.SendNotification(notification);
             }
 
             // BEFREE -> Notify supervisories

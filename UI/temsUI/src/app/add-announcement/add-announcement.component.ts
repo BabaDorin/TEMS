@@ -1,3 +1,4 @@
+import { SnackService } from './../services/snack/snack.service';
 import { AddAnnouncement } from './../models/communication/announcement/add-announcement.model';
 import { CommunicationService } from './../services/communication-service/communication.service';
 import { TEMSComponent } from 'src/app/tems/tems.component';
@@ -19,9 +20,12 @@ export class AddAnnouncementComponent extends TEMSComponent implements OnInit {
     fields: [] as FormlyFieldConfig[],
   }
 
+  dialogRef;
+
   constructor(
     private formlyParserService: FormlyParserService,
-    private communicationService: CommunicationService
+    private communicationService: CommunicationService,
+    private snackService: SnackService
   ) {
     super();
   }
@@ -37,7 +41,18 @@ export class AddAnnouncementComponent extends TEMSComponent implements OnInit {
     
     this.subscriptions.push(this.communicationService.createAnnouncement(addAnnouncement)
       .subscribe(result => {
+        if(this.snackService.snackIfError(result))
+          return;
         console.log(result);
+        console.log(this.dialogRef);
+        if(result.status == 1)
+        {
+          if(this.dialogRef != undefined)
+            this.dialogRef.close();
+
+          this.formlyData.model.announcement.title = "";
+          this.formlyData.model.announcement.text = "";
+        }
       }))
   }
 

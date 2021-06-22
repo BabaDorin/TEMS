@@ -1,4 +1,4 @@
-import { API_REP_URL } from './../../models/backend.config';
+import { API_KEY_URL, API_REP_URL } from './../../models/backend.config';
 import { TEMSService } from './../tems-service/tems.service';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -16,6 +16,13 @@ export class ReportService extends TEMSService {
     private http: HttpClient
   ) { 
     super();
+  }
+
+  remove(templateId: string): Observable<any>{
+    return this.http.get(
+      API_REP_URL + '/remove/' + templateId,
+      this.httpOptions
+    );
   }
 
   getCustomTemplates(){

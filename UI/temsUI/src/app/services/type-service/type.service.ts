@@ -16,6 +16,13 @@ export class TypeService extends TEMSService{
     super();
   }
 
+  remove(typeId: string): Observable<any>{
+    return this.http.get(
+      API_EQTYPE_URL + '/remove/' + typeId,
+      this.httpOptions
+    );
+  }
+
   getAllAutocompleteOptions(filter?: string): Observable<IOption[]> {
     let endPoint = API_EQTYPE_URL + '/getallautocompleteoptions';
     if(filter != undefined)

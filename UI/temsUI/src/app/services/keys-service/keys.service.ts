@@ -20,6 +20,20 @@ export class KeysService extends TEMSService {
     super();
   }
 
+  remove(keyId: string): Observable<any>{
+    return this.http.get(
+      API_KEY_URL + '/remove/' + keyId,
+      this.httpOptions
+    );
+  }
+
+  removeAllocation(allocationId: string): Observable<any>{
+    return this.http.get(
+      API_KEY_URL + '/removeAllocation/' + allocationId,
+      this.httpOptions
+    );
+  }
+
   getKeys(): Observable<any> {
     return this.http.get(
       API_KEY_URL + '/get',

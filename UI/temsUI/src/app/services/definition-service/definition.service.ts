@@ -16,6 +16,13 @@ export class DefinitionService extends TEMSService {
     super();
   }
 
+  remove(definitionId: string): Observable<any>{
+    return this.http.get(
+      API_EQDEF_URL + '/remove/' + definitionId,
+      this.httpOptions    
+    )
+  }
+
   getAllAutocompleteOptions(filter?: string, types?: string[]): Observable<IOption[]>{
 
     return this.http.post<IOption[]>(

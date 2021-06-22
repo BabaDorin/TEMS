@@ -19,6 +19,13 @@ export class PersonnelService extends TEMSService {
     super();
   }
 
+  remove(personnelId: string): Observable<any>{
+    return this.http.get(
+      API_PERS_URL + '/remove/' + personnelId,
+      this.httpOptions
+    );
+  }
+
   getAllAutocompleteOptions(filter?: string): Observable<IOption[]>{
     let endPoint = API_PERS_URL + '/getallautocompleteoptions';
     if(filter != undefined)

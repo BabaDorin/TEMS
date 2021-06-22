@@ -3,7 +3,7 @@ import { TEMSService } from './../tems-service/tems.service';
 import { AddEquipment } from 'src/app/models/equipment/add-equipment.model';
 import { AddType } from './../../models/equipment/add-type.model';
 import { Definition, AddDefinition } from './../../models/equipment/add-definition.model';
-import { API_PROP_URL, API_EQTYPE_URL, API_EQDEF_URL, API_EQ_URL, IEntityCollection } from './../../models/backend.config';
+import { API_PROP_URL, API_EQTYPE_URL, API_EQDEF_URL, API_EQ_URL, IEntityCollection, API_ALL_URL } from './../../models/backend.config';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { IOption } from './../../models/option.model';
 import { CheckboxItem } from '../../models/checkboxItem.model';
@@ -27,6 +27,27 @@ export class EquipmentService extends TEMSService {
     private http: HttpClient
   ) { 
     super();
+  }
+
+  removeEquipment(equipmentId: string): Observable<any>{
+    return this.http.get(
+      API_EQ_URL + '/remove/' + equipmentId,
+      this.httpOptions
+    );
+  }
+
+  removeProperty(propertyId: string): Observable<any>{
+    return this.http.get(
+      API_PROP_URL + '/remove/' + propertyId,
+      this.httpOptions
+    );
+  }
+
+  removeAllocation(allocationId: string): Observable<any>{
+    return this.http.get(
+      API_ALL_URL + '/remove/' + allocationId,
+      this.httpOptions
+    );
   }
 
   getTypesSimplified(): Observable<ViewTypeSimplified[]>{
@@ -202,22 +223,6 @@ export class EquipmentService extends TEMSService {
     );
   }
 
-  getTypesAutocomplete(): IOption[]{
-    return [
-      { value: '1', label: 'printer' },
-      { value: '2', label: 'laptop' },
-      { value: '3', label: 'scanner' },
-    ] 
-  }
-
-  getDefinitionsAutocomplete(ofTypes: IOption[]): IOption[]{
-    return [
-      { value: '1', label: 'printer' },
-      { value: '2', label: 'laptop' },
-      { value: '3', label: 'scanner' },
-    ]
-  }
-
   getProperties(): Observable<IOption[]>{
     return this.http.get<IOption[]>(
       API_PROP_URL + '/get',
@@ -230,15 +235,6 @@ export class EquipmentService extends TEMSService {
       API_PROP_URL + '/getbyid/' + propertyId,
       this.httpOptions
     );
-  }
-
-
-
-  getCommonProperties(): CheckboxItem[]{
-    return [
-      new CheckboxItem('temsid', 'Tems ID'),
-      new CheckboxItem('serialNumber', 'Serial Number'),
-    ]
   }
 
   getPropertiesOfType(typeId: string): Observable<IOption[]>{

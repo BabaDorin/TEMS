@@ -34,7 +34,7 @@ export class ViewArchieveComponent extends TEMSComponent implements OnInit {
     'Properties',
     'Equipment Types',
     'Equipment Definitions',
-  ];
+  ]; // Reffered in archiveService
 
   constructor(
     private archieveService: ArchieveService,
@@ -79,6 +79,38 @@ export class ViewArchieveComponent extends TEMSComponent implements OnInit {
           this.archievedItems = result;
         })      
       );
+  }
+
+  remove(){
+    let selected = this.agArchievedItems.getSelectedNodes() as ArchievedItem[];
+    
+    if(selected.length == 0)
+      return;
+    
+    if(selected.length > 20)
+    {
+      this.snackService.snack({message: "You can't remove more than 20 items at a time", status: 0});
+      return;
+    }
+
+    let removingResult = "Success";
+    for(let i = 0; i < selected.length; i++){
+      this.archieveService.removeEntity(this.selectedType, selected[i].id)
+      .subscribe(result => {
+          if(result.status == 0)
+          removingResult += selected[i].identifier + " failed, [" + result.message + "]\n";
+        else
+          this.agArchievedItems.removeItem(selected[i]);
+
+        if(i == selected.length - 1){
+          let status = 1;
+          if(removingResult != "Success")
+            status = 0;
+
+          this.snackService.snack(removingResult, status);
+        }
+      })
+    }  
   }
 
   dearchive(){

@@ -95,6 +95,26 @@ namespace temsAPI.Controllers.KeyControllers
             }
         }
 
+        [HttpGet("key/removeAllocation/{allocationId}")]
+        [ClaimRequirement(TEMSClaims.CAN_MANAGE_SYSTEM_CONFIGURATION)]
+        public async Task<JsonResult> RemoveAllocation(string allocationId)
+        {
+            try
+            {
+                string result = await _keyManager.RemoveAllocation(allocationId);
+                if (result != null)
+                    return ReturnResponse(result, ResponseStatus.Fail);
+
+                return ReturnResponse("Success", ResponseStatus.Success);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                return ReturnResponse("An error occured while removing the allocation", ResponseStatus.Fail);
+            }
+        }
+
+
         [HttpPost]
         [ClaimRequirement(TEMSClaims.CAN_ALLOCATE_KEYS)]
         public async Task<JsonResult> CreateAllocation([FromBody] AddKeyAllocation viewModel)

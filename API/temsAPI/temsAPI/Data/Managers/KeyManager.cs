@@ -80,6 +80,25 @@ namespace temsAPI.Data.Managers
             return null;
         }
 
+        public async Task<string> RemoveAllocation(string allocationId)
+        {
+            var allocation = await GetAllocationById(allocationId);
+            if (allocation == null)
+                return "Invalid id provided";
+
+            _unitOfWork.KeyAllocations.Delete(allocation);
+            await _unitOfWork.Save();
+            return null;
+        }
+
+        public async Task<KeyAllocation> GetAllocationById(string allocationId)
+        {
+            return (await _unitOfWork.KeyAllocations
+                .Find<KeyAllocation>(
+                    where: q => q.Id == allocationId
+                )).FirstOrDefault();
+        }
+
         public async Task<Key> GetFullById(string keyId)
         {
             return (await _unitOfWork.Keys

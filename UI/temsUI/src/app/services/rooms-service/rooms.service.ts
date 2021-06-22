@@ -19,6 +19,13 @@ export class RoomsService extends TEMSService {
     super();
   }
 
+  remove(roomId: string): Observable<any>{
+    return this.http.get(
+      API_ROOM_URL + '/remove/' + roomId,
+      this.httpOptions
+    );
+  }
+
   getAllAutocompleteOptions(filter?: string): Observable<IOption[]>{
     let endPoint = API_ROOM_URL + '/getallautocompleteoptions';
     if(filter != undefined)

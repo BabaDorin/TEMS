@@ -24,6 +24,13 @@ export class LogsService extends TEMSService {
     );
   }
 
+  remove(logId: string): Observable<any>{
+    return this.http.get(
+      API_LOG_URL + '/remove/' + logId,
+      this.httpOptions
+    );
+  }
+
   getLogsByEquipmentId(equipmentId: string): Observable<any>{
     return this.getEntityLogs('equipment', equipmentId);
   }

@@ -224,6 +224,17 @@ namespace temsAPI.Data.Managers
             }
         }
 
+        public async Task<string> Remove(string templateId)
+        {
+            var template = await GetTemplate(templateId);
+            if (template == null)
+                return "Invalid id provided";
+
+            _unitOfWork.ReportTemplates.Delete(template);
+            await _unitOfWork.Save();
+            return null;
+        }
+
         public async Task CheckForReportsOverflow()
         {
             int totalReports = await _unitOfWork.Reports.Count();

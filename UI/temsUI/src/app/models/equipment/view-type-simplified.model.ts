@@ -1,14 +1,7 @@
-export interface IViewTypeSimplified{
-    id: string,
-    name: string,
-    properties: string,
-    parents: string[],
-    children: string[]
-}
-
-export class ViewTypeSimplified implements IViewTypeSimplified{
+export class ViewTypeSimplified {
     id: string;
     name: string;
+    editable: boolean;
     properties: string;
     parents: string[];
     children: string[]

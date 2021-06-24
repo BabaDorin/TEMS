@@ -1,11 +1,6 @@
-export interface IViewPropertySimplified{
-    id: string,
-    displayName: string,
-    description: string
-}
-
-export class ViewPropertySimplified implements IViewPropertySimplified{
+export class ViewPropertySimplified {
     id: string;
     displayName: string;
+    editable: boolean;
     description: string;
 }

@@ -20,7 +20,7 @@ export interface ITagGroup{
 export interface IContainerAction{
     name: string,
     icon: string,
-    action: Function,
+    action?: Function,
     disabled?: boolean,
     actionParameters?: any;
 }

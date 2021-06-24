@@ -21,8 +21,18 @@ namespace temsAPI.Data.Entities.EquipmentEntities
             switch (Name.ToLower())
             {
                 case "number": return typeof(double);
-                case "boolean": return typeof(bool);
+                case "bool": return typeof(bool);
                 default: return typeof(string);
+            }
+        }
+
+        public bool TryParseValue(dynamic value)
+        {
+            switch (Name.ToLower())
+            {
+                case "number": return Double.TryParse(value.ToString(), out double doubleVal);
+                case "bool": return Boolean.TryParse(value.ToString(), out bool boolValue);
+                default: return true;
             }
         }
     }

@@ -22,6 +22,9 @@ export class EquipmentTypeContainerModel extends TEMSComponent implements IGener
         private equipmentType: ViewTypeSimplified) {
         super();
 
+        console.log('Equipment type:');
+        console.log(equipmentType);
+
         this.buildContainerModel();
     }
 
@@ -54,17 +57,26 @@ export class EquipmentTypeContainerModel extends TEMSComponent implements IGener
             action: () => this.view()
         });
 
-        this.actions.push({
-            name: 'Edit',
-            icon: 'pencil',
-            action: () => this.edit()
-        });
+        if(this.equipmentType.editable){
+            this.actions.push({
+                name: 'Edit',
+                icon: 'pencil',
+                action: () => this.edit()
+            });
 
-        this.actions.push({
-            name: 'Remove',
-            icon: 'delete',
-            action: () => this.remove()
-        });
+            this.actions.push({
+                name: 'Remove',
+                icon: 'delete',
+                action: () => this.remove()
+            });
+        }
+        else{
+            this.actions.push({
+                name: 'Not editable',
+                icon: 'pencil',
+                disabled: true,
+            });
+        }
     }
 
     ngOnInit(): void {

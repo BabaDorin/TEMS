@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -35,7 +36,7 @@ namespace temsAPI.ViewModels.Report
             List<string> roomIds = Rooms?.Select(q => q.Value).ToList();
             List<string> personnelIds = Personnel?.Select(q => q.Value).ToList();
             List<string> specificProperties = SpecificProperties?
-                .Where(q => Types.Any(q1 => q1.Label == q.Type))
+                .Where(q => Types.Any(q1 => q1.Value == q.Type))
                 .SelectMany(q => q.Properties).ToList();
             List<string> propertyIds = CommonProperties?
                 .Concat(specificProperties ?? new List<string>())
@@ -75,7 +76,9 @@ namespace temsAPI.ViewModels.Report
                 SeparateBy = SeparateBy,
                 Properties = (propertyIds != null)
                     ? (await unitOfWork.Properties
-                    .FindAll<Data.Entities.EquipmentEntities.Property>(q => propertyIds.Contains(q.Name)))
+                    .FindAll<Data.Entities.EquipmentEntities.Property>(
+                        where: q => propertyIds.Contains(q.Name),
+                        include: q => q.Include(q => q.DataType)))
                     .ToList()
                     : new List<Data.Entities.EquipmentEntities.Property>(),
                 Header = Header,

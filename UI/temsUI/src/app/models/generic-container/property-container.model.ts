@@ -24,14 +24,13 @@ export class PropertyContainerModel extends TEMSComponent implements IGenericCon
         private snackService: SnackService,
         private property: ViewPropertySimplified) {
         super();
-
         this.buildContainerModel();
     }
 
     buildContainerModel() {
         this.title = this.property.displayName;
 
-        // Might add datatype as tag kater
+        // Might add datatype as tag later
         // this.tagGroups = [];
         // this.tagGroups.push({
         //     name: 'DataType',
@@ -48,11 +47,20 @@ export class PropertyContainerModel extends TEMSComponent implements IGenericCon
             action: () => this.view()
         });
 
-        this.actions.push({
-            name: 'Edit',
-            icon: 'pencil',
-            action: () => this.edit()
-        });
+        if(this.property.editable){
+            this.actions.push({
+                name: 'Edit',
+                icon: 'pencil',
+                action: () => this.edit()
+            });
+        }
+        else{
+            this.actions.push({
+                name: 'Not editable',
+                icon: 'pencil',
+                disabled: true
+            });
+        }
 
         this.actions.push({
             name: 'Remove',

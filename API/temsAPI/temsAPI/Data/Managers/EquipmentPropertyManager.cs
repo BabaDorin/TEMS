@@ -145,7 +145,8 @@ namespace temsAPI.Data.Managers
 
             var propertyToUpdate = (await _unitOfWork.Properties
                 .Find<Entities.EquipmentEntities.Property>(
-                    where: q => q.Id == viewModel.Id
+                    where: q => q.Id == viewModel.Id,
+                    include: q => q.Include(q => q.DataType)
                 )).FirstOrDefault();
 
             if ((bool)!propertyToUpdate.EditablePropertyInfo)
@@ -154,11 +155,31 @@ namespace temsAPI.Data.Managers
             propertyToUpdate.Name = viewModel.Name;
             propertyToUpdate.DisplayName = viewModel.DisplayName;
             propertyToUpdate.Description = viewModel.Description;
-            propertyToUpdate.DataType = (await _unitOfWork.DataTypes.
+
+            // Update data type.
+            // We check all of property specifications to ensure that the newly setted datatype
+            // is compatible with specification values (Example: 'RX-11' can not be converted to Double).
+
+            var newDataType = (await _unitOfWork.DataTypes.
                 Find<DataType>(q => q.Name.ToLower() == viewModel.DataType.ToLower()))
                 .FirstOrDefault();
-            propertyToUpdate.Required = viewModel.Required;
 
+            if(newDataType != propertyToUpdate.DataType)
+            {
+                var propertySpecifications = (await _unitOfWork.EquipmentSpecifications
+                    .FindAll<EquipmentSpecifications>(
+                        where: q => q.PropertyID == propertyToUpdate.Id
+                    ))
+                    .ToList();
+
+                foreach(EquipmentSpecifications spec in propertySpecifications)
+                    if (!newDataType.TryParseValue(spec.Value))
+                        return $"Unable to change property datatype. Value: {spec.Value} can not be converted to new datatype: {newDataType.Name}";
+
+                propertyToUpdate.DataType = newDataType;
+            }
+            
+            propertyToUpdate.Required = viewModel.Required;
             await _unitOfWork.Save();
 
             return null;

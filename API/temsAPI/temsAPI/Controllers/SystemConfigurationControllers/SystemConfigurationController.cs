@@ -29,7 +29,7 @@ namespace temsAPI.Controllers.SystemConfigurationControllers
         }
 
         [HttpGet]
-        [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
+        [ClaimRequirement(TEMSClaims.CAN_MANAGE_SYSTEM_CONFIGURATION)]
         public async Task<JsonResult> IntegrateSIC()
         {
             try

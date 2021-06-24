@@ -98,7 +98,7 @@ namespace temsAPI.Services.SICServices
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
-                return $"An error occured while registering the computer. Details: {ex.Message}";
+                return $"An error occured while registering the computer. Details: {ex.Message}. \nMake sure SIC Integration has been enabled (via system configuration interface).";
             }
             
         }

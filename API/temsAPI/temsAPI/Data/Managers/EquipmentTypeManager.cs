@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using RazorLight.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,8 +16,17 @@ namespace temsAPI.Data.Managers
 {
     public class EquipmentTypeManager : EntityManager
     {
-        public EquipmentTypeManager(IUnitOfWork unitOfWork, ClaimsPrincipal user) : base(unitOfWork, user)
+        EquipmentDefinitionManager _equipmentDefinitionManager;
+        EquipmentManager _equipmentManager;
+
+        public EquipmentTypeManager(
+            IUnitOfWork unitOfWork, 
+            ClaimsPrincipal user,
+            EquipmentDefinitionManager equipmentDefinitionManager,
+            EquipmentManager equipmentManager) : base(unitOfWork, user)
         {
+            _equipmentDefinitionManager = equipmentDefinitionManager;
+            _equipmentManager = equipmentManager;
         }
 
         public async Task<List<Option>> GetAutocompleteOptions(string filter)
@@ -83,7 +94,7 @@ namespace temsAPI.Data.Managers
                     .Include(q => q.Parents.Where(q => !q.IsArchieved))
                     .Include(q => q.Properties.Where(q => !q.IsArchieved))
                     .ThenInclude(q => q.DataType)
-                    .Include(q => q.Children.Where(q => !q.IsArchieved))
+                    .Include(q => q.Children.Where(q => !q.IsArchieved)).ThenInclude(q => q.Parents)
                     .ThenInclude(q => q.Properties.Where(q => !q.IsArchieved))
                     .ThenInclude(q => q.DataType)
                     )).FirstOrDefault();
@@ -115,12 +126,40 @@ namespace temsAPI.Data.Managers
             return null;
         }
 
+        // remove by Id
         public async Task<string> Remove(string typeId)
         {
-            var type = await GetFullById(typeId);
+            var type = (await _unitOfWork.EquipmentTypes
+                .Find<EquipmentType>(
+                    where: q => q.Id == typeId,
+                    include: q => q
+                    .Include(q => q.Children)
+                    .ThenInclude(q => q.Parents)))
+                .FirstOrDefault();
+
             if (type == null)
                 return "Invalid Id provided";
 
+            return await Remove(type);
+        }
+
+        // remove by reference
+        public async Task<string> Remove(EquipmentType type)
+        {
+            // Remove ONLY children that are assigned to this type
+            var typeChildren = type.Children.ToList();
+
+            foreach (EquipmentType child in typeChildren)
+            {
+                if (child.Parents.Count > 1)
+                    continue;
+
+                await _equipmentDefinitionManager.RemoveOfType(child.Id);
+                _unitOfWork.EquipmentTypes.Delete(child);
+                await _unitOfWork.Save();
+            }
+
+            await _equipmentDefinitionManager.RemoveOfType(type.Id);
             _unitOfWork.EquipmentTypes.Delete(type);
             await _unitOfWork.Save();
             return null;

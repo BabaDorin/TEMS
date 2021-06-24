@@ -6,6 +6,7 @@ using System.IO.Pipes;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.EquipmentEntities;
@@ -44,21 +45,47 @@ namespace temsAPI.Data.Managers
             return null;
         }
 
+        // removeById
         public async Task<string> Remove(string equipmentId)
         {
             var equipment = await GetFullEquipmentById(equipmentId);
             if (equipment == null)
                 return "Invalid Id provided";
 
+            return await Remove(equipment);
+        }
+
+        // Remove by reference
+        public async Task<string> Remove(Equipment equipment)
+        {
             // Remove equipment children first
-            foreach(Equipment eq in equipment.Children)
+            var children = (await _unitOfWork.Equipments
+                .FindAll<Equipment>(q => q.ParentID == equipment.Id))
+                .ToList();
+
+            foreach (Equipment eq in children)
             {
                 _unitOfWork.Equipments.Delete(eq);
-                await _unitOfWork.Save();
             }
+            await _unitOfWork.Save();
 
             _unitOfWork.Equipments.Delete(equipment);
             await _unitOfWork.Save();
+            return null;
+        }
+
+        public async Task<string> RemoveOfDefinition(string definitionId)
+        {
+            var equipment = (await _unitOfWork.Equipments
+                .FindAll<Equipment>(
+                    where: q => q.EquipmentDefinitionID == definitionId,
+                    include: q => q
+                    .Include(q => q.Children)))
+                .ToList();
+
+            foreach(Equipment eq in equipment)
+                await Remove(eq);
+
             return null;
         }
 

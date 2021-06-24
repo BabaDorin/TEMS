@@ -21,7 +21,7 @@ namespace temsAPI.Data.Managers
         {
 
             List<ArchievedItemViewModel> items = new();
-            switch (itemType.ToLower())
+            switch (itemType)
             {
                 case "equipment":
                     items = await _archieveHelper.GetArchievedItemsFromRepo(_unitOfWork.Equipments); break;
@@ -33,19 +33,19 @@ namespace temsAPI.Data.Managers
                     items = await _archieveHelper.GetArchievedItemsFromRepo(_unitOfWork.Personnel); break;
                 case "keys":
                     items = await _archieveHelper.GetArchievedItemsFromRepo(_unitOfWork.Keys); break;
-                case "report templates":
+                case "reportTemplates":
                     items = await _archieveHelper.GetArchievedItemsFromRepo(_unitOfWork.ReportTemplates); break;
-                case "equipment allocations":
+                case "equipmentAllocations":
                     items = await _archieveHelper.GetArchievedItemsFromRepo(_unitOfWork.EquipmentAllocations); break;
                 case "logs":
                     items = await _archieveHelper.GetArchievedItemsFromRepo(_unitOfWork.Logs); break;
-                case "key allocations":
+                case "keyAllocations":
                     items = await _archieveHelper.GetArchievedItemsFromRepo(_unitOfWork.KeyAllocations); break;
                 case "properties":
                     items = await _archieveHelper.GetArchievedItemsFromRepo(_unitOfWork.Properties); break;
-                case "equipment types":
+                case "equipmentTypes":
                     items = await _archieveHelper.GetArchievedItemsFromRepo(_unitOfWork.EquipmentTypes); break;
-                case "equipment definitions":
+                case "equipmentDefinitions":
                     items = await _archieveHelper.GetArchievedItemsFromRepo(_unitOfWork.EquipmentDefinitions); break;
                 default:
                     throw new Exception("Invalid item type");
@@ -60,7 +60,7 @@ namespace temsAPI.Data.Managers
             // an IArchievablem (Call Archieve or Dearchive depdending on status).
 
             ArchieveHelper archieveHelper = new ArchieveHelper(_unitOfWork, _user);
-            switch (itemType.ToLower())
+            switch (itemType)
             {
                 case "equipment":
                     return await archieveHelper.SetEquipmentArchivationStatus(itemId, status);
@@ -72,19 +72,19 @@ namespace temsAPI.Data.Managers
                     return await archieveHelper.SetPersonnelArchivationStatus(itemId, status);
                 case "keys":
                     return await archieveHelper.SetKeyArchivationStatus(itemId, status);
-                case "report templates":
+                case "reportTemplates":
                     return await archieveHelper.SetReportTemplateArchivationStatus(itemId, status);
-                case "equipment allocations":
+                case "equipmentAllocations":
                     return await archieveHelper.SetEquipmenAllocationtArchivationStatus(itemId, status);
                 case "logs":
                     return await archieveHelper.SetLogArchivationStatus(itemId, status);
-                case "key allocations":
+                case "keyAllocations":
                     return await archieveHelper.SetKeyAllocationArchivationStatus(itemId, status);
                 case "properties":
                     return await archieveHelper.SetPropertyArchivationStatus(itemId, status);
-                case "equipment types":
+                case "equipmentTypes":
                     return await archieveHelper.SetTypeArchivationStatus(itemId, status);
-                case "equipment definitions":
+                case "equipmentDefinitions":
                     return await archieveHelper.SetDefinitionArchivationStatus(itemId, status);
                 case "user":
                     return await archieveHelper.SetUserArchivationStatus(itemId, status);

@@ -21,19 +21,19 @@ import { Injectable } from '@angular/core';
 })
 export class ArchieveService extends TEMSService {
 
-  types = [
-    'Equipment',
-    'Issues',
-    'Rooms',
-    'Personnel',
-    'Keys',
-    'Report templates',
-    'Equipment Allocations',
-    'Logs',
-    'Key allocations',
-    'Properties',
-    'Equipment Types',
-    'Equipment Definitions',
+  public types: IOption[] = [
+    { label: 'Equipment', value: 'equipment'},
+    { label: 'Issues', value: 'issues'},
+    { label: 'Rooms', value: 'rooms'},
+    { label: 'Personnel', value: 'personnel'},
+    { label: 'Keys', value: 'keys'},
+    { label: 'Report templates', value: 'reportTemplates'},
+    { label: 'Equipment allocations', value: 'equipmentAllocations'},
+    { label: 'Logs', value: 'logs'},
+    { label: 'Key allocations', value: 'keyAllocations'},
+    { label: 'Properties', value: 'properties'},
+    { label: 'Equipment types', value: 'equipmentTypes'},
+    { label: 'Equipment definitions', value: 'equipmentDefinitions'},
   ];
 
   typeRemoveServicesDictionary: IMap<any>;
@@ -53,18 +53,18 @@ export class ArchieveService extends TEMSService {
     super();
 
     this.typeRemoveServicesDictionary = {
-      ["Equipment"]: (id) =>  this.equipmentService.removeEquipment(id),
-      ["Properties"]: (id) => this.equipmentService.removeProperty(id),
-      ["Issues"]: (id) =>this.issuesService.remove(id),
-      ["Personnel"]: (id) =>this.personnelService.remove(id),
-      ["Keys"]: (id) =>this.keysService.remove(id),
-      ["Report templates"]: (id) =>this.reportService.remove(id),
-      ["Equipment Allocations"]: (id) =>this.equipmentService.removeAllocation(id),
-      ["Logs"]: (id) =>this.logsService.remove(id),
-      ["Key allocations"]:(id) => this.keysService.removeAllocation(id),
-      ["Equipment Types"]: (id) =>this.typeService.remove(id),
-      ["Equipment Definitions"]: (id) =>this.defintionService.remove(id),
-      ["Rooms"]:(id) => this.roomsService.remove(id)
+      ["equipment"]: (id) =>  this.equipmentService.removeEquipment(id),
+      ["properties"]: (id) => this.equipmentService.removeProperty(id),
+      ["issues"]: (id) =>this.issuesService.remove(id),
+      ["personnel"]: (id) =>this.personnelService.remove(id),
+      ["keys"]: (id) =>this.keysService.remove(id),
+      ["reportTemplates"]: (id) =>this.reportService.remove(id),
+      ["equipmentAllocations"]: (id) =>this.equipmentService.removeAllocation(id),
+      ["logs"]: (id) =>this.logsService.remove(id),
+      ["keyAllocations"]:(id) => this.keysService.removeAllocation(id),
+      ["equipmentTypes"]: (id) =>this.typeService.remove(id),
+      ["equipmentDefinitions"]: (id) =>this.defintionService.remove(id),
+      ["rooms"]:(id) => this.roomsService.remove(id)
     }
   }
 
@@ -83,6 +83,9 @@ export class ArchieveService extends TEMSService {
   }
 
   removeEntity(entityType: string, itemId: string): Observable<any> {
+    console.log('entity type:' + entityType);
+    console.log('entity id:' + itemId);
+
     return this.typeRemoveServicesDictionary[entityType](itemId);
   }
 }

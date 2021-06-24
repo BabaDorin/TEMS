@@ -108,13 +108,13 @@ namespace temsAPI.EquipmentControllers
             return ReturnResponse($"Success", ResponseStatus.Success);
         }
 
-        [HttpGet("equipmentType/remove/{typeId}")]
+        [HttpGet("equipmenttype/remove/{typeId}")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_SYSTEM_CONFIGURATION)]
-        public async Task<JsonResult> Remove(string definitionId)
+        public async Task<JsonResult> Remove(string typeId)
         {
             try
             {
-                string result = await _equipmentTypeManager.Remove(definitionId);
+                string result = await _equipmentTypeManager.Remove(typeId);
                 if (result != null)
                     return ReturnResponse(result, ResponseStatus.Fail);
 

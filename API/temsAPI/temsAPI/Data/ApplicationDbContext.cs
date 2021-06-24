@@ -30,18 +30,6 @@ namespace temsAPI.Data
                 .WithOne(e => e.Property)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // OnDeleteCascade: EquipmentType => EquipmentDefinitions
-            modelBuilder.Entity<EquipmentType>()
-                .HasMany(e => e.EquipmentDefinitions)
-                .WithOne(e => e.EquipmentType)
-                .OnDelete(DeleteBehavior.Cascade);
-            
-            // OnDeleteCascade: EquipmentDefinition => Equipment
-            modelBuilder.Entity<EquipmentDefinition>()
-                .HasMany(e => e.Equipment)
-                .WithOne(e => e.EquipmentDefinition)
-                .OnDelete(DeleteBehavior.Cascade);
-
             // OnDeleteCascade: EquipmentDefinition => EquipmentSpecifications
             modelBuilder.Entity<EquipmentDefinition>()
                 .HasMany(e => e.EquipmentSpecifications)
@@ -53,18 +41,6 @@ namespace temsAPI.Data
                 .HasMany(e => e.EquipmentAllocations)
                 .WithOne(e => e.Equipment)
                 .OnDelete(DeleteBehavior.Cascade);
-
-            // OnDeleteCascade: EquipmentDefinition => Child EquipmentDefinition
-            modelBuilder.Entity<EquipmentDefinition>()
-                .HasMany(e => e.Children)
-                .WithOne(e => e.Parent)
-                .OnDelete(DeleteBehavior.ClientSetNull);
-
-            //  OnDeleteCascade: Equipment => Child Equipment
-            modelBuilder.Entity<Equipment>()
-                .HasMany(e => e.Children)
-                .WithOne(e => e.Parent)
-                .OnDelete(DeleteBehavior.ClientCascade);
 
             // OnDeleteCascade: Equipmet => Logs
             modelBuilder.Entity<Equipment>()

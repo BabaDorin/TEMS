@@ -6,7 +6,7 @@
     <mat-form-field>
       <mat-label>Items' type</mat-label>
       <mat-select [(ngModel)]="selectedType" (selectionChange)="onTypeChanged()">
-        <mat-option *ngFor="let type of types" [value]="type">{{ type }}</mat-option>
+        <mat-option *ngFor="let type of archieveService.types" [value]="type.value">{{ type.label }}</mat-option>
       </mat-select>
     </mat-form-field>
     <div class="mt-3"></div>

@@ -21,8 +21,14 @@ namespace temsAPI.Data.Managers
 
     public class EquipmentDefinitionManager : EntityManager
     {
-        public EquipmentDefinitionManager(IUnitOfWork unitOfWork, ClaimsPrincipal user) : base(unitOfWork, user)
+        EquipmentManager _equipmentManager;
+
+        public EquipmentDefinitionManager(
+            IUnitOfWork unitOfWork, 
+            ClaimsPrincipal user,
+            EquipmentManager equipmentManager) : base(unitOfWork, user)
         {
+            _equipmentManager = equipmentManager;
         }
 
         public async Task<string> Create(AddEquipmentDefinitionViewModel viewModel)
@@ -39,14 +45,48 @@ namespace temsAPI.Data.Managers
             return null;
         }
 
+        // Remove by Id
         public async Task<string> Remove(string definitionId)
         {
             var definition = await GetFullById(definitionId);
             if (definition == null)
                 return "Invalid id provided";
 
+            return await Remove(definition);
+        }
+
+        // Remove by reference
+        public async Task<string> Remove(EquipmentDefinition definition)
+        {
+            // Remove children definitions along with associated equipment first
+            var children = definition.Children.ToList();
+
+            foreach (EquipmentDefinition child in children)
+            {
+                await _equipmentManager.RemoveOfDefinition(child.Id);
+                _unitOfWork.EquipmentDefinitions.Delete(child);
+            }
+            await _unitOfWork.Save();
+
+            await _equipmentManager.RemoveOfDefinition(definition.Id);
             _unitOfWork.EquipmentDefinitions.Delete(definition);
             await _unitOfWork.Save();
+            return null;
+        }
+
+        public async Task<string> RemoveOfType(string typeId)
+        {
+            var definitions = (await _unitOfWork.EquipmentDefinitions
+                .FindAll<EquipmentDefinition>(
+                    where: q => q.EquipmentTypeID == typeId,
+                    include: q => q.Include(q => q.Children)))
+                .ToList();
+
+            foreach (EquipmentDefinition def in definitions)
+            {
+                await Remove(def);
+            }
+
             return null;
         }
 

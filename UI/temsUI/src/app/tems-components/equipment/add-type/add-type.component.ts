@@ -133,8 +133,11 @@ export class AddTypeComponent extends TEMSComponent implements OnInit {
     this.subscriptions.push(this.equipmentService.getProperties().subscribe(response => {
       console.log(response);
       this.propertyOptions = response;
+
       if(this.propertyOptions.length == 0)
         this.formGroup.controls.properties.disable();
+      else
+        this.formGroup.controls.properties.enable();
     }));
   }
 }

@@ -217,6 +217,8 @@ namespace temsAPI.Data.Managers
                         include: q => q
                         .Include(q => q.Children.Where(q => !q.IsArchieved))
                         .ThenInclude(q => q.EquipmentType)
+                        .Include(q => q.Children.Where(q => !q.IsArchieved))
+                        .ThenInclude(q => q.EquipmentSpecifications).ThenInclude(q => q.Property).ThenInclude(q => q.DataType)
                         .Include(q => q.EquipmentSpecifications)
                         .ThenInclude(q => q.Property).ThenInclude(q => q.DataType)
                         .Include(q => q.Parent)

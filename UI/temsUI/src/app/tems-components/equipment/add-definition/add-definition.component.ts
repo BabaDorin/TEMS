@@ -5,7 +5,7 @@ import { EquipmentType } from './../../../models/equipment/view-type.model';
 import { IOption } from './../../../models/option.model';
 import { AddDefinition, Definition } from './../../../models/equipment/add-definition.model';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Component, OnInit, Input, Inject, OnDestroy, Optional } from '@angular/core';
+import { Component, OnInit, Input, Inject, OnDestroy, Optional, TemplateRef } from '@angular/core';
 import { EquipmentService } from 'src/app/services/equipment-service/equipment.service';
 import { FormlyParserService } from 'src/app/services/formly-parser-service/formly-parser.service';
 import { FormlyFieldConfig } from '@ngx-formly/core';
@@ -119,6 +119,9 @@ export class AddDefinitionComponent extends TEMSComponent implements OnInit {
     this.subscriptions.push(
       this.equipmentService.getDefinitionToUpdate(this.updateDefinitionId)
         .subscribe(result => {
+          if(this.snackService.snackIfError(result))
+            return;
+
           let resultDefinition: AddDefinition = result;
           this.setDefinitionType(resultDefinition.typeId);
 
@@ -141,7 +144,7 @@ export class AddDefinitionComponent extends TEMSComponent implements OnInit {
 
             updateDefinition[child.typeId].push({
               typeId: child.typeId,
-              identifier: child.identifier,
+              // identifier: child.identifier,
               identifierSelect: child.id,
               description: child.description,
               price: child.price,
@@ -149,7 +152,8 @@ export class AddDefinitionComponent extends TEMSComponent implements OnInit {
             });
 
             child.properties.forEach(property => {
-              updateDefinition[child.typeId][updateDefinition[child.typeId].length][property.label] = property.value;
+              updateDefinition[child.typeId][updateDefinition[child.typeId].length-1][property.label] = property.value;
+              updateDefinition[child.typeId][updateDefinition[child.typeId].length-1][property.label];
             });
           })
 

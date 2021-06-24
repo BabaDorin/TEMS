@@ -95,7 +95,7 @@ namespace temsAPI.Data.Managers
                     .Include(q => q.Properties.Where(q => !q.IsArchieved))
                     .ThenInclude(q => q.DataType)
                     .Include(q => q.Children.Where(q => !q.IsArchieved)).ThenInclude(q => q.Parents)
-                    .ThenInclude(q => q.Properties.Where(q => !q.IsArchieved))
+                    .Include(q => q.Children.Where(q => !q.IsArchieved)).ThenInclude(q => q.Properties.Where(q => !q.IsArchieved))
                     .ThenInclude(q => q.DataType)
                     )).FirstOrDefault();
 

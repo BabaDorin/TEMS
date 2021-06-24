@@ -425,6 +425,8 @@ export class FormlyParserService extends TEMSComponent {
         },
       ];
 
+      console.log('this');
+      console.log(addDefinition);
     // Add inputs for parent's properties
     addDefinition.properties.forEach(property => {
       fields.push(this.generatePropertyFieldGroup(property))
@@ -491,7 +493,8 @@ export class FormlyParserService extends TEMSComponent {
       );
 
       let destination = fields[fields.length - 1].fieldArray.fieldGroup;
-
+      console.log('childDefinition:');
+      console.log(childDefinition);
       childDefinition.properties.forEach(property => {
         destination.push(this.generatePropertyFieldGroup(property, property.value));
       });
@@ -556,7 +559,8 @@ export class FormlyParserService extends TEMSComponent {
           console.log(q);
 
           let propertyField = childFieldGroup.fieldGroup.find(e => e.key == q.name); 
-          propertyField.defaultValue = q.value;
+          if(propertyField != undefined)
+            propertyField.defaultValue = q.value;
         });
 
         priceField.defaultValue = definition.price;
@@ -659,6 +663,7 @@ export class FormlyParserService extends TEMSComponent {
             description: addProperty.description,
             label: addProperty.displayName,
             required: addProperty.required,
+            disabled: true,
           },
         }
         break;
@@ -675,7 +680,8 @@ export class FormlyParserService extends TEMSComponent {
             label: addProperty.displayName,
             required: addProperty.required,
             min: (addProperty.min == 0 && addProperty.max == 0) ? undefined : addProperty.min,
-            max: (addProperty.min == 0 && addProperty.max == 0) ? undefined : addProperty.max
+            max: (addProperty.min == 0 && addProperty.max == 0) ? undefined : addProperty.max,
+            disabled: true,
           },
         }
         break;
@@ -687,7 +693,8 @@ export class FormlyParserService extends TEMSComponent {
           templateOptions: {
             label: addProperty.displayName,
             required: addProperty.required,
-            options: addProperty.options
+            options: addProperty.options,
+            disabled: true,
           },
         }
         break;
@@ -699,7 +706,8 @@ export class FormlyParserService extends TEMSComponent {
           templateOptions: {
             label: addProperty.displayName,
             required: addProperty.required,
-            options: addProperty.options
+            options: addProperty.options,
+            disabled: true,
           },
         }
         break;
@@ -712,6 +720,7 @@ export class FormlyParserService extends TEMSComponent {
           templateOptions: {
             label: addProperty.displayName,
             required: addProperty.required,
+            disabled: true,
           },
         }
         break;
@@ -723,7 +732,8 @@ export class FormlyParserService extends TEMSComponent {
           templateOptions: {
             label: addProperty.displayName,
             required: addProperty.required,
-            options: addProperty.options
+            options: addProperty.options,
+            disabled: true,
           },
         }
         break;

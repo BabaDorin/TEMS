@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.UserEntities;
@@ -302,8 +304,14 @@ namespace temsAPI.Controllers.EquipmentControllers
         {
             try
             {
-                var equipment = await _equipmentManager.GetById(equipmentId);
-                if (equipmentId == null)
+                var equipment = (await _unitOfWork.Equipments
+                    .Find<Data.Entities.EquipmentEntities.Equipment>(
+                        where: q => q.Id == equipmentId,
+                        include: q => q
+                        .Include(q => q.Children)))
+                    .FirstOrDefault();
+
+                if (equipment == null)
                     return ReturnResponse("Invalid equipment id provided", ResponseStatus.Fail);
 
                 // by default it works like a toggler

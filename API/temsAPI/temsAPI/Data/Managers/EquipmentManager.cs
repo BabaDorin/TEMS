@@ -233,6 +233,10 @@ namespace temsAPI.Data.Managers
         public async Task ChangeUsingState(Equipment equipment, bool isUsed)
         {
             equipment.IsUsed = isUsed;
+
+            foreach(Equipment child in equipment.Children)
+                child.IsUsed = isUsed;
+
             await _unitOfWork.Save();
         }
 

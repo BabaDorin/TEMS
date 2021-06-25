@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
@@ -21,7 +22,8 @@ namespace temsAPI.Controllers.IdentityControllers
             IMapper mapper, 
             IUnitOfWork unitOfWork, 
             UserManager<TEMSUser> userManager,
-            TEMSUserManager temsUserManager) : base(mapper, unitOfWork, userManager)
+            TEMSUserManager temsUserManager,
+            ILogger<TEMSController> logger) : base(mapper, unitOfWork, userManager, logger)
         {
             _temsUserManager = temsUserManager;
         }

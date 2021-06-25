@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
@@ -21,7 +22,8 @@ namespace temsAPI.Controllers.LogControllers
             IMapper mapper, 
             IUnitOfWork unitOfWork, 
             UserManager<TEMSUser> userManager,
-            LogManager logManager) : base(mapper, unitOfWork, userManager)
+            LogManager logManager,
+            ILogger<TEMSController> logger) : base(mapper, unitOfWork, userManager, logger)
         {
             _logManager = logManager;
         }

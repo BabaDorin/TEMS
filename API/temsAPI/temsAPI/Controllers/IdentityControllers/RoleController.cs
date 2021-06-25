@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -22,7 +23,8 @@ namespace temsAPI.Controllers.IdentityControllers
             IMapper mapper,
             IUnitOfWork unitOfWork,
             UserManager<TEMSUser> userManager,
-            RoleManager<IdentityRole> roleManager) : base(mapper, unitOfWork, userManager)
+            RoleManager<IdentityRole> roleManager,
+            ILogger<TEMSController> logger) : base(mapper, unitOfWork, userManager, logger)
         {
             _roleManager = roleManager;
         }

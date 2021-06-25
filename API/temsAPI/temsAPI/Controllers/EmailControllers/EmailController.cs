@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
 using System.Diagnostics;
@@ -23,7 +24,8 @@ namespace temsAPI.Controllers.EmailControllers
             IUnitOfWork unitOfWork, 
             UserManager<TEMSUser> userManager,
             IOptions<AppSettings> appSettings,
-            EmailService emailService) : base(mapper, unitOfWork, userManager)
+            EmailService emailService,
+            ILogger<TEMSController> logger) : base(mapper, unitOfWork, userManager, logger)
         {
             _appSettings = appSettings.Value;
             _emailService = emailService;

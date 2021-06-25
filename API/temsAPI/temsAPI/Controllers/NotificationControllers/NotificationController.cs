@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -26,7 +27,8 @@ namespace temsAPI.Controllers.NotificationControllers
             UserManager<TEMSUser> userManager,
             NotificationService notificationService,
             NotificationManager notificationManager,
-            IdentityService identityService) : base(mapper, unitOfWork, userManager)
+            IdentityService identityService,
+            ILogger<TEMSController> logger) : base(mapper, unitOfWork, userManager, logger)
         {
             _notificationService = notificationService;
             _notificationManager = notificationManager;

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Diagnostics;
 using System.Linq;
@@ -21,7 +22,8 @@ namespace temsAPI.Controllers.TicketControllers
             IMapper mapper,
             IUnitOfWork unitOfWork,
             UserManager<TEMSUser> userManager,
-            TicketManager ticketManager) : base(mapper, unitOfWork, userManager)
+            TicketManager ticketManager,
+            ILogger<TEMSController> logger) : base(mapper, unitOfWork, userManager, logger)
         {
             _ticketManager = ticketManager;
         }

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
@@ -20,8 +21,9 @@ namespace temsAPI.Controllers.EquipmentControllers
             IMapper mapper, 
             IUnitOfWork unitOfWork, 
             UserManager<TEMSUser> userManager,
-            EquipmentDefinitionManager equipmentDefinitionManager)
-           : base(mapper, unitOfWork, userManager)
+            EquipmentDefinitionManager equipmentDefinitionManager,
+            ILogger<TEMSController> logger)
+           : base(mapper, unitOfWork, userManager, logger)
         {
             _equipmentDefinitionManager = equipmentDefinitionManager;
         }

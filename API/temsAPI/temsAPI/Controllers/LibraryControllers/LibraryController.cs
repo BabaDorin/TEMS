@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Connections;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -33,7 +34,8 @@ namespace temsAPI.Controllers.LibraryControllers
             IHttpContextAccessor httpContextAccessor,
             IdentityService identityService,
             SystemConfigurationService systemConfigurationService,
-            LibraryManager libraryManager) : base(mapper, unitOfWork, userManager)
+            LibraryManager libraryManager,
+            ILogger<TEMSController> logger) : base(mapper, unitOfWork, userManager, logger)
         {
             _httpContextAccessor = httpContextAccessor;
             _libraryManager = libraryManager;

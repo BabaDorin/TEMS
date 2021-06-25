@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -23,16 +24,29 @@ namespace temsAPI.Controllers
         protected readonly IUnitOfWork _unitOfWork;
         protected readonly UserManager<TEMSUser> _userManager;
         protected IMapper _mapper;
+        ILogger<TEMSController> _logger;
+        private IMapper mapper;
+        private IUnitOfWork unitOfWork;
+        private UserManager<TEMSUser> userManager;
 
         public TEMSController(
             IMapper mapper,
             IUnitOfWork unitOfWork,
-            UserManager<TEMSUser> userManager
+            UserManager<TEMSUser> userManager,
+            ILogger<TEMSController> logger
             )
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
             _userManager = userManager;
+            _logger = logger;
+        }
+
+        public TEMSController(IMapper mapper, IUnitOfWork unitOfWork, UserManager<TEMSUser> userManager)
+        {
+            this.mapper = mapper;
+            this.unitOfWork = unitOfWork;
+            this.userManager = userManager;
         }
 
         protected JsonResult ReturnResponse(string message, ResponseStatus status, object additional = null)

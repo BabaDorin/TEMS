@@ -21,19 +21,15 @@ namespace temsAPI.Controllers.EquipmentControllers
     public class EquipmentController : TEMSController
     {
         private EquipmentManager _equipmentManager;
-        ILogger<TEMSController> _logger;
-
-
         public EquipmentController(
             IMapper mapper, 
             IUnitOfWork unitOfWork, 
             UserManager<TEMSUser> userManager,
             ILogger<TEMSController> logger,
             EquipmentManager equipmentManager)
-           : base(mapper, unitOfWork, userManager)
+           : base(mapper, unitOfWork, userManager, logger)
         {
             _equipmentManager = equipmentManager;
-            _logger = logger;
         }
 
         [HttpPost]
@@ -42,7 +38,6 @@ namespace temsAPI.Controllers.EquipmentControllers
         {
             try
             {
-                throw new NullReferenceException();
                 string result = await _equipmentManager.Create(viewModel);
                 if (result != null)
                     return ReturnResponse(result, ResponseStatus.Fail);
@@ -51,7 +46,7 @@ namespace temsAPI.Controllers.EquipmentControllers
             }
             catch (Exception ex)
             {
-                _logger.Log(LogLevel.Error, ex, this.GetType().Name + " - " + new StackTrace().GetFrame(1).GetMethod().Name);
+                //_logger.Log(LogLevel.Error, ex, this.GetType().Name + " - " + new StackTrace().GetFrame(1).GetMethod().Name);
                 Debug.WriteLine(ex);
                 return ReturnResponse("An error occured while saving equipment data", ResponseStatus.Fail);
             }

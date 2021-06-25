@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using temsAPI.System_Files.TEMSFileLogger;
 
 namespace temsAPI
 {
@@ -21,6 +22,13 @@ namespace temsAPI
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
+                })
+                .ConfigureLogging((hostBuilderContext, logging) =>
+                {
+                    logging.AddFileLogger(options =>
+                    {
+                        hostBuilderContext.Configuration.GetSection("Logging").GetSection("FileLoggerSettings").Bind(options);
+                    });
                 });
     }
 }

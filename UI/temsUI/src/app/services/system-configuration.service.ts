@@ -1,8 +1,9 @@
+import { LoggerViewModel } from './../models/system-configuration/logger-view-model';
 import { EmailSenderCredentials } from './../models/system-configuration/emai-sender.model';
-import { API_SYSCONF_URL } from './../models/backend.config';
+import { API_SYSCONF_URL, API_SYS_LOG } from './../models/backend.config';
 import { Observable } from 'rxjs';
 import { TEMSService } from './tems-service/tems.service';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { API_EQ_URL } from '../models/backend.config';
 import { AppSettings } from '../models/system-configuration/app-settings.model';
@@ -73,5 +74,12 @@ export class SystemConfigurationService extends TEMSService {
       API_SYSCONF_URL + '/SetGuestTicketCreationAllowance/' + flag,
       this.httpOptions
     );
+  }
+
+  fetchSystemLogs(viewModel: LoggerViewModel): Observable<string>{
+    return this.http.post<string>(
+      API_SYS_LOG + '/getsystemlogs',
+      viewModel
+    )
   }
 }

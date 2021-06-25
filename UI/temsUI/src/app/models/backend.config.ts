@@ -21,6 +21,7 @@ export const API_ARCH_URL = API_URL + '/archieve';
 export const API_SYSCONF_URL = API_URL + '/systemconfiguration';
 export const API_ANALYTICS_URL = API_URL + '/analytics';
 export const API_NOTIF_URL = API_URL + '/notification';
+export const API_SYS_LOG = API_URL + '/systemlogs';
 
 
 

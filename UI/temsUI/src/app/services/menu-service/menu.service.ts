@@ -324,6 +324,15 @@ export class MenuService {
           isShown: this.tokenService.canManageSystemConfiguration(),
           showSubmenu: false,
           submenu: []
+        },
+        {
+          path: '/administration/system-logs',
+          title: 'Configuration',
+          icon: 'mdi mdi-log menu-icon',
+          isActive: false,
+          isShown: this.tokenService.canManageSystemConfiguration(),
+          showSubmenu: false,
+          submenu: []
         }
       ]
     },

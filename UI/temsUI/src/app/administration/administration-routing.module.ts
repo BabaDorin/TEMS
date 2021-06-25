@@ -1,3 +1,4 @@
+import { ViewSystemLogsComponent } from './../tems-components/admin/view-system-logs/view-system-logs.component';
 import { SystemConfigComponent } from './../tems-components/admin/system-config/system-config.component';
 import { RoleManagementComponent } from './../tems-components/admin/role-management/role-management.component';
 import { EquipmentManagementComponent } from './../tems-components/admin/equipment-management/equipment-management.component';
@@ -12,6 +13,7 @@ const routes: Routes = [
   { path: 'users', component: UserManagementComponent },
   { path: 'roles', component: RoleManagementComponent },
   { path: 'system-configuration', component: SystemConfigComponent },
+  { path: 'system-logs', component: ViewSystemLogsComponent },
 ];
 
 @NgModule({

@@ -1,3 +1,4 @@
+import { ViewSystemLogsComponent } from './../tems-components/admin/view-system-logs/view-system-logs.component';
 import { ChipsAutocompleteModule } from './../modules/chips-autocomplete/chips-autocomplete.module';
 import { SystemConfigComponent } from './../tems-components/admin/system-config/system-config.component';
 import { MatButtonModule } from '@angular/material/button';
@@ -47,6 +48,7 @@ declarations: [
     ManagePropertiesComponent,
     UserContainerComponent,
     SystemConfigComponent,
+    ViewSystemLogsComponent,
   ],
   imports: [
     CommonModule,

@@ -2,10 +2,12 @@
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using temsAPI.Helpers.StaticFileHelpers;
 using temsAPI.System_Files;
+using temsAPI.System_Files.TEMSFileLogger;
 
 namespace temsAPI.Services
 {
@@ -13,11 +15,15 @@ namespace temsAPI.Services
     {
         public AppSettings AppSettings { get; private set; } // this instance is used by the system
         private IWritableOptions<AppSettings> _appSettingsOptions; // this is used for file interaction
+        private FileLoggerSettings _loggerSettings;
 
-        public SystemConfigurationService(IWritableOptions<AppSettings> appSettingsOptions)
+        public SystemConfigurationService(
+            IWritableOptions<AppSettings> appSettingsOptions,
+            IOptions<FileLoggerSettings> loggerSettings)
         {
             AppSettings = appSettingsOptions.Value;
             _appSettingsOptions = appSettingsOptions;
+            _loggerSettings = loggerSettings.Value;
         }
 
         public string SetEmailSender(string address, string password)
@@ -148,6 +154,19 @@ namespace temsAPI.Services
             {
                 op.AllowGuestsToCreateTickets = false;
             });
+        }
+
+        public string GetLogsByDate(DateTime date)
+        {
+            string directoryPath = _loggerSettings.FolderPath;
+            string filePath = directoryPath + '\\' + _loggerSettings.FilePath
+                .Replace("{date}", date.ToString("yyyyMMdd"));
+
+            if(Directory.Exists(directoryPath) && File.Exists(filePath))
+                using (StreamReader sr = new StreamReader(filePath))
+                    return sr.ReadToEnd();
+
+            return null;
         }
     }
 }

@@ -33,6 +33,7 @@ using temsAPI.Services;
 using temsAPI.Services.Notification;
 using temsAPI.Services.Report;
 using temsAPI.System_Files;
+using temsAPI.System_Files.TEMSFileLogger;
 
 namespace temsAPI
 {
@@ -49,6 +50,7 @@ namespace temsAPI
         public void ConfigureServices(IServiceCollection services)
         {
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
+            services.Configure<FileLoggerSettings>(Configuration.GetSection("FileLoggerSettings"));
             services.AddDistributedMemoryCache();
             services.AddSession();
 

@@ -172,26 +172,17 @@ namespace temsAPI.Services.Report
                 roomFilter);
 
             List<Equipment> equipment = null;
-            try
-            {
-                equipment = (await _unitOfWork.Equipments
-                .FindAll<Equipment>(
-                    include: q => q
-                    .Include(q => q.EquipmentDefinition).ThenInclude(q => q.EquipmentType)
-                    .Include(q => q.EquipmentDefinition).ThenInclude(q => q.EquipmentSpecifications)
-                    .ThenInclude(q => q.Property)
-                    .Include(q => q.EquipmentAllocations).ThenInclude(q => q.Personnel)
-                    .Include(q => q.EquipmentAllocations).ThenInclude(q => q.Room)
-                    .Include(q => q.EquipmentAllocations.Where(q1 => q1.DateReturned == null)),
-                    where: mainExpression
-                )).ToList();
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex);
-                throw;
-            }
-            
+            equipment = (await _unitOfWork.Equipments
+            .FindAll<Equipment>(
+                include: q => q
+                .Include(q => q.EquipmentDefinition).ThenInclude(q => q.EquipmentType)
+                .Include(q => q.EquipmentDefinition).ThenInclude(q => q.EquipmentSpecifications)
+                .ThenInclude(q => q.Property)
+                .Include(q => q.EquipmentAllocations).ThenInclude(q => q.Personnel)
+                .Include(q => q.EquipmentAllocations).ThenInclude(q => q.Room)
+                .Include(q => q.EquipmentAllocations.Where(q1 => q1.DateReturned == null)),
+                where: mainExpression
+            )).ToList();
             
             return equipment;
         }

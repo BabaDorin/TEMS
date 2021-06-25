@@ -40,7 +40,7 @@ namespace temsAPI.Controllers.AnnouncementControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured when creating the announcement", ResponseStatus.Fail);
             }
         }
@@ -59,7 +59,7 @@ namespace temsAPI.Controllers.AnnouncementControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured when removing the announcement", ResponseStatus.Fail);
             }
         }
@@ -74,7 +74,7 @@ namespace temsAPI.Controllers.AnnouncementControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured when fetching announcements", ResponseStatus.Fail);
             }
         }

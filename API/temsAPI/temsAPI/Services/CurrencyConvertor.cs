@@ -68,9 +68,6 @@ namespace temsAPI.Services
                 }
                 catch (Exception ex)
                 {
-                    // Most probably there is no internet connection
-                    Debug.WriteLine(ex);
-
                     // Here we set at least an aproximative value for each rate.
                     // (08.06.2021)
                     USD_MDL_rate = 18;

@@ -50,7 +50,7 @@ namespace temsAPI.Controllers.ReportControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while fetching the template", ResponseStatus.Fail);
             }
         }
@@ -70,7 +70,7 @@ namespace temsAPI.Controllers.ReportControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while removing the template", ResponseStatus.Fail);
             }
         }
@@ -89,7 +89,7 @@ namespace temsAPI.Controllers.ReportControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while removing the template", ResponseStatus.Fail);
             }
         }
@@ -108,7 +108,7 @@ namespace temsAPI.Controllers.ReportControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while saving the template", ResponseStatus.Fail);
             }
         }
@@ -127,7 +127,7 @@ namespace temsAPI.Controllers.ReportControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while saving the template", ResponseStatus.Fail);
             }
         }
@@ -152,7 +152,7 @@ namespace temsAPI.Controllers.ReportControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return StatusCode(500);
             }
         }
@@ -168,7 +168,7 @@ namespace temsAPI.Controllers.ReportControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while fetching report templates", ResponseStatus.Fail);
             }
         }
@@ -184,7 +184,7 @@ namespace temsAPI.Controllers.ReportControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while fetching last generated reports", ResponseStatus.Fail);
             }
         }
@@ -207,7 +207,7 @@ namespace temsAPI.Controllers.ReportControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while removing the report", ResponseStatus.Fail);
             }
         }
@@ -232,7 +232,7 @@ namespace temsAPI.Controllers.ReportControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return NoContent();
             }
         }
@@ -252,7 +252,7 @@ namespace temsAPI.Controllers.ReportControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while retrieving the report", ResponseStatus.Fail);
             }
         }

@@ -79,12 +79,12 @@ namespace temsAPI.Controllers.LibraryControllers
 
                 // This behaviour helps us to easily implement the "cancel upload" feature (kind of), without
                 // Third party Upload Controllers that cost money ;(
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return Ok();
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return StatusCode(500, $"Internal server error: {ex}");
             }
         }
@@ -102,7 +102,7 @@ namespace temsAPI.Controllers.LibraryControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured when fetching library items", ResponseStatus.Fail);
             }
         }
@@ -121,7 +121,7 @@ namespace temsAPI.Controllers.LibraryControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured when removing an library item.", ResponseStatus.Fail);
             }
         }
@@ -163,7 +163,7 @@ namespace temsAPI.Controllers.LibraryControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while fetching space usage data.", ResponseStatus.Fail);
             }
         }
@@ -177,7 +177,7 @@ namespace temsAPI.Controllers.LibraryControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while fetching available library storage space.", ResponseStatus.Fail);
             }
         }

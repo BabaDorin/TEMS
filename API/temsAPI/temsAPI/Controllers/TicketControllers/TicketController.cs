@@ -53,7 +53,7 @@ namespace temsAPI.Controllers.TicketControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured when fetching issues", ResponseStatus.Fail);
             }
         }
@@ -73,7 +73,7 @@ namespace temsAPI.Controllers.TicketControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while closing the ticket", ResponseStatus.Fail);
             }
         }
@@ -93,7 +93,7 @@ namespace temsAPI.Controllers.TicketControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while closing the ticket", ResponseStatus.Fail);
             }
         }
@@ -117,7 +117,7 @@ namespace temsAPI.Controllers.TicketControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while updating the status", ResponseStatus.Fail);
             }
         }
@@ -142,7 +142,7 @@ namespace temsAPI.Controllers.TicketControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while removing the specified ticket", ResponseStatus.Fail);
             }
         }
@@ -157,7 +157,7 @@ namespace temsAPI.Controllers.TicketControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured when fetching statuses", ResponseStatus.Fail);
             }
         }
@@ -175,7 +175,7 @@ namespace temsAPI.Controllers.TicketControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occurred when creating the ticket", ResponseStatus.Fail);
             }
         }
@@ -194,7 +194,7 @@ namespace temsAPI.Controllers.TicketControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while removint the ticket", ResponseStatus.Fail);
             }
         }
@@ -221,7 +221,7 @@ namespace temsAPI.Controllers.TicketControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured when fetching tickets", ResponseStatus.Fail);
             }
         }
@@ -244,7 +244,7 @@ namespace temsAPI.Controllers.TicketControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while pinning the ticket", ResponseStatus.Fail);
             }
         }
@@ -260,7 +260,7 @@ namespace temsAPI.Controllers.TicketControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while fetching the pinned ticket id", ResponseStatus.Fail);
             }
         }

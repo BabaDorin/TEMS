@@ -40,7 +40,7 @@ namespace temsAPI.EquipmentControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured when fetching properties", ResponseStatus.Fail);
             }
         }
@@ -56,7 +56,7 @@ namespace temsAPI.EquipmentControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured when fetching properties", ResponseStatus.Fail);
             }
         }
@@ -72,7 +72,7 @@ namespace temsAPI.EquipmentControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured when fetching the property", ResponseStatus.Fail);
             }
         }
@@ -89,7 +89,7 @@ namespace temsAPI.EquipmentControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured when fetching the property", ResponseStatus.Fail);
             }
         }
@@ -108,7 +108,7 @@ namespace temsAPI.EquipmentControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while creating the property", ResponseStatus.Fail);
             }
         }
@@ -127,7 +127,7 @@ namespace temsAPI.EquipmentControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while removing the property.", ResponseStatus.Fail);
             }
         }
@@ -146,7 +146,7 @@ namespace temsAPI.EquipmentControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured when saving the property", ResponseStatus.Fail);
             }
         }
@@ -166,7 +166,7 @@ namespace temsAPI.EquipmentControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while changing the archivation status.", ResponseStatus.Fail);
             }
         }

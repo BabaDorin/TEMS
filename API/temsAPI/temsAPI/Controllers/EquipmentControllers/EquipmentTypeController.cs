@@ -37,7 +37,7 @@ namespace temsAPI.EquipmentControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured when fetching types", ResponseStatus.Fail);
             }
         }
@@ -53,7 +53,7 @@ namespace temsAPI.EquipmentControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured when fetching types", ResponseStatus.Fail);
             }
         }
@@ -72,7 +72,7 @@ namespace temsAPI.EquipmentControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while fetching type", ResponseStatus.Fail);
             }
         }
@@ -92,7 +92,7 @@ namespace temsAPI.EquipmentControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while fetching type info", ResponseStatus.Fail);
             }
         }
@@ -122,7 +122,7 @@ namespace temsAPI.EquipmentControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while removing the type.", ResponseStatus.Fail);
             }
         }
@@ -141,7 +141,7 @@ namespace temsAPI.EquipmentControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured when saving the type", ResponseStatus.Fail);
             }
         }
@@ -166,7 +166,7 @@ namespace temsAPI.EquipmentControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured when removing the type", ResponseStatus.Fail);
             }
         }
@@ -182,7 +182,7 @@ namespace temsAPI.EquipmentControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while fetching properties.", ResponseStatus.Fail);
             }
         }

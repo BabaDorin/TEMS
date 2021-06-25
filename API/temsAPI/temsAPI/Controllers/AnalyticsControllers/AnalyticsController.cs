@@ -46,7 +46,7 @@ namespace temsAPI.Controllers.AnalyticsControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while fetching analytics", ResponseStatus.Fail);
             }
         }
@@ -64,7 +64,7 @@ namespace temsAPI.Controllers.AnalyticsControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while fetching analytics", ResponseStatus.Fail);
             }
         }
@@ -82,7 +82,7 @@ namespace temsAPI.Controllers.AnalyticsControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while fetching analytics", ResponseStatus.Fail);
             }
 
@@ -101,7 +101,7 @@ namespace temsAPI.Controllers.AnalyticsControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while fetching analytics", ResponseStatus.Fail);
             }
 
@@ -120,7 +120,7 @@ namespace temsAPI.Controllers.AnalyticsControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while fetching analytics", ResponseStatus.Fail);
             }
         }
@@ -138,7 +138,7 @@ namespace temsAPI.Controllers.AnalyticsControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while fetching analytics", ResponseStatus.Fail);
             }
         }
@@ -156,7 +156,7 @@ namespace temsAPI.Controllers.AnalyticsControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while fetching analytics", ResponseStatus.Fail);
             }
         }
@@ -174,7 +174,7 @@ namespace temsAPI.Controllers.AnalyticsControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while fetching analytics", ResponseStatus.Fail);
             }
         }
@@ -192,7 +192,7 @@ namespace temsAPI.Controllers.AnalyticsControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while fetching analytics", ResponseStatus.Fail);
             }
         }
@@ -210,7 +210,7 @@ namespace temsAPI.Controllers.AnalyticsControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while fetching analytics", ResponseStatus.Fail);
             }
         }
@@ -228,7 +228,7 @@ namespace temsAPI.Controllers.AnalyticsControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while fetching analytics", ResponseStatus.Fail);
             }
         }
@@ -246,7 +246,7 @@ namespace temsAPI.Controllers.AnalyticsControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while fetching analytics", ResponseStatus.Fail);
             }
         }
@@ -262,7 +262,7 @@ namespace temsAPI.Controllers.AnalyticsControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while fetching analytics", ResponseStatus.Fail);
             }
         }
@@ -278,7 +278,7 @@ namespace temsAPI.Controllers.AnalyticsControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while fetching analytics", ResponseStatus.Fail);
             }
         }
@@ -293,7 +293,7 @@ namespace temsAPI.Controllers.AnalyticsControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while fetching analytics", ResponseStatus.Fail);
             }
         }
@@ -308,7 +308,7 @@ namespace temsAPI.Controllers.AnalyticsControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while fetching analytics", ResponseStatus.Fail);
             }
         }

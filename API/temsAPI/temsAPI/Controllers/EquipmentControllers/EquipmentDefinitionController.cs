@@ -47,7 +47,7 @@ namespace temsAPI.Controllers.EquipmentControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while adding the definition", ResponseStatus.Fail);
             }
         }
@@ -66,7 +66,7 @@ namespace temsAPI.Controllers.EquipmentControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while updating the definition", ResponseStatus.Fail);
             }
         }
@@ -82,7 +82,7 @@ namespace temsAPI.Controllers.EquipmentControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("Unknown error occured when fetching definitions of specified type", ResponseStatus.Fail);
             }
         }
@@ -98,7 +98,7 @@ namespace temsAPI.Controllers.EquipmentControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while fetching definitions of specified types", ResponseStatus.Fail);
             }
         }
@@ -114,7 +114,7 @@ namespace temsAPI.Controllers.EquipmentControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("Unknown error occured when fetching definitions", ResponseStatus.Fail);
             }
         }
@@ -130,7 +130,7 @@ namespace temsAPI.Controllers.EquipmentControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while fetching the definition", ResponseStatus.Fail);
             }
         }
@@ -150,7 +150,7 @@ namespace temsAPI.Controllers.EquipmentControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while fetching the definition", ResponseStatus.Fail);
             }
         }
@@ -170,7 +170,7 @@ namespace temsAPI.Controllers.EquipmentControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured when fetching defintion's data", ResponseStatus.Fail);
             }
         }
@@ -191,7 +191,7 @@ namespace temsAPI.Controllers.EquipmentControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while changing the archivation status.", ResponseStatus.Fail);
             }
         }
@@ -210,7 +210,7 @@ namespace temsAPI.Controllers.EquipmentControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while removing the definition", ResponseStatus.Fail);
             }
         }

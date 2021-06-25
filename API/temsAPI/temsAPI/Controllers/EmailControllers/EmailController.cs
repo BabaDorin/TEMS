@@ -47,7 +47,7 @@ namespace temsAPI.Controllers.EmailControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while sending the email", ResponseStatus.Fail);
             }
         }

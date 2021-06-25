@@ -40,7 +40,7 @@ namespace temsAPI.Controllers.SystemConfigurationControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while integrating SIC", ResponseStatus.Fail);
             }
 
@@ -60,7 +60,7 @@ namespace temsAPI.Controllers.SystemConfigurationControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while setting the library allocated storage space", ResponseStatus.Fail);
             }
         }
@@ -79,7 +79,7 @@ namespace temsAPI.Controllers.SystemConfigurationControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while setting the Email sender.", ResponseStatus.Fail);
             }
         }
@@ -98,7 +98,7 @@ namespace temsAPI.Controllers.SystemConfigurationControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while setting the interval value.", ResponseStatus.Fail);
             }
         }
@@ -117,7 +117,7 @@ namespace temsAPI.Controllers.SystemConfigurationControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while setting the interval value.", ResponseStatus.Fail);
             }
         }
@@ -137,7 +137,7 @@ namespace temsAPI.Controllers.SystemConfigurationControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while setting the allowance status.", ResponseStatus.Fail);
             }
         }
@@ -153,7 +153,7 @@ namespace temsAPI.Controllers.SystemConfigurationControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while getting the system configuration", ResponseStatus.Fail);
             }
         }
@@ -169,7 +169,7 @@ namespace temsAPI.Controllers.SystemConfigurationControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while setting the library password", ResponseStatus.Fail);
             }
         }

@@ -44,7 +44,7 @@ namespace temsAPI.Controllers.Allocation
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured when creating the allocation.", ResponseStatus.Fail);
             }
         }
@@ -63,7 +63,7 @@ namespace temsAPI.Controllers.Allocation
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while marking the allocation as returned", ResponseStatus.Fail);
             }
         }
@@ -82,7 +82,7 @@ namespace temsAPI.Controllers.Allocation
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while archieving the allocation", ResponseStatus.Fail);
             }
         }
@@ -101,7 +101,7 @@ namespace temsAPI.Controllers.Allocation
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while removing the allocation", ResponseStatus.Fail);
             }
         }
@@ -139,7 +139,7 @@ namespace temsAPI.Controllers.Allocation
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured when fetching entity's allocations", ResponseStatus.Fail);
             }
         }
@@ -155,7 +155,7 @@ namespace temsAPI.Controllers.Allocation
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while retrieving allocations", ResponseStatus.Fail);
             }
         }

@@ -2,8 +2,11 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.UserEntities;
@@ -47,6 +50,19 @@ namespace temsAPI.Controllers
             this.mapper = mapper;
             this.unitOfWork = unitOfWork;
             this.userManager = userManager;
+        }
+
+        protected void LogException(Exception ex, object caller = null, string header = null)
+        {
+            StringBuilder additional = new StringBuilder();
+            
+            if(caller != null)
+                additional.Append(caller.GetType().Name + " - " + new StackTrace().GetFrame(1).GetMethod().Name);
+
+            if (header != null)
+                additional.Append(" " + header);
+
+            _logger.Log(LogLevel.Error, ex, additional.ToString() ?? "");
         }
 
         protected JsonResult ReturnResponse(string message, ResponseStatus status, object additional = null)

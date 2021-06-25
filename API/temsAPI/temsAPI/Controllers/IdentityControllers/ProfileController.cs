@@ -39,7 +39,7 @@ namespace temsAPI.Controllers.IdentityControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while fetching user data", ResponseStatus.Fail);
             }
         }

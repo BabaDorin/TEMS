@@ -54,7 +54,7 @@ namespace temsAPI.Controllers.IdentityControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse(
                     "An error occured when saving the user, consider trying again",
                     ResponseStatus.Fail);
@@ -75,7 +75,7 @@ namespace temsAPI.Controllers.IdentityControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while removing the user.", ResponseStatus.Fail);
             }
         }
@@ -94,7 +94,7 @@ namespace temsAPI.Controllers.IdentityControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while archieving the user.", ResponseStatus.Fail);
             }
         }
@@ -113,7 +113,7 @@ namespace temsAPI.Controllers.IdentityControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured when updating the record", ResponseStatus.Fail);
             }
         }
@@ -128,7 +128,7 @@ namespace temsAPI.Controllers.IdentityControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured when fetching autocomplete options", ResponseStatus.Fail);
             }
         }
@@ -143,7 +143,7 @@ namespace temsAPI.Controllers.IdentityControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while fetching users", ResponseStatus.Fail);
             }
         }
@@ -159,7 +159,7 @@ namespace temsAPI.Controllers.IdentityControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured when fetching claims", ResponseStatus.Fail);
             }
         }
@@ -180,7 +180,7 @@ namespace temsAPI.Controllers.IdentityControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured when fetching role claims", ResponseStatus.Fail);
             }
         }
@@ -199,7 +199,7 @@ namespace temsAPI.Controllers.IdentityControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured when fetching user claims", ResponseStatus.Fail);
             }
         }
@@ -215,7 +215,7 @@ namespace temsAPI.Controllers.IdentityControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured when fetching user", ResponseStatus.Fail);
             }
         }
@@ -231,7 +231,7 @@ namespace temsAPI.Controllers.IdentityControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured when fetching users", ResponseStatus.Fail);
             }
         }
@@ -250,7 +250,7 @@ namespace temsAPI.Controllers.IdentityControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while changing account's password", ResponseStatus.Fail);
             }
         }
@@ -271,7 +271,7 @@ namespace temsAPI.Controllers.IdentityControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while saving email preferences.", ResponseStatus.Fail);
             }
         }
@@ -290,7 +290,7 @@ namespace temsAPI.Controllers.IdentityControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while updating account information", ResponseStatus.Fail);
             }
         }

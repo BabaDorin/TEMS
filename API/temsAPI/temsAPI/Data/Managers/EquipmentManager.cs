@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -22,13 +23,16 @@ namespace temsAPI.Data.Managers
     public class EquipmentManager : EntityManager
     {
         private CurrencyConvertor _currencyConvertor;
+        ILogger<EquipmentManager> _logger;
 
         public EquipmentManager(
             IUnitOfWork unitOfWork, 
             ClaimsPrincipal user,
-            CurrencyConvertor currencyConvertor) : base(unitOfWork, user)
+            CurrencyConvertor currencyConvertor,
+            ILogger<EquipmentManager> logger) : base(unitOfWork, user)
         {
             _currencyConvertor = currencyConvertor;
+            _logger = logger;
         }
 
         public async Task<string> Create(AddEquipmentViewModel viewModel)

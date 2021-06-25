@@ -40,7 +40,7 @@ namespace temsAPI.Controllers.ArchieveControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while retrieveing archieved items", ResponseStatus.Fail);
             }
         }

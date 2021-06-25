@@ -46,8 +46,7 @@ namespace temsAPI.Controllers.EquipmentControllers
             }
             catch (Exception ex)
             {
-                //_logger.Log(LogLevel.Error, ex, this.GetType().Name + " - " + new StackTrace().GetFrame(1).GetMethod().Name);
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while saving equipment data", ResponseStatus.Fail);
             }
         }
@@ -66,7 +65,7 @@ namespace temsAPI.Controllers.EquipmentControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while removing the equipment", ResponseStatus.Fail);
             }
         }
@@ -85,7 +84,7 @@ namespace temsAPI.Controllers.EquipmentControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while updating equipment data.", ResponseStatus.Fail);
             }
         }
@@ -112,7 +111,7 @@ namespace temsAPI.Controllers.EquipmentControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("Unknown error occured when fetching equipments", ResponseStatus.Fail);
             }
         }
@@ -132,7 +131,7 @@ namespace temsAPI.Controllers.EquipmentControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An unhandled error occured when fetching equipment", ResponseStatus.Fail);
             }
         }
@@ -167,7 +166,7 @@ namespace temsAPI.Controllers.EquipmentControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured when fetching equipment", ResponseStatus.Fail);
             }
         }
@@ -186,7 +185,7 @@ namespace temsAPI.Controllers.EquipmentControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while fetching equipment of definitions", ResponseStatus.Fail);
                 throw;
             }
@@ -205,7 +204,7 @@ namespace temsAPI.Controllers.EquipmentControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while fetching equipment data.", ResponseStatus.Fail);
             }
         }
@@ -226,7 +225,7 @@ namespace temsAPI.Controllers.EquipmentControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while changing the archivation status.", ResponseStatus.Fail);
             }
         }
@@ -249,7 +248,7 @@ namespace temsAPI.Controllers.EquipmentControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while detaching the child equipment.", ResponseStatus.Fail);
             }
         }
@@ -276,7 +275,7 @@ namespace temsAPI.Controllers.EquipmentControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while attaching child equipment", ResponseStatus.Fail);
             }
         }
@@ -296,7 +295,7 @@ namespace temsAPI.Controllers.EquipmentControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while changing equipment working state", ResponseStatus.Fail);
             }
         }
@@ -322,7 +321,7 @@ namespace temsAPI.Controllers.EquipmentControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while setting equipment's using state", ResponseStatus.Fail);
             }
         }
@@ -340,8 +339,8 @@ namespace temsAPI.Controllers.EquipmentControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
-                return ReturnResponse("An error occured while uploading files", ResponseStatus.Fail);
+               LogException(ex);
+                return ReturnResponse("An error occured while uploading files. Make sure SIC Integration has been enabled(via system configuration interface", ResponseStatus.Fail);
             }
         }
     }

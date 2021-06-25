@@ -39,7 +39,7 @@ namespace temsAPI.Controllers.RoomControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured when fetching autocomplete options", ResponseStatus.Fail);
             }
         }
@@ -58,7 +58,7 @@ namespace temsAPI.Controllers.RoomControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured when creating the room", ResponseStatus.Fail);
             }
         }
@@ -76,7 +76,7 @@ namespace temsAPI.Controllers.RoomControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while removing the room", ResponseStatus.Fail);
             }
         }
@@ -93,7 +93,7 @@ namespace temsAPI.Controllers.RoomControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while getting room data", ResponseStatus.Fail);
             }
         }
@@ -112,7 +112,7 @@ namespace temsAPI.Controllers.RoomControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while saving the room", ResponseStatus.Fail);
             }
         }
@@ -131,7 +131,7 @@ namespace temsAPI.Controllers.RoomControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while changing the archivation status.", ResponseStatus.Fail);
             }
         }
@@ -152,7 +152,7 @@ namespace temsAPI.Controllers.RoomControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured when fetching rooms", ResponseStatus.Fail);
             }
         }
@@ -168,7 +168,7 @@ namespace temsAPI.Controllers.RoomControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured when fetching room labels", ResponseStatus.Fail);
             }
         }
@@ -188,7 +188,7 @@ namespace temsAPI.Controllers.RoomControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured when fetching the room", ResponseStatus.Fail);
             }
         }

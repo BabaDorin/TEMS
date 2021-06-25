@@ -47,60 +47,50 @@ namespace temsAPI.Services.SICServices
             //      if there isn't >> set the serial number.
             //   Add description for types that have this property
             //   Description for computer will be TV data.
+            string validationResult = sicComputer.Validate();
+            if (validationResult != null)
+                return validationResult;
 
-            try
-            {
-                string validationResult = sicComputer.Validate();
-                if (validationResult != null)
-                    return validationResult;
+            // TEMSID or SerialNumber of this computer already exists
+            if (await _unitOfWork.Equipments
+                .isExists(q => q.TEMSID == sicComputer.TEMSID && !q.IsArchieved))
+                return $"An equipment with the [{sicComputer.TEMSID}] TEMSID already exists.";
 
-                // TEMSID or SerialNumber of this computer already exists
-                if (await _unitOfWork.Equipments
-                    .isExists(q => q.TEMSID == sicComputer.TEMSID && !q.IsArchieved))
-                    return $"An equipment with the [{sicComputer.TEMSID}] TEMSID already exists.";
-
-                if (await _unitOfWork.Equipments
-                    .isExists(q => q.SerialNumber == sicComputer.Motherboards[0].SerialNumber && !q.IsArchieved))
-                    return $"An equipment with the [{sicComputer.Motherboards[0].SerialNumber}] SerialNumber already exists.";
+            if (await _unitOfWork.Equipments
+                .isExists(q => q.SerialNumber == sicComputer.Motherboards[0].SerialNumber && !q.IsArchieved))
+                return $"An equipment with the [{sicComputer.Motherboards[0].SerialNumber}] SerialNumber already exists.";
                 
-                var computerType = (await _unitOfWork.EquipmentTypes
-                    .Find<EquipmentType>(
-                        where: q => q.Name == "Computer",
-                        include: q => q.Include(q => q.EquipmentDefinitions)
-                     )).FirstOrDefault();
+            var computerType = (await _unitOfWork.EquipmentTypes
+                .Find<EquipmentType>(
+                    where: q => q.Name == "Computer",
+                    include: q => q.Include(q => q.EquipmentDefinitions)
+                    )).FirstOrDefault();
 
-                var computerDefinition = computerType.EquipmentDefinitions
-                    .FirstOrDefault(q => q.Identifier == sicComputer.Identifier);
+            var computerDefinition = computerType.EquipmentDefinitions
+                .FirstOrDefault(q => q.Identifier == sicComputer.Identifier);
 
-                var computer = new Equipment
-                {
-                    Id = Guid.NewGuid().ToString(),
-                    TEMSID = sicComputer.TEMSID,
-                };
-
-                if (computerDefinition != null)
-                    computer.EquipmentDefinition = computerDefinition;
-                else
-                    computer.EquipmentDefinition = await RegisterComputerDefinition(sicComputer);
-
-                await _unitOfWork.Save();
-                
-                string assignationResult = await AssignData(computer, sicComputer);
-                if(assignationResult != null)
-                    return assignationResult;
-
-                await _unitOfWork.Equipments.Create(computer);
-                await _unitOfWork.Save();
-
-                // BEFREE: TEST & ADD MORE VALIDATION
-                return null;
-            }
-            catch (Exception ex)
+            var computer = new Equipment
             {
-                Debug.WriteLine(ex);
-                return $"An error occured while registering the computer. Details: {ex.Message}. \nMake sure SIC Integration has been enabled (via system configuration interface).";
-            }
-            
+                Id = Guid.NewGuid().ToString(),
+                TEMSID = sicComputer.TEMSID,
+            };
+
+            if (computerDefinition != null)
+                computer.EquipmentDefinition = computerDefinition;
+            else
+                computer.EquipmentDefinition = await RegisterComputerDefinition(sicComputer);
+
+            await _unitOfWork.Save();
+                
+            string assignationResult = await AssignData(computer, sicComputer);
+            if(assignationResult != null)
+                return assignationResult;
+
+            await _unitOfWork.Equipments.Create(computer);
+            await _unitOfWork.Save();
+
+            // BEFREE: TEST & ADD MORE VALIDATION
+            return null;
         }
 
         /// <summary>

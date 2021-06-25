@@ -86,24 +86,16 @@ namespace temsAPI.Services
 
         private async Task<List<EmailTo>> GetEmailAddresses(List<string> personnelIds)
         {
-            try
-            {
-                List<EmailTo> addresses = (await _unitOfWork.Personnel
-                    .FindAll<EmailTo>(
-                        where: q => personnelIds.Contains(q.Id) && q.Email != null,
-                        select: q => new EmailTo
-                        {
-                            Email = q.Email,
-                            Name = q.Name
-                        })).ToList();
+            List<EmailTo> addresses = (await _unitOfWork.Personnel
+                .FindAll<EmailTo>(
+                    where: q => personnelIds.Contains(q.Id) && q.Email != null,
+                    select: q => new EmailTo
+                    {
+                        Email = q.Email,
+                        Name = q.Name
+                    })).ToList();
 
-                return addresses;
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex);
-                return null;
-            }
+            return addresses;
         }
     }
 }

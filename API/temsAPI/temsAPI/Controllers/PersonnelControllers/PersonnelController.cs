@@ -39,7 +39,7 @@ namespace temsAPI.Controllers.PersonnelControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured when fetching positions", ResponseStatus.Fail);
             }
         }
@@ -55,7 +55,7 @@ namespace temsAPI.Controllers.PersonnelControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured when creating the personnel", ResponseStatus.Fail);
             }
         }
@@ -74,7 +74,7 @@ namespace temsAPI.Controllers.PersonnelControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while removing the personnel", ResponseStatus.Fail);
             }
         }
@@ -94,7 +94,7 @@ namespace temsAPI.Controllers.PersonnelControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while changing the archivation status.", ResponseStatus.Fail);
             }
         }
@@ -116,7 +116,7 @@ namespace temsAPI.Controllers.PersonnelControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured when fetching personnel records", ResponseStatus.Fail);
             }
         }
@@ -131,7 +131,7 @@ namespace temsAPI.Controllers.PersonnelControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured when fetching autocomplete options", ResponseStatus.Fail);
             }
         }
@@ -148,7 +148,7 @@ namespace temsAPI.Controllers.PersonnelControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while getting personnel's information", ResponseStatus.Fail);
             }
         }
@@ -167,7 +167,7 @@ namespace temsAPI.Controllers.PersonnelControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while saving personnel data", ResponseStatus.Fail);
                 throw;
             }
@@ -188,7 +188,7 @@ namespace temsAPI.Controllers.PersonnelControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while fetching personnel information", ResponseStatus.Fail);
                 throw;
             }

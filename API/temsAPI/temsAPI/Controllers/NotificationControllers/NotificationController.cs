@@ -53,7 +53,7 @@ namespace temsAPI.Controllers.NotificationControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while fetching user notifications", ResponseStatus.Fail);
             }
         }
@@ -71,7 +71,7 @@ namespace temsAPI.Controllers.NotificationControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while fetching notifications", ResponseStatus.Fail);
             }
         }
@@ -93,7 +93,7 @@ namespace temsAPI.Controllers.NotificationControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while marking notifications as seen", ResponseStatus.Fail);
             }
         }
@@ -116,7 +116,7 @@ namespace temsAPI.Controllers.NotificationControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while removing the specified notification", ResponseStatus.Fail);
             }
         }

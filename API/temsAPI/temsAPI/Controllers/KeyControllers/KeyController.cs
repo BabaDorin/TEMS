@@ -38,7 +38,7 @@ namespace temsAPI.Controllers.KeyControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured when fetching keys", ResponseStatus.Fail);
             }
         }
@@ -54,7 +54,7 @@ namespace temsAPI.Controllers.KeyControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured when fetching keys autocomplete options", ResponseStatus.Fail);
             }
         }
@@ -73,7 +73,7 @@ namespace temsAPI.Controllers.KeyControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured when creating the key.", ResponseStatus.Fail);
             }
         }
@@ -92,7 +92,7 @@ namespace temsAPI.Controllers.KeyControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while removing the key", ResponseStatus.Fail);
             }
         }
@@ -111,7 +111,7 @@ namespace temsAPI.Controllers.KeyControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while removing the allocation", ResponseStatus.Fail);
             }
         }
@@ -131,7 +131,7 @@ namespace temsAPI.Controllers.KeyControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured when creating the allocation", ResponseStatus.Fail);
             }
         }
@@ -147,7 +147,7 @@ namespace temsAPI.Controllers.KeyControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured when fetching key allocations", ResponseStatus.Fail);
             }
         }
@@ -166,7 +166,7 @@ namespace temsAPI.Controllers.KeyControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while marking the key as returned", ResponseStatus.Fail);
             }
         }
@@ -186,7 +186,7 @@ namespace temsAPI.Controllers.KeyControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while archieving the key and it's related data", ResponseStatus.Fail);
             }
         }
@@ -208,7 +208,7 @@ namespace temsAPI.Controllers.KeyControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while archieving the specified allocation", ResponseStatus.Fail);
             }
         }

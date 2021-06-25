@@ -43,7 +43,7 @@ namespace temsAPI.Controllers.IdentityControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while blacklisting the token", ResponseStatus.Fail);
             }
         }
@@ -58,7 +58,7 @@ namespace temsAPI.Controllers.IdentityControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("Invalid credentials", ResponseStatus.Fail);
             }
         }

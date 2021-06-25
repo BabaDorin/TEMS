@@ -43,7 +43,7 @@ namespace temsAPI.Controllers.LogControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while changing the archivation status.", ResponseStatus.Fail);
             }
         }
@@ -62,7 +62,7 @@ namespace temsAPI.Controllers.LogControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured when creating the log record. Please try again", ResponseStatus.Fail);
             }
         }
@@ -81,7 +81,7 @@ namespace temsAPI.Controllers.LogControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured while removing the log", ResponseStatus.Fail);
             }
         }
@@ -97,7 +97,7 @@ namespace temsAPI.Controllers.LogControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured when fetching log types", ResponseStatus.Fail);
             }
         }
@@ -113,7 +113,7 @@ namespace temsAPI.Controllers.LogControllers
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogException(ex);
                 return ReturnResponse("An error occured when fetching entity logs", ResponseStatus.Fail);
             }
         }

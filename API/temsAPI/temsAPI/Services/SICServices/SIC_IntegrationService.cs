@@ -50,16 +50,8 @@ namespace temsAPI.Services.SICServices
         {
             // In order to facilitate communication between TEMS and SIC, the first thing
             // to do is to add all of necessary types into TEMS Db (Computer, PowerSupply etc.).
-            try
-            {
-                await AddNecessaryTypesAndProperties();
-                return null;
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex);
-                return ex.Message;
-            }
+            await AddNecessaryTypesAndProperties();
+            return null;
         }
 
         private async Task AddNecessaryTypesAndProperties()

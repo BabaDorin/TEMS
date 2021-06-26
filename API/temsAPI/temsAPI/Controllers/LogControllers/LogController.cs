@@ -63,7 +63,7 @@ namespace temsAPI.Controllers.LogControllers
             catch (Exception ex)
             {
                 LogException(ex);
-                return ReturnResponse("An error occured when creating the log record. Please try again", ResponseStatus.Fail);
+                return ReturnResponse("An error occured while creating the log record. Please try again", ResponseStatus.Fail);
             }
         }
 
@@ -98,7 +98,7 @@ namespace temsAPI.Controllers.LogControllers
             catch (Exception ex)
             {
                 LogException(ex);
-                return ReturnResponse("An error occured when fetching entity logs", ResponseStatus.Fail);
+                return ReturnResponse("An error occured while fetching entity logs", ResponseStatus.Fail);
             }
         }
     }

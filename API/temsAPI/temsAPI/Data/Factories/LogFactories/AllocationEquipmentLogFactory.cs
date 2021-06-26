@@ -24,6 +24,10 @@ namespace temsAPI.Data.Factories.LogFactories
                 Id = Guid.NewGuid().ToString(),
                 DateCreated = DateTime.Now,
                 EquipmentID = _allocation.EquipmentID,
+                Description = String.Format("Has been allocated to {0}.",
+                _allocation.Personnel != null
+                    ? _allocation.Personnel.Name
+                    : _allocation.Room.Identifier)
             };
         }
     }

@@ -2,27 +2,27 @@
     <div class="page-header">
         <div class="page-title mb-0 template-title">
             <h3 class="m-0">
-                <b>{{ log.logType.label }}</b>
+                {{ log.dateCreated | date:'short' }}
             </h3>
-            <p class="m-0" class="d-block">
-                <small>
-                    {{ log.dateCreated | date:'medium' }}
-                </small>
-            </p>
-            <p class="text-muted">
-                <ng-container *ngIf="log.room != undefined">
-                    Room: {{ log.room.label }}
-                </ng-container>
-                <ng-container *ngIf="log.personnel != undefined">
-                    Personnel: {{ log.personnel.label }}
-                </ng-container>
-                <ng-container *ngIf="log.equipment != undefined">
-                    Equipment: {{ log.equipment.label }}
-                </ng-container>
-                <ng-container *ngIf="log.createdBy != undefined">
-                    , created by {{ log.createdBy.label }}
-                </ng-container>
-            </p>
+            <ng-container *ngIf="log.createdBy != undefined">
+                <p class="m-0" class="d-block">
+                    <small>
+                        Created by: {{ log.createdBy.label }}
+                    </small>
+                </p>
+            </ng-container>
+            
+                <!-- <p class="text-muted">
+                    <ng-container *ngIf="log.room != undefined">
+                        Room: {{ log.room.label }}
+                    </ng-container>
+                    <ng-container *ngIf="log.personnel != undefined">
+                        Personnel: {{ log.personnel.label }}
+                    </ng-container>
+                    <ng-container *ngIf="log.equipment != undefined">
+                        Equipment: {{ log.equipment.label }}
+                    </ng-container>
+                </p> -->
         </div>
         <ng-container *ngIf="canManage">
             <nav aria-label="breadcrumb">
@@ -44,7 +44,7 @@
         </ng-container>
     </div>
     <p>
-        {{ log.text }}
+        {{ log.description }}
     </p>
 </ng-container>
 

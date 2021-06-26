@@ -10,9 +10,7 @@ namespace temsAPI.ViewModels.Log
     {
         public List<Option> Addressees { get; set; }
         public string AddresseesType { get; set; }
-        public string LogTypeId { get; set; }
-        public string Text { get; set; }
-        public bool IsImportant { get; set; }
+        public string Description { get; set; }
 
         public string Validate()
         {
@@ -24,10 +22,6 @@ namespace temsAPI.ViewModels.Log
             // No Addressees provided or the provided ones are invalid
             if (Addressees.Count == 0)
                 return "Please, provide at least one Addressee";
-
-            // No LogTypeId provided or the provided one is invalid
-            if (String.IsNullOrEmpty(LogTypeId))
-                return "Please, Provide a log type for the log";
 
             return null;
         }

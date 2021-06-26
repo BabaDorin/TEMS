@@ -606,23 +606,14 @@ export class FormlyParserService extends TEMSComponent {
     }
   }
 
-  parseAddLog(logTypes: IOption[]) {
+  parseAddLog() {
     let fields: FormlyFieldConfig[] =
       [
         {
           key: 'log',
           fieldGroup: [
             {
-              key: 'logTypeId',
-              type: 'select',
-              templateOptions: {
-                required: true,
-                label: 'Log Type',
-                options: logTypes
-              }
-            },
-            {
-              key: 'text',
+              key: 'description',
               type: 'textarea',
               templateOptions: {
                 label: 'Description',
@@ -630,16 +621,6 @@ export class FormlyParserService extends TEMSComponent {
                 rows: 5,
               },
             },
-            {
-              className: 'mb-0',
-              key: 'isImportant',
-              type: 'checkbox',
-              defaultValue: false,
-              templateOptions: {
-                label: 'Is important',
-                description: 'Unimportant logs will get deleted after a certain period of time',
-              },
-            }
           ]
         }
       ];

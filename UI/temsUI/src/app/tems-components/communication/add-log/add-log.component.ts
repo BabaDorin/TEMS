@@ -93,10 +93,7 @@ export class AddLogComponent extends TEMSComponent implements OnInit {
       this.onAddresseeSelection(implicitAddressees.entities);
     }
 
-    this.subscriptions.push(this.logsService.getLogTypes()
-    .subscribe(response => {
-      this.formlyData.fields = this.formlyParserService.parseAddLog(response);
-    }));
+    this.formlyData.fields = this.formlyParserService.parseAddLog();
   }
 
   onAddresseeSelection(alreadySelected?: IOption[]) {
@@ -125,8 +122,7 @@ export class AddLogComponent extends TEMSComponent implements OnInit {
   }
 
   onSubmit() {
-    if(this.addresseesChips.options.length == 0 || 
-      this.formlyData.model.log.logTypeId == undefined)
+    if(this.addresseesChips.options.length == 0)
       return;
         
     this.formlyData.model.log.addresseesType = this.selectedAddresseeType;

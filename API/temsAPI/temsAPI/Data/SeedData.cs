@@ -24,7 +24,6 @@ namespace temsAPI.Data
             SeedRoles(roleManager);
             SeedUsers(userManager);
             SeedDataTypes(dbContext);
-            SeedLogTypes(dbContext);
             SeedTickedStatuses(dbContext);
             SeedRoomLabels(dbContext);
             SeedPersonnelPositions(dbContext);
@@ -72,25 +71,6 @@ namespace temsAPI.Data
                          });
                      }
                  });
-
-            dbContext.SaveChanges();
-        }
-
-        
-        private static void SeedLogTypes(ApplicationDbContext dbContext)
-        {
-            (new List<string>() { "Repair", "Maintenance", "Allocation" })
-                .ForEach(r =>
-                {
-                    if (!dbContext.LogTypes.Any(lt => lt.Type == r))
-                    {
-                        dbContext.LogTypes.Add(new LogType
-                        {
-                            Id = Guid.NewGuid().ToString(),
-                            Type = r
-                        });
-                    }
-                });
 
             dbContext.SaveChanges();
         }

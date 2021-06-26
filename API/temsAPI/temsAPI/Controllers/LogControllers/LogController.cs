@@ -86,22 +86,6 @@ namespace temsAPI.Controllers.LogControllers
             }
         }
 
-        [HttpGet]
-        [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES, TEMSClaims.CAN_VIEW_ENTITIES)]
-        public async Task<JsonResult> GetLogTypes()
-        {
-            try
-            {
-                var logTypes = await _logManager.GetLogTypes();
-                return Json(logTypes);
-            }
-            catch (Exception ex)
-            {
-                LogException(ex);
-                return ReturnResponse("An error occured when fetching log types", ResponseStatus.Fail);
-            }
-        }
-
         [HttpGet("/log/getentitylogs/{entityType}/{entityId}")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> GetEntityLogs(string entityType, string entityId)

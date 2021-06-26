@@ -22,7 +22,6 @@ namespace temsAPI.Repository
         private IGenericRepository<Announcement> _announcements;
         private IGenericRepository<FrequentTicketProblem> _frequentTicketProblems;
         private IGenericRepository<Log> _logs;
-        private IGenericRepository<LogType> _logTypes;
         private IGenericRepository<Ticket> _tickets;
         private IGenericRepository<ToDo> _toDos;
         private IGenericRepository<Equipment> _equipments;
@@ -59,8 +58,6 @@ namespace temsAPI.Repository
             => _frequentTicketProblems ??= new GenericRepository<FrequentTicketProblem>(_context);
         public IGenericRepository<Log> Logs
             => _logs ??= new GenericRepository<Log>(_context);
-        public IGenericRepository<LogType> LogTypes
-            => _logTypes ??= new GenericRepository<LogType>(_context);
         public IGenericRepository<Ticket> Tickets
             => _tickets ??= new GenericRepository<Ticket>(_context);
         public IGenericRepository<ToDo> ToDos

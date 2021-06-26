@@ -11,12 +11,10 @@ namespace temsAPI.ViewModels.Log
         public string Id { get; set; }
         public DateTime DateCreated { get; set; }
         public IOption CreatedBy { get; set; }
-        public string Text { get; set; }
+        public string Description { get; set; }
         public IOption Equipment { get; set; }
         public IOption Room { get; set; }
         public IOption Personnel { get; set; }
-        public IOption LogType { get; set; }
-        public bool IsImportant { get; set; }
 
         public static ViewLogViewModel FromModel(Data.Entities.CommunicationEntities.Log log)
         {
@@ -31,14 +29,7 @@ namespace temsAPI.ViewModels.Log
                     Value = log.CreatedByID,
                     Label = log.CreatedBy.FullName ?? log.CreatedBy.UserName
                 },
-                Text = log.Text,
-                LogType = (log.LogType == null)
-                ? null
-                : new Option
-                {
-                    Value = log.LogType.Id,
-                    Label = log.LogType.Type
-                },
+                Description = log.Description,
                 Equipment = (log.Equipment == null)
                 ? null
                 : new Option
@@ -60,7 +51,6 @@ namespace temsAPI.ViewModels.Log
                     Value = log.Personnel.Id,
                     Label = log.Personnel.Name
                 },
-                IsImportant = log.IsImportant
             };
         }
     }

@@ -16,7 +16,7 @@ namespace temsAPI.Data.Entities.CommunicationEntities
         [Key]
         public string Id { get; set; }
         
-        public string Text { get; set; }
+        public string Description { get; set; }
 
         public DateTime DateCreated { get; set; }
 
@@ -40,12 +40,6 @@ namespace temsAPI.Data.Entities.CommunicationEntities
         [ForeignKey("PersonnelID")]
         public Personnel? Personnel { get; set; }
         public string? PersonnelID { get; set; }
-
-        public bool IsImportant { get; set; }
-        
-        [ForeignKey("LogTypeID")]
-        public LogType? LogType { get; set; }
-        public string? LogTypeID { get; set; }
 
         [InverseProperty("ArchivedLogs")]
         [ForeignKey("ArchievedById")]
@@ -71,6 +65,7 @@ namespace temsAPI.Data.Entities.CommunicationEntities
         public DateTime? DateArchieved { get; set; }
 
         [NotMapped]
-        public string Identifier => $"LogType: {LogType?.Type}, Text: {Text}, Equipment: {Equipment?.TemsIdOrSerialNumber ?? "none"}, Personnel: {Personnel?.Name ?? "none"}, Room: {Room?.Identifier ?? "none"}";
+        public string Identifier => $"Description: {Description}, Equipment: {Equipment?.TemsIdOrSerialNumber ?? "none"}, Personnel: {Personnel?.Name ?? "none"}, Room: {Room?.Identifier ?? "none"}";
+
     }
 }

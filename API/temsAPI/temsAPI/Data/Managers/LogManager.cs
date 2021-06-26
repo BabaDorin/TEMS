@@ -39,9 +39,7 @@ namespace temsAPI.Data.Managers
                     Id = Guid.NewGuid().ToString(),
                     DateCreated = DateTime.Now,
                     CreatedByID = _identityService.GetUserId(),
-                    IsImportant = viewModel.IsImportant,
-                    LogTypeID = viewModel.LogTypeId,
-                    Text = viewModel.Text,
+                    Description = viewModel.Description,
                 };
 
                 switch (viewModel.AddresseesType)
@@ -74,20 +72,6 @@ namespace temsAPI.Data.Managers
             return (await _unitOfWork.Logs
                 .Find<Log>(q => q.Id == logId))
                 .FirstOrDefault();
-        }
-
-        public async Task<List<Option>> GetLogTypes()
-        {
-            var logTypes = (await _unitOfWork.LogTypes
-                .FindAll<Option>(
-                    select: q => new Option
-                    {
-                        Value = q.Id,
-                        Label = q.Type
-                    }
-                )).ToList();
-
-            return logTypes;
         }
 
         public async Task<List<ViewLogViewModel>> GetEntityLogs(
@@ -124,7 +108,6 @@ namespace temsAPI.Data.Managers
                     .Include(q => q.Equipment)
                     .Include(q => q.Personnel)
                     .Include(q => q.Room)
-                    .Include(q => q.LogType)
                     .Include(q => q.CreatedBy),
                     orderBy: q => q.OrderByDescending(q => q.DateCreated),
                     skip: skip,

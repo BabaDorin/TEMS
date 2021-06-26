@@ -11,9 +11,15 @@ namespace temsAPI.Data.Managers
 {
     public class ArchieveManager : EntityManager
     {
-        private ArchieveHelper _archieveHelper;
-        public ArchieveManager(IUnitOfWork unitOfWork, ClaimsPrincipal user) : base(unitOfWork, user)
+        ArchieveHelper _archieveHelper;
+        LogManager _logManager;
+
+        public ArchieveManager(
+            IUnitOfWork unitOfWork, 
+            ClaimsPrincipal user,
+            LogManager logManager) : base(unitOfWork, user)
         {
+            _logManager = logManager;
             _archieveHelper = new ArchieveHelper(unitOfWork, user);
         }
 
@@ -59,7 +65,7 @@ namespace temsAPI.Data.Managers
             // BEFREE: Add Archieve and Dearchive as parts of IArchievable interface and receive the item as 
             // an IArchievablem (Call Archieve or Dearchive depdending on status).
 
-            ArchieveHelper archieveHelper = new ArchieveHelper(_unitOfWork, _user);
+            ArchieveHelper archieveHelper = new ArchieveHelper(_unitOfWork, _user, _logManager);
             switch (itemType)
             {
                 case "equipment":

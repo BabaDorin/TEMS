@@ -49,11 +49,16 @@ namespace temsAPI.Data.Managers
                     case "personnel": log.PersonnelID = addressee.Value; break;
                 }
 
-                await _unitOfWork.Logs.Create(log);
-                await _unitOfWork.Save();
+                await Create(log);
             }
 
             return null;
+        }
+
+        public async Task Create(Log log)
+        {
+            await _unitOfWork.Logs.Create(log);
+            await _unitOfWork.Save();
         }
 
         public async Task<string> Remove(string logId)

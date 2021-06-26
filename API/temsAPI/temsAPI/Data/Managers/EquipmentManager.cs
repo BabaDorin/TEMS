@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.EquipmentEntities;
+using temsAPI.Data.Factories.LogFactories;
 using temsAPI.Helpers;
 using temsAPI.Services;
 using temsAPI.System_Files;
@@ -22,17 +23,21 @@ namespace temsAPI.Data.Managers
 {
     public class EquipmentManager : EntityManager
     {
-        private CurrencyConvertor _currencyConvertor;
+        CurrencyConvertor _currencyConvertor;
+        LogManager _logManager;
         ILogger<EquipmentManager> _logger;
+
 
         public EquipmentManager(
             IUnitOfWork unitOfWork, 
             ClaimsPrincipal user,
             CurrencyConvertor currencyConvertor,
-            ILogger<EquipmentManager> logger) : base(unitOfWork, user)
+            ILogger<EquipmentManager> logger,
+            LogManager logManager) : base(unitOfWork, user)
         {
             _currencyConvertor = currencyConvertor;
             _logger = logger;
+            _logManager = logManager;
         }
 
         public async Task<string> Create(AddEquipmentViewModel viewModel)
@@ -124,6 +129,9 @@ namespace temsAPI.Data.Managers
             model.TEMSID = viewModel.Temsid;
 
             await _unitOfWork.Save();
+
+            var eqUpdatedLog = new EquipmentUpdatedLogFactory(model, IdentityService.GetUserId(_user)).Create();
+            await _logManager.Create(eqUpdatedLog);
 
             return null;
         }
@@ -223,15 +231,13 @@ namespace temsAPI.Data.Managers
             return equipment;
         }
 
-        public void Attach(Equipment parent, Equipment child)
-        {
-            parent.Children.Add(child);
-        }
-
         public async Task ChangeWorkingState(Equipment equipment, bool isDefect)
         {
             equipment.IsDefect = isDefect;
             await _unitOfWork.Save();
+
+            var workingStateChangedLog = new EquipmentWorkingStateChangedLogFactory(equipment, IdentityService.GetUserId(_user)).Create();
+            await _logManager.Create(workingStateChangedLog);
         }
 
         public async Task ChangeUsingState(Equipment equipment, bool isUsed)
@@ -239,15 +245,31 @@ namespace temsAPI.Data.Managers
             equipment.IsUsed = isUsed;
 
             foreach(Equipment child in equipment.Children)
+            {
                 child.IsUsed = isUsed;
+                var childUsingChanged = new EquipmentUsingStateChangedLogFactory(child, IdentityService.GetUserId(_user)).Create();
+                await _logManager.Create(childUsingChanged);
+            }
 
             await _unitOfWork.Save();
+            
+            var parentUsingChanged = new EquipmentUsingStateChangedLogFactory(equipment, IdentityService.GetUserId(_user)).Create();
+            await _logManager.Create(parentUsingChanged);
         }
 
         public async Task<string> DetachEquipment(Equipment equipment)
         {
+            var parent = await GetFullEquipmentById(equipment.ParentID);
+
             equipment.ParentID = null;
             await _unitOfWork.Save();
+
+            string createdById = IdentityService.GetUserId(_user);
+            var eqDetachedChildLog = new ChildEquipmentDetachedChildLogFactory(parent, equipment, createdById).Create();
+            var eqDetachedParentLog = new ChildEquipmentDetachedParentLogFactory(parent, equipment, createdById).Create();
+
+            await _logManager.Create(eqDetachedParentLog);
+            await _logManager.Create(eqDetachedChildLog);
 
             return null;
         }
@@ -345,6 +367,14 @@ namespace temsAPI.Data.Managers
 
                     await _unitOfWork.EquipmentAllocations.Create(model);
                     await _unitOfWork.Save();
+
+                    var eqAllocationLog = new AllocationEquipmentLogFactory(model).Create();
+                    var allocateeAllocationLog = (model.RoomID != null)
+                        ? new AllocationRoomLogFactory(model).Create()
+                        : new AllocationPersonnelLogFactory(model).Create();
+
+                    await _logManager.Create(eqAllocationLog);
+                    await _logManager.Create(allocateeAllocationLog);
                 }
                 catch (Exception ex)
                 {
@@ -513,6 +543,19 @@ namespace temsAPI.Data.Managers
         }
 
         // Utilities
+
+        public async Task Attach(Equipment parent, Equipment child)
+        {
+            parent.Children.Add(child);
+            await _unitOfWork.Save();
+
+            string createdById = IdentityService.GetUserId(_user);
+            var eqAttachedParentLog = new ChildEquipmentAttachedParentLogFactory(parent, child, createdById).Create();
+            var eqAttachedChildLog = new ChildEquipmentAttachedChildLogFactory(parent, child, createdById).Create();
+
+            await _logManager.Create(eqAttachedChildLog);
+            await _logManager.Create(eqAttachedParentLog);
+        }
 
         public class EntityCollection
         {

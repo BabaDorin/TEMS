@@ -14,6 +14,9 @@ using temsAPI.Data.Entities.KeyEntities;
 using temsAPI.Data.Entities.OtherEntities;
 using temsAPI.Data.Entities.Report;
 using temsAPI.Data.Entities.UserEntities;
+using temsAPI.Data.Factories.LogFactories;
+using temsAPI.Data.Managers;
+using temsAPI.Services;
 using temsAPI.ViewModels;
 using temsAPI.ViewModels.Archieve;
 
@@ -23,11 +26,16 @@ namespace temsAPI.Helpers
     {
         private IUnitOfWork _unitOfWork;
         private ClaimsPrincipal _user;
+        private LogManager _logManager;
 
-        public ArchieveHelper(IUnitOfWork unitOfWork, ClaimsPrincipal user)
+        public ArchieveHelper(
+            IUnitOfWork unitOfWork, 
+            ClaimsPrincipal user,
+            LogManager logManager = null)
         {
             _unitOfWork = unitOfWork;
             _user = user;
+            _logManager = logManager;
         }
 
         public async Task<List<ArchievedItemViewModel>> GetArchievedItemsFromRepo<T>(IGenericRepository<T> repo) where T : class, IArchiveableItem
@@ -80,6 +88,10 @@ namespace temsAPI.Helpers
                 log.IsArchieved = status;
             }
 
+            var archivationChangedLog = new EquipmentArchivationStateChangedLogFactory(model, IdentityService.GetUserId(_user))
+                .Create();
+            await _logManager.Create(archivationChangedLog);
+            
             await _unitOfWork.Save();
             return null;
         }

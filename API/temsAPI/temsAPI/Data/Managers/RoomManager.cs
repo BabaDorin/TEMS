@@ -8,6 +8,8 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.OtherEntities;
+using temsAPI.Data.Factories.LogFactories;
+using temsAPI.Services;
 using temsAPI.ViewModels;
 using temsAPI.ViewModels.Room;
 
@@ -15,8 +17,14 @@ namespace temsAPI.Data.Managers
 {
     public class RoomManager : EntityManager
     {
-        public RoomManager(IUnitOfWork unitOfWork, ClaimsPrincipal user) : base(unitOfWork, user)
+        LogManager _logManager;
+
+        public RoomManager(
+            IUnitOfWork unitOfWork, 
+            ClaimsPrincipal user,
+            LogManager logManager) : base(unitOfWork, user)
         {
+            _logManager = logManager;
         }
 
         public async Task<List<Option>> GetAutocompleteOptions(string filter)
@@ -114,7 +122,7 @@ namespace temsAPI.Data.Managers
             if (validationResult != null)
                 return validationResult;
 
-            var room = await GetById(viewModel.Id);
+            var room = await GetFullById(viewModel.Id);
             if (room == null)
                 return "Invalid room id provided";
 
@@ -126,7 +134,17 @@ namespace temsAPI.Data.Managers
             List<string> supervisoriesIds = viewModel.Supervisories.Select(q => q.Value).ToList() ?? new();
 
             await room.AssignLabels(labelIds, _unitOfWork);
+            
+            var supervisoriesBefore = room.Supervisories.ToList();
             await room.AssignSupervisories(supervisoriesIds, _unitOfWork);
+            var supervisoriesAfter = room.Supervisories.ToList();
+
+            if (supervisoriesBefore != supervisoriesAfter)
+            {
+                // Supervisories changed
+                var supervisoriesUpdatedLog = new RoomSupervisoriesChangedLogFactory(room, IdentityService.GetUserId(_user)).Create();
+                await _logManager.Create(supervisoriesUpdatedLog);
+            }
 
             await _unitOfWork.Save();
             return null;

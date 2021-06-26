@@ -24,7 +24,7 @@ namespace temsAPI.Data.Factories.LogFactories
                 PersonnelID = _allocation.PersonnelID,
                 DateCreated = DateTime.Now,
                 Description = String.Format(
-                    "Was assigned the equipment ({0}, {1}) with the TEMSID of: {2} and Serial Number: {3}",
+                    "Was assigned the equipment ({0}, {1}) with the TEMSID of: {2} and Serial Number: {3}.",
                     _allocation.Equipment.EquipmentDefinition.EquipmentType.Name,
                     _allocation.Equipment.EquipmentDefinition.Identifier,
                     _allocation.Equipment.TEMSID,

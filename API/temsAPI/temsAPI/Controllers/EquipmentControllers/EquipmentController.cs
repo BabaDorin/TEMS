@@ -263,14 +263,13 @@ namespace temsAPI.Controllers.EquipmentControllers
                 if (validationResult != null)
                     return ReturnResponse(validationResult, ResponseStatus.Fail);
 
-                var parent = await _equipmentManager.GetById(viewModel.ParentId);
+                var parent = await _equipmentManager.GetFullEquipmentById(viewModel.ParentId);
                 foreach(var childId in viewModel.ChildrenIds)
                 {
-                    var child = await _equipmentManager.GetById(childId);
-                    _equipmentManager.Attach(parent, child);
+                    var child = await _equipmentManager.GetFullEquipmentById(childId);
+                    await _equipmentManager.Attach(parent, child);
                 }
 
-                await _unitOfWork.Save();
                 return ReturnResponse("Success", ResponseStatus.Success);
             }
             catch (Exception ex)

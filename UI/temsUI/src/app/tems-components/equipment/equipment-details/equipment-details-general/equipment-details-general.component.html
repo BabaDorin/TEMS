@@ -146,7 +146,7 @@
                         Detached equipments (These will dissapear after a refresh)
                     </h2>
                     <div *ngFor="let detachedEq of detachedEquipments">
-                        <app-child-equipment-container [childEquipment]="detachedEq" canManage="false">
+                        <app-child-equipment-container [childEquipment]="detachedEq" canManage="false" detachable="false">
                         </app-child-equipment-container>
                     </div>
                 </ng-container>

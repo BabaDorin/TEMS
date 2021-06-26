@@ -13,6 +13,7 @@ export class ChildEquipmentContainerComponent extends TEMSComponent implements O
 
   @Input() childEquipment: IOption;
   @Input() canManage: boolean = false;
+  @Input() detachable: boolean = true;
 
   @Output() detached = new EventEmitter();
 

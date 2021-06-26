@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using temsAPI.Data.Entities.CommunicationEntities;
+using temsAPI.Data.Entities.EquipmentEntities;
 
 namespace temsAPI.Data.Factories.LogFactories
 {
@@ -11,7 +12,7 @@ namespace temsAPI.Data.Factories.LogFactories
         Equipment _equipment;
         string _createdById;
 
-        public EquipmentArchivationStateChangedLogFactory(Equipment equipment, string createdById)
+        public EquipmentWorkingStateChangedLogFactory(Equipment equipment, string createdById)
         {
             _equipment = equipment;
             _createdById = createdById;

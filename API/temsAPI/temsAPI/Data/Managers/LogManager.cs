@@ -85,6 +85,33 @@ namespace temsAPI.Data.Managers
             int skip = 0, 
             int take = int.MaxValue)
         {
+            var expression = GetExpressionOfEntityTypeAndEntityId(entityType, entityId);
+
+            var logs = (await _unitOfWork.Logs
+                .FindAll<ViewLogViewModel>(
+                    where: expression,
+                    include: q => q
+                    .Include(q => q.Equipment)
+                    .Include(q => q.Personnel)
+                    .Include(q => q.Room)
+                    .Include(q => q.CreatedBy),
+                    orderBy: q => q.OrderByDescending(q => q.DateCreated),
+                    skip: skip,
+                    take: take,
+                    select: q => ViewLogViewModel.FromModel(q)
+                )).ToList();
+
+            return logs;
+        }
+
+        public async Task<int> GetItemsNumber(string entityType, string entityId)
+        {
+            var expression = GetExpressionOfEntityTypeAndEntityId(entityType, entityId);
+            return await _unitOfWork.Logs.Count(expression);
+        }
+
+        private Expression<Func<Log, bool>> GetExpressionOfEntityTypeAndEntityId(string entityType, string entityId)
+        {
             if ((new List<string>() { "any", "equipment", "personnel", "room" }).IndexOf(entityType) == -1)
                 throw new Exception($"{entityType} is not a valid tems type, valid: any, equipment, personnel, room");
 
@@ -104,23 +131,7 @@ namespace temsAPI.Data.Managers
                     break;
             }
 
-            expression = ExpressionCombiner.CombineTwo(expression, secondaryExp);
-
-            var logs = (await _unitOfWork.Logs
-                .FindAll<ViewLogViewModel>(
-                    where: expression,
-                    include: q => q
-                    .Include(q => q.Equipment)
-                    .Include(q => q.Personnel)
-                    .Include(q => q.Room)
-                    .Include(q => q.CreatedBy),
-                    orderBy: q => q.OrderByDescending(q => q.DateCreated),
-                    skip: skip,
-                    take: take,
-                    select: q => ViewLogViewModel.FromModel(q)
-                )).ToList();
-
-            return logs;
+            return ExpressionCombiner.CombineTwo(expression, secondaryExp);
         }
     }
 }

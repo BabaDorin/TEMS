@@ -86,13 +86,20 @@ namespace temsAPI.Controllers.LogControllers
             }
         }
 
-        [HttpGet("/log/getentitylogs/{entityType}/{entityId}")]
+        [HttpGet("/log/getentitylogs/{entityType}/{entityId}/{pageNumber?}/{itemsPerPage?}")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
-        public async Task<JsonResult> GetEntityLogs(string entityType, string entityId)
+        public async Task<JsonResult> GetEntityLogs(string entityType, string entityId, int? pageNumber, int? itemsPerPage)
         {
             try
             {
-                var logs = await _logManager.GetEntityLogs(entityType, entityId);
+                int skip = (pageNumber != null && itemsPerPage != null)
+                    ? (int)(itemsPerPage * (pageNumber - 1))
+                    : 0;
+                int take = (pageNumber != null && itemsPerPage != null)
+                    ? (int)itemsPerPage
+                    : int.MaxValue;
+
+                var logs = await _logManager.GetEntityLogs(entityType, entityId, skip, take);
                 return Json(logs);
             }
             catch (Exception ex)
@@ -101,5 +108,22 @@ namespace temsAPI.Controllers.LogControllers
                 return ReturnResponse("An error occured while fetching entity logs", ResponseStatus.Fail);
             }
         }
+
+        [HttpGet("log/getitemsnumber/{entityType}/{entityId}")]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
+        public async Task<JsonResult> GetItemsNumber(string entityType, string entityId)
+        {
+            try
+            {
+                var number = await _logManager.GetItemsNumber(entityType, entityId);
+                return Json(number);
+            }
+            catch (Exception ex)
+            {
+                LogException(ex);
+                return ReturnResponse("An error occured while fetching log items number", ResponseStatus.Fail);
+            }
+        }
+
     }
 }

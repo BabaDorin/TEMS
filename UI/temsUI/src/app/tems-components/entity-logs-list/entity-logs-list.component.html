@@ -20,7 +20,7 @@
     <ng-container *ngIf="logs != undefined && logs.length > 0">
       <ul id="progress">
         <ng-container
-          *ngFor="let log of logs | paginate: { itemsPerPage: 20, currentPage: pageNumber, id: 'logs' }; let i = index">
+          *ngFor="let log of logs | paginate: { itemsPerPage: itemsPerPage, currentPage: pageNumber, id: 'logs', totalItems: totalItems }; let i = index">
           <li>
             <div class="node">
             </div>
@@ -32,7 +32,7 @@
             </div>
         </ng-container>
       </ul>
-      <pagination-controls (pageChange)="pageNumber = $event" id="logs" *ngIf="logs != undefined && logs.length > 0">
+      <pagination-controls (pageChange)="pageNumber = $event; fetchLogs()" id="logs" *ngIf="logs != undefined && logs.length > 0">
       </pagination-controls>
     </ng-container>
   

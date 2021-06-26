@@ -17,9 +17,9 @@ export class LogsService extends TEMSService {
     super();
   }
 
-  getEntityLogs(entityType: string, entityId: string): Observable<any>{
+  getEntityLogs(entityType: string, entityId: string, pageNumber?: number, itemsPerPage?: number): Observable<any>{
     return this.http.get(
-      API_LOG_URL + '/getentitylogs/' + entityType + '/' + entityId,
+      API_LOG_URL + '/getentitylogs/' + entityType + '/' + entityId + '/' + pageNumber + '/' + itemsPerPage,
       this.httpOptions
     );
   }
@@ -31,16 +31,22 @@ export class LogsService extends TEMSService {
     );
   }
 
-  getLogsByEquipmentId(equipmentId: string): Observable<any>{
-    return this.getEntityLogs('equipment', equipmentId);
+  getTotalItems(entityType: string, entityId: string): Observable<number>{
+    return this.http.get<number>(
+      API_LOG_URL + '/getitemsnumber/' + entityType + '/' + entityId,
+      this.httpOptions
+    );
+  }  
+  getLogsByEquipmentId(equipmentId: string, pageNumber: number, itemsPerPage: number): Observable<any>{
+    return this.getEntityLogs('equipment', equipmentId, pageNumber, itemsPerPage);
   }
 
-  getLogsByRoomId(roomId: string): Observable<any>{
-    return this.getEntityLogs('room', roomId);
+  getLogsByRoomId(roomId: string, pageNumber: number, itemsPerPage: number): Observable<any>{
+    return this.getEntityLogs('room', roomId, pageNumber, itemsPerPage);
   }
 
-  getLogsByPersonnelId(personnelId: string): Observable<any>{
-    return this.getEntityLogs('personnel', personnelId);
+  getLogsByPersonnelId(personnelId: string, pageNumber: number, itemsPerPage: number): Observable<any>{
+    return this.getEntityLogs('personnel', personnelId, pageNumber, itemsPerPage);
   }
 
   getLogs(): Observable<any>{

@@ -20,10 +20,14 @@ export class EntityLogsListComponent extends TEMSComponent implements OnInit {
   @Input() personnel: IOption;
   @Input() addLogEnabled: boolean = true;
 
+  itemsPerPage = 10;
+  totalItems = 0;
+
   logs: ViewLog[];
   loading: boolean = true;  
+  logsEndpoint;
 
-  pageNumber: 1;
+  pageNumber= 1;
 
   constructor(
     private logsService: LogsService,
@@ -34,19 +38,45 @@ export class EntityLogsListComponent extends TEMSComponent implements OnInit {
     super();
   }
 
-  ngOnInit(): void {
+  getTotalItems(){
     let endPoint;
+    if(this.equipment != undefined)
+      endPoint = this.logsService.getTotalItems('equipment', this.equipment.value);
 
+    if(this.personnel != undefined)
+      endPoint = this.logsService.getTotalItems('personnel', this.personnel.value);
+
+    if(this.room != undefined)
+      endPoint = this.logsService.getTotalItems('room', this.room.value);
+
+    this.subscriptions.push(
+      endPoint
+      .subscribe(result => {
+        if(this.snackService.snackIfError(result))
+          return;
+
+        this.totalItems = result;
+      })
+    )
+  }
+
+  ngOnInit(): void {
+    this.getTotalItems();
+    
     if(this.equipment)
-      endPoint = this.logsService.getLogsByEquipmentId(this.equipment.value);
+      this.logsEndpoint = (pageNumber: number, itemsPerPage: number) => this.logsService.getLogsByEquipmentId(this.equipment.value, pageNumber, itemsPerPage);
     if(this.room)
-        endPoint = this.logsService.getLogsByRoomId(this.room.value);
+      this.logsEndpoint = (pageNumber: number, itemsPerPage: number) => this.logsService.getLogsByRoomId(this.room.value, pageNumber, itemsPerPage);
     if(this.personnel)
-      endPoint = this.logsService.getLogsByPersonnelId(this.personnel.value);
+      this.logsEndpoint = (pageNumber: number, itemsPerPage: number) => this.logsService.getLogsByPersonnelId(this.personnel.value, pageNumber, itemsPerPage);
 
-    if(endPoint != undefined){
+    this.fetchLogs();
+  }
+
+  fetchLogs(){
+    if(this.logsEndpoint != undefined){
       this.subscriptions.push(
-        endPoint
+        this.logsEndpoint(this.pageNumber, this.itemsPerPage)
         .subscribe(result => {
           this.loading = false;
           if(this.snackService.snackIfError(result))

@@ -17,9 +17,13 @@ export class LibraryService extends TEMSService {
     super();
   }
 
-  getItems(): Observable<ViewLibraryItem[]>{
+  getItems(accessPass?: string): Observable<ViewLibraryItem[]>{
+    let endPoint = API_LBR_URL + '/getlibraryitems';
+    if(accessPass != undefined)
+      endPoint += '/' + accessPass;
+
     return this.http.get<ViewLibraryItem[]>(
-      API_LBR_URL + '/getlibraryitems',
+      endPoint,
       this.httpOptions
     );
   }

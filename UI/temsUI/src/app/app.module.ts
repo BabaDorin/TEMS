@@ -1,3 +1,4 @@
+import { NgxPaginationModule, PaginatePipe } from 'ngx-pagination';
 import { ChipsAutocompleteModule } from './modules/chips-autocomplete/chips-autocomplete.module';
 import { QuickAccessModule } from './modules/quick-access/quick-access.module';
 import { ClaimService } from './services/claim.service';
@@ -42,10 +43,10 @@ import { LastCreatedTicketsChartComponent } from './tems-components/analytics/la
 import { LastIssuesSimplifiedComponent } from './tems-components/analytics/last-issues-simplified/last-issues-simplified.component';
 import { IssueContainerModule } from './modules/issues/issue-container/issue-container.module';
 import { ViewNotificationsComponent } from './tems-components/notifications/view-notifications/view-notifications.component';
-import { NgxPaginationModule } from 'ngx-pagination';
 import { AnnouncementModule } from './modules/announcement/announcement.module';
 import { RoleService } from './services/role.service';
 import { SnackComponent } from './shared/snack/snack.component';
+import { LibraryModule } from './modules/library/library.module';
 
 @NgModule({
   declarations: [
@@ -63,12 +64,12 @@ import { SnackComponent } from './shared/snack/snack.component';
     ViewNotificationsComponent,
     ],
   imports: [
+    NgxPaginationModule,
     IssueContainerModule,
     GenericContainerModule,
     BrowserModule,
     AppRoutingModule,
     NgbModule,
-    NgxPaginationModule,
     MatDialogModule,
     BrowserAnimationsModule,
     ChartsModule,
@@ -83,7 +84,11 @@ import { SnackComponent } from './shared/snack/snack.component';
     UserCardsModule,
     AnnouncementModule,
     ChipsAutocompleteModule,
-    QuickAccessModule
+    QuickAccessModule,
+
+
+    // for modal thing
+    LibraryModule
   ],
   exports:[
     MatAutocompleteModule,
@@ -108,6 +113,7 @@ import { SnackComponent } from './shared/snack/snack.component';
     RoomLabelService,
     CurrencyPipe,
     DatePipe,
+    PaginatePipe,
     DecimalPipe
   ],
   bootstrap: [AppComponent],

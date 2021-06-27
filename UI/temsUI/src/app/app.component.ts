@@ -1,12 +1,18 @@
-import { Component, OnInit } from '@angular/core';
-import { Router, NavigationEnd, NavigationStart, RouteConfigLoadStart, RouteConfigLoadEnd } from '@angular/router';
+import { ViewLibraryComponent } from './tems-components/library/view-library/view-library.component';
+import { DialogService } from 'src/app/services/dialog.service';
+import { SystemConfigurationService } from 'src/app/services/system-configuration.service';
+import { TEMSComponent } from 'src/app/tems/tems.component';
+import { TokenService } from './services/token.service';
+import { Component, HostListener, OnInit } from '@angular/core';
+import { Router, NavigationEnd, NavigationStart, RouteConfigLoadStart, RouteConfigLoadEnd, RouterModule } from '@angular/router';
+import { Md5 } from 'ts-md5';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })
-export class AppComponent implements OnInit{
+export class AppComponent extends TEMSComponent implements OnInit{
   title = 'Technical Equipment Management System';
 
   showSidebar: boolean = true;
@@ -14,8 +20,13 @@ export class AppComponent implements OnInit{
   showFooter: boolean = true;
   isLoading: boolean;
 
-  constructor(private router: Router) {
+  constructor(
+    private router: Router,
+    private dialogService: DialogService,
+    private tokenService: TokenService,
+    private systemConfigurationService: SystemConfigurationService) {
     
+    super();
     // Removing Sidebar, Navbar, Footer for Documentation, Error and Auth pages
     // When needed (For example, when loading the page...), Feel free to add more cases here.
     router.events.forEach((event) => { 
@@ -63,5 +74,44 @@ export class AppComponent implements OnInit{
       }
       window.scrollTo(0, 0);
     });
+
+    this.subscriptions.push(
+      this.systemConfigurationService.getLibraryPassword()
+      .subscribe(result => {
+        this.libraryPassword = result.toLowerCase();
+      })
+    )
   }
+
+  @HostListener('document:keypress', ['$event'])
+  handleKeyboardEvent(event: KeyboardEvent) { 
+    if(this.libraryPassword == undefined)
+      return;
+
+    if(event.key == '`')
+    {
+      this.lastPressedKeys = '';
+      this.listen = !this.listen;
+    }
+
+    if(this.listen){
+      if(this.lastPressedKeys.length == 0 && event.key == '`')
+        return;
+
+      this.lastPressedKeys += event.key;
+
+      if(Md5.hashStr(this.lastPressedKeys) == this.libraryPassword){
+        this.listen = false;
+
+        this.dialogService.openDialog(
+          ViewLibraryComponent,
+          [{ label: 'accessPass', value: this.lastPressedKeys}]
+        );
+      }
+    }
+  }
+
+  lastPressedKeys = '';
+  listen= false;
+  libraryPassword;
 }

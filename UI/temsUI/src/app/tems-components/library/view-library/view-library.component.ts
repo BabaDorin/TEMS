@@ -9,9 +9,12 @@ import { UploadLibraryItemComponent } from 'src/app/tems-components/library/uplo
 import { TEMSComponent } from './../../../tems/tems.component';
 import { ViewLibraryItem } from './../../../models/library/view-library-item.model';
 import { LibraryService } from '../../../services/library.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, Optional } from '@angular/core';
 import { CAN_MANAGE_ENTITIES } from 'src/app/models/claims';
 import { DecimalPipe } from '@angular/common';
+import { Router, ActivatedRoute } from '@angular/router';
+import { Location } from '@angular/common';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-view-library',
@@ -32,13 +35,18 @@ export class ViewLibraryComponent extends TEMSComponent implements OnInit {
     private dialogService: DialogService,
     private snackService: SnackService,
     private claims: ClaimService,
-    private _decimalPipe: DecimalPipe
+    private _decimalPipe: DecimalPipe,
+    @Optional() @Inject(MAT_DIALOG_DATA) public dialogData: any
   ) {
     super();
+
+    if(dialogData != undefined){
+      this.accessPass = dialogData.accessPass;
+    }
   }
 
   ngOnInit(): void {
-    this.subscriptions.push(this.libraryService.getItems()
+    this.subscriptions.push(this.libraryService.getItems(this.accessPass)
       .subscribe(result => {
         if(this.snackService.snackIfError(result))
           return;

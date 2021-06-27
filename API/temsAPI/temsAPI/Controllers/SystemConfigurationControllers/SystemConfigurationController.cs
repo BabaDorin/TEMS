@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.UserEntities;
@@ -174,5 +175,18 @@ namespace temsAPI.Controllers.SystemConfigurationControllers
             }
         }
 
+        [HttpGet]
+        public JsonResult GetLibraryPassword()
+        {
+            try
+            {
+                return Json(_configService.GetLibraryPasswordMd5());
+            }
+            catch (Exception ex)
+            {
+                LogException(ex);
+                return ReturnResponse("An error occured getting the library password", ResponseStatus.Fail);
+            }
+        }
     }
 }

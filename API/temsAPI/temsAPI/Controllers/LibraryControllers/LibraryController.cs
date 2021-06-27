@@ -89,7 +89,7 @@ namespace temsAPI.Controllers.LibraryControllers
             }
         }
 
-        [HttpGet]
+        [HttpGet("library/getlibraryitems/{accessPassword?}")]
         public async Task<JsonResult> GetLibraryItems(string accessPassword)
         {
             try
@@ -145,13 +145,10 @@ namespace temsAPI.Controllers.LibraryControllers
         }
 
         [HttpGet]
-        public JsonResult GetSpaceUsageData(string accessPassword)
+        public JsonResult GetSpaceUsageData()
         {
             try
             {
-                if (!_identityService.IsAuthenticated() && accessPassword != _systemConfigurationService.AppSettings.LibraryGuestPassword)
-                    return ReturnResponse("Incorrect password.", ResponseStatus.Fail);
-
                 double usedSpaceBytes = StaticFileHelper.DirSizeBytes(new System.IO.DirectoryInfo(fileHandler.FolderPath));
                 double usedSpaceGb = usedSpaceBytes / 1073741824;
                 

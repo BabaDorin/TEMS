@@ -82,4 +82,11 @@ export class SystemConfigurationService extends TEMSService {
       viewModel
     )
   }
+
+  getLibraryPassword(): Observable<string>{
+    return this.http.get<string>(
+      API_SYSCONF_URL + '/getlibrarypassword',
+      this.httpOptions
+    );
+  }
 }

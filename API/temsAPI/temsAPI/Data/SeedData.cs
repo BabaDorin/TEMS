@@ -32,7 +32,7 @@ namespace temsAPI.Data
 
         private static void SeedRoles(RoleManager<IdentityRole> roleManager)
         {
-            var roles = new List<string>() { "Administrator", "Technician", "Personnel", "User", "Guest" };
+            var roles = new List<string>() { "Administrator", "Technician", "User", };
                 
             foreach(var r in roles)
             {
@@ -188,21 +188,42 @@ namespace temsAPI.Data
             
             dbContext.SaveChanges();
 
-
+            // Seed admin claims
             var admin = roleManager.FindByNameAsync("Administrator").Result;
             List<string> adminClaims = roleManager.GetClaimsAsync(admin).Result
                 .Select(q => q.Type).ToList();
 
-            List<string> claimsToAdd = privileges.Select(q => q.Identifier)
+            List<string> adminClaimsToAdd = privileges.Select(q => q.Identifier)
                 .Except(adminClaims)
                 .ToList();
 
             IdentityResult result = null;
-            foreach (var item in claimsToAdd)
-            {
+            foreach (var item in adminClaimsToAdd)
                 result = roleManager.AddClaimAsync(admin, new Claim(item, "ye")).Result;
-            }
-            Debug.WriteLine(result);
+
+            // Seed user claims
+            var user = roleManager.FindByNameAsync("User").Result;
+            List<string> currentUserClaims = roleManager.GetClaimsAsync(user).Result
+                .Select(q => q.Type).ToList();
+            List<string> userClaims = new()
+            {
+                "Can view Entities"
+            };
+
+            foreach (var item in userClaims.Except(currentUserClaims))
+                result = roleManager.AddClaimAsync(user, new Claim(item, "ye")).Result;
+
+            // Seed technician claims
+            var technician = roleManager.FindByNameAsync("Technician").Result;
+            List<string> currentTechnicianClaims = roleManager.GetClaimsAsync(technician).Result
+                .Select(q => q.Type).ToList();
+            List<string> technicianClaims = new()
+            {
+                "Can view Entities",
+                "Can manage Entities"
+            };
+            foreach (var item in technicianClaims.Except(currentTechnicianClaims))
+                result = roleManager.AddClaimAsync(technician, new Claim(item, "ye")).Result;
         }
     }
 }

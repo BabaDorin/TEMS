@@ -1,13 +1,13 @@
 import { ClaimService } from './../../../../services/claim.service';
 import { RoomDetailsGeneralComponent } from './../../../room/room-details-general/room-details-general.component';
 import { AttachEquipmentComponent } from './../../attach-equipment/attach-equipment.component';
-import { DialogService } from './../../../../services/dialog-service/dialog.service';
+import { DialogService } from '../../../../services/dialog.service';
 import { CAN_MANAGE_ENTITIES } from './../../../../models/claims';
-import { TokenService } from './../../../../services/token-service/token.service';
-import { SnackService } from './../../../../services/snack/snack.service';
+import { TokenService } from '../../../../services/token.service';
+import { SnackService } from '../../../../services/snack.service';
 import { TEMSComponent } from './../../../../tems/tems.component';
 import { Property } from './../../../../models/equipment/view-property.model';
-import { EquipmentService } from 'src/app/services/equipment-service/equipment.service';
+import { EquipmentService } from 'src/app/services/equipment.service';
 import { Component, Input, OnInit, Output, EventEmitter, OnChanges, SimpleChanges, Inject, Optional } from '@angular/core';
 import { ViewEquipment } from 'src/app/models/equipment/view-equipment.model';
 import { PersonnelDetailsGeneralComponent } from 'src/app/tems-components/personnel/personnel-details-general/personnel-details-general.component';

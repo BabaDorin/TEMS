@@ -1,9 +1,9 @@
 import { CAN_MANAGE_ENTITIES, CAN_MANAGE_SYSTEM_CONFIGURATION } from './../../../../models/claims';
-import { TokenService } from './../../../../services/token-service/token.service';
-import { DialogService } from './../../../../services/dialog-service/dialog.service';
+import { TokenService } from '../../../../services/token.service';
+import { DialogService } from '../../../../services/dialog.service';
 import { EquipmentTypeContainerModel } from '../../../../models/generic-container/equipment-type-container.model';
-import { SnackService } from './../../../../services/snack/snack.service';
-import { EquipmentService } from './../../../../services/equipment-service/equipment.service';
+import { SnackService } from '../../../../services/snack.service';
+import { EquipmentService } from './../../../../services/equipment.service';
 import { TEMSComponent } from './../../../../tems/tems.component';
 import { Component, OnInit, Input } from '@angular/core';
 import { ViewTypeSimplified } from 'src/app/models/equipment/view-type-simplified.model';

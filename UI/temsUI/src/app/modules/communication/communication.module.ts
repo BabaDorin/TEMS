@@ -1,6 +1,6 @@
 import { EmailModule } from './../email/email/email.module';
 import { TemsFormsModule } from './../tems-forms/tems-forms.module';
-import { CommunicationService } from './../../services/communication-service/communication.service';
+import { CommunicationService } from '../../services/communication.service';
 import { MaterialModule } from 'src/app/modules/material/material.module';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';

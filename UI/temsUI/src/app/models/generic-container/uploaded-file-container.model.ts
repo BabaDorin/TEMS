@@ -1,8 +1,8 @@
 import { ClaimService } from './../../services/claim.service';
-import { TokenService } from './../../services/token-service/token.service';
+import { TokenService } from '../../services/token.service';
 import { ViewLibraryItem } from './../library/view-library-item.model';
-import { SnackService } from './../../services/snack/snack.service';
-import { LibraryService } from './../../services/library-service/library.service';
+import { SnackService } from '../../services/snack.service';
+import { LibraryService } from '../../services/library.service';
 import { IContainerAction, IGenericContainerModel, ITagGroup } from './IGenericContainer.model';
 import { TEMSComponent } from './../../tems/tems.component';
 import { Downloader } from 'src/app/shared/downloader/fileDownloader';

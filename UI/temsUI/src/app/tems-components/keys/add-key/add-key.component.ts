@@ -1,13 +1,13 @@
-import { SnackService } from 'src/app/services/snack/snack.service';
+import { SnackService } from 'src/app/services/snack.service';
 import { ChipsAutocompleteComponent } from 'src/app/public/formly/chips-autocomplete/chips-autocomplete.component';
 import { AddKey } from './../../../models/key/add-key.model';
-import { FormlyParserService } from 'src/app/services/formly-parser-service/formly-parser.service';
-import { KeysService } from 'src/app/services/keys-service/keys.service';
+import { FormlyParserService } from 'src/app/services/formly-parser.service';
+import { KeysService } from 'src/app/services/keys.service';
 import { TEMSComponent } from 'src/app/tems/tems.component';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { FormlyFieldConfig } from '@ngx-formly/core';
-import { RoomsService } from 'src/app/services/rooms-service/rooms.service';
+import { RoomsService } from 'src/app/services/rooms.service';
 
 @Component({
   selector: 'app-add-key',

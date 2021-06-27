@@ -1,20 +1,20 @@
 import { FormlyData } from './../../../models/formly/formly-data.model';
 import { SICFileUploadResult } from './../../../models/equipment/bulk-upload-result.model';
-import { TypeService } from './../../../services/type-service/type.service';
-import { SnackService } from './../../../services/snack/snack.service';
-import { DialogService } from './../../../services/dialog-service/dialog.service';
+import { TypeService } from '../../../services/type.service';
+import { SnackService } from '../../../services/snack.service';
+import { DialogService } from '../../../services/dialog.service';
 import { TEMSComponent } from 'src/app/tems/tems.component';
 import { IOption } from './../../../models/option.model';
 import { AddDefinitionComponent } from './../add-definition/add-definition.component';
 import { AddTypeComponent } from '.././add-type/add-type.component';
-import { FormlyParserService } from './../../../services/formly-parser-service/formly-parser.service';
+import { FormlyParserService } from '../../../services/formly-parser.service';
 import { Definition } from '../../../models/equipment/add-definition.model';
-import { EquipmentService } from './../../../services/equipment-service/equipment.service';
+import { EquipmentService } from './../../../services/equipment.service';
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { AddEquipment } from 'src/app/models/equipment/add-equipment.model';
-import { DefinitionService } from 'src/app/services/definition-service/definition.service';
+import { DefinitionService } from 'src/app/services/definition.service';
 import { BulkUploadComponent } from '../bulk-upload/bulk-upload.component';
 
 @Component({

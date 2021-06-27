@@ -1,7 +1,7 @@
-import { SnackService } from 'src/app/services/snack/snack.service';
+import { SnackService } from 'src/app/services/snack.service';
 import { ViewIssueSimplified } from 'src/app/models/communication/issues/view-issue-simplified.model';
 import { TEMSComponent } from 'src/app/tems/tems.component';
-import { IssuesService } from './../../../services/issues-service/issues.service';
+import { IssuesService } from '../../../services/issues.service';
 import { Router } from '@angular/router';
 import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import { IOption } from 'src/app/models/option.model';

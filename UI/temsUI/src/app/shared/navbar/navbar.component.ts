@@ -1,8 +1,8 @@
 import { ViewNotificationsComponent } from './../../tems-components/notifications/view-notifications/view-notifications.component';
-import { DialogService } from 'src/app/services/dialog-service/dialog.service';
-import { SnackService } from './../../services/snack/snack.service';
+import { DialogService } from 'src/app/services/dialog.service';
+import { SnackService } from '../../services/snack.service';
 import { ViewNotification } from './../../models/communication/notification/view-notification.model';
-import { UserService } from './../../services/user-service/user.service';
+import { UserService } from '../../services/user.service';
 import { AuthService } from './../../services/auth.service';
 import { TEMSComponent } from './../../tems/tems.component';
 import { Component, OnInit, ViewChild } from '@angular/core';

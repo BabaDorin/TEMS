@@ -1,15 +1,15 @@
 import { map } from 'rxjs/operators';
-import { AllocationService } from 'src/app/services/allocation-service/allocation.service';
+import { AllocationService } from 'src/app/services/allocation.service';
 import { ViewAllocationSimplified } from './../../models/equipment/view-equipment-allocation.model';
 import { IOption } from './../../models/option.model';
-import { SnackService } from './../../services/snack/snack.service';
-import { DialogService } from './../../services/dialog-service/dialog.service';
-import { PersonnelService } from './../../services/personnel-service/personnel.service';
-import { DefinitionService } from './../../services/definition-service/definition.service';
-import { RoomsService } from './../../services/rooms-service/rooms.service';
+import { SnackService } from '../../services/snack.service';
+import { DialogService } from '../../services/dialog.service';
+import { PersonnelService } from '../../services/personnel.service';
+import { DefinitionService } from '../../services/definition.service';
+import { RoomsService } from '../../services/rooms.service';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { EquipmentService } from 'src/app/services/equipment-service/equipment.service';
+import { EquipmentService } from 'src/app/services/equipment.service';
 import { TEMSComponent } from 'src/app/tems/tems.component';
 
 @Component({

@@ -1,13 +1,13 @@
 import { ClaimService } from './../../../services/claim.service';
-import { DialogService } from './../../../services/dialog-service/dialog.service';
+import { DialogService } from '../../../services/dialog.service';
 import { CAN_MANAGE_SYSTEM_CONFIGURATION } from './../../../models/claims';
-import { TokenService } from './../../../services/token-service/token.service';
+import { TokenService } from '../../../services/token.service';
 import { TEMSComponent } from 'src/app/tems/tems.component';
 import { AddAnnouncementComponent } from './../add-announcement/add-announcement.component';
 import { Component, Input, OnInit } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ViewAnnouncement } from '../../../models/communication/announcement/view-announcement.model';
-import { CommunicationService } from '../../../services/communication-service/communication.service';
+import { CommunicationService } from '../../../services/communication.service';
 import { CAN_MANAGE_ANNOUNCEMENTS } from 'src/app/models/claims';
 
 @Component({

@@ -1,7 +1,7 @@
 import { ViewUserSimplified } from './../../../models/user/view-user.model';
 import { TEMSComponent } from './../../../tems/tems.component';
-import { SnackService } from 'src/app/services/snack/snack.service';
-import { UserService } from 'src/app/services/user-service/user.service';
+import { SnackService } from 'src/app/services/snack.service';
+import { UserService } from 'src/app/services/user.service';
 import { ViewProfile } from 'src/app/models/profile/view-profile.model';
 import { Component, Input, OnInit } from '@angular/core';
 

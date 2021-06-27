@@ -1,10 +1,10 @@
 import { PersonnelDetailsGeneralComponent } from './../personnel-details-general/personnel-details-general.component';
 import { TEMSComponent } from './../../../tems/tems.component';
-import { PersonnelService } from './../../../services/personnel-service/personnel.service';
+import { PersonnelService } from '../../../services/personnel.service';
 import { ViewPersonnelSimplified } from './../../../models/personnel/view-personnel-simplified.model';
 import { Component, OnInit } from '@angular/core';
-import { DialogService } from 'src/app/services/dialog-service/dialog.service';
-import { SnackService } from 'src/app/services/snack/snack.service';
+import { DialogService } from 'src/app/services/dialog.service';
+import { SnackService } from 'src/app/services/snack.service';
 import { BtnCellRendererComponent } from 'src/app/public/ag-grid/btn-cell-renderer/btn-cell-renderer.component';
 
 @Component({

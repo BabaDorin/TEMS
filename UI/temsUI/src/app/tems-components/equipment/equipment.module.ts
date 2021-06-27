@@ -1,5 +1,5 @@
 import { EquipmentSummaryAnalyticsModule } from './../../modules/summary-analytics/equipment-summary-analytics/equipment-summary-analytics.module';
-import { ChildEquipmentContainerComponent } from './../../tems-component/equipment/child-equipment-container/child-equipment-container.component';
+import { ChildEquipmentContainerComponent } from './child-equipment-container/child-equipment-container.component';
 import { FileUploadModule } from './../../modules/file-upload/file-upload.module';
 import { EquipmentDetailsGeneralComponent } from './equipment-details/equipment-details-general/equipment-details-general.component';
 import { ViewDefinitionComponent } from './view-definition/view-definition.component';

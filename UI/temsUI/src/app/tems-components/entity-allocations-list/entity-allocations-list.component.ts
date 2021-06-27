@@ -1,16 +1,16 @@
 import { ClaimService } from './../../services/claim.service';
 import { CAN_MANAGE_ENTITIES } from './../../models/claims';
-import { TokenService } from './../../services/token-service/token.service';
-import { SnackService } from './../../services/snack/snack.service';
+import { TokenService } from '../../services/token.service';
+import { SnackService } from '../../services/snack.service';
 import { TEMSComponent } from './../../tems/tems.component';
-import { AllocationService } from './../../services/allocation-service/allocation.service';
+import { AllocationService } from '../../services/allocation.service';
 import { ViewPersonnelSimplified } from './../../models/personnel/view-personnel-simplified.model';
 import { ViewRoomSimplified } from './../../models/room/view-room-simplified.model';
 import { Component, OnInit, Input, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
 import { ViewAllocationSimplified,} from 'src/app/models/equipment/view-equipment-allocation.model';
 import { ViewEquipmentSimplified } from 'src/app/models/equipment/view-equipment-simplified.model';
 import { EquipmentAllocationComponent } from '../equipment/equipment-allocation/equipment-allocation.component';
-import { DialogService } from 'src/app/services/dialog-service/dialog.service';
+import { DialogService } from 'src/app/services/dialog.service';
 import { Router } from '@angular/router';
 import { IOption } from 'src/app/models/option.model';
 

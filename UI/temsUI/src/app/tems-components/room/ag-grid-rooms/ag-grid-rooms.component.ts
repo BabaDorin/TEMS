@@ -1,8 +1,8 @@
 import { RoomDetailsGeneralComponent } from './../room-details-general/room-details-general.component';
-import { SnackService } from './../../../services/snack/snack.service';
-import { DialogService } from './../../../services/dialog-service/dialog.service';
+import { SnackService } from '../../../services/snack.service';
+import { DialogService } from '../../../services/dialog.service';
 import { TEMSComponent } from './../../../tems/tems.component';
-import { RoomsService } from './../../../services/rooms-service/rooms.service';
+import { RoomsService } from '../../../services/rooms.service';
 import { ViewRoomSimplified } from 'src/app/models/room/view-room-simplified.model';
 import { Observable } from 'rxjs';
 import { Component, OnInit } from '@angular/core';

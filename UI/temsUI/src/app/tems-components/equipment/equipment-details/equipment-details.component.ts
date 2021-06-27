@@ -1,5 +1,5 @@
 import { TEMSComponent } from './../../../tems/tems.component';
-import { EquipmentService } from 'src/app/services/equipment-service/equipment.service';
+import { EquipmentService } from 'src/app/services/equipment.service';
 import { ViewEquipmentSimplified } from './../../../models/equipment/view-equipment-simplified.model';
 import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';

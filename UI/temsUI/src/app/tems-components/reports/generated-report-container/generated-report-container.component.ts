@@ -1,5 +1,5 @@
-import { SnackService } from './../../../services/snack/snack.service';
-import { ReportService } from './../../../services/report-service/report.service';
+import { SnackService } from '../../../services/snack.service';
+import { ReportService } from '../../../services/report.service';
 import { TEMSComponent } from './../../../tems/tems.component';
 import { Downloader } from './../../../shared/downloader/fileDownloader';
 import { GeneratedReport } from './../../../models/report/generated-report.model';

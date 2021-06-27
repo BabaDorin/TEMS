@@ -1,7 +1,7 @@
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ViewType, EquipmentType } from './../../../models/equipment/view-type.model';
 import { TEMSComponent } from './../../../tems/tems.component';
-import { EquipmentService } from './../../../services/equipment-service/equipment.service';
+import { EquipmentService } from './../../../services/equipment.service';
 import { Component, Inject, Input, OnInit, Optional, Output } from '@angular/core';
 import EventEmitter from 'events';
 import { ViewPropertyComponent } from '../view-property/view-property.component';

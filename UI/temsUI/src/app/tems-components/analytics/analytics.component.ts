@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AnalyticsService } from 'src/app/services/analytics-service/analytics.service';
+import { AnalyticsService } from 'src/app/services/analytics.service';
 
 
 @Component({

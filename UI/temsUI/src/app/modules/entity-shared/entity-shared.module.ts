@@ -1,5 +1,5 @@
 import { ChipsAutocompleteModule } from './../chips-autocomplete/chips-autocomplete.module';
-import { LogContainerComponent } from './../../tems-component/log-container/log-container.component';
+import { LogContainerComponent } from '../../tems-components/communication/log-container/log-container.component';
 import { EquipmentAllocationContainerComponent } from './../../tems-components/equipment/equipment-allocation-container/equipment-allocation-container.component';
 import { AnalyticsModule } from 'src/app/modules/analytics/analytics.module';
 import { LoadingplaceholderModule } from './../loadingplaceholder/loadingplaceholder.module';
@@ -15,7 +15,6 @@ import { EquipmentAllocationComponent } from './../../tems-components/equipment/
 import { PropertyRenderComponent } from './../../public/property-render/property-render.component';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ImageCarouselComponent } from 'src/app/public/image-carousel/image-carousel.component';
 import { AddLogComponent } from 'src/app/tems-components/communication/add-log/add-log.component';
 import { CreateIssueComponent } from 'src/app/tems-components/issue/create-issue/create-issue.component';
 import { EntityLogsListComponent } from 'src/app/tems-components/entity-logs-list/entity-logs-list.component';
@@ -25,7 +24,6 @@ import { IssueContainerModule } from '../issues/issue-container/issue-container.
 
 @NgModule({
   declarations: [
-    ImageCarouselComponent,
     PropertyRenderComponent,
     AddLogComponent,
     CreateIssueComponent,
@@ -53,7 +51,6 @@ import { IssueContainerModule } from '../issues/issue-container/issue-container.
   ],
   exports: [
     TemsAgGridModule,
-    ImageCarouselComponent,
     PropertyRenderComponent,
     AddLogComponent,
     CreateIssueComponent,

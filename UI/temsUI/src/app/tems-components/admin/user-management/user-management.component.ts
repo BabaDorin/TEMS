@@ -1,6 +1,6 @@
 import { ViewUsersComponent } from './view-users/view-users.component';
-import { AddUserComponent } from './../../../administration/add-user/add-user.component';
-import { DialogService } from './../../../services/dialog-service/dialog.service';
+import { AddUserComponent } from './add-user/add-user.component';
+import { DialogService } from '../../../services/dialog.service';
 import { TEMSComponent } from 'src/app/tems/tems.component';
 import { Component, OnInit, ViewChild } from '@angular/core';
 

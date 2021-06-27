@@ -2,9 +2,9 @@ import { AddDefinitionComponent } from './../../../equipment/add-definition/add-
 import { DefinitionContainerModel } from './../../../../models/generic-container/definition-container.model';
 import { ViewDefinitionSimplified } from 'src/app/models/equipment/view-definition-simplified.model';
 import { TEMSComponent } from './../../../../tems/tems.component';
-import { SnackService } from './../../../../services/snack/snack.service';
-import { DialogService } from './../../../../services/dialog-service/dialog.service';
-import { EquipmentService } from './../../../../services/equipment-service/equipment.service';
+import { SnackService } from '../../../../services/snack.service';
+import { DialogService } from '../../../../services/dialog.service';
+import { EquipmentService } from './../../../../services/equipment.service';
 import { Component, Input, OnInit } from '@angular/core';
 
 @Component({

@@ -2,8 +2,8 @@ import { ClaimService } from './../../../services/claim.service';
 import { ViewIssueSimplified } from 'src/app/models/communication/issues/view-issue-simplified.model';
 import { TEMSComponent } from 'src/app/tems/tems.component';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { IssuesService } from 'src/app/services/issues-service/issues.service';
-import { SnackService } from 'src/app/services/snack/snack.service';
+import { IssuesService } from 'src/app/services/issues.service';
+import { SnackService } from 'src/app/services/snack.service';
 
 @Component({
   selector: 'app-pinned-issues',

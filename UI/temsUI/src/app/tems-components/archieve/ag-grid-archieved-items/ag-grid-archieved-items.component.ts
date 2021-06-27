@@ -1,6 +1,6 @@
 import { ArchieveService } from 'src/app/services/archieve.service';
 import { ArchievedItem } from './../../../models/archieve/archieved-item.model';
-import { SnackService } from './../../../services/snack/snack.service';
+import { SnackService } from '../../../services/snack.service';
 import { Component, Input, OnInit, SimpleChanges, OnChanges } from '@angular/core';
 import { TEMSComponent } from 'src/app/tems/tems.component';
 import { dateFormatter } from 'src/app/public/ag-grid/ag-grid-formatters';

@@ -1,5 +1,5 @@
 import { CAN_MANAGE_SYSTEM_CONFIGURATION } from './../../../models/claims';
-import { TokenService } from './../../../services/token-service/token.service';
+import { TokenService } from '../../../services/token.service';
 import { Component, OnInit } from '@angular/core';
 
 @Component({

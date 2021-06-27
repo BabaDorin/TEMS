@@ -1,6 +1,6 @@
 import { TEMSComponent } from './../../../tems/tems.component';
 import { ViewRoom } from './../../../models/room/view-room.model';
-import { RoomsService } from './../../../services/rooms-service/rooms.service';
+import { RoomsService } from '../../../services/rooms.service';
 import { ViewRoomSimplified } from './../../../models/room/view-room-simplified.model';
 import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';

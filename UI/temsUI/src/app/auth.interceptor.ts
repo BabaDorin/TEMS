@@ -1,4 +1,4 @@
-import { SnackService } from './services/snack/snack.service';
+import { SnackService } from './services/snack.service';
 import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Router } from "@angular/router";

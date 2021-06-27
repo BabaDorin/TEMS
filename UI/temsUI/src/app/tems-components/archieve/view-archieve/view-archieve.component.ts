@@ -1,12 +1,12 @@
 import { AgGridArchievedItemsComponent } from './../ag-grid-archieved-items/ag-grid-archieved-items.component';
 import { CAN_MANAGE_SYSTEM_CONFIGURATION } from 'src/app/models/claims';
-import { TokenService } from './../../../services/token-service/token.service';
+import { TokenService } from '../../../services/token.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Location } from '@angular/common'
 import { TEMSComponent } from 'src/app/tems/tems.component';
 import { ArchieveService } from 'src/app/services/archieve.service';
-import { SnackService } from 'src/app/services/snack/snack.service';
+import { SnackService } from 'src/app/services/snack.service';
 import { ArchievedItem } from 'src/app/models/archieve/archieved-item.model';
 
 @Component({

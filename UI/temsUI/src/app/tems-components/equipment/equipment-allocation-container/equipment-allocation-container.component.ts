@@ -1,6 +1,6 @@
-import { DialogService } from './../../../services/dialog-service/dialog.service';
-import { SnackService } from './../../../services/snack/snack.service';
-import { AllocationService } from './../../../services/allocation-service/allocation.service';
+import { DialogService } from '../../../services/dialog.service';
+import { SnackService } from '../../../services/snack.service';
+import { AllocationService } from '../../../services/allocation.service';
 import { TEMSComponent } from './../../../tems/tems.component';
 import { emit } from 'process';
 import { ViewAllocationSimplified } from './../../../models/equipment/view-equipment-allocation.model';

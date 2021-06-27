@@ -1,5 +1,5 @@
 import { LoggerViewModel } from './../../../models/system-configuration/logger-view-model';
-import { SnackService } from './../../../services/snack/snack.service';
+import { SnackService } from '../../../services/snack.service';
 import { TEMSComponent } from './../../../tems/tems.component';
 import { SystemConfigurationService } from 'src/app/services/system-configuration.service';
 import { Component, OnInit } from '@angular/core';

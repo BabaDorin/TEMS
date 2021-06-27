@@ -1,6 +1,6 @@
 import { Property } from './../../../models/equipment/view-property.model';
 import { TEMSComponent } from 'src/app/tems/tems.component';
-import { EquipmentService } from 'src/app/services/equipment-service/equipment.service';
+import { EquipmentService } from 'src/app/services/equipment.service';
 import { Component, Inject, Input, OnInit, Optional } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 

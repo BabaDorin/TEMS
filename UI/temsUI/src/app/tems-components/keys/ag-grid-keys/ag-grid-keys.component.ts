@@ -1,12 +1,12 @@
 import { ClaimService } from './../../../services/claim.service';
 import { IOption } from './../../../models/option.model';
-import { DialogService } from './../../../services/dialog-service/dialog.service';
-import { SnackService } from 'src/app/services/snack/snack.service';
+import { DialogService } from '../../../services/dialog.service';
+import { SnackService } from 'src/app/services/snack.service';
 import { CAN_MANAGE_ENTITIES } from './../../../models/claims';
-import { TokenService } from './../../../services/token-service/token.service';
+import { TokenService } from '../../../services/token.service';
 import { IViewKeySimplified, ViewKeySimplified } from './../../../models/key/view-key.model';
 import { TEMSComponent } from './../../../tems/tems.component';
-import { KeysService } from './../../../services/keys-service/keys.service';
+import { KeysService } from '../../../services/keys.service';
 import { Component, Input, OnInit, OnChanges, Output, EventEmitter, SimpleChange } from '@angular/core';
 import { BtnCellRendererComponent } from 'src/app/public/ag-grid/btn-cell-renderer/btn-cell-renderer.component';
 import { KeysAllocationsComponent } from '../keys-allocations/keys-allocations.component';

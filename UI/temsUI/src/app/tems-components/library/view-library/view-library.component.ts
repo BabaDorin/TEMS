@@ -1,14 +1,14 @@
 import { Fraction } from './../../../models/analytics/fraction.model';
 import { ClaimService } from './../../../services/claim.service';
-import { TokenService } from './../../../services/token-service/token.service';
-import { SnackService } from './../../../services/snack/snack.service';
+import { TokenService } from '../../../services/token.service';
+import { SnackService } from '../../../services/snack.service';
 import { UploadedFileContainerModel } from './../../../models/generic-container/uploaded-file-container.model';
 import { Downloader } from './../../../shared/downloader/fileDownloader';
-import { DialogService } from 'src/app/services/dialog-service/dialog.service';
+import { DialogService } from 'src/app/services/dialog.service';
 import { UploadLibraryItemComponent } from 'src/app/tems-components/library/upload-library-item/upload-library-item.component';
 import { TEMSComponent } from './../../../tems/tems.component';
 import { ViewLibraryItem } from './../../../models/library/view-library-item.model';
-import { LibraryService } from './../../../services/library-service/library.service';
+import { LibraryService } from '../../../services/library.service';
 import { Component, OnInit } from '@angular/core';
 import { CAN_MANAGE_ENTITIES } from 'src/app/models/claims';
 import { DecimalPipe } from '@angular/common';

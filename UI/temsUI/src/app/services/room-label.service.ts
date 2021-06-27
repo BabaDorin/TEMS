@@ -1,7 +1,7 @@
-import { SnackService } from './snack/snack.service';
+import { SnackService } from './snack.service';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { TEMSService } from './tems-service/tems.service';
+import { TEMSService } from './tems.service';
 import { Injectable } from '@angular/core';
 import { IOption } from '../models/option.model';
 import { of } from 'rxjs/internal/observable/of';

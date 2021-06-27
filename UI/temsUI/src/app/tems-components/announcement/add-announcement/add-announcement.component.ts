@@ -1,10 +1,10 @@
 import { TEMSComponent } from 'src/app/tems/tems.component';
-import { FormlyParserService } from 'src/app/services/formly-parser-service/formly-parser.service';
+import { FormlyParserService } from 'src/app/services/formly-parser.service';
 import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { AddAnnouncement } from 'src/app/models/communication/announcement/add-announcement.model';
-import { CommunicationService } from 'src/app/services/communication-service/communication.service';
+import { CommunicationService } from 'src/app/services/communication.service';
 
 @Component({
   selector: 'app-add-announcement',

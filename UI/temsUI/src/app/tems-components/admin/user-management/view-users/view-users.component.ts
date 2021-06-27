@@ -1,8 +1,8 @@
-import { DialogService } from './../../../../services/dialog-service/dialog.service';
-import { AddUserComponent } from './../../../../administration/add-user/add-user.component';
+import { DialogService } from '../../../../services/dialog.service';
+import { AddUserComponent } from '../add-user/add-user.component';
 import { ViewUserSimplified } from './../../../../models/user/view-user.model';
 import { TEMSComponent } from './../../../../tems/tems.component';
-import { UserService } from 'src/app/services/user-service/user.service';
+import { UserService } from 'src/app/services/user.service';
 import { Component, OnInit } from '@angular/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 

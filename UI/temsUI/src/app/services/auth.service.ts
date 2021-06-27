@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { TEMSService } from './tems-service/tems.service';
+import { TEMSService } from './tems.service';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { API_AUTH_URL } from '../models/backend.config';

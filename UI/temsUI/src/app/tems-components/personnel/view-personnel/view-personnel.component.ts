@@ -1,9 +1,9 @@
 import { ClaimService } from './../../../services/claim.service';
 import { AgGridPersonnelComponent } from './../ag-grid-personnel/ag-grid-personnel.component';
 import { AddPersonnelComponent } from './../add-personnel/add-personnel.component';
-import { DialogService } from './../../../services/dialog-service/dialog.service';
+import { DialogService } from '../../../services/dialog.service';
 import { ViewPersonnelSimplified } from './../../../models/personnel/view-personnel-simplified.model';
-import { SnackService } from './../../../services/snack/snack.service';
+import { SnackService } from '../../../services/snack.service';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { IOption } from 'src/app/models/option.model';
 import { EmailService } from 'src/app/services/email.service';

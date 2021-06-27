@@ -1,6 +1,6 @@
 import { AppSettings } from './../../../models/system-configuration/app-settings.model';
 import { EmailSenderCredentials } from './../../../models/system-configuration/emai-sender.model';
-import { SnackService } from './../../../services/snack/snack.service';
+import { SnackService } from '../../../services/snack.service';
 import { TEMSComponent } from './../../../tems/tems.component';
 import { Component, OnInit } from '@angular/core';
 import { SystemConfigurationService } from 'src/app/services/system-configuration.service';

@@ -1,11 +1,11 @@
-import { PersonnelService } from 'src/app/services/personnel-service/personnel.service';
+import { PersonnelService } from 'src/app/services/personnel.service';
 import { ChipsAutocompleteComponent } from 'src/app/public/formly/chips-autocomplete/chips-autocomplete.component';
 import { IOption } from './../../models/option.model';
 import { SendEmail } from './../../models/email/send-email.model';
 import { EmailService } from './../../services/email.service';
 import { TEMSComponent } from './../../tems/tems.component';
-import { SnackService } from './../../services/snack/snack.service';
-import { FormlyParserService } from './../../services/formly-parser-service/formly-parser.service';
+import { SnackService } from '../../services/snack.service';
+import { FormlyParserService } from '../../services/formly-parser.service';
 import { Component, Inject, Input, OnInit, Optional, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { FormlyFieldConfig } from '@ngx-formly/core';

@@ -1,8 +1,8 @@
-import { TokenService } from './../../../services/token-service/token.service';
+import { TokenService } from '../../../services/token.service';
 import { ViewNotification } from 'src/app/models/communication/notification/view-notification.model';
 import { TEMSComponent } from 'src/app/tems/tems.component';
-import { SnackService } from 'src/app/services/snack/snack.service';
-import { UserService } from 'src/app/services/user-service/user.service';
+import { SnackService } from 'src/app/services/snack.service';
+import { UserService } from 'src/app/services/user.service';
 import { Component, Input, OnInit } from '@angular/core';
 
 @Component({

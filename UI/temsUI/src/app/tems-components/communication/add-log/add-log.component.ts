@@ -1,17 +1,17 @@
-import { SnackService } from './../../../services/snack/snack.service';
+import { SnackService } from '../../../services/snack.service';
 import { AddLog } from './../../../models/communication/logs/add-log.model';
 import { IOption } from './../../../models/option.model';
-import { LogsService } from 'src/app/services/logs-service/logs.service';
-import { PersonnelService } from './../../../services/personnel-service/personnel.service';
-import { RoomsService } from './../../../services/rooms-service/rooms.service';
-import { EquipmentService } from './../../../services/equipment-service/equipment.service';
+import { PersonnelService } from '../../../services/personnel.service';
+import { RoomsService } from '../../../services/rooms.service';
+import { EquipmentService } from './../../../services/equipment.service';
 import { Component, OnInit, Input, ViewChild, Inject, Optional } from '@angular/core';
 import { ChipsAutocompleteComponent } from 'src/app/public/formly/chips-autocomplete/chips-autocomplete.component';
-import { FormlyParserService } from 'src/app/services/formly-parser-service/formly-parser.service';
+import { FormlyParserService } from 'src/app/services/formly-parser.service';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { FormGroup } from '@angular/forms';
 import { TEMSComponent } from 'src/app/tems/tems.component';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { LogsService } from 'src/app/services/logs.service';
 
 @Component({
   selector: 'app-add-log',

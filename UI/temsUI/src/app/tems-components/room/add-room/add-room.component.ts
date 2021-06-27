@@ -1,11 +1,11 @@
-import { PersonnelService } from './../../../services/personnel-service/personnel.service';
+import { PersonnelService } from '../../../services/personnel.service';
 import { RoomLabelService } from './../../../services/room-label.service';
-import { SnackService } from './../../../services/snack/snack.service';
+import { SnackService } from '../../../services/snack.service';
 import { TEMSComponent } from './../../../tems/tems.component';
 import { ChipsAutocompleteComponent } from './../../../public/formly/chips-autocomplete/chips-autocomplete.component';
 import { IOption } from '../../../models/option.model';
-import { RoomsService } from '../../../services/rooms-service/rooms.service';
-import { FormlyParserService } from '../../../services/formly-parser-service/formly-parser.service';
+import { RoomsService } from '../../../services/rooms.service';
+import { FormlyParserService } from '../../../services/formly-parser.service';
 import { Component, Inject, OnInit, Optional, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { FormlyFieldConfig } from '@ngx-formly/core';

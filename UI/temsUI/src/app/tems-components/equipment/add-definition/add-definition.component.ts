@@ -1,17 +1,17 @@
-import { SnackService } from 'src/app/services/snack/snack.service';
-import { TypeService } from './../../../services/type-service/type.service';
+import { SnackService } from 'src/app/services/snack.service';
+import { TypeService } from '../../../services/type.service';
 import { Observable } from 'rxjs';
 import { EquipmentType } from './../../../models/equipment/view-type.model';
 import { IOption } from './../../../models/option.model';
 import { AddDefinition, Definition } from './../../../models/equipment/add-definition.model';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Component, OnInit, Input, Inject, OnDestroy, Optional, TemplateRef } from '@angular/core';
-import { EquipmentService } from 'src/app/services/equipment-service/equipment.service';
-import { FormlyParserService } from 'src/app/services/formly-parser-service/formly-parser.service';
+import { FormlyParserService } from 'src/app/services/formly-parser.service';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { FormGroup } from '@angular/forms';
 import { TEMSComponent } from 'src/app/tems/tems.component';
 import { Z } from '@angular/cdk/keycodes';
+import { EquipmentService } from 'src/app/services/equipment.service';
 
 @Component({
   selector: 'app-add-definition',

@@ -1,8 +1,8 @@
 import { ClaimService } from './../../../services/claim.service';
 import { PieChartData } from './../../../models/analytics/pieChart-model';
 import { TEMSComponent } from './../../../tems/tems.component';
-import { SnackService } from './../../../services/snack/snack.service';
-import { AnalyticsService } from './../../../services/analytics-service/analytics.service';
+import { SnackService } from '../../../services/snack.service';
+import { AnalyticsService } from '../../../services/analytics.service';
 import { Component, Input, OnInit } from '@angular/core';
 import { CurrencyPipe } from '@angular/common';
 

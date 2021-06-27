@@ -1,7 +1,7 @@
 import { TemsFormsModule } from './../../tems-forms/tems-forms.module';
 import { RouterModule } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
-import { IssueStatusComponent } from './../../../issues/issue-status/issue-status.component';
+import { IssueStatusComponent } from '../../../tems-components/issues/issue-status/issue-status.component';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { IssueContainerSimplifiedComponent } from './../../../tems-components/issues/issue-container-simplified/issue-container-simplified.component';

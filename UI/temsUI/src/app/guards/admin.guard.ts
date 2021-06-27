@@ -1,4 +1,4 @@
-import { UserService } from 'src/app/services/user-service/user.service';
+import { UserService } from 'src/app/services/user.service';
 import { Injectable } from '@angular/core';
 import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree } from '@angular/router';
 import { Observable } from 'rxjs';

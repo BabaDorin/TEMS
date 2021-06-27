@@ -21,15 +21,19 @@ namespace temsAPI.Controllers.EquipmentControllers
     public class EquipmentController : TEMSController
     {
         private EquipmentManager _equipmentManager;
+        private LogManager _logManager;
+
         public EquipmentController(
             IMapper mapper, 
             IUnitOfWork unitOfWork, 
             UserManager<TEMSUser> userManager,
             ILogger<TEMSController> logger,
-            EquipmentManager equipmentManager)
+            EquipmentManager equipmentManager,
+            LogManager logManager)
            : base(mapper, unitOfWork, userManager, logger)
         {
             _equipmentManager = equipmentManager;
+            _logManager = logManager;
         }
 
         [HttpPost]
@@ -215,7 +219,7 @@ namespace temsAPI.Controllers.EquipmentControllers
         {
             try
             {
-                string archivationResult = await (new ArchieveHelper(_unitOfWork, User))
+                string archivationResult = await (new ArchieveHelper(_unitOfWork, User, _logManager))
                     .SetEquipmentArchivationStatus(equipmentId, archivationStatus);
 
                 if (archivationResult != null)

@@ -1,8 +1,8 @@
-import { SnackService } from 'src/app/services/snack/snack.service';
+import { SnackService } from 'src/app/services/snack.service';
 import { TEMSComponent } from 'src/app/tems/tems.component';
 import { AddProperty } from './../../../models/equipment/add-property.model';
-import { FormlyParserService } from 'src/app/services/formly-parser-service/formly-parser.service';
-import { EquipmentService } from 'src/app/services/equipment-service/equipment.service';
+import { FormlyParserService } from 'src/app/services/formly-parser.service';
+import { EquipmentService } from 'src/app/services/equipment.service';
 import { Component, Inject, OnInit, Optional } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { FormlyFieldConfig } from '@ngx-formly/core';

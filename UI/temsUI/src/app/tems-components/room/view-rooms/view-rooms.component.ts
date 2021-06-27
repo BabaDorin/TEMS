@@ -1,8 +1,8 @@
 import { ClaimService } from './../../../services/claim.service';
 import { ViewRoomSimplified } from './../../../models/room/view-room-simplified.model';
 import { AddRoomComponent } from './../add-room/add-room.component';
-import { SnackService } from './../../../services/snack/snack.service';
-import { DialogService } from './../../../services/dialog-service/dialog.service';
+import { SnackService } from '../../../services/snack.service';
+import { DialogService } from '../../../services/dialog.service';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { AddLogComponent } from '../../communication/add-log/add-log.component';
 import { CreateIssueComponent } from '../../issue/create-issue/create-issue.component';

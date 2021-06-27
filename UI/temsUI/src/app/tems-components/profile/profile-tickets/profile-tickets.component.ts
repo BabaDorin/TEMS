@@ -1,6 +1,6 @@
-import { SnackService } from './../../../services/snack/snack.service';
+import { SnackService } from '../../../services/snack.service';
 import { TEMSComponent } from './../../../tems/tems.component';
-import { IssuesService } from './../../../services/issues-service/issues.service';
+import { IssuesService } from '../../../services/issues.service';
 import { ViewIssueSimplified } from 'src/app/models/communication/issues/view-issue-simplified.model';
 import { Component, Input, OnInit } from '@angular/core';
 import { ViewProfile } from 'src/app/models/profile/view-profile.model';

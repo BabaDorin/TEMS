@@ -1,7 +1,7 @@
-import { DialogService } from './../../../services/dialog-service/dialog.service';
+import { DialogService } from '../../../services/dialog.service';
 import { Definition } from './../../../models/equipment/add-definition.model';
 import { TEMSComponent } from 'src/app/tems/tems.component';
-import { EquipmentService } from 'src/app/services/equipment-service/equipment.service';
+import { EquipmentService } from 'src/app/services/equipment.service';
 import { Component, Inject, OnInit, Optional } from '@angular/core';
 import { ViewTypeComponent } from '../view-type/view-type.component';
 import { ViewPropertyComponent } from '../view-property/view-property.component';

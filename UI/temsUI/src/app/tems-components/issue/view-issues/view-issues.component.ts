@@ -1,13 +1,13 @@
 import { PinnedIssuesComponent } from './../pinned-issues/pinned-issues.component';
 import { ViewIssueSimplified } from 'src/app/models/communication/issues/view-issue-simplified.model';
 import { EntityIssuesListComponent } from './../../entity-issues-list/entity-issues-list.component';
-import { PersonnelService } from 'src/app/services/personnel-service/personnel.service';
-import { EquipmentService } from 'src/app/services/equipment-service/equipment.service';
+import { PersonnelService } from 'src/app/services/personnel.service';
+import { EquipmentService } from 'src/app/services/equipment.service';
 import { TEMSComponent } from 'src/app/tems/tems.component';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { IOption } from 'src/app/models/option.model';
-import { RoomsService } from 'src/app/services/rooms-service/rooms.service';
+import { RoomsService } from 'src/app/services/rooms.service';
 import { FormControl, FormGroup } from '@angular/forms';
 
 @Component({

@@ -2,7 +2,7 @@ import { CAN_VIEW_ENTITIES, CAN_MANAGE_ANNOUNCEMENTS, CAN_MANAGE_ENTITIES, CAN_M
 import { Injectable } from '@angular/core';
 import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree } from '@angular/router';
 import { Observable } from 'rxjs';
-import { TokenService } from '../services/token-service/token.service';
+import { TokenService } from '../services/token.service';
 
 @Injectable({
   providedIn: 'root'

@@ -1,5 +1,5 @@
-import { SnackService } from './../../../services/snack/snack.service';
-import { AnalyticsService } from 'src/app/services/analytics-service/analytics.service';
+import { SnackService } from '../../../services/snack.service';
+import { AnalyticsService } from 'src/app/services/analytics.service';
 import { TEMSComponent } from './../../../tems/tems.component';
 import { Component, Input, OnInit } from '@angular/core';
 import { ViewProfile } from 'src/app/models/profile/view-profile.model';

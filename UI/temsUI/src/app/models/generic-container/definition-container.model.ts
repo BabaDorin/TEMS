@@ -1,11 +1,11 @@
 import { ViewDefinitionSimplified } from './../equipment/view-definition-simplified.model';
-import { SnackService } from './../../services/snack/snack.service';
+import { SnackService } from '../../services/snack.service';
 import { TEMSComponent } from './../../tems/tems.component';
-import { DialogService } from './../../services/dialog-service/dialog.service';
-import { EquipmentService } from './../../services/equipment-service/equipment.service';
+import { DialogService } from '../../services/dialog.service';
 import { IContainerAction, IGenericContainerModel, ITagGroup } from './IGenericContainer.model';
 import { ViewDefinitionComponent } from 'src/app/tems-components/equipment/view-definition/view-definition.component';
 import { AddDefinitionComponent } from 'src/app/tems-components/equipment/add-definition/add-definition.component';
+import { EquipmentService } from 'src/app/services/equipment.service';
 
 export class DefinitionContainerModel extends TEMSComponent implements IGenericContainerModel {
     title: string;

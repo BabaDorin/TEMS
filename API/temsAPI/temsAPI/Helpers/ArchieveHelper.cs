@@ -58,6 +58,7 @@ namespace temsAPI.Helpers
                     where: q => q.Id == equipmentId,
                     include: q => q
                     .Include(q => q.Children)
+                    .Include(q => q.EquipmentDefinition).ThenInclude(q => q.EquipmentType)
                     .Include(q => q.EquipmentAllocations)
                     .Include(q => q.Logs)))
                 .FirstOrDefault();
@@ -67,10 +68,10 @@ namespace temsAPI.Helpers
 
             model.IsArchieved = status;
                 
-            if (model.TEMSID.IndexOf("[Dearchieved]") > -1)
+            if (status == false && model.TEMSID != null && model.TEMSID.IndexOf("[Dearchieved]") > -1)
                 model.TEMSID = model.TEMSID+ " [Dearchieved]";
 
-            if (model.SerialNumber.IndexOf("[Dearchieved]") > -1)
+            if (status == false && model.SerialNumber != null && model.SerialNumber.IndexOf("[Dearchieved]") > -1)
                 model.SerialNumber = model.SerialNumber + " [Dearchieved]";
 
             foreach (var child in model.Children)
@@ -88,9 +89,12 @@ namespace temsAPI.Helpers
                 log.IsArchieved = status;
             }
 
-            var archivationChangedLog = new EquipmentArchivationStateChangedLogFactory(model, IdentityService.GetUserId(_user))
-                .Create();
-            await _logManager.Create(archivationChangedLog);
+            if(_logManager != null)
+            {
+                var archivationChangedLog = new EquipmentArchivationStateChangedLogFactory(model, IdentityService.GetUserId(_user))
+                    .Create();
+                await _logManager.Create(archivationChangedLog);
+            }
             
             await _unitOfWork.Save();
             return null;

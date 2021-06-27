@@ -1,5 +1,5 @@
 import { ViewEquipmentSimplified } from './../../../../models/equipment/view-equipment-simplified.model';
-import { EquipmentService } from 'src/app/services/equipment-service/equipment.service';
+import { EquipmentService } from 'src/app/services/equipment.service';
 import { Component, Input, OnInit } from '@angular/core';
 
 @Component({

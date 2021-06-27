@@ -1,15 +1,15 @@
 import { ViewPropertySimplified } from './../equipment/view-property-simplified.model';
-import { SnackService } from './../../services/snack/snack.service';
+import { SnackService } from '../../services/snack.service';
 import { TEMSComponent } from './../../tems/tems.component';
-import { DialogService } from './../../services/dialog-service/dialog.service';
+import { DialogService } from '../../services/dialog.service';
 import { OnInit } from '@angular/core';
 import { ViewTypeSimplified } from './../equipment/view-type-simplified.model';
-import { EquipmentService } from './../../services/equipment-service/equipment.service';
 import { IContainerAction, IGenericContainerModel, ITagGroup } from './IGenericContainer.model';
 import { ViewTypeComponent } from 'src/app/tems-components/equipment/view-type/view-type.component';
 import { AddTypeComponent } from 'src/app/tems-components/equipment/add-type/add-type.component';
 import { ViewPropertyComponent } from 'src/app/tems-components/equipment/view-property/view-property.component';
 import { AddPropertyComponent } from 'src/app/tems-components/equipment/add-property/add-property.component';
+import { EquipmentService } from 'src/app/services/equipment.service';
 
 export class PropertyContainerModel extends TEMSComponent implements IGenericContainerModel, OnInit {
     title: string;

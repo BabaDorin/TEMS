@@ -1,15 +1,15 @@
 import { ClaimService } from './../../../services/claim.service';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { PersonnelService } from './../../../services/personnel-service/personnel.service';
-import { RoomsService } from './../../../services/rooms-service/rooms.service';
-import { EquipmentService } from 'src/app/services/equipment-service/equipment.service';
+import { PersonnelService } from '../../../services/personnel.service';
+import { RoomsService } from '../../../services/rooms.service';
+import { EquipmentService } from 'src/app/services/equipment.service';
 import { AddAllocation } from './../../../models/allocation/add-allocation.model';
 import { TEMSComponent } from './../../../tems/tems.component';
 import { Component, Inject, Input, OnInit, Optional, ViewChild } from '@angular/core';
 import { ChipsAutocompleteComponent } from 'src/app/public/formly/chips-autocomplete/chips-autocomplete.component';
 import { IOption } from 'src/app/models/option.model';
-import { AllocationService } from 'src/app/services/allocation-service/allocation.service';
-import { SnackService } from 'src/app/services/snack/snack.service';
+import { AllocationService } from 'src/app/services/allocation.service';
+import { SnackService } from 'src/app/services/snack.service';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({

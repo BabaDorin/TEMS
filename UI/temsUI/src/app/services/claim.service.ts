@@ -1,5 +1,5 @@
-import { TokenService } from './token-service/token.service';
-import { TEMSService } from './tems-service/tems.service';
+import { TokenService } from './token.service';
+import { TEMSService } from './tems.service';
 import { Injectable, OnInit } from '@angular/core';
 
 @Injectable({

@@ -1,8 +1,8 @@
-import { SnackService } from './snack/snack.service';
+import { SnackService } from './snack.service';
 import { API_EMAIL_URL } from './../models/backend.config';
 import { Observable } from 'rxjs';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { TEMSService } from './tems-service/tems.service';
+import { TEMSService } from './tems.service';
 import { Injectable } from '@angular/core';
 import { ISendEmail } from '../models/email/send-email.model';
 

@@ -1,6 +1,6 @@
-import { SnackService } from './../../../../services/snack/snack.service';
+import { SnackService } from '../../../../services/snack.service';
 import { ViewType } from './../../../../models/equipment/view-type.model';
-import { EquipmentService } from './../../../../services/equipment-service/equipment.service';
+import { EquipmentService } from './../../../../services/equipment.service';
 import { TEMSComponent } from './../../../../tems/tems.component';
 import { Component, Input, OnInit } from '@angular/core';
 

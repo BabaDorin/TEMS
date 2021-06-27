@@ -1,17 +1,17 @@
 import { Downloader } from './../../../shared/downloader/fileDownloader';
-import { SnackService } from './../../../services/snack/snack.service';
+import { SnackService } from '../../../services/snack.service';
 import { filter } from 'rxjs/operators';
-import { DefinitionService } from './../../../services/definition-service/definition.service';
-import { TypeService } from './../../../services/type-service/type.service';
+import { DefinitionService } from '../../../services/definition.service';
+import { TypeService } from '../../../services/type.service';
 import { ActivatedRoute } from '@angular/router';
-import { ReportService } from '../../../services/report-service/report.service';
+import { ReportService } from '../../../services/report.service';
 import { AddReportTemplate } from '../../../models/report/add-report.model';
 import { TEMSComponent } from '../../../tems/tems.component';
 import { CheckboxItem } from '../../../models/checkboxItem.model';
 import { IOption } from 'src/app/models/option.model';
-import { PersonnelService } from '../../../services/personnel-service/personnel.service';
-import { EquipmentService } from '../../../services/equipment-service/equipment.service';
-import { RoomsService } from '../../../services/rooms-service/rooms.service';
+import { PersonnelService } from '../../../services/personnel.service';
+import { EquipmentService } from '../../../services/equipment.service';
+import { RoomsService } from '../../../services/rooms.service';
 import { FormGroup, FormControl } from '@angular/forms';
 import { Component, OnInit } from '@angular/core';
 

@@ -100,7 +100,7 @@ namespace temsAPI.Data.Managers
 
         public async Task<string> RemoveAllocation(string allocationId)
         {
-            var allocation = await GetAllocationById(allocationId);
+            var allocation = await GetFullAllocationById(allocationId);
             if (allocation == null)
                 return "Invalid id provided";
 
@@ -368,10 +368,12 @@ namespace temsAPI.Data.Managers
                     await _unitOfWork.EquipmentAllocations.Create(model);
                     await _unitOfWork.Save();
 
-                    var eqAllocationLog = new AllocationEquipmentLogFactory(model).Create();
-                    var allocateeAllocationLog = (model.RoomID != null)
-                        ? new AllocationRoomLogFactory(model).Create()
-                        : new AllocationPersonnelLogFactory(model).Create();
+                    var logModel = await GetFullAllocationById(model.Id);
+
+                    var eqAllocationLog = new AllocationEquipmentLogFactory(logModel).Create();
+                    var allocateeAllocationLog = (logModel.RoomID != null)
+                        ? new AllocationRoomLogFactory(logModel).Create()
+                        : new AllocationPersonnelLogFactory(logModel).Create();
 
                     await _logManager.Create(eqAllocationLog);
                     await _logManager.Create(allocateeAllocationLog);
@@ -392,7 +394,7 @@ namespace temsAPI.Data.Managers
 
         public async Task<string> MarkAllocationAsReturned(string allocationId)
         {
-            var allocation = await GetAllocationById(allocationId);
+            var allocation = await GetFullAllocationById(allocationId);
             if (allocation == null)
                 return "Invalid allocation provided";
 
@@ -533,10 +535,17 @@ namespace temsAPI.Data.Managers
             return allocations;
         }
 
-        public async Task<EquipmentAllocation> GetAllocationById(string allocationId)
+        public async Task<EquipmentAllocation> GetFullAllocationById(string allocationId)
         {
             var allocation = (await _unitOfWork.EquipmentAllocations
-                    .Find<EquipmentAllocation>(q => q.Id == allocationId))
+                    .Find<EquipmentAllocation>(
+                        where: q => q.Id == allocationId,
+                        include: q => q
+                        .Include(q => q.Personnel)
+                        .Include(q => q.Room)
+                        .Include(q => q.Equipment)
+                        .ThenInclude(q => q.EquipmentDefinition)
+                        .ThenInclude(q => q.EquipmentType)))
                     .FirstOrDefault();
 
             return allocation;

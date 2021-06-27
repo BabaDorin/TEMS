@@ -1,20 +1,20 @@
-import { LogsService } from './logs-service/logs.service';
-import { TypeService } from './type-service/type.service';
-import { DefinitionService } from './definition-service/definition.service';
-import { ReportService } from './report-service/report.service';
-import { KeysService } from './keys-service/keys.service';
-import { PersonnelService } from './personnel-service/personnel.service';
-import { RoomsService } from './rooms-service/rooms.service';
-import { IssuesService } from './issues-service/issues.service';
-import { EquipmentService } from './equipment-service/equipment.service';
+import { LogsService } from './logs.service';
+import { TypeService } from './type.service';
+import { DefinitionService } from './definition.service';
+import { ReportService } from './report.service';
+import { KeysService } from './keys.service';
+import { PersonnelService } from './personnel.service';
+import { RoomsService } from './rooms.service';
+import { IssuesService } from './issues.service';
 import { IMap } from './../models/map.model';
 import { ArchievedItem } from './../models/archieve/archieved-item.model';
 import { Observable } from 'rxjs';
 import { IOption } from './../models/option.model';
 import { API_ARCH_URL } from './../models/backend.config';
-import { TEMSService } from './tems-service/tems.service';
+import { TEMSService } from './tems.service';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { EquipmentService } from './equipment.service';
 
 @Injectable({
   providedIn: 'root'

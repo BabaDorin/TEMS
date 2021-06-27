@@ -1,6 +1,6 @@
-import { SnackService } from './../../../services/snack/snack.service';
+import { SnackService } from '../../../services/snack.service';
 import { PieChartData } from './../../../models/analytics/pieChart-model';
-import { AnalyticsService } from './../../../services/analytics-service/analytics.service';
+import { AnalyticsService } from '../../../services/analytics.service';
 import { TEMSComponent } from './../../../tems/tems.component';
 import { Component, Input, OnInit } from '@angular/core';
 

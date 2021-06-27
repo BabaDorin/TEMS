@@ -1,7 +1,7 @@
 import { ViewIssueSimplified } from './../../../models/communication/issues/view-issue-simplified.model';
-import { AnalyticsService } from 'src/app/services/analytics-service/analytics.service';
-import { IssuesService } from './../../../services/issues-service/issues.service';
-import { SnackService } from './../../../services/snack/snack.service';
+import { AnalyticsService } from 'src/app/services/analytics.service';
+import { IssuesService } from '../../../services/issues.service';
+import { SnackService } from '../../../services/snack.service';
 import { TEMSComponent } from './../../../tems/tems.component';
 import { Component, Input, OnInit } from '@angular/core';
 

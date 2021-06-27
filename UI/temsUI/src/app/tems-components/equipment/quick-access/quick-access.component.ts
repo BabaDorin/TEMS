@@ -1,8 +1,8 @@
 import { ChipsAutocompleteComponent } from 'src/app/public/formly/chips-autocomplete/chips-autocomplete.component';
-import { SnackService } from 'src/app/services/snack/snack.service';
-import { PersonnelService } from './../../../services/personnel-service/personnel.service';
-import { RoomsService } from './../../../services/rooms-service/rooms.service';
-import { EquipmentService } from 'src/app/services/equipment-service/equipment.service';
+import { SnackService } from 'src/app/services/snack.service';
+import { PersonnelService } from '../../../services/personnel.service';
+import { RoomsService } from '../../../services/rooms.service';
+import { EquipmentService } from 'src/app/services/equipment.service';
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from "@angular/router"

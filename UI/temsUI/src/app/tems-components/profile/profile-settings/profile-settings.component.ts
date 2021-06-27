@@ -1,13 +1,13 @@
 import { AccountGeneralInfoModel } from './../../../models/identity/account-general-info.model';
 import { EmailPreferencesModel } from './../../../models/identity/email-preferences.model';
 import { ChangePasswordModel } from './../../../models/identity/change-password.model';
-import { UserService } from 'src/app/services/user-service/user.service';
-import { FormlyParserService } from 'src/app/services/formly-parser-service/formly-parser.service';
+import { UserService } from 'src/app/services/user.service';
+import { FormlyParserService } from 'src/app/services/formly-parser.service';
 import { FormGroup, FormControl } from '@angular/forms';
 import { TEMSComponent } from './../../../tems/tems.component';
 import { Component, Input, OnInit } from '@angular/core';
 import { ViewProfile } from 'src/app/models/profile/view-profile.model';
-import { SnackService } from 'src/app/services/snack/snack.service';
+import { SnackService } from 'src/app/services/snack.service';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { Router } from '@angular/router';
 

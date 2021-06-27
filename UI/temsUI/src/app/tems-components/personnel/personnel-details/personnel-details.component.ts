@@ -1,5 +1,5 @@
 import { TEMSComponent } from './../../../tems/tems.component';
-import { PersonnelService } from './../../../services/personnel-service/personnel.service';
+import { PersonnelService } from '../../../services/personnel.service';
 import { ViewPersonnelSimplified } from './../../../models/personnel/view-personnel-simplified.model';
 import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';

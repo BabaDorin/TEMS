@@ -1,13 +1,13 @@
 import { ClaimService } from './../../services/claim.service';
 import { CAN_MANAGE_ENTITIES } from './../../models/claims';
-import { TokenService } from './../../services/token-service/token.service';
-import { SnackService } from './../../services/snack/snack.service';
+import { TokenService } from '../../services/token.service';
+import { SnackService } from '../../services/snack.service';
 import { Router } from '@angular/router';
-import { DialogService } from './../../services/dialog-service/dialog.service';
+import { DialogService } from '../../services/dialog.service';
 import { IOption } from 'src/app/models/option.model';
 import { TEMSComponent } from 'src/app/tems/tems.component';
 import { CreateIssueComponent } from './../issue/create-issue/create-issue.component';
-import { IssuesService } from './../../services/issues-service/issues.service';
+import { IssuesService } from '../../services/issues.service';
 import { Component, Input, OnInit, OnChanges, ViewChild, Output, EventEmitter } from '@angular/core';
 import { ViewIssueSimplified } from 'src/app/models/communication/issues/view-issue-simplified.model';
 import * as confetti from 'canvas-confetti';

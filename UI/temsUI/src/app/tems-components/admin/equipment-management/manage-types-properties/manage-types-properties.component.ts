@@ -1,9 +1,9 @@
 import { AddPropertyComponent } from './../../../equipment/add-property/add-property.component';
-import { DialogService } from './../../../../services/dialog-service/dialog.service';
+import { DialogService } from '../../../../services/dialog.service';
 import { AddTypeComponent } from './../../../equipment/add-type/add-type.component';
 import { ViewTypeComponent } from './../../../equipment/view-type/view-type.component';
 import { ViewPropertySimplified } from './../../../../models/equipment/view-property-simplified.model';
-import { EquipmentService } from 'src/app/services/equipment-service/equipment.service';
+import { EquipmentService } from 'src/app/services/equipment.service';
 import { TEMSComponent } from './../../../../tems/tems.component';
 import { Component, OnInit } from '@angular/core';
 import { ViewPropertyComponent } from 'src/app/tems-components/equipment/view-property/view-property.component';

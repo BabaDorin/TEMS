@@ -1,12 +1,12 @@
 import { ClaimService } from './../../services/claim.service';
-import { SnackService } from './../../services/snack/snack.service';
-import { DialogService } from './../../services/dialog-service/dialog.service';
+import { SnackService } from '../../services/snack.service';
+import { DialogService } from '../../services/dialog.service';
 import { TEMSComponent } from './../../tems/tems.component';
 import { IOption } from 'src/app/models/option.model';
 import { Component, Input, OnInit } from '@angular/core';
 import { ViewLog } from 'src/app/models/communication/logs/view-logs.model';
-import { LogsService } from 'src/app/services/logs-service/logs.service';
 import { AddLogComponent } from '../communication/add-log/add-log.component';
+import { LogsService } from 'src/app/services/logs.service';
 
 @Component({
   selector: 'app-entity-logs-list',

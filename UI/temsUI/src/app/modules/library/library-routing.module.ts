@@ -7,7 +7,7 @@ import { CanViewEntitiesGuard } from 'src/app/guards/can-view-entities.guard';
 
 const routes: Routes = [
   { path: '', component: ViewLibraryComponent, canActivate: [CanViewEntitiesGuard] },
-  { path: 'all', component: ViewLibraryComponent },
+  { path: 'all', component: ViewLibraryComponent, canActivate: [CanViewEntitiesGuard] },
   { path: 'add', component: UploadLibraryItemComponent, canActivate: [CanManageEntitiesGuard] }
 ];
 

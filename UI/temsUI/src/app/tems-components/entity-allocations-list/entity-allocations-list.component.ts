@@ -31,20 +31,23 @@ export class EntityAllocationsListComponent extends TEMSComponent implements OnI
   @Input() roomIds: string[] = [];
   @Input() onlyActive: boolean;
   @Input() onlyClosed: boolean;
+  @Input() include: string;
   
   @Output() allocationCreated = new EventEmitter();
   equipmentNotAllocated = false;
-  pageNumber = 1;
   
+  // Pagination
+  pageNumber = 1;
+  totalItems = 0;
+  itemsPerPage = 10;
+
   allocations: ViewAllocationSimplified[];
   loading = true;
-  canManage = false;
 
   constructor(
     private allocationService: AllocationService,
     private dialogService: DialogService,
     private snackService: SnackService,
-    private tokenService: TokenService,
     private router: Router,
     private claims: ClaimService
   ) {
@@ -52,6 +55,8 @@ export class EntityAllocationsListComponent extends TEMSComponent implements OnI
   }
 
   ngOnInit(): void {
+    this.readInputVariables();
+    this.getTotalItems();
     this.fetchAllocations();
   }
 
@@ -61,12 +66,32 @@ export class EntityAllocationsListComponent extends TEMSComponent implements OnI
       return;
     }
 
+    this.readInputVariables();
+    this.getTotalItems();
     this.fetchAllocations();
   }
   
-  fetchAllocations(){
-    this.canManage = this.tokenService.hasClaim(CAN_MANAGE_ENTITIES);
+  getTotalItems(){
+    let endPoint = this.allocationService.getTotalItems(
+      this.equipmentIds,
+      this.definitionIds,
+      this.personnelIds,
+      this.roomIds,
+      this.include,
+    );
 
+    this.subscriptions.push(
+      endPoint
+      .subscribe(result => {
+        if(this.snackService.snackIfError(result))
+          return;
+
+        this.totalItems = result;
+      })
+    )
+  }
+
+  readInputVariables(){
     if(this.equipment) this.equipmentIds = [this.equipment.id];
     if(this.room) this.roomIds = [this.room.id];
     if(this.personnel) this.personnelIds = [this.personnel.id];
@@ -74,16 +99,20 @@ export class EntityAllocationsListComponent extends TEMSComponent implements OnI
     if(this.onlyActive == undefined) this.onlyActive = false;
     if(this.onlyClosed == undefined) this.onlyClosed = false;
     
-    let include = 'any';
-    if(this.onlyActive) include = 'active';
-    if(this.onlyClosed) include = 'returned';
+    this.include = 'any';
+    if(this.onlyActive) this.include = 'active';
+    if(this.onlyClosed) this.include = 'returned';
+  }
 
+  fetchAllocations(){
     let endPoint = this.allocationService.getAllocations(
       this.equipmentIds,
       this.definitionIds,
       this.personnelIds,
       this.roomIds,
-      include
+      this.include,
+      this.pageNumber,
+      this.itemsPerPage
     );
 
     this.loading = true;
@@ -92,10 +121,9 @@ export class EntityAllocationsListComponent extends TEMSComponent implements OnI
       .subscribe(result => {
         this.loading = false;
         if(this.snackService.snackIfError(result))
-        return;
+          return;
 
         this.allocations = result;
-
         this.equipmentNotAllocated = (this.equipment != undefined && this.allocations.findIndex(q => q.dateReturned == null) == -1);
       })
     )

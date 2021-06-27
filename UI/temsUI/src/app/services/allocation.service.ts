@@ -26,12 +26,38 @@ export class AllocationService extends TEMSService{
     );
   }
 
+  getTotalItems(eqIds: string[], 
+    defIds:string[],
+    persIds: string[],
+    rIds: string[],
+    include?: string): Observable<number>{
+
+    if(include == undefined)
+      include = 'any';
+
+    let entityCollection = {
+      equipmentIds: eqIds,
+      definitionIds: defIds,
+      personnelIds: persIds,
+      roomIds: rIds,
+      include: include
+    }
+
+    return this.http.post<number>(
+      API_ALL_URL + '/gettotalitems',
+      JSON.stringify(entityCollection),
+      this.httpOptions
+    );
+  }
+
   getAllocations(
     eqIds: string[], 
     defIds:string[],
     persIds: string[],
     rIds: string[],
-    include?: string): Observable<ViewAllocationSimplified[]> {
+    include?: string,
+    pageNumber?: number,
+    itemsPerPage?: number): Observable<ViewAllocationSimplified[]> {
       if(include == undefined)
         include = 'any';
 
@@ -40,7 +66,9 @@ export class AllocationService extends TEMSService{
         definitionIds: defIds,
         personnelIds: persIds,
         roomIds: rIds,
-        include: include
+        include: include,
+        pageNumber: pageNumber,
+        itemsPerPage: itemsPerPage
       }
 
       return this.http.post<ViewAllocationSimplified[]>(

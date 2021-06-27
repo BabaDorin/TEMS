@@ -159,5 +159,22 @@ namespace temsAPI.Controllers.Allocation
                 return ReturnResponse("An error occured while retrieving allocations", ResponseStatus.Fail);
             }
         }
+
+        [HttpPost]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
+        public async Task<JsonResult> GetTotalItems([FromBody] EntityCollection entityCollection)
+        {
+            try
+            {
+                var totalItems = await _equipmentManager.GetTotalItems(entityCollection);
+                return Json(totalItems);
+            }
+            catch (Exception ex)
+            {
+                LogException(ex);
+                return ReturnResponse("An error occured while retrieving total allocations number", ResponseStatus.Fail);
+            }
+        }
+
     }
 }

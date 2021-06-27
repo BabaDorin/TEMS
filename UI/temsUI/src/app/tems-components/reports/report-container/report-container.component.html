@@ -17,11 +17,11 @@
                                     <mat-icon>more_vert</mat-icon>
                                 </button>
                                 <mat-menu #menu="matMenu">
-                                    <button mat-button (click)="edit(template.id)" class="btn-block">
+                                    <button mat-button (click)="edit()" class="btn-block">
                                         Edit
                                         <mat-icon class="text-muted float-right">edit</mat-icon>
                                     </button>
-                                    <button mat-button (click)="remove(template.id)" class="btn-block">
+                                    <button mat-button (click)="remove()" class="btn-block">
                                         Remove
                                         <mat-icon class="text-muted float-right">delete</mat-icon>
                                     </button>
@@ -38,7 +38,7 @@
                 </div>
             </ng-container>
         </div>
-        <p class="text-muted">Created by: {{template.createdBy.label}}</p>
+        <p class="text-muted">Created by: {{template.createdBy.fullName}}</p>
 
         <p class="template-description text-justify">
             {{template.description}}

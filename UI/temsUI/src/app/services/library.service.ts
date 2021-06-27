@@ -62,7 +62,7 @@ export class LibraryService extends TEMSService {
     );
   }
   
-  formatBytes(bytes, decimals) {
+  formatBytes(bytes, decimals?) {
     if (bytes === 0) {
       return '0 Bytes';
     }

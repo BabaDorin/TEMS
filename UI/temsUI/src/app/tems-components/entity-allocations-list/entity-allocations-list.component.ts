@@ -49,7 +49,7 @@ export class EntityAllocationsListComponent extends TEMSComponent implements OnI
     private dialogService: DialogService,
     private snackService: SnackService,
     private router: Router,
-    private claims: ClaimService
+    public claims: ClaimService
   ) {
     super();
   }

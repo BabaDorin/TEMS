@@ -28,7 +28,7 @@ export class ViewKeysComponent extends TEMSComponent implements OnInit {
     private keysService: KeysService,
     private dialogService: DialogService,
     private snackService: SnackService,
-    private claims: ClaimService
+    public claims: ClaimService
   ) { 
     super();
   }

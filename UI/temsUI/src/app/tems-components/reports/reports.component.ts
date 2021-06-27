@@ -91,4 +91,8 @@ export class ReportsComponent extends TEMSComponent implements OnInit {
   createTemplate(){
     this.router.navigate(["/reports/createtemplate"]);
   }
+
+  remove(eventData, index){
+    // to be implemented or removed completely
+  }
 }

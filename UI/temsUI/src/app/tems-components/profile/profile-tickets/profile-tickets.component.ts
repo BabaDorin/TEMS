@@ -4,7 +4,6 @@ import { IssuesService } from '../../../services/issues.service';
 import { ViewIssueSimplified } from 'src/app/models/communication/issues/view-issue-simplified.model';
 import { Component, Input, OnInit } from '@angular/core';
 import { ViewProfile } from 'src/app/models/profile/view-profile.model';
-import { fakeAsync } from '@angular/core/testing';
 
 @Component({
   selector: 'app-profile-tickets',
@@ -13,7 +12,7 @@ import { fakeAsync } from '@angular/core/testing';
 })
 export class ProfileTicketsComponent extends TEMSComponent implements OnInit {
 
-  @Input() profile: ViewProfile;
+  profile: ViewProfile;
   lastClosedIssues: ViewIssueSimplified[] = [];
   closedIssuesEndPoint;
   showMoreClosed: boolean = false;
@@ -36,7 +35,7 @@ export class ProfileTicketsComponent extends TEMSComponent implements OnInit {
     console.log(prof);
     this.profile = prof;
     this.isCurrentUser = isCurrentUser;
-  }
+  };
 
   ngOnInit(): void {
     this.closedIssuesEndPoint = this.issueService.getIssuesOfEntity('user closed', this.profile.id, true, true, 'recency closed');
@@ -70,5 +69,5 @@ export class ProfileTicketsComponent extends TEMSComponent implements OnInit {
           this.lastAssignedIssues = result;
         }),
     )
-  }
+  };
 }

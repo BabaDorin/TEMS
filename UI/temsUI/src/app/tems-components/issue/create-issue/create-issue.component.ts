@@ -25,7 +25,7 @@ export class CreateIssueComponent extends TEMSComponent implements OnInit {
   isRegistered: boolean;
   sent = false;
   
-  private formlyData = {
+  public formlyData = {
     isVisible: false,
     form: new FormGroup({}),
     model: {} as any,
@@ -46,11 +46,11 @@ export class CreateIssueComponent extends TEMSComponent implements OnInit {
 
   constructor(
     private formlyParserService: FormlyParserService,
-    private roomService: RoomsService,
-    private userService: UserService,
+    public roomService: RoomsService,
+    public userService: UserService,
     private tokenService: TokenService,
-    private personnelService: PersonnelService,
-    private equipmentService: EquipmentService,
+    public personnelService: PersonnelService,
+    public equipmentService: EquipmentService,
     private issueService: IssuesService,
     private snackService: SnackService,
     @Optional() @Inject(MAT_DIALOG_DATA) public dialogData: any

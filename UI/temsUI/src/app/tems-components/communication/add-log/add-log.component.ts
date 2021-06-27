@@ -37,7 +37,7 @@ export class AddLogComponent extends TEMSComponent implements OnInit {
     { value: 'personnel', viewValue: 'Personnel' }
   ];
 
-  private formlyData = {
+  public formlyData = {
     isVisible: false,
     form: new FormGroup({}),
     model: {} as any,

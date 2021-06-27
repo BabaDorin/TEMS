@@ -48,11 +48,11 @@ export class CreateReportTemplateComponent extends TEMSComponent implements OnIn
   typesEndPointParameter;
 
   constructor(
-    private roomService: RoomsService,
-    private equipmentService: EquipmentService,
-    private typeService: TypeService,
-    private definitionService: DefinitionService,
-    private personnelService: PersonnelService,
+    public roomService: RoomsService,
+    public equipmentService: EquipmentService,
+    public typeService: TypeService,
+    public definitionService: DefinitionService,
+    public personnelService: PersonnelService,
     private reportService: ReportService,
     private activatedroute: ActivatedRoute,
     private snackService: SnackService

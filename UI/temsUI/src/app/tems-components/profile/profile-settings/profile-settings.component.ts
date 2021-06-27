@@ -50,7 +50,7 @@ export class ProfileSettingsComponent extends TEMSComponent implements OnInit {
     console.log(prof);
     this.profile = prof;
     this.isCurrentUser = isCurrentUser;
-  }
+  };
 
   ngOnInit(): void {
     if(!this.isCurrentUser)
@@ -70,7 +70,7 @@ export class ProfileSettingsComponent extends TEMSComponent implements OnInit {
       fullName: this.profile.fullName,
       username: this.profile.username,
     }
-  }  
+  };
 
   changePass(model){
 

@@ -25,7 +25,7 @@ export class ViewEquipmentComponent implements OnInit {
     public dialogService: DialogService,
     public router: Router,
     private snackService: SnackService,
-    private claims: ClaimService
+    public claims: ClaimService
   ) {
 
   }

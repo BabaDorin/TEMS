@@ -17,7 +17,7 @@
                 <hr>
                 <div class="row mt-3">
                     <div class="col-md-2" class="limitedWidth" *ngFor="let template of defaultTemplates; let i = index">
-                        <app-report-container [template]="template" (editTemplate)="edit($event)"
+                        <app-report-container [template]="template"
                             (removeTemplate)="remove($event, i)" (generateReport)="generateReport($event)">
                         </app-report-container>
                     </div>

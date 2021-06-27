@@ -20,7 +20,7 @@ export class ViewRoomsComponent implements OnInit {
   constructor(
     private dialogService: DialogService,
     private snackService: SnackService,
-    private claims: ClaimService
+    public claims: ClaimService
   ) { 
 
   }

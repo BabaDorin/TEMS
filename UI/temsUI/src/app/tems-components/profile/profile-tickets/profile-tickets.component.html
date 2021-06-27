@@ -2,7 +2,7 @@
     <div class="card-body">
         <h2>Closed issues</h2>
         <p *ngIf="lastClosedIssues.length == 0" class="text-muted">No data...</p>
-        <ng-container *ngIf="!showMoreClosed">
+        <ng-container *ngIf="showMoreClosed == false">
             <app-issue-container 
             *ngFor="let issue of lastClosedIssues"
             [issue]="issue"
@@ -10,11 +10,11 @@
             </app-issue-container>
             <a mat-button *ngIf="lastClosedIssues.length > 0" (click)="showMoreClosed = true">View more...</a>
         </ng-container>
-        <ng-container *ngIf="showMoreClosed">
+        <ng-container *ngIf="showMoreClosed == true">
             <app-entity-issues-list
             [endPoint]="closedIssuesEndPoint"
-            [addIssueEnabled]="false"
-            [showIncludeClosed]="false">
+            addIssueEnabled="false"
+            showIncludeClosed="false">
             </app-entity-issues-list>
         </ng-container>
     </div>
@@ -23,7 +23,7 @@
     <div class="card-body">
         <h2>Created issues</h2>
         <p *ngIf="lastCreatedIssues.length == 0" class="text-muted">No data...</p>
-        <ng-container *ngIf="!showMoreCreated">
+        <ng-container *ngIf="showMoreCreated == false">
             <app-issue-container 
             *ngFor="let issue of lastCreatedIssues"
             [issue]="issue"
@@ -31,11 +31,11 @@
             </app-issue-container>
             <a mat-button *ngIf="lastCreatedIssues.length > 0" (click)="showMoreCreated = true">View more...</a>
         </ng-container>
-        <ng-container *ngIf="showMoreCreated">
+        <ng-container *ngIf="showMoreCreated == true">
             <app-entity-issues-list
             [endPoint]="createdIssuesEndPoint"
-            [addIssueEnabled]="false"
-            [showIncludeClosed]="false">
+            addIssueEnabled="false"
+            showIncludeClosed="false">
             </app-entity-issues-list>
         </ng-container>
     </div>
@@ -44,7 +44,7 @@
     <div class="card-body">
         <h2>Assigned issues</h2>
         <p *ngIf="lastAssignedIssues.length == 0" class="text-muted">No data...</p>
-        <ng-container *ngIf="!showMoreAssigned">
+        <ng-container *ngIf="showMoreAssigned == false">
             <app-issue-container 
             *ngFor="let issue of lastAssignedIssues"
             [issue]="issue"
@@ -52,11 +52,11 @@
             </app-issue-container>
             <a mat-button *ngIf="lastAssignedIssues.length > 0" (click)="showMoreAssigned = true">View more...</a>
         </ng-container>
-        <ng-container *ngIf="showMoreAssigned">
+        <ng-container *ngIf="showMoreAssigned == true">
             <app-entity-issues-list
             [endPoint]="assignedIssuesEndPoint"
-            [addIssueEnabled]="false"
-            [showIncludeClosed]="false">
+            addIssueEnabled="false"
+            showIncludeClosed="false">
             </app-entity-issues-list>
         </ng-container>
     </div>

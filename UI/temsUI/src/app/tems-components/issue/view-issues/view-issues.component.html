@@ -21,8 +21,8 @@
                             <app-chips-autocomplete label="Equipments' TEMSID or Serial Number..."
                             formControlName="equipment"
                             [endPoint]="equipmentService"
-                            (dataCollected)="equipmentSelected($value)"
-                            (dataRemoved)="equipmentSelected($value)"
+                            (dataCollected)="equipmentSelected($event)"
+                            (dataRemoved)="equipmentSelected($event)"
                             maxOptionsSelected="1">
                             </app-chips-autocomplete>
                         </div>
@@ -30,8 +30,8 @@
                             <app-chips-autocomplete label="Room"
                             formControlName="rooms"
                             [endPoint]="roomService"
-                            (dataCollected)="roomSelected($value)"
-                            (dataRemoved)="roomSelected($value)"
+                            (dataCollected)="roomSelected($event)"
+                            (dataRemoved)="roomSelected($event)"
                             maxOptionsSelected="1">
                             </app-chips-autocomplete>
                         </div>
@@ -39,8 +39,8 @@
                             <app-chips-autocomplete label="Personnel"
                             formControlName="personnel"
                             [endPoint]="personnelService"
-                            (dataCollected)="personnelSelected($value)"
-                            (dataRemoved)="personnelSelected($value)"
+                            (dataCollected)="personnelSelected($event)"
+                            (dataRemoved)="personnelSelected($event)"
                             maxOptionsSelected="1">
                             </app-chips-autocomplete>
                         </div>

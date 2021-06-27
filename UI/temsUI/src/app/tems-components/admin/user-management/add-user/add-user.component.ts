@@ -26,7 +26,7 @@ export class AddUserComponent extends TEMSComponent implements OnInit {
 
   @ViewChild('rolesChips') roles: ChipsAutocompleteComponent;
   @ViewChild('personnelChips') personnel: ChipsAutocompleteComponent;
-  private formlyData = new FormlyData();
+  formlyData = new FormlyData();
 
   userIdToUpdate: string;
   // roles: IViewRole[];
@@ -38,7 +38,7 @@ export class AddUserComponent extends TEMSComponent implements OnInit {
   dialogRef: MatDialogRef<any>;
 
   constructor(
-    private personnelService: PersonnelService,
+    public personnelService: PersonnelService,
     private userService: UserService,
     private roleService: RoleService,
     private snackService: SnackService,
@@ -139,7 +139,7 @@ export class AddUserComponent extends TEMSComponent implements OnInit {
     );
   }
 
-  markRoleClaims(uncheckUnselected) {
+  markRoleClaims(uncheckUnselected?) {
     let selectedRoles = this.roles.options.map(q => q.label) as string[];
 
     this.unsubscribeFromAll();

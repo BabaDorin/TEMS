@@ -38,7 +38,7 @@ export class ViewProfileComponent extends TEMSComponent implements OnInit {
     private inj: Injector,
   ) {
     super();
-  }
+  };
 
   ngOnInit(): void {
     this.location.onUrlChange(url => {

@@ -41,7 +41,7 @@ export class PersonnelDetailsComponent extends TEMSComponent implements OnInit {
       }));
   }
 
-  archivationStatusChanged(newStatus: boolean){
+  archivationStatusChanged(){
     this.mainHeaderLabel = "General"
 
     this.personnelSimplified.isArchieved = !this.personnelSimplified.isArchieved;

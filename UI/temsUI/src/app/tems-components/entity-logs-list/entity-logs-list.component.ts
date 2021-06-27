@@ -33,7 +33,7 @@ pageNumber=1;
     private logsService: LogsService,
     private dialoService: DialogService,
     private snackService: SnackService,
-    private claims: ClaimService
+    public claims: ClaimService
   ) { 
     super();
   }
@@ -96,7 +96,7 @@ pageNumber=1;
         }));
   }
 
-  private addLog(){   
+  addLog(){   
     let selectedEntityType: string;
     let selectedEntities: IOption[];
 

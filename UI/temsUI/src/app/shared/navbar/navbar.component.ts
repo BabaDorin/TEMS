@@ -19,8 +19,8 @@ export class NavbarComponent extends TEMSComponent implements OnInit {
   public iconOnlyToggled = false;
   public sidebarToggled = false;
   public username: string;
-  private loggedIn: boolean;
-  private refreshing: boolean = false;
+  public loggedIn: boolean;
+  public refreshing: boolean = false;
 
   notifications = [] as ViewNotification[];
   newNotifications = [] as ViewNotification[];

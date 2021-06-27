@@ -27,7 +27,7 @@ export class AttachEquipmentComponent extends TEMSComponent implements OnInit {
   availableEquipment = [] as IOption[];
 
   constructor(
-    private equipmentService: EquipmentService,
+    public equipmentService: EquipmentService,
     private snackService: SnackService,
     @Optional() @Inject(MAT_DIALOG_DATA) public dialogData: any
   ) {

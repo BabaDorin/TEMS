@@ -8,7 +8,7 @@ import { Component, Input, OnInit } from '@angular/core';
 export class ManageTypesComponent implements OnInit {
 
   @Input() canManage: boolean = false;
-  
+
   constructor() { }
 
   ngOnInit(): void {

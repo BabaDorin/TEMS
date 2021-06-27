@@ -4,7 +4,6 @@ import { SystemConfigComponent } from '../../tems-components/admin/system-config
 import { MatButtonModule } from '@angular/material/button';
 import { UserContainerComponent } from '../../tems-components/identity/user-container/user-container.component';
 import { GenericContainerModule } from '../../shared/generic-container/generic-container.module';
-import { EquipmentTypeContainerComponent } from '../../tems-components/admin/equipment-management/equipment-type-container/equipment-type-container.component';
 import { EquipmentDefinitionsListComponent } from '../../tems-components/admin/equipment-management/equipment-definitions-list/equipment-definitions-list.component';
 import { PropertiesListComponent } from '../../tems-components/admin/equipment-management/properties-list/properties-list.component';
 import { EquipmentTypesListComponent } from '../../tems-components/admin/equipment-management/equipment-types-list/equipment-types-list.component';
@@ -20,7 +19,6 @@ import { AdministrationRoutingModule } from './administration-routing.module';
 import { UserManagementComponent } from '../../tems-components/admin/user-management/user-management.component';
 import { AddUserComponent } from '../../tems-components/admin/user-management/add-user/add-user.component';
 import { ViewUsersComponent } from '../../tems-components/admin/user-management/view-users/view-users.component';
-import { ManageTypesPropertiesComponent } from '../../tems-components/admin/equipment-management/manage-types-properties/manage-types-properties.component';
 import { ManageDefinitionsComponent } from '../../tems-components/admin/equipment-management/manage-definitions/manage-definitions.component';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { DialogModule } from '../dialog/dialog.module';
@@ -34,12 +32,10 @@ declarations: [
     UserManagementComponent,
     AddUserComponent,
     ViewUsersComponent,
-    ManageTypesPropertiesComponent,
     ManageDefinitionsComponent,
     EquipmentTypesListComponent,
     PropertiesListComponent,
     EquipmentDefinitionsListComponent,
-    EquipmentTypeContainerComponent,
     ManageTypesComponent,
     ManagePropertiesComponent,
     UserContainerComponent,

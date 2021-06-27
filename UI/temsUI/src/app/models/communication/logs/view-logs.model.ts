@@ -4,7 +4,7 @@ export class ViewLog {
     id: string;
     dateCreated: Date;
     createdBy: IOption;
-    text: string;
+    description: string;
     equipment: IOption;
     room: IOption;
     personnel?: IOption;

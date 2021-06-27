@@ -14,7 +14,7 @@ export class DashboardComponent implements OnInit {
   }
 
   constructor(
-    private claims: ClaimService
+    public claims: ClaimService
   ) { 
   }
 

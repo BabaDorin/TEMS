@@ -1,8 +1,6 @@
 import { BooleanCellRendererComponent } from './../../public/ag-grid/boolean-cell-renderer/boolean-cell-renderer.component';
-import { BrowserModule } from '@angular/platform-browser';
 import { MaterialModule } from './../material/material.module';
 import { AgGridRoomsComponent } from './../../tems-components/room/ag-grid-rooms/ag-grid-rooms.component';
-import { AgGridTooltipComponent } from './../../public/ag-grid/ag-grid-tooltip/ag-grid-tooltip.component';
 import { AgGridPersonnelComponent } from './../../tems-components/personnel/ag-grid-personnel/ag-grid-personnel.component';
 import { AgGridKeysComponent } from './../../tems-components/keys/ag-grid-keys/ag-grid-keys.component';
 import { AgGridEquipmentComponent } from './../../tems-components/equipment/ag-grid-equipment/ag-grid-equipment.component';
@@ -18,7 +16,6 @@ import { BtnCellRendererComponent } from 'src/app/public/ag-grid/btn-cell-render
     AgGridEquipmentComponent,
     AgGridKeysComponent,
     AgGridPersonnelComponent,
-    AgGridTooltipComponent,
     AgGridRoomsComponent,
     BtnCellRendererComponent,
     BooleanCellRendererComponent
@@ -33,7 +30,6 @@ import { BtnCellRendererComponent } from 'src/app/public/ag-grid/btn-cell-render
     AgGridEquipmentComponent,
     AgGridKeysComponent,
     AgGridPersonnelComponent,
-    AgGridTooltipComponent,
     AgGridRoomsComponent,
     BtnCellRendererComponent,
   ]

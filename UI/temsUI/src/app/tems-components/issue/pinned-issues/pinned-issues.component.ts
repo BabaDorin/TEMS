@@ -20,7 +20,7 @@ export class PinnedIssuesComponent extends TEMSComponent implements OnInit {
   constructor(
     private issuesService: IssuesService,
     private snackService: SnackService,
-    private claims: ClaimService
+    public claims: ClaimService
   ) {
     super();
   }

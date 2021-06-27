@@ -40,7 +40,7 @@ export class RoomDetailsComponent extends TEMSComponent implements OnInit {
       }));
   }
 
-  archivationStatusChanged(newStatus: boolean){
+  archivationStatusChanged(){
     this.mainHeaderLabel = "General"
 
     this.roomSimplified.isArchieved = !this.roomSimplified.isArchieved;

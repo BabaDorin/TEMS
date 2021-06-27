@@ -18,12 +18,12 @@ export class AgGridArchievedItemsComponent extends TEMSComponent implements OnIn
   public gridApi;
   private gridColumnApi;
 
-  private columnDefs;
-  private defaultColDef;
-  private rowSelection;
-  private rowData: ArchievedItem[];
-  private pagination
-  private paginationPageSize;
+  public columnDefs;
+  public defaultColDef;
+  public rowSelection;
+  public rowData: ArchievedItem[];
+  public pagination
+  public paginationPageSize;
   loading: boolean = true;
 
   constructor(

@@ -49,10 +49,10 @@ export class EquipmentAllocationComponent extends TEMSComponent implements OnIni
   dialogRef;
 
   constructor(
-    private equipmentService: EquipmentService,
-    private roomService: RoomsService,
+    public equipmentService: EquipmentService,
+    public roomService: RoomsService,
     private snackService: SnackService,
-    private personnelService: PersonnelService,
+    public personnelService: PersonnelService,
     private allocationService: AllocationService,
     private claims: ClaimService,
     @Optional() @Inject(MAT_DIALOG_DATA) public dialogData: any

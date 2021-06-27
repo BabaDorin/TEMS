@@ -2,7 +2,7 @@
     <div class="card-body">
         <div class="card-title">{{ definition.identifier }}</div>
         <h3 *ngIf="definition.equipmentType != undefined">
-            Type: <button mat-button (click)="viewType(definition.equipmentType.id)">{{ definition.equipmentType.name }}</button></h3>
+            Type: <button mat-button (click)="viewType(definition.equipmentType.value)">{{ definition.equipmentType.label }}</button></h3>
         
         <ng-container *ngIf = "definition.properties.length > 0">
             <h3>Properties:</h3>

@@ -18,7 +18,7 @@ export class UploadLibraryItemComponent extends TEMSComponent implements OnInit 
   uploadEnabled = true;
 
   constructor(
-    private libraryService: LibraryService,
+    public libraryService: LibraryService,
     private snackService: SnackService,
   ) {
     super();

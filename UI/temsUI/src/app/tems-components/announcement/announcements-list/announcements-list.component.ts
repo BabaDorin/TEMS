@@ -25,7 +25,7 @@ export class AnnouncementsListComponent extends TEMSComponent implements OnInit 
   constructor(
     private communicationService: CommunicationService,
     public dialog: MatDialog,
-    private claims: ClaimService,
+    public claims: ClaimService,
     private dialogService: DialogService
   ) { 
     super();

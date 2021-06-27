@@ -28,8 +28,8 @@ export class KeysAllocationsComponent extends TEMSComponent implements OnInit {
   dialogRef;
 
   constructor(
-    private keysService: KeysService,
-    private personnelService: PersonnelService,
+    public keysService: KeysService,
+    public personnelService: PersonnelService,
     private snackService: SnackService,
     private tokenService: TokenService,
     @Optional() @Inject(MAT_DIALOG_DATA) public dialogData: any

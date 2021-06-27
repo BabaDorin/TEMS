@@ -18,7 +18,7 @@ export class AddPropertyComponent extends TEMSComponent implements OnInit {
 
   propertyId: string;
 
-  private formlyData = {
+  public formlyData = {
     form: new FormGroup({}),
     model: {} as any,
     fields: [] as FormlyFieldConfig[],

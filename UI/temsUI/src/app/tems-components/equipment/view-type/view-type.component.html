@@ -1,8 +1,8 @@
-<div class="card">
+<!-- <div class="card">
     <div class="card-body">
         <div class="card-title">{{ type.name }}</div>
         <h3>Type's parent</h3>
-        <p *ngIf="type.parent == undefined">None</p>
+        <p *ngIf="type.parents == undefined">None</p>
         <div *ngIf="type.parent != undefined">
             <a (click)="viewType(type.parent.id)">
                 {{ type.parent.name }}
@@ -19,11 +19,17 @@
 
         <br>
         <h3>Type's properties</h3>
-        <p *ngIf="type.properties == undefined || type.properties == 0">None</p>
+        <p *ngIf="type.properties == undefined || type.properties.length == 0">None</p>
         <div *ngIf="type.properties != undefined && type.properties.length > 0">
             <button mat-button *ngFor="let prop of type.properties" (click)="viewProperty(prop.id)">
                 {{ prop.displayName }}
             </button>
         </div>
+    </div>
+</div> -->
+
+<div class="card">
+    <div class="card-body">
+        <h3>Building...</h3>
     </div>
 </div>

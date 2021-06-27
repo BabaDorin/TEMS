@@ -22,7 +22,7 @@ export class ViewPersonnelComponent implements OnInit {
     private snackService: SnackService,
     private emaiService: EmailService,
     private dialogService: DialogService,
-    private claims: ClaimService
+    public claims: ClaimService
   ) { }
 
   ngOnInit(): void {

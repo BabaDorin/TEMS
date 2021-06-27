@@ -25,7 +25,7 @@ export class AddDefinitionComponent extends TEMSComponent implements OnInit {
   updateDefinitionId: string;
   @Input() typeId: string;
 
-  private formlyData = {
+  formlyData = {
     isVisible: false,
     form: new FormGroup({}),
     model: {} as any,

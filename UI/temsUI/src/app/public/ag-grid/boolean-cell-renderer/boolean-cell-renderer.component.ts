@@ -8,7 +8,7 @@ import { ICellRendererParams } from 'ag-grid-community';
 })
 export class BooleanCellRendererComponent {
 
-  private cellValue: boolean;
+  public cellValue: boolean;
 
    // gets called once before the renderer is used
    agInit(params: ICellRendererParams): void {

@@ -55,7 +55,7 @@ export class EntityIssuesListComponent extends TEMSComponent implements OnInit, 
     private issuesService: IssuesService,
     private dialogService: DialogService,
     private snackService: SnackService,
-    private claims: ClaimService,
+    public claims: ClaimService,
   ) { 
     super();
   }
@@ -142,7 +142,7 @@ export class EntityIssuesListComponent extends TEMSComponent implements OnInit, 
       this.launchConfetti();
   }
 
-  private addIssue(){
+  addIssue(){
     this.dialogService.openDialog(
       CreateIssueComponent,
       [

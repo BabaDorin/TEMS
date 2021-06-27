@@ -34,7 +34,7 @@ export class ViewLibraryComponent extends TEMSComponent implements OnInit {
     private libraryService: LibraryService,
     private dialogService: DialogService,
     private snackService: SnackService,
-    private claims: ClaimService,
+    public claims: ClaimService,
     private _decimalPipe: DecimalPipe,
     @Optional() @Inject(MAT_DIALOG_DATA) public dialogData: any
   ) {

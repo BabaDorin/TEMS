@@ -35,7 +35,7 @@ export class PersonnelDetailsGeneralComponent extends TEMSComponent implements O
     private snackService: SnackService,
     private dialogService: DialogService,
     private tockenService: TokenService,
-    private claims: ClaimService,
+    public claims: ClaimService,
     @Optional() @Inject(MAT_DIALOG_DATA) public dialogData: any
   ) {
     super();

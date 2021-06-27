@@ -1,3 +1,4 @@
+import { FormlyData } from './../../models/formly/formly-data.model';
 import { PersonnelService } from 'src/app/services/personnel.service';
 import { ChipsAutocompleteComponent } from 'src/app/public/formly/chips-autocomplete/chips-autocomplete.component';
 import { IOption } from './../../models/option.model';
@@ -22,11 +23,7 @@ export class SendEmailComponent extends TEMSComponent implements OnInit {
 
   @ViewChild('recievers') recieversChipsAutocomplete: ChipsAutocompleteComponent;
 
-  private formlyData = {
-    form: new FormGroup({}),
-    model: {} as any,
-    fields: [] as FormlyFieldConfig[],
-  }
+  public formlyData = new FormlyData();
 
   @Input() personnel: IOption[] = [];
   personnelNames: string;
@@ -36,7 +33,7 @@ export class SendEmailComponent extends TEMSComponent implements OnInit {
     private formlyParser: FormlyParserService,
     private snackService: SnackService,
     private emailService: EmailService,
-    private personnelService: PersonnelService,
+    public personnelService: PersonnelService,
     @Optional() @Inject(MAT_DIALOG_DATA) public dialogData: any
   ) { 
     super();

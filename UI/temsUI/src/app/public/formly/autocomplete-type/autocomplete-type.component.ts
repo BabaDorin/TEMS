@@ -14,7 +14,7 @@ import { startWith, switchMap } from 'rxjs/operators';
       [formlyAttributes]="field"
       [placeholder]="to.placeholder"
       [errorStateMatcher]="errorStateMatcher">
-    <mat-autocomplete #auto="matAutocomplete">
+    <mat-autocomplete #auto>
       <mat-option *ngFor="let value of filter | async" [value]="value">
         {{ value }}
       </mat-option>

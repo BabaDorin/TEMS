@@ -44,9 +44,9 @@ export class ViewIssuesComponent extends TEMSComponent implements OnInit {
   @ViewChild('entityClosedIssuesList') entityClosedIssuesList: EntityIssuesListComponent;
 
   constructor(
-    private equipmentService: EquipmentService,
-    private roomService: RoomsService,
-    private personnelService: PersonnelService
+    public equipmentService: EquipmentService,
+    public roomService: RoomsService,
+    public personnelService: PersonnelService
   ) {
     super();
   }

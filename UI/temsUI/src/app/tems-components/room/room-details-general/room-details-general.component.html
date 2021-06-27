@@ -30,13 +30,11 @@
                                         <mat-icon class="text-muted">edit</mat-icon>
                                         Edit
                                     </button>
-                                    <button mat-menu-item *ngIf="room.isArchieved" (click)="archieve()"
-                                        [disabled]="editing">
+                                    <button mat-menu-item *ngIf="room.isArchieved" (click)="archieve()">
                                         <mat-icon class="text-muted">restore</mat-icon>
                                         Dearchieve
                                     </button>
-                                    <button mat-menu-item *ngIf="!room.isArchieved" (click)="archieve()"
-                                        [disabled]="editing">
+                                    <button mat-menu-item *ngIf="!room.isArchieved" (click)="archieve()">
                                         <mat-icon class="text-muted">auto_delete</mat-icon>
                                         Archieve
                                     </button>

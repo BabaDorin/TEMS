@@ -37,7 +37,7 @@ export class EquipmentDetailsComponent extends TEMSComponent implements OnInit {
       }));
   }
 
-  archivationStatusChanged(newStatus: boolean){
+  archivationStatusChanged(){
     this.mainHeaderLabel = "General"
 
     this.equipmentSimplified.isArchieved = !this.equipmentSimplified.isArchieved;

@@ -23,7 +23,7 @@ export class ViewArchieveComponent extends TEMSComponent implements OnInit {
   canRemove: boolean = false;
 
   constructor(
-    private archieveService: ArchieveService,
+    public archieveService: ArchieveService,
     private snackService: SnackService,
     private route: ActivatedRoute,
     private router: Router,

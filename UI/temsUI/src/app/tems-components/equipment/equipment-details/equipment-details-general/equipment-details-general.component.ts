@@ -38,7 +38,7 @@ export class EquipmentDetailsGeneralComponent extends TEMSComponent implements O
 
   constructor(
     private equipmentService: EquipmentService,
-    private claims: ClaimService,
+    public claims: ClaimService,
     private dialogService: DialogService,
     private snackService: SnackService,
     @Optional() @Inject(MAT_DIALOG_DATA) public dialogData: any) {

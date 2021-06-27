@@ -70,17 +70,9 @@
                 class="btn btn-gradient-primary" 
                 *ngIf="files.length > 0" 
                 [disabled]="!uploadEnabled"
-                (click)="upload($event)">
+                (click)="upload()">
                 Start uploading
             </button>
         </div>
     </div>
 </div>
-
-<span style="font-weight:bold;color:green;" *ngIf="progress > 0 && progress < 100">
-    {{progress}}%
-</span>
-
-<span style="font-weight:bold;color:green;" *ngIf="message">
-    {{message.status}}
-</span>

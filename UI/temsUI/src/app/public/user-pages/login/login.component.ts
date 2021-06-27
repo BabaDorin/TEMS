@@ -18,7 +18,7 @@ import { emit } from 'process';
 })
 export class LoginComponent extends TEMSComponent implements OnInit {
 
-  private formlyData = {
+  public formlyData = {
     isVisible: false,
     form: new FormGroup({}),
     model: {} as any,

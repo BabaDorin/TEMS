@@ -11,6 +11,7 @@ import { FormGroup } from '@angular/forms';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { AddRoom } from 'src/app/models/room/add-room.model';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { FormlyData } from 'src/app/models/formly/formly-data.model';
 
 @Component({
   selector: 'app-add-room',
@@ -24,21 +25,17 @@ export class AddRoomComponent extends TEMSComponent implements OnInit {
   @ViewChild('labels') labels: ChipsAutocompleteComponent;
   @ViewChild('supervisories') supervisories: ChipsAutocompleteComponent;
 
-  private formlyData = {
-    form: new FormGroup({}),
-    model: {} as any,
-    fields: [] as FormlyFieldConfig[],
-  }
+  public formlyData = new FormlyData();
 
   roomLabels: IOption[];
   dialogRef;
 
   constructor(
     private formlyParserService: FormlyParserService,
-    private roomService: RoomsService,
+    public roomService: RoomsService,
     private snackService: SnackService,
-    private roomLabelService: RoomLabelService,
-    private personnelService: PersonnelService,
+    public roomLabelService: RoomLabelService,
+    public personnelService: PersonnelService,
     @Optional() @Inject(MAT_DIALOG_DATA) public dialogData: any
   ) {
     super();

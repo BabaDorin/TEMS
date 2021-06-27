@@ -3,7 +3,7 @@
         <div class="card-title">Attach an equipment</div>
         <hr>
         <p class="text-muted">Attach an existing equipment. You can choose only withing equipments
-            that are supported as children by the parent({{ equipment.identifier }}) definition.
+            that are supported as children by the parent({{ equipment.definition.identifier }}) definition.
         </p>
         <form [formGroup]="attachEquipmentFormGroup" (submit)="onSubmit(attachEquipmentFormGroup.controls)">
             <mat-form-field>

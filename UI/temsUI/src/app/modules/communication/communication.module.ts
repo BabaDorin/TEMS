@@ -1,3 +1,4 @@
+import { RouterModule } from '@angular/router';
 import { EmailModule } from './../email/email/email.module';
 import { TemsFormsModule } from './../tems-forms/tems-forms.module';
 import { CommunicationService } from '../../services/communication.service';
@@ -20,6 +21,8 @@ import { ViewLogsComponent } from 'src/app/tems-components/communication/view-lo
     EntitySharedModule,
     TemsFormsModule,
     EmailModule,
+    RouterModule,
+    
   ],
   providers: [
     CommunicationService,

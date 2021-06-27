@@ -1,3 +1,4 @@
+import { FormlyData } from './../../../models/formly/formly-data.model';
 import { UserService } from '../../../services/user.service';
 import { SnackService } from '../../../services/snack.service';
 import { ChipsAutocompleteComponent } from './../../../public/formly/chips-autocomplete/chips-autocomplete.component';
@@ -31,16 +32,12 @@ export class AddPersonnelComponent extends TEMSComponent implements OnInit {
   
   dialogRef;
 
-  private formlyData = {
-    form: new FormGroup({}),
-    model: {} as any,
-    fields: [] as FormlyFieldConfig[],
-  }
+  public formlyData = new FormlyData();
 
   constructor(
     private formlyParserService: FormlyParserService,
     private personnelService: PersonnelService,
-    private userService: UserService,
+    public userService: UserService,
     private snackService: SnackService,
     @Optional() @Inject(MAT_DIALOG_DATA) public dialogData: any
   ) {

@@ -1,3 +1,8 @@
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatSelectModule } from '@angular/material/select';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { ChipsAutocompleteModule } from './../chips-autocomplete/chips-autocomplete.module';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -18,6 +23,7 @@ import { MaterialModule } from '../material/material.module';
 import { fieldMatchValidator, specCharValidator } from 'src/app/models/validators';
 import { usernameValidator } from 'src/app/models/validators';
 import { CheckboxGroupComponent } from 'src/app/shared/forms/checkbox-group/checkbox-group.component';
+import { MatOptionModule } from '@angular/material/core';
 
 @NgModule({
   declarations: [
@@ -31,8 +37,16 @@ import { CheckboxGroupComponent } from 'src/app/shared/forms/checkbox-group/chec
     CheckboxGroupComponent
   ],
   imports: [
+    CommonModule,
     MatInputModule,
+    MatAutocompleteModule,
+    ReactiveFormsModule,
+    MatOptionModule,
     MatFormFieldModule,
+    MatTooltipModule,
+    MatCheckboxModule,
+    MatIconModule,
+    MatSelectModule,
     ChipsAutocompleteModule,
     FormlyModule.forRoot({
       wrappers: [

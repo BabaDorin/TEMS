@@ -1,3 +1,4 @@
+import { FormlyData } from './../../../models/formly/formly-data.model';
 import { TEMSComponent } from 'src/app/tems/tems.component';
 import { FormlyParserService } from 'src/app/services/formly-parser.service';
 import { Component, OnInit } from '@angular/core';
@@ -13,11 +14,7 @@ import { CommunicationService } from 'src/app/services/communication.service';
 })
 export class AddAnnouncementComponent extends TEMSComponent implements OnInit {
 
-  private formlyData = {
-    form: new FormGroup({}),
-    model: {} as any,
-    fields: [] as FormlyFieldConfig[],
-  }
+  public formlyData = new FormlyData();
 
   constructor(
     private formlyParserService: FormlyParserService,

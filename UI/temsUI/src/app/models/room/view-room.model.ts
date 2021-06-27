@@ -7,7 +7,7 @@ export interface IViewRooom{
     identifier: string,
     floor?: number,
     description?: string,
-    supervisory?: ViewPersonnelSimplified[],
+    supervisories?: ViewPersonnelSimplified[],
     photos?: string[];
     activeTickets: number; // 0 - ok (green), 1 - so-so, 2 (yellow) - not gud (red)
     labels?: IOption[],
@@ -20,7 +20,7 @@ export class ViewRoom implements IViewRooom
     identifier: string;
     floor?: number;
     description?: string;
-    supervisory?: ViewPersonnelSimplified[];
+    supervisories?: ViewPersonnelSimplified[];
     photos?: string[];
     activeTickets: number;
     labels?: IOption[];

@@ -36,10 +36,10 @@ export class ViewEquipmentAllocationsComponent extends TEMSComponent implements 
   })
 
   constructor(
-    private equipmentService: EquipmentService,
-    private roomService: RoomsService,
-    private definitionService: DefinitionService,
-    private personnelService: PersonnelService,
+    public equipmentService: EquipmentService,
+    public roomService: RoomsService,
+    public definitionService: DefinitionService,
+    public personnelService: PersonnelService,
     private dialogService: DialogService,
     private snackService: SnackService,
     private allocationService: AllocationService

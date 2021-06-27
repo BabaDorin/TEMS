@@ -18,13 +18,13 @@ export class AgGridRoomsComponent extends TEMSComponent implements OnInit {
   private gridApi;
   private gridColumnApi;
 
-  private columnDefs;
-  private defaultColDef;
-  private rowSelection;
-  private rowData: [];
-  private frameworkComponents: any;
-  private pagination
-  private paginationPageSize;
+  columnDefs;
+  defaultColDef;
+  rowSelection;
+  rowData: [];
+  frameworkComponents: any;
+  pagination
+  paginationPageSize;
   loading: boolean = true;
 
   rooms: ViewRoomSimplified[];

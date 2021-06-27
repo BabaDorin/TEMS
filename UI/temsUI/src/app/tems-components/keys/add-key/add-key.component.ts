@@ -1,3 +1,4 @@
+import { FormlyData } from './../../../models/formly/formly-data.model';
 import { SnackService } from 'src/app/services/snack.service';
 import { ChipsAutocompleteComponent } from 'src/app/public/formly/chips-autocomplete/chips-autocomplete.component';
 import { AddKey } from './../../../models/key/add-key.model';
@@ -16,18 +17,15 @@ import { RoomsService } from 'src/app/services/rooms.service';
 })
 export class AddKeyComponent extends TEMSComponent implements OnInit {
 
-  private formlyData = {
-    form: new FormGroup({}),
-    model: {} as any,
-    fields: [] as FormlyFieldConfig[],
-  }
+  public formlyData = new FormlyData();
+
   @ViewChild('room') room: ChipsAutocompleteComponent;
   dialogRef;
 
   constructor(
-    private keysService: KeysService,
+    public keysService: KeysService,
     private formlyParserService: FormlyParserService,
-    private roomsService: RoomsService,
+    public roomsService: RoomsService,
     private snackService: SnackService
   ) { 
     super();

@@ -27,7 +27,7 @@ export class EntityLogsListComponent extends TEMSComponent implements OnInit {
   loading: boolean = true;  
   logsEndpoint;
 
-  pageNumber= 1;
+pageNumber=1;
 
   constructor(
     private logsService: LogsService,

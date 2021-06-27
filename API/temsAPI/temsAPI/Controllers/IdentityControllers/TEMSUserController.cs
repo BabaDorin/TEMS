@@ -261,8 +261,6 @@ namespace temsAPI.Controllers.IdentityControllers
         {
             try
             {
-                var removeResult = await _temsUserManager.RemoveUser(viewModel.UserId);
-
                 var result = await _temsUserManager.ChangeEmailPreferences(viewModel);
                 if (result != null)
                     return ReturnResponse(result, ResponseStatus.Fail);

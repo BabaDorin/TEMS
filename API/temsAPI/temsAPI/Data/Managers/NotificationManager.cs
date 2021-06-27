@@ -165,7 +165,7 @@ namespace temsAPI.Data.Managers
         {
             // Notify assignees
             var assigneeIds = ticket.Assignees?.Select(q => q.Id).ToList();
-            if(assigneeIds != null)
+            if(assigneeIds != null && assigneeIds.Count > 0)
             {
                 var notification = (new TicketAssignedNotiFactory().Create(ticket));
                 await CreateCommonNotification(notification);
@@ -174,11 +174,12 @@ namespace temsAPI.Data.Managers
 
             // Notify technicians
             var techIds = (await _userManager.GetUsersInRoleAsync("technician"))
-                ?.Select(q => q.Id)
+                ?.Where(q => q.GetEmailNotifications)
+                .Select(q => q.Id)
                 .Except(assigneeIds)
                 .ToList();
 
-            if(techIds != null)
+            if(techIds != null && techIds.Count > 0)
             {
                 var notification = new TicketCreatedNotiFactory().Create(ticket, techIds);
                 await CreateCommonNotification(notification);

@@ -20,12 +20,12 @@ namespace temsAPI.Services.Notification
             SendEmailViewModel emailViewModel = new()
             {
                 From = "TEMS CIH Cahul",
-                Addressees = notification.GetUsers().Select(q => q.Email).Distinct().ToList(),
+                Addressees = notification.GetUsers().Select(q => q.Id).ToList(),
                 Subject = notification.Title,
                 Text = notification.Message
             };
 
-            await _emailService.SendEmail(emailViewModel);
+            await _emailService.SendEmailToUsers(emailViewModel);
             return null;
         }
     }

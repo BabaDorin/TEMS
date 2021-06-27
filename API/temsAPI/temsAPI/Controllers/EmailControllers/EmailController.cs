@@ -37,7 +37,7 @@ namespace temsAPI.Controllers.EmailControllers
         {
             try
             {
-                var mailingResult = await _emailService.SendEmail(viewModel);
+                var mailingResult = await _emailService.SendEmailToPersonnel(viewModel);
                 
                 int numbersOfEmailsSent = 0;
                 if (int.TryParse(mailingResult, out numbersOfEmailsSent))

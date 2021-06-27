@@ -40,12 +40,26 @@ namespace temsAPI.Services
         /// </summary>
         /// <param name="emailData"></param>
         /// <returns></returns>
-        public async Task<string> SendEmail(SendEmailViewModel emailData)
+        public async Task<string> SendEmailToPersonnel(SendEmailViewModel emailData)
         {
-            List<EmailTo> addresses = await GetEmailAddresses(emailData.Addressees);
+            List<EmailTo> addresses = await GetEmailAddresses_Personnel(emailData.Addressees);
             if (addresses == null || addresses.Count == 0)
                 return "No email addresses found. No mail has been sent";
 
+            return await SendEmail(addresses, emailData);
+        }
+
+        public async Task<string> SendEmailToUsers(SendEmailViewModel emailData)
+        {
+            List<EmailTo> addresses = await GetEmailAddresses_Users(emailData.Addressees);
+            if (addresses == null || addresses.Count == 0)
+                return "No email addresses found. No mail has been sent";
+            
+            return await SendEmail(addresses, emailData);
+        }
+
+        private async Task<string> SendEmail(List<EmailTo> addresses, SendEmailViewModel emailData)
+        {
             SetDefaultSender();
             return await SendEmailsTo(addresses, emailData);
         }
@@ -84,15 +98,27 @@ namespace temsAPI.Services
             FluentEmail.Core.Email.DefaultSender = sender;
         }
 
-        private async Task<List<EmailTo>> GetEmailAddresses(List<string> personnelIds)
+        private async Task<List<EmailTo>> GetEmailAddresses_Personnel(List<string> addreseeIds)
         {
-            List<EmailTo> addresses = (await _unitOfWork.Personnel
+            return (await _unitOfWork.Personnel
                 .FindAll<EmailTo>(
-                    where: q => personnelIds.Contains(q.Id) && q.Email != null,
+                    where: q => addreseeIds.Contains(q.Id) && q.Email != null,
                     select: q => new EmailTo
                     {
                         Email = q.Email,
                         Name = q.Name
+                    })).ToList();
+        }
+
+        private async Task<List<EmailTo>> GetEmailAddresses_Users(List<string> addreseeIds)
+        {
+            List<EmailTo> addresses = (await _unitOfWork.TEMSUsers
+                .FindAll<EmailTo>(
+                    where: q => addreseeIds.Contains(q.Id) && q.Email != null,
+                    select: q => new EmailTo
+                    {
+                        Email = q.Email,
+                        Name = q.FullName ?? q.UserName
                     })).ToList();
 
             return addresses;

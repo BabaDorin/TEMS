@@ -86,7 +86,6 @@ import { LibraryModule } from './modules/library/library.module';
     ChipsAutocompleteModule,
     QuickAccessModule,
 
-
     // for modal thing
     LibraryModule
   ],

@@ -1,3 +1,4 @@
+import { CheckboxGroupModule } from './../checkbox-group/checkbox-group.module';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSelectModule } from '@angular/material/select';
 import { MatIconModule } from '@angular/material/icon';
@@ -22,7 +23,6 @@ import { FormlyModule } from '@ngx-formly/core';
 import { MaterialModule } from '../material/material.module';
 import { fieldMatchValidator, specCharValidator } from 'src/app/models/validators';
 import { usernameValidator } from 'src/app/models/validators';
-import { CheckboxGroupComponent } from 'src/app/shared/forms/checkbox-group/checkbox-group.component';
 import { MatOptionModule } from '@angular/material/core';
 
 @NgModule({
@@ -34,7 +34,6 @@ import { MatOptionModule } from '@angular/material/core';
     ButtonTypeComponent,                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
     RepeatTypeComponent,
     AddEquipmentRepeatComponent,
-    CheckboxGroupComponent
   ],
   imports: [
     CommonModule,
@@ -44,6 +43,7 @@ import { MatOptionModule } from '@angular/material/core';
     MatOptionModule,
     MatFormFieldModule,
     MatTooltipModule,
+    CheckboxGroupModule,
     MatCheckboxModule,
     MatIconModule,
     MatSelectModule,
@@ -106,8 +106,8 @@ import { MatOptionModule } from '@angular/material/core';
 
     // Other
     MaterialModule,
+    CheckboxGroupModule,
     TagInputModule,
-    CheckboxGroupComponent,
     ChipsAutocompleteModule,
   ]
 })

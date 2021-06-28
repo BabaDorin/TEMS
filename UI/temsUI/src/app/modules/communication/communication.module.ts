@@ -1,6 +1,8 @@
+import { AnnouncementModule } from './../announcement/announcement.module';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormlyModule } from '@ngx-formly/core';
 import { RouterModule } from '@angular/router';
 import { EmailModule } from './../email/email/email.module';
-import { TemsFormsModule } from './../tems-forms/tems-forms.module';
 import { CommunicationService } from '../../services/communication.service';
 import { MaterialModule } from 'src/app/modules/material/material.module';
 import { NgModule } from '@angular/core';
@@ -19,10 +21,12 @@ import { ViewLogsComponent } from 'src/app/tems-components/communication/view-lo
     CommunicationRoutingModule,
     MaterialModule,
     EntitySharedModule,
-    TemsFormsModule,
     EmailModule,
     RouterModule,
-    
+    AnnouncementModule,
+    ReactiveFormsModule,
+    FormsModule,
+    FormlyModule
   ],
   providers: [
     CommunicationService,

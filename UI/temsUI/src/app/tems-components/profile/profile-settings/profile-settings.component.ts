@@ -5,7 +5,7 @@ import { UserService } from 'src/app/services/user.service';
 import { FormlyParserService } from 'src/app/services/formly-parser.service';
 import { FormGroup, FormControl } from '@angular/forms';
 import { TEMSComponent } from './../../../tems/tems.component';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Inject, Input, OnInit } from '@angular/core';
 import { ViewProfile } from 'src/app/models/profile/view-profile.model';
 import { SnackService } from 'src/app/services/snack.service';
 import { FormlyFieldConfig } from '@ngx-formly/core';
@@ -21,27 +21,27 @@ export class ProfileSettingsComponent extends TEMSComponent implements OnInit {
   @Input() profile: ViewProfile;
   isCurrentUser: boolean;
 
-  private changePasswordFormlyData = {
+  changePasswordFormlyData = {
     form: new FormGroup({}),
     model: {} as any,
     fields: [] as FormlyFieldConfig[],
   }
 
-  private emailPreferencesFormlyData = {
+  emailPreferencesFormlyData = {
     form: new FormGroup({}),
     model: {} as any,
     fields: [] as FormlyFieldConfig[],
   }
 
-  private accountGeneralInfoFormlyData = {
+  accountGeneralInfoFormlyData = {
     form: new FormGroup({}),
     model: {} as any,
     fields: [] as FormlyFieldConfig[],
   }
 
   constructor(
-    prof: ViewProfile,
-    isCurrentUser: boolean,
+    @Inject(ViewProfile) prof,
+    @Inject(Boolean) isCurrentUser,
     private userService: UserService,
     private snackService: SnackService,
     private router: Router,

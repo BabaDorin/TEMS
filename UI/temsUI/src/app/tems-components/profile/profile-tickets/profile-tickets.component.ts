@@ -2,8 +2,9 @@ import { SnackService } from '../../../services/snack.service';
 import { TEMSComponent } from './../../../tems/tems.component';
 import { IssuesService } from '../../../services/issues.service';
 import { ViewIssueSimplified } from 'src/app/models/communication/issues/view-issue-simplified.model';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, Injectable, Inject } from '@angular/core';
 import { ViewProfile } from 'src/app/models/profile/view-profile.model';
+import { inject } from '@angular/core/testing';
 
 @Component({
   selector: 'app-profile-tickets',
@@ -27,8 +28,8 @@ export class ProfileTicketsComponent extends TEMSComponent implements OnInit {
   isCurrentUser: boolean;
 
   constructor(
-    prof: ViewProfile,
-    isCurrentUser: boolean,
+    @Inject(ViewProfile) prof,
+    @Inject(Boolean) isCurrentUser,
     private issueService: IssuesService,
     private snackService: SnackService) {
     super();

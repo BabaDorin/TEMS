@@ -1,5 +1,7 @@
+import { RouterModule } from '@angular/router';
+import { FormlyModule } from '@ngx-formly/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DateTimeDisplayModule } from './../../shared/date-time-display/date-time-display.module';
-import { TemsFormsModule } from './../tems-forms/tems-forms.module';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
@@ -17,13 +19,16 @@ import { CommonModule } from '@angular/common';
   ],
   imports: [
     CommonModule,
+    RouterModule,
     MatIconModule,
     MatCardModule,
     MatButtonModule,
-    TemsFormsModule,
-    DateTimeDisplayModule
+    DateTimeDisplayModule,
+    ReactiveFormsModule,
+    FormsModule,
+    FormlyModule
   ],
-  exports:[
+  exports: [
     AnnouncementsListComponent,
     AddAnnouncementComponent,
     ViewAnnouncementsComponent

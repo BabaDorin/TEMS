@@ -10,6 +10,7 @@ using temsAPI.Contracts;
 using temsAPI.Data.Entities.CommunicationEntities;
 using temsAPI.Data.Entities.UserEntities;
 using temsAPI.Data.Managers;
+using temsAPI.Services;
 using temsAPI.System_Files;
 using temsAPI.ViewModels.Ticket;
 
@@ -18,14 +19,21 @@ namespace temsAPI.Controllers.TicketControllers
     public class TicketController : TEMSController
     {
         private TicketManager _ticketManager;
+        private IdentityService _identityService;
+        private SystemConfigurationService _systemConfigService;
+
         public TicketController(
             IMapper mapper,
             IUnitOfWork unitOfWork,
             UserManager<TEMSUser> userManager,
             TicketManager ticketManager,
-            ILogger<TEMSController> logger) : base(mapper, unitOfWork, userManager, logger)
+            ILogger<TEMSController> logger,
+            IdentityService identityService,
+            SystemConfigurationService systemConfigService) : base(mapper, unitOfWork, userManager, logger)
         {
             _ticketManager = ticketManager;
+            _identityService = identityService;
+            _systemConfigService = systemConfigService;
         }
 
         [HttpGet("/ticket/getticketsofentity/{entityType}/{entityId}/{includingClosed}/{onlyClosed}/{orderBy?}/{skip?}/{take?}")]
@@ -167,6 +175,10 @@ namespace temsAPI.Controllers.TicketControllers
         {
             try
             {
+                // Check if the function has not been disabled by adminstrators for guests
+                if (!_identityService.IsAuthenticated() && !_systemConfigService.AppSettings.AllowGuestsToCreateTickets)
+                    return ReturnResponse("Creating tickets has been disabled for guets.", ResponseStatus.Fail);
+
                 var result = await _ticketManager.Create(viewModel);
                 if (result != null)
                     return ReturnResponse(result, ResponseStatus.Fail);

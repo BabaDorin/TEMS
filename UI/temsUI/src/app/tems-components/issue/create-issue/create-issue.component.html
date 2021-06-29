@@ -1,31 +1,33 @@
 <div class="card">
     <div class="card-body" *ngIf="sent">
         <h2 class="text-center text-muted" >
-            Your ticket has been sent! Our technicians will help you as soon as possible.
+            {{ 'ticket.sent' | translate }}
         </h2>
         <img class="mt-5 centerSvg fade-in" src="assets/svgs/technician.svg">
     </div>
     
     <div class="card-body animate__bounce" *ngIf="sent==false">
-        <div class="card-title">Report a problem</div>
+        <div class="card-title">
+            {{ 'ticket.create' | translate }}
+        </div>
         <form *ngIf="formlyData.isVisible" [formGroup]="formlyData.form" (ngSubmit)="onSubmit(formlyData.model)">
             <formly-form [form]="formlyData.form" [fields]="formlyData.fields" [model]="formlyData.model"></formly-form>
             <div class="container mt-3">
                 <div class="row">
                     <div class="col-md-12 col-lg-4 col-sm-12">
-                        <app-chips-autocomplete #equipment label="Equipments' TEMSID or Serial Number..."
+                        <app-chips-autocomplete #equipment [label]="translate.instant('ticket.selectEquipmentLabel')"
                             [endPoint]="equipmentService"
                             [alreadySelected]="equipmentAlreadySelected">
                         </app-chips-autocomplete>
                     </div>
                     <div class="col-md-6 col-lg-4 col-sm-12">
-                        <app-chips-autocomplete #rooms label="Select one or more rooms..."
+                        <app-chips-autocomplete #rooms [label]="translate.instant('ticket.selectRoomLabel')"
                             [endPoint]="roomService" 
                             [alreadySelected]="roomsAlreadySelected">
                         </app-chips-autocomplete>
                     </div>
                     <div class="col-md-6 col-lg-4 col-sm-12">
-                        <app-chips-autocomplete #personnel label="People who need help..."
+                        <app-chips-autocomplete #personnel [label]="translate.instant('ticket.selectPeopleLabel')"
                             [endPoint]="personnelService"
                             [alreadySelected]="personnelAlreadySelected">
                         </app-chips-autocomplete>
@@ -34,7 +36,7 @@
             </div>
             <div *ngIf="isRegistered">
                 <hr>
-                <app-chips-autocomplete #assignees label="Assign this issue to..."
+                <app-chips-autocomplete #assignees [label]="translate.instant('ticket.assignToLabel')"
                     [endPoint]="userService" 
                     [alreadySelected]="assigneesAlreadySelected">
                 </app-chips-autocomplete>
@@ -45,7 +47,7 @@
                 type="submit" 
                 class="btn-gradient-primary mr-2"
                 [disabled]="formlyData.form.status=='INVALID'">
-                Submit
+                {{ 'form.submit' | translate }}
             </button>
         </form>
     </div>

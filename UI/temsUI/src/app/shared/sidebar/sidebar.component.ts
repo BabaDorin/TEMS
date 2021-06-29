@@ -25,8 +25,8 @@ export class SidebarComponent implements OnInit {
   ngOnInit() {
     const body = document.querySelector('body');
 
-    // this.sidebarNavItems = this.menuService.ROUTES.filter(sidebarnavItem => sidebarnavItem);
-    this.sidebarNavItems = this.menuService.ROUTES;
+    // // this.sidebarNavItems = this.menuService.ROUTES.filter(sidebarnavItem => sidebarnavItem);
+    // this.sidebarNavItems = this.menuService.ROUTES;
 
     document.querySelectorAll('.sidebar .nav-item').forEach(function (el) {
       el.addEventListener('mouseover', function () {

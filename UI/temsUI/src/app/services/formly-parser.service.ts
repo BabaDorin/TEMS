@@ -132,14 +132,14 @@ export class FormlyParserService extends TEMSComponent {
                 filter: (term) => of(term ? this.filterAutocomplete(term, frequentProblems) : frequentProblems.slice()),
               },
               expressionProperties: {
-                'templateOptions.label': this.translate.stream('issue.problem'),
+                'templateOptions.label': this.translate.stream('ticket.problem'),
               },
             },
             {
               key: 'problemDescription',
               type: 'textarea',
               expressionProperties: {
-                'templateOptions.label': this.translate.stream('issue.description'),
+                'templateOptions.label': this.translate.stream('ticket.description'),
               },
             },
             {
@@ -151,7 +151,7 @@ export class FormlyParserService extends TEMSComponent {
                 options: statuses
               },
               expressionProperties: {
-                'templateOptions.label': this.translate.stream('issue.priority'),
+                'templateOptions.label': this.translate.stream('ticket.priority'),
               },
             }
           ]

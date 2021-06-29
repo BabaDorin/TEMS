@@ -3,14 +3,14 @@
         <mat-tab-group [@.disabled]="true">
             <mat-tab [label]="mainHeaderLabel">
                 <app-room-details-general [roomId]="roomId" (archivationStatusChanged)="archivationStatusChanged()">
-                    Loading...
+                    {{ 'general.loading' | translate }}
                 </app-room-details-general>
             </mat-tab>
             <ng-container *ngIf="roomSimplified.isArchieved == false">
                 <mat-tab label="Logs">
                     <ng-template matTabContent>
                         <app-room-details-logs [room]="roomSimplified">
-                            Loading...
+                            {{ 'general.loading' | translate }}
                         </app-room-details-logs>
                     </ng-template>
                 </mat-tab>
@@ -18,24 +18,24 @@
                     <ng-container *ngIf="roomSimplified.activeIssues != 0; else elseIssueHeader">
                         <ng-template mat-tab-label>
                             <div [matBadge]="roomSimplified.activeIssues" matBadgeOverlap="false">
-                                Issues
+                                {{ 'entities.tickets' | translate }}
                             </div>
                         </ng-template>
                     </ng-container>
 
                     <ng-template #elseIssueHeader>
-                        Issues
+                        {{ 'entities.tickets' | translate }}
                     </ng-template>
                     <ng-template matTabContent>
                         <app-room-details-issues [room]="roomSimplified">
-                            Loading...
+                            {{ 'general.loading' | translate }}
                         </app-room-details-issues>
                     </ng-template>
                 </mat-tab>
                 <mat-tab label="Allocations">
                     <ng-template matTabContent>
                         <app-room-details-allocations [room]="roomSimplified">
-                            Loading...
+                            {{ 'general.loading' | translate }}
                         </app-room-details-allocations>
                     </ng-template>
                 </mat-tab>

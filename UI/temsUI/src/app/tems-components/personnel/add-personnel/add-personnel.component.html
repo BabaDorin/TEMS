@@ -1,25 +1,25 @@
 <div class="card">
     <div class="card-body" style="max-width: 500px;">
-        <div class="card-title">Add Personnel</div>
+        <div class="card-title">
+            {{ 'personnel.add' | translate }}
+        </div>
         <form [formGroup]="formlyData.form" (ngSubmit)="onSubmit(formlyData.model)">
             <formly-form [form]="formlyData.form" [fields]="formlyData.fields" [model]="formlyData.model"></formly-form>
             <ng-container *ngIf="personnelPositions != undefined">
-                <app-chips-autocomplete #personnelPositionsChips label="Personnel Positions"
+                <app-chips-autocomplete #personnelPositionsChips [label]="translate.instant('personnel.positions')"
                     [autocompleteOptions]="personnelPositions">
                 </app-chips-autocomplete>
             </ng-container>
 
-            <app-chips-autocomplete #userChips label="Personnel - User association" [endPoint]="userService"
+            <app-chips-autocomplete #userChips [label]="translate.instant('personnel.userAssociations')" [endPoint]="userService"
                 [alreadySelected]="user" maxOptionsSelected="1">
             </app-chips-autocomplete>
             <small class="text-muted text-justify">
-                If this personnel record is here to represent someone who already has an account,
-                provide the properly Personnel - User association in order to make these entities connected. Make
-                sure the indicated user does not have another personnel association.
+                {{ 'personnel.userAssociationsInfo' | translate }}
             </small>
             <br><br>
             <button type="submit" class="btn btn-gradient-primary mr-2"
-                [disabled]="formlyData.form.status=='INVALID'">Submit</button>
+                [disabled]="formlyData.form.status=='INVALID'">{{ 'form.submit' | translate }}</button>
         </form>
     </div>
 </div>

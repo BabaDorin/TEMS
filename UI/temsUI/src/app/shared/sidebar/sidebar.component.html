@@ -1,6 +1,7 @@
 <nav class="sidebar sidebar-offcanvas" id="sidebar">
   <ul class="nav">
-    <li class="nav-item" *ngFor="let sidebarNavItem of sidebarNavItems"
+    <ng-container *ngIf="menuService.ROUTES != undefined">
+      <li class="nav-item" *ngFor="let sidebarNavItem of menuService.ROUTES"
       [class]="{ 'active' : sidebarNavItem.isActive }">
 
       <!-- if it contains submenu -->
@@ -31,5 +32,6 @@
         </a>
       </div>
     </li>
+    </ng-container>
   </ul>
 </nav>

@@ -2,19 +2,23 @@
   <div class="card-body">
     <div class="col-md-12">
       <h2>
-        Last key allocations
+        {{ 'key.allocations' | translate }}
       </h2>
       <hr>
       <h3>
-        Filter conditions
+        {{ 'key.filterAllocations' | translate }}
       </h3>
       <form class="container">
         <div class="row">
           <div class="col-md-4 text-center">
             <mat-form-field appearance="fill">
-              <mat-label>Key</mat-label>
+              <mat-label>
+                {{ 'key.key' | translate }}
+              </mat-label>
               <mat-select (selectionChange)="keySelected($event.value)">
-                <mat-option value="any">Any</mat-option>
+                <mat-option value="any">
+                  {{ 'form.any' | translate }}
+                </mat-option>
                 <mat-option *ngFor="let key of filteredKeys | async" [value]="key.value">{{ key.label }}
                 </mat-option>
               </mat-select>
@@ -22,9 +26,9 @@
           </div>
           <div class="col-md-4 text-center">
             <mat-form-field appearance="fill">
-              <mat-label>Room</mat-label>
+              <mat-label>{{ 'entities.room' | translate }}</mat-label>
               <mat-select (selectionChange)="roomSelected($event.value)">
-                <mat-option value="any">Any</mat-option>
+                <mat-option value="any">{{ 'form.any' | translate }}</mat-option>
                 <mat-option *ngFor="let room of rooms | async" [value]="room.value">{{ room.label }}
                 </mat-option>
               </mat-select>
@@ -32,9 +36,9 @@
           </div>
           <div class="col-md-4 text-center">
             <mat-form-field appearance="fill">
-              <mat-label>Personnel</mat-label>
+              <mat-label>{{ 'entities.personnel' | translate }}</mat-label>
               <mat-select (selectionChange)="personnelSelected($event.value)">
-                <mat-option value="any">Any</mat-option>
+                <mat-option value="any">{{ 'form.any' | translate }}</mat-option>
                 <mat-option *ngFor="let pers of personnel | async" [value]="pers.value">{{ pers.label }}
                 </mat-option>
               </mat-select>

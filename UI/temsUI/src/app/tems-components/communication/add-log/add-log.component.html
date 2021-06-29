@@ -1,13 +1,17 @@
 <div class="card">
     <div class="card-body">
-        <h5 class="card-title">Create new log</h5>
+        <h5 class="card-title">
+            {{ 'logs.create' | translate }}  
+        </h5>
         <form [formGroup]="formlyData.form" (ngSubmit)="onSubmit()">
             <div class="row mt-3">
                 <div class="col-md-6">
                     <br>
                     <!-- Choose type (Equipment, Room, personnel) -->
                     <mat-form-field appearance="fill">
-                        <mat-label>Choose the addressee</mat-label>
+                        <mat-label>
+                            {{ 'logs.selectAddressee' | translate }}  
+                        </mat-label>
                         <mat-select 
                             [(ngModel)]="selectedAddresseeType" 
                             (ngModelChange)="onAddresseeSelection()"
@@ -22,7 +26,7 @@
                     <app-chips-autocomplete 
                         *ngIf="adresseeChosen" 
                         #addresseesChips
-                        label="Identifier..."
+                        [label]="translate.instant('form.identifier')"
                         [endPoint]="adresseeEndPoint"
                         [alreadySelected]="alreadySelectedOptions"
                         required>
@@ -37,7 +41,9 @@
             <button 
                 type="submit" 
                 class="btn btn-gradient-primary btn-block" 
-                [disabled]="formlyData.form.status=='INVALID'">Submit</button>
+                [disabled]="formlyData.form.status=='INVALID'">
+                {{ 'form.submit'  | translate }}
+            </button>
         </form>
     </div>
 </div>

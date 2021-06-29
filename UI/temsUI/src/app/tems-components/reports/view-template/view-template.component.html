@@ -4,7 +4,7 @@
     </h2>
     <hr>
     <p class="text-muted"> 
-        Created on: {{ template.dateCreated | date: 'short' }} by 
+        {{ 'general.createdOn' | translate }} {{ template.dateCreated | date: 'short' }} by 
         <a mat-button [routerLink]="'/profile/view/' + template.createdBy.value" (click)="closeDialog()">
             <mat-icon class="text-primary ml-3">person</mat-icon>
             {{ template.createdBy.label }}

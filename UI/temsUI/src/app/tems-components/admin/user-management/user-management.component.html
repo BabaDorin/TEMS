@@ -2,16 +2,16 @@
     <div class="card-body">
         <h2>
             <mat-icon class="text-primary">account_circle</mat-icon>
-            User management
+            {{ 'user.management' | translate }}
         </h2>
         <button mat-button (click)="addUser()">
             <mat-icon class="text-primary">add</mat-icon>
-            Add new user
+            {{ 'user.add' | translate }}
         </button>
         <hr>
         <div class="mt-3">
             <app-view-users #viewUsers>
-                Loading...
+                {{ 'general.loading' | translate }}
             </app-view-users>
         </div>
     </div>

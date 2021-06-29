@@ -2,11 +2,11 @@
     <div class="card-body">
         <!-- Page header -->
         <h2>
-            Generate reports
+            {{ 'report.reports' | translate }}
         </h2>
         <p class="text-muted">
-            Choose of the following templates in order to generate a report
-            <span *ngIf="canManage">or create a new template</span>
+            {{ 'report.reportsTip' | translate }}
+            <span *ngIf="canManage">{{ 'report.createTemplate' | translate }}</span>
             .
         </p>
 
@@ -26,7 +26,9 @@
 
             <!-- Custom report templates -->
             <div>
-                <h2>Custom report templates</h2>
+                <h2>
+                    {{ 'report.templates' | translate }}
+                </h2>
                 <hr>
                 <div class="row mt-3">
                     <div class="col-xl-3 col-lg-4 col-sm-6 col-xs-12 p-3" *ngFor="let template of customTemplates | paginate: { 
@@ -51,7 +53,7 @@
                                                 transform="translate(6 6)" fill="#141124" />
                                         </svg>
                                     </div>
-                                    <p class="text-center">Add custom template</p>
+                                    <p class="text-center">{{ 'report.createTemplate' | translate }}</p>
                                 </mat-card-content>
                             </mat-card>
                         </div>
@@ -68,7 +70,7 @@
 <div class="card" *ngIf="lastGeneratedReports != undefined && lastGeneratedReports.length > 0">
     <div class="card-body">
         <div class="card-title align-text-center">
-            Last generated reports
+            {{ 'report.lastReports' | translate }}
             <mat-icon matSuffix class="mr-1">
                 <i class="mdi mdi-information-outline" matTooltip="These are references to generated report files, which means that data within these
                     reports is static and reflects the state at the moment of generation."></i>

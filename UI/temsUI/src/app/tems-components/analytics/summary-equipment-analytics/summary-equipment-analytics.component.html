@@ -8,7 +8,7 @@ equipmentAllocationRate != undefined
 ">
     <div class="col-lg-3 col-md-3">
         <app-simple-info-card
-        title="Total Equipment Amount"
+        [title]="translate.instant('analytics.translate')"
         [mainText]="equipmentTotalAmount"
         [secondaryText]="equipmentTotalCost">
         </app-simple-info-card>
@@ -16,21 +16,21 @@ equipmentAllocationRate != undefined
 
     <div class="col-lg-3 col-md-3">
         <app-piechart-card
-        title="Equipment using rate"
+        [title]="translate.instant('analytics.equipmentUsingRate')"
         [rates]="equipmentUtilizationRate">
         </app-piechart-card>
     </div>
 
     <div class="col-lg-3 col-md-3">
         <app-piechart-card
-        title="Equipment type rate"
+        [title]="translate.instant('analytics.equipmentTypeRate')"
         [rates]="equipmentTypeRate">
         </app-piechart-card>
     </div>
 
     <div class="col-lg-3 col-md-3">
         <app-piechart-card
-        title="Equipment allocation rate"
+        [title]="translate.instant('analytics.equipmentAllocationRate')"
         [rates]="equipmentAllocationRate">
         </app-piechart-card>
     </div>

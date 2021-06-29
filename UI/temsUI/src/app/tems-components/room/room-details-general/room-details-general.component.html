@@ -8,7 +8,7 @@
             <div class="page-header">
                 <div class="page-title mt-4 mb-0">
                     <h1 class="font-weight-light">
-                        <h3 class="font-weight-light d-inline">Room </h3>
+                        <h3 class="font-weight-light d-inline">{{ 'entities.room' | translate }}</h3>
                         {{ room.identifier }}
                     </h1>
                     <ng-container *ngIf="room.labels != undefined">
@@ -23,20 +23,20 @@
                             <li class="breadcrumb-item" aria-current="page">
                                 <button mat-button [matMenuTriggerFor]="menu"
                                     class="float-right">
-                                    Actions <mat-icon class="text-primary">more_vert</mat-icon>
+                                    <mat-icon class="text-primary">more_vert</mat-icon>
                                 </button>
                                 <mat-menu #menu="matMenu">
                                     <button mat-menu-item (click)="edit()">
                                         <mat-icon class="text-muted">edit</mat-icon>
-                                        Edit
+                                        {{ 'general.edit' | translate }}
                                     </button>
                                     <button mat-menu-item *ngIf="room.isArchieved" (click)="archieve()">
                                         <mat-icon class="text-muted">restore</mat-icon>
-                                        Dearchieve
+                                        {{ 'general.dearchive' | translate }}
                                     </button>
                                     <button mat-menu-item *ngIf="!room.isArchieved" (click)="archieve()">
                                         <mat-icon class="text-muted">auto_delete</mat-icon>
-                                        Archieve
+                                        {{ 'general.archieve' | translate }}
                                     </button>
                                 </mat-menu>
                             </li>
@@ -47,7 +47,7 @@
             <hr>
             <ng-container *ngIf="room.supervisories != undefined && room.supervisories.length > 0">
                 <h2 class="text-muted text-bold">
-                    Room's supervisors:
+                    {{ 'room.supervisories' | translate }}
                 </h2>
                 <a mat-button *ngFor="let supv of room.supervisories" [routerLink]="'/personnel/details/' + supv.value">
                     <mat-icon class="text-primary">account_circle</mat-icon>
@@ -56,12 +56,14 @@
                 <hr>
             </ng-container>
             <div class="property-container">
-                <h2 class="text-muted text-bold">Properties</h2>
+                <h2 class="text-muted text-bold">
+                    {{ 'entities.properties' | translate }}
+                </h2>
                 <app-property-render [properties]="roomProperties">
                 </app-property-render>
             </div>
             <a *ngIf="displayViewMore == true" mat-button [routerLink]="'/rooms/details/' + room.id"
-                (click)="viewMore()">View More</a>
+                (click)="viewMore()">{{ 'general.viewMore' | translate }}</a>
         </div>
     </div>
 </ng-container>

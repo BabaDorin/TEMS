@@ -1,3 +1,4 @@
+import { TranslateService } from '@ngx-translate/core';
 import { map } from 'rxjs/operators';
 import { AllocationService } from 'src/app/services/allocation.service';
 import { ViewAllocationSimplified } from './../../models/equipment/view-equipment-allocation.model';
@@ -40,6 +41,7 @@ export class ViewEquipmentAllocationsComponent extends TEMSComponent implements 
     public roomService: RoomsService,
     public definitionService: DefinitionService,
     public personnelService: PersonnelService,
+    public translate: TranslateService,
     private dialogService: DialogService,
     private snackService: SnackService,
     private allocationService: AllocationService

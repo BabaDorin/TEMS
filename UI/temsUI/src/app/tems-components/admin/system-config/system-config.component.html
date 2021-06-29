@@ -1,7 +1,7 @@
 <div class="card">
     <div class="card-body">
         <h2>
-            System configuration settings
+            {{ 'config.configSettingsHeader' | translate }}
         </h2>
         <hr>
 
@@ -11,15 +11,18 @@
                 <mat-icon class="text-primary">
                     chevron_right
                 </mat-icon>
-                SIC Integration
+                {{ 'config.sicIntegration' | translate }}
             </h3>
             <p class="text-muted">
-                Creates all of SIC (System Info Collector) types and properties. <br>
-                Note: These will get created anyways at the first valid SIC .JSON file uploaded and processed.
+                {{ 'config.configSettingsHeader' | translate }}
+                 <br>
             </p>
             <button mat-button (click)="integrateSIC()" class="btn-gradient-primary">
-                Integrate System Info Collector
+                {{ 'config.sicIntegrationButtonText' | translate }}
             </button>
+            <p class="text-muted">
+                {{ 'config.sicIntegrationText' | translate }}
+            </p>
         </div>
         <hr>
 
@@ -29,14 +32,16 @@
                 <mat-icon class="text-primary">
                     chevron_right
                 </mat-icon>
-                Storage constraints
+                {{ 'config.storageConstraintsHeader' | translate }}
             </h3>
             <p class="text-muted">
-                Set space limits (in Gigabytes) for the following subjects:
+                {{ 'config.storageConstraintsText' | translate }}
             </p>
             <form [formGroup]="spaceConstraintsFormGroup" (ngSubmit)="onSubmit_spaceConstraints()" class="config-form">
                 <mat-form-field class="d-block">
-                    <mat-label>GB of storage space allocated for storing library items:</mat-label>
+                    <mat-label>
+                        {{ 'config.libraryStorageLabel' | translate }}
+                    </mat-label>
                     <input matInput formControlName="libraryAllocatedStorageSpace" type="number" min="0">
                 </mat-form-field>
 
@@ -45,7 +50,7 @@
                     <input matInput formControlName="generatedReportsLimit" type="number" min="0">
                 </mat-form-field> -->
                 <button mat-button type="submit" class="btn-gradient-primary mt-2">
-                    Submit
+                    {{ 'form.submit' | translate }}
                 </button>
             </form>
         </div>
@@ -57,23 +62,27 @@
                 <mat-icon class="text-primary">
                     chevron_right
                 </mat-icon>
-                Email configuration
+                {{ 'config.emailConfigurationHeader' | translate }}
             </h3>
             <p class="text-muted">
-                Specify the email sender
+                {{ 'config.emailConfigurationText' | translate }}
             </p>
             <form [formGroup]="emailConfigFormGroup" (ngSubmit)="onSubmit_emailConfigFormGroup()" class="config-form">
                 <mat-form-field class="d-block">
-                    <mat-label>Sender Address:</mat-label>
+                    <mat-label>
+                        {{ 'config.emailSender' | translate }}
+                    </mat-label>
                     <input matInput formControlName="senderAddress" type="email">
                 </mat-form-field>
 
                 <mat-form-field class="d-block mt-2">
-                    <mat-label>Sender password:</mat-label>
+                    <mat-label>
+                        {{ 'config.emailPassword' | translate }}
+                    </mat-label>
                     <input matInput formControlName="senderPassword" type="password">
                 </mat-form-field>
                 <button mat-button type="submit" class="btn-gradient-primary mt-2">
-                    Submit
+                    {{ 'form.submit' | translate }}
                 </button>
             </form>
         </div>
@@ -85,26 +94,30 @@
                 <mat-icon class="text-primary">
                     chevron_right
                 </mat-icon>
-                Time intervals
+                {{ 'config.timeIntervalsHeader' | translate }}
             </h3>
             <p class="text-muted">
-                Indicate interval values in hours for the following actions
+                {{ 'config.timeIntervalsText' | translate }}
             </p>
             <form [formGroup]="timeConfigFormGroup" class="config-form">
                 <mat-form-field class="d-block">
-                    <mat-label>Routine check interval (recommended: up to 5 days):</mat-label>
+                    <mat-label>
+                       {{ 'config.timeIntervalRoutineCheckLabel' | translate }}
+                    </mat-label>
                     <input matInput formControlName="routineInterval" type="number" min="1">
                 </mat-form-field>
                 <button mat-button (click)="setRoutineCheckInterval()" class="btn-gradient-primary">
-                    Submit
+                    {{ 'form.submit' | translate }}
                 </button>
 
                 <mat-form-field class="d-block mt-2">
-                    <mat-label>Archieve interval (recommended: up to 30 days):</mat-label>
+                    <mat-label>
+                        {{ 'config.timeIntervalArchiveLabel' | translate }}
+                    </mat-label>
                     <input matInput formControlName="archiveInterval" type="number" min="1">
                 </mat-form-field>
                 <button mat-button (click)="setArchiveInterval()" class="btn-gradient-primary">
-                    Submit
+                    {{ 'form.submit' | translate }}
                 </button>
             </form>
         </div>
@@ -113,20 +126,22 @@
             <mat-icon class="text-primary">
                 chevron_right
             </mat-icon>
-            Guests
+            {{ 'form.guestsConfigurationHeader' | translate }}
         </h3>
         <section [formGroup]="guestTicketConfigFormGroup">
             <mat-checkbox (change)="guestTicketCreationAllowanceChanged()" formControlName="creationAllowance">
-                Allow guests to create tickets
+                {{ 'form.guestsTicketLabel' | translate }}
             </mat-checkbox>
         </section>
         <form [formGroup]="libraryPassFormGroup" (ngSubmit)="onSubmit_libraryPassFormGroup()" class="config-form">
             <mat-form-field class="d-block">
-                <mat-label>Library access password (for guests):</mat-label>
+                <mat-label>
+                    {{ 'form.guestsLibraryPasswordLabel' | translate }}
+                </mat-label>
                 <input matInput formControlName="libraryPassword" type="text" minlength="1">
             </mat-form-field>
             <button mat-button type="submit" class="btn-gradient-primary">
-                Submit
+                {{ 'form.submit' | translate }}
             </button>
         </form>
     </div>

@@ -7,7 +7,7 @@
             <ng-container *ngIf="log.createdBy != undefined">
                 <p class="m-0" class="d-block">
                     <small>
-                        Created by: {{ log.createdBy.label }}
+                        {{ 'user.createdBy' | translate }} {{ log.createdBy.label }}
                     </small>
                 </p>
             </ng-container>
@@ -35,7 +35,7 @@
                         <mat-menu #menu="matMenu">
                             <button mat-menu-item (click)="remove()">
                                 <mat-icon class="text-muted">delete</mat-icon>
-                                Remove
+                                {{ 'form.remove' | translate }}
                             </button>
                         </mat-menu>
                     </li>
@@ -49,5 +49,5 @@
 </ng-container>
 
 <ng-template #elseBlock>
-    No data to display...
+    {{ 'general.empty' | translate }}
 </ng-template>

@@ -5,12 +5,12 @@
                 <label *ngFor="let role of profile.roles" class="badge badge-gradient-info mr-2">{{ role }}</label>
             </p>
         </h2> 
-        <p>Username: {{ profile.username }}</p>
-        <p>Joined: {{ profile.dateRegistered | date:'short' }}</p>
+        <p>{{ 'profile.username' | translate }}: {{ profile.username }}</p>
+        <p>{{ 'profile.joined' | translate }}: {{ profile.dateRegistered | date:'short' }}</p>
         <hr>
         <ng-container *ngIf="profile.personnel != undefined">
             <p class="mt-4">
-                This profile is associated with personnel: 
+                {{ 'profile.associatedWithPersonnel' | translate }}:
                 <a mat-button [routerLink]="'personnel/details/' + profile.personnel.value">
                     <mat-icon class="text-primary">account_circle</mat-icon>{{ profile.personnel.label }}
                 </a>
@@ -18,7 +18,9 @@
         </ng-container>
     
         <ng-container *ngIf="profile.personnel == undefined">
-            <p class="mt-4">This user is not associated with any personnel.</p>
+            <p class="mt-4">
+                {{ 'profile.notAssociatedWithPersonnel' | translate }}:
+            </p>
         </ng-container>
     </div>
 </div>

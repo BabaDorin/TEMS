@@ -1,19 +1,19 @@
 <div class="card">
   <div class="card-body">
-    <div class="card-title">Create new report template</div>
+    <div class="card-title">{{ 'report.createTemplate' | translate }}</div>
     <hr class="mb-2">
     <form [formGroup]="reportFormGroup">
       <p class="text-muted">
-        If you want to save this template, provide a name and a description if necessary
+        {{ 'report.createTemplateTip' | translate }}
       </p>
       
       <mat-form-field class="reportFormControl mb-2 d-block">
-        <mat-label>Name</mat-label>
+        <mat-label>{{ 'report.name' | translate }}</mat-label>
         <input matInput formControlName="name">
       </mat-form-field>
 
       <mat-form-field class="reportFormControl mb-2">
-        <mat-label>Description</mat-label>
+        <mat-label>{{ 'form.description' | translate }}</mat-label>
         <textarea matInput formControlName="description"></textarea>
       </mat-form-field>
       <hr class="mt-3 mb-3">
@@ -21,37 +21,39 @@
       <mat-vertical-stepper>
         <!-- STEP 1- Subject choice -->
         <mat-step>
-          <ng-template matStepLabel>Choose the subject</ng-template>
+          <ng-template matStepLabel>{{ 'report.selectSubject' | translate }}</ng-template>
           <p class="text-muted">
-            Choose the type of entities that will be present in the report. 
+            {{ 'report.selectSubjectTip' | translate }}
           </p>
           <mat-form-field class="reportFormControl">
-            <mat-label>Choose the report's subject</mat-label>
+            <mat-label>{{ 'report.selectSubject' | translate }}</mat-label>
             <mat-select formControlName="subject">
               <mat-option *ngFor="let option of reportObjectOptions" [value]="option.value">
                 {{ option.label }}
               </mat-option>
             </mat-select>
           </mat-form-field>
-          <button mat-button class="d-block" matStepperNext>Next</button>
+          <button mat-button class="d-block" matStepperNext>{{ 'general.next' | translate }}</button>
         </mat-step>
 
         <!-- STEP 2 - Layout configuration (For equipment: Types, definitions, personnel, room, SeparateBy) -->
         <mat-step>
-          <ng-template matStepLabel>Layout configuration</ng-template>
+          <ng-template matStepLabel>
+            {{ 'report.layoutConfiguration' | translate }}
+          </ng-template>
           <p class="text-muted">
-            Configure the way how TEMS should generate the report.
+            {{ 'report.layoutConfigurationTip' | translate }}
           </p>
           <ng-container *ngIf="reportFormGroup.controls.subject.value != 'equipment'">
             <p class="text-muted">
-              Please, select a supported subject first.
+              {{ 'report.noSubjectSelected' | translate }}
             </p>
           </ng-container>
           <ng-container *ngIf="reportFormGroup.controls.subject.value == 'equipment'">
             <div class="row">
               <div class="col-md-5">
-                <app-chips-autocomplete label="Equipment types" formControlName="types"
-                  placeholder="No selection = all types" 
+                <app-chips-autocomplete [label]="translate.instant('report.types')" formControlName="types"
+                  [placeholder]="translate.instant('report.noSelection')" 
                   [alreadySelected]="typesAlreadySelected"s
                   [endPoint]="typeService"
                   (dataCollected)="typeAdded($event)"
@@ -59,8 +61,8 @@
                 </app-chips-autocomplete>
               </div>
               <div class="col-md-5">
-                <app-chips-autocomplete label="Definitions for selected types" formControlName="definitions"
-                  placeholder="No selection = all definitions" 
+                <app-chips-autocomplete [label]="translate.instant('report.definitions')" formControlName="definitions"
+                  [placeholder]="translate.instant('report.noSelection')" 
                   [endPoint]="definitionService"
                   [endPointParameter]="typesEndPointParameter"
                   [alreadySelected]="definitionsAlreadySelected">
@@ -70,14 +72,14 @@
             <br>
             <div class="row">
               <div class="col-md-5">
-                <app-chips-autocomplete label="Include only equipment from these rooms" formControlName="rooms"
-                  placeholder="No selection = all of the rooms"
+                <app-chips-autocomplete [label]="translate.instant('report.roomsFilter')" formControlName="rooms"
+                  [placeholder]="translate.instant('report.noSelection')" 
                   [endPoint]="roomService" 
                   [alreadySelected]="roomsAlreadySelected">
                 </app-chips-autocomplete>
               </div>
               <div class="col-md-5">
-                <app-chips-autocomplete label="Include only equipment allocated to these people"
+                <app-chips-autocomplete [label]="translate.instant('report.personnelFilter')"
                   formControlName="personnel" placeholder="No selection = all personnel"
                   [endPoint]="personnelService"
                   [alreadySelected]="personnelAlreadySelected">
@@ -85,62 +87,62 @@
               </div>
             </div>
             <br>
-            <mat-label>Sepparate by:</mat-label><br><br>
+            <mat-label>{{ 'report.separateBy' | translate }}</mat-label><br><br>
             
             <mat-radio-group formControlName="separateBy">
-              <mat-radio-button value="none">No separation</mat-radio-button><br>
-              <mat-radio-button value="room">By Room</mat-radio-button><br>
-              <mat-radio-button value="personnel">By Personnel</mat-radio-button><br>
-              <mat-radio-button value="type">By Type</mat-radio-button><br>
-              <mat-radio-button value="definition">By Definition</mat-radio-button><br>
+              <mat-radio-button value="none">{{ 'report.noSeparation' | translate }}</mat-radio-button><br>
+              <mat-radio-button value="room">{{ 'report.byRoom' | translate }}</mat-radio-button><br>
+              <mat-radio-button value="personnel">{{ 'report.byPersonnel | translate }}</mat-radio-button><br>
+              <mat-radio-button value="type">{{ 'report.bytType' | translate }}</mat-radio-button><br>
+              <mat-radio-button value="definition">{{ 'report.byDefinition' | translate }}</mat-radio-button><br>
             </mat-radio-group>
           </ng-container>
-          <button mat-button matStepperNext>Next</button>
+          <button mat-button matStepperNext>{{ 'general.next' | translate }}</button>
         </mat-step>
 
         <!-- STEP - Select report properties -->
         <mat-step>
-          <ng-template matStepLabel>Choose report columns</ng-template>
+          <ng-template matStepLabel>{{ 'report.selectColumns' | translate }}</ng-template>
 
           <!-- No subject selected -->
           <ng-container *ngIf="reportFormGroup.controls.subject.value != 'equipment'">
-            <p class="text-muted">Please, select a supported subject first.</p>
+            <p class="text-muted">{{ 'report.noSubjectSelected' | translate }}</p>
           </ng-container>
 
           <!-- Equipment subject -->
           <ng-container *ngIf="reportFormGroup.controls.subject.value == 'equipment'">
             <!-- Common properties for all equipment records -->
-            <app-checkbox-group [options]="equipmentCommonProperties" label="Common proprerties for all types"
+            <app-checkbox-group [options]="equipmentCommonProperties"[label]="translate.instant('report.commonProperties')"
             (toggle)="onCommonPropChange($event)">
             </app-checkbox-group>
 
             <!-- Type specific properties -->
             <ng-container *ngFor="let type of typeSpecificProperties">
             <div class="mt-2">
-              <app-checkbox-group [options]="type.properties" label="Specific properties of {{ type.type.label }}"
+              <app-checkbox-group [options]="type.properties" [label]="translate.instant('report.specificProperties') + type.type.label"
               (toggle)="onSpecificPropChange($event, type.type)">
               </app-checkbox-group>
             </div>
             </ng-container>
           </ng-container>
-          <button mat-button matStepperNext>Next</button>
+          <button mat-button matStepperNext>{{ 'general.next' | translate }}</button>
         </mat-step>
 
         <mat-step>
-          <ng-template matStepLabel>Additional report data</ng-template>
+          <ng-template matStepLabel>{{ 'report.additional' | translate }}</ng-template>
           <br>
           <mat-form-field class="reportFormControl d-block">
-            <mat-label>Header</mat-label>
+            <mat-label>{{ 'report.header' | translate }}</mat-label>
             <textarea matInput formControlName="header"></textarea>
           </mat-form-field>
           <mat-form-field class="reportFormControl d-block">
-            <mat-label>Footer</mat-label>
+            <mat-label>{{ 'report.footer' | translate }}</mat-label>
             <textarea matInput formControlName="footer"></textarea>
           </mat-form-field>
           <!-- signatories   -->
           <app-chips-autocomplete
           class="reportFormControl d-block"
-          label="Signatories"
+          [label]="translate.instant('report.signatories')"
           formControlName="signatories"
           [alreadySelected]="signatoriesAlreadySelected"
           [endPoint]="personnelService"
@@ -150,13 +152,12 @@
       </mat-vertical-stepper>
       <button mat-button (click)="save()" class="d-block">
         <mat-icon class="text-primary">save</mat-icon>
-        Save template
+        {{ 'report.save' | translate }}
       </button>
       <button mat-button (click)="generateReport()" class="d-block">
         <mat-icon class="text-primary">print</mat-icon>
-        Generate report
+        {{ 'report.generate' | translate }}
       </button>
     </form>
-
   </div>
 </div>

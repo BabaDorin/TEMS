@@ -1,23 +1,30 @@
 <div class="card">
     <div class="card-body" style="max-width: 500px;">
-        <div class="card-title">Add Room</div>
+        <h2 *ngIf="roomId == undefined">
+            {{ 'room.add' | translate }}
+        </h2>
+        <h2 *ngIf="roomId != undefined">
+            {{ 'room.update' | translate }}
+        </h2>
         <form [formGroup]="formlyData.form" (ngSubmit)="onSubmit(formlyData.model)">
             <formly-form [form]="formlyData.form" [fields]="formlyData.fields" [model]="formlyData.model"></formly-form>
             <app-chips-autocomplete
                 #labels
-                label="Room labels"
+                [label]="translate.instant('room.labels')"
                 [endPoint]="roomLabelService">
             </app-chips-autocomplete>
             <app-chips-autocomplete
                 #supervisories
-                label="Room Supervisories"
+                [label]="translate.instant('room.supervisories')"
                 [endPoint]="personnelService">
             </app-chips-autocomplete>
             <br>
             <button 
                 type="submit" 
                 class="btn btn-gradient-primary mr-2"
-                [disabled]="formlyData.form.status=='INVALID'">Submit</button>
+                [disabled]="formlyData.form.status=='INVALID'">
+                {{ 'form.submit' | translate }}
+            </button>
         </form>
     </div>
 </div>

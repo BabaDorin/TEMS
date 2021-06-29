@@ -1,3 +1,4 @@
+import { TranslateService } from '@ngx-translate/core';
 import { UserService } from 'src/app/services/user.service';
 import { TokenService } from '../../../services/token.service';
 import { SnackService } from '../../../services/snack.service';
@@ -53,6 +54,7 @@ export class CreateIssueComponent extends TEMSComponent implements OnInit {
     public equipmentService: EquipmentService,
     private issueService: IssuesService,
     private snackService: SnackService,
+    public translate: TranslateService,
     @Optional() @Inject(MAT_DIALOG_DATA) public dialogData: any
   ) {
     super();

@@ -6,35 +6,35 @@
                     <app-personnel-details-general 
                     [personnelId]="personnelId"
                     (archivationStatusChanged)="archivationStatusChanged()">
-                        Loading...
+                        {{ 'general.loading' | translate }}
                     </app-personnel-details-general>
                 </ng-template>
             </mat-tab>
             <ng-container *ngIf="personnelSimplified.isArchieved == false">
-                <mat-tab label="Logs">
+                <mat-tab [label]="translate.instant('entities.logs')">
                     <ng-template matTabContent>
                         <app-personnel-details-logs [personnel]="personnelSimplified">
-                            Loading...
+                            {{ 'general.loading' | translate }}
                         </app-personnel-details-logs>
                     </ng-template>
                 </mat-tab>
                 <mat-tab>
                     <ng-template mat-tab-label>
                         <div [matBadge]="personnelSimplified.activeTickets" matBadgeOverlap="false">
-                            Issues
+                            {{ 'entities.tickets' | translate }}
                         </div>
                     </ng-template>
                     
                     <ng-template matTabContent>
                         <app-personnel-details-issues [personnel]="personnelSimplified">
-                            Loading...
+                            {{ 'general.loading' | translate }}
                         </app-personnel-details-issues>
                     </ng-template>
                 </mat-tab>
-                <mat-tab label="Allocations">
+                <mat-tab [label]="translate.instant('entities.allocations')">
                     <ng-template matTabContent>
                         <app-personnel-details-allocations [personnel]="personnelSimplified">
-                            Loading...
+                            {{ 'general.loading' | translate }}
                         </app-personnel-details-allocations>
                     </ng-template>
                 </mat-tab>

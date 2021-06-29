@@ -1,3 +1,4 @@
+import { TranslateService } from '@ngx-translate/core';
 import { PersonnelService } from '../../../services/personnel.service';
 import { RoomLabelService } from './../../../services/room-label.service';
 import { SnackService } from '../../../services/snack.service';
@@ -36,6 +37,7 @@ export class AddRoomComponent extends TEMSComponent implements OnInit {
     private snackService: SnackService,
     public roomLabelService: RoomLabelService,
     public personnelService: PersonnelService,
+    public translate: TranslateService,
     @Optional() @Inject(MAT_DIALOG_DATA) public dialogData: any
   ) {
     super();

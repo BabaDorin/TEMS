@@ -1,3 +1,4 @@
+import { TranslateService } from '@ngx-translate/core';
 import { ClaimService } from './../../../services/claim.service';
 import { PieChartData } from './../../../models/analytics/pieChart-model';
 import { TEMSComponent } from './../../../tems/tems.component';
@@ -26,6 +27,7 @@ export class SummaryEquipmentAnalyticsComponent extends TEMSComponent implements
   constructor(
     private analyticsService: AnalyticsService,
     private snackService: SnackService,
+    public translate: TranslateService,
     private cp: CurrencyPipe,
   ) {
     super();

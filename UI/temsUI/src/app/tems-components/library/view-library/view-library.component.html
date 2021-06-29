@@ -1,18 +1,18 @@
 <div class="card">
     <div class="card-body">
         <h2>
-            View library items
+            {{ 'library.view' | translate }}
         </h2>
         <button mat-button *ngIf="claims.canManage" (click)="openUploadItems()">
             <mat-icon class="text-primary">add</mat-icon>
-            Upload new file
+            {{ 'library.upload' | translate }}
         </button>
         <div class="mt-3"></div>
         <ng-container *ngIf="spaceUsageData != undefined">
             <div class="row">
                 <div class="col-md-6 col-xs-12">
-                    <small>{{spaceUsageData.numerator | number : '1.1-1'}} used out of {{ spaceUsageData.denominator | number :
-                        '1.1'}} GB allocated</small>
+                    <small>{{spaceUsageData.numerator | number : '1.1-1'}} {{ 'library.usedOutOf' | translate }} {{ spaceUsageData.denominator | number :
+                        '1.1'}} {{ 'library.gbAllocated' | translate }}</small>
                     <mat-progress-bar mode="determinate"
                         [value]="spaceUsageData.numerator*100/spaceUsageData.denominator">
                     </mat-progress-bar>

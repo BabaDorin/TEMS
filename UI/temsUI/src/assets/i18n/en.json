@@ -1,4 +1,87 @@
 {
+    "entities": {
+        "personnel": "Personnel",
+        "room": "Room",
+        "rooms": "Rooms",
+        "equipment": "Equipment",
+        "tickets": "Tickets",
+        "logs": "Logs",
+        "allocations": "Allocations",
+        "properties": "Properties",
+        "definitions": "Definitions",
+        "currentlyAllocatedEquipment": "Currently allocated equipment"
+    },
+
+    "general": {
+        "preparing": "Preparing",
+        "loading": "Loading",
+        "empty": "Nothing to display...",
+        "edit": "Edit",
+        "archive": "Archive",
+        "sendEmail": "Send an e-mail",
+        "dearchive": "Dearchive",
+        "viewMore": "View more",
+        "next": "Next",
+        "createdBy": "Created by: ",
+        "createdOn": "Created on: "
+    },
+
+    "notifications":{
+        "notifications": "Notifications"
+    },
+
+    "menu": {
+        "equipment": "Equipment",
+        "view": "View",
+        "add": "Add",
+        "quickAccess": "Quick access",
+        "allocate": "Allocate",
+        "allocations": "Allocations", 
+        "rooms": "Rooms",
+        "personnel": "Personnel",
+        "keys": "Keys",
+        "issues": "Issues",
+        "create": "Create",
+        "communication": "Communication",
+        "announcements": "Announcements", 
+        "emails": "Send E-mails",
+        "logs": "Logs",
+        "library": "Library",
+        "upload": "Upload",
+        "report": "Reports",
+        "administration": "Administration",
+        "users": "Users",
+        "configuration": "Configuration",
+        "systemLogs": "System logs",
+        "archive": "Archive"
+    },
+    "library": {
+        "view": "View library items",
+        "upload": "Upload file",
+        "fileName": "File name",
+        "successfulyUploaded": "has been successfuly uploaded!",
+        "startUpload": "Start uploading",
+        "usedOutOf": "used out of",
+        "gbAllocated": "GB allocated"
+    },
+    "logs": {
+        "logsHeader": "View system logs",
+        "create": "Create new log",
+        "selectAddressee" : "Select the addressee"
+    },
+
+    "analytics": {
+        "equipmentAmount": "Total equipment amount", 
+        "equipmentUsingRate": "Equipment using rage", 
+        "equipmentTypeRate": "Equipment type rate",
+        "equipmentAllocationRate": "Equipment allocation rate",
+        "openTickets": "Open tickets",
+        "closingRate": "Closing rate",
+        "closingByRate": "Closing by rate",
+        "openTicketStatusRate": "Open ticket status rate"
+    },
+
+
     "form":{
         "description": "Description",
         "identifier": "Identifier",
@@ -13,11 +96,15 @@
         "email": "E-mail",
         "fullName" :"Full name",
         "username" : "Username",
-        "password": "Password"
+        "password": "Password",
+        "submit": "Submit",
+        "remove": "Remove",
+        "date" : "Select the date:",
+        "any": "Any"
     },
     
     "equipment": {
-        "priceDescription": "The price can be overwritten equipments having this definition",
+        "priceDescription": "The price can be overwritten equipments having this definition"
 
     },
     
@@ -28,13 +115,24 @@
         "phoneNumber": "Phone number",
         "email": "E-mail",
         "emailNotificationsDescription": "The email address is primarily used for account recovering. If you desire, you can recieve notifications too.",
-        "emailNotifications": "Get notifications via E-mail"
+        "emailNotifications": "Get notifications via E-mail",
+        "profile": "Profile",
+        "signOut": "Sign Out",
+        "logIn": "Log In",
+        "add": "Add user",
+        "update": "Update user",
+        "claims": "User's claims",
+        "claimsLabel": "Select new user claims (Role's claims will set anyways)",
+        "roleLabel": "Assign roles", 
+        "assignPersonnelLabel": "Assign personnel record to this user if any",
+        "userManagement": "User management",
+        "createdBy": "Created by: "
     },
 
     "password": {
         "old": "Old password",
         "new": "New password",
-        "confirm": "Confirm new password",
+        "confirm": "Confirm new password"
     },
 
     "personnel":{
@@ -42,9 +140,43 @@
         "phoneNumber": "Phone number",
         "phoneNumberDescription": "It might be used in the future for sending SMS",
         "email": "Email",
-        "emailDescription": "It will be used for sending E-mails"
+        "emailDescription": "It will be used for sending E-mails",
+        "personnel": "Personnel",
+        "add": "Add personnel",
+        "positions": "Personnel positions",
+        "properties": "Personnel properties",
+        "userAssociations": "Personnel - user association",
+        "roomsSupervised": "Rooms supervised",
+        "includeSelectedInATicket": "Include selected in a ticket",
+        "sendEmailToSelected": "Send e-mail to selected",
+        "userAssociationsInfo": "If this personnel record is here to represent someone who already has an account, provide the properly Personnel - User association in order to make these entities connected. Make sure the indicated user does not have another personnel association."
+    },
 
-    }
+    "profile": {
+        "generalInformation": "General information",
+        "tickets": "Tickets",
+        "analytics": "Analytics",
+        "settings": "Settings",
+        "visit": "Visit profile",
+        "email": "E-mail",
+        "phone": "Phone",
+        "username": "Username",
+        "joined": "Joined",
+        "associatedWithPersonnel": "This profile is associated with personnel",
+        "notAssociatedWithPersonnel": "This user is not associated with any personnel",
+        "accountSettings": "Account settings",
+        "generalAccountInfomration": "General account information",
+        "changePassowrd": "Change password",
+        "changeMyPassword": "Change my password",
+        "emailPreferences": "E-mail preferences",
+        "emailTip": "Tech support team is advised to activate email notifications in order to be notified when someone reports an issue.",
+        "ticketsCreated": "Tickets created by the user",
+        "ticketsClosed": "Tickets closed by the user", 
+        "ticketsAssigned": "Tickets assigned to user",
+        "probabilityOfReopenClosedTicket": "Probability of reopening a ticket closed by the user",
+        "probabilityOfReopenClosedTicketLabel1": "tickets were closed by the user, from which",
+        "probabilityOfReopenClosedTicketLabel2": "have been reopened afterwards"
+    },
 
     "property":{
         "name": "Name",
@@ -54,18 +186,68 @@
         "description": "Property description",
         "descriptionDescription": "Description of this property will appear like this",
         "dataType": "Data type",
-        "required": "Required"
+        "required": "Required",
+        "properties": "Properties",
+        "add": "Add new property"
+    },
+
+    "config": {
+        "configSettingsHeader": "System configuration settings",
+        "sicIntegration": "SIC Integration",
+        "sicIntegrationText": "Creates all of SIC (System Info Collector) types and properties.",
+        "sicIntegrationButtonText": "Integrate Sytem Info Collector",
+        "storageConstraintsHeader": "Storage constraints",
+        "storageConstraintsText": "Set space limit (in Gigabytes) for the following subjects:",
+        "libraryStorageLabel": "GB of storage space allocated for storing library items:",
+        "emailConfigurationHeader": "Email configuration",
+        "emailConfigurationText": "Specify the email sender",
+        "emailSender": "Sender address:",
+        "emailPassword": "Sender password:",
+        "timeIntervalsHeader": "Time intervals",
+        "timeIntervalsText": "Indicate interval values in hours for the following actions",
+        "timeIntervalRoutineCheckLabel": "Routine check interval (recommended: up to 5 days):",
+        "timeIntervalArchiveLabel": "Archieve period (recommended: up to 30 days):",
+        "guestsConfigurationHeader": "Guests",
+        "guestsTicketLabel": "Allow guests to create tickets",
+        "guestsLibraryPasswordLabel": "Library access password (for guests):"
     },
 
     "key": {
+        "key": "Key",
+        "add": "Add new key",
         "identifierDescription": "A short name for this key, like 214",
         "copies": "Number of copies",
-        "copiesDescription": "Number of available copies"
+        "copiesDescription": "Number of available copies",
+        "allocations": "Key allocations",
+        "allocateTo": "Allocate to",
+        "allocate": "Allocate",
+        "allocateSelected": "Allocate selected",
+        "allocated": "Allocated",
+        "returned": "Returned",
+        "unallocatedKeys": "Unallocated keys",
+        "filterAllocations": "Filter",
+        "markSelectedAsReturned": "Mark selected as returned",
+        "allocatedKeys": "allocated keys",
+        "createAllocation": "Create new allocation",
+        "selectForAllocation": "Choose one or more keys to allocate"
+    },
+
+    "allocation": {
+        "open": "Open",
+        "close": "Close",
+
+        "allocationsHeader": "Allocations",
+        "notAllocated": "This equipment is deposited, it's not allocated to anyone currently.",
+        "create": "Create new allocation",
+        "filterAllocations": "Filter",
+        "selectEquipmentLabel": "Equipments' TEMSID or Serial Number"
     },
 
     "announcement": {
+        "announcementsHeader": "TEMS Announcements",
         "title": "Title", 
-        "message": "Message" 
+        "message": "Message",
+        "add": "Create an announcement"
     },
 
     "definition": {
@@ -73,24 +255,59 @@
         "childIdentifierDescription": "Name associated with this definition (If the desired definition already exists, select it from dropdown)",
         "choseExistingLabel": "Choose existing one",
         "choseExistingDescription": "Choose an existing definition",
+        "add": "Add new definition"
+    },
+
+    "type": {
+        "add": "Add new type"
     },
 
     "room":{
+        "add": "Add new room",
+        "update": "Update room",
         "identifier": "Room identifier",
         "floor": "Floor",
-        "emailSender": "E-mail sender"
+        "emailSender": "E-mail sender",
+        "labels": "Room labels", 
+        "supervisories": "Room supervisories", 
+        "addLogForSelected": "Add log for selected",
+        "includeSelectedInATicket": "Include selected in a ticket"
     },
 
     "email":{
         "sender": "E-Mail sender",
         "subject": "E-Mail subject",
-        "text": "E-Mail text"
+        "text": "E-Mail text",
+        "sendEmailHeader": "Send an e-mail",
+        "sendEmailTo": "Send this e-mail to",
+        "send": "Send e-mail",
+        "sendEmailTip": "Note: Your message will be sent only to those personnel records that have a valid email address assigned."
     },
 
-    "issue": {
+
+    "ticket": {
         "problem": "What is the problem?",
         "description": "Problem description (helps a lot!)",
-        "priority": "Priority level"
+        "priority": "Priority level",
+        "create": "Report a problem",
+        "selectEquipmentLabel": "Equipments' TEMSID or Serial Number",
+        "selectRoomLabel": "Select one or more rooms",
+        "selectPeopleLabel": "People who need help",
+        "assignToLabel": "Assign this issue to",
+        "pinned": "Pinned tickets",
+        "closedOn": "Closed on",
+        "changeStatus": "Change ticket status",
+        "equipmentInvolved": "Equipment involved",
+        "roomsInvolved": "Rooms involved",
+        "personnelInvolved": "Personnel involved",
+        "assignedTo": "Assigned to",
+        "markSolved": "Mark as solved",
+        "reopen": "Reopen",
+        "remove": "Remove", 
+        "pin": "Pin",
+        "unpin": "Unpin",
+        "view": "View tickets",
+        "sent": "Your ticket has been sent! Our technicians will help you as soon as possible."
     }, 
 
     "authentication": {
@@ -98,6 +315,7 @@
         "askAdministrator": "If you don't have an account, ask system administrator.",
         "signIn": "SIGN IN"
     },
+
     "error": {
         "sorry": "sorry",
         "restricted": "The acces to this page is restricted",
@@ -105,8 +323,17 @@
         "internal": "Internal server error",
         "backHome": "Back to home"
     },
+
+    "navbar": {
+        "notifications": "Notifications",
+        "noNotificationsPlaceholder": "Nothing to display...",
+        "viewAll": "View all notifications"
+
+
+    },
+
     "dashboard" : { 
-        "announcementLabel" : "Last 5 announcements",
+        "announcementLabel" : "Last announcements",
         "quickAccess": "Quick access",
         "tickets": "Tickets",
         "ticketText": "Encountered any problems or need some technical support?",
@@ -115,9 +342,49 @@
         "seeMore": "See more...",
         "techniciansLabel": "Our technicians"
     },
-    "announcementsList": {
-        "create": "Create an announcement",
-        "noAnnouncementsPlaceHolder": "No announcements yet..."
-    }
+
+    "archive": {
+        "archived": "Archived",
+        "archiveHeader": "View archived items",
+        "archiveNote": "Note: All of archieved items will get deleted after a specified period of time.",
+        "typeSelectionHeader": "Archived items' type",
+        "dearchive": "Dearchive selected",
+        "remove": "Remove selected (completely)"
+    },
     
+    "report": {
+        "lastReports": "Last generated reports",
+        "templates": "Custom templates",
+        "reports": "Reports",
+        "reportsTip": "Choose of the following templates in order to generate a report or",
+        "selectSubject": "Select the report subject",
+        "selectSubjectTip": "Choose the type of entities that will be present in the report.",
+        "createTemplate": "Create new report template",
+        "name": "Name",
+        "header": "Header",
+        "signatories": "Signatories",
+        "footer": "Footer",
+        "generatedOn": "Report generated on ",
+        "additional": "Additional report data",
+        "commonProperties": "Common proprerties for all types",
+        "specificProperties": "Specific properties of ",
+        "selectColumns": "Select report columns",
+        "save": "Save template",
+        "generate": "Generate report",
+        "separateBy": "Separate by",
+        "noSeparation": "No separation",
+        "byRoom": "By room",
+        "byPersonnel": "By personnel",
+        "byType": "By type",
+        "byDefinition": "By definition",
+        "noSelection": "No selection = any",
+        "types": "Equipment types",
+        "defintions": "DefinitionsOfSelectedTypes",
+        "roomsFilter": "Include only equipment from these rooms",
+        "personnelFilter": "Include only equipment allocated to these people",
+        "layoutConfiguration": "Layout configuration",
+        "noSubjectSelected": "Please, select a supported subject first",
+        "layoutConfigurationTip": "Configure the way how TEMS should generate the report.",
+        "createTemplateTip": "If you want to save this template, provide a name and a description if necessary"
+    }
 }

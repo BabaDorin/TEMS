@@ -1,12 +1,13 @@
 <div class="card">
     <div class="card-body">
         <h2>
-            Filter
+            {{ 'allocation.filterAllocations' | translate }}
         </h2>
         <form [formGroup]="filterAllocationsFormGroup">
             <div class="row">
                 <div class="col-md-6 col-sm-12 fade-in">
-                    <app-chips-autocomplete label="Equipments' TEMSID or Serial Number..."
+                    <app-chips-autocomplete 
+                    [label]="translate.instant('allocation.selectEquipmentLabel')"
                     formControlName="equipment"
                     [endPoint]="equipmentService"
                     (dataCollected)="filtersChanged()"
@@ -14,7 +15,7 @@
                     </app-chips-autocomplete>
                 </div>
                 <div class="col-md-6 col-sm-12 fade-in">
-                    <app-chips-autocomplete label="Room"
+                    <app-chips-autocomplete [label]="translate.instant('entities.rooms')"
                     formControlName="rooms"
                     [endPoint]="roomService"
                     (dataCollected)="filtersChanged()"
@@ -22,7 +23,7 @@
                     </app-chips-autocomplete>
                 </div>
                 <div class="col-md-6 col-sm-12 fade-in">
-                    <app-chips-autocomplete label="Personnel"
+                    <app-chips-autocomplete [label]="translate.instant('entities.personnel')"
                     formControlName="personnel"
                     [endPoint]="personnelService"
                     (dataCollected)="filtersChanged()"
@@ -30,7 +31,7 @@
                     </app-chips-autocomplete>
                 </div>
                 <div class="col-md-6 col-sm-12 fade-in">
-                    <app-chips-autocomplete label="Definitions"
+                    <app-chips-autocomplete [label]="translate.instant('entities.definitions')"
                     formControlName="definitions"
                     [endPoint]="definitionService"
                     (dataCollected)="filtersChanged()"
@@ -40,17 +41,17 @@
             </div>
         </form>
         <mat-tab-group [@.disabled]="true">
-            <mat-tab label="Open">
+            <mat-tab [label]="translate.instant('allocation.open')">
                 <app-entity-allocations-list
                     [equipmentIds]="equipments"
                     [personnelIds]="personnel"
                     [roomIds]="rooms"
                     [definitionIds]="definitions"
                     onlyActive="true">
-                    Loading...
+                    {{ 'general.loading' | translate }}
                 </app-entity-allocations-list>
             </mat-tab>
-            <mat-tab label="Closed">
+            <mat-tab [label]="translate.instant('allocation.closed')">
                 <ng-template matTabContent>
                     <app-entity-allocations-list
                     [equipmentIds]="equipments"
@@ -58,7 +59,7 @@
                     [roomIds]="rooms"
                     [definitionIds]="definitions"
                     onlyClosed="true">
-                    Loading...
+                    {{ 'general.loading' | translate }}
                     </app-entity-allocations-list>
                 </ng-template>
             </mat-tab>

@@ -1,37 +1,43 @@
 <div class="card strech-card">
     <div class="card-body">
-        <h2>Account settings</h2>
+        <h2>
+            {{ 'profile.accountSettings' | translate }}
+        </h2>
         <hr>
-        <h3>General account information</h3>
+        <h3>
+            {{ 'profile.generalAccountInfomration' | translate }}
+        </h3>
         <form [formGroup]="accountGeneralInfoFormlyData.form" (ngSubmit)="editGeneralInfo(accountGeneralInfoFormlyData.model)">
             <formly-form [form]="accountGeneralInfoFormlyData.form" [fields]="accountGeneralInfoFormlyData.fields"
                 [model]="accountGeneralInfoFormlyData.model"></formly-form>
             <br>
             <button mat-button type="submit" class="btn-gradient-primary"
                 [disabled]="accountGeneralInfoFormlyData.form.status == 'INVALID'">
-                Submit changes
+                {{ 'form.submit' | translate }}
             </button>
         </form>
         <hr>
-        <h3>Change account password</h3>
+        <h3>{{ 'profile.changePassowrd' | translate }}</h3>
         <form [formGroup]="changePasswordFormlyData.form" (ngSubmit)="changePass(changePasswordFormlyData.model)">
             <formly-form [form]="changePasswordFormlyData.form" [fields]="changePasswordFormlyData.fields"
                 [model]="changePasswordFormlyData.model"></formly-form>
             <br>
             <button mat-button type="submit" class="btn-gradient-primary"
                 [disabled]="changePasswordFormlyData.form.status == 'INVALID'">
-                Change my password
+                {{ 'profile.changeMyPassword' | translate }}
             </button>
         </form>
         <hr>
-        <h3>Email preferences</h3>
+        <h3>{{ 'profile.emailPreferences' | translate }}</h3>
         <form [formGroup]="emailPreferencesFormlyData.form" (ngSubmit)="saveEmailPreferences(emailPreferencesFormlyData.model)">
             <formly-form [form]="emailPreferencesFormlyData.form" [fields]="emailPreferencesFormlyData.fields"
                 [model]="emailPreferencesFormlyData.model"></formly-form>
-            <p class="text-muted">Tech support team is advised to activate email notifications in order to be notified when someone reports an issue.</p>
+            <p class="text-muted">
+                {{ 'profile.emailTip' | translate }}
+            </p>
             <button mat-button type="submit" class="btn-gradient-primary"
                 [disabled]="emailPreferencesFormlyData.form.status == 'INVALID'">
-                Save email preferences
+                {{ 'form.submit' | translate }}
             </button>
         </form>
     </div>

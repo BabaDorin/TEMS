@@ -1,7 +1,7 @@
 <div class="flex-container">
     <div class="col-md-12" id="section1">
         <app-summary-issues-analytics>
-            Loading...
+            {{ 'general.Loading' | translate }}
         </app-summary-issues-analytics>
     </div>
     
@@ -14,11 +14,13 @@
         
         <div class="card mt-3">
             <div class="card-body">
-                <div class="card-title">View Issues</div>
+                <div class="card-title">
+                    {{ 'ticket.view' | translate }}
+                </div>
                 <form [formGroup]="filterIssueFormGroup">
                     <div class="row">
                         <div class="col-md-4 col-sm-12">
-                            <app-chips-autocomplete label="Equipments' TEMSID or Serial Number..."
+                            <app-chips-autocomplete [label]="translate.instant('ticket.selectEquipmentLabel')"
                             formControlName="equipment"
                             [endPoint]="equipmentService"
                             (dataCollected)="equipmentSelected($event)"
@@ -27,7 +29,7 @@
                             </app-chips-autocomplete>
                         </div>
                         <div class="col-md-4 col-sm-12">
-                            <app-chips-autocomplete label="Room"
+                            <app-chips-autocomplete [label]="translate.instant('entities.rooms')"
                             formControlName="rooms"
                             [endPoint]="roomService"
                             (dataCollected)="roomSelected($event)"
@@ -36,7 +38,7 @@
                             </app-chips-autocomplete>
                         </div>
                         <div class="col-md-4 col-sm-12">
-                            <app-chips-autocomplete label="Personnel"
+                            <app-chips-autocomplete [label]="translate.instant('entities.personnel')"
                             formControlName="personnel"
                             [endPoint]="personnelService"
                             (dataCollected)="personnelSelected($event)"
@@ -55,7 +57,7 @@
                             [roomId]="roomId"
                             [personnelId]="personnelId"
                             (pinned)="ticketPinned($event)">
-                            Loading...
+                            {{ 'general.loading' | translate }}
                         </app-entity-issues-list>
                     </mat-tab>
                     <mat-tab label="Closed">
@@ -69,7 +71,7 @@
                             onlyClosed="true"
                             addIssueEnabled="false"
                             (pinned)="ticketPinned($event)">
-                            Loading...
+                            {{ 'general.loading' | translate }}
                         </app-entity-issues-list>
                         </ng-template>
                     </mat-tab>

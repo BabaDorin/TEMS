@@ -2,10 +2,9 @@
     <mat-card-content>
         <h4><b>{{ report.template }}</b></h4>
         <small class="text-muted">
-            Report generated on {{ report.dateGenerated | date: 'medium' }}
-            by
+            {{ 'report.generatedOn' | translate }} {{ report.dateGenerated | date: 'medium' }}
             <a class="text-muted" [routerLink]="'/profile/view/' + report.generatedBy.value">
-                {{ report.generatedBy.label }}
+                ({{ report.generatedBy.label }})
             </a>
         </small>
     </mat-card-content>

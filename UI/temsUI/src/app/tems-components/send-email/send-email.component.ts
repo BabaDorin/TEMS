@@ -1,3 +1,4 @@
+import { TranslateService } from '@ngx-translate/core';
 import { FormlyData } from './../../models/formly/formly-data.model';
 import { PersonnelService } from 'src/app/services/personnel.service';
 import { ChipsAutocompleteComponent } from 'src/app/public/formly/chips-autocomplete/chips-autocomplete.component';
@@ -34,6 +35,7 @@ export class SendEmailComponent extends TEMSComponent implements OnInit {
     private snackService: SnackService,
     private emailService: EmailService,
     public personnelService: PersonnelService,
+    public translate: TranslateService,
     @Optional() @Inject(MAT_DIALOG_DATA) public dialogData: any
   ) { 
     super();

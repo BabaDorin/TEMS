@@ -1,6 +1,6 @@
 <div class="col-md-12 flex-container">
     <h2 class="mt-3">
-        Currently allocated equipment
+        {{ 'entities.currentlyAllocatedEquipment' | translate }}
     </h2>
     <hr>
 
@@ -16,7 +16,7 @@
 
     <div id="section3" class="mt-5">
         <app-entity-allocations-list [personnel]="personnel" (allocationCreated)="refreshAgGrid()">
-            Loading...
+            {{ 'general.loading' | translate }}
         </app-entity-allocations-list>
     </div>
 

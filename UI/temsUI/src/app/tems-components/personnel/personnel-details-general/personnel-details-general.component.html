@@ -30,27 +30,27 @@
                             <li class="breadcrumb-item" aria-current="page">
                                 <button mat-button [matMenuTriggerFor]="menu" aria-label="Add Equipment Menu"
                                     class="float-right">
-                                    Actions <mat-icon class="text-primary">more_vert</mat-icon>
+                                    <mat-icon class="text-primary">more_vert</mat-icon>
                                 </button>
                                 <mat-menu #menu="matMenu">
                                     <ng-container *ngIf="!personnel.isArchieved">
                                         <button mat-button (click)="edit()" class="btn-block">
                                             <mat-icon class="text-muted float-right p-1">edit</mat-icon>
-                                            Edit
+                                            {{ 'general.edit' | translate }}
                                         </button>
                                         <button mat-button (click)="archieve()" class="btn-block">
                                             <mat-icon class="text-muted float-right p-1">auto_delete</mat-icon>
-                                            Archieve
+                                            {{ 'general.archive' | translate }}
                                         </button>
                                         <button *ngIf="claims.canSendEmails" mat-button (click)="sendMail()" class="btn-block">
                                             <mat-icon class="text-muted float-right p-1">mail</mat-icon>
-                                            Send an email
+                                            {{ 'general.sendEmail' | translate }}
                                         </button>
                                     </ng-container>
                                     <ng-container *ngIf="personnel.isArchieved">
                                         <button mat-button (click)="archieve()">
                                             <mat-icon class="text-muted float-right p-1">restore</mat-icon>
-                                            Dearchieve
+                                            {{ 'general.dearchive' | translate }}
                                         </button>
                                     </ng-container>
                                 </mat-menu>
@@ -62,7 +62,7 @@
             <hr>
             <ng-container *ngIf="personnel.roomSupervisories != undefined && personnel.roomSupervisories.length > 0">
                 <h2 class="text-muted text-bold">
-                    Rooms supervised:
+                    {{ 'personnel.roomsSupervised' | translate }}
                 </h2>
                 <a mat-button *ngFor="let supv of personnel.roomSupervisories" [routerLink]="'/rooms/details/' + supv.value">
                     <mat-icon class="text-primary">edit</mat-icon>
@@ -71,12 +71,16 @@
                 <hr>
             </ng-container>
             <div class="property-container">
-                <h2 class="text-muted text-bold">Personnel properties</h2>
+                <h2 class="text-muted text-bold">
+                    {{ 'personnel.properties' | translate }}
+                </h2>
                 <app-property-render [properties]="personnelProperties">
                 </app-property-render>
             </div>
         </div>
 
-        <a *ngIf="displayViewMore == true" mat-button [routerLink]="'/personnel/details/' + personnel.id" (click)="viewMore()">View More</a>
+        <a *ngIf="displayViewMore == true" mat-button [routerLink]="'/personnel/details/' + personnel.id" (click)="viewMore()">
+            {{ 'general.viewMore' | translate }}
+        </a>
     </div>
 </ng-container>

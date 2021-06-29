@@ -1,6 +1,8 @@
 <div class="card">
     <div class="card-body">
-        <div class="card-title">Upload file</div>
+        <div class="card-title">
+            {{ 'library.upload' | translate }}
+        </div>
         <hr>
         <div class="mt-5"></div>
         <app-file-upload (filesSelected)="filesSelected($event)"></app-file-upload>
@@ -28,7 +30,7 @@
                         <br>
                         <form class="fileInfoForm">
                             <mat-form-field class="full-width">
-                                <mat-label>File name (Optional)</mat-label>
+                                <mat-label>{{ 'library.fileName' | translate }}</mat-label>
                                 <input 
                                     matInput 
                                     name="title"
@@ -38,7 +40,7 @@
                             </mat-form-field>
                             <br>
                             <mat-form-field class="full-width">
-                                <mat-label>Description (Optional)</mat-label>
+                                <mat-label>{{ 'form.description' | translate }}</mat-label>
                                 <textarea 
                                     matInput 
                                     name="description"
@@ -52,7 +54,7 @@
 
                     <div *ngIf="file?.status == 'uploaded'">
                             <p class="text-center"><b>{{ file?.name }}</b></p>
-                            <p class="text-success text-center">Has been successfuly uploaded!</p>
+                            <p class="text-success text-center">{{ 'library.successfulyUploaded' | translate }}</p>
                     </div>
     
                     <div class="delete" (click)="deleteFile(i)">
@@ -71,7 +73,7 @@
                 *ngIf="files.length > 0" 
                 [disabled]="!uploadEnabled"
                 (click)="upload()">
-                Start uploading
+                {{ 'library.startUploading' | translate }}
             </button>
         </div>
     </div>

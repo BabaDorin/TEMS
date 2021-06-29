@@ -5,15 +5,15 @@
             <mat-tab label="Unallocated">
                 <div class="col-md-12 mt-3">
                     <h2>
-                        Unallocated keys
+                        {{ 'key.unallocatedKeys' | translate }}
                     </h2>
                     <button *ngIf="claims.canManage || claims.canAllocateKeys" mat-button (click)="addKey()">
                         <mat-icon class="text-primary">add</mat-icon>
-                        Add new
+                        {{ 'key.add' | translate }}:
                     </button>
                     <button *ngIf="claims.canAllocateKeys" mat-button (click)="allocateSelectedKeys()">
                         <mat-icon class="text-primary">double_arrow</mat-icon>
-                        Allocate selected
+                        {{ 'key.allocateSelected' | translate }}
                     </button>
                     <hr>
                     <app-ag-grid-keys #unallocated [loading]="loading" [keys]="unallocatedKeys"
@@ -24,11 +24,11 @@
             <mat-tab label="Allocated">
                 <div class="col-md-12 mt-3">
                     <h2>
-                        Allocated keys
+                        {{ 'key.allocatedKeys' | translate }}
                     </h2>
                     <button *ngIf="claims.canAllocateKeys" mat-button (click)="returnMultipleKeys()">
                         <mat-icon class="text-primary">done</mat-icon>
-                        Mark selected as returned
+                        {{ 'key.markSelectedAsReturned' | translate }}
                     </button>
                     <hr>
                     <app-ag-grid-keys #allocated [keys]="allocatedKeys" [loading]="loading" displayAsAllocated="true"

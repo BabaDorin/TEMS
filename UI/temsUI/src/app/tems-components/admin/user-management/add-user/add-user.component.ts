@@ -1,3 +1,4 @@
+import { TranslateService } from '@ngx-translate/core';
 import { ChipsAutocompleteComponent } from 'src/app/public/formly/chips-autocomplete/chips-autocomplete.component';
 import { FormlyData } from '../../../../models/formly/formly-data.model';
 import { IOption } from '../../../../models/option.model';
@@ -43,6 +44,7 @@ export class AddUserComponent extends TEMSComponent implements OnInit {
     private roleService: RoleService,
     private snackService: SnackService,
     private formlyParserService: FormlyParserService,
+    private translate: TranslateService,
     @Optional() @Inject(MAT_DIALOG_DATA) public dialogData: any
   ) {
     super();

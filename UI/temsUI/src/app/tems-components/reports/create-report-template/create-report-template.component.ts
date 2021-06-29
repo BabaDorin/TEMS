@@ -1,3 +1,4 @@
+import { TranslateService } from '@ngx-translate/core';
 import { Downloader } from './../../../shared/downloader/fileDownloader';
 import { SnackService } from '../../../services/snack.service';
 import { filter } from 'rxjs/operators';
@@ -55,6 +56,7 @@ export class CreateReportTemplateComponent extends TEMSComponent implements OnIn
     public personnelService: PersonnelService,
     private reportService: ReportService,
     private activatedroute: ActivatedRoute,
+    public translate: TranslateService,
     private snackService: SnackService
   ) {
     super();

@@ -1,3 +1,4 @@
+import { TranslateService } from '@ngx-translate/core';
 import { TEMSComponent } from './../../../tems/tems.component';
 import { PersonnelService } from '../../../services/personnel.service';
 import { ViewPersonnelSimplified } from './../../../models/personnel/view-personnel-simplified.model';
@@ -20,7 +21,8 @@ export class PersonnelDetailsComponent extends TEMSComponent implements OnInit {
 
   constructor(
     private activatedroute: ActivatedRoute,
-    private personnelService: PersonnelService
+    private personnelService: PersonnelService,
+    public translate: TranslateService
   ) { 
     super();
   }
@@ -37,7 +39,7 @@ export class PersonnelDetailsComponent extends TEMSComponent implements OnInit {
         this.personnelSimplified = this.personnelService.getPersonnelSimplifiedFromPersonnel(this.personnel);
 
         if(this.personnelSimplified.isArchieved)
-          this.mainHeaderLabel += " (Archieved)"
+          this.mainHeaderLabel += " (" + this.translate.instant('archive.archived') + ")";
       }));
   }
 
@@ -46,6 +48,6 @@ export class PersonnelDetailsComponent extends TEMSComponent implements OnInit {
 
     this.personnelSimplified.isArchieved = !this.personnelSimplified.isArchieved;
     if(this.personnelSimplified.isArchieved)
-          this.mainHeaderLabel += " (Archieved)"
+          this.mainHeaderLabel += " (" + this.translate.instant('archive.archived') + ")";
   }
 }

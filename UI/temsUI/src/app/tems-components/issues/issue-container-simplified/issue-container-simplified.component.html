@@ -8,10 +8,10 @@
   </mat-card-header>
   <mat-card-content>
     <ng-container *ngIf="issue.dateClosed != undefined && issue.closedBy != undefined">
-        <p>Closed on {{ issue.dateClosed | date:'short' }} by
+        <p>{{ 'ticket.closedOn' | translate }} {{ issue.dateClosed | date:'short' }}
           <a mat-button [routerLink]="'/profile/view/' + issue.closedBy.value">
             <mat-icon class="text-primary ml-3">person</mat-icon>
-            {{ issue.closedBy.label }}
+            ({{ issue.closedBy.label }})
           </a>
         </p>
     </ng-container>

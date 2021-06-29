@@ -207,7 +207,7 @@ namespace temsAPI.Controllers.TicketControllers
             catch (Exception ex)
             {
                 LogException(ex);
-                return ReturnResponse("An error occured while removint the ticket", ResponseStatus.Fail);
+                return ReturnResponse("An error occured while removing the ticket", ResponseStatus.Fail);
             }
         }
 

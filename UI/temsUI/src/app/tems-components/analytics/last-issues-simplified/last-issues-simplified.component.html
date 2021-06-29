@@ -1,5 +1,5 @@
 <ng-container *ngIf="issues == undefined || issues.length == 0">
-    <p class="text-muted"> No data...</p>
+    <p class="text-muted"> {{ 'general.empty' | translate }}</p>
 </ng-container>
 
 <ng-container *ngIf="issues != undefined && issues.length > 0">

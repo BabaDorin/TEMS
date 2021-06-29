@@ -1,3 +1,4 @@
+import { TranslateService } from '@ngx-translate/core';
 import { CAN_MANAGE_ENTITIES, CAN_ALLOCATE_KEYS } from './../../../models/claims';
 import { TokenService } from '../../../services/token.service';
 import { SnackService } from '../../../services/snack.service';
@@ -32,6 +33,7 @@ export class KeysAllocationsComponent extends TEMSComponent implements OnInit {
     public personnelService: PersonnelService,
     private snackService: SnackService,
     private tokenService: TokenService,
+    public translate: TranslateService,
     @Optional() @Inject(MAT_DIALOG_DATA) public dialogData: any
   ) { 
     super();

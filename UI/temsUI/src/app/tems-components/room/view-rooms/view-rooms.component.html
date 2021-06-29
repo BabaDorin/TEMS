@@ -9,21 +9,22 @@
 <div class="card pt-3">
     <div class="card-body">
         <h2>
-            Rooms
+            {{ 'entities.rooms' | translate }}
         </h2>
 
         <ng-container *ngIf="claims.canManage">
             <button mat-button (click)="addNew()">
-                <mat-icon class="text-primary">add</mat-icon>Add new
+                <mat-icon class="text-primary">add</mat-icon>
+                {{ 'room.add' | translate }}
             </button>
             <button mat-button (click)="addLogSelected()">
-                <mat-icon class="text-primary">timeline</mat-icon>Add a log for selected
+                <mat-icon class="text-primary">timeline</mat-icon>{{ 'room.addLogForSelected' | translate }}
             </button>
 
         </ng-container>
         <ng-container *ngIf="claims.canView">
             <button mat-button (click)="addIssue()">
-                <mat-icon class="text-primary">feedback</mat-icon>Include selected in an issue
+                <mat-icon class="text-primary">feedback</mat-icon>{{ 'room.includeSelectedInATicket' | translate }}
             </button>
         </ng-container>
         <app-ag-grid-rooms #agGrid></app-ag-grid-rooms>

@@ -7,11 +7,19 @@
                         style="max-width: 90%; max-height: 90%; margin: auto;">
                         <img src="assets/svgs/default_avatar.svg" style="width: 100%;">
                     </div>
-                    <a mat-button class="btn-block mt-3" (click)="viewPage('general')">General Info</a>
+                    <a mat-button class="btn-block mt-3" (click)="viewPage('general')">
+                        {{ 'profile.generalInformation' | translate }}
+                    </a>
                     <!-- <a mat-button class="btn-block" (click)="viewPage('allocations')">Allocations</a> -->
-                    <a mat-button class="btn-block" (click)="viewPage('issues')">Issues</a>
-                    <a mat-button class="btn-block" (click)="viewPage('analytics')">Analytics</a>
-                    <a mat-button *ngIf="isCurrentUser" class="btn-block" (click)="viewPage('settings')">Settings</a>
+                    <a mat-button class="btn-block" (click)="viewPage('issues')">
+                        {{ 'profile.tickets' | translate }}
+                    </a>
+                    <a mat-button class="btn-block" (click)="viewPage('analytics')">
+                        {{ 'profile.analytics' | translate }}
+                    </a>
+                    <a mat-button *ngIf="isCurrentUser" class="btn-block" (click)="viewPage('settings')">
+                        {{ 'profile.settings' | translate }}
+                    </a>
                 </div>
             </div>
         </div>

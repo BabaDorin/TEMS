@@ -1,3 +1,4 @@
+import { TranslateService } from '@ngx-translate/core';
 import { SnackService } from '../../../services/snack.service';
 import { PieChartData } from './../../../models/analytics/pieChart-model';
 import { AnalyticsService } from '../../../services/analytics.service';
@@ -23,7 +24,8 @@ export class SummaryIssuesAnalyticsComponent extends TEMSComponent implements On
 
   constructor(
     private analyticsService: AnalyticsService,
-    private snackService: SnackService
+    private snackService: SnackService,
+    public translate: TranslateService
   ) {
     super();
   }

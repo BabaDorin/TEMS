@@ -5,12 +5,12 @@
     </div>
     <div class="card-body">
         <h5 class="card-title">{{ user.fullName }}</h5>
-        <p *ngIf="user.email != undefined" class="card-text"><b>Email: </b>{{ user.email }}</p>
-        <p *ngIf="user.phoneNumber != undefined" class="card-text"><b>Phone: </b>{{ user.phoneNumber }}</p>
+        <p *ngIf="user.email != undefined" class="card-text"><b>{{ 'profile.email' | translate }}: </b>{{ user.email }}</p>
+        <p *ngIf="user.phoneNumber != undefined" class="card-text"><b>{{ 'profile.phone' | translate }}: </b>{{ user.phoneNumber }}</p>
     </div>
     <ng-container *ngIf="canManage || canView">
         <div class="card-body">
-            <a [routerLink]="'/profile/view/' + user.id" class="card-link">Visit profile</a>
+            <a [routerLink]="'/profile/view/' + user.id" class="card-link">{{ 'profile.visit' | translate }}</a>
         </div>
     </ng-container>
 </div>

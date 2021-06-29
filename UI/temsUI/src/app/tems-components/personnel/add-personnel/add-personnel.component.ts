@@ -1,3 +1,4 @@
+import { TranslateService } from '@ngx-translate/core';
 import { FormlyData } from './../../../models/formly/formly-data.model';
 import { UserService } from '../../../services/user.service';
 import { SnackService } from '../../../services/snack.service';
@@ -38,6 +39,7 @@ export class AddPersonnelComponent extends TEMSComponent implements OnInit {
     private formlyParserService: FormlyParserService,
     private personnelService: PersonnelService,
     public userService: UserService,
+    public translate: TranslateService,
     private snackService: SnackService,
     @Optional() @Inject(MAT_DIALOG_DATA) public dialogData: any
   ) {

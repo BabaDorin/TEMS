@@ -1,7 +1,7 @@
 <div class="col-md-12">
     <button mat-button *ngIf="canManage" (click)="createAllocation()" class="mb-3">
         <mat-icon class="text-primary">add</mat-icon>
-        Create new allocation
+        {{ 'key.createAllocation' | translate }}
     </button>
 
     <ng-container *ngIf="loading == true">
@@ -33,12 +33,12 @@
             <div class="mt-2 text-center">
                 <p class="m-0">
                     <small class="text-muted">
-                        Allocated: {{ allocation.dateAllocated | date:'medium' }}
+                        {{ 'key.allocated' | translate }}: {{ allocation.dateAllocated | date:'medium' }}
                     </small>
                 </p>
                 <p *ngIf="allocation.dateReturned != undefined" class="m-0">
                     <small class="text-muted">
-                        Returned: {{ allocation.dateReturned | date:'medium' }}
+                        {{ 'key.returned' | translate }}: {{ allocation.dateReturned | date:'medium' }}
                     </small>
                 </p>
             </div>

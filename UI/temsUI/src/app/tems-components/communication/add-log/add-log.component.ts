@@ -1,3 +1,4 @@
+import { TranslateService } from '@ngx-translate/core';
 import { SnackService } from '../../../services/snack.service';
 import { AddLog } from './../../../models/communication/logs/add-log.model';
 import { IOption } from './../../../models/option.model';
@@ -55,6 +56,7 @@ export class AddLogComponent extends TEMSComponent implements OnInit {
     private roomService: RoomsService,
     private logsService: LogsService,
     private snackService: SnackService,
+    public translate: TranslateService,
     private personnelService: PersonnelService,
     @Optional() @Inject(MAT_DIALOG_DATA) public dialogData: any) {
     super();

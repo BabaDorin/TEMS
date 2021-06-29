@@ -27,17 +27,17 @@
   <ng-template matExpansionPanelContent>
     <ng-container *ngIf="issue.dateClosed != undefined && issue.closedBy != undefined">
       <div class="alert alert-warning">
-        <p>Closed on {{ issue.dateClosed | date:'short' }} by
+        <p> {{ 'ticket.closedOn' | translate }} {{ issue.dateClosed | date:'short' }}
           <a mat-button [routerLink]="'/profile/view/' + issue.closedBy.value">
             <mat-icon class="text-primary ml-3">person</mat-icon>
-            {{ issue.closedBy.label }}
+            ({{ issue.closedBy.label }})
           </a>
         </p>
       </div>
     </ng-container>
     <ng-container *ngIf="!readonly && canManage && issue.dateClosed == undefined">
       <mat-form-field appearance="fill">
-        <mat-label>Change issue status</mat-label>
+        <mat-label>{{ 'ticket.changeStatus' | translate }}</mat-label>
         <mat-select (selectionChange)="issueStatusChanged($event)">
           <mat-option *ngFor="let status of statuses" [value]="status">
             {{ status.label }}
@@ -46,13 +46,13 @@
       </mat-form-field>
     </ng-container>
     <div *ngIf="issue.description != undefined">
-      <h4>Description:</h4>
+      <h4>{{ 'form.description' | translate }}</h4>
       <hr>
       <p>{{ issue.description }}</p>
     </div>
     <br>
     <div *ngIf="issue.equipments != undefined && issue.equipments.length > 0" class="mb-4">
-      <h4>Equipments involved:</h4>
+      <h4>{{ 'ticket.equipmentInvolvedLabel' | translate }}</h4>
       <hr>
       <div class="alert alert-info">
         <a mat-button *ngFor="let eq of issue.equipments" [routerLink]="'/equipment/details/' + eq.value">
@@ -62,7 +62,7 @@
       </div>
     </div>
     <div *ngIf="issue.rooms != undefined && issue.rooms.length > 0" class="mb-4">
-      <h4>Rooms involved:</h4>
+      <h4>{{ 'ticket.roomsInvolvedLabel' | translate }}</h4>
       <hr>
       <div class="alert alert-info">
         <a mat-button *ngFor="let rm of issue.rooms" [routerLink]="'/rooms/details/' + rm.value">
@@ -72,7 +72,7 @@
       </div>
     </div>
     <div *ngIf="issue.personnel != undefined && issue.personnel.length > 0" class="mb-4">
-      <h4>Personnel involved:</h4>
+      <h4>{{ 'ticket.personnelInvolvedLabel' | translate }}</h4>
       <hr>
       <div class="alert alert-info">
         <a mat-button *ngFor="let pr of issue.personnel" [routerLink]="'/personnel/details/' + pr.value">
@@ -82,7 +82,7 @@
       </div>
     </div>
     <div *ngIf="issue.assignees != undefined && issue.assignees.length > 0" class="mb-4">
-      <h4>Assigned to:</h4>
+      <h4>{{ 'ticket.assignedTo' | translate }}</h4>
       <hr>
       <div class="alert alert-warning">
         <a mat-button *ngFor="let assignee of issue.assignees" [routerLink]="'/profile/view/' + assignee.value">
@@ -95,19 +95,23 @@
 
     <ng-container *ngIf="!readonly && canManage">
       <button mat-button (click)="solveIssue()" *ngIf="issue.dateClosed == undefined">
-        <mat-icon class="text-primary">done</mat-icon>Mark as solved
+        <mat-icon class="text-primary">done</mat-icon>
+        {{ 'ticket.markSolved' | translate }}
       </button>
       <button mat-button (click)="reopenIssue()" *ngIf="issue.dateClosed != undefined">
-        <mat-icon class="text-secondary">restore</mat-icon>Reopen
+        <mat-icon class="text-secondary">restore</mat-icon>
+        {{ 'ticket.reopen' | translate }}
       </button>
       <button mat-button (click)="removeIssue()">
-        <mat-icon class="text-danger">delete</mat-icon>Remove
+        <mat-icon class="text-danger">delete</mat-icon>
+        {{ 'ticket.remove' | translate }}
       </button>
       <button *ngIf="!issue.isPinned" mat-button (click)="pin()">
-        <mat-icon class="text-info">push_pin</mat-icon>Pin
+        <mat-icon class="text-info">push_pin</mat-icon>
+        {{ 'ticket.pin' | translate }}
       </button>
       <button *ngIf="issue.isPinned" mat-button (click)="unPin()">
-        Unpin
+        {{ 'ticket.unpin' | translate }}
       </button>
     </ng-container>
   </ng-template>

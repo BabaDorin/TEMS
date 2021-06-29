@@ -1,3 +1,4 @@
+import { TranslateService } from '@ngx-translate/core';
 import { PinnedIssuesComponent } from './../pinned-issues/pinned-issues.component';
 import { ViewIssueSimplified } from 'src/app/models/communication/issues/view-issue-simplified.model';
 import { EntityIssuesListComponent } from './../../entity-issues-list/entity-issues-list.component';
@@ -46,6 +47,7 @@ export class ViewIssuesComponent extends TEMSComponent implements OnInit {
   constructor(
     public equipmentService: EquipmentService,
     public roomService: RoomsService,
+    public translate: TranslateService,
     public personnelService: PersonnelService
   ) {
     super();

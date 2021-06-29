@@ -10,23 +10,26 @@
 <div class="card pt-3">
     <div class="card-body">
         <h2>
-            Personnel
+            {{ 'entities.personnel' | translate }}
         </h2>
         <ng-container *ngIf="claims.canManage">
             <button mat-button (click)="addNew()">
-                <mat-icon class="text-primary">add</mat-icon>Add new
+                <mat-icon class="text-primary">add</mat-icon>
+                {{ 'personnel.add' | translate }}
             </button>
         </ng-container>
 
         <ng-container *ngIf="claims.canView">
             <button mat-button (click)="addIssue()">
-                <mat-icon class="text-primary">feedback</mat-icon>Include selected in an issue
+                <mat-icon class="text-primary">feedback</mat-icon>
+                {{ 'personnel.includeSelectedInATicket' | translate }}
             </button>
         </ng-container>
 
         <ng-container *ngIf="claims.canSendEmails">
             <button mat-button (click)="sendEmail()">
-                <mat-icon class="text-primary">mail</mat-icon>Send E-mail to selected
+                <mat-icon class="text-primary">mail</mat-icon>
+                {{ 'personnel.sendEmailToSelected' | translate }}
             </button>
         </ng-container>
         <app-ag-grid-personnel #agGridPersonnel></app-ag-grid-personnel>

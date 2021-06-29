@@ -6,6 +6,7 @@ import { TokenService } from './services/token.service';
 import { Component, HostListener, OnInit } from '@angular/core';
 import { Router, NavigationEnd, NavigationStart, RouteConfigLoadStart, RouteConfigLoadEnd, RouterModule } from '@angular/router';
 import { Md5 } from 'ts-md5';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-root',
@@ -21,12 +22,19 @@ export class AppComponent extends TEMSComponent implements OnInit{
   isLoading: boolean;
 
   constructor(
+    public translate: TranslateService,
     private router: Router,
     private dialogService: DialogService,
     private tokenService: TokenService,
     private systemConfigurationService: SystemConfigurationService) {
     
     super();
+
+    translate.addLangs(['en', 'ro']);
+    translate.setDefaultLang('en');
+    const browserLang = translate.getBrowserLang(); 
+    translate.use(browserLang.match(/en|ro/) ? browserLang: 'en');
+
     // Removing Sidebar, Navbar, Footer for Documentation, Error and Auth pages
     // When needed (For example, when loading the page...), Feel free to add more cases here.
     router.events.forEach((event) => { 

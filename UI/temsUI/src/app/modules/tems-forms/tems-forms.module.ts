@@ -1,3 +1,4 @@
+import { TranslateModule } from '@ngx-translate/core';
 import { CheckboxGroupModule } from './../checkbox-group/checkbox-group.module';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatSelectModule } from '@angular/material/select';
@@ -41,6 +42,7 @@ import { MatOptionModule } from '@angular/material/core';
     ReactiveFormsModule,
     MatOptionModule,
     MatFormFieldModule,
+    TranslateModule,
     MatTooltipModule,
     CheckboxGroupModule,
     MatCheckboxModule,

@@ -1,3 +1,4 @@
+import { TranslateModule } from '@ngx-translate/core';
 import { MatInputModule } from '@angular/material/input';
 import { ChipsAutocompleteModule } from './../chips-autocomplete/chips-autocomplete.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -18,6 +19,7 @@ import { CommonModule } from '@angular/common';
     MatButtonModule,
     ReactiveFormsModule,
     FormsModule,
+    TranslateModule,
     ChipsAutocompleteModule
   ],
   exports: [

@@ -1,3 +1,4 @@
+import { TranslateModule } from '@ngx-translate/core';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatMenuModule } from '@angular/material/menu';
@@ -42,6 +43,7 @@ import { TemsAgGridModule } from '../tems-ag-grid/tems-ag-grid.module';
     MatMenuModule,
     MatTabsModule,
     MatBadgeModule,
+    TranslateModule,
     EquipmentSummaryAnalyticsModule,
     EmailModule,
     // Shared modules

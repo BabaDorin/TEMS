@@ -12,6 +12,7 @@ import { of } from 'rxjs';
 import { AddPersonnel } from 'src/app/models/personnel/add-personnel.model';
 import { tap } from 'rxjs/operators';
 import { LogsService } from './logs.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Injectable({
   providedIn: 'root'
@@ -23,6 +24,7 @@ export class FormlyParserService extends TEMSComponent {
   // Which is used by formly to render forms.
 
   constructor(
+    private translate: TranslateService,
     private equipmentService: EquipmentService,
     private logsService: LogsService,
     private definitionService: DefinitionService
@@ -38,27 +40,33 @@ export class FormlyParserService extends TEMSComponent {
           type: 'input',
           templateOptions: {
             required: true,
-            label: 'Room Identifier',
             placeholder: '214'
-          }
+          },
+          expressionProperties: {
+            'templateOptions.label': this.translate.stream('room.identifier'),
+          },
         },
         {
           key: 'floor',
           type: 'input',
           templateOptions: {
             type: 'number',
-            label: 'Floor',
             placeholder: '1',
             min: 1,
-          }
+          },
+          expressionProperties: {
+            'templateOptions.label': this.translate.stream('room.floor'),
+          },
         },
         {
           key: 'description',
           type: 'textarea',
           templateOptions: {
-            label: 'Description',
             placeholder: '...',
             rows: 5,
+          },
+          expressionProperties: {
+            'templateOptions.label': this.translate.stream('form.description'),
           },
         }
       ];
@@ -75,24 +83,30 @@ export class FormlyParserService extends TEMSComponent {
           defaultValue: 'TEMS CIH Cahul',
           templateOptions: {
             required: true,
-            label: 'Email sender',
-          }
+          },
+          expressionProperties: {
+            'templateOptions.label': this.translate.stream('email.sender'),
+          },
         },
         {
           key: 'subject',
           type: 'input',
           templateOptions: {
             required: true,
-            label: 'Email subject',
-          }
+          },
+          expressionProperties: {
+            'templateOptions.label': this.translate.stream('email.subject'),
+          },
         },
         {
           key: 'text',
           type: 'textarea',
           templateOptions: {
             required: true,
-            label: 'Email text',
             rows: 5,
+          },
+          expressionProperties: {
+            'templateOptions.label': this.translate.stream('email.text'),
           },
         }
       ];
@@ -114,16 +128,18 @@ export class FormlyParserService extends TEMSComponent {
               type: 'autocomplete',
               templateOptions: {
                 required: true,
-                label: 'What is the problem?',
                 placeholder: 'Incarcare cartus...',
                 filter: (term) => of(term ? this.filterAutocomplete(term, frequentProblems) : frequentProblems.slice()),
+              },
+              expressionProperties: {
+                'templateOptions.label': this.translate.stream('issue.problem'),
               },
             },
             {
               key: 'problemDescription',
               type: 'textarea',
-              templateOptions: {
-                label: 'Problem description - Helps a lot!',
+              expressionProperties: {
+                'templateOptions.label': this.translate.stream('issue.description'),
               },
             },
             {
@@ -131,9 +147,11 @@ export class FormlyParserService extends TEMSComponent {
               type: 'radio',
               defaultValue: statuses[0].value,
               templateOptions: {
-                label: 'Priority',
                 required: true,
                 options: statuses
+              },
+              expressionProperties: {
+                'templateOptions.label': this.translate.stream('issue.priority'),
               },
             }
           ]
@@ -191,10 +209,8 @@ export class FormlyParserService extends TEMSComponent {
         key: 'identifier',
         type: 'input',
         defaultValue: addEquipment.definition.identifier,
-        templateOptions: {
-          label: 'Identifier',
-        },
         expressionProperties: {
+          'templateOptions.label': this.translate.stream('form.identifier'),
           'templateOptions.disabled': 'true',
         },
       },
@@ -203,7 +219,9 @@ export class FormlyParserService extends TEMSComponent {
         type: 'input-tooltip',
         templateOptions: {
           label: 'TEMSID',
-          description: "The unique identifier you've given to the item, like LPB002"
+        },
+        expressionProperties: {
+          'templateOptions.description': this.translate.stream('form.temsIdDescription')
         }
       },
       {
@@ -211,30 +229,33 @@ export class FormlyParserService extends TEMSComponent {
         type: 'input-tooltip',
         templateOptions: {
           label: 'Serial Number',
-          description: "The serial number assigned to the item by it's manufacturer"
+        },
+        expressionProperties: {
+          'templateOptions.label': this.translate.stream('form.serialNumber'),
+          'templateOptions.description': this.translate.stream('form.serialNumberDescription')
         }
       },
       {
         key: 'isDefect',
         type: 'checkbox',
         defaultValue: false,
-        templateOptions: {
-          label: 'Is Defect',
+        expressionProperties: {
+          'templateOptions.label': this.translate.stream('form.isDefect'),
         }
       },
       {
         key: 'isUsed',
         type: 'checkbox',
         defaultValue: true,
-        templateOptions: {
-          label: 'Is Used',
+        expressionProperties: {
+          'templateOptions.label': this.translate.stream('form.isUsed'),
         }
       },
       {
         key: 'description',
         type: 'textarea',
-        templateOptions: {
-          label: 'Description',
+        expressionProperties: {
+          'templateOptions.label': this.translate.stream('form.description'),
         }
       },
       {
@@ -245,9 +266,9 @@ export class FormlyParserService extends TEMSComponent {
             key: 'price',
             defaultValue: addEquipment.definition.price,
             type: 'input',
-            templateOptions: {
-              label: 'Price',
-            },
+            expressionProperties: {
+              'templateOptions.label': this.translate.stream('form.price'),
+            }
           },
           {
             className: 'col-4',
@@ -255,13 +276,15 @@ export class FormlyParserService extends TEMSComponent {
             type: 'select',
             defaultValue: addEquipment.definition.currency,
             templateOptions: {
-              label: 'Currency',
               options: [
                 { label: 'LEI', value: 'lei' },
                 { label: 'EUR', value: 'eur' },
                 { label: 'USD', value: 'usd' },
               ],
             },
+            expressionProperties: {
+              'templateOptions.label': this.translate.stream('form.currency'),
+            }
           },
           {
             className: 'col-4',
@@ -269,8 +292,10 @@ export class FormlyParserService extends TEMSComponent {
             key: 'purchaseDate',
             templateOptions: {
               type: 'date',
-              label: 'Purchase Date',
             },
+            expressionProperties: {
+              'templateOptions.label': this.translate.stream('form.purchaseDate'),
+            }
           }
         ]
       }
@@ -285,10 +310,12 @@ export class FormlyParserService extends TEMSComponent {
           key: 'name',
           type: 'input-tooltip',
           templateOptions: {
-            label: 'Name',
             placeholder: 'model',
-            description: 'The name that will be used by the system for building objects. No spaces or other special charaters allowed!',
             required: true
+          },
+          expressionProperties: {
+            'templateOptions.label': this.translate.stream('property.name'),
+            'templateOptions.description': this.translate.stream('property.nameDescription'),
           },
           validators: {
             validation: ['specCharValidator']
@@ -298,40 +325,43 @@ export class FormlyParserService extends TEMSComponent {
           key: 'displayName',
           type: 'input-tooltip',
           templateOptions: {
-            label: 'Display Name',
             placeholder: 'Model',
             required: true,
-            description: 'The name that will be displayed'
+          },
+          expressionProperties: {
+            'templateOptions.label': this.translate.stream('property.displayName'),
+            'templateOptions.description': this.translate.stream('property.displayNameDescription'),
           },
         },
         {
           key: 'description',
           type: 'input-tooltip',
-          templateOptions: {
-            label: 'Property description',
-            description: 'Description of this property will appear like this',
+          expressionProperties: {
+            'templateOptions.label': this.translate.stream('property.description'),
+            'templateOptions.description': this.translate.stream('property.descriptionDescription'),
           },
         },
-
         {
           key: 'dataType',
           type: 'select',
           templateOptions: {
             required: true,
-            label: 'DataType',
             options: [
               { value: 'text', label: 'Text' },
               { value: 'number', label: 'Number' },
               { value: 'bool', label: 'Boolean' }, // Other will appear soon
             ]
-          }
+          },
+          expressionProperties: {
+            'templateOptions.label': this.translate.stream('property.dataType'),
+          },
         },
         {
           key: 'required',
           type: 'checkbox',
           defaultValue: false,
-          templateOptions: {
-            label: 'Required',
+          expressionProperties: {
+            'templateOptions.label': this.translate.stream('property.required'),
           },
         },
       ];
@@ -350,9 +380,11 @@ export class FormlyParserService extends TEMSComponent {
               type: 'input-tooltip',
               templateOptions: {
                 required: true,
-                label: 'Indetifier',
-                description: 'A short name for this key, like "214"'
-              }
+              },
+              expressionProperties: {
+                'templateOptions.label': this.translate.stream('form.identifier'),
+                'templateOptions.description': this.translate.stream('key.identifierDescription'),
+              },
             },
             {
               key: 'numberOfCopies',
@@ -360,16 +392,18 @@ export class FormlyParserService extends TEMSComponent {
               templateOptions: {
                 type: 'number',
                 min: 0,
-                label: 'Number of copies',
-                description: "Number of available options"
+              },
+              expressionProperties: {
+                'templateOptions.label': this.translate.stream('key.copies'),
+                'templateOptions.description': this.translate.stream('key.copiesDescription'),
               },
             },
             {
               key: 'description',
               type: 'input',
-              templateOptions: {
-                label: 'Description',
-              }
+              expressionProperties: {
+                'templateOptions.label': this.translate.stream('form.description'),
+              },
             },
           ]
         }
@@ -389,8 +423,10 @@ export class FormlyParserService extends TEMSComponent {
               type: 'input',
               templateOptions: {
                 required: true,
-                label: 'Title',
-              }
+              },
+              expressionProperties: {
+                'templateOptions.label': this.translate.stream('announcement.title'),
+              },
             },
             {
               key: 'text',
@@ -398,7 +434,9 @@ export class FormlyParserService extends TEMSComponent {
               templateOptions: {
                 rows: 3,
                 required: true,
-                label: 'Message',
+              },
+              expressionProperties: {
+                'templateOptions.label': this.translate.stream('announcement.message'),
               },
             },
           ]
@@ -416,16 +454,15 @@ export class FormlyParserService extends TEMSComponent {
           key: 'identifier',
           type: 'input-tooltip',
           templateOptions: {
-            description: 'Name associated with this definition',
             required: true,
-            label: 'Identifier'
-          }
+          },
+          expressionProperties: {
+            'templateOptions.label': this.translate.stream('form.identifier'),
+            'templateOptions.description': this.translate.stream('definition.identifierDescription'),
+          },
         },
       ];
 
-      console.log('this');
-      console.log(addDefinition);
-    // Add inputs for parent's properties
     addDefinition.properties.forEach(property => {
       fields.push(this.generatePropertyFieldGroup(property))
     });
@@ -434,9 +471,9 @@ export class FormlyParserService extends TEMSComponent {
       {
         key: 'description',
         type: 'textarea',
-        templateOptions: {
-          label: 'Description',
-        }
+        expressionProperties: {
+          'templateOptions.label': this.translate.stream('form.description'),
+        },
       },
       this.generatePriceFields(),
     );
@@ -465,24 +502,28 @@ export class FormlyParserService extends TEMSComponent {
                 key: 'identifier',
                 type: 'input-tooltip',
                 templateOptions: {
-                  description: 'Name associated with this definition (If the desired definition already exists, select it from dropdown)',
                   required: true,
-                  label: 'Identifier'
-                }
-              },
-              {
-                className: 'col-6',
-                key: 'identifierSelect',
-                type: 'select',
-                templateOptions: {
-                  description: 'Choose an existing definition',
-                  label: 'Choose existing one',
-                  options: this.definitionService.getDefinitionsOfType(childDefinition.equipmentType.value).pipe(tap(defs => {
-                    defs.unshift({value: "new", label: "new"});
-                  })),
-                  change: (field, $event)=>{ 
-                    this.setChildDefinition(field.parent, $event.value);
                 },
+                expressionProperties: {
+                  'templateOptions.label': this.translate.stream('form.identifier'),
+                  'templateOptions.description': this.translate.stream('definition.childIdentifierDescription'),
+                },
+              },
+                {
+                  className: 'col-6',
+                  key: 'identifierSelect',
+                  type: 'select',
+                  templateOptions: {
+                    options: this.definitionService.getDefinitionsOfType(childDefinition.equipmentType.value).pipe(tap(defs => {
+                      defs.unshift({value: "new", label: "new"});
+                    })),
+                    change: (field, $event)=>{ 
+                      this.setChildDefinition(field.parent, $event.value);
+                  },
+                  expressionProperties: {
+                    'templateOptions.label': this.translate.stream('definition.choseExistingLabel'),
+                    'templateOptions.description': this.translate.stream('definition.choseExistingDescription'),
+                  },
                 },
               }
             ]
@@ -491,8 +532,6 @@ export class FormlyParserService extends TEMSComponent {
       );
 
       let destination = fields[fields.length - 1].fieldArray.fieldGroup;
-      console.log('childDefinition:');
-      console.log(childDefinition);
       childDefinition.properties.forEach(property => {
         destination.push(this.generatePropertyFieldGroup(property, property.value));
       });
@@ -502,9 +541,9 @@ export class FormlyParserService extends TEMSComponent {
         {
           key: 'description',
           type: 'textarea',
-          templateOptions: {
-            label: 'Description',
-          }
+          expressionProperties: {
+            'templateOptions.label': this.translate.stream('form.description'),
+          },
         },
         this.generatePriceFields(childDefinition.price, childDefinition.currency),
       );
@@ -553,8 +592,6 @@ export class FormlyParserService extends TEMSComponent {
         
         let definition: Definition = result;
         definition.properties.forEach(q => {
-          console.log('property:');
-          console.log(q);
 
           let propertyField = childFieldGroup.fieldGroup.find(e => e.key == q.name); 
           if(propertyField != undefined)
@@ -582,8 +619,10 @@ export class FormlyParserService extends TEMSComponent {
           templateOptions: {
             type: 'number',
             min: 0,
-            description: 'The price can be overwritten equipments having this definition',
-            label: 'Price',
+          },
+          expressionProperties: {
+            'templateOptions.label': this.translate.stream('form.price'),
+            'templateOptions.description': this.translate.stream('equipment.priceDescription'),
           },
         },
         {
@@ -592,12 +631,14 @@ export class FormlyParserService extends TEMSComponent {
           type: 'select',
           defaultValue: defaultCurrency ?? 'lei',
           templateOptions: {
-            label: 'Currency',
             options: [
               { label: 'LEI', value: 'lei' },
               { label: 'EUR', value: 'eur' },
               { label: 'USD', value: 'usd' },
             ],
+          },
+          expressionProperties: {
+            'templateOptions.label': this.translate.stream('form.currency'),
           },
         },
       ]
@@ -614,9 +655,11 @@ export class FormlyParserService extends TEMSComponent {
               key: 'description',
               type: 'textarea',
               templateOptions: {
-                label: 'Description',
                 placeholder: '...',
                 rows: 5,
+              },
+              expressionProperties: {
+                'templateOptions.label': this.translate.stream('form.description'),
               },
             },
           ]
@@ -729,15 +772,17 @@ export class FormlyParserService extends TEMSComponent {
           type: 'input',
           templateOptions: {
             required: true,
-            label: 'Name',
-          }
+          },
+          expressionProperties: {
+            'templateOptions.label': this.translate.stream('personnel.name'),
+          },
         },
         {
           key: 'phoneNumber',
           type: 'input-tooltip',
-          templateOptions: {
-            label: 'Phone Number (Without the leading 0)',
-            description: 'It will be used to send SMS!'
+          expressionProperties: {
+            'templateOptions.label': this.translate.stream('personnel.phoneNumber'),
+            'templateOptions.description': this.translate.stream('personnel.phoneNumberDescription'),
           },
         },
         {
@@ -745,8 +790,10 @@ export class FormlyParserService extends TEMSComponent {
           type: 'input-tooltip',
           templateOptions: {
             type: 'email',
-            label: 'Email',
-            description: 'It will be used to send mails!'
+          },
+          expressionProperties: {
+            'templateOptions.label': this.translate.stream('personnel.email'),
+            'templateOptions.description': this.translate.stream('personnel.emailDescription'),
           },
         },
       ];
@@ -766,8 +813,10 @@ export class FormlyParserService extends TEMSComponent {
               type: 'input',
               templateOptions: {
                 required: true,
-                label: 'Username',
-              }
+              },
+              expressionProperties: {
+                'templateOptions.label': this.translate.stream('form.username'),
+              },
             },
             {
               key: 'password',
@@ -776,7 +825,9 @@ export class FormlyParserService extends TEMSComponent {
               templateOptions: {
                 required: true,
                 type: 'password',
-                label: 'Password',
+              },
+              expressionProperties: {
+                'templateOptions.label': this.translate.stream('form.password'),
               },
             },
           ]
@@ -796,8 +847,10 @@ export class FormlyParserService extends TEMSComponent {
           templateOptions: {
             minLength: 4,
             required: true,
-            label: 'Username',
-            description: 'Minimum 4 alphanumerics or ".", "_"'
+          },
+          expressionProperties: {
+            'templateOptions.label': this.translate.stream('form.username'),
+            'templateOptions.description': this.translate.stream('user.usernameDescription'),
           },
           validators: {
             validation: ['usernameValidator']
@@ -810,23 +863,24 @@ export class FormlyParserService extends TEMSComponent {
             type: "password",
             minLength: 5,
             required: update ? false : true,
-            label: update ? 'Set new password' : 'Password',
-            description: "At least 5 characters long"
+          },
+          expressionProperties: {
+            'templateOptions.label': this.translate.stream('user.password'),
+            'templateOptions.description': this.translate.stream('user.passwordDescription'),
           },
         },
         {
           key: 'fullName',
           type: 'input',
-          templateOptions: {
-            label: 'Full Name',
+          expressionProperties: {
+            'templateOptions.label': this.translate.stream('user.fullName'),
           },
         },
         {
           key: 'phoneNumber',
           type: 'input-tooltip',
-          templateOptions: {
-            label: 'Phone Number (Without the leading 0)',
-            description: 'It will be used to send SMS!'
+          expressionProperties: {
+            'templateOptions.label': this.translate.stream('user.phoneNumber'),
           },
         },
         {
@@ -834,8 +888,9 @@ export class FormlyParserService extends TEMSComponent {
           type: 'input-tooltip',
           templateOptions: {
             type: 'email',
-            label: 'Email',
-            description: 'It will be used to send mails!'
+          },
+          expressionProperties: {
+            'templateOptions.label': this.translate.stream('user.email'),
           },
         },
         {
@@ -858,8 +913,10 @@ export class FormlyParserService extends TEMSComponent {
           templateOptions: {
             type: "password",
             required: true,
-            label: 'Old password',
-          }
+          },
+          expressionProperties: {
+            'templateOptions.label': this.translate.stream('password.old'),
+          },
         },
         {
           validators: {
@@ -875,8 +932,10 @@ export class FormlyParserService extends TEMSComponent {
               templateOptions: {
                 type: "password",
                 required: true,
-                label: 'New password',
-              }
+              },
+              expressionProperties: {
+                'templateOptions.label': this.translate.stream('password.new'),
+              },
             },
             {
               key: 'confirmNewPass',
@@ -884,8 +943,10 @@ export class FormlyParserService extends TEMSComponent {
               templateOptions: {
                 type: "password",
                 required: true,
-                label: 'Confirm new password',
-              }
+              },
+              expressionProperties: {
+                'templateOptions.label': this.translate.stream('password.confirm'),
+              },
             },
           ]
         }];
@@ -901,16 +962,18 @@ export class FormlyParserService extends TEMSComponent {
           type: 'input-tooltip',
           templateOptions: {
             type: "email",
-            description: 'The email address is primarily used for account recovering. If you desire, you can recieve notifications too.',
-            label: 'Email address',
-          }
+          },
+          expressionProperties: {
+            'templateOptions.label': this.translate.stream('form.email'),
+            'templateOptions.description': this.translate.stream('user.emailNotificationsDescription'),
+          },
         },
         {
           key: 'getNotifications',
           type: 'checkbox',
-          templateOptions: {
-            label: 'Get notifications via Email',
-          }
+          expressionProperties: {
+            'templateOptions.label': this.translate.stream('user.emailNotifications'),
+          },
         },
       ];
 
@@ -925,8 +988,10 @@ export class FormlyParserService extends TEMSComponent {
           type: 'input',
           templateOptions: {
             required: true,
-            label: 'Full Name',
-          }
+          },
+          expressionProperties: {
+            'templateOptions.label': this.translate.stream('form.fullName'),
+          },
         },
         {
           key: 'username',
@@ -934,8 +999,10 @@ export class FormlyParserService extends TEMSComponent {
           templateOptions: {
             minLength: 4,
             required: true,
-            label: 'Username',
-            description: 'Minimum 4 alphanumerics or ".", "_"'
+          },
+          expressionProperties: {
+            'templateOptions.label': this.translate.stream('form.username'),
+            'templateOptions.description': this.translate.stream('form.usernameDescription'),
           },
           validators: {
             validation: ['usernameValidator']

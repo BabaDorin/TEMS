@@ -3,6 +3,7 @@ import { TemsFormsModule } from './../tems-forms/tems-forms.module';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatDialogModule } from '@angular/material/dialog';
+import { TranslateModule } from '@ngx-translate/core';
 
 
 @NgModule({
@@ -13,7 +14,8 @@ import { MatDialogModule } from '@angular/material/dialog';
     TemsFormsModule,
   ],
   providers:[
-    DialogService
+    DialogService,
+    TranslateModule
   ]
 })
 export class DialogModule { }

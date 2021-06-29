@@ -1,3 +1,4 @@
+import { TranslateModule } from '@ngx-translate/core';
 import { FractionCardComponent } from './../../tems-components/analytics/fraction-card/fraction-card.component';
 import { ChartsModule } from 'ng2-charts';
 import { PiechartCardComponent } from './../../tems-components/analytics/piechart-card/piechart-card.component';
@@ -19,6 +20,7 @@ import { NgbProgressbarModule } from '@ng-bootstrap/ng-bootstrap';
     CommonModule,
     AnalyticsRoutingModule,
     ChartsModule,
+    TranslateModule,
     MatProgressBarModule,
     NgbProgressbarModule
   ],

@@ -1,3 +1,4 @@
+import { TranslateModule } from '@ngx-translate/core';
 import { RouterModule } from '@angular/router';
 import { FormlyModule } from '@ngx-formly/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -24,6 +25,7 @@ import { CommonModule } from '@angular/common';
     MatCardModule,
     MatButtonModule,
     DateTimeDisplayModule,
+    TranslateModule,
     ReactiveFormsModule,
     FormsModule,
     FormlyModule

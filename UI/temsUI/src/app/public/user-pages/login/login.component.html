@@ -9,14 +9,16 @@
           <formly-form [form]="formlyData.form" [fields]="formlyData.fields" [model]="formlyData.model"></formly-form>
           <br>
           <button type="submit" class="btn btn-block btn-gradient-primary btn-lg font-weight-medium auth-form-btn"
-          [disabled]="formlyData.form.status == 'INVALID'">SIGN IN</button>
+          [disabled]="formlyData.form.status == 'INVALID'">{{ 'authentication.signIn' | translate }}</button>
           <div class="text-center mt-4">
-            <button (click)="forgotPassword()">
-              Forgot password?
+            <button mat-button (click)="forgotPassword()">
+              {{ 'authentication.forgotPassword' | translate }}
             </button>
           </div>
         </form>
-        <h4 class="text-muted text-center mt-4">If you don't have an account, ask system administrator.</h4>
+        <h4 class="text-muted text-center mt-4">
+          {{ 'authentication.askAdministrator' | translate }}
+        </h4>
       </div>
     </div>
   </div>

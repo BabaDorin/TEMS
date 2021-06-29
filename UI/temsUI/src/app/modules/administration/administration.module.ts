@@ -1,3 +1,4 @@
+import { TranslateModule } from '@ngx-translate/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatInputModule } from '@angular/material/input';
@@ -54,6 +55,7 @@ declarations: [
     MatTabsModule,
     MatFormFieldModule,
     MatInputModule,
+    TranslateModule,
     MatExpansionModule,
     GenericContainerModule,
     AdministrationRoutingModule,

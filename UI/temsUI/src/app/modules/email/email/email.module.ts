@@ -1,3 +1,4 @@
+import { TranslateModule } from '@ngx-translate/core';
 import { SendEmailComponent } from 'src/app/tems-components/send-email/send-email.component';
 import { ChipsAutocompleteModule } from './../../chips-autocomplete/chips-autocomplete.module';
 import { MatChipsModule } from '@angular/material/chips';
@@ -24,6 +25,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     ChipsAutocompleteModule,
     ReactiveFormsModule,
     MatAutocompleteModule,
+    TranslateModule,
     MatChipsModule,
   ],
   exports:[

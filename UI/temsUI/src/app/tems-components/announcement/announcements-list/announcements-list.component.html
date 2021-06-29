@@ -2,7 +2,7 @@
     <mat-icon class="text-primary">
         add
     </mat-icon>
-    Create an announcement
+    {{ 'announcementsList.create' | translate }}
 </button>
 
 <ng-container *ngIf="announcements != undefined && announcements.length > 0">
@@ -40,6 +40,6 @@
 
 <ng-container *ngIf="announcements == undefined || announcements.length == 0">
     <p class="mt-5 text-center text-muted">
-        No announcements yet...
+        {{ 'announcementsList.noAnnouncementsPlaceHolder' | translate }}
     </p>
 </ng-container>

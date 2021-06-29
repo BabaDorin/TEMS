@@ -17,7 +17,7 @@ import { MatInputModule } from '@angular/material/input';
 import { PersonnelService } from './services/personnel.service';
 import { RoomsService } from './services/rooms.service';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HttpClient, HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
@@ -48,6 +48,12 @@ import { AnnouncementModule } from './modules/announcement/announcement.module';
 import { RoleService } from './services/role.service';
 import { SnackComponent } from './shared/snack/snack.component';
 import { LibraryModule } from './modules/library/library.module';
+import { TranslateLoader, TranslateModule, TranslatePipe } from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+
+export function HttpLoaderFactory(http: HttpClient){
+  return new TranslateHttpLoader(http);
+}
 
 @NgModule({
   declarations: [
@@ -89,7 +95,16 @@ import { LibraryModule } from './modules/library/library.module';
     MatIconModule,
 
     // for modal thing
-    LibraryModule
+    LibraryModule,
+
+    // for internationalization
+    TranslateModule.forRoot({
+      loader: {
+        provide: TranslateLoader,
+        useFactory: HttpLoaderFactory,
+        deps: [HttpClient]
+      }
+    })
   ],
   exports:[
     MatAutocompleteModule,
@@ -115,7 +130,8 @@ import { LibraryModule } from './modules/library/library.module';
     CurrencyPipe,
     DatePipe,
     PaginatePipe,
-    DecimalPipe
+    DecimalPipe,
+    TranslatePipe,
   ],
   bootstrap: [AppComponent],
 })

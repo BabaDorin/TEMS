@@ -1,0 +1,123 @@
+{
+    "form":{
+        "description": "Description",
+        "identifier": "Identifier",
+        "temsIdDescription": "The unique identifier you've given to the item, like LPB002",
+        "serialNumber": "Serial number",
+        "serialNumberDescription": "The serial number assigned to the item by it's manufacturer",
+        "isDefect": "Is defect",
+        "isUsed": "Is used",
+        "price": "Price",
+        "currency": "Currency",
+        "purchaseDate": "Purchase date",
+        "email": "E-mail",
+        "fullName" :"Full name",
+        "username" : "Username",
+        "password": "Password"
+    },
+    
+    "equipment": {
+        "priceDescription": "The price can be overwritten equipments having this definition",
+
+    },
+    
+    "user": {
+        "usernameDescription": "Minimum 4 alphanumerics or '.', '_'",
+        "passwordDescription": "At least 5 characters long",
+        "fullName": "Full name",
+        "phoneNumber": "Phone number",
+        "email": "E-mail",
+        "emailNotificationsDescription": "The email address is primarily used for account recovering. If you desire, you can recieve notifications too.",
+        "emailNotifications": "Get notifications via E-mail"
+    },
+
+    "password": {
+        "old": "Old password",
+        "new": "New password",
+        "confirm": "Confirm new password",
+    },
+
+    "personnel":{
+        "name": "Name",
+        "phoneNumber": "Phone number",
+        "phoneNumberDescription": "It might be used in the future for sending SMS",
+        "email": "Email",
+        "emailDescription": "It will be used for sending E-mails"
+
+    }
+
+    "property":{
+        "name": "Name",
+        "nameDescription": "The name that will be used by the system for building objects. No spaces or other special charaters allowed!", 
+        "displayName": "Display name",
+        "displayNameDescription": "The name that will be displayed",
+        "description": "Property description",
+        "descriptionDescription": "Description of this property will appear like this",
+        "dataType": "Data type",
+        "required": "Required"
+    },
+
+    "key": {
+        "identifierDescription": "A short name for this key, like 214",
+        "copies": "Number of copies",
+        "copiesDescription": "Number of available copies"
+    },
+
+    "announcement": {
+        "title": "Title", 
+        "message": "Message" 
+    },
+
+    "definition": {
+        "identifierDescription" : "Name associated with this definition",
+        "childIdentifierDescription": "Name associated with this definition (If the desired definition already exists, select it from dropdown)",
+        "choseExistingLabel": "Choose existing one",
+        "choseExistingDescription": "Choose an existing definition",
+    },
+
+    "room":{
+        "identifier": "Room identifier",
+        "floor": "Floor",
+        "emailSender": "E-mail sender"
+    },
+
+    "email":{
+        "sender": "E-Mail sender",
+        "subject": "E-Mail subject",
+        "text": "E-Mail text"
+    },
+
+    "issue": {
+        "problem": "What is the problem?",
+        "description": "Problem description (helps a lot!)",
+        "priority": "Priority level"
+    }, 
+
+    "authentication": {
+        "forgotPassword": "Forgot password?",
+        "askAdministrator": "If you don't have an account, ask system administrator.",
+        "signIn": "SIGN IN"
+    },
+    "error": {
+        "sorry": "sorry",
+        "restricted": "The acces to this page is restricted",
+        "notFound": "The page you’re looking for was not found",
+        "internal": "Internal server error",
+        "backHome": "Back to home"
+    },
+    "dashboard" : { 
+        "announcementLabel" : "Last 5 announcements",
+        "quickAccess": "Quick access",
+        "tickets": "Tickets",
+        "ticketText": "Encountered any problems or need some technical support?",
+        "createTicketButtonText": "Create a ticket!",
+        "recentTickets": "Most recent tickets!",
+        "seeMore": "See more...",
+        "techniciansLabel": "Our technicians"
+    },
+    "announcementsList": {
+        "create": "Create an announcement",
+        "noAnnouncementsPlaceHolder": "No announcements yet..."
+    }
+    
+}

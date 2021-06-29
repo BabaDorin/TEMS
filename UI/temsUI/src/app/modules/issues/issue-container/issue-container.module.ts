@@ -1,3 +1,4 @@
+import { TranslateModule } from '@ngx-translate/core';
 import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 import { TemsFormsModule } from './../../tems-forms/tems-forms.module';
@@ -34,6 +35,7 @@ import { MatOptionModule } from '@angular/material/core';
     MatOptionModule,
     MatIconModule,
     TemsFormsModule,
+    TranslateModule,
   ],
   exports: [
     IssueContainerComponent,

@@ -1,3 +1,4 @@
+import { TranslateModule } from '@ngx-translate/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -32,6 +33,7 @@ import { MatOptionModule } from '@angular/material/core';
     MatOptionModule,
     MatFormFieldModule,
     FormsModule,
+    TranslateModule,
     MatMenuModule,
     MatIconModule,
     FormlyModule

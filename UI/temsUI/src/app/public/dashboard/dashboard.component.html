@@ -11,7 +11,7 @@
   </div>
 
   <h3 class="text-muted mt-5">
-    <mat-icon class="text-primary">campaign</mat-icon> Last announcements
+    <mat-icon class="text-primary">campaign</mat-icon> {{ 'dashboard.announcementLabel' | translate }}
   </h3>
 
   <div class="container mt-5">
@@ -24,7 +24,7 @@
   <ng-container *ngIf="claims.canView || claims.canManage">
     <h3 class="text-muted">
       <mat-icon class="text-primary">read_more</mat-icon>
-      Quick entity access
+      {{ 'dashboard.quickAccess' | translate }}
     </h3>
     <!-- Quick searches -->
     <div class="row mt-5">
@@ -46,7 +46,7 @@
 
   <h3 class="text-muted">
     <mat-icon class="text-primary">error</mat-icon>
-    Tickets
+    {{ 'dashboard.tickets' | translate }}
   </h3>
   <div class="container mt-5">
     <div class="row">
@@ -58,10 +58,10 @@
             </mat-icon>
           </div>
           <h4>
-            Encountered any problems or need some technical support?
+            {{ 'dashboard.ticketText' | translate }}
           </h4>
           <a mat-button class="btn-gradient-primary" routerLink="/issues/create/">
-            Create a ticket!
+            {{ 'dashboard.createTicketButtonText' | translate }}
           </a>
         </div>
       </div>
@@ -81,9 +81,9 @@
 
       <div class="col-lg-5 col-md-12">
         <h4 class="d-block">
-          Most recent tickets
+          {{ 'dashboard.recentTickets' | translate }}
         </h4>
-        <a routerLink="/issues/all">See more</a>
+        <a routerLink="/issues/all">{{ 'dashboard.recentTickets' | translate }}</a>
         <app-last-issues-simplified>
         </app-last-issues-simplified>
       </div>
@@ -93,7 +93,7 @@
   <hr class="m-5 m-5">
   <h3 class="text-muted">
     <mat-icon class="text-primary">engineering</mat-icon>
-    Our Technicians
+    {{ 'dashboard.techniciansLabel' | translate }}
   </h3>
   <div class="mt-5"></div>
   <app-user-cards-list ofRole="technician" [canManage]="claims.canManage" [canView]="claims.canView">

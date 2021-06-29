@@ -1,3 +1,4 @@
+import { TranslateModule } from '@ngx-translate/core';
 import { MatIconModule } from '@angular/material/icon';
 import { AnalyticsModule } from 'src/app/modules/analytics/analytics.module';
 import { ProfileAnalyticsComponent } from './../../tems-components/profile/profile-analytics/profile-analytics.component';
@@ -29,6 +30,7 @@ import { ProfileRoutingModule } from './profile-routing.module';
     TemsFormsModule,
     AnalyticsModule,
     MatIconModule,
+    TranslateModule,
     EntitySharedModule,
   ]
 })

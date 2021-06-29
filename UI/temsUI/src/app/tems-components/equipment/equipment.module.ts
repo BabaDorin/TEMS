@@ -1,3 +1,4 @@
+import { TranslateModule } from '@ngx-translate/core';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -66,6 +67,7 @@ import { MatOptionModule } from '@angular/material/core';
     CommonModule,
     EquipmentRoutingModule,
     ScrollingModule,
+    TranslateModule,
     TemsFormsModule,
     TemsAgGridModule,
     MatInputModule,

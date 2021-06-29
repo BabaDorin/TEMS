@@ -1,3 +1,4 @@
+import { TranslateModule } from '@ngx-translate/core';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatIconModule } from '@angular/material/icon';
@@ -42,6 +43,7 @@ import { ReactiveFormsModule } from '@angular/forms';
     MatMenuModule,
     MatIconModule,
     MatBadgeModule,
+    TranslateModule,
     MatTabsModule,
 
     // Shared modules

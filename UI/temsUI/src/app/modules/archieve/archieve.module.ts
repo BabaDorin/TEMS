@@ -1,3 +1,4 @@
+import { TranslateModule } from '@ngx-translate/core';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
@@ -27,6 +28,7 @@ import { MatOptionModule } from '@angular/material/core';
     MatProgressBarModule,
     MatIconModule,
     MatFormFieldModule,
+    TranslateModule,
     MatInputModule,
     MatOptionModule,
     NgxPaginationModule,

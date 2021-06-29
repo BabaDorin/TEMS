@@ -1,3 +1,8 @@
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatBadgeModule } from '@angular/material/badge';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { EquipmentSummaryAnalyticsModule } from './../summary-analytics/equipment-summary-analytics/equipment-summary-analytics.module';
 import { TemsFormsModule } from './../tems-forms/tems-forms.module';
 import { ViewRoomsComponent } from '../../tems-components/room/view-rooms/view-rooms.component';
@@ -11,7 +16,6 @@ import { AddRoomComponent } from '../../tems-components/room/add-room/add-room.c
 import { RoomDetailsComponent } from '../../tems-components/room/room-details/room-details.component';
 import { RoomDetailsLogsComponent } from '../../tems-components/room/room-details-logs/room-details-logs.component';
 import { EntitySharedModule } from '../entity-shared/entity-shared.module';
-import { MaterialModule } from '../material/material.module';
 import { RoomDetailsIssuesComponent } from '../../tems-components/room/room-details-issues/room-details-issues.component';
 import { RoomDetailsAllocationsComponent } from '../../tems-components/room/room-details-allocations/room-details-allocations.component';
 import { AnalyticsModule } from '../analytics/analytics.module';
@@ -31,10 +35,14 @@ import { ReactiveFormsModule } from '@angular/forms';
     CommonModule,
     RoomsRoutingModule,
     AgGridModule,
-    MaterialModule,
     TemsFormsModule,
     ReactiveFormsModule,
     AnalyticsModule,
+    MatProgressBarModule,
+    MatMenuModule,
+    MatIconModule,
+    MatBadgeModule,
+    MatTabsModule,
 
     // Shared modules
     EntitySharedModule,

@@ -20,7 +20,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormlyModule } from '@ngx-formly/core';
-import { MaterialModule } from '../material/material.module';
 import { fieldMatchValidator, specCharValidator } from 'src/app/models/validators';
 import { usernameValidator } from 'src/app/models/validators';
 import { MatOptionModule } from '@angular/material/core';
@@ -105,7 +104,6 @@ import { MatOptionModule } from '@angular/material/core';
     FormlyMaterialModule,
 
     // Other
-    MaterialModule,
     CheckboxGroupModule,
     TagInputModule,
     ChipsAutocompleteModule,

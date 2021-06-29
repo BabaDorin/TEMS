@@ -1,3 +1,10 @@
+import { MatCardModule } from '@angular/material/card';
+import { MatInputModule } from '@angular/material/input';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { ChipsAutocompleteModule } from './../chips-autocomplete/chips-autocomplete.module';
 import { LogContainerComponent } from '../../tems-components/communication/log-container/log-container.component';
 import { EquipmentAllocationContainerComponent } from './../../tems-components/equipment/equipment-allocation-container/equipment-allocation-container.component';
@@ -10,7 +17,6 @@ import { RouterModule } from '@angular/router';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { EntityIssuesListComponent } from './../../tems-components/entity-issues-list/entity-issues-list.component';
 import { TemsFormsModule } from './../tems-forms/tems-forms.module';
-import { MaterialModule } from 'src/app/modules/material/material.module';
 import { EquipmentAllocationComponent } from './../../tems-components/equipment/equipment-allocation/equipment-allocation.component';
 import { PropertyRenderComponent } from './../../public/property-render/property-render.component';
 import { NgModule } from '@angular/core';
@@ -21,6 +27,8 @@ import { EntityLogsListComponent } from 'src/app/tems-components/entity-logs-lis
 import { SummaryIssuesAnalyticsComponent } from 'src/app/tems-components/analytics/summary-issues-analytics/summary-issues-analytics.component';
 import { EntityAllocationsListComponent } from 'src/app/tems-components/entity-allocations-list/entity-allocations-list.component';
 import { IssueContainerModule } from '../issues/issue-container/issue-container.module';
+import { MatOptionModule } from '@angular/material/core';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 @NgModule({
   declarations: [
@@ -39,7 +47,6 @@ import { IssueContainerModule } from '../issues/issue-container/issue-container.
   ],
   imports: [
     CommonModule,
-    MaterialModule,
     RouterModule,
     TemsFormsModule,
     NgxPaginationModule,
@@ -48,6 +55,17 @@ import { IssueContainerModule } from '../issues/issue-container/issue-container.
     LoadingplaceholderModule,
     IssueContainerModule,
     ChipsAutocompleteModule,
+    MatTooltipModule,
+    MatIconModule,
+    MatMenuModule,
+    MatSlideToggleModule,
+    MatExpansionModule,
+    MatInputModule,
+    MatOptionModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatCardModule,
+    MatFormFieldModule,
   ],
   exports: [
     TemsAgGridModule,

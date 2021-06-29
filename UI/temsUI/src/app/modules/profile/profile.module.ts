@@ -1,3 +1,4 @@
+import { MatIconModule } from '@angular/material/icon';
 import { AnalyticsModule } from 'src/app/modules/analytics/analytics.module';
 import { ProfileAnalyticsComponent } from './../../tems-components/profile/profile-analytics/profile-analytics.component';
 import { EntitySharedModule } from 'src/app/modules/entity-shared/entity-shared.module';
@@ -27,6 +28,7 @@ import { ProfileRoutingModule } from './profile-routing.module';
     ProfileRoutingModule,
     TemsFormsModule,
     AnalyticsModule,
+    MatIconModule,
     EntitySharedModule,
   ]
 })

@@ -1,3 +1,12 @@
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatSelectModule } from '@angular/material/select';
+import { MatInputModule } from '@angular/material/input';
 import { EquipmentSummaryAnalyticsModule } from './../../modules/summary-analytics/equipment-summary-analytics/equipment-summary-analytics.module';
 import { ChildEquipmentContainerComponent } from './child-equipment-container/child-equipment-container.component';
 import { FileUploadModule } from './../../modules/file-upload/file-upload.module';
@@ -19,7 +28,6 @@ import { EquipmentDetailsComponent } from './equipment-details/equipment-details
 import { EquipmentDetailsLogsComponent } from './equipment-details/equipment-details-logs/equipment-details-logs.component';
 import { EquipmentDetailsAllocationsComponent } from './equipment-details/equipment-details-allocations/equipment-details-allocations.component';
 import { EquipmentDetailsIssuesComponent } from './equipment-details/equipment-details-issues/equipment-details-issues.component';
-import { MaterialModule } from 'src/app/modules/material/material.module';
 import { EntitySharedModule } from 'src/app/modules/entity-shared/entity-shared.module';
 import { AnalyticsModule } from 'src/app/modules/analytics/analytics.module';
 import { AddPropertyComponent } from './add-property/add-property.component';
@@ -29,6 +37,7 @@ import { BulkUploadComponent } from './bulk-upload/bulk-upload.component';
 import { BulkUploadResultsComponent } from './bulk-upload-results/bulk-upload-results.component';
 import { EquipmentLabelComponent } from './equipment-label/equipment-label.component';
 import { EquipmentSerialNumberComponent } from './equipment-serial-number/equipment-serial-number.component';
+import { MatOptionModule } from '@angular/material/core';
 
 @NgModule({
   declarations: [
@@ -57,12 +66,22 @@ import { EquipmentSerialNumberComponent } from './equipment-serial-number/equipm
     CommonModule,
     EquipmentRoutingModule,
     ScrollingModule,
-    MaterialModule,
     TemsFormsModule,
     TemsAgGridModule,
+    MatInputModule,
+    MatSelectModule,
+    MatOptionModule,
+    MatTabsModule,
+    MatButtonModule,
+    MatMenuModule,
+    MatFormFieldModule,
+    MatProgressBarModule,
     EntitySharedModule,
     AnalyticsModule,
+    MatExpansionModule,
+    MatIconModule,
     FileUploadModule,
+    MatIconModule,
     EquipmentSummaryAnalyticsModule,
   ],
   exports: [

@@ -1,5 +1,5 @@
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { BooleanCellRendererComponent } from './../../public/ag-grid/boolean-cell-renderer/boolean-cell-renderer.component';
-import { MaterialModule } from './../material/material.module';
 import { AgGridRoomsComponent } from './../../tems-components/room/ag-grid-rooms/ag-grid-rooms.component';
 import { AgGridPersonnelComponent } from './../../tems-components/personnel/ag-grid-personnel/ag-grid-personnel.component';
 import { AgGridKeysComponent } from './../../tems-components/keys/ag-grid-keys/ag-grid-keys.component';
@@ -23,8 +23,8 @@ import { BtnCellRendererComponent } from 'src/app/public/ag-grid/btn-cell-render
   imports: [
     CommonModule,
     CommonModule,
+    MatProgressBarModule,
     AgGridModule.withComponents([BtnCellRendererComponent, BooleanCellRendererComponent]),
-    MaterialModule,
   ],
   exports: [
     AgGridEquipmentComponent,

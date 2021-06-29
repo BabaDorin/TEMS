@@ -1,3 +1,4 @@
+import { MatIconModule } from '@angular/material/icon';
 import { NgxPaginationModule, PaginatePipe } from 'ngx-pagination';
 import { ChipsAutocompleteModule } from './modules/chips-autocomplete/chips-autocomplete.module';
 import { QuickAccessModule } from './modules/quick-access/quick-access.module';
@@ -85,6 +86,7 @@ import { LibraryModule } from './modules/library/library.module';
     AnnouncementModule,
     ChipsAutocompleteModule,
     QuickAccessModule,
+    MatIconModule,
 
     // for modal thing
     LibraryModule

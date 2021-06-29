@@ -1,6 +1,10 @@
+import { MatSelectModule } from '@angular/material/select';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatIconModule } from '@angular/material/icon';
 import { PinnedIssuesComponent } from './../../tems-components/issue/pinned-issues/pinned-issues.component';
 import { TemsFormsModule } from './../tems-forms/tems-forms.module';
-import { MaterialModule } from 'src/app/modules/material/material.module';
 import { ViewIssuesComponent } from './../../tems-components/issue/view-issues/view-issues.component';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -8,6 +12,7 @@ import { CommonModule } from '@angular/common';
 import { IssuesRoutingModule } from './issues-routing.module';
 import { EntitySharedModule } from '../entity-shared/entity-shared.module';
 import { AnalyticsModule } from '../analytics/analytics.module';
+import { MatOptionModule } from '@angular/material/core';
 
 
 @NgModule({
@@ -18,12 +23,17 @@ import { AnalyticsModule } from '../analytics/analytics.module';
   imports: [
     CommonModule,
     IssuesRoutingModule,
+    MatIconModule,
+    MatTabsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatOptionModule,
     
     // Shared modules
     TemsFormsModule,
     EntitySharedModule,
     AnalyticsModule,
-    MaterialModule,
   ],
 })
 export class IssuesModule { }

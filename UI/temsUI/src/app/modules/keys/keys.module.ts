@@ -1,5 +1,11 @@
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatSelectModule } from '@angular/material/select';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatCardModule } from '@angular/material/card';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { NgxPaginationModule } from 'ngx-pagination';
-import { MaterialModule } from 'src/app/modules/material/material.module';
 import { TemsFormsModule } from './../tems-forms/tems-forms.module';
 import { KeysService } from 'src/app/services/keys.service';
 import { ViewKeysAllocationsComponent } from './../../tems-components/keys/view-keys-allocations/view-keys-allocations.component';
@@ -28,10 +34,15 @@ import { NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
     CommonModule,
     KeysRoutingModule,
     TemsFormsModule,
-    MaterialModule,
     TemsAgGridModule,
     LoadingplaceholderModule,
-    NgbPaginationModule,
+    MatProgressBarModule,
+    MatCardModule,
+    MatInputModule,
+    MatSelectModule,
+    MatIconModule,
+    MatTabsModule,
+    MatFormFieldModule,
     NgxPaginationModule,
   ],
   providers: [

@@ -1,3 +1,10 @@
+import { MatCardModule } from '@angular/material/card';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatInputModule } from '@angular/material/input';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatFormFieldModule, MatLabel } from '@angular/material/form-field';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatIconModule } from '@angular/material/icon';
 import { ViewSystemLogsComponent } from '../../tems-components/admin/view-system-logs/view-system-logs.component';
 import { ChipsAutocompleteModule } from '../chips-autocomplete/chips-autocomplete.module';
 import { SystemConfigComponent } from '../../tems-components/admin/system-config/system-config.component';
@@ -10,7 +17,6 @@ import { EquipmentTypesListComponent } from '../../tems-components/admin/equipme
 import { PersonnelModule } from '../personnel/personnel.module';
 import { EquipmentModule } from '../../tems-components/equipment/equipment.module';
 import { EquipmentManagementComponent } from '../../tems-components/admin/equipment-management/equipment-management.component';
-import { MaterialModule } from 'src/app/modules/material/material.module';
 import { TemsFormsModule } from '../tems-forms/tems-forms.module';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -45,15 +51,21 @@ declarations: [
   imports: [
     CommonModule,
     MatButtonModule,
+    MatTabsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatExpansionModule,
     GenericContainerModule,
     AdministrationRoutingModule,
     TemsFormsModule,
-    MaterialModule,
     EquipmentModule,
     DialogModule,
     PersonnelModule,
     NgxPaginationModule,
+    MatMenuModule,
     ChipsAutocompleteModule,
+    MatIconModule,
+    MatCardModule,
   ]
 })
 export class AdministrationModule { }

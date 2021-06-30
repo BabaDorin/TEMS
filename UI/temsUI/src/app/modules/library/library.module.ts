@@ -1,3 +1,4 @@
+import { MatButtonModule } from '@angular/material/button';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatInputModule } from '@angular/material/input';
@@ -39,6 +40,7 @@ import { MatIconModule } from '@angular/material/icon';
     NgbModule,
     FileUploadModule,
     TranslateModule,
+    MatButtonModule,
     NgxPaginationModule,
   ]
 })

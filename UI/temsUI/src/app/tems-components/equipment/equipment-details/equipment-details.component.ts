@@ -3,6 +3,7 @@ import { EquipmentService } from 'src/app/services/equipment.service';
 import { ViewEquipmentSimplified } from './../../../models/equipment/view-equipment-simplified.model';
 import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-equipment-details',
@@ -18,6 +19,7 @@ export class EquipmentDetailsComponent extends TEMSComponent implements OnInit {
 
   constructor(
     private activatedroute: ActivatedRoute, 
+    public translate: TranslateService,
     private equipmentService: EquipmentService) {
       super();
   }
@@ -42,6 +44,6 @@ export class EquipmentDetailsComponent extends TEMSComponent implements OnInit {
 
     this.equipmentSimplified.isArchieved = !this.equipmentSimplified.isArchieved;
     if(this.equipmentSimplified.isArchieved)
-          this.mainHeaderLabel += " (Archieved)"
+          this.mainHeaderLabel += " (" + this.translate.instant('general.archive')+')';
   }
 }

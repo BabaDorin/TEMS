@@ -1,3 +1,4 @@
+import { MatButtonModule } from '@angular/material/button';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatBadgeModule } from '@angular/material/badge';
@@ -45,6 +46,7 @@ import { ReactiveFormsModule } from '@angular/forms';
     MatBadgeModule,
     TranslateModule,
     MatTabsModule,
+    MatButtonModule,
 
     // Shared modules
     EntitySharedModule,

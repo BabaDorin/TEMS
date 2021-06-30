@@ -5,7 +5,9 @@
             Type: <button mat-button (click)="viewType(definition.equipmentType.value)">{{ definition.equipmentType.label }}</button></h3>
         
         <ng-container *ngIf = "definition.properties.length > 0">
-            <h3>Properties:</h3>
+            <h3>
+                {{ 'entity.properties' | translate }}
+            </h3>
             <ng-container *ngFor="let prop of definition.properties">
                 <button 
                 mat-button 
@@ -17,7 +19,8 @@
         </ng-container>
             
         <ng-container *ngIf="definition.children.length > 0">
-            <h3>Children:</h3>
+            <h3>
+                {{ 'definition.children' | translate }}:</h3>
             <button 
                 mat-button 
                 *ngFor="let child of definition.children" 
@@ -26,6 +29,6 @@
             </button>
         </ng-container>
         
-        <h3>Price: {{ definition.price }} {{ definition.currency }}</h3>
+        <h3>{{ 'form.price' | translate }}: {{ definition.price }} {{ definition.currency }}</h3>
     </div>
 </div>

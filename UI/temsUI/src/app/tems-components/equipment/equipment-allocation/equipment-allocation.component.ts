@@ -11,6 +11,7 @@ import { IOption } from 'src/app/models/option.model';
 import { AllocationService } from 'src/app/services/allocation.service';
 import { SnackService } from 'src/app/services/snack.service';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-equipment-allocation',
@@ -55,6 +56,7 @@ export class EquipmentAllocationComponent extends TEMSComponent implements OnIni
     public personnelService: PersonnelService,
     private allocationService: AllocationService,
     private claims: ClaimService,
+    public translate: TranslateService,
     @Optional() @Inject(MAT_DIALOG_DATA) public dialogData: any
   ) {
     super();

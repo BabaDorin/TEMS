@@ -3,14 +3,14 @@
     <input type="file" #fileDropRef id="fileDropRef" multiple (change)="onFilesSelected($event.target.files)" />
 
     <h3>
-        <b>Drag and drop files here or</b>
+        <b>{{ 'fileUpload.dragDrop' | translate }}</b>
     </h3>
 
     <button for="fileDropRef" class="btn btn-gradient-primary">
-        Browse for file
+        {{ 'fileUpload.browse' | translate }}
     </button>
 
     <p class="text-muted text-center mt-3 mb-2">
-        <mat-icon class="text-primary">description</mat-icon>{{ nrOfFiles }} files selected
+        <mat-icon class="text-primary">description</mat-icon>{{ nrOfFiles }} {{ 'fileUpload.filesSelected' | translate }}
     </p>
 </div>

@@ -61,9 +61,7 @@
             {{ 'dashboard.ticketText' | translate }}
           </h4>
           <a mat-button class="btn-gradient-primary" routerLink="/issues/create/">
-            <p>
               {{ 'dashboard.createTicketButtonText' | translate }}
-            </p>
           </a>
         </div>
       </div>
@@ -85,7 +83,7 @@
         <h4 class="d-block">
           {{ 'dashboard.recentTickets' | translate }}
         </h4>
-        <a routerLink="/issues/all">{{ 'dashboard.recentTickets' | translate }}</a>
+        <a routerLink="/issues/all">{{ 'general.viewMore' | translate }}</a>
         <app-last-issues-simplified>
         </app-last-issues-simplified>
       </div>

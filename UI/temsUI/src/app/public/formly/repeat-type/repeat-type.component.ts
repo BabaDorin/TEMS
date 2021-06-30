@@ -8,7 +8,7 @@ import { FieldArrayType, FormlyFieldConfig } from '@ngx-formly/core';
         <div style="margin-bottom:5px;">
           <button type="button" mat-button (click)="remove(i)">
             <mat-icon class="text-danger">remove</mat-icon>
-            Remove
+            {{ 'form.remove' | translate }}
           </button>
         </div>
       <formly-group

@@ -1,3 +1,4 @@
+import { MatButtonModule } from '@angular/material/button';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatMenuModule } from '@angular/material/menu';
@@ -39,6 +40,7 @@ import { MatOptionModule } from '@angular/material/core';
     MatRadioModule,
     MatCardModule,
     MatMenuModule,
+    MatButtonModule,
     MatProgressBarModule,
     TranslateModule,
     NgxPaginationModule,

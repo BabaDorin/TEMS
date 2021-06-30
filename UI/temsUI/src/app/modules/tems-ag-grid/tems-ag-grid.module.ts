@@ -1,3 +1,5 @@
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { BooleanCellRendererComponent } from './../../public/ag-grid/boolean-cell-renderer/boolean-cell-renderer.component';
 import { AgGridRoomsComponent } from './../../tems-components/room/ag-grid-rooms/ag-grid-rooms.component';
@@ -8,8 +10,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AgGridModule } from 'ag-grid-angular';
 import { BtnCellRendererComponent } from 'src/app/public/ag-grid/btn-cell-renderer/btn-cell-renderer.component';
-
-
 
 @NgModule({
   declarations: [
@@ -23,6 +23,8 @@ import { BtnCellRendererComponent } from 'src/app/public/ag-grid/btn-cell-render
   imports: [
     CommonModule,
     CommonModule,
+    MatIconModule,
+    MatButtonModule,
     MatProgressBarModule,
     AgGridModule.withComponents([BtnCellRendererComponent, BooleanCellRendererComponent]),
   ],

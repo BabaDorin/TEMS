@@ -37,12 +37,12 @@
                 <div class="mt-2 mb-2 text-center">
                     <p class="m-0">
                         <small class="text-muted">
-                            Allocated: {{ allocation.dateAllocated | date:'medium' }}
+                            {{ 'allocation.allocated' | translate }}: {{ allocation.dateAllocated | date:'medium' }}
                         </small>
                     </p>
                     <p *ngIf="allocation.dateReturned != undefined" class="m-0">
                         <small class="text-muted">
-                            Returned: {{ allocation.dateReturned | date:'medium' }}
+                            {{ 'allocation.returned' | translate }}: {{ allocation.dateReturned | date:'medium' }}
                         </small>
                     </p>
                 </div>
@@ -58,11 +58,11 @@
                     <mat-menu #menu="matMenu">
                         <button mat-menu-item (click)="return()" *ngIf="allocation.dateReturned == undefined">
                             <mat-icon class="text-muted">assignment_returned</mat-icon>
-                            Mark as returned
+                            {{ 'allocation.markAsReturned' | translate }}:
                         </button>
                         <button mat-menu-item (click)="remove()">
                             <mat-icon class="text-muted">delete</mat-icon>
-                            Remove
+                            {{ 'form.remove' | translate }}:
                         </button>
                     </mat-menu>
                 </li>

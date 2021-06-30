@@ -44,7 +44,7 @@ export class AddUserComponent extends TEMSComponent implements OnInit {
     private roleService: RoleService,
     private snackService: SnackService,
     private formlyParserService: FormlyParserService,
-    private translate: TranslateService,
+    public translate: TranslateService,
     @Optional() @Inject(MAT_DIALOG_DATA) public dialogData: any
   ) {
     super();

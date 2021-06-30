@@ -6,6 +6,7 @@ import { TEMSComponent } from './../../../tems/tems.component';
 import { EquipmentService } from './../../../services/equipment.service';
 import { Component, Input, OnInit, OnChanges, SimpleChanges } from '@angular/core';
 import { BtnCellRendererComponent } from 'src/app/public/ag-grid/btn-cell-renderer/btn-cell-renderer.component';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-ag-grid-equipment',
@@ -34,6 +35,7 @@ export class AgGridEquipmentComponent extends TEMSComponent implements OnInit, O
   constructor(
     private equipmentService: EquipmentService,
     private dialogService: DialogService,
+    private translate: TranslateService,
     private snackService: SnackService) {
     super();
 
@@ -48,17 +50,17 @@ export class AgGridEquipmentComponent extends TEMSComponent implements OnInit, O
     }
 
     this.columnDefs = [
-      { field: 'temsId', sortable: true, filter: true },
-      { field: 'serialNumber', sortable: true, filter: true },
-      { field: 'definition', sortable: true, filter: true },
-      { field: 'assignee', sortable: true, filter: true },
-      { field: 'type', sortable: true, filter: true },
+      { headerName: this.translate.instant('equipment.TEMSID'), field: 'temsId', sortable: true, filter: true },
+      { headerName: this.translate.instant('equipment.serialNumber'), field: 'serialNumber', sortable: true, filter: true },
+      { headerName: this.translate.instant('equipment.definition'), field: 'definition', sortable: true, filter: true },
+      { headerName: this.translate.instant('equipment.assignee'), field: 'assignee', sortable: true, filter: true },
+      { headerName: this.translate.instant('equipment.type'), field: 'type', sortable: true, filter: true },
       {
-        field: 'isUsed', sortable: false, filter: true,
+        headerName: this.translate.instant('equipment.isUsed'), field: 'isUsed', sortable: false, filter: true,
         cellRenderer: 'booleanCellRendererComponent',
       },
       {
-        field: 'isDefect', sortable: false, filter: true,
+        headerName: this.translate.instant('equipment.isDefect'), field: 'isDefect', sortable: false, filter: true,
         cellRenderer: 'booleanCellRendererComponent',
       },
       {

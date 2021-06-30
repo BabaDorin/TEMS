@@ -1,3 +1,4 @@
+import { TranslateModule } from '@ngx-translate/core';
 import { RouterModule } from '@angular/router';
 import { UserCardsListComponent } from './../tems-components/profile/user-cards-list/user-cards-list.component';
 import { UserCardComponent } from './../tems-components/profile/user-card/user-card.component';
@@ -13,7 +14,8 @@ import { CommonModule } from '@angular/common';
   ],
   imports: [
     CommonModule,
-    RouterModule
+    RouterModule,
+    TranslateModule,
   ],
   exports: [
     UserCardComponent,

@@ -25,24 +25,23 @@
                     </ng-container>
                     <hr>
                     <ng-container *ngIf="user.email != undefined">
-                        <p>Email: {{user.email}}</p>
+                        <p>E-mail: {{user.email}}</p>
                     </ng-container>
                 </div>
                 <nav aria-label="breadcrumb" (click)="$event.preventDefault();$event.stopPropagation()">
                     <ul class="breadcrumb bg-transparent">
                         <li class="breadcrumb-item" aria-current="page">
                             <button mat-button [matMenuTriggerFor]="menu">
-                                Actions 
                                 <mat-icon class="text-primary">more_vert</mat-icon>
                             </button>
                             <mat-menu #menu="matMenu">
                                 <button mat-menu-item (click)="edit()">
                                     <mat-icon class="text-muted">edit</mat-icon>
-                                    Edit
+                                    {{ 'general.edit' | translate }}
                                 </button>
                                 <button mat-menu-item (click)="remove()">
                                     <mat-icon class="text-muted">delete</mat-icon>
-                                    Remove
+                                    {{ 'general.remove' | translate }}
                                 </button>
                             </mat-menu>
                         </li>

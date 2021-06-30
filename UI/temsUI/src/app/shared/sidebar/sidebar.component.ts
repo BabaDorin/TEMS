@@ -17,7 +17,7 @@ export class SidebarComponent implements OnInit {
   private sidebarManager: SidebarManager;
 
   constructor(
-    private menuService: MenuService
+    public menuService: MenuService
   ) {
 
   }

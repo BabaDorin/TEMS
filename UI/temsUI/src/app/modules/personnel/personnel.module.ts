@@ -22,6 +22,7 @@ import { PersonnelDetailsIssuesComponent } from 'src/app/tems-components/personn
 import { PersonnelDetailsAllocationsComponent } from 'src/app/tems-components/personnel/personnel-details-allocations/personnel-details-allocations.component';
 import { AnalyticsModule } from '../analytics/analytics.module';
 import { TemsAgGridModule } from '../tems-ag-grid/tems-ag-grid.module';
+import { MatButtonModule } from '@angular/material/button';
 
 @NgModule({
   declarations: [
@@ -50,6 +51,7 @@ import { TemsAgGridModule } from '../tems-ag-grid/tems-ag-grid.module';
     EntitySharedModule,
     EquipmentModule,
     AnalyticsModule,
+    MatButtonModule,
     TemsAgGridModule
   ]
 })

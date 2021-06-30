@@ -9,7 +9,7 @@
                 <div class="card-body">
                     <div class="page-header">
                         <h2 class="page-title mb-0">
-                            Equipment
+                            {{ 'entity.equipment' | translate }}
                         </h2>
                         <nav aria-label="breadcrumb">
                             <ul class="breadcrumb bg-transparent">
@@ -21,12 +21,10 @@
                                     <mat-menu #menu="matMenu">
                                         <div class="p-2 text-center">
                                             <mat-slide-toggle class="d-block" [(ngModel)]="includeDerived">
-                                                Include child equipment
+                                                {{ 'equipment.includeChild' | translate }}
                                             </mat-slide-toggle>
                                             <small class="text-muted">
-                                                Include secondary equipment entities (Equipment entries that have 
-                                                a parent assigned), Example: Computer component parts (PSU, RAM
-                                                Chips etc).
+                                                {{ 'equipment.includeChildTip' | translate }}
                                             </small>
                                         </div>
                                     </mat-menu>
@@ -36,16 +34,20 @@
                     </div>
                     <ng-container *ngIf="claims.canManage">
                         <button mat-button class="d-md-inline d-sm-block" (click)="addNew()">
-                            <mat-icon class="text-primary">add</mat-icon>Add new
+                            <mat-icon class="text-primary">add</mat-icon>
+                            {{ 'equipment.add' | translate }}
                         </button>
                         <button mat-button class="d-md-inline d-sm-block" (click)="allocateSelected()">
-                            <mat-icon class="text-primary">double_arrow</mat-icon>Allocate selected
+                            <mat-icon class="text-primary">double_arrow</mat-icon>
+                            {{ 'equipment.allocateSelected' | translate }}
                         </button>
                         <button mat-button class="d-md-inline d-sm-block" (click)="addLogSelected()">
-                            <mat-icon class="text-primary">timeline</mat-icon>Add log for selected
+                            <mat-icon class="text-primary">timeline</mat-icon>
+                            {{ 'equipment.addLogForSelected' | translate }}
                         </button>
                         <button mat-button class="d-md-inline d-sm-block" (click)="addIssue()">
-                            <mat-icon class="text-primary">feedback</mat-icon>Include selected in an issue
+                            <mat-icon class="text-primary">feedback</mat-icon>
+                            {{ 'equipment.includeSelectedInATicket' | translate }}
                         </button>
                         <hr class="separator">
                     </ng-container>

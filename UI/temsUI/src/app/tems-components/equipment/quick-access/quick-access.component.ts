@@ -8,6 +8,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from "@angular/router"
 import { TEMSComponent } from 'src/app/tems/tems.component';
 import { IOption } from 'src/app/models/option.model';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-quick-access',
@@ -29,7 +30,8 @@ export class QuickAccessComponent extends TEMSComponent implements OnInit {
     private activatedroute: ActivatedRoute,
     private roomService: RoomsService,
     private personnelService: PersonnelService,
-    private snackService: SnackService
+    private snackService: SnackService,
+    private translate: TranslateService
   ) {
     super();
   }
@@ -48,7 +50,6 @@ export class QuickAccessComponent extends TEMSComponent implements OnInit {
     if (this.identifier != undefined)
       this.identifier.alreadySelected = [] as IOption[];
 
-    console.log('type = ' + this.type);
     this.getType();
   }
 
@@ -74,23 +75,20 @@ export class QuickAccessComponent extends TEMSComponent implements OnInit {
     switch (this.type) {
       case 'equipment':
         this.endPoint = this.equipmentService;
-        this.header = "Find an equipment";
-        this.label = "Find equipment by it's TEMSID or Serial Number";
-        this.placeholder = "TEMSID or Serial Number";
+        this.header = this.translate.instant('quickAccess.equipmentHeader');
+        this.label = this.translate.instant('quickAccess.equipmentLabel');
         break;
 
       case 'rooms':
         this.endPoint = this.roomService;
-        this.header = "Find a room";
-        this.label = "Find room by identifier";
-        this.placeholder = "Room's identifier";
+        this.header = this.translate.instant('quickAccess.roomHeader');
+        this.label = this.translate.instant('quickAccess.roomLabel');
         break;
 
       case 'personnel':
         this.endPoint = this.personnelService;
-        this.header = "Find personnel";
-        this.label = "Find personnel by name";
-        this.placeholder = "Personnel's name";
+        this.header = this.translate.instant('quickAccess.personnelHeader');
+        this.label = this.translate.instant('quickAccess.personnelLabel');
         break;
     }
   }

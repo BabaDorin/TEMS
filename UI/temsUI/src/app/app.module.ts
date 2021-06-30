@@ -1,3 +1,4 @@
+import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { NgxPaginationModule, PaginatePipe } from 'ngx-pagination';
 import { ChipsAutocompleteModule } from './modules/chips-autocomplete/chips-autocomplete.module';
@@ -85,6 +86,7 @@ export function HttpLoaderFactory(http: HttpClient){
     BrowserAnimationsModule,
     TagInputModule,
     HttpClientModule,
+    MatButtonModule,
     MatInputModule,
     MatFormFieldModule,
     TemsFormsModule,

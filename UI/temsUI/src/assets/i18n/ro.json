@@ -1,5 +1,466 @@
 {
+    "entities": {
+        "personnel": "Personal",
+        "room": "Sala",
+        "rooms": "Săli",
+        "equipment": "Echipament",
+        "tickets": "Ticket",
+        "logs": "Log-uri",
+        "allocations": "Allocări",
+        "properties": "Proprietăți",
+        "definition": "Definiție a echipamentului",
+        "definitions": "Definiții ale echipamentului",
+        "currentlyAllocatedEquipment": "Echipamentul alocat la moment",
+        "type": "Tipul echipamentului",
+        "types": "Tipurile echipamentului",
+        "deposit": "Depozit"
+    },
+
+    "general": {
+        "preparing": "Pregărire...",
+        "loading": "Încărcare...",
+        "empty": "Nu există date spre afișare...",
+        "edit": "Modifică",
+        "archive": "Arhivează",
+        "sendEmail": "Trimite un e-mail",
+        "dearchive": "Dezarchivează",
+        "viewMore": "Mai multe",
+        "next": "Următorul",
+        "createdBy": "Creat de către: ",
+        "createdOn": "Creat: ",
+        "insufficientPermisions": "Permisiuni insuficiente",
+        "add": "Adaugă",
+        "message": "Mesaj",
+        "success": "Succes",
+        "failed": "Eșuat"
+    },
+
+    "notifications":{
+        "notifications": "Notificări"
+    },
+
+    "menu": {
+        "equipment": "Echipament",
+        "view": "Detalii",
+        "add": "Adaugă",
+        "quickAccess": "Acces rapid",
+        "allocate": "Alocă",
+        "allocations": "Alocări", 
+        "rooms": "Săli",
+        "personnel": "Personal",
+        "keys": "Chei",
+        "issues": "Ticket-uri",
+        "create": "Crează",
+        "communication": "Comunicare",
+        "announcements": "Anunțuri", 
+        "emails": "Trimite E-mail-uri",
+        "logs": "Log-uri",
+        "library": "Bibliotecă",
+        "upload": "Încarcă",
+        "report": "Rapoarte",
+        "administration": "Administrație",
+        "users": "Utilizatori",
+        "configuration": "Configurare",
+        "systemLogs": "Log-uri de sistem",
+        "archive": "Arhivă"
+    },
+    "library": {
+        "view": "Vezi biblioteca",
+        "upload": "Încarcă fișier",
+        "fileName": "Numele fișierului",
+        "successfulyUploaded": "a fost încărcat cu succes!",
+        "startUpload": "Începe încărcarea",
+        "usedOutOf": "utilizați din",
+        "gbAllocated": "GB alocați"
+    },
+
+    "logs": {
+        "logsHeader": "Vezi log-urile sistemului",
+        "create": "Crează un log",
+        "selectAddressee" : "Selectează destinatarul"
+    },
+
+    "analytics": {
+        "equipmentAmount": "Numărul total de echipamente", 
+        "equipmentUsingRate": "Rata de utilizare", 
+        "equipmentTypeRate": "Rata tipurile",
+        "equipmentAllocationRate": "Rata de alocare",
+        "openTickets": "Ticket-urile active",
+        "closingRate": "Rata de soluționare",
+        "closingByRate": "Rata de soluționare per utilizator",
+        "openTicketStatusRate": "Rata statusurilor ticket-urilor active"
+    },
+
+    "quickAccess": {
+        "equipmentHeader": "Caută un echipament",
+        "equipmentLabel": "Caută un echipament după numărul de serie sau TEMSID",
+        "personnelHeader": "Caută personal",
+        "personnelLabel": "Caută o înregistrare după nume",
+        "roomHeader": "Caută o sală",
+        "roomLabel": "Caută o sală dupa identificator"
+    },
+
+    "form":{
+        "description": "Descriere",
+        "identifier": "Identificator",
+        "temsIdDescription": "Identificatorul unic TEMS, exemplu: LPB003 (Numit și număr de inventariere)",
+        "serialNumber": "Numărul de serie",
+        "serialNumberDescription": "Numărul de serie acordat de către producător",
+        "isDefect": "Este defect",
+        "isUsed": "Este în uz",
+        "price": "Preț",
+        "currency": "Valută",
+        "purchaseDate": "Data achiziționării",
+        "email": "E-mail",
+        "fullName" :"Numele complet",
+        "username" : "Numele de utilizator",
+        "password": "Parola",
+        "submit": "Trimite",
+        "back": "Înapoi",
+        "remove": "Elimină",
+        "date" : "Selectează data:",
+        "any": "Oricare",
+        "upload": "Încarcă",
+        "find": "Caută"
+    },
+    
+    "equipment": {
+        "allocation": "Alocare de echipament",
+        "selectEquipmentToAllocateLabel": "Selectează echipamentele spre alocare",
+        "createAllocation": "Alocă",
+        "allocateTo":"Alocă către",
+        "allocatedTo":"Alocat către",
+        "add": "Adaugă un echipament",
+        "attach": "Atașează un echipament",
+        "attachTip": "Atașează un echipament existent. Pot fi atașate doar echipamentele a căror definiții sunt suportate drept copii de către definiția părite:",
+        "detach": "Detașează",
+        "detachTip": "Doar echipamentele detașate sunt incluse",
+        "addTip": "Introduceți datele necesare pentru înregistrarea echipamentului",
+        "update": "Modifică datele despre echipament",
+        "bulkUpload": "Încărcare fișiere SIC",
+        "step": "Pasul",
+        "selectType": "Selectează tipul",
+        "selectDefinition": "Selectează definiția",
+        "priceDescription": "Prețul va fi moștenit, dar putea fi supradefinit de către fiecare echipament în parte",
+        "provideEquipmentInformation": "Furnizează informații despre echipament",
+        "updateTip": "Aceast formular poate fi utilizat doar pentru a modifica datele echipamentului curent (a părintelui). Dacă se dorește editarea informațiilor echipamentelor copil, acestea trebuie să fie accesate individual. Deasemenea, puteți utiliza opțiunile de Atașare sau Detașare pentru a atașa și respectiv - detașa echipamentel copil.",
+        "TEMSID": "TEMSID",
+        "serialNumber":"Numărul de serie",
+        "definition": "Definiție",
+        "assignee": "Cesionar", 
+        "type": "Tip",
+        "isUsed": "Este în uz",
+        "allocateSelected": "Alocă",
+        "addLogForSelected":"Adaugă un log",
+        "includeSelectedInATicket":"Include într-un ticket",
+        "indexedBy": "Indexat prin",
+        "isDefect": "Este defect",
+        "properties": "Proprietățile echipamentului",
+        "ellapsedMiliseconds": "Milisecunde",
+        "availableDefinitios": "Definiții disponibile",
+        "bulkUploadTip": "Using this option you can upload multiple equipment items at once. Please, upload .json files generated by SIC.",
+        "markAsWorking": "Mark as working",
+        "markAsDefect": "Mark as defect",
+        "markAsUnused": "Mark as unused",
+        "markAsUsed": "Mark as used",
+        "children": "Equipment's children",
+        "detachedEquipment": "Detached equipment (These will dissapear after a refresh)",
+        "includeChild": "Include child equipment",
+        "includeChildTip": "Include secondary equipment entities (Equipment entries that have a parent assigned), Example: Computer component parts (PSU, RAM Chips etc)."
+    },
+    
+    "user": {
+        "usernameDescription": "Minimum 4 alphanumerics or '.', '_'",
+        "passwordDescription": "At least 5 characters long",
+        "fullName": "Full name",
+        "phoneNumber": "Phone number",
+        "email": "E-mail",
+        "emailNotificationsDescription": "The email address is primarily used for account recovering. If you desire, you can recieve notifications too.",
+        "emailNotifications": "Get notifications via E-mail",
+        "profile": "Profile",
+        "signOut": "Sign Out",
+        "logIn": "Log In",
+        "add": "Add user",
+        "update": "Update user",
+        "claims": "User's claims",
+        "claimsLabel": "Select new user claims (Role's claims will set anyways)",
+        "roleLabel": "Assign roles", 
+        "assignPersonnelLabel": "Assign personnel record to this user if any",
+        "userManagement": "User management",
+        "createdBy": "Created by: "
+    },
+
+    "password": {
+        "old": "Old password",
+        "new": "New password",
+        "confirm": "Confirm new password"
+    },
+
+    "personnel":{
+        "name": "Name",
+        "phoneNumber": "Phone number",
+        "phoneNumberDescription": "It might be used in the future for sending SMS",
+        "email": "Email",
+        "emailDescription": "It will be used for sending E-mails",
+        "personnel": "Personnel",
+        "add": "Add personnel",
+        "positions": "Personnel positions",
+        "properties": "Personnel properties",
+        "userAssociations": "Personnel - user association",
+        "roomsSupervised": "Rooms supervised",
+        "includeSelectedInATicket": "Include selected in a ticket",
+        "sendEmailToSelected": "Send e-mail to selected",
+        "userAssociationsInfo": "If this personnel record is here to represent someone who already has an account, provide the properly Personnel - User association in order to make these entities connected. Make sure the indicated user does not have another personnel association."
+    },
+
+    "fileUpload": {
+        "dragDrop": "Drag and drop files here or",
+        "browse": "Browse for files",
+        "filesSelected": "files selected"
+    },
+
+    "profile": {
+        "generalInformation": "General information",
+        "tickets": "Tickets",
+        "analytics": "Analytics",
+        "settings": "Settings",
+        "visit": "Visit profile",
+        "email": "E-mail",
+        "phone": "Phone",
+        "username": "Username",
+        "joined": "Joined",
+        "associatedWithPersonnel": "This profile is associated with personnel",
+        "notAssociatedWithPersonnel": "This user is not associated with any personnel",
+        "accountSettings": "Account settings",
+        "generalAccountInfomration": "General account information",
+        "changePassowrd": "Change password",
+        "changeMyPassword": "Change my password",
+        "emailPreferences": "E-mail preferences",
+        "emailTip": "Tech support team is advised to activate email notifications in order to be notified when someone reports an issue.",
+        "ticketsCreated": "Tickets created by the user",
+        "ticketsClosed": "Tickets closed by the user", 
+        "ticketsAssigned": "Tickets assigned to user",
+        "probabilityOfReopenClosedTicket": "Probability of reopening a ticket closed by the user",
+        "probabilityOfReopenClosedTicketLabel1": "tickets were closed by the user, from which",
+        "probabilityOfReopenClosedTicketLabel2": "have been reopened afterwards"
+    },
+
+    "property":{
+        "name": "Name",
+        "nameDescription": "The name that will be used by the system for building objects. No spaces or other special charaters allowed!", 
+        "displayName": "Display name",
+        "displayNameDescription": "The name that will be displayed",
+        "description": "Property description",
+        "descriptionDescription": "Description of this property will appear like this",
+        "dataType": "Data type",
+        "required": "Required",
+        "properties": "Properties",
+        "add": "Add new property",
+        "update": "Update property information",
+        "common": "Common properties",
+        "specific": "Specific properties"
+    },
+
+    "config": {
+        "configSettingsHeader": "System configuration settings",
+        "sicIntegration": "SIC Integration",
+        "sicIntegrationText": "Creates all of SIC (System Info Collector) types and properties.",
+        "sicIntegrationButtonText": "Integrate Sytem Info Collector",
+        "storageConstraintsHeader": "Storage constraints",
+        "storageConstraintsText": "Set space limit (in Gigabytes) for the following subjects:",
+        "libraryStorageLabel": "GB of storage space allocated for storing library items:",
+        "emailConfigurationHeader": "Email configuration",
+        "emailConfigurationText": "Specify the email sender",
+        "emailSender": "Sender address:",
+        "emailPassword": "Sender password:",
+        "timeIntervalsHeader": "Time intervals",
+        "timeIntervalsText": "Indicate interval values in hours for the following actions",
+        "timeIntervalRoutineCheckLabel": "Routine check interval (recommended: up to 5 days):",
+        "timeIntervalArchiveLabel": "Archieve period (recommended: up to 30 days):",
+        "guestsConfigurationHeader": "Guests",
+        "guestsTicketLabel": "Allow guests to create tickets",
+        "guestsLibraryPasswordLabel": "Library access password (for guests):"
+    },
+
+    "key": {
+        "key": "Key",
+        "add": "Add new key",
+        "identifierDescription": "A short name for this key, like 214",
+        "copies": "Number of copies",
+        "copiesDescription": "Number of available copies",
+        "allocations": "Key allocations",
+        "allocateTo": "Allocate to",
+        "allocate": "Allocate",
+        "allocateSelected": "Allocate selected",
+        "allocated": "Allocated",
+        "returned": "Returned",
+        "unallocatedKeys": "Unallocated keys",
+        "filterAllocations": "Filter",
+        "markSelectedAsReturned": "Mark selected as returned",
+        "allocatedKeys": "allocated keys",
+        "createAllocation": "Create new allocation",
+        "selectForAllocation": "Choose one or more keys to allocate"
+    },
+
+    "allocation": {
+        "open": "Open",
+        "close": "Close",
+        "allocated": "Allocated",
+        "returned":"Returned",
+        "markAsReturned": "Mark as returned",
+        "allocationsHeader": "Allocations",
+        "notAllocated": "This equipment is deposited, it's not allocated to anyone currently.",
+        "create": "Create new allocation",
+        "filterAllocations": "Filter",
+        "selectEquipmentLabel": "Equipments' TEMSID or Serial Number"
+    },
+
+    "announcement": {
+        "announcementsHeader": "TEMS Announcements",
+        "title": "Title", 
+        "message": "Message",
+        "add": "Create an announcement"
+    },
+
+    "definition": {
+        "identifierDescription" : "Name associated with this definition",
+        "childIdentifierDescription": "Name associated with this definition (If the desired definition already exists, select it from dropdown)",
+        "choseExistingLabel": "Choose existing one",
+        "choseExistingDescription": "Choose an existing definition",
+        "add": "Add new definition",
+        "children" : "Child definitions"
+    },
+
+    "type": {
+        "add": "Add new type"
+    },
+
+    "room":{
+        "add": "Add new room",
+        "update": "Update room",
+        "identifier": "Room identifier",
+        "floor": "Floor",
+        "emailSender": "E-mail sender",
+        "labels": "Room labels", 
+        "supervisories": "Room supervisories", 
+        "addLogForSelected": "Add log for selected",
+        "includeSelectedInATicket": "Include selected in a ticket"
+    },
+
+    "email":{
+        "sender": "E-Mail sender",
+        "subject": "E-Mail subject",
+        "text": "E-Mail text",
+        "sendEmailHeader": "Send an e-mail",
+        "sendEmailTo": "Send this e-mail to",
+        "send": "Send e-mail",
+        "sendEmailTip": "Note: Your message will be sent only to those personnel records that have a valid email address assigned."
+    },
+
+
+    "ticket": {
+        "problem": "What is the problem?",
+        "description": "Problem description (helps a lot!)",
+        "priority": "Priority level",
+        "create": "Report a problem",
+        "selectEquipmentLabel": "Equipments' TEMSID or Serial Number",
+        "selectRoomLabel": "Select one or more rooms",
+        "selectPeopleLabel": "People who need help",
+        "assignToLabel": "Assign this issue to",
+        "pinned": "Pinned tickets",
+        "closedOn": "Closed on",
+        "changeStatus": "Change ticket status",
+        "equipmentInvolved": "Equipment involved",
+        "roomsInvolved": "Rooms involved",
+        "personnelInvolved": "Personnel involved",
+        "assignedTo": "Assigned to",
+        "markSolved": "Mark as solved",
+        "reopen": "Reopen",
+        "remove": "Remove", 
+        "pin": "Pin",
+        "unpin": "Unpin",
+        "view": "View tickets",
+        "includeClosed": "Include closed",
+        "sortPriority": "Sort by priority",
+        "sortDate": "Sort by date",
+        "sent": "Your ticket has been sent! Our technicians will help you as soon as possible."
+    }, 
+
+    "authentication": {
+        "forgotPassword": "Forgot password?",
+        "askAdministrator": "If you don't have an account, ask system administrator.",
+        "signIn": "SIGN IN"
+    },
+
+    "error": {
+        "sorry": "sorry",
+        "restricted": "The acces to this page is restricted",
+        "notFound": "The page you’re looking for was not found",
+        "internal": "Internal server error",
+        "backHome": "Back to home"
+    },
+
+    "navbar": {
+        "notifications": "Notifications",
+        "noNotificationsPlaceholder": "Nothing to display...",
+        "viewAll": "View all notifications"
+
+
+    },
+
     "dashboard" : { 
-        "announcementLabel" : "Ultimele anunturi" 
+        "announcementLabel" : "Last announcements",
+        "quickAccess": "Quick access",
+        "tickets": "Tickets",
+        "ticketText": "Encountered any problems or need some technical support?",
+        "createTicketButtonText": "Create a ticket!",
+        "recentTickets": "Most recent tickets!",
+        "seeMore": "See more...",
+        "techniciansLabel": "Our technicians"
+    },
+
+    "archive": {
+        "archived": "Archived",
+        "archiveHeader": "View archived items",
+        "archiveNote": "Note: All of archieved items will get deleted after a specified period of time.",
+        "typeSelectionHeader": "Archived items' type",
+        "dearchive": "Dearchive selected",
+        "remove": "Remove selected (completely)"
+    },
+    
+    "report": {
+        "lastReports": "Last generated reports",
+        "templates": "Custom templates",
+        "reports": "Reports",
+        "reportsTip": "Choose of the following templates in order to generate a report or",
+        "selectSubject": "Select the report subject",
+        "selectSubjectTip": "Choose the type of entities that will be present in the report.",
+        "createTemplate": "Create new report template",
+        "name": "Name",
+        "header": "Header",
+        "signatories": "Signatories",
+        "footer": "Footer",
+        "generatedOn": "Report generated on ",
+        "additional": "Additional report data",
+        "commonProperties": "Common proprerties for all types",
+        "specificProperties": "Specific properties of ",
+        "selectColumns": "Select report columns",
+        "save": "Save template",
+        "generate": "Generate report",
+        "separateBy": "Separate by",
+        "noSeparation": "No separation",
+        "byRoom": "By room",
+        "byPersonnel": "By personnel",
+        "byType": "By type",
+        "byDefinition": "By definition",
+        "noSelection": "No selection = any",
+        "types": "Equipment types",
+        "defintions": "DefinitionsOfSelectedTypes",
+        "roomsFilter": "Include only equipment from these rooms",
+        "personnelFilter": "Include only equipment allocated to these people",
+        "layoutConfiguration": "Layout configuration",
+        "noSubjectSelected": "Please, select a supported subject first",
+        "layoutConfigurationTip": "Configure the way how TEMS should generate the report.",
+        "createTemplateTip": "If you want to save this template, provide a name and a description if necessary"
     }
 }

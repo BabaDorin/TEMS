@@ -4,10 +4,10 @@
     <form [formGroup]="quickAccessFormGroup" (submit)="onSubmit()">
       <div style="max-width: 600px;">
         <app-chips-autocomplete #identifier [label]="label" [endPoint]="endPoint"
-          [placeholder]="placeholder" formControlName="selectedEntities" maxOptionsSelected="1">
+          formControlName="selectedEntities" maxOptionsSelected="1">
         </app-chips-autocomplete>
         <button type="submit" mat-button>
-          <mat-icon class="text-primary">search</mat-icon> Find
+          <mat-icon class="text-primary">search</mat-icon> {{ 'general.search' | translate }}
         </button>
       </div>
     </form>

@@ -1,3 +1,4 @@
+import { MatButtonModule } from '@angular/material/button';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatSelectModule } from '@angular/material/select';
@@ -43,6 +44,7 @@ import { NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
     MatSelectModule,
     MatIconModule,
     TranslateModule,
+    MatButtonModule,
     MatTabsModule,
     MatFormFieldModule,
     NgxPaginationModule,

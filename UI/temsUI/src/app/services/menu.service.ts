@@ -239,15 +239,15 @@ export class MenuService {
                 showSubmenu: false,
                 submenu: []
               },
-              {
-                path: '/communication/logs',
-                title: menu.logs,
-                icon: 'mdi mdi-format-align-center menu-icon',
-                isActive: false,
-                isShown: this.tokenService.canViewEntities(),
-                showSubmenu: false,
-                submenu: []
-              },
+              // {
+              //   path: '/communication/logs',
+              //   title: menu.logs,
+              //   icon: 'mdi mdi-format-align-center menu-icon',
+              //   isActive: false,
+              //   isShown: this.tokenService.canViewEntities(),
+              //   showSubmenu: false,
+              //   submenu: []
+              // },
               {
                 path: '/communication/sendemail',
                 title: menu.emails,

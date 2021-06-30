@@ -1,3 +1,4 @@
+import { TranslateService } from '@ngx-translate/core';
 import { SnackService } from '../../../services/snack.service';
 import { AnalyticsService } from 'src/app/services/analytics.service';
 import { TEMSComponent } from './../../../tems/tems.component';
@@ -29,7 +30,8 @@ export class ProfileAnalyticsComponent extends TEMSComponent implements OnInit {
   constructor(
     prof: ViewProfile,
     private analyticsService: AnalyticsService,
-    private snackService: SnackService) {
+    private snackService: SnackService,
+    public translate: TranslateService) {
     super();
     this.profile = prof;
   }

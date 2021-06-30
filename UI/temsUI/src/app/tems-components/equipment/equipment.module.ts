@@ -1,3 +1,4 @@
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
@@ -77,6 +78,7 @@ import { MatOptionModule } from '@angular/material/core';
     MatButtonModule,
     MatMenuModule,
     MatFormFieldModule,
+    MatSlideToggleModule,
     MatProgressBarModule,
     EntitySharedModule,
     AnalyticsModule,

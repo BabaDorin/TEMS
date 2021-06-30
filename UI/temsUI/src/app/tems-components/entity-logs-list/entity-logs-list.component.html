@@ -1,11 +1,12 @@
 <ng-container *ngIf="claims.canManage || claims.canView; else elseBlock">
   <div class="col-md-12">
     <h2 class="mt-3 mb-3">
-      Last logs
+      {{ 'entities.logs' | translate }}
     </h2>
     <ng-container *ngIf="claims.canManage">
       <button mat-button (click)="addLog()">
-        <mat-icon class="text-primary">add</mat-icon> Add Log
+        <mat-icon class="text-primary">add</mat-icon>
+        {{ 'logs.create' | translate }}
       </button>
       <hr>
     </ng-container>
@@ -45,6 +46,6 @@
 
 <ng-template #elseBlock>
   <p class="text-center text-muted">
-    Insuficient permissions.
+    {{ 'general.insufficientPermisions' | translate }}
   </p>
 </ng-template>

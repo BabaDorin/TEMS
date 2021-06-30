@@ -1,13 +1,17 @@
 <div class="card">
     <div class="card-body">
-        <div class="card-title">Attach an equipment</div>
+        <div class="card-title">
+            {{ 'equipment.attach' | translate }}
+        </div>
         <hr>
-        <p class="text-muted">Attach an existing equipment. You can choose only withing equipments
-            that are supported as children by the parent({{ equipment.definition.identifier }}) definition.
+        <p class="text-muted">
+            {{ 'equipment.attachTip' | translate }} {{ equipment.definition.identifier }}.
         </p>
         <form [formGroup]="attachEquipmentFormGroup" (submit)="onSubmit(attachEquipmentFormGroup.controls)">
             <mat-form-field>
-                <mat-label>Available definitions</mat-label>
+                <mat-label>
+                    {{ 'equipment.availableDefinitions' | translate }}
+                </mat-label>
                 <mat-select formControlName="equipmentDefinition" 
                 (selectionChange)="onDefinitionChanged($event)">
                   <mat-option *ngFor="let def of equipment.definition.children" [value]="def.id">{{ def.identifier }}</mat-option>
@@ -19,13 +23,13 @@
               </app-chips-autocomplete>
               <p class="text-muted">
                   <mat-icon class="text-muted">info</mat-icon> 
-                  Only deatached equipment are included in the dropdown
+                  {{ 'equipment.detachTip' | translate }}
               </p>
                <button 
                 mat-button
                 type="submit" 
                 class="btn-gradient-primary mr-2">
-                Attach selected equipment
+                {{ 'equipment.attach' | translate }}
             </button>
         </form>
     </div>

@@ -1,3 +1,4 @@
+import { TranslateModule } from '@ngx-translate/core';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Error404Component } from './error404/error404.component';
@@ -15,6 +16,7 @@ const routes: Routes = [
   declarations: [Error404Component, Error500Component, Error403Component],
   imports: [
     CommonModule,
+    TranslateModule,
     RouterModule.forChild(routes)
   ]
 })

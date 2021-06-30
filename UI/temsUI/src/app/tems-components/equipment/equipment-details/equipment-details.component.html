@@ -5,28 +5,28 @@
                     <app-equipment-details-general 
                     [equipmentId]="equipmentId"
                     (archivationStatusChanged)="archivationStatusChanged()">
-                        Loading...
+                    {{ 'general.loading' | translate }}
                     </app-equipment-details-general>
             </mat-tab>
             <ng-container *ngIf="equipmentSimplified.isArchieved == false">
-                <mat-tab label="Logs">
+                <mat-tab [label]="translate.instant('entities.logs')">
                     <ng-template matTabContent>
                         <app-equipment-details-logs [equipment]="equipmentSimplified">
-                            Loading...
+                            {{ 'general.loading' | translate }}
                         </app-equipment-details-logs>
                     </ng-template>
                 </mat-tab>
-                <mat-tab  label="Issues">
+                <mat-tab  [label]="translate.instant('entities.tickets')">
                     <ng-template matTabContent>
                         <app-equipment-details-issues [equipment]="equipmentSimplified">
-                            Loading...
+                            {{ 'general.loading' | translate }}
                         </app-equipment-details-issues>
                     </ng-template>
                 </mat-tab>
-                <mat-tab label="Allocations">
+                <mat-tab [label]="translate.instant('entities.allocations')">
                     <ng-template matTabContent>
                         <app-equipment-details-allocations [equipment]="equipmentSimplified">
-                            Loading...
+                            {{ 'general.loading' | translate }}
                         </app-equipment-details-allocations>
                     </ng-template>
                 </mat-tab>

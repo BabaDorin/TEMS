@@ -1,3 +1,6 @@
+import { MatSelectModule } from '@angular/material/select';
+import { MatButtonModule } from '@angular/material/button';
+import { ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatInputModule } from '@angular/material/input';
@@ -52,6 +55,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
     TemsFormsModule,
     NgxPaginationModule,
     TemsAgGridModule,
+    ReactiveFormsModule,
     AnalyticsModule,
     LoadingplaceholderModule,
     IssueContainerModule,
@@ -61,9 +65,10 @@ import { MatFormFieldModule } from '@angular/material/form-field';
     MatMenuModule,
     MatSlideToggleModule,
     MatExpansionModule,
+    MatButtonModule,
+    MatSelectModule,
     MatInputModule,
     MatOptionModule,
-    MatFormFieldModule,
     MatIconModule,
     MatCardModule,
     TranslateModule,

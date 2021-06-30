@@ -1,7 +1,9 @@
 <div class="col-md-12">
   <ng-container *ngIf="typeId == undefined">
     <mat-form-field class="form-field">
-      <mat-label>Equipment Type</mat-label>
+      <mat-label>
+        {{ 'entities.types' | translate }}
+      </mat-label>
       <mat-select (selectionChange)="onSelectionChanged($event)">
         <mat-option *ngFor="let option of equipmentTypes" [value]="option.value">
           {{ option.label }}
@@ -13,6 +15,8 @@
   <form *ngIf="formlyData.isVisible" [formGroup]="formlyData.form" (ngSubmit)="onSubmit(formlyData.model)">
     <formly-form [form]="formlyData.form" [fields]="formlyData.fields" [model]="formlyData.model"></formly-form>
     <button type="submit" class="btn btn-gradient-primary mt-3"
-      [disabled]="formlyData.form.status=='INVALID'">Submit</button>
+      [disabled]="formlyData.form.status=='INVALID'">
+      {{ 'form.submit' | translate }}
+    </button>
   </form>
 </div>

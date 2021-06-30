@@ -3,7 +3,7 @@
     <div class="page-header">
       <div class="page-title mt-4 mb-0">
         <h2>
-          Issues
+          {{ 'entities.tickets' | translate }}
         </h2>
       </div>
       <ng-container *ngIf="showIncludeClosed">
@@ -12,13 +12,13 @@
   
             <li class="breadcrumb-item" aria-current="page">
               <button mat-button [matMenuTriggerFor]="menu" aria-label="Add Equipment Menu" class="float-right">
-                Actions <mat-icon class="text-primary">more_vert</mat-icon>
+                <mat-icon class="text-primary">more_vert</mat-icon>
               </button>
               <mat-menu #menu="matMenu">
                 <div class="p-2 text-center">
                   <mat-slide-toggle class="float-right"
                     (click)="includeClosedChanged()">
-                    Include Closed
+                    {{ 'ticket.includeClosed' | translate }}
                   </mat-slide-toggle>
                 </div>
               </mat-menu>
@@ -30,13 +30,16 @@
 
     <div class="button-container">
       <button *ngIf="addIssueEnabled == true" mat-button (click)="addIssue()" class="d-xs-block">
-        <mat-icon class="text-primary">add</mat-icon>Create issue
+        <mat-icon class="text-primary">add</mat-icon>
+        {{ 'ticket.create' | translate }}
       </button>
       <button mat-button (click)="sortBy('priority')" class="d-xs-block">
-        <mat-icon class="text-primary">import_export</mat-icon>Sort by priority
+        <mat-icon class="text-primary">import_export</mat-icon>
+        {{ 'ticket.sortPriority' | translate }}
       </button>
       <button mat-button (click)="sortBy('date')" class="d-xs-block">
-        <mat-icon class="text-primary">import_export</mat-icon>Sort by date
+        <mat-icon class="text-primary">import_export</mat-icon>
+        {{ 'ticket.sortDate' | translate }}
       </button>
     </div>
 
@@ -70,6 +73,6 @@
 
 <ng-template #elseBlock>
   <p class="text-center text-muted">
-    Insufficient permissions.
+    {{ 'general.insufficientPermisions' | translate }}
   </p>
 </ng-template>

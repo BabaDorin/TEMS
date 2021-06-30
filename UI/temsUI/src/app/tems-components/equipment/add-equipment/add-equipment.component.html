@@ -6,15 +6,17 @@
         <!-- Header for Add equipment case -->
         <ng-container *ngIf="updateEquipmentId == undefined; else headerElseBlock">
           <h2>
-            Add Equipment
+            {{ 'equipment.add' | translate }}
           </h2>
-          <small>Please, provide all of the necessary data in order to register the equipment.</small>
+          <small>
+            {{ 'equipment.addTip' | translate }}
+          </small>
         </ng-container>
 
         <!-- Header for update equipment case -->
         <ng-template #headerElseBlock>
           <h2>
-            Update Equipment information
+            {{ 'equipment.update' | translate }}
           </h2>
         </ng-template>
         <hr>
@@ -25,12 +27,12 @@
           <ul class="breadcrumb bg-transparent">
               <li class="breadcrumb-item" aria-current="page">
                 <button mat-button [matMenuTriggerFor]="menu" aria-label="Add Equipment Menu" class="float-right">
-                  Actions <mat-icon class="text-primary">more_vert</mat-icon>
+                  <mat-icon class="text-primary">more_vert</mat-icon>
                 </button>
                 <mat-menu #menu="matMenu">
                   <button mat-menu-item (click)="bulkUpload()">
                     <mat-icon class="text-muted">playlist_add</mat-icon>
-                    Bulk upload
+                    {{ 'equipment.bulkUpload' | translate }}
                   </button>
                 </mat-menu>
               </li>
@@ -49,18 +51,18 @@
           <!-- Choose Equipment Type -->
           <ng-container class="form-group">
             <h3 class="mt-3">
-              <span class="text-primary">Step 1: </span>
-              Select the Type
+              <span class="text-primary">{{ 'equipment.step' | translate }} 1: </span>
+              {{ 'equipment.selectType' | translate }}
             </h3>
             <hr>
             <mat-form-field>
               <mat-label>
-                Equipment Type
+                {{ 'entities.type' | translate }}
               </mat-label>
               <mat-select formControlName="equipmentType" [(ngModel)]="selectedType"
                 (selectionChange)="onTypeChanged($event)">
                 <mat-option (click)="openAddType()">
-                  + Add New
+                  + {{ 'general.add' | translate }}
                 </mat-option>
                 <mat-option *ngFor="let type of types" [value]="type.value">
                   {{ type.label }}
@@ -72,18 +74,18 @@
           <!-- Choose Equipment Definition -->
           <ng-container *ngIf="selectedType != undefined" class="form-group">
             <h3 class="mt-3">
-              <span class="text-primary">Step 2: </span>
-              Select the Definition
+              <span class="text-primary">{{ 'equipment.step' | translate }} 2: </span>
+              {{ 'equipment.selectDefinition' | translate }}
             </h3>
             <hr>  
             <mat-form-field>
                 <mat-label>
-                  Equipment Definition
+                  {{ 'entities.type' | translate }}
                 </mat-label>
                 <mat-select formControlName="equipmentDefinition" [(ngModel)]="selectedDefinition"
                   (selectionChange)="onDefinitionChanged($event)">
                   <mat-option (click)="openAddDefinition()">
-                    + Add New
+                    + {{ 'general.add' | translate }}
                   </mat-option>
                   <mat-option *ngFor="let definition of definitionsOfType" [value]="definition.value">
                     {{ definition.label }}
@@ -107,8 +109,8 @@
       <ng-container *ngIf="formlyData.isVisible">
         <ng-container *ngIf="updateEquipmentId == undefined">
           <h3 class="mt-3">
-            <span class="text-primary">Step 3: </span>
-            Provide equipment information
+            <span class="text-primary">{{ 'equipment.step' | translate }} 3: </span>
+            {{ 'equipment.provideEquipmentInformation' | translate }}
           </h3>
           <hr>
         </ng-container>
@@ -118,16 +120,14 @@
           <hr class="mt-3">
           <ng-container *ngIf="updateEquipmentId != undefined">
             <p class="text-muted">
-              This form can be used to update information related only to this specific equipment. If you want to
-              edit children's information, you have to access them individually. Also, use 'attach' and 'deattach'
-              options to add or remove children equipment.
+              {{ 'equipment.updateTip' | translate }}
             </p>
             <br>
             <button mat-button (click)="back()">Go back</button>
           </ng-container>
           
           <button mat-button type="submit" class="btn-gradient-primary" [disabled]="formlyData.form.status == 'INVALID'">
-            Submit
+            {{ 'form.submit' | translate }}
           </button>
         </form>
       </ng-container>
@@ -138,7 +138,7 @@
       <app-bulk-upload-results [bulkUploadResults]="bulkUploadResults"></app-bulk-upload-results>
       <button mat-button (click)="clearResults()">
         <mat-icon class="text-primary">arrow_back</mat-icon>
-        Back
+        {{ 'form.back' | translate }}
       </button>
     </ng-template>
   </div>

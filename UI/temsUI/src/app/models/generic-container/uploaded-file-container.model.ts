@@ -80,7 +80,6 @@ export class UploadedFileContainerModel extends TEMSComponent implements IGeneri
     }
 
     download() {
-        this.description = "Preparing... Please wait";
         let downloadButton = this.actions.find(q => q.name == 'Download');
         downloadButton.disabled = true;
 

@@ -7,7 +7,6 @@
         <p class="text-muted">
             {{ 'report.reportsTip' | translate }}
             <span *ngIf="canManage">{{ 'report.createTemplate' | translate }}</span>
-            .
         </p>
 
         <div class="container m-0 p-0">
@@ -69,13 +68,13 @@
 <br>
 <div class="card" *ngIf="lastGeneratedReports != undefined && lastGeneratedReports.length > 0">
     <div class="card-body">
-        <div class="card-title align-text-center">
+        <h2>
             {{ 'report.lastReports' | translate }}
             <mat-icon matSuffix class="mr-1">
                 <i class="mdi mdi-information-outline" matTooltip="These are references to generated report files, which means that data within these
                     reports is static and reflects the state at the moment of generation."></i>
             </mat-icon>
-        </div>
+        </h2>
         <hr>
         <div class="mb-2" *ngFor="let report of lastGeneratedReports | paginate: { 
             itemsPerPage: 10, 

@@ -1,8 +1,8 @@
 <div class="card">
     <div class="card-body">
-        <div class="card-title">
-            {{ 'equipment.allocation | translate }}
-        </div>
+        <h2>
+            {{ 'equipment.allocation' | translate }}
+        </h2>
         <hr>
         <form [formGroup]="equipmentAllocationFormGroup" (submit)="submit(equipmentAllocationFormGroup.controls)">
             <div class="row">

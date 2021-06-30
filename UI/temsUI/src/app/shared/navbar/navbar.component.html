@@ -77,7 +77,8 @@
           </a>
           <div class="dropdown-menu navbar-dropdown" ngbDropdownMenu aria-labelledby="profileDropdown">
             <a class="dropdown-item" routerLink="profile/view">
-              <mat-icon class="text-warning">person</mat-icon>{{ 'user.profile' | translate }}
+              <i class="mdi mdi-account mr-2 text-primary"></i>
+              {{ 'user.profile' | translate }}
             </a>
             <div class="dropdown-divider"></div>
             <a class="dropdown-item" (click)="signOut()">

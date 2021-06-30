@@ -1,6 +1,8 @@
 <div class="card">
   <div class="card-body">
-    <div class="card-title">{{ header }}</div>
+    <h2>
+      {{ header }}
+    </h2>
     <form [formGroup]="quickAccessFormGroup" (submit)="onSubmit()">
       <div style="max-width: 600px;">
         <app-chips-autocomplete #identifier [label]="label" [endPoint]="endPoint"

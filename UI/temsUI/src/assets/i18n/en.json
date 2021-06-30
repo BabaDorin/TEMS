@@ -4,6 +4,7 @@
         "room": "Room",
         "rooms": "Rooms",
         "equipment": "Equipment",
+        "registeredEquipment": "Registered equipment",
         "tickets": "Tickets",
         "logs": "Logs",
         "allocations": "Allocations",
@@ -32,7 +33,8 @@
         "add": "Add new",
         "message": "Message",
         "success": "Success",
-        "failed": "Failed"
+        "failed": "Failed",
+        "search": "Search"
     },
 
     "notifications":{
@@ -121,7 +123,7 @@
         "date" : "Select the date:",
         "any": "Any",
         "upload": "Upload",
-        "find": "Find",
+        "find": "Find"
     },
     
     "equipment": {
@@ -359,6 +361,9 @@
 
 
     "ticket": {
+        "openTabLabel": "Open",
+        "closedTabLabel": "Closed",
+        "closed": "Closed",
         "problem": "What is the problem?",
         "description": "Problem description (helps a lot!)",
         "priority": "Priority level",
@@ -455,7 +460,7 @@
         "byDefinition": "By definition",
         "noSelection": "No selection = any",
         "types": "Equipment types",
-        "defintions": "DefinitionsOfSelectedTypes",
+        "defintions": "Definitions of selected types",
         "roomsFilter": "Include only equipment from these rooms",
         "personnelFilter": "Include only equipment allocated to these people",
         "layoutConfiguration": "Layout configuration",

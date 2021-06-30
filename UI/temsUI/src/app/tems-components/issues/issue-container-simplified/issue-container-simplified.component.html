@@ -3,12 +3,14 @@
     <mat-card-title>{{ issue.problem }} [{{ issue.trackingNumber }}]</mat-card-title>
     <mat-card-subtitle>
         {{ issue.dateCreated | date:'medium' }}
+        <br>
         <app-issue-status [issue]="issue"></app-issue-status>
     </mat-card-subtitle>
   </mat-card-header>
   <mat-card-content>
     <ng-container *ngIf="issue.dateClosed != undefined && issue.closedBy != undefined">
-        <p>{{ 'ticket.closedOn' | translate }} {{ issue.dateClosed | date:'short' }}
+        <p class="text-center">
+          {{ 'ticket.closedOn' | translate }} {{ issue.dateClosed | date:'short' }}
           <a mat-button [routerLink]="'/profile/view/' + issue.closedBy.value">
             <mat-icon class="text-primary ml-3">person</mat-icon>
             ({{ issue.closedBy.label }})

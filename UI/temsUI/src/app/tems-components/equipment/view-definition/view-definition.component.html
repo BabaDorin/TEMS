@@ -1,6 +1,8 @@
 <div class="card">
     <div class="card-body">
-        <div class="card-title">{{ definition.identifier }}</div>
+        <h2>
+            {{ definition.identifier }}
+        </h2>
         <h3 *ngIf="definition.equipmentType != undefined">
             Type: <button mat-button (click)="viewType(definition.equipmentType.value)">{{ definition.equipmentType.label }}</button></h3>
         

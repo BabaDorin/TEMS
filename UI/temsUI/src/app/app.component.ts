@@ -1,3 +1,4 @@
+import { browser } from 'protractor';
 import { ViewLibraryComponent } from './tems-components/library/view-library/view-library.component';
 import { DialogService } from 'src/app/services/dialog.service';
 import { SystemConfigurationService } from 'src/app/services/system-configuration.service';
@@ -32,7 +33,8 @@ export class AppComponent extends TEMSComponent implements OnInit{
 
     translate.addLangs(['en', 'ro']);
     translate.setDefaultLang('en');
-    const browserLang = translate.getBrowserLang(); 
+    // const browserLang = translate.getBrowserLang(); 
+    const browserLang = 'ro';
     translate.use(browserLang.match(/en|ro/) ? browserLang: 'en');
 
     // Removing Sidebar, Navbar, Footer for Documentation, Error and Auth pages

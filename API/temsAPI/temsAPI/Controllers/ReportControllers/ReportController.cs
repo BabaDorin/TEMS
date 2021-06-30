@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
 using System.Diagnostics;
@@ -29,7 +30,8 @@ namespace temsAPI.Controllers.ReportControllers
             UserManager<TEMSUser> userManager,
             ReportingService reportingService,
             IOptions<AppSettings> appSettings,
-            ReportManager reportManager) : base(mapper, unitOfWork, userManager)
+            ReportManager reportManager,
+            ILogger<TEMSController> logger) : base(mapper, unitOfWork, userManager, logger)
         {
             _reportingService = reportingService;
             _appSettings = appSettings.Value;

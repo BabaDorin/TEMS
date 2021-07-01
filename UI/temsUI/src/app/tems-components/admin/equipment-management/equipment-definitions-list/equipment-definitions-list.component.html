@@ -22,7 +22,7 @@
                 </app-generic-container>
             </div>
         </div>
-        <pagination-controls (pageChange)="pageNumber = $event" id="definitions"
+        <pagination-controls class="text-center mb-2"  (pageChange)="pageNumber = $event" id="definitions"
             *ngIf="definitionContainerModels != undefined && definitionContainerModels.length > 1">
         </pagination-controls>
     </div>

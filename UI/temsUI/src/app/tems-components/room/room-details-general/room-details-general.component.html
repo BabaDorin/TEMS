@@ -36,7 +36,7 @@
                                     </button>
                                     <button mat-menu-item *ngIf="!room.isArchieved" (click)="archieve()">
                                         <mat-icon class="text-muted">auto_delete</mat-icon>
-                                        {{ 'general.archieve' | translate }}
+                                        {{ 'general.archive' | translate }}
                                     </button>
                                 </mat-menu>
                             </li>
@@ -44,7 +44,6 @@
                     </ul>
                 </nav>
             </div>
-            <hr>
             <ng-container *ngIf="room.supervisories != undefined && room.supervisories.length > 0">
                 <h2 class="text-muted text-bold">
                     {{ 'room.supervisories' | translate }}

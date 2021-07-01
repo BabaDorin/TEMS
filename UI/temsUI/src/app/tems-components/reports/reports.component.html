@@ -59,7 +59,7 @@
                         </div>
                     </div>
                 </div>
-                <pagination-controls (pageChange)="templatePageNumber = $event" id="reports"
+                <pagination-controls class="text-center mb-2"  (pageChange)="templatePageNumber = $event" id="reports"
                     *ngIf="customTemplates != undefined && customTemplates.length > 1">
                 </pagination-controls>
             </div>
@@ -88,7 +88,7 @@
                 (reportRemoved)="removeGeneratedReport((generatedReportsPageNumber-1)*10 + i)">
             </app-generated-report-container>
         </div>
-        <pagination-controls (pageChange)="generatedReportsPageNumber = $event" id="generatedReports"
+        <pagination-controls class="text-center mb-2"  (pageChange)="generatedReportsPageNumber = $event" id="generatedReports"
             *ngIf="lastGeneratedReports != undefined && lastGeneratedReports.length > 0">
         </pagination-controls>
     </div>

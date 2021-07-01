@@ -18,15 +18,17 @@
                 {{ 'room.add' | translate }}
             </button>
             <button mat-button (click)="addLogSelected()" class="d-block d-md-inline">
-                <mat-icon class="text-primary">timeline</mat-icon>{{ 'room.addLogForSelected' | translate }}
+                <mat-icon class="text-primary">timeline</mat-icon>
+                {{ 'room.addLogForSelected' | translate }}
             </button>
-
         </ng-container>
         <ng-container *ngIf="claims.canView">
             <button mat-button (click)="addIssue()" class="d-block d-md-inline">
-                <mat-icon class="text-primary">feedback</mat-icon>{{ 'room.includeSelectedInATicket' | translate }}
+                <mat-icon class="text-primary">feedback</mat-icon>
+                {{ 'room.includeSelectedInATicket' | translate }}
             </button>
         </ng-container>
+        <hr class="separator">
         <app-ag-grid-rooms #agGrid></app-ag-grid-rooms>
     </div>
 </div>

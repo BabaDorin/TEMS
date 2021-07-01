@@ -290,7 +290,12 @@ formly-field-mat-radio {
 
 .property-container {
   max-width: 800px;
-  min-width: 400px;
+  min-width: 300px;
+}
+
+.ngx-pagination{
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
 // Bootstrap component styles overrides

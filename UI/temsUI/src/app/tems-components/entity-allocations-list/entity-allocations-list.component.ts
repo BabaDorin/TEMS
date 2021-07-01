@@ -65,6 +65,7 @@ export class EntityAllocationsListComponent extends TEMSComponent implements OnI
       return;
     }
 
+    this.loading = true;
     this.readInputVariables();
     this.getTotalItems();
     this.fetchAllocations();
@@ -162,7 +163,7 @@ export class EntityAllocationsListComponent extends TEMSComponent implements OnI
       EquipmentAllocationComponent,
       [{label: selectedEntityType, value: selectedEntities}],
       () => {
-        this.ngOnInit();
+        this.fetchAllocations();
         this.allocationCreated.emit();
       }
     )

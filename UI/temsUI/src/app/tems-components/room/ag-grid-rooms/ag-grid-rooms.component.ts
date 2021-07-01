@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { ViewRoomSimplified } from 'src/app/models/room/view-room-simplified.model';
 import { BtnCellRendererComponent } from 'src/app/public/ag-grid/btn-cell-renderer/btn-cell-renderer.component';
 import { DialogService } from '../../../services/dialog.service';
@@ -32,6 +33,7 @@ export class AgGridRoomsComponent extends TEMSComponent implements OnInit {
     private roomService: RoomsService,
     private dialogService: DialogService,
     private snackService: SnackService,
+    private translate: TranslateService,
   ) {
     super();
 
@@ -51,11 +53,11 @@ export class AgGridRoomsComponent extends TEMSComponent implements OnInit {
 
 
     this.columnDefs = [
-      { field: 'identifier', sortable: true, filter: true, checkboxSelection: true, headerCheckboxSelection: true, resizeable: true },
-      { field: 'label', sortable: true, filter: true, resizeable: true },
-      { field: 'description', sortable: true, filter: true, resizeable: true },
-      { field: 'activeTickets', sortable: true, filter: true, resizeable: true },
-      { field: 'allocatedEquipments', sortable: true, filter: true, resizeable: true },
+      { headerName: this.translate.instant('form.identifier'), field: 'identifier', sortable: true, filter: true, checkboxSelection: true, headerCheckboxSelection: true, resizeable: true },
+      { headerName: this.translate.instant('room.labels'), field: 'label', sortable: true, filter: true, resizeable: true },
+      { headerName: this.translate.instant('form.description'), field: 'description', sortable: true, filter: true, resizeable: true },
+      { headerName: this.translate.instant('entities.activeTickets'), field: 'activeTickets', sortable: true, filter: true, resizeable: true },
+      { headerName: this.translate.instant('entities.allocatedEquipment'), field: 'allocatedEquipments', sortable: true, filter: true, resizeable: true },
       {
         cellRenderer: 'btnCellRendererComponent',
         cellRendererParams: {
@@ -115,17 +117,26 @@ export class AgGridRoomsComponent extends TEMSComponent implements OnInit {
     this.gridApi = params.api;
     this.gridColumnApi = params.columnApi;
 
+    this.loading = true;
     this.fetchRooms();
   }
 
   fetchRooms() {
-    this.loading = true;
     this.subscriptions.push(this.roomService.getRoomsSimplified(20, 20)
       .subscribe(result => {
-        console.log(result);
-        this.rowData = result;
+        if(this.rowData != result)
+          this.rowData = result;
         this.loading = false;
+        this.autoSizeAll();
       }));
+  }
+
+  autoSizeAll() {
+    var allColumnIds = [];
+    this.gridColumnApi.getAllColumns().forEach(function (column) {
+      allColumnIds.push(column.colId);
+    });
+    this.gridColumnApi.autoSizeColumns(allColumnIds, false);
   }
 
   isFirstColumn(params) {

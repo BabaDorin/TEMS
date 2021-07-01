@@ -1,4 +1,4 @@
-<div class="card">
+<div [ngClass]="dialogRef == undefined ? 'card' : 'card cancel-margins'">
     <div class="card-body">
         <h2>
             {{ 'key.allocations' | translate }}

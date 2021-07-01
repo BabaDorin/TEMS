@@ -5,7 +5,9 @@
         "rooms": "Rooms",
         "equipment": "Equipment",
         "registeredEquipment": "Registered equipment",
+        "allocatedEquipment": "Allocated equipment",
         "tickets": "Tickets",
+        "activeTickets": "Active tickets",
         "logs": "Logs",
         "allocations": "Allocations",
         "properties": "Properties",
@@ -358,7 +360,6 @@
         "send": "Send e-mail",
         "sendEmailTip": "Note: Your message will be sent only to those personnel records that have a valid email address assigned."
     },
-
 
     "ticket": {
         "urgent": "Urgent",

@@ -10,9 +10,9 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
+import { IssueSimplifiedModule } from '../issue-simplified/issue-simplified.module';
+import { IssueStatusModule } from '../issue-status/issue-status.module';
 import { IssueContainerComponent } from './../../../tems-components/issues/issue-container/issue-container.component';
-import { IssueSimplifiedModule } from './../issue-simplified/issue-simplified.module';
-import { IssueStatusModule } from './../issue-status/issue-status.module';
 
 
 
@@ -34,6 +34,9 @@ import { IssueStatusModule } from './../issue-status/issue-status.module';
     TranslateModule,
     IssueSimplifiedModule,
     IssueStatusModule
+  ],
+  exports: [
+    IssueContainerComponent
   ]
 })
 export class IssueContainerModule { }

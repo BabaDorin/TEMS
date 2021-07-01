@@ -5,7 +5,9 @@
         "rooms": "Săli",
         "equipment": "Echipament",
         "registeredEquipment": "Echipamentele înregistrate",
+        "allocatedEquipment": "Echipamente alocate",
         "tickets": "Ticket-uri",
+        "activeTickets": "Ticket-uri active",
         "logs": "Log-uri",
         "allocations": "Alocări",
         "properties": "Proprietăți",
@@ -358,7 +360,6 @@
         "send": "Trimite mesajul",
         "sendEmailTip": "Notă: Mesajul va ajunge la persoanele pentru care există o adresă validă de email asociată."
     },
-
 
     "ticket": {
         "urgent": "Urgent",

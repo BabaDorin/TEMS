@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
 import { RoomsService } from '../../../services/rooms.service';
 import { ViewRoomSimplified } from './../../../models/room/view-room-simplified.model';
 import { ViewRoom } from './../../../models/room/view-room.model';
@@ -20,7 +21,8 @@ export class RoomDetailsComponent extends TEMSComponent implements OnInit {
   
   constructor(
     private activatedroute: ActivatedRoute,
-    private roomService: RoomsService
+    private roomService: RoomsService,
+    private translate: TranslateService
   ) { 
     super();
   }

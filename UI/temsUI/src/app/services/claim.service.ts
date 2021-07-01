@@ -12,12 +12,14 @@ export class ClaimService extends TEMSService {
   public canAllocateKeys: boolean = false;
   public canManageSystemConfiguration: boolean = false;
   public canSendEmails: boolean = false;
+  public canManageAnnouncements: boolean = false;
 
   constructor(
     private tokenService: TokenService
   ) {
     super();
 
+    this.canManageAnnouncements = this.tokenService.canManageAnnouncements();
     this.canManage = this.tokenService.canManageEntities(); 
     this.canView = this.tokenService.canViewEntities();
     this.canAllocateKeys = this.tokenService.canAllocateKeys();

@@ -62,7 +62,7 @@ export class NavbarComponent extends TEMSComponent implements OnInit {
       .subscribe(result => {
         if(this.snackService.snackIfError(result))
           return;
-
+          
           this.newNotifications.forEach(q => q.seen = true);
           this.newNotifications = [];
       })
@@ -92,11 +92,10 @@ export class NavbarComponent extends TEMSComponent implements OnInit {
     this.subscriptions.push(
       this.userService.getLastNotifications()
       .subscribe(result => {
-        console.log(result);
         if(this.snackService.snackIfError(result))
           return;
         
-        this.notifications = result;
+        this.notifications = result.slice(0, 5);
         this.newNotifications = this.notifications.filter(q => q.seen == false);
         console.log(this.newNotifications);
         this.refreshing = false;

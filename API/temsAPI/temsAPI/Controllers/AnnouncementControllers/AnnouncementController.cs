@@ -46,7 +46,7 @@ namespace temsAPI.Controllers.AnnouncementControllers
         }
 
         [HttpGet("announcement/remove/{announcementId}")]
-        [ClaimRequirement(TEMSClaims.CAN_MANAGE_SYSTEM_CONFIGURATION)]
+        [ClaimRequirement(TEMSClaims.CAN_MANAGE_ANNOUNCEMENTS)]
         public async Task<JsonResult> Remove(string announcementId)
         {
             try

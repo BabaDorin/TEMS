@@ -1,3 +1,4 @@
+import { NgxPaginationModule } from 'ngx-pagination';
 import { TemsFormsModule } from './../tems-forms/tems-forms.module';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
@@ -26,7 +27,7 @@ import { AnnouncementsListModule } from './announcements-list/announcements-list
     ReactiveFormsModule,
     FormsModule,
     TemsFormsModule,
-    AnnouncementsListModule
+    AnnouncementsListModule,
   ]
 })
 export class AnnouncementModule { }

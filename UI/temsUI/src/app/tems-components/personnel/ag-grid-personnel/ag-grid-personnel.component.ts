@@ -52,8 +52,8 @@ export class AgGridPersonnelComponent extends TEMSComponent implements OnInit {
     this.columnDefs = [
       { field: 'name', sortable: true, filter: true, checkboxSelection: true, resizeable: true},
       { field: 'positions', sortable: true, filter: true, resizeable: true },
-      // { field: 'allocatedEquipments', sortable: true, filter: true, resizeable: true },
-      // { field: 'activeTickets', sortable: true, filter: true, resizeable: true },
+      { field: 'allocatedEquipments', sortable: true, filter: true, resizeable: true },
+      { field: 'activeTickets', sortable: true, filter: true, resizeable: true },
       {
         cellRenderer: 'btnCellRendererComponent',
         cellRendererParams: {
@@ -99,9 +99,17 @@ export class AgGridPersonnelComponent extends TEMSComponent implements OnInit {
         console.log(result);
         this.rowData = result;
         this.loading = false;
+        this.autoSizeAll();
       }));
   }
 
+  autoSizeAll() {
+    var allColumnIds = [];
+    this.gridColumnApi.getAllColumns().forEach(function (column) {
+      allColumnIds.push(column.colId);
+    });
+    this.gridColumnApi.autoSizeColumns(allColumnIds, false);
+  }
 
   isFirstColumn(params) {
     var displayedColumns = params.columnApi.getAllDisplayedColumns();

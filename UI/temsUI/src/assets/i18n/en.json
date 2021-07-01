@@ -36,7 +36,8 @@
         "message": "Message",
         "success": "Success",
         "failed": "Failed",
-        "search": "Search"
+        "search": "Search",
+        "remove": "Remove"
     },
 
     "notifications":{

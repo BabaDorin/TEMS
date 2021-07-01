@@ -1,3 +1,4 @@
+import { SnackService } from './../../../services/snack.service';
 import { Component, Input, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { TEMSComponent } from 'src/app/tems/tems.component';
@@ -19,11 +20,15 @@ export class AnnouncementsListComponent extends TEMSComponent implements OnInit 
   @Input() displayCreateNew: boolean = false;
 
   announcements: ViewAnnouncement[];
+  itemsPerPage = 10;
+  pageNumber = 1;
+
   constructor(
     private communicationService: CommunicationService,
     public dialog: MatDialog,
     public claims: ClaimService,
-    private dialogService: DialogService
+    private dialogService: DialogService,
+    private snackService: SnackService
   ) { 
     super();
   }
@@ -54,5 +59,19 @@ export class AnnouncementsListComponent extends TEMSComponent implements OnInit 
         this.fetchAnnouncements();
       }
     );
+  }
+
+  remove(index){
+    this.subscriptions.push(
+      this.communicationService.removeAnnouncement(this.announcements[index].id)
+      .subscribe(result => {
+        console.log(result);
+        if(this.snackService.snackIfError(result))
+          return;
+        
+        if(result?.status == 1)
+          this.announcements.splice(index, 1);
+      })
+    )
   }
 }

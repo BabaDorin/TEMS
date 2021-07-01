@@ -36,7 +36,8 @@
         "message": "Mesaj",
         "success": "Succes",
         "failed": "Eșuat",
-        "search": "Caută"
+        "search": "Caută",
+        "remove": "Elimină"
     },
 
     "notifications":{
@@ -119,7 +120,7 @@
         "fullName" :"Numele complet",
         "username" : "Numele de utilizator",
         "password": "Parola",
-        "submit": "Trimite",
+        "submit": "Salveaza",
         "back": "Înapoi",
         "remove": "Elimină",
         "date" : "Selectează data:",

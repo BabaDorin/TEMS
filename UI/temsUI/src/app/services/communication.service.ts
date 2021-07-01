@@ -35,4 +35,11 @@ export class CommunicationService extends TEMSService {
       this.httpOptions
     );
   }
+  
+  removeAnnouncement(announcementId: string): Observable<any>{
+    return this.http.get(
+      API_ANN_URL + '/remove/' + announcementId,
+      this.httpOptions
+    );
+  }
 }

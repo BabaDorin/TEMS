@@ -100,8 +100,6 @@ export class AgGridEquipmentComponent extends TEMSComponent implements OnInit, O
       this.cancelFirstOnChange = false;
       return;
     }
-    
-    console.log('changed');
     this.fetchEquipments();
   }
 
@@ -176,5 +174,4 @@ export class AgGridEquipmentComponent extends TEMSComponent implements OnInit, O
     });
     this.gridColumnApi.autoSizeColumns(allColumnIds, false);
   }
-
 }

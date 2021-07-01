@@ -1,6 +1,6 @@
-import { ViewRoomSimplified } from 'src/app/models/room/view-room-simplified.model';
 import { Component, Input, OnInit } from '@angular/core';
 import { IOption } from 'src/app/models/option.model';
+import { ViewRoomSimplified } from 'src/app/models/room/view-room-simplified.model';
 
 @Component({
   selector: 'app-room-details-logs',

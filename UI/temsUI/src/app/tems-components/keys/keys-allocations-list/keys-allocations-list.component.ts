@@ -1,11 +1,10 @@
-import { KeysAllocationsComponent } from 'src/app/tems-components/keys/keys-allocations/keys-allocations.component';
-import { DialogService } from 'src/app/services/dialog.service';
-import { SnackService } from '../../../services/snack.service';
-import { TEMSComponent } from 'src/app/tems/tems.component';
-import { Component, Input, OnInit, SimpleChanges } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { ViewKeyAllocation } from 'src/app/models/key/view-key-allocation.model';
+import { DialogService } from 'src/app/services/dialog.service';
 import { KeysService } from 'src/app/services/keys.service';
-import { Observable, of } from 'rxjs';
+import { KeysAllocationsComponent } from 'src/app/tems-components/keys/keys-allocations/keys-allocations.component';
+import { TEMSComponent } from 'src/app/tems/tems.component';
+import { SnackService } from '../../../services/snack.service';
 
 @Component({
   selector: 'app-keys-allocations-list',

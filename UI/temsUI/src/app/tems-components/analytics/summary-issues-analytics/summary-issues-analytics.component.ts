@@ -1,9 +1,9 @@
+import { Component, Input, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
+import { AnalyticsService } from '../../../services/analytics.service';
 import { SnackService } from '../../../services/snack.service';
 import { PieChartData } from './../../../models/analytics/pieChart-model';
-import { AnalyticsService } from '../../../services/analytics.service';
 import { TEMSComponent } from './../../../tems/tems.component';
-import { Component, Input, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-summary-issues-analytics',

@@ -1,16 +1,15 @@
-import { TranslateService } from '@ngx-translate/core';
-import { CAN_MANAGE_ENTITIES, CAN_ALLOCATE_KEYS } from './../../../models/claims';
-import { TokenService } from '../../../services/token.service';
-import { SnackService } from '../../../services/snack.service';
+import { Component, Inject, Input, OnInit, Optional, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { AddKeyAllocation } from './../../../models/key/add-key-allocation.model';
-import { TEMSComponent } from './../../../tems/tems.component';
-import { PersonnelService } from '../../../services/personnel.service';
-import { KeysService } from 'src/app/services/keys.service';
-import { IOption } from './../../../models/option.model';
-import { Component, OnInit, Input, ViewChild, Inject, Optional } from '@angular/core';
-import { ChipsAutocompleteComponent } from 'src/app/public/formly/chips-autocomplete/chips-autocomplete.component';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { TranslateService } from '@ngx-translate/core';
+import { ChipsAutocompleteComponent } from 'src/app/public/formly/chips-autocomplete/chips-autocomplete.component';
+import { KeysService } from 'src/app/services/keys.service';
+import { PersonnelService } from '../../../services/personnel.service';
+import { SnackService } from '../../../services/snack.service';
+import { TokenService } from '../../../services/token.service';
+import { AddKeyAllocation } from './../../../models/key/add-key-allocation.model';
+import { IOption } from './../../../models/option.model';
+import { TEMSComponent } from './../../../tems/tems.component';
 
 @Component({
   selector: 'app-keys-allocations',

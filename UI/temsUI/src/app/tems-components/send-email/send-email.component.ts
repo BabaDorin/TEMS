@@ -1,17 +1,15 @@
+import { Component, Inject, Input, OnInit, Optional, ViewChild } from '@angular/core';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
-import { FormlyData } from './../../models/formly/formly-data.model';
-import { PersonnelService } from 'src/app/services/personnel.service';
 import { ChipsAutocompleteComponent } from 'src/app/public/formly/chips-autocomplete/chips-autocomplete.component';
-import { IOption } from './../../models/option.model';
+import { PersonnelService } from 'src/app/services/personnel.service';
+import { FormlyParserService } from '../../services/formly-parser.service';
+import { SnackService } from '../../services/snack.service';
 import { SendEmail } from './../../models/email/send-email.model';
+import { FormlyData } from './../../models/formly/formly-data.model';
+import { IOption } from './../../models/option.model';
 import { EmailService } from './../../services/email.service';
 import { TEMSComponent } from './../../tems/tems.component';
-import { SnackService } from '../../services/snack.service';
-import { FormlyParserService } from '../../services/formly-parser.service';
-import { Component, Inject, Input, OnInit, Optional, ViewChild } from '@angular/core';
-import { FormGroup } from '@angular/forms';
-import { FormlyFieldConfig } from '@ngx-formly/core';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-send-email',

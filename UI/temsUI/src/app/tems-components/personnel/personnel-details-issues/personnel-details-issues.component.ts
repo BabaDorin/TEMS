@@ -1,6 +1,6 @@
+import { Component, Input, OnInit } from '@angular/core';
 import { IOption } from 'src/app/models/option.model';
 import { ViewPersonnelSimplified } from 'src/app/models/personnel/view-personnel-simplified.model';
-import { Component, Input, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-personnel-details-issues',

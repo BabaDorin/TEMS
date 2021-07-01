@@ -1,14 +1,14 @@
-import { ChipsAutocompleteComponent } from 'src/app/public/formly/chips-autocomplete/chips-autocomplete.component';
-import { SnackService } from 'src/app/services/snack.service';
-import { PersonnelService } from '../../../services/personnel.service';
-import { RoomsService } from '../../../services/rooms.service';
-import { EquipmentService } from 'src/app/services/equipment.service';
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { ActivatedRoute, Router } from "@angular/router"
-import { TEMSComponent } from 'src/app/tems/tems.component';
-import { IOption } from 'src/app/models/option.model';
+import { ActivatedRoute, Router } from "@angular/router";
 import { TranslateService } from '@ngx-translate/core';
+import { IOption } from 'src/app/models/option.model';
+import { ChipsAutocompleteComponent } from 'src/app/public/formly/chips-autocomplete/chips-autocomplete.component';
+import { EquipmentService } from 'src/app/services/equipment.service';
+import { SnackService } from 'src/app/services/snack.service';
+import { TEMSComponent } from 'src/app/tems/tems.component';
+import { PersonnelService } from '../../../services/personnel.service';
+import { RoomsService } from '../../../services/rooms.service';
 
 @Component({
   selector: 'app-quick-access',

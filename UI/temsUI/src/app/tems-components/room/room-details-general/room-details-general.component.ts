@@ -1,15 +1,15 @@
-import { CAN_MANAGE_ENTITIES } from './../../../models/claims';
-import { TokenService } from '../../../services/token.service';
-import { AddRoomComponent } from './../add-room/add-room.component';
-import { SnackService } from '../../../services/snack.service';
+import { Component, EventEmitter, Inject, Input, OnInit, Optional, Output } from '@angular/core';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Router } from '@angular/router';
+import { Property } from 'src/app/models/equipment/view-property.model';
 import { RoomsService } from 'src/app/services/rooms.service';
 import { TEMSComponent } from 'src/app/tems/tems.component';
 import { DialogService } from '../../../services/dialog.service';
+import { SnackService } from '../../../services/snack.service';
+import { TokenService } from '../../../services/token.service';
+import { CAN_MANAGE_ENTITIES } from './../../../models/claims';
 import { ViewRoom } from './../../../models/room/view-room.model';
-import { Component, EventEmitter, Inject, Input, OnChanges, OnInit, Optional, Output } from '@angular/core';
-import { Property } from 'src/app/models/equipment/view-property.model';
-import { Router } from '@angular/router';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { AddRoomComponent } from './../add-room/add-room.component';
 
 @Component({
   selector: 'app-room-details-general',

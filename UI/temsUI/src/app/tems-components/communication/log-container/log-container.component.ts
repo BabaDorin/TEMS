@@ -1,9 +1,8 @@
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { ViewLog } from '../../../models/communication/logs/view-logs.model';
 import { LogsService } from '../../../services/logs.service';
 import { SnackService } from '../../../services/snack.service';
-import { EquipmentService } from '../../../services/equipment.service';
 import { TEMSComponent } from '../../../tems/tems.component';
-import { ViewLog } from '../../../models/communication/logs/view-logs.model';
-import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'app-log-container',

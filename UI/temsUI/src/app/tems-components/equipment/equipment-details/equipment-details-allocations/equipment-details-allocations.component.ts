@@ -1,6 +1,5 @@
-import { ViewEquipmentSimplified } from './../../../../models/equipment/view-equipment-simplified.model';
-import { EquipmentService } from 'src/app/services/equipment.service';
 import { Component, Input, OnInit } from '@angular/core';
+import { ViewEquipmentSimplified } from './../../../../models/equipment/view-equipment-simplified.model';
 
 @Component({
   selector: 'app-equipment-details-allocations',

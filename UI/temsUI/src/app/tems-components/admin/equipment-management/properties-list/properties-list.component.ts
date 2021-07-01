@@ -1,12 +1,12 @@
-import { IGenericContainerModel } from './../../../../models/generic-container/IGenericContainer.model';
-import { AddPropertyComponent } from './../../../equipment/add-property/add-property.component';
-import { ViewPropertySimplified } from './../../../../models/equipment/view-property-simplified.model';
-import { SnackService } from '../../../../services/snack.service';
-import { DialogService } from '../../../../services/dialog.service';
-import { EquipmentService } from './../../../../services/equipment.service';
-import { TEMSComponent } from './../../../../tems/tems.component';
 import { Component, Input, OnInit } from '@angular/core';
 import { PropertyContainerModel } from 'src/app/models/generic-container/property-container.model';
+import { DialogService } from '../../../../services/dialog.service';
+import { SnackService } from '../../../../services/snack.service';
+import { ViewPropertySimplified } from './../../../../models/equipment/view-property-simplified.model';
+import { IGenericContainerModel } from './../../../../models/generic-container/IGenericContainer.model';
+import { EquipmentService } from './../../../../services/equipment.service';
+import { TEMSComponent } from './../../../../tems/tems.component';
+import { AddPropertyComponent } from './../../../equipment/add-property/add-property.component';
 
 @Component({
   selector: 'app-properties-list',

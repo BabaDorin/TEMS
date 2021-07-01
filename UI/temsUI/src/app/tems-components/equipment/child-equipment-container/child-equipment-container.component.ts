@@ -1,8 +1,8 @@
-import { SnackService } from '../../../services/snack.service';
-import { EquipmentService } from '../../../services/equipment.service';
-import { TEMSComponent } from '../../../tems/tems.component';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { IOption } from '../../../models/option.model';
-import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
+import { EquipmentService } from '../../../services/equipment.service';
+import { SnackService } from '../../../services/snack.service';
+import { TEMSComponent } from '../../../tems/tems.component';
 
 @Component({
   selector: 'app-child-equipment-container',

@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { FieldType } from '@ngx-formly/core';
-import {TooltipPosition} from '@angular/material/tooltip';
-import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'input-tooltip',

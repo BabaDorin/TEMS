@@ -1,15 +1,15 @@
-import { AccountGeneralInfoModel } from './../../../models/identity/account-general-info.model';
-import { EmailPreferencesModel } from './../../../models/identity/email-preferences.model';
-import { ChangePasswordModel } from './../../../models/identity/change-password.model';
-import { UserService } from 'src/app/services/user.service';
-import { FormlyParserService } from 'src/app/services/formly-parser.service';
-import { FormGroup, FormControl } from '@angular/forms';
-import { TEMSComponent } from './../../../tems/tems.component';
 import { Component, Inject, Input, OnInit } from '@angular/core';
-import { ViewProfile } from 'src/app/models/profile/view-profile.model';
-import { SnackService } from 'src/app/services/snack.service';
-import { FormlyFieldConfig } from '@ngx-formly/core';
+import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
+import { FormlyFieldConfig } from '@ngx-formly/core';
+import { ViewProfile } from 'src/app/models/profile/view-profile.model';
+import { FormlyParserService } from 'src/app/services/formly-parser.service';
+import { SnackService } from 'src/app/services/snack.service';
+import { UserService } from 'src/app/services/user.service';
+import { AccountGeneralInfoModel } from './../../../models/identity/account-general-info.model';
+import { ChangePasswordModel } from './../../../models/identity/change-password.model';
+import { EmailPreferencesModel } from './../../../models/identity/email-preferences.model';
+import { TEMSComponent } from './../../../tems/tems.component';
 
 @Component({
   selector: 'app-profile-settings',

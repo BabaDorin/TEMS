@@ -1,9 +1,8 @@
-import { CanManageEntitiesGuard } from './../../guards/can-manage-entities.guard';
-import { CanViewEntitiesGuard } from './../../guards/can-view-entities.guard';
-import { CreateIssueComponent } from 'src/app/tems-components/issue/create-issue/create-issue.component';
-import { ViewIssuesComponent } from './../../tems-components/issue/view-issues/view-issues.component';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { CreateIssueComponent } from 'src/app/tems-components/issue/create-issue/create-issue.component';
+import { CanViewEntitiesGuard } from './../../guards/can-view-entities.guard';
+import { ViewIssuesComponent } from './../../tems-components/issue/view-issues/view-issues.component';
 
 const routes: Routes = [
   { path: '', component: ViewIssuesComponent, canActivate: [CanViewEntitiesGuard]},

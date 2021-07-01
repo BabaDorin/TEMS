@@ -1,10 +1,10 @@
-import { TranslateService } from '@ngx-translate/core';
-import { TEMSComponent } from './../../../tems/tems.component';
-import { PersonnelService } from '../../../services/personnel.service';
-import { ViewPersonnelSimplified } from './../../../models/personnel/view-personnel-simplified.model';
 import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
 import { ViewPersonnel } from 'src/app/models/personnel/view-personnel.model';
+import { PersonnelService } from '../../../services/personnel.service';
+import { ViewPersonnelSimplified } from './../../../models/personnel/view-personnel-simplified.model';
+import { TEMSComponent } from './../../../tems/tems.component';
 
 @Component({
   selector: 'app-personnel-details',

@@ -1,9 +1,9 @@
-import { ViewIssueSimplified } from './../../../models/communication/issues/view-issue-simplified.model';
+import { Component, Input, OnInit } from '@angular/core';
 import { AnalyticsService } from 'src/app/services/analytics.service';
 import { IssuesService } from '../../../services/issues.service';
 import { SnackService } from '../../../services/snack.service';
+import { ViewIssueSimplified } from './../../../models/communication/issues/view-issue-simplified.model';
 import { TEMSComponent } from './../../../tems/tems.component';
-import { Component, Input, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-last-issues-simplified',

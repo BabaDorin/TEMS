@@ -1,17 +1,17 @@
-import { ClaimService } from './../../../services/claim.service';
-import { CAN_MANAGE_ENTITIES } from './../../../models/claims';
-import { TokenService } from '../../../services/token.service';
-import { SendEmailComponent } from './../../send-email/send-email.component';
-import { AddPersonnelComponent } from './../add-personnel/add-personnel.component';
+import { Component, EventEmitter, Inject, Input, OnInit, Optional, Output } from '@angular/core';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Router } from '@angular/router';
+import { Property } from 'src/app/models/equipment/view-property.model';
+import { SnackService } from 'src/app/services/snack.service';
 import { DialogService } from '../../../services/dialog.service';
 import { PersonnelService } from '../../../services/personnel.service';
-import { TEMSComponent } from './../../../tems/tems.component';
+import { TokenService } from '../../../services/token.service';
+import { CAN_MANAGE_ENTITIES } from './../../../models/claims';
 import { ViewPersonnel } from './../../../models/personnel/view-personnel.model';
-import { Component, EventEmitter, Inject, Input, OnInit, Optional, Output } from '@angular/core';
-import { Property } from 'src/app/models/equipment/view-property.model';
-import { Router } from '@angular/router';
-import { SnackService } from 'src/app/services/snack.service';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { ClaimService } from './../../../services/claim.service';
+import { TEMSComponent } from './../../../tems/tems.component';
+import { SendEmailComponent } from './../../send-email/send-email.component';
+import { AddPersonnelComponent } from './../add-personnel/add-personnel.component';
 
 @Component({
   selector: 'app-personnel-details-general',

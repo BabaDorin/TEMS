@@ -1,11 +1,11 @@
-import { ViewTemplateComponent } from './../view-template/view-template.component';
-import { DialogService } from '../../../services/dialog.service';
-import { SnackService } from 'src/app/services/snack.service';
-import { Report } from './../../../models/report/report.model';
-import { ReportService } from '../../../services/report.service';
-import { TEMSComponent } from './../../../tems/tems.component';
-import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
+import { SnackService } from 'src/app/services/snack.service';
+import { DialogService } from '../../../services/dialog.service';
+import { ReportService } from '../../../services/report.service';
+import { Report } from './../../../models/report/report.model';
+import { TEMSComponent } from './../../../tems/tems.component';
+import { ViewTemplateComponent } from './../view-template/view-template.component';
 
 @Component({
   selector: 'app-report-container',

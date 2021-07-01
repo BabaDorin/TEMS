@@ -1,12 +1,12 @@
-import { ClaimService } from './../../../services/claim.service';
-import { ViewRoomSimplified } from './../../../models/room/view-room-simplified.model';
-import { AddRoomComponent } from './../add-room/add-room.component';
-import { SnackService } from '../../../services/snack.service';
-import { DialogService } from '../../../services/dialog.service';
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { IOption } from 'src/app/models/option.model';
+import { DialogService } from '../../../services/dialog.service';
+import { SnackService } from '../../../services/snack.service';
 import { AddLogComponent } from '../../communication/add-log/add-log.component';
 import { CreateIssueComponent } from '../../issue/create-issue/create-issue.component';
-import { IOption } from 'src/app/models/option.model';
+import { ViewRoomSimplified } from './../../../models/room/view-room-simplified.model';
+import { ClaimService } from './../../../services/claim.service';
+import { AddRoomComponent } from './../add-room/add-room.component';
 
 @Component({
   selector: 'app-view-rooms',

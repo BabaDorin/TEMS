@@ -1,10 +1,10 @@
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { AddUserComponent } from 'src/app/tems-components/admin/user-management/add-user/add-user.component';
+import { TEMSComponent } from 'src/app/tems/tems.component';
 import { DialogService } from '../../../services/dialog.service';
 import { SnackService } from '../../../services/snack.service';
 import { UserService } from '../../../services/user.service';
 import { ViewUserSimplified } from './../../../models/user/view-user.model';
-import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
-import { AddUserComponent } from 'src/app/tems-components/admin/user-management/add-user/add-user.component';
-import { TEMSComponent } from 'src/app/tems/tems.component';
 
 @Component({
   selector: 'app-user-container',

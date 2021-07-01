@@ -33,19 +33,19 @@
                         </nav>
                     </div>
                     <ng-container *ngIf="claims.canManage">
-                        <button mat-button class="d-md-inline d-sm-block" (click)="addNew()">
+                        <button mat-button class="d-md-inline d-block" (click)="addNew()">
                             <mat-icon class="text-primary">add</mat-icon>
                             {{ 'equipment.add' | translate }}
                         </button>
-                        <button mat-button class="d-md-inline d-sm-block" (click)="allocateSelected()">
+                        <button mat-button class="d-md-inline d-block" (click)="allocateSelected()">
                             <mat-icon class="text-primary">double_arrow</mat-icon>
                             {{ 'equipment.allocateSelected' | translate }}
                         </button>
-                        <button mat-button class="d-md-inline d-sm-block" (click)="addLogSelected()">
+                        <button mat-button class="d-md-inline d-block" (click)="addLogSelected()">
                             <mat-icon class="text-primary">timeline</mat-icon>
                             {{ 'equipment.addLogForSelected' | translate }}
                         </button>
-                        <button mat-button class="d-md-inline d-sm-block" (click)="addIssue()">
+                        <button mat-button class="d-md-inline d-block" (click)="addIssue()">
                             <mat-icon class="text-primary">feedback</mat-icon>
                             {{ 'equipment.includeSelectedInATicket' | translate }}
                         </button>

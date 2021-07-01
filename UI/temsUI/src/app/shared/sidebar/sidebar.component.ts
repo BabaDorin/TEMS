@@ -1,9 +1,7 @@
-import { SidebarManager } from './sidebar-shared-functionalities';
-import { MenuService } from '../../services/menu.service';
-import { Role } from '../../models/role.model';
 import { Component, OnInit } from '@angular/core';
+import { MenuService } from '../../services/menu.service';
+import { SidebarManager } from './sidebar-shared-functionalities';
 import { RouteInfo } from './sidebar.metadata';
-import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-sidebar',

@@ -1,13 +1,13 @@
 <ng-container *ngIf="users != undefined && users.length > 0">
-    <div class="container">
-        <div class="row justify-content-center">
-          <div class="col" *ngFor="let user of users">
-            <app-user-card 
-              [user]="user"
-              [canManage]="canManage"
-              [canView]="canView">
-            </app-user-card>
-          </div>
-        </div>
+  <div class="col-md-12">
+    <div class="row justify-content-center">
+      <div class="col" *ngFor="let user of users">
+        <app-user-card 
+          [user]="user"
+          [canManage]="canManage"
+          [canView]="canView">
+        </app-user-card>
+      </div>
     </div>
+  </div>  
 </ng-container>

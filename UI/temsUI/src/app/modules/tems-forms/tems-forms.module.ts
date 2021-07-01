@@ -1,29 +1,28 @@
-import { TranslateModule } from '@ngx-translate/core';
-import { CheckboxGroupModule } from './../checkbox-group/checkbox-group.module';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatSelectModule } from '@angular/material/select';
-import { MatIconModule } from '@angular/material/icon';
-import { MatTooltipModule } from '@angular/material/tooltip';
+import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { ChipsAutocompleteModule } from './../chips-autocomplete/chips-autocomplete.module';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatOptionModule } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { SelectTooltipComponent } from './../../public/formly/select-tooltip/select-tooltip.component';
+import { MatSelectModule } from '@angular/material/select';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { FormlyModule } from '@ngx-formly/core';
+import { FormlyMaterialModule } from '@ngx-formly/material';
+import { TranslateModule } from '@ngx-translate/core';
 import { TagInputModule } from 'ngx-chips';
+import { fieldMatchValidator, specCharValidator, usernameValidator } from 'src/app/models/validators';
 import { AddEquipmentRepeatComponent } from './../../public/formly/add-equipment-repeat/add-equipment-repeat.component';
-import { RepeatTypeComponent } from './../../public/formly/repeat-type/repeat-type.component';
-import { ButtonTypeComponent } from './../../public/formly/button-type/button-type.component';
 import { AutocompleteTypeComponent } from './../../public/formly/autocomplete-type/autocomplete-type.component';
+import { ButtonTypeComponent } from './../../public/formly/button-type/button-type.component';
 import { FormlyWrapperComponent } from './../../public/formly/formly-wrapper/formly-wrapper.component';
 import { InputTooltipComponent } from './../../public/formly/input-tooltip/input-tooltip.component';
-import { FormlyMaterialModule } from '@ngx-formly/material';
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { FormlyModule } from '@ngx-formly/core';
-import { fieldMatchValidator, specCharValidator } from 'src/app/models/validators';
-import { usernameValidator } from 'src/app/models/validators';
-import { MatOptionModule } from '@angular/material/core';
+import { RepeatTypeComponent } from './../../public/formly/repeat-type/repeat-type.component';
+import { SelectTooltipComponent } from './../../public/formly/select-tooltip/select-tooltip.component';
+import { CheckboxGroupModule } from './../checkbox-group/checkbox-group.module';
+import { ChipsAutocompleteModule } from './../chips-autocomplete/chips-autocomplete.module';
 
 @NgModule({
   declarations: [

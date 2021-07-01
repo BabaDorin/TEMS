@@ -1,18 +1,18 @@
+import { Component, Inject, Input, OnInit, Optional, ViewChild } from '@angular/core';
+import { FormGroup } from '@angular/forms';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { FormlyFieldConfig } from '@ngx-formly/core';
 import { TranslateService } from '@ngx-translate/core';
+import { ChipsAutocompleteComponent } from 'src/app/public/formly/chips-autocomplete/chips-autocomplete.component';
+import { FormlyParserService } from 'src/app/services/formly-parser.service';
+import { LogsService } from 'src/app/services/logs.service';
+import { TEMSComponent } from 'src/app/tems/tems.component';
+import { PersonnelService } from '../../../services/personnel.service';
+import { RoomsService } from '../../../services/rooms.service';
 import { SnackService } from '../../../services/snack.service';
 import { AddLog } from './../../../models/communication/logs/add-log.model';
 import { IOption } from './../../../models/option.model';
-import { PersonnelService } from '../../../services/personnel.service';
-import { RoomsService } from '../../../services/rooms.service';
 import { EquipmentService } from './../../../services/equipment.service';
-import { Component, OnInit, Input, ViewChild, Inject, Optional } from '@angular/core';
-import { ChipsAutocompleteComponent } from 'src/app/public/formly/chips-autocomplete/chips-autocomplete.component';
-import { FormlyParserService } from 'src/app/services/formly-parser.service';
-import { FormlyFieldConfig } from '@ngx-formly/core';
-import { FormGroup } from '@angular/forms';
-import { TEMSComponent } from 'src/app/tems/tems.component';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { LogsService } from 'src/app/services/logs.service';
 
 @Component({
   selector: 'app-add-log',

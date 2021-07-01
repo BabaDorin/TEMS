@@ -1,13 +1,12 @@
+import { Component, Inject, OnInit, Optional } from '@angular/core';
+import { FormGroup } from '@angular/forms';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { FormlyFieldConfig } from '@ngx-formly/core';
+import { EquipmentService } from 'src/app/services/equipment.service';
+import { FormlyParserService } from 'src/app/services/formly-parser.service';
 import { SnackService } from 'src/app/services/snack.service';
 import { TEMSComponent } from 'src/app/tems/tems.component';
 import { AddProperty } from './../../../models/equipment/add-property.model';
-import { FormlyParserService } from 'src/app/services/formly-parser.service';
-import { EquipmentService } from 'src/app/services/equipment.service';
-import { Component, Inject, OnInit, Optional } from '@angular/core';
-import { FormGroup } from '@angular/forms';
-import { FormlyFieldConfig } from '@ngx-formly/core';
-import { Property } from 'src/app/models/equipment/view-property.model';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-add-property',

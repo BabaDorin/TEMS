@@ -1,9 +1,9 @@
-import { TranslateModule } from '@ngx-translate/core';
-import { RouterModule } from '@angular/router';
-import { UserCardsListComponent } from './../tems-components/profile/user-cards-list/user-cards-list.component';
-import { UserCardComponent } from './../tems-components/profile/user-card/user-card.component';
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
+import { RouterModule } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
+import { UserCardComponent } from './../tems-components/profile/user-card/user-card.component';
+import { UserCardsListComponent } from './../tems-components/profile/user-cards-list/user-cards-list.component';
 
 
 

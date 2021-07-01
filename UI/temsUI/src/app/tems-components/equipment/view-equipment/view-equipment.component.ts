@@ -1,14 +1,14 @@
-import { ClaimService } from './../../../services/claim.service';
-import { CreateIssueComponent } from 'src/app/tems-components/issue/create-issue/create-issue.component';
-import { AddLogComponent } from 'src/app/tems-components/communication/add-log/add-log.component';
-import { SnackService } from '../../../services/snack.service';
-import { DialogService } from '../../../services/dialog.service';
-import { Router } from '@angular/router';
-import { IOption } from './../../../models/option.model';
-import { ViewEquipmentSimplified } from 'src/app/models/equipment/view-equipment-simplified.model';
-import { AgGridEquipmentComponent } from './../ag-grid-equipment/ag-grid-equipment.component';
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { Router } from '@angular/router';
+import { ViewEquipmentSimplified } from 'src/app/models/equipment/view-equipment-simplified.model';
+import { AddLogComponent } from 'src/app/tems-components/communication/add-log/add-log.component';
+import { CreateIssueComponent } from 'src/app/tems-components/issue/create-issue/create-issue.component';
+import { DialogService } from '../../../services/dialog.service';
+import { SnackService } from '../../../services/snack.service';
 import { EquipmentAllocationComponent } from '../equipment-allocation/equipment-allocation.component';
+import { IOption } from './../../../models/option.model';
+import { ClaimService } from './../../../services/claim.service';
+import { AgGridEquipmentComponent } from './../ag-grid-equipment/ag-grid-equipment.component';
 
 @Component({
   selector: 'app-view-equipment',

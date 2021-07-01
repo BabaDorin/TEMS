@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter, ViewChild, TemplateRef } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
 
 @Component({
   selector: 'app-file-upload',

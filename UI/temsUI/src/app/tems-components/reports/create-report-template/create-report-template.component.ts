@@ -1,20 +1,19 @@
-import { TranslateService } from '@ngx-translate/core';
-import { Downloader } from './../../../shared/downloader/fileDownloader';
-import { SnackService } from '../../../services/snack.service';
-import { filter } from 'rxjs/operators';
-import { DefinitionService } from '../../../services/definition.service';
-import { TypeService } from '../../../services/type.service';
-import { ActivatedRoute } from '@angular/router';
-import { ReportService } from '../../../services/report.service';
-import { AddReportTemplate } from '../../../models/report/add-report.model';
-import { TEMSComponent } from '../../../tems/tems.component';
-import { CheckboxItem } from '../../../models/checkboxItem.model';
-import { IOption } from 'src/app/models/option.model';
-import { PersonnelService } from '../../../services/personnel.service';
-import { EquipmentService } from '../../../services/equipment.service';
-import { RoomsService } from '../../../services/rooms.service';
-import { FormGroup, FormControl } from '@angular/forms';
 import { Component, OnInit } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
+import { IOption } from 'src/app/models/option.model';
+import { CheckboxItem } from '../../../models/checkboxItem.model';
+import { AddReportTemplate } from '../../../models/report/add-report.model';
+import { DefinitionService } from '../../../services/definition.service';
+import { EquipmentService } from '../../../services/equipment.service';
+import { PersonnelService } from '../../../services/personnel.service';
+import { ReportService } from '../../../services/report.service';
+import { RoomsService } from '../../../services/rooms.service';
+import { SnackService } from '../../../services/snack.service';
+import { TypeService } from '../../../services/type.service';
+import { TEMSComponent } from '../../../tems/tems.component';
+import { Downloader } from './../../../shared/downloader/fileDownloader';
 
 @Component({
   selector: 'app-create-report-template',

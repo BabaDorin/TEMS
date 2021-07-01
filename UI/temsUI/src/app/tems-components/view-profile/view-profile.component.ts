@@ -1,17 +1,16 @@
-import { ProfileAnalyticsComponent } from './../profile/profile-analytics/profile-analytics.component';
-import { ViewProfile } from 'src/app/models/profile/view-profile.model';
-import { ProfileTicketsComponent } from './../profile/profile-tickets/profile-tickets.component';
-import { ProfileGeneralComponent } from './../profile/profile-general/profile-general.component';
-import { CAN_MANAGE_SYSTEM_CONFIGURATION } from './../../models/claims';
-import { TokenService } from '../../services/token.service';
-import { TEMSComponent } from './../../tems/tems.component';
+import { Location } from '@angular/common';
+import { Component, Injector, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ViewProfile } from 'src/app/models/profile/view-profile.model';
 import { DialogService } from '../../services/dialog.service';
 import { SnackService } from '../../services/snack.service';
+import { TokenService } from '../../services/token.service';
 import { UserService } from '../../services/user.service';
-import { Component, Injector, OnInit, ViewChild } from '@angular/core';
-import { Location } from '@angular/common'
 import { ProfileSettingsComponent } from '../profile/profile-settings/profile-settings.component';
+import { TEMSComponent } from './../../tems/tems.component';
+import { ProfileAnalyticsComponent } from './../profile/profile-analytics/profile-analytics.component';
+import { ProfileGeneralComponent } from './../profile/profile-general/profile-general.component';
+import { ProfileTicketsComponent } from './../profile/profile-tickets/profile-tickets.component';
 
 
 @Component({

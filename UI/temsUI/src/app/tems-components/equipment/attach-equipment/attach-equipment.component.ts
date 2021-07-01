@@ -1,13 +1,12 @@
-import { ViewEquipment } from 'src/app/models/equipment/view-equipment.model';
-import { IOption } from './../../../models/option.model';
-import { FormGroup, FormControl } from '@angular/forms';
-import { TEMSComponent } from './../../../tems/tems.component';
-import { SnackService } from '../../../services/snack.service';
-import { EquipmentService } from 'src/app/services/equipment.service';
-import { Component, Inject, Input, OnInit } from '@angular/core';
-import { AttachEquipment } from 'src/app/models/equipment/attach-equipment.model';
+import { Component, Inject, Input, OnInit, Optional } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Optional } from '@angular/core';
+import { AttachEquipment } from 'src/app/models/equipment/attach-equipment.model';
+import { ViewEquipment } from 'src/app/models/equipment/view-equipment.model';
+import { EquipmentService } from 'src/app/services/equipment.service';
+import { SnackService } from '../../../services/snack.service';
+import { IOption } from './../../../models/option.model';
+import { TEMSComponent } from './../../../tems/tems.component';
 
 @Component({
   selector: 'app-attach-equipment',

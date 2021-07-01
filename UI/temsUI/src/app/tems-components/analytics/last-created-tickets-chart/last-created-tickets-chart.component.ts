@@ -1,9 +1,9 @@
 import { DatePipe } from '@angular/common';
+import { Component, Input, OnInit } from '@angular/core';
+import { AnalyticsService } from 'src/app/services/analytics.service';
+import { SnackService } from '../../../services/snack.service';
 import { PieChartData } from './../../../models/analytics/pieChart-model';
 import { TEMSComponent } from './../../../tems/tems.component';
-import { SnackService } from '../../../services/snack.service';
-import { AnalyticsService } from 'src/app/services/analytics.service';
-import { Component, Input, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-last-created-tickets-chart',

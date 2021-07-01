@@ -1,8 +1,6 @@
+import { Component, Input, OnInit } from '@angular/core';
 import { IOption } from 'src/app/models/option.model';
 import { ViewEquipmentSimplified } from './../../../../models/equipment/view-equipment-simplified.model';
-import { Component, Input, OnInit } from '@angular/core';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { AddLogComponent } from 'src/app/tems-components/communication/add-log/add-log.component';
 
 @Component({
   selector: 'app-equipment-details-logs',

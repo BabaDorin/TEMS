@@ -1,12 +1,11 @@
-import { IOption } from './../../../models/option.model';
-import { COMMA, ENTER, SPACE } from '@angular/cdk/keycodes';
-import { Component, ElementRef, Input, ViewChild, EventEmitter, Output, OnInit, forwardRef, SimpleChanges, SimpleChange, OnChanges } from '@angular/core';
+import { COMMA, ENTER } from '@angular/cdk/keycodes';
+import { Component, ElementRef, EventEmitter, forwardRef, Input, OnChanges, OnInit, Output, SimpleChange, ViewChild } from '@angular/core';
 import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { MatAutocompleteSelectedEvent, MatAutocomplete } from '@angular/material/autocomplete';
+import { MatAutocomplete, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatChipInputEvent } from '@angular/material/chips';
-import { allowedNodeEnvironmentFlags } from 'process';
-import { Observable, Subscription } from 'rxjs';
-import { debounceTime, map, startWith, switchMap } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
+import { IOption } from './../../../models/option.model';
 
 @Component({
   selector: 'app-chips-autocomplete',

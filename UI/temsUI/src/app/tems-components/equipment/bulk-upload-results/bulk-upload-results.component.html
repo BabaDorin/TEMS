@@ -1,6 +1,6 @@
 <ng-container *ngIf="bulkUploadResults != undefined && bulkUploadResults.length > 0; else elseBlock">
     <ng-container *ngFor="let result of bulkUploadResults">
-        <div [ngClass]="'alert alert-' + result.status == 0 ? 'danger' : 'success'" role="alert">
+        <div [ngClass]="result.status == 0 ? 'alert alert-danger' : 'alert alert-success'" role="alert">
             <p><b> {{ result.fileName }}</b> - {{ 'general.failed' | translate }}.</p>
             <p>{{ 'general.message' | translate }}: {{ result.message }}</p>
             <p class="mt-1 text-muted">{{ 'equipment.ellapsedMiliseconds' | translate }}: {{ result.ellapsedMiliseconds }}</p>

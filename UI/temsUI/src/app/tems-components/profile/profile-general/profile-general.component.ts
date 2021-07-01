@@ -1,5 +1,5 @@
-import { ViewProfile } from 'src/app/models/profile/view-profile.model';
 import { Component, Input, OnInit } from '@angular/core';
+import { ViewProfile } from 'src/app/models/profile/view-profile.model';
 
 @Component({
   selector: 'app-profile-general',

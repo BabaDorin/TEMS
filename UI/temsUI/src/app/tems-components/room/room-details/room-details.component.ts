@@ -1,9 +1,9 @@
-import { TEMSComponent } from './../../../tems/tems.component';
-import { ViewRoom } from './../../../models/room/view-room.model';
-import { RoomsService } from '../../../services/rooms.service';
-import { ViewRoomSimplified } from './../../../models/room/view-room-simplified.model';
 import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { RoomsService } from '../../../services/rooms.service';
+import { ViewRoomSimplified } from './../../../models/room/view-room-simplified.model';
+import { ViewRoom } from './../../../models/room/view-room.model';
+import { TEMSComponent } from './../../../tems/tems.component';
 
 @Component({
   selector: 'app-room-details',

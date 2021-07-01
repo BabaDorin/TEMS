@@ -13,17 +13,17 @@
         </h2>
 
         <ng-container *ngIf="claims.canManage">
-            <button mat-button (click)="addNew()">
+            <button mat-button (click)="addNew()" class="d-block d-md-inline">
                 <mat-icon class="text-primary">add</mat-icon>
                 {{ 'room.add' | translate }}
             </button>
-            <button mat-button (click)="addLogSelected()">
+            <button mat-button (click)="addLogSelected()" class="d-block d-md-inline">
                 <mat-icon class="text-primary">timeline</mat-icon>{{ 'room.addLogForSelected' | translate }}
             </button>
 
         </ng-container>
         <ng-container *ngIf="claims.canView">
-            <button mat-button (click)="addIssue()">
+            <button mat-button (click)="addIssue()" class="d-block d-md-inline">
                 <mat-icon class="text-primary">feedback</mat-icon>{{ 'room.includeSelectedInATicket' | translate }}
             </button>
         </ng-container>

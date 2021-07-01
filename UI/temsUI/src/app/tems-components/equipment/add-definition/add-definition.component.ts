@@ -1,17 +1,15 @@
+import { Component, Inject, Input, OnInit, Optional } from '@angular/core';
+import { FormGroup } from '@angular/forms';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { FormlyFieldConfig } from '@ngx-formly/core';
+import { EquipmentService } from 'src/app/services/equipment.service';
+import { FormlyParserService } from 'src/app/services/formly-parser.service';
 import { SnackService } from 'src/app/services/snack.service';
+import { TEMSComponent } from 'src/app/tems/tems.component';
 import { TypeService } from '../../../services/type.service';
-import { Observable } from 'rxjs';
+import { AddDefinition, Definition } from './../../../models/equipment/add-definition.model';
 import { EquipmentType } from './../../../models/equipment/view-type.model';
 import { IOption } from './../../../models/option.model';
-import { AddDefinition, Definition } from './../../../models/equipment/add-definition.model';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Component, OnInit, Input, Inject, OnDestroy, Optional, TemplateRef } from '@angular/core';
-import { FormlyParserService } from 'src/app/services/formly-parser.service';
-import { FormlyFieldConfig } from '@ngx-formly/core';
-import { FormGroup } from '@angular/forms';
-import { TEMSComponent } from 'src/app/tems/tems.component';
-import { Z } from '@angular/cdk/keycodes';
-import { EquipmentService } from 'src/app/services/equipment.service';
 
 @Component({
   selector: 'app-add-definition',

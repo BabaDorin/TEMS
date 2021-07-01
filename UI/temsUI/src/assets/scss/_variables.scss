@@ -286,8 +286,8 @@ $breadcrumb-item-bg:                #dbe3e6;
 ////////// MODALS VARIABLES //////////
 
 $modal-inner-padding:               .937rem;
-$modal-dialog-margin:               10px;
-$modal-dialog-margin-y-sm-up:       30px;
+$modal-dialog-margin:               0;
+$modal-dialog-margin-y-sm-up:       0;
 $modal-title-line-height:           $line-height-base;
 $modal-content-bg:                  $content-bg;
 $modal-content-box-shadow-xs:       0 3px 9px rgba($black,.5);

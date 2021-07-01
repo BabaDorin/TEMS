@@ -1,17 +1,16 @@
-import { TranslateService } from '@ngx-translate/core';
-import { map } from 'rxjs/operators';
-import { AllocationService } from 'src/app/services/allocation.service';
-import { ViewAllocationSimplified } from './../../models/equipment/view-equipment-allocation.model';
-import { IOption } from './../../models/option.model';
-import { SnackService } from '../../services/snack.service';
-import { DialogService } from '../../services/dialog.service';
-import { PersonnelService } from '../../services/personnel.service';
-import { DefinitionService } from '../../services/definition.service';
-import { RoomsService } from '../../services/rooms.service';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import { TranslateService } from '@ngx-translate/core';
+import { AllocationService } from 'src/app/services/allocation.service';
 import { EquipmentService } from 'src/app/services/equipment.service';
 import { TEMSComponent } from 'src/app/tems/tems.component';
+import { DefinitionService } from '../../services/definition.service';
+import { DialogService } from '../../services/dialog.service';
+import { PersonnelService } from '../../services/personnel.service';
+import { RoomsService } from '../../services/rooms.service';
+import { SnackService } from '../../services/snack.service';
+import { ViewAllocationSimplified } from './../../models/equipment/view-equipment-allocation.model';
+import { IOption } from './../../models/option.model';
 
 @Component({
   selector: 'app-view-equipment-allocations',

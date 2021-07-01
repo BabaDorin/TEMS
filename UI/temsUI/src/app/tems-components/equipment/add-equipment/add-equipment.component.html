@@ -1,46 +1,47 @@
 <div class="card">
   <div class="card-body">
-    <div class="page-header">
-      <div class="page-title mt-4 mb-0">
-
-        <!-- Header for Add equipment case -->
-        <ng-container *ngIf="updateEquipmentId == undefined; else headerElseBlock">
-          <h2>
-            {{ 'equipment.add' | translate }}
-          </h2>
-          <small>
-            {{ 'equipment.addTip' | translate }}
-          </small>
-        </ng-container>
-
-        <!-- Header for update equipment case -->
-        <ng-template #headerElseBlock>
-          <h2>
-            {{ 'equipment.update' | translate }}
-          </h2>
-        </ng-template>
-        <hr>
-
-      </div>
-      <ng-container *ngIf="updateEquipmentId == undefined">
-        <nav aria-label="breadcrumb">
-          <ul class="breadcrumb bg-transparent">
-              <li class="breadcrumb-item" aria-current="page">
-                <button mat-button [matMenuTriggerFor]="menu" aria-label="Add Equipment Menu" class="float-right">
-                  <mat-icon class="text-primary">more_vert</mat-icon>
-                </button>
-                <mat-menu #menu="matMenu">
-                  <button mat-menu-item (click)="bulkUpload()">
-                    <mat-icon class="text-muted">playlist_add</mat-icon>
-                    {{ 'equipment.bulkUpload' | translate }}
+    <div>
+      <div class="page-header">
+        <div class="page-title mt-4 mb-0">
+  
+          <!-- Header for Add equipment case -->
+          <ng-container *ngIf="updateEquipmentId == undefined; else headerElseBlock">
+            <h2>
+              {{ 'equipment.add' | translate }}
+            </h2>
+          </ng-container>
+  
+          <!-- Header for update equipment case -->
+          <ng-template #headerElseBlock>
+            <h2>
+              {{ 'equipment.update' | translate }}
+            </h2>
+          </ng-template>
+        </div>
+        <ng-container *ngIf="updateEquipmentId == undefined">
+          <nav aria-label="breadcrumb">
+            <ul class="breadcrumb bg-transparent">
+                <li class="breadcrumb-item" aria-current="page">
+                  <button mat-button [matMenuTriggerFor]="menu" aria-label="Add Equipment Menu" class="float-right">
+                    <mat-icon class="text-primary">more_vert</mat-icon>
                   </button>
-                </mat-menu>
-              </li>
-          </ul>
-        </nav>
-      </ng-container>
+                  <mat-menu #menu="matMenu">
+                    <button mat-menu-item (click)="bulkUpload()">
+                      <mat-icon class="text-muted">playlist_add</mat-icon>
+                      {{ 'equipment.bulkUpload' | translate }}
+                    </button>
+                  </mat-menu>
+                </li>
+            </ul>
+          </nav>
+        </ng-container>
+      </div>
+      <small *ngIf="updateEquipmentId == undefined">
+        {{ 'equipment.addTip' | translate }}
+      </small>
+      <hr>
     </div>
-
+    
     <!-- serves the 'add-equipment' form -->
     <ng-container *ngIf="bulkUploadResults == undefined; else bulkResultElseBlock">
       

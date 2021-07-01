@@ -1,6 +1,6 @@
-import { LoadingPlaceholderComponent } from './../../tems-components/loading-placeholder/loading-placeholder.component';
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
+import { LoadingPlaceholderComponent } from './../../tems-components/loading-placeholder/loading-placeholder.component';
 
 
 

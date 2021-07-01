@@ -1,11 +1,11 @@
-import { AddDefinitionComponent } from './../../../equipment/add-definition/add-definition.component';
-import { DefinitionContainerModel } from './../../../../models/generic-container/definition-container.model';
-import { ViewDefinitionSimplified } from 'src/app/models/equipment/view-definition-simplified.model';
-import { TEMSComponent } from './../../../../tems/tems.component';
-import { SnackService } from '../../../../services/snack.service';
-import { DialogService } from '../../../../services/dialog.service';
-import { EquipmentService } from './../../../../services/equipment.service';
 import { Component, Input, OnInit } from '@angular/core';
+import { ViewDefinitionSimplified } from 'src/app/models/equipment/view-definition-simplified.model';
+import { DialogService } from '../../../../services/dialog.service';
+import { SnackService } from '../../../../services/snack.service';
+import { DefinitionContainerModel } from './../../../../models/generic-container/definition-container.model';
+import { EquipmentService } from './../../../../services/equipment.service';
+import { TEMSComponent } from './../../../../tems/tems.component';
+import { AddDefinitionComponent } from './../../../equipment/add-definition/add-definition.component';
 
 @Component({
   selector: 'app-equipment-definitions-list',

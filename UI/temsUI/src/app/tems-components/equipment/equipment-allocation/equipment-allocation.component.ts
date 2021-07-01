@@ -1,17 +1,17 @@
-import { ClaimService } from './../../../services/claim.service';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { PersonnelService } from '../../../services/personnel.service';
-import { RoomsService } from '../../../services/rooms.service';
-import { EquipmentService } from 'src/app/services/equipment.service';
-import { AddAllocation } from './../../../models/allocation/add-allocation.model';
-import { TEMSComponent } from './../../../tems/tems.component';
 import { Component, Inject, Input, OnInit, Optional, ViewChild } from '@angular/core';
-import { ChipsAutocompleteComponent } from 'src/app/public/formly/chips-autocomplete/chips-autocomplete.component';
-import { IOption } from 'src/app/models/option.model';
-import { AllocationService } from 'src/app/services/allocation.service';
-import { SnackService } from 'src/app/services/snack.service';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
+import { IOption } from 'src/app/models/option.model';
+import { ChipsAutocompleteComponent } from 'src/app/public/formly/chips-autocomplete/chips-autocomplete.component';
+import { AllocationService } from 'src/app/services/allocation.service';
+import { EquipmentService } from 'src/app/services/equipment.service';
+import { SnackService } from 'src/app/services/snack.service';
+import { PersonnelService } from '../../../services/personnel.service';
+import { RoomsService } from '../../../services/rooms.service';
+import { AddAllocation } from './../../../models/allocation/add-allocation.model';
+import { ClaimService } from './../../../services/claim.service';
+import { TEMSComponent } from './../../../tems/tems.component';
 
 @Component({
   selector: 'app-equipment-allocation',

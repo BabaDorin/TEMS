@@ -1,5 +1,5 @@
-import { ViewUserSimplified } from './../../../models/user/view-user.model';
 import { Component, Input, OnInit } from '@angular/core';
+import { ViewUserSimplified } from './../../../models/user/view-user.model';
 
 @Component({
   selector: 'app-user-card',

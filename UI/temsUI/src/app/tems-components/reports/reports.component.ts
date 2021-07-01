@@ -1,13 +1,13 @@
-import { CAN_MANAGE_ENTITIES } from 'src/app/models/claims';
-import { TokenService } from '../../services/token.service';
-import { GeneratedReport } from './../../models/report/generated-report.model';
-import { Downloader } from './../../shared/downloader/fileDownloader';
-import { SnackService } from '../../services/snack.service';
-import { TEMSComponent } from 'src/app/tems/tems.component';
-import { ViewReportSimplified } from './../../models/report/view-report-simplified.model';
-import { ReportService } from '../../services/report.service';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { CAN_MANAGE_ENTITIES } from 'src/app/models/claims';
+import { TEMSComponent } from 'src/app/tems/tems.component';
+import { ReportService } from '../../services/report.service';
+import { SnackService } from '../../services/snack.service';
+import { TokenService } from '../../services/token.service';
+import { GeneratedReport } from './../../models/report/generated-report.model';
+import { ViewReportSimplified } from './../../models/report/view-report-simplified.model';
+import { Downloader } from './../../shared/downloader/fileDownloader';
 
 @Component({
   selector: 'app-reports',

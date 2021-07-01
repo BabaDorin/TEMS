@@ -1,12 +1,11 @@
-import { RoomDetailsGeneralComponent } from './../room-details-general/room-details-general.component';
-import { SnackService } from '../../../services/snack.service';
-import { DialogService } from '../../../services/dialog.service';
-import { TEMSComponent } from './../../../tems/tems.component';
-import { RoomsService } from '../../../services/rooms.service';
-import { ViewRoomSimplified } from 'src/app/models/room/view-room-simplified.model';
-import { Observable } from 'rxjs';
 import { Component, OnInit } from '@angular/core';
+import { ViewRoomSimplified } from 'src/app/models/room/view-room-simplified.model';
 import { BtnCellRendererComponent } from 'src/app/public/ag-grid/btn-cell-renderer/btn-cell-renderer.component';
+import { DialogService } from '../../../services/dialog.service';
+import { RoomsService } from '../../../services/rooms.service';
+import { SnackService } from '../../../services/snack.service';
+import { TEMSComponent } from './../../../tems/tems.component';
+import { RoomDetailsGeneralComponent } from './../room-details-general/room-details-general.component';
 
 @Component({
   selector: 'app-ag-grid-rooms',
@@ -33,25 +32,30 @@ export class AgGridRoomsComponent extends TEMSComponent implements OnInit {
     private roomService: RoomsService,
     private dialogService: DialogService,
     private snackService: SnackService,
-  ) { 
+  ) {
     super();
 
-     // enables pagination in the grid
-     this.pagination = true;
+    // enables pagination in the grid
+    this.pagination = true;
 
-     // sets 10 rows per page (default is 100)
-     this.paginationPageSize = 20;
- 
-     this.frameworkComponents = {
-       btnCellRendererComponent: BtnCellRendererComponent
-     }
+    // sets 10 rows per page (default is 100)
+    this.paginationPageSize = 20;
+
+    this.frameworkComponents = {
+      btnCellRendererComponent: BtnCellRendererComponent
+    };
+
+    this.defaultColDef = {
+      resizable: true
+    }
+
 
     this.columnDefs = [
-      { field: 'identifier', sortable: true, filter: true, checkboxSelection: true, headerCheckboxSelection: true},
-      { field: 'label', sortable: true, filter: true },
-      { field: 'description', sortable: true, filter: true },
-      { field: 'activeTickets', sortable: true, filter: true },
-      { field: 'allocatedEquipments', sortable: true, filter: true },
+      { field: 'identifier', sortable: true, filter: true, checkboxSelection: true, headerCheckboxSelection: true, resizeable: true },
+      { field: 'label', sortable: true, filter: true, resizeable: true },
+      { field: 'description', sortable: true, filter: true, resizeable: true },
+      { field: 'activeTickets', sortable: true, filter: true, resizeable: true },
+      { field: 'allocatedEquipments', sortable: true, filter: true, resizeable: true },
       {
         cellRenderer: 'btnCellRendererComponent',
         cellRendererParams: {
@@ -93,17 +97,17 @@ export class AgGridRoomsComponent extends TEMSComponent implements OnInit {
     )
   }
 
-  archieve(e){
-    if(!confirm("Are you sure you want to archive this item? It will result in archieving all of it's logs and allocations"))
-    return;
+  archieve(e) {
+    if (!confirm("Are you sure you want to archive this item? It will result in archieving all of it's logs and allocations"))
+      return;
 
     this.subscriptions.push(
       this.roomService.archieveRoom(e.rowData.id) // HERE
-      .subscribe(result => {
-        if(this.snackService.snack(result)){
-          this.gridApi.applyTransaction({ remove: [e.rowData] });
-        }
-      })
+        .subscribe(result => {
+          if (this.snackService.snack(result)) {
+            this.gridApi.applyTransaction({ remove: [e.rowData] });
+          }
+        })
     )
   }
 
@@ -114,7 +118,7 @@ export class AgGridRoomsComponent extends TEMSComponent implements OnInit {
     this.fetchRooms();
   }
 
-  fetchRooms(){
+  fetchRooms() {
     this.loading = true;
     this.subscriptions.push(this.roomService.getRoomsSimplified(20, 20)
       .subscribe(result => {
@@ -130,7 +134,7 @@ export class AgGridRoomsComponent extends TEMSComponent implements OnInit {
     return thisIsFirstColumn;
   }
 
-  getSelectedNodes(){
+  getSelectedNodes() {
     return this.gridApi.getSelectedNodes().map(q => q.data);
   }
 }

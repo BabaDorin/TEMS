@@ -1,9 +1,9 @@
-import { TranslateService } from '@ngx-translate/core';
-import { SnackService } from '../../../services/snack.service';
-import { AnalyticsService } from 'src/app/services/analytics.service';
-import { TEMSComponent } from './../../../tems/tems.component';
 import { Component, Input, OnInit } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { ViewProfile } from 'src/app/models/profile/view-profile.model';
+import { AnalyticsService } from 'src/app/services/analytics.service';
+import { SnackService } from '../../../services/snack.service';
+import { TEMSComponent } from './../../../tems/tems.component';
 
 @Component({
   selector: 'app-profile-analytics',

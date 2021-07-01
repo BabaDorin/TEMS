@@ -15,6 +15,7 @@
       "prefix": "app",
       "architect": {
         "build": {
+          "defaultConfiguration": "production",
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
             "outputPath": "dist",
@@ -64,10 +65,19 @@
                   "maximumError": "12mb"
                 }
               ]
+            },
+            "development": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
             }
           }
         },
         "serve": {
+          "defaultConfiguration": "development",
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
             "browserTarget": "demo1:build"
@@ -132,6 +142,5 @@
   "defaultProject": "demo1",
   "cli": {
     "analytics": false
-  },
-  
+  }
 }

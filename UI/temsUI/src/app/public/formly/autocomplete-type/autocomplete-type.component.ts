@@ -1,7 +1,7 @@
-import { Component, ViewChild, OnInit, AfterViewInit } from '@angular/core';
-import { FieldType } from '@ngx-formly/material';
-import { MatInput } from '@angular/material/input';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
+import { MatInput } from '@angular/material/input';
+import { FieldType } from '@ngx-formly/material';
 import { Observable } from 'rxjs';
 import { startWith, switchMap } from 'rxjs/operators';
 

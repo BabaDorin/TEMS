@@ -1,5 +1,5 @@
-import { ViewIssueSimplified } from '../../../models/communication/issues/view-issue-simplified.model';
 import { Component, Input, OnInit } from '@angular/core';
+import { ViewIssueSimplified } from '../../../models/communication/issues/view-issue-simplified.model';
 
 @Component({
   selector: 'app-issue-status',

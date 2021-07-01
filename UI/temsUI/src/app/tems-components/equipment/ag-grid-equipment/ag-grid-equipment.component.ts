@@ -1,12 +1,12 @@
-import { BooleanCellRendererComponent } from './../../../public/ag-grid/boolean-cell-renderer/boolean-cell-renderer.component';
-import { EquipmentDetailsGeneralComponent } from './../equipment-details/equipment-details-general/equipment-details-general.component';
+import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
+import { BtnCellRendererComponent } from 'src/app/public/ag-grid/btn-cell-renderer/btn-cell-renderer.component';
 import { DialogService } from '../../../services/dialog.service';
 import { SnackService } from '../../../services/snack.service';
-import { TEMSComponent } from './../../../tems/tems.component';
+import { BooleanCellRendererComponent } from './../../../public/ag-grid/boolean-cell-renderer/boolean-cell-renderer.component';
 import { EquipmentService } from './../../../services/equipment.service';
-import { Component, Input, OnInit, OnChanges, SimpleChanges } from '@angular/core';
-import { BtnCellRendererComponent } from 'src/app/public/ag-grid/btn-cell-renderer/btn-cell-renderer.component';
-import { TranslateService } from '@ngx-translate/core';
+import { TEMSComponent } from './../../../tems/tems.component';
+import { EquipmentDetailsGeneralComponent } from './../equipment-details/equipment-details-general/equipment-details-general.component';
 
 @Component({
   selector: 'app-ag-grid-equipment',
@@ -47,20 +47,24 @@ export class AgGridEquipmentComponent extends TEMSComponent implements OnInit, O
     this.frameworkComponents = {
       btnCellRendererComponent: BtnCellRendererComponent,
       booleanCellRendererComponent: BooleanCellRendererComponent
+    };
+
+    this.defaultColDef = {
+      resizable: true
     }
 
     this.columnDefs = [
-      { headerName: this.translate.instant('equipment.TEMSID'), field: 'temsId', sortable: true, filter: true },
-      { headerName: this.translate.instant('equipment.serialNumber'), field: 'serialNumber', sortable: true, filter: true },
-      { headerName: this.translate.instant('equipment.definition'), field: 'definition', sortable: true, filter: true },
-      { headerName: this.translate.instant('equipment.assignee'), field: 'assignee', sortable: true, filter: true },
-      { headerName: this.translate.instant('equipment.type'), field: 'type', sortable: true, filter: true },
+      { headerName: this.translate.instant('equipment.TEMSID'), field: 'temsId', sortable: true, filter: true, resizable: true },
+      { headerName: this.translate.instant('equipment.serialNumber'), field: 'serialNumber', sortable: true, filter: true, resizable: true },
+      { headerName: this.translate.instant('equipment.definition'), field: 'definition', sortable: true, filter: true, resizable: true },
+      { headerName: this.translate.instant('equipment.assignee'), field: 'assignee', sortable: true, filter: true, resizable: true },
+      { headerName: this.translate.instant('equipment.type'), field: 'type', sortable: true, filter: true, resizable: true },
       {
-        headerName: this.translate.instant('equipment.isUsed'), field: 'isUsed', sortable: false, filter: true,
+        headerName: this.translate.instant('equipment.isUsed'), field: 'isUsed', sortable: false, filter: true, resizable: true,
         cellRenderer: 'booleanCellRendererComponent',
       },
       {
-        headerName: this.translate.instant('equipment.isDefect'), field: 'isDefect', sortable: false, filter: true,
+        headerName: this.translate.instant('equipment.isDefect'), field: 'isDefect', sortable: false, filter: true, resizable: true,
         cellRenderer: 'booleanCellRendererComponent',
       },
       {
@@ -101,6 +105,7 @@ export class AgGridEquipmentComponent extends TEMSComponent implements OnInit, O
     this.fetchEquipments();
   }
 
+  
   details(e) {
     console.log('data from ag-grid-equipment:');
     console.log(e);
@@ -148,9 +153,9 @@ export class AgGridEquipmentComponent extends TEMSComponent implements OnInit, O
 
     this.subscriptions.push(this.equipmentService.getEquipmentSimplified(20, 20, !this.includeDerived, entityCollection)
     .subscribe(result => {
-      console.log(result);
       this.rowData = result;
       this.loading = false;
+      this.autoSizeAll();
     }));
   }
 
@@ -163,4 +168,13 @@ export class AgGridEquipmentComponent extends TEMSComponent implements OnInit, O
   getSelectedNodes(){
     return this.gridApi.getSelectedNodes().map(q => q.data);
   }
+
+  autoSizeAll() {
+    var allColumnIds = [];
+    this.gridColumnApi.getAllColumns().forEach(function (column) {
+      allColumnIds.push(column.colId);
+    });
+    this.gridColumnApi.autoSizeColumns(allColumnIds, false);
+  }
+
 }

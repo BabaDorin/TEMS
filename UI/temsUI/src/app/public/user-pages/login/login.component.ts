@@ -1,15 +1,12 @@
-import { SnackService } from '../../../services/snack.service';
-import { AuthService } from './../../../services/auth.service';
-import { Router } from '@angular/router';
-import { UserService } from 'src/app/services/user.service';
-import { LoginModel } from './../../../models/identity/login.model';
-import { TEMSComponent } from './../../../tems/tems.component';
-import { FormlyParserService } from 'src/app/services/formly-parser.service';
-import { Component, OnInit, Output } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { Router } from '@angular/router';
 import { FormlyFieldConfig } from '@ngx-formly/core';
-import * as EventEmitter from 'events';
-import { emit } from 'process';
+import { FormlyParserService } from 'src/app/services/formly-parser.service';
+import { SnackService } from '../../../services/snack.service';
+import { LoginModel } from './../../../models/identity/login.model';
+import { AuthService } from './../../../services/auth.service';
+import { TEMSComponent } from './../../../tems/tems.component';
 
 @Component({
   selector: 'app-login',

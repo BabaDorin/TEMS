@@ -1,9 +1,8 @@
-import { SnackService } from '../../../services/snack.service';
-import { resolve } from '@angular-devkit/core';
-import { LibraryService } from '../../../services/library.service';
-import { TEMSComponent } from 'src/app/tems/tems.component';
-import { Component, OnInit } from '@angular/core';
 import { HttpEventType } from '@angular/common/http';
+import { Component, OnInit } from '@angular/core';
+import { TEMSComponent } from 'src/app/tems/tems.component';
+import { LibraryService } from '../../../services/library.service';
+import { SnackService } from '../../../services/snack.service';
 
 @Component({
   selector: 'app-upload-library-item',

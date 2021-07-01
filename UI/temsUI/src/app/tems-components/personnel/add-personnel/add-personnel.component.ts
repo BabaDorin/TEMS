@@ -1,17 +1,15 @@
-import { TranslateService } from '@ngx-translate/core';
-import { FormlyData } from './../../../models/formly/formly-data.model';
-import { UserService } from '../../../services/user.service';
-import { SnackService } from '../../../services/snack.service';
-import { ChipsAutocompleteComponent } from './../../../public/formly/chips-autocomplete/chips-autocomplete.component';
-import { IOption } from './../../../models/option.model';
-import { TEMSComponent } from './../../../tems/tems.component';
-import { PersonnelService } from 'src/app/services/personnel.service';
 import { Component, Inject, OnInit, Optional, ViewChild } from '@angular/core';
-import { FormGroup } from '@angular/forms';
-import { FormlyFieldConfig } from '@ngx-formly/core';
-import { FormlyParserService } from 'src/app/services/formly-parser.service';
-import { AddPersonnel } from 'src/app/models/personnel/add-personnel.model';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { TranslateService } from '@ngx-translate/core';
+import { AddPersonnel } from 'src/app/models/personnel/add-personnel.model';
+import { FormlyParserService } from 'src/app/services/formly-parser.service';
+import { PersonnelService } from 'src/app/services/personnel.service';
+import { SnackService } from '../../../services/snack.service';
+import { UserService } from '../../../services/user.service';
+import { FormlyData } from './../../../models/formly/formly-data.model';
+import { IOption } from './../../../models/option.model';
+import { ChipsAutocompleteComponent } from './../../../public/formly/chips-autocomplete/chips-autocomplete.component';
+import { TEMSComponent } from './../../../tems/tems.component';
 
 @Component({
   selector: 'app-add-personnel',

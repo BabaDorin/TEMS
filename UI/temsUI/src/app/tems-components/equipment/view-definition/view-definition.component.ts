@@ -1,11 +1,11 @@
-import { DialogService } from '../../../services/dialog.service';
-import { Definition } from './../../../models/equipment/add-definition.model';
-import { TEMSComponent } from 'src/app/tems/tems.component';
-import { EquipmentService } from 'src/app/services/equipment.service';
 import { Component, Inject, OnInit, Optional } from '@angular/core';
-import { ViewTypeComponent } from '../view-type/view-type.component';
-import { ViewPropertyComponent } from '../view-property/view-property.component';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { EquipmentService } from 'src/app/services/equipment.service';
+import { TEMSComponent } from 'src/app/tems/tems.component';
+import { DialogService } from '../../../services/dialog.service';
+import { ViewPropertyComponent } from '../view-property/view-property.component';
+import { ViewTypeComponent } from '../view-type/view-type.component';
+import { Definition } from './../../../models/equipment/add-definition.model';
 
 @Component({
   selector: 'app-view-definition',

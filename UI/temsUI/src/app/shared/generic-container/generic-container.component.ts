@@ -1,5 +1,5 @@
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { IContainerAction, IGenericContainerModel } from './../../models/generic-container/IGenericContainer.model';
-import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'app-generic-container',

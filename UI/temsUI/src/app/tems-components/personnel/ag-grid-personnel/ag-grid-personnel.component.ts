@@ -1,11 +1,11 @@
-import { PersonnelDetailsGeneralComponent } from './../personnel-details-general/personnel-details-general.component';
-import { TEMSComponent } from './../../../tems/tems.component';
-import { PersonnelService } from '../../../services/personnel.service';
-import { ViewPersonnelSimplified } from './../../../models/personnel/view-personnel-simplified.model';
 import { Component, OnInit } from '@angular/core';
+import { BtnCellRendererComponent } from 'src/app/public/ag-grid/btn-cell-renderer/btn-cell-renderer.component';
 import { DialogService } from 'src/app/services/dialog.service';
 import { SnackService } from 'src/app/services/snack.service';
-import { BtnCellRendererComponent } from 'src/app/public/ag-grid/btn-cell-renderer/btn-cell-renderer.component';
+import { PersonnelService } from '../../../services/personnel.service';
+import { ViewPersonnelSimplified } from './../../../models/personnel/view-personnel-simplified.model';
+import { TEMSComponent } from './../../../tems/tems.component';
+import { PersonnelDetailsGeneralComponent } from './../personnel-details-general/personnel-details-general.component';
 
 @Component({
   selector: 'app-ag-grid-personnel',
@@ -43,13 +43,17 @@ export class AgGridPersonnelComponent extends TEMSComponent implements OnInit {
 
     this.frameworkComponents = {
       btnCellRendererComponent: BtnCellRendererComponent
+    };
+
+    this.defaultColDef = {
+      resizable: true
     }
 
     this.columnDefs = [
-      { field: 'name', sortable: true, filter: true, checkboxSelection: true, headerCheckboxSelection: true},
-      { field: 'positions', sortable: true, filter: true },
-      { field: 'allocatedEquipments', sortable: true, filter: true },
-      { field: 'activeTickets', sortable: true, filter: true },
+      { field: 'name', sortable: true, filter: true, checkboxSelection: true, resizeable: true},
+      { field: 'positions', sortable: true, filter: true, resizeable: true },
+      // { field: 'allocatedEquipments', sortable: true, filter: true, resizeable: true },
+      // { field: 'activeTickets', sortable: true, filter: true, resizeable: true },
       {
         cellRenderer: 'btnCellRendererComponent',
         cellRendererParams: {

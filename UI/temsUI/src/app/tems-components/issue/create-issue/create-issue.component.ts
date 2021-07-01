@@ -1,19 +1,19 @@
-import { TranslateService } from '@ngx-translate/core';
-import { UserService } from 'src/app/services/user.service';
-import { TokenService } from '../../../services/token.service';
-import { SnackService } from '../../../services/snack.service';
-import { IssuesService } from '../../../services/issues.service';
-import { TEMSComponent } from './../../../tems/tems.component';
-import { IOption } from './../../../models/option.model';
-import { EquipmentService } from 'src/app/services/equipment.service';
-import { PersonnelService } from '../../../services/personnel.service';
-import { RoomsService } from '../../../services/rooms.service';
-import { FormlyParserService } from 'src/app/services/formly-parser.service';
 import { Component, Inject, Input, OnInit, Optional, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { FormlyFieldConfig } from '@ngx-formly/core';
-import { AddIssue } from 'src/app/models/communication/issues/add-issue.model';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { FormlyFieldConfig } from '@ngx-formly/core';
+import { TranslateService } from '@ngx-translate/core';
+import { AddIssue } from 'src/app/models/communication/issues/add-issue.model';
+import { EquipmentService } from 'src/app/services/equipment.service';
+import { FormlyParserService } from 'src/app/services/formly-parser.service';
+import { UserService } from 'src/app/services/user.service';
+import { IssuesService } from '../../../services/issues.service';
+import { PersonnelService } from '../../../services/personnel.service';
+import { RoomsService } from '../../../services/rooms.service';
+import { SnackService } from '../../../services/snack.service';
+import { TokenService } from '../../../services/token.service';
+import { IOption } from './../../../models/option.model';
+import { TEMSComponent } from './../../../tems/tems.component';
 
 @Component({
   selector: 'app-create-issue',

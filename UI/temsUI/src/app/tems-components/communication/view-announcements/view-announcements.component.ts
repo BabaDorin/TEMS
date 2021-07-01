@@ -1,5 +1,3 @@
-import { CommunicationService } from '../../../services/communication.service';
-import { ViewAnnouncement } from './../../../models/communication/announcement/view-announcement.model';
 import { Component, OnInit } from '@angular/core';
 
 @Component({

@@ -1,14 +1,13 @@
-import { ClaimService } from './../../../services/claim.service';
-import { SnackService } from 'src/app/services/snack.service';
-import { DialogService } from 'src/app/services/dialog.service';
-import { KeysAllocationsComponent } from 'src/app/tems-components/keys/keys-allocations/keys-allocations.component';
-import { ViewKeySimplified } from 'src/app/models/key/view-key.model';
-import { AgGridKeysComponent } from 'src/app/tems-components/keys/ag-grid-keys/ag-grid-keys.component';
-import { KeysService } from 'src/app/services/keys.service';
-import { TEMSComponent } from 'src/app/tems/tems.component';
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { ViewKeySimplified } from 'src/app/models/key/view-key.model';
 import { IOption } from 'src/app/models/option.model';
+import { DialogService } from 'src/app/services/dialog.service';
+import { KeysService } from 'src/app/services/keys.service';
+import { SnackService } from 'src/app/services/snack.service';
+import { AgGridKeysComponent } from 'src/app/tems-components/keys/ag-grid-keys/ag-grid-keys.component';
+import { TEMSComponent } from 'src/app/tems/tems.component';
 import { AddKeyComponent } from '../add-key/add-key.component';
+import { ClaimService } from './../../../services/claim.service';
 
 @Component({
   selector: 'app-view-keys',

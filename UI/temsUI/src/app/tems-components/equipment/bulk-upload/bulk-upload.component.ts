@@ -1,8 +1,8 @@
-import { TEMSComponent } from './../../../tems/tems.component';
-import { SnackService } from '../../../services/snack.service';
-import { EquipmentService } from 'src/app/services/equipment.service';
-import { Component, OnInit, Output } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { SICFileUploadResult } from 'src/app/models/equipment/bulk-upload-result.model';
+import { EquipmentService } from 'src/app/services/equipment.service';
+import { SnackService } from '../../../services/snack.service';
+import { TEMSComponent } from './../../../tems/tems.component';
 
 @Component({
   selector: 'app-bulk-upload',

@@ -1,9 +1,8 @@
-import { TokenService } from '../../../services/token.service';
+import { Component, OnInit } from '@angular/core';
 import { ViewNotification } from 'src/app/models/communication/notification/view-notification.model';
-import { TEMSComponent } from 'src/app/tems/tems.component';
 import { SnackService } from 'src/app/services/snack.service';
 import { UserService } from 'src/app/services/user.service';
-import { Component, Input, OnInit } from '@angular/core';
+import { TEMSComponent } from 'src/app/tems/tems.component';
 
 @Component({
   selector: 'app-view-notifications',

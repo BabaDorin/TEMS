@@ -1,15 +1,13 @@
-import { ClaimService } from './../../../services/claim.service';
-import { IOption } from './../../../models/option.model';
-import { DialogService } from '../../../services/dialog.service';
-import { SnackService } from 'src/app/services/snack.service';
-import { CAN_MANAGE_ENTITIES } from './../../../models/claims';
-import { TokenService } from '../../../services/token.service';
-import { IViewKeySimplified, ViewKeySimplified } from './../../../models/key/view-key.model';
-import { TEMSComponent } from './../../../tems/tems.component';
-import { KeysService } from '../../../services/keys.service';
-import { Component, Input, OnInit, OnChanges, Output, EventEmitter, SimpleChange } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChange } from '@angular/core';
 import { BtnCellRendererComponent } from 'src/app/public/ag-grid/btn-cell-renderer/btn-cell-renderer.component';
+import { SnackService } from 'src/app/services/snack.service';
+import { DialogService } from '../../../services/dialog.service';
+import { KeysService } from '../../../services/keys.service';
 import { KeysAllocationsComponent } from '../keys-allocations/keys-allocations.component';
+import { IViewKeySimplified, ViewKeySimplified } from './../../../models/key/view-key.model';
+import { IOption } from './../../../models/option.model';
+import { ClaimService } from './../../../services/claim.service';
+import { TEMSComponent } from './../../../tems/tems.component';
 
 @Component({
   selector: 'app-ag-grid-keys',
@@ -51,6 +49,10 @@ export class AgGridKeysComponent extends TEMSComponent implements OnInit, OnChan
 
     this.frameworkComponents = {
       btnCellRendererComponent: BtnCellRendererComponent
+    };
+
+    this.defaultColDef = {
+      resizable: true
     }
   }
 
@@ -101,10 +103,10 @@ export class AgGridKeysComponent extends TEMSComponent implements OnInit, OnChan
 
   buildColumnDefsAsAllocated(){
     this.columnDefs = [
-      { headerName: 'Identifier',  field: 'identifier', sortable: true, filter: true, checkboxSelection: true, headerCheckboxSelection: true},
-      { headerName: 'Room', field: 'room.label', sortable: true, filter: true },
-      { headerName: 'Allocated to', field: 'allocatedTo.label', sortable: true, filter: true },
-      { headerName: 'Time', field: 'timePassed', sortable: true, filter: true }
+      { headerName: 'Identifier',  field: 'identifier', sortable: true, filter: true, checkboxSelection: true, headerCheckboxSelection: true, resizeable: true},
+      { headerName: 'Room', field: 'room.label', sortable: true, filter: true, resizeable: true },
+      { headerName: 'Allocated to', field: 'allocatedTo.label', sortable: true, filter: true, resizeable: true },
+      { headerName: 'Time', field: 'timePassed', sortable: true, filter: true, resizeable: true }
     ];
 
     if(this.claims.canAllocateKeys){

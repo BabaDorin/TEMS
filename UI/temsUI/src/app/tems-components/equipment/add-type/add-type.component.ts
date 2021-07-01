@@ -1,16 +1,16 @@
+import { Component, Inject, OnInit, Optional } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Observable } from 'rxjs';
 import { SnackService } from 'src/app/services/snack.service';
-import { TypeService } from '../../../services/type.service';
-import { DialogService } from '../../../services/dialog.service';
 import { TEMSComponent } from 'src/app/tems/tems.component';
-import { EquipmentType } from './../../../models/equipment/view-type.model';
+import { DialogService } from '../../../services/dialog.service';
+import { TypeService } from '../../../services/type.service';
+import { AddPropertyComponent } from '../add-property/add-property.component';
 import { AddType } from './../../../models/equipment/add-type.model';
+import { EquipmentType } from './../../../models/equipment/view-type.model';
 import { IOption } from './../../../models/option.model';
 import { EquipmentService } from './../../../services/equipment.service';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { Component, OnInit, OnDestroy, Inject, Optional } from '@angular/core';
-import { AddPropertyComponent } from '../add-property/add-property.component';
-import { Observable } from 'rxjs';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 
 @Component({

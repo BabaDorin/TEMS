@@ -17,12 +17,14 @@
                 </div>
                 <div class="col-md-9 col-xs-12 pl-3 pr-2">
                     <p class="text-muted text-center d-block d-md-none">
-                        <mat-icon class="text-primary">
-                            event
-                        </mat-icon>
-                        {{announcement.dateCreated | date: 'short'}}
+                        <small>
+                            <mat-icon class="text-primary">
+                                event
+                            </mat-icon>
+                            {{announcement.dateCreated | date: 'short'}}
+                        </small>
                     </p>
-                    <p class="title font-weight-light">
+                    <p class="title font-weight-light announcement-title-wrapper">
                         {{announcement.title}}
                     </p>
                     <a mat-button *ngIf="announcement.createdBy != undefined"

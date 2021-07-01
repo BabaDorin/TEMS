@@ -1,22 +1,19 @@
+import { Component, Inject, OnInit, Optional, ViewChild } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
+import { Observable, of } from 'rxjs';
+import { IViewRole } from 'src/app/models/roles/role.model';
 import { ChipsAutocompleteComponent } from 'src/app/public/formly/chips-autocomplete/chips-autocomplete.component';
+import { FormlyParserService } from 'src/app/services/formly-parser.service';
+import { PersonnelService } from 'src/app/services/personnel.service';
+import { RoleService } from 'src/app/services/role.service';
+import { UserService } from 'src/app/services/user.service';
+import { TEMSComponent } from 'src/app/tems/tems.component';
+import { CheckboxItem } from '../../../../models/checkboxItem.model';
 import { FormlyData } from '../../../../models/formly/formly-data.model';
+import { AddUser } from '../../../../models/identity/add-user.model';
 import { IOption } from '../../../../models/option.model';
 import { SnackService } from '../../../../services/snack.service';
-import { CheckboxItem } from '../../../../models/checkboxItem.model';
-import { Observable, of } from 'rxjs';
-import { AddUser } from '../../../../models/identity/add-user.model';
-import { FormlyParserService } from 'src/app/services/formly-parser.service';
-import { specCharValidator } from 'src/app/models/validators';
-import { UserService } from 'src/app/services/user.service';
-import { PersonnelService } from 'src/app/services/personnel.service';
-import { TEMSComponent } from 'src/app/tems/tems.component';
-import { Component, Inject, OnInit, Optional, ViewChild } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { FormlyFieldConfig } from '@ngx-formly/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { RoleService } from 'src/app/services/role.service';
-import { IViewRole } from 'src/app/models/roles/role.model';
 
 @Component({
   selector: 'app-add-user',

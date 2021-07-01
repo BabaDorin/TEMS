@@ -1,8 +1,7 @@
-import { Error404Component } from './public/error-pages/error404/error404.component';
-import { QuickAccessComponent } from './tems-components/equipment/quick-access/quick-access.component';
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
 import { DashboardComponent } from './public/dashboard/dashboard.component';
+import { QuickAccessComponent } from './tems-components/equipment/quick-access/quick-access.component';
 
 
 const routes: Routes = [

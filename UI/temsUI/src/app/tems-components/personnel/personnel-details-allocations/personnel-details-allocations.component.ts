@@ -1,6 +1,6 @@
-import { AgGridEquipmentComponent } from './../../equipment/ag-grid-equipment/ag-grid-equipment.component';
-import { ViewPersonnelSimplified } from 'src/app/models/personnel/view-personnel-simplified.model';
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { ViewPersonnelSimplified } from 'src/app/models/personnel/view-personnel-simplified.model';
+import { AgGridEquipmentComponent } from './../../equipment/ag-grid-equipment/ag-grid-equipment.component';
 
 @Component({
   selector: 'app-personnel-details-allocations',

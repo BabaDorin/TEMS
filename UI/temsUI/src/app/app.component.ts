@@ -1,4 +1,3 @@
-import { browser } from 'protractor';
 import { ViewLibraryComponent } from './tems-components/library/view-library/view-library.component';
 import { DialogService } from 'src/app/services/dialog.service';
 import { SystemConfigurationService } from 'src/app/services/system-configuration.service';

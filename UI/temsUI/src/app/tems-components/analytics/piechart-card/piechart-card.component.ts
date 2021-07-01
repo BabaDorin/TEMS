@@ -1,5 +1,5 @@
+import { Component, Input, OnInit } from '@angular/core';
 import { PieChartData } from './../../../models/analytics/pieChart-model';
-import { Component, Input, OnInit, OnChanges, SimpleChanges } from '@angular/core';
 
 @Component({
   selector: 'app-piechart-card',

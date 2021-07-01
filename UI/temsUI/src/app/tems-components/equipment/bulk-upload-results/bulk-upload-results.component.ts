@@ -1,5 +1,5 @@
-import { SICFileUploadResult } from './../../../models/equipment/bulk-upload-result.model';
 import { Component, Input, OnInit } from '@angular/core';
+import { SICFileUploadResult } from './../../../models/equipment/bulk-upload-result.model';
 
 @Component({
   selector: 'app-bulk-upload-results',

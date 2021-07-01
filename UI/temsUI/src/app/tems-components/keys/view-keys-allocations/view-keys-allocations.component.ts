@@ -1,16 +1,15 @@
-import { CAN_MANAGE_ENTITIES, CAN_ALLOCATE_KEYS } from './../../../models/claims';
-import { TokenService } from '../../../services/token.service';
-import { SnackService } from '../../../services/snack.service';
-import { PersonnelService } from 'src/app/services/personnel.service';
-import { TEMSComponent } from 'src/app/tems/tems.component';
-import { Component, OnInit, ViewChild} from '@angular/core';
-import { KeysService } from 'src/app/services/keys.service';
-import { IOption } from 'src/app/models/option.model';
-import { RoomsService } from 'src/app/services/rooms.service';
-import { Observable } from 'rxjs';
-import { of } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
+import { Observable, of } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { IOption } from 'src/app/models/option.model';
+import { KeysService } from 'src/app/services/keys.service';
+import { PersonnelService } from 'src/app/services/personnel.service';
+import { RoomsService } from 'src/app/services/rooms.service';
+import { TEMSComponent } from 'src/app/tems/tems.component';
+import { SnackService } from '../../../services/snack.service';
+import { TokenService } from '../../../services/token.service';
+import { CAN_ALLOCATE_KEYS, CAN_MANAGE_ENTITIES } from './../../../models/claims';
 
 @Component({
   selector: 'app-view-keys-allocations',

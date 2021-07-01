@@ -1,9 +1,9 @@
-import { ArchieveService } from 'src/app/services/archieve.service';
-import { ArchievedItem } from './../../../models/archieve/archieved-item.model';
-import { SnackService } from '../../../services/snack.service';
-import { Component, Input, OnInit, SimpleChanges, OnChanges } from '@angular/core';
-import { TEMSComponent } from 'src/app/tems/tems.component';
+import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { dateFormatter } from 'src/app/public/ag-grid/ag-grid-formatters';
+import { ArchieveService } from 'src/app/services/archieve.service';
+import { TEMSComponent } from 'src/app/tems/tems.component';
+import { SnackService } from '../../../services/snack.service';
+import { ArchievedItem } from './../../../models/archieve/archieved-item.model';
 
 @Component({
   selector: 'app-ag-grid-archieved-items',

@@ -415,9 +415,9 @@
         "announcementLabel" : "Ultimele anunțuri",
         "quickAccess": "Acces rapid",
         "tickets": "Ticket-uri",
-        "ticketText": "Ați întâmpinat probleme tehnice sau doriți să solicitați intervenția echipei tehice?",
+        "ticketText": "Ați întâmpinat probleme tehnice sau doriți să solicitați intervenția echipei tehnice?",
         "createTicketButtonText": "Crează un ticket!",
-        "recentTickets": "Ticket-uri recente!",
+        "recentTickets": "Ticket-uri recente",
         "seeMore": "Vezi mai mult...",
         "techniciansLabel": "Tehnicienii noștri"
     },

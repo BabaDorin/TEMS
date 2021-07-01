@@ -1,9 +1,9 @@
-import { TEMSComponent } from './../../../tems/tems.component';
-import { EquipmentService } from 'src/app/services/equipment.service';
-import { ViewEquipmentSimplified } from './../../../models/equipment/view-equipment-simplified.model';
 import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
+import { EquipmentService } from 'src/app/services/equipment.service';
+import { ViewEquipmentSimplified } from './../../../models/equipment/view-equipment-simplified.model';
+import { TEMSComponent } from './../../../tems/tems.component';
 
 @Component({
   selector: 'app-equipment-details',

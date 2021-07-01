@@ -1,11 +1,11 @@
-import { ClaimService } from './../../../services/claim.service';
-import { DialogService } from '../../../services/dialog.service';
-import { TEMSComponent } from 'src/app/tems/tems.component';
-import { AddAnnouncementComponent } from './../add-announcement/add-announcement.component';
 import { Component, Input, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { TEMSComponent } from 'src/app/tems/tems.component';
 import { ViewAnnouncement } from '../../../models/communication/announcement/view-announcement.model';
 import { CommunicationService } from '../../../services/communication.service';
+import { DialogService } from '../../../services/dialog.service';
+import { ClaimService } from './../../../services/claim.service';
+import { AddAnnouncementComponent } from './../add-announcement/add-announcement.component';
 
 @Component({
   selector: 'app-announcements-list',

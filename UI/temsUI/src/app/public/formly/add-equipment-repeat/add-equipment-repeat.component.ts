@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FieldArrayType, FormlyFieldConfig } from '@ngx-formly/core';
+import { FieldArrayType } from '@ngx-formly/core';
 
 @Component({
   selector: 'add-eq-repeat-section',

@@ -1,9 +1,8 @@
-import { ViewUserSimplified } from './../../../models/user/view-user.model';
-import { TEMSComponent } from './../../../tems/tems.component';
+import { Component, Input, OnInit } from '@angular/core';
 import { SnackService } from 'src/app/services/snack.service';
 import { UserService } from 'src/app/services/user.service';
-import { ViewProfile } from 'src/app/models/profile/view-profile.model';
-import { Component, Input, OnInit } from '@angular/core';
+import { ViewUserSimplified } from './../../../models/user/view-user.model';
+import { TEMSComponent } from './../../../tems/tems.component';
 
 @Component({
   selector: 'app-user-cards-list',

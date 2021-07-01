@@ -1,14 +1,11 @@
-import { CAN_MANAGE_ENTITIES, CAN_MANAGE_SYSTEM_CONFIGURATION } from './../../../../models/claims';
-import { TokenService } from '../../../../services/token.service';
-import { DialogService } from '../../../../services/dialog.service';
+import { Component, Input, OnInit } from '@angular/core';
+import { ViewTypeSimplified } from 'src/app/models/equipment/view-type-simplified.model';
+import { AddTypeComponent } from 'src/app/tems-components/equipment/add-type/add-type.component';
 import { EquipmentTypeContainerModel } from '../../../../models/generic-container/equipment-type-container.model';
+import { DialogService } from '../../../../services/dialog.service';
 import { SnackService } from '../../../../services/snack.service';
 import { EquipmentService } from './../../../../services/equipment.service';
 import { TEMSComponent } from './../../../../tems/tems.component';
-import { Component, OnInit, Input } from '@angular/core';
-import { ViewTypeSimplified } from 'src/app/models/equipment/view-type-simplified.model';
-import { AddTypeComponent } from 'src/app/tems-components/equipment/add-type/add-type.component';
-import { build$ } from 'protractor/built/element';
 
 @Component({
   selector: 'app-equipment-types-list',

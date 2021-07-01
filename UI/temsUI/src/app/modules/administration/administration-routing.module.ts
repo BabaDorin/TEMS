@@ -1,9 +1,9 @@
-import { ViewSystemLogsComponent } from '../../tems-components/admin/view-system-logs/view-system-logs.component';
-import { SystemConfigComponent } from '../../tems-components/admin/system-config/system-config.component';
-import { EquipmentManagementComponent } from '../../tems-components/admin/equipment-management/equipment-management.component';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { EquipmentManagementComponent } from '../../tems-components/admin/equipment-management/equipment-management.component';
+import { SystemConfigComponent } from '../../tems-components/admin/system-config/system-config.component';
 import { UserManagementComponent } from '../../tems-components/admin/user-management/user-management.component';
+import { ViewSystemLogsComponent } from '../../tems-components/admin/view-system-logs/view-system-logs.component';
 
 const routes: Routes = [
   { path: '', component: EquipmentManagementComponent },

@@ -170,11 +170,14 @@ formly-field-mat-radio {
   }
 }
 
-.centerSvg {
+.center-svg {
   display: block;
   margin-left: auto;
   margin-right: auto;
   width: 50%;
+  margin-top: 10px;
+  min-width: 100px;
+  max-width: 400px;
 }
 
 .medium-font-size{
@@ -259,6 +262,10 @@ formly-field-mat-radio {
   margin: auto;
 }
 
+.h-0{
+  height: 0;
+}
+
 
 // Angular material components override
 .mat-expansion-panel-header{
@@ -270,20 +277,39 @@ formly-field-mat-radio {
   min-width: 400px;
 }
 
-
-
-
-
-
 // Bootstrap component styles overrides
 @media screen and (max-width: 991px) {
   .card-body{
-    // padding: 10px !important;
+    padding: 10px !important;
+  }
+
+  .dashboard-logo {
+    width: 70%;
+    height: auto;
+  }
+
+  .page-body-wrapper {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  // .col-md-12{
+  //   padd
+  // }
+
+  .announcement-title-wrapper{
+    text-align: center !important;
   }
 }
 
 button{
   white-space: normal !important;
+}
+
+.mat-button{
+  .mat-icon{
+    margin: 0 !important;
+  }
 }
 
 .mat-icon {

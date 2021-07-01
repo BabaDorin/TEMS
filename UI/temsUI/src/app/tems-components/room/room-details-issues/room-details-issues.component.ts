@@ -1,6 +1,6 @@
+import { Component, Input, OnInit } from '@angular/core';
 import { IOption } from 'src/app/models/option.model';
 import { ViewRoomSimplified } from './../../../models/room/view-room-simplified.model';
-import { Component, Input, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-room-details-issues',

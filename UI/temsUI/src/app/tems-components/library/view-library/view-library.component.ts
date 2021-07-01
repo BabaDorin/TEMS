@@ -1,20 +1,16 @@
-import { Fraction } from './../../../models/analytics/fraction.model';
-import { ClaimService } from './../../../services/claim.service';
-import { TokenService } from '../../../services/token.service';
-import { SnackService } from '../../../services/snack.service';
-import { UploadedFileContainerModel } from './../../../models/generic-container/uploaded-file-container.model';
-import { Downloader } from './../../../shared/downloader/fileDownloader';
+import { DecimalPipe } from '@angular/common';
+import { Component, Inject, OnInit, Optional } from '@angular/core';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { DialogService } from 'src/app/services/dialog.service';
 import { UploadLibraryItemComponent } from 'src/app/tems-components/library/upload-library-item/upload-library-item.component';
-import { TEMSComponent } from './../../../tems/tems.component';
-import { ViewLibraryItem } from './../../../models/library/view-library-item.model';
 import { LibraryService } from '../../../services/library.service';
-import { Component, Inject, OnInit, Optional } from '@angular/core';
-import { CAN_MANAGE_ENTITIES } from 'src/app/models/claims';
-import { DecimalPipe } from '@angular/common';
-import { Router, ActivatedRoute } from '@angular/router';
-import { Location } from '@angular/common';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { SnackService } from '../../../services/snack.service';
+import { Fraction } from './../../../models/analytics/fraction.model';
+import { UploadedFileContainerModel } from './../../../models/generic-container/uploaded-file-container.model';
+import { ViewLibraryItem } from './../../../models/library/view-library-item.model';
+import { ClaimService } from './../../../services/claim.service';
+import { Downloader } from './../../../shared/downloader/fileDownloader';
+import { TEMSComponent } from './../../../tems/tems.component';
 
 @Component({
   selector: 'app-view-library',

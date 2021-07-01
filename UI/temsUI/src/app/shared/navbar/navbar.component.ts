@@ -1,13 +1,13 @@
-import { ViewNotificationsComponent } from './../../tems-components/notifications/view-notifications/view-notifications.component';
+import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { NgbDropdownConfig } from '@ng-bootstrap/ng-bootstrap';
 import { DialogService } from 'src/app/services/dialog.service';
 import { SnackService } from '../../services/snack.service';
-import { ViewNotification } from './../../models/communication/notification/view-notification.model';
 import { UserService } from '../../services/user.service';
+import { ViewNotification } from './../../models/communication/notification/view-notification.model';
 import { AuthService } from './../../services/auth.service';
+import { ViewNotificationsComponent } from './../../tems-components/notifications/view-notifications/view-notifications.component';
 import { TEMSComponent } from './../../tems/tems.component';
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { NgbDropdown, NgbDropdownConfig } from '@ng-bootstrap/ng-bootstrap';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-navbar',

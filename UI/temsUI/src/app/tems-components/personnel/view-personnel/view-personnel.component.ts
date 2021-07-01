@@ -1,14 +1,14 @@
-import { ClaimService } from './../../../services/claim.service';
-import { AgGridPersonnelComponent } from './../ag-grid-personnel/ag-grid-personnel.component';
-import { AddPersonnelComponent } from './../add-personnel/add-personnel.component';
-import { DialogService } from '../../../services/dialog.service';
-import { ViewPersonnelSimplified } from './../../../models/personnel/view-personnel-simplified.model';
-import { SnackService } from '../../../services/snack.service';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { IOption } from 'src/app/models/option.model';
 import { EmailService } from 'src/app/services/email.service';
-import { SendEmailComponent } from '../../send-email/send-email.component';
+import { DialogService } from '../../../services/dialog.service';
+import { SnackService } from '../../../services/snack.service';
 import { CreateIssueComponent } from '../../issue/create-issue/create-issue.component';
+import { SendEmailComponent } from '../../send-email/send-email.component';
+import { ViewPersonnelSimplified } from './../../../models/personnel/view-personnel-simplified.model';
+import { ClaimService } from './../../../services/claim.service';
+import { AddPersonnelComponent } from './../add-personnel/add-personnel.component';
+import { AgGridPersonnelComponent } from './../ag-grid-personnel/ag-grid-personnel.component';
 
 @Component({
   selector: 'app-view-personnel',

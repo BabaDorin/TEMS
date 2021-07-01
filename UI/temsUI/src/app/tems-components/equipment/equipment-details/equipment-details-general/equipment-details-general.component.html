@@ -24,37 +24,37 @@
                                 <mat-menu #menu="matMenu">
                                     <button mat-menu-item (click)="edit()">
                                         <mat-icon class="text-muted">edit</mat-icon>
-                                        {{ 'general.edit' | translate }}:
+                                        {{ 'general.edit' | translate }}
                                     </button>
                                     <button mat-menu-item *ngIf="equipment.isArchieved" (click)="archieve()"
                                         [disabled]="editing">
                                         <mat-icon class="text-muted">restore</mat-icon>
-                                        {{ 'general.dearchive' | translate }}:
+                                        {{ 'general.dearchive' | translate }}
                                     </button>
                                     <button mat-menu-item *ngIf="!equipment.isArchieved" (click)="archieve()"
                                         [disabled]="editing">
                                         <mat-icon class="text-muted">auto_delete</mat-icon>
-                                        {{ 'general.archive' | translate }}:
+                                        {{ 'general.archive' | translate }}
                                     </button>
                                     <button mat-menu-item (click)="changeWorkingState()" [disabled]="editing">
                                         <ng-container *ngIf="equipment.isDefect">
                                             <mat-icon class="text-success">done</mat-icon>
-                                            {{ 'equipment.markAsWorking' | translate }}:
+                                            {{ 'equipment.markAsWorking' | translate }}
                                         </ng-container>
                                         <ng-container *ngIf="!equipment.isDefect">
                                             <mat-icon class="text-muted">error</mat-icon>
-                                            {{ 'equipment.markAsDefect' | translate }}:
+                                            {{ 'equipment.markAsDefect' | translate }}
                                         </ng-container>
                                     </button>
                                     <button mat-menu-item (click)="changeUsingState()" [disabled]="editing"
                                         class="btn-block">
                                         <ng-container *ngIf="equipment.isUsed; else eqUnused">
                                             <mat-icon class="text-muted">pause</mat-icon>
-                                            {{ 'equipment.markAsUnused' | translate }}:
+                                            {{ 'equipment.markAsUnused' | translate }}
                                         </ng-container>
                                         <ng-template #eqUnused>
                                             <mat-icon class="text-success">play_arrow</mat-icon>
-                                            {{ 'equipment.markAsUsed' | translate }}:
+                                            {{ 'equipment.markAsUsed' | translate }}
                                         </ng-template>
                                     </button>
                                 </mat-menu>
@@ -69,14 +69,14 @@
 
                 <!-- Actual equipment information -->
                 <h2 class="text-muted text-bold">
-                    <mat-icon class="text-primary">double_arrow</mat-icon> {{ 'equipment.allocatedTo' | translate }}::
+                    <mat-icon class="text-primary">double_arrow</mat-icon> {{ 'equipment.allocatedTo' | translate }}:
                 </h2>
                 <hr>
                 <button mat-button *ngIf="equipment.room != undefined" (click)="viewAllocatee()">
-                    <mat-icon class="text-primary">pin_drop</mat-icon> {{ equipment.room'.label }}
+                    <mat-icon class="text-primary">pin_drop</mat-icon> {{ equipment.room.label }}
                 </button>
                 <button mat-button *ngIf="equipment.personnel != undefined" (click)="viewAllocatee()">
-                    <mat-icon class="text-primary">account_circle</mat-icon> {{ equipment.personnel'.label }}
+                    <mat-icon class="text-primary">account_circle</mat-icon> {{ equipment.personnel.label }}
                 </button>
                 <ng-container *ngIf="equipment.room == undefined && equipment.personnel == undefined">
                     <mat-icon class="text-muted">storage</mat-icon> {{ 'entities.deposit' | translate }}:
@@ -86,13 +86,17 @@
                     <mat-icon class="text-primary">sell</mat-icon> {{ 'equipment.indexedBy' | translate }}:
                 </h2>
                 <hr>
-                <div class="d-flex align-items-center d-flex">
-                    <app-equipment-label *ngIf="equipment.temsId != undefined" [mainText]="equipment.temsId"
+                <div class="d-flex align-items-center d-flex flex-wrap">
+                    <div class="equipment-index">
+                        <app-equipment-label *ngIf="equipment.temsId != undefined" [mainText]="equipment.temsId"
                         class="mr-4" matTooltip="TEMS ID">
-                    </app-equipment-label>
-                    <app-equipment-serial-number *ngIf="equipment.serialNumber != undefined"
+                        </app-equipment-label>
+                    </div>
+                    <div class="equipment-index">
+                        <app-equipment-serial-number *ngIf="equipment.serialNumber != undefined"
                         [mainText]="equipment.serialNumber" matTooltip="Serial Number">
-                    </app-equipment-serial-number>
+                        </app-equipment-serial-number>
+                    </div>
                 </div>
 
                 <!-- Case 1: Equipment has only common properties -->
@@ -101,7 +105,7 @@
                     else propertyElseBlock">
                     <div class="property-container mt-5">
                         <h2 class="text-muted text-bold">
-                            {{ 'equipment.properties | translate }}
+                            {{ 'equipment.properties' | translate }}
                         </h2>
                         <app-property-render [properties]="generalProperties">
                         </app-property-render>
@@ -119,7 +123,7 @@
                         </div>
                         <div class="col-lg-6 col-sm-12">
                             <!-- Speciic properties for current equipment go here -->
-                            <h2 class="text-muted text-bold">{{ 'equipment.indexedBy' | translate }}</h2>
+                            <h2 class="text-muted text-bold">{{ 'property.specific' | translate }}</h2>
                             <app-property-render [properties]="equipment.definition.properties">
                             </app-property-render>
                         </div>
@@ -146,7 +150,7 @@
 
                 <ng-container *ngIf="detachedEquipments.length > 0">
                     <h2 class="text-muted text-bold mt-5">
-                        {{ 'equipment.indexedBy | translate }}
+                        {{ 'equipment.detachedEquipment' | translate }}
                     </h2>
                     <div *ngFor="let detachedEq of detachedEquipments">
                         <app-child-equipment-container [childEquipment]="detachedEq" canManage="false" detachable="false">

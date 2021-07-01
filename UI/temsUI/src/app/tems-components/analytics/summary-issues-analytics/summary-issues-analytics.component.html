@@ -9,7 +9,7 @@
     totalTickets != undefined">
         <div class="col-lg-3 col-md-6 p-1">
             <app-fraction-card
-           [title]="translate.instant('analytics.openTickets')"
+            [title]="translate.instant('analytics.openTickets')"
             [numerator]="openTickets"
             [denominator]="totalTickets"
             theme="success">
@@ -25,14 +25,14 @@
     
         <div class="col-lg-3 col-md-6 p-1">
             <app-piechart-card
-            title="translate.instant('analytics.closingByRate)"
+            [title]="translate.instant('analytics.closingByRate')"
             [rates]="closingByRate">
             </app-piechart-card>
         </div>
     
         <div class="col-lg-3 col-md-6 p-1">
             <app-piechart-card
-            title="translate.instant('analytics.openTicketStatusRate')"
+            [title]="translate.instant('analytics.openTicketStatusRate')"
             [rates]="openTicketStatusRate">
             </app-piechart-card>
         </div>

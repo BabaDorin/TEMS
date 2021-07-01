@@ -162,8 +162,8 @@ namespace temsAPI.Data.Managers
                     include: q => q.Include(q => q.EquipmentAllocations),
                     where: filterByEntityExpression
                     ))
-                .GroupBy(q => q.ActiveAllocation == null)
-                .Select(q => new Tuple<string, int>(q.Key ? "Allocated" : "unallocated", q.Count()))
+                .GroupBy(q => q.ActiveAllocation != null)
+                .Select(q => new Tuple<string, int>(q.Key ? "Allocated" : "Unallocated", q.Count()))
                 .ToList();
 
             PieChartData pieChart = new()

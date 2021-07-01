@@ -361,6 +361,9 @@
 
 
     "ticket": {
+        "urgent": "Urgent",
+        "medium": "Medium",
+        "future": "Future",
         "openTabLabel": "Open",
         "closedTabLabel": "Closed",
         "closed": "Closed",

@@ -1,5 +1,5 @@
 <ng-container *ngIf="log != undefined; else elseBlock">
-    <div class="page-header">
+    <div class="page-header mb-1">
         <div class="page-title mb-0 template-title">
             <h3 class="m-0">
                 {{ log.dateCreated | date:'short' }}
@@ -11,18 +11,6 @@
                     </small>
                 </p>
             </ng-container>
-            
-                <!-- <p class="text-muted">
-                    <ng-container *ngIf="log.room != undefined">
-                        Room: {{ log.room.label }}
-                    </ng-container>
-                    <ng-container *ngIf="log.personnel != undefined">
-                        Personnel: {{ log.personnel.label }}
-                    </ng-container>
-                    <ng-container *ngIf="log.equipment != undefined">
-                        Equipment: {{ log.equipment.label }}
-                    </ng-container>
-                </p> -->
         </div>
         <ng-container *ngIf="canManage">
             <nav aria-label="breadcrumb">
@@ -43,7 +31,7 @@
             </nav>
         </ng-container>
     </div>
-    <p>
+    <p class="m-0">
         {{ log.description }}
     </p>
 </ng-container>

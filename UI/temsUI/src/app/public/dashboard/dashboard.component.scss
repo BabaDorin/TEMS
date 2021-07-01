@@ -112,3 +112,10 @@
 hr{
   height: 0;
 }
+
+@media screen and (max-width: 991px) {
+  .dashboard-logo {
+    width: 70%;
+    height: auto;
+  }
+}

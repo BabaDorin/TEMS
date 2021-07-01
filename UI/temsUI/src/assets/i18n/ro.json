@@ -361,9 +361,12 @@
 
 
     "ticket": {
+        "urgent": "Urgent",
+        "medium": "Mediu",
+        "future": "Pe viitor",
+        "closed": "Soluționat",
         "openTabLabel": "Active",
         "closedTabLabel": "Soluționate",
-        "closed": "Soluționat",
         "problem": "Care este problema?",
         "description": "Descrierea problemei (Ne ajută extrem de mult!)",
         "priority": "Nivelul de prioritate (după aprecierea dumneavoastră)",
@@ -385,7 +388,7 @@
         "pin": "Fixează",
         "unpin": "Anulează fixarea",
         "view": "Vezi ticket-urile",
-        "includeClosed": "Include ticket-urile închise",
+        "includeClosed": "Include ticket-urile soluționate",
         "sortPriority": "Sortează după prioritate",
         "sortDate": "Sortează după dată",
         "sent": "Ticket-ul dumneavoastră a fost înregistrat! Tehnicienii noștri vor interveni în cel mai scurt timp posibil."

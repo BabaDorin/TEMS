@@ -4,7 +4,7 @@
             style="width: 80%; margin-top: 10px;">
     </div>
     <div class="card-body">
-        <h5 class="card-title">{{ user.fullName }}</h5>
+        <h3>{{ user.fullName }}</h3>
         <p *ngIf="user.email != undefined" class="card-text"><b>{{ 'profile.email' | translate }}: </b>{{ user.email }}</p>
         <p *ngIf="user.phoneNumber != undefined" class="card-text"><b>{{ 'profile.phone' | translate }}: </b>{{ user.phoneNumber }}</p>
     </div>

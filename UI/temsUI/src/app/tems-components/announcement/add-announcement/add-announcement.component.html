@@ -1,8 +1,8 @@
 <div class="card">
     <div class="card-body">
-        <div class="card-title">
+        <h2>
             {{ 'announcement.add' | translate }}
-        </div>
+        </h2>
         <form [formGroup]="formlyDataModel.form" (ngSubmit)="onSubmit()">
             <formly-form [form]="formlyDataModel.form" [fields]="formlyDataModel.fields" [model]="formlyDataModel.model">
             </formly-form>

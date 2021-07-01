@@ -309,12 +309,20 @@ namespace temsAPI.Data.Managers
                 .Statuses
                 .FindAll<Option>(
                     where: q => !q.IsArchieved,
+                    orderBy: q => q.OrderBy(q => q.ImportanceIndex),
                     select: q => new Option
                     {
                         Value = q.Id,
                         Label = q.Name
                     }))
                 .ToList();
+
+            // There are only 3 statuses for now: Urgent (II 0), Medium (II 1) and Future (II 2).
+            // We want to return a list that follows this order: Medium, Urgent, future
+
+            var aux = statuses[0];
+            statuses[0] = statuses[1];
+            statuses[1] = aux;
 
             return statuses;
         }

@@ -1,11 +1,15 @@
-<label *ngIf="issue.status.label == 'Urgent'" class="badge-pill badge-gradient-danger ml-3">{{
-    issue.status.label
-    }}</label>
-  <label *ngIf="issue.status.label == 'Medium'" class="badge-pill badge-gradient-warning ml-3">{{
-    issue.status.label
-    }}</label>
-  <label *ngIf="issue.status.label == 'Future'" class="badge-pill badge-gradient-info ml-3">{{ issue.status.label
-    }}</label>
-  <label *ngIf="issue.dateClosed != undefined" class="badge-pill badge-gradient-secondary ml-3">Closed</label>
-  <label *ngIf="issue.status.label == 'Progress'" class="badge-pill badge-gradient-primary ml-3">{{
-    issue.status.label }}</label>
+<label *ngIf="issue.status.label == 'Urgent'" class="badge-pill badge-gradient-danger ml-3">
+  {{ 'ticket.urgent' | translate }}
+</label>
+<label *ngIf="issue.status.label == 'Medium'" class="badge-pill badge-gradient-warning ml-3">
+  {{ 'ticket.medium' | translate }}
+</label>
+<label *ngIf="issue.status.label == 'Future'" class="badge-pill badge-gradient-info ml-3">
+  {{ 'ticket.future' | translate }}
+</label>
+<label *ngIf="issue.dateClosed != undefined" class="badge-pill badge-gradient-secondary ml-3">
+  {{ 'ticket.closed' | translate }}
+</label>
+<label *ngIf="issue.status.label == 'Progress'" class="badge-pill badge-gradient-primary ml-3">
+  {{ issue.status.label }}
+</label>

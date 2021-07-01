@@ -1,3 +1,7 @@
+import { DialogService } from 'src/app/services/dialog.service';
+import { ReactiveFormsModule } from '@angular/forms';
+import { DialogModule } from './modules/dialog/dialog.module';
+import { MatMenuModule } from '@angular/material/menu';
 import { CurrencyPipe, DatePipe, DecimalPipe } from '@angular/common';
 import { HttpClient, HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { NgModule } from '@angular/core';
@@ -42,6 +46,7 @@ import { LastCreatedTicketsChartComponent } from './tems-components/analytics/la
 import { ViewNotificationsComponent } from './tems-components/notifications/view-notifications/view-notifications.component';
 import { TEMSComponent } from './tems/tems.component';
 import { UserCardsModule } from './user-cards/user-cards.module';
+import { TemsFormsModule } from './modules/tems-forms/tems-forms.module';
 
 
 
@@ -67,7 +72,7 @@ export function HttpLoaderFactory(http: HttpClient){
     LastIssuesSimplifiedModule,
     AppRoutingModule,
     NgbModule,
-    MatDialogModule,
+    MatMenuModule,
     BrowserAnimationsModule,
     ChartsModule,
     BrowserModule,
@@ -80,6 +85,7 @@ export function HttpLoaderFactory(http: HttpClient){
     ViewLibraryModule,
 
     MatDialogModule,
+    ReactiveFormsModule,
     MatButtonModule,
     ChartsModule,
     MatIconModule,
@@ -93,7 +99,7 @@ export function HttpLoaderFactory(http: HttpClient){
     // TagInputModule,
     // MatInputModule,
     // MatFormFieldModule,
-    // TemsFormsModule,
+    TemsFormsModule,
     // AnnouncementModule,
 
     // LibraryModule,
@@ -118,6 +124,7 @@ export function HttpLoaderFactory(http: HttpClient){
     },
     RoleService,
     ThemeService,
+    DialogService,
     RoomsService,
     PersonnelService,
     EquipmentService,

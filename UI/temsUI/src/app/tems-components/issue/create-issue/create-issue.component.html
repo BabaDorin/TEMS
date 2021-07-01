@@ -1,15 +1,15 @@
-<div class="card">
+<div [ngClass]="dialogRef == undefined ? 'card' : 'card cancel-margins'">
     <div class="card-body" *ngIf="sent">
         <h2 class="text-center text-muted" >
             {{ 'ticket.sent' | translate }}
         </h2>
-        <img class="mt-5 centerSvg fade-in" src="assets/svgs/technician.svg">
+        <img class="mt-5 center-svg fade-in" src="assets/svgs/technician.svg">
     </div>
     
     <div class="card-body animate__bounce" *ngIf="sent==false">
-        <div class="card-title">
+        <h2>
             {{ 'ticket.create' | translate }}
-        </div>
+        </h2>
         <form *ngIf="formlyData.isVisible" [formGroup]="formlyData.form" (ngSubmit)="onSubmit(formlyData.model)">
             <formly-form [form]="formlyData.form" [fields]="formlyData.fields" [model]="formlyData.model"></formly-form>
             <div class="container mt-3">

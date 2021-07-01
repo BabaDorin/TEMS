@@ -14,6 +14,7 @@ import { DndDirective } from './../../tems-components/library/upload-library-ite
 import { FileUploadModule } from './../file-upload/file-upload.module';
 import { LibraryRoutingModule } from './library-routing.module';
 import { ViewLibraryModule } from './view-library/view-library.module';
+import { TemsFormsModule } from '../tems-forms/tems-forms.module';
 
 
 
@@ -28,7 +29,7 @@ import { ViewLibraryModule } from './view-library/view-library.module';
     CommonModule,
     LibraryRoutingModule,
     AngularFileUploaderModule,
-    // TemsFormsModule,
+    TemsFormsModule,
     MatFormFieldModule,
     MatInputModule,
     // MatProgressBarModule,

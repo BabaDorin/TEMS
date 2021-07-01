@@ -73,8 +73,6 @@ export class EntityIssuesListComponent extends TEMSComponent implements OnInit, 
   }
 
   getIssues(){
-    this.loading = true;
-
     this.endPoint =  this.issuesService.getIssues(
       this.equipmentId ?? "any", 
       this.roomId ?? "any", 
@@ -148,7 +146,7 @@ export class EntityIssuesListComponent extends TEMSComponent implements OnInit, 
         { label: "personnelAlreadySelected", value: this.personnel},
       ],
       () => {
-        this.ngOnInit();
+        this.getIssues();  
       }
     )
   }

@@ -118,6 +118,8 @@ export class FormlyParserService extends TEMSComponent {
     if (addIssue == undefined)
       addIssue = new AddIssue();
 
+    statuses.map(q => q.label = this.translate.instant('ticket.' + q.label.toLowerCase()));
+
     let fields: FormlyFieldConfig[] =
       [
         {
@@ -262,7 +264,7 @@ export class FormlyParserService extends TEMSComponent {
         fieldGroupClassName: 'row',
         fieldGroup: [
           {
-            className: 'col-4',
+            className: 'col-sm-4',
             key: 'price',
             defaultValue: addEquipment.definition.price,
             type: 'input',
@@ -271,7 +273,7 @@ export class FormlyParserService extends TEMSComponent {
             }
           },
           {
-            className: 'col-4',
+            className: 'col-sm-4',
             key: 'currency',
             type: 'select',
             defaultValue: addEquipment.definition.currency,
@@ -287,7 +289,7 @@ export class FormlyParserService extends TEMSComponent {
             }
           },
           {
-            className: 'col-4',
+            className: 'col-sm-4',
             type: 'input',
             key: 'purchaseDate',
             templateOptions: {

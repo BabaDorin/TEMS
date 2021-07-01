@@ -32,8 +32,9 @@ export class AppComponent extends TEMSComponent implements OnInit{
 
     translate.addLangs(['en', 'ro']);
     translate.setDefaultLang('en');
-    const browserLang = translate.getBrowserLang(); 
-    translate.use(browserLang.match(/en|ro/) ? browserLang: 'en');
+    // const browserLang = translate.getBrowserLang(); 
+    const browserLang = 'ro';
+    translate.use(browserLang.match(/en|ro/) ? browserLang: 'ro');
 
     // Removing Sidebar, Navbar, Footer for Documentation, Error and Auth pages
     // When needed (For example, when loading the page...), Feel free to add more cases here.

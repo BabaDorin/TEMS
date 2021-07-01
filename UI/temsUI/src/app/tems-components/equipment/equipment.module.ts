@@ -1,3 +1,4 @@
+import { MatDialogModule } from '@angular/material/dialog';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
@@ -70,6 +71,7 @@ import { ViewTypeComponent } from './view-type/view-type.component';
     ScrollingModule,
     TranslateModule,
     TemsFormsModule,
+    MatDialogModule,
     TemsAgGridModule,
     MatInputModule,
     MatSelectModule,

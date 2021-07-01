@@ -53,6 +53,7 @@ export class EntityAllocationsListComponent extends TEMSComponent implements OnI
   }
 
   ngOnInit(): void {
+    this.loading = true;
     this.readInputVariables();
     this.getTotalItems();
     this.fetchAllocations();
@@ -113,7 +114,6 @@ export class EntityAllocationsListComponent extends TEMSComponent implements OnI
       this.itemsPerPage
     );
 
-    this.loading = true;
     this.subscriptions.push(
       endPoint
       .subscribe(result => {

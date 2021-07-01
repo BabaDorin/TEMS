@@ -1,3 +1,4 @@
+import { TemsFormsModule } from './../tems-forms/tems-forms.module';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -36,7 +37,7 @@ import { CommunicationRoutingModule } from './communication-routing.module';
     TranslateModule,
     MatMenuModule,
     MatIconModule,
-    FormlyModule
+    TemsFormsModule,
   ],
   providers: [
     CommunicationService,

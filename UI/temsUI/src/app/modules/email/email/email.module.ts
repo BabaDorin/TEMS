@@ -1,3 +1,4 @@
+import { TemsFormsModule } from './../../tems-forms/tems-forms.module';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -20,7 +21,7 @@ import { ChipsAutocompleteModule } from './../../chips-autocomplete/chips-autoco
     MatInputModule,
     MatCheckboxModule,
     MatButtonModule,
-    FormlyModule,
+    TemsFormsModule,
     FormsModule,
     ChipsAutocompleteModule,
     ReactiveFormsModule,

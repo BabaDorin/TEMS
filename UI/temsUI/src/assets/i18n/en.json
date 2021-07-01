@@ -69,6 +69,7 @@
         "systemLogs": "System logs",
         "archive": "Archive"
     },
+
     "library": {
         "view": "View library items",
         "upload": "Upload file",

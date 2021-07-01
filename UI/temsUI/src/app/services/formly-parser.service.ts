@@ -867,7 +867,7 @@ export class FormlyParserService extends TEMSComponent {
             required: update ? false : true,
           },
           expressionProperties: {
-            'templateOptions.label': this.translate.stream('user.password'),
+            'templateOptions.label': this.translate.stream('form.password'),
             'templateOptions.description': this.translate.stream('user.passwordDescription'),
           },
         },

@@ -1,3 +1,4 @@
+import { TranslateModule } from '@ngx-translate/core';
 import { GenericContainerModule } from './../../../shared/generic-container/generic-container.module';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
@@ -19,7 +20,8 @@ import { CommonModule } from '@angular/common';
     MatButtonModule,
     MatProgressBarModule,
     NgxPaginationModule,
-    GenericContainerModule
+    GenericContainerModule,
+    TranslateModule
   ],
   exports: [
     ViewLibraryComponent

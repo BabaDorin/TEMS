@@ -65,7 +65,7 @@
             </div>
         </mat-card-content>
     </mat-card>
-    <pagination-controls class="text-center mb-2" (pageChange)="pageNumber = $event" id="announcements"
+    <pagination-controls class="text-center mb-2 mt-3" (pageChange)="pageNumber = $event" id="announcements"
         *ngIf="announcements != undefined && announcements.length >= itemsPerPage">
     </pagination-controls>
 </ng-container>

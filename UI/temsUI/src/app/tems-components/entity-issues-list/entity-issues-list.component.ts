@@ -61,6 +61,8 @@ export class EntityIssuesListComponent extends TEMSComponent implements OnInit, 
     this.loading = true;
     this.getStatuses();
     this.getIssues();  
+    console.log('----------------------------');
+    console.log(this.showIncludeClosed);
   }
 
   ngOnChanges(): void {

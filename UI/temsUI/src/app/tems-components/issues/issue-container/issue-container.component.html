@@ -36,7 +36,7 @@
       </div>
     </ng-container>
     <ng-container *ngIf="!readonly && canManage && issue.dateClosed == undefined">
-      <mat-form-field appearance="fill">
+      <mat-form-field appearance="fill" class="status-dropdown-wrapper">
         <mat-label>{{ 'ticket.changeStatus' | translate }}</mat-label>
         <mat-select (selectionChange)="issueStatusChanged($event)">
           <mat-option *ngFor="let status of statuses" [value]="status">
@@ -52,7 +52,7 @@
     </div>
     <br>
     <div *ngIf="issue.equipments != undefined && issue.equipments.length > 0" class="mb-4">
-      <h4>{{ 'ticket.equipmentInvolvedLabel' | translate }}</h4>
+      <h4>{{ 'ticket.equipmentInvolved' | translate }}</h4>
       <hr>
       <div class="alert alert-info">
         <a mat-button *ngFor="let eq of issue.equipments" [routerLink]="'/equipment/details/' + eq.value">
@@ -62,7 +62,7 @@
       </div>
     </div>
     <div *ngIf="issue.rooms != undefined && issue.rooms.length > 0" class="mb-4">
-      <h4>{{ 'ticket.roomsInvolvedLabel' | translate }}</h4>
+      <h4>{{ 'ticket.roomsInvolved' | translate }}</h4>
       <hr>
       <div class="alert alert-info">
         <a mat-button *ngFor="let rm of issue.rooms" [routerLink]="'/rooms/details/' + rm.value">
@@ -72,7 +72,7 @@
       </div>
     </div>
     <div *ngIf="issue.personnel != undefined && issue.personnel.length > 0" class="mb-4">
-      <h4>{{ 'ticket.personnelInvolvedLabel' | translate }}</h4>
+      <h4>{{ 'ticket.personnelInvolved' | translate }}</h4>
       <hr>
       <div class="alert alert-info">
         <a mat-button *ngFor="let pr of issue.personnel" [routerLink]="'/personnel/details/' + pr.value">
@@ -94,23 +94,23 @@
     <br>
 
     <ng-container *ngIf="!readonly && canManage">
-      <button mat-button (click)="solveIssue()" *ngIf="issue.dateClosed == undefined">
+      <button mat-button class="d-block s-dm-inline" (click)="solveIssue()" *ngIf="issue.dateClosed == undefined">
         <mat-icon class="text-primary">done</mat-icon>
         {{ 'ticket.markSolved' | translate }}
       </button>
-      <button mat-button (click)="reopenIssue()" *ngIf="issue.dateClosed != undefined">
+      <button mat-button class="d-block s-dm-inline" (click)="reopenIssue()" *ngIf="issue.dateClosed != undefined">
         <mat-icon class="text-secondary">restore</mat-icon>
         {{ 'ticket.reopen' | translate }}
       </button>
-      <button mat-button (click)="removeIssue()">
+      <button mat-button class="d-block s-dm-inline" (click)="removeIssue()">
         <mat-icon class="text-danger">delete</mat-icon>
         {{ 'ticket.remove' | translate }}
       </button>
-      <button *ngIf="!issue.isPinned" mat-button (click)="pin()">
+      <button class="d-block s-dm-inline" *ngIf="!issue.isPinned" mat-button (click)="pin()">
         <mat-icon class="text-info">push_pin</mat-icon>
         {{ 'ticket.pin' | translate }}
       </button>
-      <button *ngIf="issue.isPinned" mat-button (click)="unPin()">
+      <button class="d-block s-dm-inline" *ngIf="issue.isPinned" mat-button (click)="unPin()">
         {{ 'ticket.unpin' | translate }}
       </button>
     </ng-container>

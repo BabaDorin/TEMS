@@ -6,15 +6,15 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { AngularFileUploaderModule } from 'angular-file-uploader';
 import { UploadLibraryItemComponent } from 'src/app/tems-components/library/upload-library-item/upload-library-item.component';
 import { FileIconComponent } from 'src/app/tems-components/tems-icons/file-icon/file-icon.component';
 import { DndDirective } from './../../tems-components/library/upload-library-item/dnd.directive';
 import { FileUploadModule } from './../file-upload/file-upload.module';
 import { LibraryRoutingModule } from './library-routing.module';
-import { ViewLibraryModule } from './view-library/view-library.module';
 import { TemsFormsModule } from '../tems-forms/tems-forms.module';
+import { ViewLibraryModule } from './view-library/view-library.module';
 
 
 
@@ -40,6 +40,7 @@ import { TemsFormsModule } from '../tems-forms/tems-forms.module';
     MatButtonModule,
     // NgxPaginationModule,
     ViewLibraryModule,
+    TranslateModule
   ],
   exports: [
     UploadLibraryItemComponent,

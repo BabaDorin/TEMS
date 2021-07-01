@@ -1,3 +1,4 @@
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
@@ -67,6 +68,7 @@ declarations: [
     MatMenuModule,
     ChipsAutocompleteModule,
     MatIconModule,
+    MatCheckboxModule,
     MatCardModule,
   ]
 })

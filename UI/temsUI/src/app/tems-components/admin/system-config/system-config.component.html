@@ -126,17 +126,17 @@
             <mat-icon class="text-primary">
                 chevron_right
             </mat-icon>
-            {{ 'form.guestsConfigurationHeader' | translate }}
+            {{ 'config.guestsConfigurationHeader' | translate }}
         </h3>
         <section [formGroup]="guestTicketConfigFormGroup">
             <mat-checkbox (change)="guestTicketCreationAllowanceChanged()" formControlName="creationAllowance">
-                {{ 'form.guestsTicketLabel' | translate }}
+                {{ 'config.guestsTicketLabel' | translate }}
             </mat-checkbox>
         </section>
         <form [formGroup]="libraryPassFormGroup" (ngSubmit)="onSubmit_libraryPassFormGroup()" class="config-form">
             <mat-form-field class="d-block">
                 <mat-label>
-                    {{ 'form.guestsLibraryPasswordLabel' | translate }}
+                    {{ 'config.guestsLibraryPasswordLabel' | translate }}
                 </mat-label>
                 <input matInput formControlName="libraryPassword" type="text" minlength="1">
             </mat-form-field>

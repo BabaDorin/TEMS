@@ -14,9 +14,9 @@
         
         <div class="card mt-3">
             <div class="card-body">
-                <h2>
+                <div class="card-title">
                     {{ 'ticket.view' | translate }}
-                </h2>
+                </div>
                 <form [formGroup]="filterIssueFormGroup">
                     <div class="row">
                         <div class="col-md-4 col-sm-12">
@@ -49,7 +49,7 @@
                     </div>
                 </form>
                 <mat-tab-group [@.disabled]="true">
-                    <mat-tab [label]="translate.instant('ticket.openTabLabel')">
+                    <mat-tab label="Open">
                         <app-entity-issues-list #entityOpenIssuesList
                             showIncludeClosed="false"
                             [equipmentId]="equipmentId"
@@ -60,7 +60,7 @@
                             {{ 'general.loading' | translate }}
                         </app-entity-issues-list>
                     </mat-tab>
-                    <mat-tab [label]="translate.instant('ticket.closedTabLabel')">
+                    <mat-tab label="Closed">
                         <ng-template matTabContent>
                             <app-entity-issues-list #entityClosedIssuesList
                             showIncludeClosed="false"

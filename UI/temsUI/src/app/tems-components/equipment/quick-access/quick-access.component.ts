@@ -31,7 +31,7 @@ export class QuickAccessComponent extends TEMSComponent implements OnInit {
     private roomService: RoomsService,
     private personnelService: PersonnelService,
     private snackService: SnackService,
-    public translate: TranslateService
+    private translate: TranslateService
   ) {
     super();
   }
@@ -72,32 +72,25 @@ export class QuickAccessComponent extends TEMSComponent implements OnInit {
   }
 
   prepareUnderType() {
-    this.subscriptions.push(
-      this.translate.stream('quickAccess')
-      .subscribe(translation => {
-        let quickAccess = translation;
+    switch (this.type) {
+      case 'equipment':
+        this.endPoint = this.equipmentService;
+        this.header = this.translate.instant('quickAccess.equipmentHeader');
+        this.label = this.translate.instant('quickAccess.equipmentLabel');
+        break;
 
-        switch (this.type) {
-          case 'equipment':
-            this.endPoint = this.equipmentService;
-            this.header = quickAccess.equipmentHeader;
-            this.label = quickAccess.equipmentLabel;
-            break;
-    
-          case 'rooms':
-            this.endPoint = this.roomService;
-            this.header = quickAccess.roomHeader;
-            this.label = quickAccess.roomLabel;
-            break;
-    
-          case 'personnel':
-            this.endPoint = this.personnelService;
-            this.header = quickAccess.personnelHeader;
-            this.label = quickAccess.personnelLabel;
-            break;
-        }
-      })
-    )
+      case 'rooms':
+        this.endPoint = this.roomService;
+        this.header = this.translate.instant('quickAccess.roomHeader');
+        this.label = this.translate.instant('quickAccess.roomLabel');
+        break;
+
+      case 'personnel':
+        this.endPoint = this.personnelService;
+        this.header = this.translate.instant('quickAccess.personnelHeader');
+        this.label = this.translate.instant('quickAccess.personnelLabel');
+        break;
+    }
   }
 
   onSubmit() {

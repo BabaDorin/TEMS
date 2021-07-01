@@ -18,7 +18,6 @@ import { UserCardsListComponent } from './../tems-components/profile/user-cards-
     TranslateModule,
   ],
   exports: [
-    UserCardComponent,
     UserCardsListComponent
   ]
 })

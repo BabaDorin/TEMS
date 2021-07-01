@@ -11,7 +11,7 @@ import { TemsFormsModule } from './../tems-forms/tems-forms.module';
   imports: [
     CommonModule,
     MatDialogModule,
-    TemsFormsModule,
+    // TemsFormsModule,
   ],
   providers:[
     DialogService,

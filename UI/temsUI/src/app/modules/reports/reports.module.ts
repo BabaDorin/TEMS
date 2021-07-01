@@ -9,7 +9,6 @@ import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatRadioModule } from '@angular/material/radio';
-import { MatSelectModule } from '@angular/material/select';
 import { MatStepperModule } from '@angular/material/stepper';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgxPaginationModule } from 'ngx-pagination';
@@ -40,7 +39,6 @@ import { ReportsRoutingModule } from './reports-routing.module';
     MatIconModule,
     MatRadioModule,
     MatCardModule,
-    MatSelectModule,
     MatMenuModule,
     MatButtonModule,
     MatProgressBarModule,

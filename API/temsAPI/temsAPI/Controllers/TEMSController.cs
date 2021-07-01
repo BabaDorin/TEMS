@@ -45,6 +45,13 @@ namespace temsAPI.Controllers
             _logger = logger;
         }
 
+        public TEMSController(IMapper mapper, IUnitOfWork unitOfWork, UserManager<TEMSUser> userManager)
+        {
+            this.mapper = mapper;
+            this.unitOfWork = unitOfWork;
+            this.userManager = userManager;
+        }
+
         protected void LogException(Exception ex, object caller = null, string header = null)
         {
             StringBuilder additional = new StringBuilder();

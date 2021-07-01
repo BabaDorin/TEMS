@@ -101,7 +101,7 @@ export class EntityIssuesListComponent extends TEMSComponent implements OnInit, 
   sortBy(criterium: string){
     if(criterium == 'date')
     {
-      this.issues = this.issues.sort((a,b)=> new Date(b.dateCreated).getTime() - new Date(a.dateCreated).getTime());
+      this.issues = this.issues.sort((a,b)=> new Date(a.dateCreated).getTime() - new Date(b.dateCreated).getTime());
       return;
     }
 

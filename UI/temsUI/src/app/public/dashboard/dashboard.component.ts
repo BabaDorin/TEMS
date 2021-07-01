@@ -1,5 +1,5 @@
-import { ClaimService } from './../../services/claim.service';
 import { Component, OnInit } from '@angular/core';
+import { ClaimService } from './../../services/claim.service';
 
 @Component({
   selector: 'app-dashboard',

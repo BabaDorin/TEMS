@@ -1,8 +1,8 @@
 <div class="card">
     <div class="card-body">
-        <h2>
+        <div class="card-title">
             {{ 'library.upload' | translate }}
-        </h2>
+        </div>
         <hr>
         <div class="mt-5"></div>
         <app-file-upload (filesSelected)="filesSelected($event)"></app-file-upload>

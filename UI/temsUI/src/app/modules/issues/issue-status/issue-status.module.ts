@@ -2,8 +2,6 @@ import { IssueStatusComponent } from './../../../tems-components/issues/issue-st
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-
-
 @NgModule({
   declarations: [
     IssueStatusComponent

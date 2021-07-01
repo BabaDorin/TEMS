@@ -69,7 +69,7 @@
 
                 <!-- Actual equipment information -->
                 <h2 class="text-muted text-bold">
-                    <mat-icon class="text-primary">double_arrow</mat-icon> {{ 'equipment.allocatedTo' | translate }}:
+                    <mat-icon class="text-primary">double_arrow</mat-icon> {{ 'equipment.allocatedTo' | translate }}::
                 </h2>
                 <hr>
                 <button mat-button *ngIf="equipment.room != undefined" (click)="viewAllocatee()">
@@ -119,7 +119,7 @@
                         </div>
                         <div class="col-lg-6 col-sm-12">
                             <!-- Speciic properties for current equipment go here -->
-                            <h2 class="text-muted text-bold">{{ 'property.specific' | translate }}</h2>
+                            <h2 class="text-muted text-bold">{{ 'equipment.indexedBy' | translate }}</h2>
                             <app-property-render [properties]="equipment.definition.properties">
                             </app-property-render>
                         </div>

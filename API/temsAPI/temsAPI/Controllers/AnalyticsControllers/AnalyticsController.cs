@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
@@ -23,8 +22,7 @@ namespace temsAPI.Controllers.AnalyticsControllers
             IUnitOfWork unitOfWork,
             UserManager<TEMSUser> userManager,
             AnalyticsManager analyticsManager,
-            CurrencyConvertor currencyConvertor,
-            ILogger<TEMSController> logger) : base(mapper, unitOfWork, userManager, logger)
+            CurrencyConvertor currencyConvertor) : base(mapper, unitOfWork, userManager)
         {
             _analyticsManager = analyticsManager;
 

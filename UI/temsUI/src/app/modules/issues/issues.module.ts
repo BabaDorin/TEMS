@@ -31,11 +31,14 @@ import { IssuesRoutingModule } from './issues-routing.module';
     MatSelectModule,
     MatOptionModule,
     TranslateModule,
-    
     // Shared modules
     TemsFormsModule,
     EntitySharedModule,
     AnalyticsModule,
-  ],
+  ], 
+  exports: [
+    ViewIssuesComponent,
+    PinnedIssuesComponent
+  ]
 })
 export class IssuesModule { }

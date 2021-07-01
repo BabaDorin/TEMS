@@ -1,12 +1,12 @@
-import { ViewLibraryComponent } from './tems-components/library/view-library/view-library.component';
+import { Component, HostListener, OnInit } from '@angular/core';
+import { NavigationEnd, NavigationStart, RouteConfigLoadEnd, RouteConfigLoadStart, Router } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
 import { DialogService } from 'src/app/services/dialog.service';
 import { SystemConfigurationService } from 'src/app/services/system-configuration.service';
 import { TEMSComponent } from 'src/app/tems/tems.component';
-import { TokenService } from './services/token.service';
-import { Component, HostListener, OnInit } from '@angular/core';
-import { Router, NavigationEnd, NavigationStart, RouteConfigLoadStart, RouteConfigLoadEnd, RouterModule } from '@angular/router';
 import { Md5 } from 'ts-md5';
-import { TranslateService } from '@ngx-translate/core';
+import { TokenService } from './services/token.service';
+import { ViewLibraryComponent } from './tems-components/library/view-library/view-library.component';
 
 @Component({
   selector: 'app-root',
@@ -32,8 +32,7 @@ export class AppComponent extends TEMSComponent implements OnInit{
 
     translate.addLangs(['en', 'ro']);
     translate.setDefaultLang('en');
-    // const browserLang = translate.getBrowserLang(); 
-    const browserLang = 'ro';
+    const browserLang = translate.getBrowserLang(); 
     translate.use(browserLang.match(/en|ro/) ? browserLang: 'en');
 
     // Removing Sidebar, Navbar, Footer for Documentation, Error and Auth pages

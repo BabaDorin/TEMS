@@ -1,8 +1,6 @@
 <div class="card">
     <div class="card-body">
-        <h2>
-            {{ property.displayName }}
-        </h2>
+        <div class="card-title">{{ property.displayName }}</div>
         <h3 *ngIf="property.name != undefined">{{ 'property.name' | translate }}: {{ property.name }}</h3>
         <h3 *ngIf="property.description != undefined">{{ 'form.description' | translate }}: {{ property.description }}</h3>
         <h3>{{ 'property.dataType' | translate }}: {{ property.dataType }}</h3>

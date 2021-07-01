@@ -1,12 +1,21 @@
-import { ViewPropertySimplified } from './../equipment/view-property-simplified.model';
+import { Component, OnInit } from '@angular/core';
+import { EquipmentService } from 'src/app/services/equipment.service';
+import { AddPropertyComponent } from 'src/app/tems-components/equipment/add-property/add-property.component';
+import { ViewPropertyComponent } from 'src/app/tems-components/equipment/view-property/view-property.component';
+import { DialogService } from '../../services/dialog.service';
 import { SnackService } from '../../services/snack.service';
 import { TEMSComponent } from './../../tems/tems.component';
+<<<<<<< HEAD
 import { DialogService } from '../../services/dialog.service';
 import { Component, OnInit } from '@angular/core';
 import { IContainerAction, IGenericContainerModel, ITagGroup } from './IGenericContainer.model';
 import { ViewPropertyComponent } from 'src/app/tems-components/equipment/view-property/view-property.component';
 import { AddPropertyComponent } from 'src/app/tems-components/equipment/add-property/add-property.component';
 import { EquipmentService } from 'src/app/services/equipment.service';
+=======
+import { ViewPropertySimplified } from './../equipment/view-property-simplified.model';
+import { IContainerAction, IGenericContainerModel, ITagGroup } from './IGenericContainer.model';
+>>>>>>> optimize-modules
 
 @Component({
     template: ''

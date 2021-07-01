@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -25,8 +24,7 @@ namespace temsAPI.Controllers.SystemConfigurationControllers
             IMapper mapper,
             IUnitOfWork unitOfWork,
             UserManager<TEMSUser> userManager,
-            SystemConfigurationService configService,
-            ILogger<TEMSController> logger) : base(mapper, unitOfWork, userManager, logger)
+            SystemConfigurationService configService) : base(mapper, unitOfWork, userManager)
         {
             _configService = configService;
         }

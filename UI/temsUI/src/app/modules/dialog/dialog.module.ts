@@ -11,7 +11,7 @@ import { TranslateModule } from '@ngx-translate/core';
   imports: [
     CommonModule,
     MatDialogModule,
-    TemsFormsModule,
+    // TemsFormsModule,
   ],
   providers:[
     DialogService,

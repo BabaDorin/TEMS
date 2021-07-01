@@ -1,56 +1,49 @@
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { NgxPaginationModule, PaginatePipe } from 'ngx-pagination';
-import { ChipsAutocompleteModule } from './modules/chips-autocomplete/chips-autocomplete.module';
-import { QuickAccessModule } from './modules/quick-access/quick-access.module';
-import { ClaimService } from './services/claim.service';
-import { GenericContainerModule } from './shared/generic-container/generic-container.module';
-import { UserCardsModule } from './user-cards/user-cards.module';
-import { DatePipe, DecimalPipe } from '@angular/common';
-import { RoomLabelService } from './services/room-label.service';
-import { TypeService } from './services/type.service';
-import { MenuService } from './services/menu.service';
-import { TokenService } from './services/token.service';
-import { AuthInterceptor } from './auth.interceptor';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { EquipmentService } from './services/equipment.service';
-import { MatInputModule } from '@angular/material/input';
-import { PersonnelService } from './services/personnel.service';
-import { RoomsService } from './services/rooms.service';
-import { MatFormFieldModule } from '@angular/material/form-field';
+import { CurrencyPipe, DatePipe, DecimalPipe } from '@angular/common';
 import { HttpClient, HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { AppRoutingModule } from './app-routing.module';
-
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ChartsModule, ThemeService } from 'ng2-charts';
-
-import { AppComponent } from './app.component';
-import { NavbarComponent } from './shared/navbar/navbar.component';
-import { SidebarComponent } from './shared/sidebar/sidebar.component';
-import { FooterComponent } from './shared/footer/footer.component';
-import { DashboardComponent } from './public/dashboard/dashboard.component';
-import { SpinnerComponent } from './shared/spinner/spinner.component';
-import { ContentAnimateDirective } from './shared/directives/content-animate.directive';
-import { TagInputModule } from 'ngx-chips';
-import { MatDialogModule, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { TEMSComponent } from './tems/tems.component';
-import { TemsFormsModule } from './modules/tems-forms/tems-forms.module';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { DefinitionService } from './services/definition.service';
-import { CurrencyPipe } from '@angular/common';
-import { LastCreatedTicketsChartComponent } from './tems-components/analytics/last-created-tickets-chart/last-created-tickets-chart.component';
-import { LastIssuesSimplifiedComponent } from './tems-components/analytics/last-issues-simplified/last-issues-simplified.component';
-import { IssueContainerModule } from './modules/issues/issue-container/issue-container.module';
-import { ViewNotificationsComponent } from './tems-components/notifications/view-notifications/view-notifications.component';
-import { AnnouncementModule } from './modules/announcement/announcement.module';
-import { RoleService } from './services/role.service';
-import { SnackComponent } from './shared/snack/snack.component';
-import { LibraryModule } from './modules/library/library.module';
+import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { TranslateLoader, TranslateModule, TranslatePipe } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { ChartsModule, ThemeService } from 'ng2-charts';
+import { PaginatePipe } from 'ngx-pagination';
+import { AppRoutingModule } from './app-routing.module';
+import { AppComponent } from './app.component';
+import { AuthInterceptor } from './auth.interceptor';
+import { AnnouncementsListModule } from './modules/announcement/announcements-list/announcements-list.module';
+import { ChipsAutocompleteModule } from './modules/chips-autocomplete/chips-autocomplete.module';
+import { LastIssuesSimplifiedModule } from './modules/issues/last-issues-simplified/last-issues-simplified.module';
+import { ViewLibraryModule } from './modules/library/view-library/view-library.module';
+import { QuickAccessModule } from './modules/quick-access/quick-access.module';
+import { DashboardComponent } from './public/dashboard/dashboard.component';
+import { ClaimService } from './services/claim.service';
+import { DefinitionService } from './services/definition.service';
+import { EquipmentService } from './services/equipment.service';
+import { MenuService } from './services/menu.service';
+import { PersonnelService } from './services/personnel.service';
+import { RoleService } from './services/role.service';
+import { RoomLabelService } from './services/room-label.service';
+import { RoomsService } from './services/rooms.service';
+import { TokenService } from './services/token.service';
+import { TypeService } from './services/type.service';
+import { ContentAnimateDirective } from './shared/directives/content-animate.directive';
+import { FooterComponent } from './shared/footer/footer.component';
+import { NavbarComponent } from './shared/navbar/navbar.component';
+import { SidebarComponent } from './shared/sidebar/sidebar.component';
+import { SnackComponent } from './shared/snack/snack.component';
+import { SpinnerComponent } from './shared/spinner/spinner.component';
+import { LastCreatedTicketsChartComponent } from './tems-components/analytics/last-created-tickets-chart/last-created-tickets-chart.component';
+import { ViewNotificationsComponent } from './tems-components/notifications/view-notifications/view-notifications.component';
+import { TEMSComponent } from './tems/tems.component';
+import { UserCardsModule } from './user-cards/user-cards.module';
+
+
 
 export function HttpLoaderFactory(http: HttpClient){
   return new TranslateHttpLoader(http);
@@ -68,36 +61,37 @@ export function HttpLoaderFactory(http: HttpClient){
     TEMSComponent,
     SnackComponent,
     LastCreatedTicketsChartComponent,
-    LastIssuesSimplifiedComponent,
     ViewNotificationsComponent,
     ],
   imports: [
-    NgxPaginationModule,
-    IssueContainerModule,
-    GenericContainerModule,
-    BrowserModule,
+    LastIssuesSimplifiedModule,
     AppRoutingModule,
     NgbModule,
     MatDialogModule,
     BrowserAnimationsModule,
     ChartsModule,
-    HttpClientModule,
     BrowserModule,
-    BrowserAnimationsModule,
-    TagInputModule,
     HttpClientModule,
     MatButtonModule,
-    MatInputModule,
-    MatFormFieldModule,
-    TemsFormsModule,
     UserCardsModule,
-    AnnouncementModule,
+    AnnouncementsListModule,
     ChipsAutocompleteModule,
     QuickAccessModule,
     MatIconModule,
+    ViewLibraryModule,
+    // NgxPaginationModule,
+    // IssueContainerModule,
+    // IssueSimplifiedModule,
 
-    // for modal thing
-    LibraryModule,
+
+    // GenericContainerModule,
+    // TagInputModule,
+    // MatInputModule,
+    // MatFormFieldModule,
+    // TemsFormsModule,
+    // AnnouncementModule,
+
+    // LibraryModule,
 
     // for internationalization
     TranslateModule.forRoot({

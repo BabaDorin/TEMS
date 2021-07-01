@@ -31,11 +31,14 @@ import { MatOptionModule } from '@angular/material/core';
     MatSelectModule,
     MatOptionModule,
     TranslateModule,
-    
     // Shared modules
     TemsFormsModule,
     EntitySharedModule,
     AnalyticsModule,
-  ],
+  ], 
+  exports: [
+    ViewIssuesComponent,
+    PinnedIssuesComponent
+  ]
 })
 export class IssuesModule { }

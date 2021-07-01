@@ -1,11 +1,8 @@
 <div class="col-md-12">
   <div class="row">
-    <div class="col-md-12">
+    <div class="col-md-12 p-0">
       <div class="text-center mt-5">
         <img src="assets/images/logo.svg" alt="logo" class="dashboard-logo fade-in" />
-        <!-- <h1 class="text-primary title">TEMS</h1> -->
-        <!-- <h4>Technical Equipment Management System</h4> -->
-        <!-- <h5 class="text-muted">CIH Cahul</h5> -->
       </div>
     </div>
   </div>
@@ -15,11 +12,11 @@
   </h3>
 
   <div class="container mt-5">
-    <app-announcements-list skip="0" take="5">
+    <app-announcements-list skip="0" take="2">
     </app-announcements-list>
   </div>
 
-  <hr class="m-5 m-5">
+  <hr class="m-5 m-5 h-0">
 
   <ng-container *ngIf="claims.canView || claims.canManage">
     <h3 class="text-muted">
@@ -28,15 +25,15 @@
     </h3>
     <!-- Quick searches -->
     <div class="row mt-5">
-      <div class="col-md-4">
+      <div class="col-md-4 mb-2">
         <app-quick-access type="equipment">
         </app-quick-access>
       </div>
-      <div class="col-md-4">
+      <div class="col-md-4 mb-2">
         <app-quick-access type="rooms">
         </app-quick-access>
       </div>
-      <div class="col-md-4">
+      <div class="col-md-4 mb-2">
         <app-quick-access type="personnel">
         </app-quick-access>
       </div>
@@ -50,8 +47,8 @@
   </h3>
   <div class="container mt-5">
     <div class="row">
-      <div class="col-md-4">
-        <div class="text-center mb-3">
+      <div class="col-md-7">
+        <div class="text-center">
           <div class="d-block">
             <mat-icon class="text-primary icon-large mb-3">
               support_agent
@@ -65,9 +62,9 @@
           </a>
         </div>
       </div>
-      <div class="col-md-8">
+      <div class="col-md-5">
         <div class="text-center">
-          <img src="assets/svgs/dashboard-ticket.svg" class="dashboard-ticket fade-in" />
+          <img src="assets/svgs/dashboard-ticket.svg" class="dashboard-ticket centerSvg" />
         </div>
       </div>
     </div>
@@ -75,7 +72,7 @@
 
   <ng-container *ngIf="claims.canManage">
     <div class="row mt-5">
-      <div class="col-lg-7 col-md-12 grid-margin">
+      <div class="col-lg-7 col-md-12 grid-margin mx-0 px-0 mb-3">
         <app-last-created-tickets-chart></app-last-created-tickets-chart>
       </div>
 
@@ -90,7 +87,7 @@
     </div>
   </ng-container>
 
-  <hr class="m-5 m-5">
+  <hr class="m-5 m-5 h-0">
   <h3 class="text-muted">
     <mat-icon class="text-primary">engineering</mat-icon>
     {{ 'dashboard.techniciansLabel' | translate }}

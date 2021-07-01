@@ -1,14 +1,14 @@
-import { ChipsAutocompleteComponent } from 'src/app/public/formly/chips-autocomplete/chips-autocomplete.component';
-import { SnackService } from 'src/app/services/snack.service';
-import { PersonnelService } from '../../../services/personnel.service';
-import { RoomsService } from '../../../services/rooms.service';
-import { EquipmentService } from 'src/app/services/equipment.service';
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { ActivatedRoute, Router } from "@angular/router"
-import { TEMSComponent } from 'src/app/tems/tems.component';
-import { IOption } from 'src/app/models/option.model';
+import { ActivatedRoute, Router } from "@angular/router";
 import { TranslateService } from '@ngx-translate/core';
+import { IOption } from 'src/app/models/option.model';
+import { ChipsAutocompleteComponent } from 'src/app/public/formly/chips-autocomplete/chips-autocomplete.component';
+import { EquipmentService } from 'src/app/services/equipment.service';
+import { SnackService } from 'src/app/services/snack.service';
+import { TEMSComponent } from 'src/app/tems/tems.component';
+import { PersonnelService } from '../../../services/personnel.service';
+import { RoomsService } from '../../../services/rooms.service';
 
 @Component({
   selector: 'app-quick-access',
@@ -31,7 +31,7 @@ export class QuickAccessComponent extends TEMSComponent implements OnInit {
     private roomService: RoomsService,
     private personnelService: PersonnelService,
     private snackService: SnackService,
-    private translate: TranslateService
+    public translate: TranslateService
   ) {
     super();
   }
@@ -72,25 +72,32 @@ export class QuickAccessComponent extends TEMSComponent implements OnInit {
   }
 
   prepareUnderType() {
-    switch (this.type) {
-      case 'equipment':
-        this.endPoint = this.equipmentService;
-        this.header = this.translate.instant('quickAccess.equipmentHeader');
-        this.label = this.translate.instant('quickAccess.equipmentLabel');
-        break;
+    this.subscriptions.push(
+      this.translate.stream('quickAccess')
+      .subscribe(translation => {
+        let quickAccess = translation;
 
-      case 'rooms':
-        this.endPoint = this.roomService;
-        this.header = this.translate.instant('quickAccess.roomHeader');
-        this.label = this.translate.instant('quickAccess.roomLabel');
-        break;
-
-      case 'personnel':
-        this.endPoint = this.personnelService;
-        this.header = this.translate.instant('quickAccess.personnelHeader');
-        this.label = this.translate.instant('quickAccess.personnelLabel');
-        break;
-    }
+        switch (this.type) {
+          case 'equipment':
+            this.endPoint = this.equipmentService;
+            this.header = quickAccess.equipmentHeader;
+            this.label = quickAccess.equipmentLabel;
+            break;
+    
+          case 'rooms':
+            this.endPoint = this.roomService;
+            this.header = quickAccess.roomHeader;
+            this.label = quickAccess.roomLabel;
+            break;
+    
+          case 'personnel':
+            this.endPoint = this.personnelService;
+            this.header = quickAccess.personnelHeader;
+            this.label = quickAccess.personnelLabel;
+            break;
+        }
+      })
+    )
   }
 
   onSubmit() {

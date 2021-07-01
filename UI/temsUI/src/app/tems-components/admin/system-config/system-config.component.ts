@@ -1,10 +1,10 @@
+import { Component, OnInit } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
+import { SystemConfigurationService } from 'src/app/services/system-configuration.service';
+import { SnackService } from '../../../services/snack.service';
 import { AppSettings } from './../../../models/system-configuration/app-settings.model';
 import { EmailSenderCredentials } from './../../../models/system-configuration/emai-sender.model';
-import { SnackService } from '../../../services/snack.service';
 import { TEMSComponent } from './../../../tems/tems.component';
-import { Component, OnInit } from '@angular/core';
-import { SystemConfigurationService } from 'src/app/services/system-configuration.service';
-import { FormControl, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-system-config',

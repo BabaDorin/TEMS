@@ -1,7 +1,6 @@
-import { style } from '@angular/animations';
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy } from '@angular/core';
 import { ICellRendererAngularComp } from 'ag-grid-angular';
-import { ICellRendererParams, IAfterGuiAttachedParams } from 'ag-grid-community';
+import { IAfterGuiAttachedParams, ICellRendererParams } from 'ag-grid-community';
 
 @Component({
   selector: 'app-btn-cell-renderer',

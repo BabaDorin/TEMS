@@ -1,39 +1,31 @@
-import { TranslateModule } from '@ngx-translate/core';
-import { RouterModule } from '@angular/router';
-import { FormlyModule } from '@ngx-formly/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { DateTimeDisplayModule } from './../../shared/date-time-display/date-time-display.module';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
-import { MatIconModule } from '@angular/material/icon';
-import { ViewAnnouncementsComponent } from './../../tems-components/communication/view-announcements/view-announcements.component';
-import { AddAnnouncementComponent } from './../../tems-components/announcement/add-announcement/add-announcement.component';
-import { AnnouncementsListComponent } from './../../tems-components/announcement/announcements-list/announcements-list.component';
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { FormlyModule } from '@ngx-formly/core';
+import { TranslateModule } from '@ngx-translate/core';
+import { AddAnnouncementComponent } from './../../tems-components/announcement/add-announcement/add-announcement.component';
+import { ViewAnnouncementsComponent } from './../../tems-components/communication/view-announcements/view-announcements.component';
+import { AnnouncementsListModule } from './announcements-list/announcements-list.module';
 
 @NgModule({
   declarations: [
-    AnnouncementsListComponent,
     AddAnnouncementComponent,
     ViewAnnouncementsComponent
   ],
   imports: [
     CommonModule,
-    RouterModule,
+    // RouterModule,
     MatIconModule,
-    MatCardModule,
+    // MatCardModule,
     MatButtonModule,
-    DateTimeDisplayModule,
+    // DateTimeDisplayModule,
     TranslateModule,
     ReactiveFormsModule,
     FormsModule,
-    FormlyModule
-  ],
-  exports: [
-    AnnouncementsListComponent,
-    AddAnnouncementComponent,
-    ViewAnnouncementsComponent
+    FormlyModule,
+    AnnouncementsListModule
   ]
 })
 export class AnnouncementModule { }

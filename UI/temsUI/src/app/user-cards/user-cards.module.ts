@@ -18,7 +18,6 @@ import { CommonModule } from '@angular/common';
     TranslateModule,
   ],
   exports: [
-    UserCardComponent,
     UserCardsListComponent
   ]
 })

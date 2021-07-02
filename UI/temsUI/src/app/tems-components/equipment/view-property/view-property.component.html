@@ -1,9 +1,30 @@
-<div class="card">
+<div [ngClass]="dialogRef == undefined ? 'card' : 'card cancel-margins'">
     <div class="card-body">
-        <h2>{{ property.displayName }}</h2>
-        <h3 *ngIf="property.name != undefined">{{ 'property.name' | translate }}: {{ property.name }}</h3>
-        <h3 *ngIf="property.description != undefined">{{ 'form.description' | translate }}: {{ property.description }}</h3>
-        <h3>{{ 'property.dataType' | translate }}: {{ property.dataType }}</h3>
-        <h3>{{ 'property.required' | translate }}: {{ property.required }}</h3>
+        <h2>
+            {{ property.displayName }}
+        </h2>
+        <hr class="separator">
+
+        <p class="font-weight-bold mt-2 mb-0">
+            {{ 'property.name' | translate }}
+        </p>
+        <p> {{ property.name }} </p>
+
+        <ng-container *ngIf="property.description != undefined">
+            <p class="font-weight-bold mt-2 mb-0">
+                {{ 'form.description' | translate }}:
+            </p>
+            <p> {{ property.description }} </p>
+        </ng-container>
+
+        <p class="font-weight-bold mt-2 mb-0">
+            {{ 'property.dataType' | translate }}
+        </p>
+        <p> {{ property.dataType }} </p>
+
+        <p class="font-weight-bold mt-2 mb-0">
+            {{ 'property.required' | translate }}
+        </p>
+        <p> {{ property.required }} </p>
     </div>
 </div>

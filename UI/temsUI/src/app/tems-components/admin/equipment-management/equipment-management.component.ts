@@ -1,3 +1,5 @@
+import { ClaimService } from './../../../services/claim.service';
+import { TranslateService } from '@ngx-translate/core';
 import { Component, OnInit } from '@angular/core';
 import { TokenService } from '../../../services/token.service';
 import { CAN_MANAGE_SYSTEM_CONFIGURATION } from './../../../models/claims';
@@ -9,15 +11,12 @@ import { CAN_MANAGE_SYSTEM_CONFIGURATION } from './../../../models/claims';
 })
 export class EquipmentManagementComponent implements OnInit {
 
-  canManage: boolean;
-
   constructor(
-    private tokenService: TokenService
+    public claims: ClaimService,
+    public translate: TranslateService
   ) {
-    this.canManage = this.tokenService.hasClaim(CAN_MANAGE_SYSTEM_CONFIGURATION);
   }
 
   ngOnInit(): void {
   }
-
 }

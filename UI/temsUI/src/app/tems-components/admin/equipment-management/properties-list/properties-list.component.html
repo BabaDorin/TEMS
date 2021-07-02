@@ -1,13 +1,14 @@
 <div class="col-md-12">
     <h2>
-        <mat-icon class="text-primary">settings</mat-icon> {{ 'properties.properties' | translate }}
+        <mat-icon class="text-primary">settings</mat-icon> 
+        {{ 'entities.properties' | translate }}
     </h2>
     <hr>
 
     <ng-container *ngIf="canManage">
         <button mat-button (click)="addProp()">
             <mat-icon class="text-primary">add</mat-icon>
-            {{ 'property.properties' | translate }}
+            {{ 'property.add' | translate }}
         </button>
     </ng-container>
 

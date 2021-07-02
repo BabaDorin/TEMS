@@ -1,34 +1,62 @@
-<div class="card">
+<div [ngClass]="dialogRef == undefined ? 'card' : 'card cancel-margins'">
     <div class="card-body">
-        <h2>{{ definition.identifier }}</h2>
-        <h3 *ngIf="definition.equipmentType != undefined">
-            Type: <button mat-button (click)="viewType(definition.equipmentType.value)">{{ definition.equipmentType.label }}</button></h3>
-        
-        <ng-container *ngIf = "definition.properties.length > 0">
-            <h3>
-                {{ 'entity.properties' | translate }}
-            </h3>
-            <ng-container *ngFor="let prop of definition.properties">
-                <button 
-                mat-button 
-                (click)="viewProperty(prop.id)">
-                {{ prop.displayName }}
-            </button> {{ prop.value }}
-            <br>
+        <h2>
+            {{ definition.identifier }}
+        </h2>
+
+        <ng-container *ngIf="definition.equipmentType != undefined">
+            <p>
+                <button mat-button (click)="viewType(definition.equipmentType.value)">
+                    {{ definition.equipmentType.label }}
+                </button>
+            </p>
+        </ng-container>
+        <hr class="separator">
+        <ng-container *ngIf="definition.properties.length > 0">
+            <p class="font-weight-bold mt-2 mb-0">
+                {{ 'entities.properties' | translate }}
+            </p>
+
+            <table class="table" >
+                <tr *ngFor="let prop of definition.properties"  class="align-middle">
+                    <td>
+                        <p class="prop-lbl mr-3 font-weight-bold py-1 m-0">{{ prop.displayName }}
+                            <i class="mdi mdi-information-outline" *ngIf="prop.description != undefined"
+                                [matTooltip]="prop.description">
+                            </i>
+                        </p>
+                    </td>
+                    <td>
+                        <p class="py-1 m-0">{{ prop.value }}</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <p class="prop-lbl mr-3 font-weight-bold py-1 m-0">
+                            {{ 'form.price' | translate }}
+                        </p>
+                    </td>
+                    <td>
+                        <p class="py-1 m-0">{{ definition.price }} {{ definition.currency }}</p>
+                    </td>
+                </tr>
+            </table>
+        </ng-container>
+
+        <ng-container *ngIf = "definition.children.length > 0">
+            <p class="font-weight-bold mt-2 mb-0">
+                {{ 'definition.children' | translate }}
+            </p>
+            <ng-container *ngFor="let child of definition.children">
+                <p>
+                    <button 
+                    mat-button 
+                    (click)="viewDefinition(child.id)">
+                    {{ child.identifier }}
+                    </button> 
+                </p>
             </ng-container> 
         </ng-container>
-            
-        <ng-container *ngIf="definition.children.length > 0">
-            <h3>
-                {{ 'definition.children' | translate }}:</h3>
-            <button 
-                mat-button 
-                *ngFor="let child of definition.children" 
-                (click)="viewDefinition(child.id)">
-                {{ child.identifier }}
-            </button>
-        </ng-container>
         
-        <h3>{{ 'form.price' | translate }}: {{ definition.price }} {{ definition.currency }}</h3>
     </div>
 </div>

@@ -1,35 +1,40 @@
-<!-- <div class="card">
+<div [ngClass]="dialogRef == undefined ? 'card' : 'card cancel-margins'">
     <div class="card-body">
-        <h2>{{ type.name }}</div>
-        <h3>Type's parent</h3>
-        <p *ngIf="type.parents == undefined">None</p>
-        <div *ngIf="type.parent != undefined">
-            <a (click)="viewType(type.parent.id)">
-                {{ type.parent.name }}
-            </a>
-        </div>
-        <br>
-        <h3>Type's children</h3>
-        <p *ngIf="type.children == undefined || type.children.length == 0">None</p>
-        <div *ngIf="type.children != undefined && type.children.length > 0">
-            <a *ngFor="let child of type.children" (click)="viewType(child.value)">
-                {{ child.label }}
-            </a>
-        </div>
+        <h2>
+            {{ type.name }}
+        </h2>
+        <hr class="separator">
+        <ng-container *ngIf="type.parents != undefined && type.parents.length > 0">
+            <p class="font-weight-bold mt-2 mb-0">
+                {{ 'entities.parentTypes' | translate }}
+            </p>
+            <p>
+                <button mat-button *ngFor="let parent of type.parents" (click)="viewType(parent.value)">
+                    {{ parent.label }} 
+                </button>
+            </p>
+        </ng-container>
 
-        <br>
-        <h3>Type's properties</h3>
-        <p *ngIf="type.properties == undefined || type.properties.length == 0">None</p>
-        <div *ngIf="type.properties != undefined && type.properties.length > 0">
-            <button mat-button *ngFor="let prop of type.properties" (click)="viewProperty(prop.id)">
-                {{ prop.displayName }}
-            </button>
-        </div>
-    </div>
-</div> -->
+        <ng-container *ngIf="type.children != undefined && type.children.length > 0">
+            <p class="font-weight-bold mt-2 mb-0">
+                {{ 'entities.childTypes' | translate }}
+            </p>
+            <p>
+                <button mat-button *ngFor="let child of type.children" (click)="viewType(child.id)">
+                    {{ child.name }} 
+                </button>
+            </p>
+        </ng-container>
 
-<div class="card">
-    <div class="card-body">
-        <h3>Building...</h3>
+        <ng-container *ngIf="type.properties != undefined && type.properties.length > 0">
+            <p class="font-weight-bold mt-2 mb-0">
+                {{ 'entities.properties' | translate }}
+            </p>
+            <p>
+                <button mat-button *ngFor="let property of type.properties"  (click)="viewProperty(property.id)">
+                    {{ property.displayName }} 
+                </button>
+            </p>
+        </ng-container>
     </div>
 </div>

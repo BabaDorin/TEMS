@@ -1,3 +1,4 @@
+import { TranslateService } from '@ngx-translate/core';
 import { Component, Input, OnInit } from '@angular/core';
 import { PropertyContainerModel } from 'src/app/models/generic-container/property-container.model';
 import { DialogService } from '../../../../services/dialog.service';
@@ -24,7 +25,8 @@ export class PropertiesListComponent extends TEMSComponent implements OnInit {
   constructor(
     private equipmentService: EquipmentService,
     private dialogService: DialogService,
-    private snackService: SnackService
+    private snackService: SnackService,
+    public translate: TranslateService
   ) {
     super();
   }

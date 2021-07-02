@@ -15,7 +15,9 @@
         "definitions": "Definiții ale echipamentului",
         "currentlyAllocatedEquipment": "Echipamentul alocat la moment",
         "type": "Tipul echipamentului",
-        "types": "Tipurile echipamentului",
+        "types": "Tipurile de echipament",
+        "parentTypes": "Tipurile părinte",
+        "childTypes": "Tipurile copil",
         "deposit": "Depozit"
     },
 
@@ -332,7 +334,7 @@
         "childIdentifierDescription": "Numele asociat definiției (Dacă definiția este deja înregistrată, o puteți selecta din listă)",
         "choseExistingLabel": "Selecteză o definiție existentă",
         "choseExistingDescription": "Selectează o definiție înregistrată anterior",
-        "add": "Adaugă o definiție nouă",
+        "add": "Adaugă o definiție",
         "children" : "Definițiile copil"
     },
 

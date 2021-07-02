@@ -16,6 +16,8 @@
         "currentlyAllocatedEquipment": "Currently allocated equipment",
         "type": "Equipment type",
         "types": "Equipment types",
+        "parentTypes": "Parent types",
+        "childTypes": "Child types",
         "deposit": "Deposit"
     },
 

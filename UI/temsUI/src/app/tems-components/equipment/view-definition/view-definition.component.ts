@@ -17,6 +17,8 @@ export class ViewDefinitionComponent extends TEMSComponent implements OnInit {
   definitionId: string;
   definition = new Definition();
 
+  dialogRef;
+
   constructor(
     private equipmentService: EquipmentService,
     private dialogService: DialogService,

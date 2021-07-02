@@ -1,24 +1,24 @@
 <div class="card">
     <div class="card-body">
         <mat-tab-group [@.disabled]="true">
-            <mat-tab label="Equipment Types">
+            <mat-tab [label]="translate.instant('entities.types')">
                 <ng-template matTabContent>
                     <div class="mt-3">
-                        <app-manage-types [canManage]="canManage"></app-manage-types>
+                        <app-manage-types [canManage]="claims.canManageSystemConfiguration"></app-manage-types>
                     </div>
                 </ng-template>
             </mat-tab>
-            <mat-tab label="Properties">
+            <mat-tab [label]="translate.instant('entities.properties')">
                 <ng-template matTabContent>
                     <div class="mt-3">
-                        <app-manage-properties [canManage]="canManage"></app-manage-properties>
+                        <app-manage-properties [canManage]="claims.canManageSystemConfiguration"></app-manage-properties>
                     </div>
                 </ng-template>
             </mat-tab>
-            <mat-tab label="Definitions">
+            <mat-tab [label]="translate.instant('entities.definitions')">
                 <ng-template matTabContent>
                     <div class="mt-3"> 
-                        <app-manage-definitions [canManage]="canManage"></app-manage-definitions>
+                        <app-manage-definitions [canManage]="claims.canManageSystemConfiguration"></app-manage-definitions>
                     </div>
                 </ng-template>
             </mat-tab>

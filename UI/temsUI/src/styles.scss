@@ -298,6 +298,10 @@ formly-field-mat-radio {
   padding: 0 !important;
 }
 
+.card {
+  min-width: 280px !important;
+}
+
 // Bootstrap component styles overrides
 @media screen and (max-width: 991px) {
   .card-body {

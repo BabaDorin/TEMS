@@ -13,10 +13,14 @@ namespace temsAPI.Data.Entities.OtherEntities
 {
     public class Status: IArchiveable, IIdentifiable
     {
-        [Key]
+        [Key] [MaxLength(150)]
         public string Id { get; set; }
+
+        [MaxLength(150)]
         public string Name { get; set; }
+        
         public int ImportanceIndex { get; set; } = Int32.MaxValue;
+
         public DateTime? DateArchieved { get; set; }
         private bool isArchieved;
         public bool IsArchieved

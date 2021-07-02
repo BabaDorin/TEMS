@@ -14,12 +14,13 @@ namespace temsAPI.Data.Entities.CommunicationEntities
 {
     public class Ticket: IArchiveableItem, IPinable
     {
-        [Key]
+        [Key] [MaxLength(150)]
         public string Id { get; set; }
+
         public bool IsPinned { get; set; }
+        
         public int TrackingNumber { get; set; }
-
-
+        
         public DateTime DateCreated { get; set; }
 
 #nullable enable
@@ -27,10 +28,14 @@ namespace temsAPI.Data.Entities.CommunicationEntities
 
         [ForeignKey("StatusId")]
         public Status? Status { get; set; }
+
+        [MaxLength(150)]
         public string? StatusId { get; set; }
 
         [ForeignKey("LabelId")]
         public Label? Label { get; set; }
+
+        [MaxLength(150)]
         public string? LabelId { get; set; }
 
         [InverseProperty("ClosedTickets")]
@@ -38,7 +43,10 @@ namespace temsAPI.Data.Entities.CommunicationEntities
         public TEMSUser? ClosedBy { get; set; }
         public string? ClosedById { get; set; }
 
+        [MaxLength(100)]
         public string? Problem { get; set; }
+
+        [MaxLength(250)]
         public string? Description { get; set; }
 
         [InverseProperty("CreatedTickets")]
@@ -74,6 +82,7 @@ namespace temsAPI.Data.Entities.CommunicationEntities
         public ICollection<Personnel> Personnel { get; set; } = new List<Personnel>();
         public ICollection<Equipment> Equipments { get; set; } = new List<Equipment>();
         public ICollection<Room> Rooms { get; set; } = new List<Room>();
+        
         [InverseProperty("AssignedTickets")]
         public ICollection<TEMSUser> Assignees  { get; set; } = new List<TEMSUser>();
         

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
@@ -15,6 +16,8 @@ namespace temsAPI.Data.Entities.CommunicationEntities
 
         [ForeignKey("NotificationId")]
         public CommonNotification Notification { get; set; }
+
+        [MaxLength(150)]
         public string NotificationId { get; set; }
 
         public bool Seen { get; set; }

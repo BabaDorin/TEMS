@@ -15,14 +15,20 @@ namespace temsAPI.Data.Entities.OtherEntities
 {
     public class Personnel: IArchiveableItem
     {
-        [Key]
+        [Key] [MaxLength(150)]
         public string Id { get; set; }
 
+        [MaxLength(100)]
         public string Name { get; set; }
 #nullable enable
+
+        [MaxLength(50)]
         public string? PhoneNumber { get; set; }
+
+        [MaxLength(100)]
         public string? Email { get; set; }
 
+        [MaxLength(250)]
         public string? ImagePath { get; set; }
 
         public TEMSUser? TEMSUser { get; set; }

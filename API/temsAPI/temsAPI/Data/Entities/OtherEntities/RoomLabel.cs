@@ -11,9 +11,12 @@ namespace temsAPI.Data.Entities.OtherEntities
 {
     public class RoomLabel: IArchiveable, IIdentifiable
     {
-        [Key]
+        [Key] [MaxLength(150)]
         public string Id { get; set; }
+
+        [MaxLength(50)]
         public string Name { get; set; }
+
         public DateTime? DateArchieved { get; set; }
         private bool isArchieved;
         public bool IsArchieved

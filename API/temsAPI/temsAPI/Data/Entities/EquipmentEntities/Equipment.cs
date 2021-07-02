@@ -23,22 +23,33 @@ namespace temsAPI.Data.Entities.EquipmentEntities
     [Index(nameof(SerialNumber))]
     public class Equipment : IArchiveableItem
     {
-        [Key]
+        [Key] [MaxLength(150)]
         public string Id { get; set; }
 
 #nullable enable
         [ForeignKey("ParentID")]
         public Equipment? Parent { get; set; }
+
+        [MaxLength(150)]
         public string? ParentID { get; set; }
 
+        [MaxLength(50)]
         public string? TEMSID { get; set; }
+
+        [MaxLength(100)]
         public string? SerialNumber { get; set; }
         public double? Price { get; set; }
+
+        [MaxLength(10)]
         public string? Currency { get; set; }
+
+        [MaxLength(1500)]
         public string? Description { get; set; }
 
         [ForeignKey("EquipmentDefinitionID")]
         public EquipmentDefinition? EquipmentDefinition { get; set; }
+
+        [MaxLength(150)]
         public string? EquipmentDefinitionID { get; set; }
 
         [InverseProperty("RegisteredEquipment")]
@@ -58,6 +69,7 @@ namespace temsAPI.Data.Entities.EquipmentEntities
 
         public bool IsDefect { get; set; }
         public bool IsUsed { get; set; }
+
         public DateTime? DateArchieved { get; set; }
         private bool isArchieved;
         public bool IsArchieved
@@ -114,11 +126,6 @@ namespace temsAPI.Data.Entities.EquipmentEntities
             }
 
             return model;
-        }
-
-        public static implicit operator Equipment(TEMSUser v)
-        {
-            throw new NotImplementedException();
         }
     }
 }

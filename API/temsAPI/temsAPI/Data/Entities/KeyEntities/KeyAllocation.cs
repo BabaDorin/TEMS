@@ -13,17 +13,22 @@ namespace temsAPI.Data.Entities.KeyEntities
 {
     public class KeyAllocation: IArchiveableItem
     {
-        [Key]
+        [Key] [MaxLength(150)]
         public string Id { get; set; }
 
         [InverseProperty("KeyAllocations")]
         [ForeignKey("PersonnelID")]
         public Personnel Personnel { get; set; }
+
+        [MaxLength(150)]
         public string PersonnelID { get; set; }
 
         [ForeignKey("KeyID")]
         public Key Key { get; set; }
+
+        [MaxLength(150)]
         public string KeyID { get; set; }
+
         public DateTime? DateArchieved { get; set; }
         private bool isArchieved;
 

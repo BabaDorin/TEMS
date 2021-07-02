@@ -14,11 +14,15 @@ namespace temsAPI.Data.Entities.CommunicationEntities
     [Index(nameof(UserID))]
     public class UserNotification : INotification
     {
-        [Key]
+        [MaxLength(150)]
         public string Id { get; set; }
 
         public DateTime DateCreated { get; set; }
+
+        [MaxLength(50)]
         public string Title { get; set; }
+
+        [MaxLength(150)]
         public string Message { get; set; }
         public bool SendEmail { get; set; }
         public bool SendSMS { get; set; }

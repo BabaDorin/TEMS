@@ -10,15 +10,17 @@ using temsAPI.Data.Entities.UserEntities;
 
 namespace temsAPI.Data.Entities.CommunicationEntities
 {
-    [Index(nameof(DateCreated))]
     public class Announcement
     {
-        [Key]
+        [Key] [MaxLength(150)]
         public string Id { get; set; }
 
         public DateTime DateCreated { get; set; }
 
+        [MaxLength(100)]
         public string Title { get; set; }
+
+        [MaxLength(250)]
         public string Message { get; set; }
 
 #nullable enable
@@ -28,6 +30,5 @@ namespace temsAPI.Data.Entities.CommunicationEntities
 #nullable disable
 
         public bool IsArchieved { get; set; }
-
     }
 }

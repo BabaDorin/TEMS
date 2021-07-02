@@ -16,29 +16,37 @@ namespace temsAPI.Data.Entities.EquipmentEntities
     [Index(nameof(Identifier))]
     public class EquipmentDefinition: IArchiveableItem
     {
-        [Key]
+        [Key] [MaxLength(150)]
         public string Id { get; set; }
 
+        [MaxLength(100)]
         public string Identifier { get; set; }
         public double Price { get; set; }
+        
+        [MaxLength(10)]
         public string Currency { get; set; } = "lei";
 
 
 #nullable enable
         [ForeignKey("EquipmentTypeID")]
         public EquipmentType? EquipmentType { get; set; }
+
+        [MaxLength(150)]
         public string? EquipmentTypeID { get; set; }
 
         [ForeignKey("ParentID")]
         public EquipmentDefinition? Parent { get; set; }
+
+        [MaxLength(150)]
         public string? ParentID { get; set; }
+
+        [MaxLength(500)]
         public string? Description { get; set; }
 
         [InverseProperty("ArchivedDefinitions")]
         [ForeignKey("ArchievedById")]
         public TEMSUser? ArchievedBy { get; set; }
         public string? ArchievedById { get; set; }
-
 #nullable disable
 
         public DateTime? DateArchieved { get; set; }

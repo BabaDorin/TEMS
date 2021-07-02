@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.Design.Serialization;
 using System.Linq;
@@ -20,6 +21,7 @@ namespace temsAPI.Data.Entities.UserEntities
     public class TEMSUser : IdentityUser, IArchiveable, IIdentifiable
     {
         public DateTime DateRegistered { get; set; }
+
         public DateTime? DateArchieved { get; set; }
         private bool isArchieved;
         public bool IsArchieved
@@ -36,6 +38,8 @@ namespace temsAPI.Data.Entities.UserEntities
                     : null;
             }
         }
+
+        [MaxLength(50)]
         public string FullName { get; set; }
 
         public bool GetEmailNotifications { get; set; }
@@ -44,6 +48,8 @@ namespace temsAPI.Data.Entities.UserEntities
         [ForeignKey("PersonnelId")]
         [InverseProperty("TEMSUser")]
         public Personnel? Personnel { get; set; }
+
+        [MaxLength(150)]
         public string? PersonnelId { get; set; }
 
         [ForeignKey("ArchievedById")]

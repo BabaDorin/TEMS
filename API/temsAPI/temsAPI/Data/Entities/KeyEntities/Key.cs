@@ -15,9 +15,10 @@ namespace temsAPI.Data.Entities.KeyEntities
 {
     public class Key: IArchiveableItem
     {
-        [Key]
+        [Key] [MaxLength(150)]
         public string Id { get; set; }
 
+        [MaxLength(50)]
         public string Identifier { get; set; }
         public DateTime? DateArchieved { get; set; }
         private bool isArchieved;
@@ -37,11 +38,15 @@ namespace temsAPI.Data.Entities.KeyEntities
         }
 
 #nullable enable
+
+        [MaxLength(250)]
         public string? Description { get; set; }
 
         [InverseProperty("Keys")]
         [ForeignKey("RoomId")]
         public Room? Room { get; set; }
+
+        [MaxLength(150)]
         public string? RoomId { get; set; }
 
         [InverseProperty("ArchivedKeys")]

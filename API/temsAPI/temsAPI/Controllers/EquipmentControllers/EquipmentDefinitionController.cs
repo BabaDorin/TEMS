@@ -48,7 +48,7 @@ namespace temsAPI.Controllers.EquipmentControllers
             catch (Exception ex)
             {
                 LogException(ex);
-                return ReturnResponse("An error occured while adding the definition", ResponseStatus.Fail);
+                return ReturnResponse("An error occured while adding the definition. Property values might be too large (maximum length for property value: 1500 characters)", ResponseStatus.Fail);
             }
         }
 

@@ -12,13 +12,17 @@ namespace temsAPI.Data.Entities.EquipmentEntities
 {
     public class EquipmentAllocation: IArchiveableItem
     {
-        [Key]
+        [Key] [MaxLength(150)]
         public string Id { get; set; }
 
         [ForeignKey("EquipmentID")]
         public Equipment Equipment { get; set; }
+
+        [MaxLength(150)]
         public string EquipmentID { get; set; }
+
         public DateTime DateAllocated { get; set; }
+        
         public DateTime? DateArchieved { get; set; }
         private bool isArchieved;
         public bool IsArchieved
@@ -41,11 +45,15 @@ namespace temsAPI.Data.Entities.EquipmentEntities
         [InverseProperty("EquipmentAllocations")]
         [ForeignKey("PersonnelID")]
         public Personnel? Personnel { get; set; }
+
+        [MaxLength(150)]
         public string? PersonnelID { get; set; }
 
         [InverseProperty("EquipmentAllocations")]
         [ForeignKey("RoomID")]
         public Room? Room { get; set; }
+
+        [MaxLength(150)]
         public string? RoomID { get; set; }
 
         [NotMapped]

@@ -13,9 +13,12 @@ namespace temsAPI.Data.Entities.EquipmentEntities
 {
     public class EquipmentType: IArchiveableItem
     {
-        [Key]
+        [Key] [MaxLength(150)]
         public string Id { get; set; }
+
+        [MaxLength(100)]
         public string Name { get; set; }
+
         public DateTime? DateArchieved { get; set; }
         private bool isArchieved;
         public bool IsArchieved

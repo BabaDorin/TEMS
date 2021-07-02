@@ -10,7 +10,7 @@ namespace temsAPI.Data.Entities.UserEntities
 {
     public class RolePrivileges
     {
-        [Key]
+        [Key] [MaxLength(150)]
         public string Id { get; set; }
 
         [ForeignKey("RoleID")]
@@ -19,6 +19,8 @@ namespace temsAPI.Data.Entities.UserEntities
 
         [ForeignKey("PrivilegeID")]
         public Privilege Privilege { get; set; }
+
+        [MaxLength(150)]
         public string PrivilegeID { get; set; }
     }
 }

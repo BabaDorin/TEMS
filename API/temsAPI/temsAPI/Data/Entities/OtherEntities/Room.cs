@@ -15,13 +15,16 @@ namespace temsAPI.Data.Entities.OtherEntities
 {
     public class Room : IArchiveableItem
     {
-        [Key]
+        [Key] [MaxLength(150)]
         public string Id { get; set; }
 
+        [MaxLength(100)]
         public string Identifier { get; set; }
 
 #nullable enable
         public int? Floor { get; set; }
+
+        [MaxLength(1500)]
         public string? Description { get; set; }
 
         [InverseProperty("ArchivedRooms")]

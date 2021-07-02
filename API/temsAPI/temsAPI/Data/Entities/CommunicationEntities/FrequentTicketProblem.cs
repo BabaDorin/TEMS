@@ -8,9 +8,10 @@ namespace temsAPI.Data.Entities.CommunicationEntities
 {
     public class FrequentTicketProblem
     {
-        [Key]
+        [Key] [MaxLength(150)]
         public string Id { get; set; }
 
+        [MaxLength(100)]
         public string Problem { get; set; }
     }
 }

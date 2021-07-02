@@ -10,16 +10,22 @@ namespace temsAPI.Data.Entities.CommunicationEntities
 {
     public class CommonNotification : INotification
     {
-        [Key]
+        [Key] [MaxLength(150)]
         public string Id { get; set; }
 
         public DateTime DateCreated { get; set; }
+        
+        [MaxLength(50)]
         public string Title { get; set; }
+        
+        [MaxLength(150)]
         public string Message { get; set; }
+        
         public bool SendEmail { get; set; }
         public bool SendSMS { get; set; }
         public bool SendPush { get; set; }
         public bool SendBrowser { get; set; }
+        
         public List<UserCommonNotification> UserCommonNotifications { get; set; } = new();
 
         public IEnumerable<TEMSUser> GetUsers() => UserCommonNotifications.Select(q => q.User);

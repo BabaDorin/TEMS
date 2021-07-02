@@ -11,9 +11,13 @@ namespace temsAPI.Data.Entities.OtherEntities
 {
     public class Label
     {
-        [Key]
+        [Key] [MaxLength(150)]
         public string Id { get; set; }
+
+        [MaxLength(150)]
         public string Name { get; set; }
+        
+        [MaxLength(100)]
         public string ColorHex
         {
             get

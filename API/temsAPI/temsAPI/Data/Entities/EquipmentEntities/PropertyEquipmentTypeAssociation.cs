@@ -11,15 +11,19 @@ namespace temsAPI.Data.Entities.EquipmentEntities
     {
         // Which properties belong to which equipment types
 
-        [Key]
+        [Key] [MaxLength(150)]
         public string Id { get; set; }
 
         [ForeignKey("TypeID")]
         public EquipmentType Type { get; set; }
+
+        [MaxLength(150)]
         public string TypeID { get; set; }
 
         [ForeignKey("PropertyID")]
         public Property Property { get; set; }
+
+        [MaxLength(150)]
         public string PropertyID { get; set; }
     }
 }

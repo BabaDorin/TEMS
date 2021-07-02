@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace temsAPI.Migrations
 {
-    public partial class db_init : Migration
+    public partial class dbInitialization : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -25,10 +25,10 @@ namespace temsAPI.Migrations
                 name: "CommonNotifications",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Id = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
                     DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Title = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Message = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Title = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    Message = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: true),
                     SendEmail = table.Column<bool>(type: "bit", nullable: false),
                     SendSMS = table.Column<bool>(type: "bit", nullable: false),
                     SendPush = table.Column<bool>(type: "bit", nullable: false),
@@ -43,8 +43,8 @@ namespace temsAPI.Migrations
                 name: "DataTypes",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Id = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -55,8 +55,8 @@ namespace temsAPI.Migrations
                 name: "FrequentTicketProblems",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Problem = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Id = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
+                    Problem = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -67,8 +67,8 @@ namespace temsAPI.Migrations
                 name: "JWTBlacklist",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Content = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Id = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
+                    Content = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
                     ExpirationDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
@@ -80,8 +80,8 @@ namespace temsAPI.Migrations
                 name: "Labels",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Id = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -92,9 +92,9 @@ namespace temsAPI.Migrations
                 name: "LibraryFolders",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Id = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -102,24 +102,12 @@ namespace temsAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "LogTypes",
-                columns: table => new
-                {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Type = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_LogTypes", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Privileges",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Identifier = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Id = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
+                    Identifier = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -151,9 +139,9 @@ namespace temsAPI.Migrations
                 name: "RolePrivileges",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Id = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
                     RoleID = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    PrivilegeID = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    PrivilegeID = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -194,10 +182,10 @@ namespace temsAPI.Migrations
                 name: "Announcements",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Id = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
                     DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Title = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Message = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Title = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    Message = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true),
                     AuthorID = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     IsArchieved = table.Column<bool>(type: "bit", nullable: false)
                 },
@@ -253,13 +241,13 @@ namespace temsAPI.Migrations
                 name: "EquipmentAllocations",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    EquipmentID = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    Id = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
+                    EquipmentID = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: true),
                     DateAllocated = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DateArchieved = table.Column<DateTime>(type: "datetime2", nullable: true),
                     IsArchieved = table.Column<bool>(type: "bit", nullable: false),
-                    PersonnelID = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    RoomID = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    PersonnelID = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: true),
+                    RoomID = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: true),
                     DateReturned = table.Column<DateTime>(type: "datetime2", nullable: true),
                     ArchievedById = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
@@ -272,13 +260,13 @@ namespace temsAPI.Migrations
                 name: "EquipmentDefinitions",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Identifier = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    Id = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
+                    Identifier = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     Price = table.Column<double>(type: "float", nullable: false),
-                    Currency = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    EquipmentTypeID = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    ParentID = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Currency = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: true),
+                    EquipmentTypeID = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: true),
+                    ParentID = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
                     ArchievedById = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     DateArchieved = table.Column<DateTime>(type: "datetime2", nullable: true),
                     IsArchieved = table.Column<bool>(type: "bit", nullable: false)
@@ -298,14 +286,14 @@ namespace temsAPI.Migrations
                 name: "Equipments",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ParentID = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    TEMSID = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    SerialNumber = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    Id = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
+                    ParentID = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: true),
+                    TEMSID = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    SerialNumber = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     Price = table.Column<double>(type: "float", nullable: true),
-                    Currency = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    EquipmentDefinitionID = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    Currency = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(1500)", maxLength: 1500, nullable: true),
+                    EquipmentDefinitionID = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: true),
                     RegisteredByID = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     ArchievedById = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     PurchaseDate = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -324,7 +312,7 @@ namespace temsAPI.Migrations
                         column: x => x.EquipmentDefinitionID,
                         principalTable: "EquipmentDefinitions",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Equipments_Equipments_ParentID",
                         column: x => x.ParentID,
@@ -337,12 +325,12 @@ namespace temsAPI.Migrations
                 name: "EquipmentSpecifications",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    EquipmentDefinitionID = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    PropertyID = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    Id = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
+                    EquipmentDefinitionID = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: true),
+                    PropertyID = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: true),
                     DateArchieved = table.Column<DateTime>(type: "datetime2", nullable: true),
                     IsArchieved = table.Column<bool>(type: "bit", nullable: false),
-                    Value = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Value = table.Column<string>(type: "nvarchar(1500)", maxLength: 1500, nullable: true),
                     ArchievedById = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
@@ -360,8 +348,8 @@ namespace temsAPI.Migrations
                 name: "EquipmentTypes",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Id = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     DateArchieved = table.Column<DateTime>(type: "datetime2", nullable: true),
                     IsArchieved = table.Column<bool>(type: "bit", nullable: false),
                     EditableTypeInfo = table.Column<bool>(type: "bit", nullable: false, defaultValue: true),
@@ -376,8 +364,8 @@ namespace temsAPI.Migrations
                 name: "EquipmentTypeEquipmentType",
                 columns: table => new
                 {
-                    ChildrenId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ParentsId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    ChildrenId = table.Column<string>(type: "nvarchar(150)", nullable: false),
+                    ParentsId = table.Column<string>(type: "nvarchar(150)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -400,9 +388,9 @@ namespace temsAPI.Migrations
                 name: "KeyAllocations",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    PersonnelID = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    KeyID = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    Id = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
+                    PersonnelID = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: true),
+                    KeyID = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: true),
                     DateArchieved = table.Column<DateTime>(type: "datetime2", nullable: true),
                     IsArchieved = table.Column<bool>(type: "bit", nullable: false),
                     DateAllocated = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -418,12 +406,12 @@ namespace temsAPI.Migrations
                 name: "Keys",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Identifier = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Id = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
+                    Identifier = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     DateArchieved = table.Column<DateTime>(type: "datetime2", nullable: true),
                     IsArchieved = table.Column<bool>(type: "bit", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    RoomId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true),
+                    RoomId = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: true),
                     ArchievedById = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
@@ -435,15 +423,15 @@ namespace temsAPI.Migrations
                 name: "LibraryItems",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ActualName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DisplayName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DbPath = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Id = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
+                    ActualName = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: true),
+                    DisplayName = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: true),
+                    DbPath = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true),
                     FileSize = table.Column<double>(type: "float", nullable: false),
                     Downloads = table.Column<int>(type: "int", nullable: false),
                     DateUploaded = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    LibraryFolderId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true),
+                    LibraryFolderId = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: true),
                     UploadedById = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
@@ -461,15 +449,13 @@ namespace temsAPI.Migrations
                 name: "Logs",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Text = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Id = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true),
                     DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedByID = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    EquipmentID = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    RoomID = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    PersonnelID = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    IsImportant = table.Column<bool>(type: "bit", nullable: false),
-                    LogTypeID = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    EquipmentID = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: true),
+                    RoomID = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: true),
+                    PersonnelID = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: true),
                     ArchievedById = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     IsArchieved = table.Column<bool>(type: "bit", nullable: false),
                     DateArchieved = table.Column<DateTime>(type: "datetime2", nullable: true)
@@ -483,23 +469,17 @@ namespace temsAPI.Migrations
                         principalTable: "Equipments",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Logs_LogTypes_LogTypeID",
-                        column: x => x.LogTypeID,
-                        principalTable: "LogTypes",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
                 name: "Personnel",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ImagePath = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Id = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    Email = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    ImagePath = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true),
                     ArchievedById = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     DateArchieved = table.Column<DateTime>(type: "datetime2", nullable: true),
                     IsArchieved = table.Column<bool>(type: "bit", nullable: false)
@@ -518,9 +498,9 @@ namespace temsAPI.Migrations
                     DateRegistered = table.Column<DateTime>(type: "datetime2", nullable: true),
                     DateArchieved = table.Column<DateTime>(type: "datetime2", nullable: true),
                     IsArchieved = table.Column<bool>(type: "bit", nullable: true),
-                    FullName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    FullName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     GetEmailNotifications = table.Column<bool>(type: "bit", nullable: true),
-                    PersonnelId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    PersonnelId = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: true),
                     ArchievedById = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -558,8 +538,8 @@ namespace temsAPI.Migrations
                 name: "PersonnelPositions",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Id = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     DateArchieved = table.Column<DateTime>(type: "datetime2", nullable: true),
                     IsArchieved = table.Column<bool>(type: "bit", nullable: false),
                     ArchievedById = table.Column<string>(type: "nvarchar(450)", nullable: true)
@@ -571,25 +551,26 @@ namespace temsAPI.Migrations
                         name: "FK_PersonnelPositions_AspNetUsers_ArchievedById",
                         column: x => x.ArchievedById,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
                 name: "Properties",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Id = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     Required = table.Column<bool>(type: "bit", nullable: false),
                     DateArchieved = table.Column<DateTime>(type: "datetime2", nullable: true),
                     IsArchieved = table.Column<bool>(type: "bit", nullable: false),
                     EditablePropertyInfo = table.Column<bool>(type: "bit", nullable: false, defaultValue: true),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DisplayName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true),
+                    DisplayName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     Min = table.Column<int>(type: "int", nullable: true),
                     Max = table.Column<int>(type: "int", nullable: true),
-                    Options = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DataTypeID = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    Options = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
+                    DataTypeID = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: true),
                     ArchievedById = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
@@ -599,7 +580,8 @@ namespace temsAPI.Migrations
                         name: "FK_Properties_AspNetUsers_ArchievedById",
                         column: x => x.ArchievedById,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Properties_DataTypes_DataTypeID",
                         column: x => x.DataTypeID,
@@ -612,10 +594,10 @@ namespace temsAPI.Migrations
                 name: "Reports",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Template = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Id = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
+                    Template = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: true),
                     DateGenerated = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    DBPath = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DBPath = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true),
                     GeneratedByID = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
@@ -625,24 +607,25 @@ namespace temsAPI.Migrations
                         name: "FK_Reports_AspNetUsers_GeneratedByID",
                         column: x => x.GeneratedByID,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
                 name: "ReportTemplates",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Subject = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    SeparateBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Header = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Footer = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Id = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true),
+                    Subject = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    SeparateBy = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    Header = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
+                    Footer = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
                     DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DateArchieved = table.Column<DateTime>(type: "datetime2", nullable: true),
                     IsArchieved = table.Column<bool>(type: "bit", nullable: false),
-                    CommonProperties = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CommonProperties = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
                     CreatedById = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     ArchievedById = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
@@ -653,20 +636,22 @@ namespace temsAPI.Migrations
                         name: "FK_ReportTemplates_AspNetUsers_ArchievedById",
                         column: x => x.ArchievedById,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_ReportTemplates_AspNetUsers_CreatedById",
                         column: x => x.CreatedById,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
                 name: "RoomLabels",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Id = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     DateArchieved = table.Column<DateTime>(type: "datetime2", nullable: true),
                     IsArchieved = table.Column<bool>(type: "bit", nullable: false),
                     ArchievedById = table.Column<string>(type: "nvarchar(450)", nullable: true)
@@ -678,17 +663,18 @@ namespace temsAPI.Migrations
                         name: "FK_RoomLabels_AspNetUsers_ArchievedById",
                         column: x => x.ArchievedById,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
                 name: "Rooms",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Identifier = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Id = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
+                    Identifier = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     Floor = table.Column<int>(type: "int", nullable: true),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(1500)", maxLength: 1500, nullable: true),
                     ArchievedById = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     DateArchieved = table.Column<DateTime>(type: "datetime2", nullable: true),
                     IsArchieved = table.Column<bool>(type: "bit", nullable: false)
@@ -700,15 +686,16 @@ namespace temsAPI.Migrations
                         name: "FK_Rooms_AspNetUsers_ArchievedById",
                         column: x => x.ArchievedById,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
                 name: "Statuses",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Id = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: true),
                     ImportanceIndex = table.Column<int>(type: "int", nullable: false),
                     DateArchieved = table.Column<DateTime>(type: "datetime2", nullable: true),
                     IsArchieved = table.Column<bool>(type: "bit", nullable: false),
@@ -726,33 +713,11 @@ namespace temsAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ToDos",
-                columns: table => new
-                {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    DateClosed = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Text = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Urgent = table.Column<bool>(type: "bit", nullable: false),
-                    CreatedByID = table.Column<string>(type: "nvarchar(450)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ToDos", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_ToDos_AspNetUsers_CreatedByID",
-                        column: x => x.CreatedByID,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "UserCommonNotification",
                 columns: table => new
                 {
                     UserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    NotificationId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    NotificationId = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
                     Seen = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
@@ -776,10 +741,10 @@ namespace temsAPI.Migrations
                 name: "UserNotifications",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Id = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
                     DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Title = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Message = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Title = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    Message = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: true),
                     SendEmail = table.Column<bool>(type: "bit", nullable: false),
                     SendSMS = table.Column<bool>(type: "bit", nullable: false),
                     SendPush = table.Column<bool>(type: "bit", nullable: false),
@@ -802,8 +767,8 @@ namespace temsAPI.Migrations
                 name: "PersonnelPersonnelPosition",
                 columns: table => new
                 {
-                    PersonnelId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    PositionsId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    PersonnelId = table.Column<string>(type: "nvarchar(150)", nullable: false),
+                    PositionsId = table.Column<string>(type: "nvarchar(150)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -826,8 +791,8 @@ namespace temsAPI.Migrations
                 name: "EquipmentTypeProperty",
                 columns: table => new
                 {
-                    EquipmentTypesId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    PropertiesId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    EquipmentTypesId = table.Column<string>(type: "nvarchar(150)", nullable: false),
+                    PropertiesId = table.Column<string>(type: "nvarchar(150)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -850,9 +815,9 @@ namespace temsAPI.Migrations
                 name: "PropertyEquipmentTypeAssociations",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    TypeID = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    PropertyID = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    Id = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
+                    TypeID = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: true),
+                    PropertyID = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -875,8 +840,8 @@ namespace temsAPI.Migrations
                 name: "EquipmentDefinitionReportTemplate",
                 columns: table => new
                 {
-                    EquipmentDefinitionsId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ReportTemplatesMemberOfId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    EquipmentDefinitionsId = table.Column<string>(type: "nvarchar(150)", nullable: false),
+                    ReportTemplatesMemberOfId = table.Column<string>(type: "nvarchar(150)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -899,8 +864,8 @@ namespace temsAPI.Migrations
                 name: "EquipmentTypeReportTemplate",
                 columns: table => new
                 {
-                    EquipmentTypesId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ReportTemplatesMemberOfId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    EquipmentTypesId = table.Column<string>(type: "nvarchar(150)", nullable: false),
+                    ReportTemplatesMemberOfId = table.Column<string>(type: "nvarchar(150)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -923,8 +888,8 @@ namespace temsAPI.Migrations
                 name: "PersonnelReportTemplate",
                 columns: table => new
                 {
-                    ReportTemplatesAssignedId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    SignatoriesId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    ReportTemplatesAssignedId = table.Column<string>(type: "nvarchar(150)", nullable: false),
+                    SignatoriesId = table.Column<string>(type: "nvarchar(150)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -947,8 +912,8 @@ namespace temsAPI.Migrations
                 name: "PersonnelReportTemplate1",
                 columns: table => new
                 {
-                    PersonnelId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ReportTemplatesMemberId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    PersonnelId = table.Column<string>(type: "nvarchar(150)", nullable: false),
+                    ReportTemplatesMemberId = table.Column<string>(type: "nvarchar(150)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -971,8 +936,8 @@ namespace temsAPI.Migrations
                 name: "PropertyReportTemplate",
                 columns: table => new
                 {
-                    PropertiesId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ReportTemplatesMemberOfId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    PropertiesId = table.Column<string>(type: "nvarchar(150)", nullable: false),
+                    ReportTemplatesMemberOfId = table.Column<string>(type: "nvarchar(150)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -995,8 +960,8 @@ namespace temsAPI.Migrations
                 name: "PersonnelRoom",
                 columns: table => new
                 {
-                    RoomsSupervisoriedId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    SupervisoriesId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    RoomsSupervisoriedId = table.Column<string>(type: "nvarchar(150)", nullable: false),
+                    SupervisoriesId = table.Column<string>(type: "nvarchar(150)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -1019,8 +984,8 @@ namespace temsAPI.Migrations
                 name: "ReportTemplateRoom",
                 columns: table => new
                 {
-                    ReportTemplatesMemberOfId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    RoomsId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    ReportTemplatesMemberOfId = table.Column<string>(type: "nvarchar(150)", nullable: false),
+                    RoomsId = table.Column<string>(type: "nvarchar(150)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -1043,8 +1008,8 @@ namespace temsAPI.Migrations
                 name: "RoomRoomLabel",
                 columns: table => new
                 {
-                    LabelsId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    RoomsId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    LabelsId = table.Column<string>(type: "nvarchar(150)", nullable: false),
+                    RoomsId = table.Column<string>(type: "nvarchar(150)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -1067,17 +1032,17 @@ namespace temsAPI.Migrations
                 name: "Tickets",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Id = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
                     IsPinned = table.Column<bool>(type: "bit", nullable: false),
                     TrackingNumber = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     DateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DateClosed = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    StatusId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    LabelId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    StatusId = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: true),
+                    LabelId = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: true),
                     ClosedById = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    Problem = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Problem = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true),
                     CreatedById = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     ArchievedById = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     DatePinned = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -1091,17 +1056,20 @@ namespace temsAPI.Migrations
                         name: "FK_Tickets_AspNetUsers_ArchievedById",
                         column: x => x.ArchievedById,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Tickets_AspNetUsers_ClosedById",
                         column: x => x.ClosedById,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Tickets_AspNetUsers_CreatedById",
                         column: x => x.CreatedById,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Tickets_Labels_LabelId",
                         column: x => x.LabelId,
@@ -1120,8 +1088,8 @@ namespace temsAPI.Migrations
                 name: "EquipmentTicket",
                 columns: table => new
                 {
-                    EquipmentsId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    TicketsId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    EquipmentsId = table.Column<string>(type: "nvarchar(150)", nullable: false),
+                    TicketsId = table.Column<string>(type: "nvarchar(150)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -1144,8 +1112,8 @@ namespace temsAPI.Migrations
                 name: "PersonnelTicket",
                 columns: table => new
                 {
-                    PersonnelId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    TicketsId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    PersonnelId = table.Column<string>(type: "nvarchar(150)", nullable: false),
+                    TicketsId = table.Column<string>(type: "nvarchar(150)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -1168,8 +1136,8 @@ namespace temsAPI.Migrations
                 name: "RoomTicket",
                 columns: table => new
                 {
-                    RoomsId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    TicketsId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    RoomsId = table.Column<string>(type: "nvarchar(150)", nullable: false),
+                    TicketsId = table.Column<string>(type: "nvarchar(150)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -1192,7 +1160,7 @@ namespace temsAPI.Migrations
                 name: "TEMSUserTicket",
                 columns: table => new
                 {
-                    AssignedTicketsId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    AssignedTicketsId = table.Column<string>(type: "nvarchar(150)", nullable: false),
                     AssigneesId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
@@ -1216,7 +1184,7 @@ namespace temsAPI.Migrations
                 name: "TEMSUserTicket1",
                 columns: table => new
                 {
-                    ClosedAndThenReopenedTicketsId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ClosedAndThenReopenedTicketsId = table.Column<string>(type: "nvarchar(150)", nullable: false),
                     PreviouslyClosedById = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
@@ -1240,11 +1208,6 @@ namespace temsAPI.Migrations
                 name: "IX_Announcements_AuthorID",
                 table: "Announcements",
                 column: "AuthorID");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Announcements_DateCreated",
-                table: "Announcements",
-                column: "DateCreated");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -1463,11 +1426,6 @@ namespace temsAPI.Migrations
                 column: "EquipmentID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Logs_LogTypeID",
-                table: "Logs",
-                column: "LogTypeID");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Logs_PersonnelID",
                 table: "Logs",
                 column: "PersonnelID");
@@ -1628,11 +1586,6 @@ namespace temsAPI.Migrations
                 column: "StatusId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ToDos_CreatedByID",
-                table: "ToDos",
-                column: "CreatedByID");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_UserCommonNotification_NotificationId",
                 table: "UserCommonNotification",
                 column: "NotificationId");
@@ -1656,7 +1609,7 @@ namespace temsAPI.Migrations
                 column: "AuthorID",
                 principalTable: "AspNetUsers",
                 principalColumn: "Id",
-                onDelete: ReferentialAction.SetNull);
+                onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_AspNetUserClaims_AspNetUsers_UserId",
@@ -1687,7 +1640,8 @@ namespace temsAPI.Migrations
                 table: "EquipmentAllocations",
                 column: "ArchievedById",
                 principalTable: "AspNetUsers",
-                principalColumn: "Id");
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_EquipmentAllocations_Equipments_EquipmentID",
@@ -1703,7 +1657,7 @@ namespace temsAPI.Migrations
                 column: "PersonnelID",
                 principalTable: "Personnel",
                 principalColumn: "Id",
-                onDelete: ReferentialAction.Restrict);
+                onDelete: ReferentialAction.Cascade);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_EquipmentAllocations_Rooms_RoomID",
@@ -1711,14 +1665,15 @@ namespace temsAPI.Migrations
                 column: "RoomID",
                 principalTable: "Rooms",
                 principalColumn: "Id",
-                onDelete: ReferentialAction.Restrict);
+                onDelete: ReferentialAction.Cascade);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_EquipmentDefinitions_AspNetUsers_ArchievedById",
                 table: "EquipmentDefinitions",
                 column: "ArchievedById",
                 principalTable: "AspNetUsers",
-                principalColumn: "Id");
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_EquipmentDefinitions_EquipmentTypes_EquipmentTypeID",
@@ -1726,28 +1681,31 @@ namespace temsAPI.Migrations
                 column: "EquipmentTypeID",
                 principalTable: "EquipmentTypes",
                 principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+                onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Equipments_AspNetUsers_ArchievedById",
                 table: "Equipments",
                 column: "ArchievedById",
                 principalTable: "AspNetUsers",
-                principalColumn: "Id");
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Equipments_AspNetUsers_RegisteredByID",
                 table: "Equipments",
                 column: "RegisteredByID",
                 principalTable: "AspNetUsers",
-                principalColumn: "Id");
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_EquipmentSpecifications_AspNetUsers_ArchievedById",
                 table: "EquipmentSpecifications",
                 column: "ArchievedById",
                 principalTable: "AspNetUsers",
-                principalColumn: "Id");
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_EquipmentSpecifications_Properties_PropertyID",
@@ -1762,14 +1720,16 @@ namespace temsAPI.Migrations
                 table: "EquipmentTypes",
                 column: "ArchievedById",
                 principalTable: "AspNetUsers",
-                principalColumn: "Id");
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_KeyAllocations_AspNetUsers_ArchievedById",
                 table: "KeyAllocations",
                 column: "ArchievedById",
                 principalTable: "AspNetUsers",
-                principalColumn: "Id");
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_KeyAllocations_Keys_KeyID",
@@ -1777,7 +1737,7 @@ namespace temsAPI.Migrations
                 column: "KeyID",
                 principalTable: "Keys",
                 principalColumn: "Id",
-                onDelete: ReferentialAction.Restrict);
+                onDelete: ReferentialAction.Cascade);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_KeyAllocations_Personnel_PersonnelID",
@@ -1785,14 +1745,15 @@ namespace temsAPI.Migrations
                 column: "PersonnelID",
                 principalTable: "Personnel",
                 principalColumn: "Id",
-                onDelete: ReferentialAction.Restrict);
+                onDelete: ReferentialAction.Cascade);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Keys_AspNetUsers_ArchievedById",
                 table: "Keys",
                 column: "ArchievedById",
                 principalTable: "AspNetUsers",
-                principalColumn: "Id");
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Keys_Rooms_RoomId",
@@ -1800,28 +1761,31 @@ namespace temsAPI.Migrations
                 column: "RoomId",
                 principalTable: "Rooms",
                 principalColumn: "Id",
-                onDelete: ReferentialAction.Restrict);
+                onDelete: ReferentialAction.Cascade);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_LibraryItems_AspNetUsers_UploadedById",
                 table: "LibraryItems",
                 column: "UploadedById",
                 principalTable: "AspNetUsers",
-                principalColumn: "Id");
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Logs_AspNetUsers_ArchievedById",
                 table: "Logs",
                 column: "ArchievedById",
                 principalTable: "AspNetUsers",
-                principalColumn: "Id");
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Logs_AspNetUsers_CreatedByID",
                 table: "Logs",
                 column: "CreatedByID",
                 principalTable: "AspNetUsers",
-                principalColumn: "Id");
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Logs_Personnel_PersonnelID",
@@ -1829,7 +1793,7 @@ namespace temsAPI.Migrations
                 column: "PersonnelID",
                 principalTable: "Personnel",
                 principalColumn: "Id",
-                onDelete: ReferentialAction.Restrict);
+                onDelete: ReferentialAction.Cascade);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Logs_Rooms_RoomID",
@@ -1837,14 +1801,15 @@ namespace temsAPI.Migrations
                 column: "RoomID",
                 principalTable: "Rooms",
                 principalColumn: "Id",
-                onDelete: ReferentialAction.Restrict);
+                onDelete: ReferentialAction.Cascade);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Personnel_AspNetUsers_ArchievedById",
                 table: "Personnel",
                 column: "ArchievedById",
                 principalTable: "AspNetUsers",
-                principalColumn: "Id");
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Restrict);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -1950,9 +1915,6 @@ namespace temsAPI.Migrations
                 name: "TEMSUserTicket1");
 
             migrationBuilder.DropTable(
-                name: "ToDos");
-
-            migrationBuilder.DropTable(
                 name: "UserCommonNotification");
 
             migrationBuilder.DropTable(
@@ -1966,9 +1928,6 @@ namespace temsAPI.Migrations
 
             migrationBuilder.DropTable(
                 name: "Equipments");
-
-            migrationBuilder.DropTable(
-                name: "LogTypes");
 
             migrationBuilder.DropTable(
                 name: "PersonnelPositions");

@@ -20,7 +20,6 @@ namespace temsAPI.Contracts
         IGenericRepository<FrequentTicketProblem> FrequentTicketProblems { get; }
         IGenericRepository<Log> Logs { get; }
         IGenericRepository<Ticket> Tickets { get; }
-        IGenericRepository<ToDo> ToDos { get; }
         IGenericRepository<CommonNotification> CommonNotifications { get; }
         IGenericRepository<UserNotification> UserNotifications { get; }
 

@@ -10,8 +10,10 @@ namespace temsAPI.Data.Entities.EquipmentEntities
 {
     public class DataType
     {
-        [Key]
+        [Key] [MaxLength(150)]
         public string Id { get; set; }
+
+        [MaxLength(50)]
         public string Name { get; set; }
 
         public virtual ICollection<Property> DataTypeProperties { get; set; }

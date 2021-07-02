@@ -22,10 +22,10 @@ namespace temsAPI.Migrations
             modelBuilder.Entity("EquipmentDefinitionReportTemplate", b =>
                 {
                     b.Property<string>("EquipmentDefinitionsId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(150)");
 
                     b.Property<string>("ReportTemplatesMemberOfId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(150)");
 
                     b.HasKey("EquipmentDefinitionsId", "ReportTemplatesMemberOfId");
 
@@ -37,10 +37,10 @@ namespace temsAPI.Migrations
             modelBuilder.Entity("EquipmentTicket", b =>
                 {
                     b.Property<string>("EquipmentsId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(150)");
 
                     b.Property<string>("TicketsId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(150)");
 
                     b.HasKey("EquipmentsId", "TicketsId");
 
@@ -52,10 +52,10 @@ namespace temsAPI.Migrations
             modelBuilder.Entity("EquipmentTypeEquipmentType", b =>
                 {
                     b.Property<string>("ChildrenId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(150)");
 
                     b.Property<string>("ParentsId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(150)");
 
                     b.HasKey("ChildrenId", "ParentsId");
 
@@ -67,10 +67,10 @@ namespace temsAPI.Migrations
             modelBuilder.Entity("EquipmentTypeProperty", b =>
                 {
                     b.Property<string>("EquipmentTypesId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(150)");
 
                     b.Property<string>("PropertiesId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(150)");
 
                     b.HasKey("EquipmentTypesId", "PropertiesId");
 
@@ -82,10 +82,10 @@ namespace temsAPI.Migrations
             modelBuilder.Entity("EquipmentTypeReportTemplate", b =>
                 {
                     b.Property<string>("EquipmentTypesId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(150)");
 
                     b.Property<string>("ReportTemplatesMemberOfId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(150)");
 
                     b.HasKey("EquipmentTypesId", "ReportTemplatesMemberOfId");
 
@@ -303,10 +303,10 @@ namespace temsAPI.Migrations
             modelBuilder.Entity("PersonnelPersonnelPosition", b =>
                 {
                     b.Property<string>("PersonnelId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(150)");
 
                     b.Property<string>("PositionsId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(150)");
 
                     b.HasKey("PersonnelId", "PositionsId");
 
@@ -318,10 +318,10 @@ namespace temsAPI.Migrations
             modelBuilder.Entity("PersonnelReportTemplate", b =>
                 {
                     b.Property<string>("ReportTemplatesAssignedId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(150)");
 
                     b.Property<string>("SignatoriesId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(150)");
 
                     b.HasKey("ReportTemplatesAssignedId", "SignatoriesId");
 
@@ -333,10 +333,10 @@ namespace temsAPI.Migrations
             modelBuilder.Entity("PersonnelReportTemplate1", b =>
                 {
                     b.Property<string>("PersonnelId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(150)");
 
                     b.Property<string>("ReportTemplatesMemberId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(150)");
 
                     b.HasKey("PersonnelId", "ReportTemplatesMemberId");
 
@@ -348,10 +348,10 @@ namespace temsAPI.Migrations
             modelBuilder.Entity("PersonnelRoom", b =>
                 {
                     b.Property<string>("RoomsSupervisoriedId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(150)");
 
                     b.Property<string>("SupervisoriesId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(150)");
 
                     b.HasKey("RoomsSupervisoriedId", "SupervisoriesId");
 
@@ -363,10 +363,10 @@ namespace temsAPI.Migrations
             modelBuilder.Entity("PersonnelTicket", b =>
                 {
                     b.Property<string>("PersonnelId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(150)");
 
                     b.Property<string>("TicketsId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(150)");
 
                     b.HasKey("PersonnelId", "TicketsId");
 
@@ -378,10 +378,10 @@ namespace temsAPI.Migrations
             modelBuilder.Entity("PropertyReportTemplate", b =>
                 {
                     b.Property<string>("PropertiesId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(150)");
 
                     b.Property<string>("ReportTemplatesMemberOfId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(150)");
 
                     b.HasKey("PropertiesId", "ReportTemplatesMemberOfId");
 
@@ -393,10 +393,10 @@ namespace temsAPI.Migrations
             modelBuilder.Entity("ReportTemplateRoom", b =>
                 {
                     b.Property<string>("ReportTemplatesMemberOfId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(150)");
 
                     b.Property<string>("RoomsId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(150)");
 
                     b.HasKey("ReportTemplatesMemberOfId", "RoomsId");
 
@@ -408,10 +408,10 @@ namespace temsAPI.Migrations
             modelBuilder.Entity("RoomRoomLabel", b =>
                 {
                     b.Property<string>("LabelsId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(150)");
 
                     b.Property<string>("RoomsId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(150)");
 
                     b.HasKey("LabelsId", "RoomsId");
 
@@ -423,10 +423,10 @@ namespace temsAPI.Migrations
             modelBuilder.Entity("RoomTicket", b =>
                 {
                     b.Property<string>("RoomsId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(150)");
 
                     b.Property<string>("TicketsId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(150)");
 
                     b.HasKey("RoomsId", "TicketsId");
 
@@ -438,7 +438,7 @@ namespace temsAPI.Migrations
             modelBuilder.Entity("TEMSUserTicket", b =>
                 {
                     b.Property<string>("AssignedTicketsId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(150)");
 
                     b.Property<string>("AssigneesId")
                         .HasColumnType("nvarchar(450)");
@@ -453,7 +453,7 @@ namespace temsAPI.Migrations
             modelBuilder.Entity("TEMSUserTicket1", b =>
                 {
                     b.Property<string>("ClosedAndThenReopenedTicketsId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(150)");
 
                     b.Property<string>("PreviouslyClosedById")
                         .HasColumnType("nvarchar(450)");
@@ -468,7 +468,8 @@ namespace temsAPI.Migrations
             modelBuilder.Entity("temsAPI.Data.Entities.CommunicationEntities.Announcement", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
 
                     b.Property<string>("AuthorID")
                         .HasColumnType("nvarchar(450)");
@@ -480,16 +481,16 @@ namespace temsAPI.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("Message")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
 
                     b.Property<string>("Title")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("AuthorID");
-
-                    b.HasIndex("DateCreated");
 
                     b.ToTable("Announcements");
                 });
@@ -497,13 +498,15 @@ namespace temsAPI.Migrations
             modelBuilder.Entity("temsAPI.Data.Entities.CommunicationEntities.CommonNotification", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
 
                     b.Property<DateTime>("DateCreated")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Message")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
 
                     b.Property<bool>("SendBrowser")
                         .HasColumnType("bit");
@@ -518,7 +521,8 @@ namespace temsAPI.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("Title")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
 
@@ -528,10 +532,12 @@ namespace temsAPI.Migrations
             modelBuilder.Entity("temsAPI.Data.Entities.CommunicationEntities.FrequentTicketProblem", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
 
                     b.Property<string>("Problem")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.HasKey("Id");
 
@@ -541,7 +547,8 @@ namespace temsAPI.Migrations
             modelBuilder.Entity("temsAPI.Data.Entities.CommunicationEntities.Log", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
 
                     b.Property<string>("ArchievedById")
                         .HasColumnType("nvarchar(450)");
@@ -556,19 +563,23 @@ namespace temsAPI.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
 
                     b.Property<string>("EquipmentID")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
 
                     b.Property<bool>("IsArchieved")
                         .HasColumnType("bit");
 
                     b.Property<string>("PersonnelID")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
 
                     b.Property<string>("RoomID")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
 
                     b.HasKey("Id");
 
@@ -588,7 +599,8 @@ namespace temsAPI.Migrations
             modelBuilder.Entity("temsAPI.Data.Entities.CommunicationEntities.Ticket", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
 
                     b.Property<string>("ArchievedById")
                         .HasColumnType("nvarchar(450)");
@@ -612,7 +624,8 @@ namespace temsAPI.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
 
                     b.Property<bool>("IsArchieved")
                         .HasColumnType("bit");
@@ -621,13 +634,16 @@ namespace temsAPI.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("LabelId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
 
                     b.Property<string>("Problem")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("StatusId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
 
                     b.Property<int>("TrackingNumber")
                         .ValueGeneratedOnAdd()
@@ -649,40 +665,14 @@ namespace temsAPI.Migrations
                     b.ToTable("Tickets");
                 });
 
-            modelBuilder.Entity("temsAPI.Data.Entities.CommunicationEntities.ToDo", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("CreatedByID")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("DateClosed")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("DateCreated")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Text")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("Urgent")
-                        .HasColumnType("bit");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CreatedByID");
-
-                    b.ToTable("ToDos");
-                });
-
             modelBuilder.Entity("temsAPI.Data.Entities.CommunicationEntities.UserCommonNotification", b =>
                 {
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("NotificationId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
 
                     b.Property<bool>("Seen")
                         .HasColumnType("bit");
@@ -697,13 +687,15 @@ namespace temsAPI.Migrations
             modelBuilder.Entity("temsAPI.Data.Entities.CommunicationEntities.UserNotification", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
 
                     b.Property<DateTime>("DateCreated")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Message")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
 
                     b.Property<bool>("Seen")
                         .HasColumnType("bit");
@@ -721,7 +713,8 @@ namespace temsAPI.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("Title")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("UserID")
                         .HasColumnType("nvarchar(450)");
@@ -736,10 +729,12 @@ namespace temsAPI.Migrations
             modelBuilder.Entity("temsAPI.Data.Entities.EquipmentEntities.DataType", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
 
@@ -749,13 +744,15 @@ namespace temsAPI.Migrations
             modelBuilder.Entity("temsAPI.Data.Entities.EquipmentEntities.Equipment", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
 
                     b.Property<string>("ArchievedById")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Currency")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
 
                     b.Property<DateTime?>("DateArchieved")
                         .HasColumnType("datetime2");
@@ -764,10 +761,12 @@ namespace temsAPI.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(1500)
+                        .HasColumnType("nvarchar(1500)");
 
                     b.Property<string>("EquipmentDefinitionID")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
 
                     b.Property<bool>("IsArchieved")
                         .HasColumnType("bit");
@@ -779,7 +778,8 @@ namespace temsAPI.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("ParentID")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
 
                     b.Property<double?>("Price")
                         .HasColumnType("float");
@@ -794,10 +794,12 @@ namespace temsAPI.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("SerialNumber")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("TEMSID")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
 
@@ -819,7 +821,8 @@ namespace temsAPI.Migrations
             modelBuilder.Entity("temsAPI.Data.Entities.EquipmentEntities.EquipmentAllocation", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
 
                     b.Property<string>("ArchievedById")
                         .HasColumnType("nvarchar(450)");
@@ -834,16 +837,19 @@ namespace temsAPI.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("EquipmentID")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
 
                     b.Property<bool>("IsArchieved")
                         .HasColumnType("bit");
 
                     b.Property<string>("PersonnelID")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
 
                     b.Property<string>("RoomID")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
 
                     b.HasKey("Id");
 
@@ -861,31 +867,37 @@ namespace temsAPI.Migrations
             modelBuilder.Entity("temsAPI.Data.Entities.EquipmentEntities.EquipmentDefinition", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
 
                     b.Property<string>("ArchievedById")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Currency")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
 
                     b.Property<DateTime?>("DateArchieved")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<string>("EquipmentTypeID")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
 
                     b.Property<string>("Identifier")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<bool>("IsArchieved")
                         .HasColumnType("bit");
 
                     b.Property<string>("ParentID")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
 
                     b.Property<double>("Price")
                         .HasColumnType("float");
@@ -906,7 +918,8 @@ namespace temsAPI.Migrations
             modelBuilder.Entity("temsAPI.Data.Entities.EquipmentEntities.EquipmentSpecifications", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
 
                     b.Property<string>("ArchievedById")
                         .HasColumnType("nvarchar(450)");
@@ -915,16 +928,19 @@ namespace temsAPI.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("EquipmentDefinitionID")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
 
                     b.Property<bool>("IsArchieved")
                         .HasColumnType("bit");
 
                     b.Property<string>("PropertyID")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
 
                     b.Property<string>("Value")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(1500)
+                        .HasColumnType("nvarchar(1500)");
 
                     b.HasKey("Id");
 
@@ -940,7 +956,8 @@ namespace temsAPI.Migrations
             modelBuilder.Entity("temsAPI.Data.Entities.EquipmentEntities.EquipmentType", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
 
                     b.Property<string>("ArchievedById")
                         .HasColumnType("nvarchar(450)");
@@ -957,7 +974,8 @@ namespace temsAPI.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.HasKey("Id");
 
@@ -969,22 +987,26 @@ namespace temsAPI.Migrations
             modelBuilder.Entity("temsAPI.Data.Entities.EquipmentEntities.Property", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
 
                     b.Property<string>("ArchievedById")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("DataTypeID")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
 
                     b.Property<DateTime?>("DateArchieved")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
 
                     b.Property<string>("DisplayName")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<bool>("EditablePropertyInfo")
                         .ValueGeneratedOnAdd()
@@ -1001,10 +1023,12 @@ namespace temsAPI.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("Options")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
 
                     b.Property<bool>("Required")
                         .HasColumnType("bit");
@@ -1021,13 +1045,16 @@ namespace temsAPI.Migrations
             modelBuilder.Entity("temsAPI.Data.Entities.EquipmentEntities.PropertyEquipmentTypeAssociation", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
 
                     b.Property<string>("PropertyID")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
 
                     b.Property<string>("TypeID")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
 
                     b.HasKey("Id");
 
@@ -1041,7 +1068,8 @@ namespace temsAPI.Migrations
             modelBuilder.Entity("temsAPI.Data.Entities.KeyEntities.Key", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
 
                     b.Property<string>("ArchievedById")
                         .HasColumnType("nvarchar(450)");
@@ -1050,16 +1078,19 @@ namespace temsAPI.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
 
                     b.Property<string>("Identifier")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<bool>("IsArchieved")
                         .HasColumnType("bit");
 
                     b.Property<string>("RoomId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
 
                     b.HasKey("Id");
 
@@ -1073,7 +1104,8 @@ namespace temsAPI.Migrations
             modelBuilder.Entity("temsAPI.Data.Entities.KeyEntities.KeyAllocation", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
 
                     b.Property<string>("ArchievedById")
                         .HasColumnType("nvarchar(450)");
@@ -1091,10 +1123,12 @@ namespace temsAPI.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("KeyID")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
 
                     b.Property<string>("PersonnelID")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
 
                     b.HasKey("Id");
 
@@ -1110,13 +1144,16 @@ namespace temsAPI.Migrations
             modelBuilder.Entity("temsAPI.Data.Entities.LibraryEntities.LibraryFolder", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.HasKey("Id");
 
@@ -1126,22 +1163,27 @@ namespace temsAPI.Migrations
             modelBuilder.Entity("temsAPI.Data.Entities.LibraryEntities.LibraryItem", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
 
                     b.Property<string>("ActualName")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
 
                     b.Property<DateTime>("DateUploaded")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("DbPath")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
 
                     b.Property<string>("DisplayName")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
 
                     b.Property<int>("Downloads")
                         .HasColumnType("int");
@@ -1150,7 +1192,8 @@ namespace temsAPI.Migrations
                         .HasColumnType("float");
 
                     b.Property<string>("LibraryFolderId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
 
                     b.Property<string>("UploadedById")
                         .HasColumnType("nvarchar(450)");
@@ -1167,10 +1210,12 @@ namespace temsAPI.Migrations
             modelBuilder.Entity("temsAPI.Data.Entities.OtherEntities.Label", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
 
                     b.HasKey("Id");
 
@@ -1180,7 +1225,8 @@ namespace temsAPI.Migrations
             modelBuilder.Entity("temsAPI.Data.Entities.OtherEntities.Personnel", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
 
                     b.Property<string>("ArchievedById")
                         .HasColumnType("nvarchar(450)");
@@ -1189,19 +1235,23 @@ namespace temsAPI.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("ImagePath")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
 
                     b.Property<bool>("IsArchieved")
                         .HasColumnType("bit");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
 
@@ -1213,7 +1263,8 @@ namespace temsAPI.Migrations
             modelBuilder.Entity("temsAPI.Data.Entities.OtherEntities.PersonnelPosition", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
 
                     b.Property<string>("ArchievedById")
                         .HasColumnType("nvarchar(450)");
@@ -1225,7 +1276,8 @@ namespace temsAPI.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
 
@@ -1237,7 +1289,8 @@ namespace temsAPI.Migrations
             modelBuilder.Entity("temsAPI.Data.Entities.OtherEntities.Room", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
 
                     b.Property<string>("ArchievedById")
                         .HasColumnType("nvarchar(450)");
@@ -1246,13 +1299,15 @@ namespace temsAPI.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(1500)
+                        .HasColumnType("nvarchar(1500)");
 
                     b.Property<int?>("Floor")
                         .HasColumnType("int");
 
                     b.Property<string>("Identifier")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<bool>("IsArchieved")
                         .HasColumnType("bit");
@@ -1267,7 +1322,8 @@ namespace temsAPI.Migrations
             modelBuilder.Entity("temsAPI.Data.Entities.OtherEntities.RoomLabel", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
 
                     b.Property<string>("ArchievedById")
                         .HasColumnType("nvarchar(450)");
@@ -1279,7 +1335,8 @@ namespace temsAPI.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
 
@@ -1291,7 +1348,8 @@ namespace temsAPI.Migrations
             modelBuilder.Entity("temsAPI.Data.Entities.OtherEntities.Status", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
 
                     b.Property<string>("ArchievedById")
                         .HasColumnType("nvarchar(450)");
@@ -1306,7 +1364,8 @@ namespace temsAPI.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
 
                     b.HasKey("Id");
 
@@ -1318,10 +1377,12 @@ namespace temsAPI.Migrations
             modelBuilder.Entity("temsAPI.Data.Entities.Report.Report", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
 
                     b.Property<string>("DBPath")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
 
                     b.Property<DateTime>("DateGenerated")
                         .HasColumnType("datetime2");
@@ -1330,7 +1391,8 @@ namespace temsAPI.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Template")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
 
                     b.HasKey("Id");
 
@@ -1342,13 +1404,15 @@ namespace temsAPI.Migrations
             modelBuilder.Entity("temsAPI.Data.Entities.Report.ReportTemplate", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
 
                     b.Property<string>("ArchievedById")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("CommonProperties")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
 
                     b.Property<string>("CreatedById")
                         .HasColumnType("nvarchar(450)");
@@ -1360,25 +1424,31 @@ namespace temsAPI.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
 
                     b.Property<string>("Footer")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
 
                     b.Property<string>("Header")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
 
                     b.Property<bool>("IsArchieved")
                         .HasColumnType("bit");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("SeparateBy")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("Subject")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.HasKey("Id");
 
@@ -1392,13 +1462,16 @@ namespace temsAPI.Migrations
             modelBuilder.Entity("temsAPI.Data.Entities.UserEntities.Privilege", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
 
                     b.Property<string>("Identifier")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.HasKey("Id");
 
@@ -1408,10 +1481,12 @@ namespace temsAPI.Migrations
             modelBuilder.Entity("temsAPI.Data.Entities.UserEntities.RolePrivileges", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
 
                     b.Property<string>("PrivilegeID")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
 
                     b.Property<string>("RoleID")
                         .HasColumnType("nvarchar(450)");
@@ -1428,10 +1503,12 @@ namespace temsAPI.Migrations
             modelBuilder.Entity("temsAPI.Data.Entities.UserEntities.TemsJWT", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
 
                     b.Property<string>("Content")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
 
                     b.Property<DateTime>("ExpirationDate")
                         .HasColumnType("datetime2");
@@ -1455,7 +1532,8 @@ namespace temsAPI.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("FullName")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<bool>("GetEmailNotifications")
                         .HasColumnType("bit");
@@ -1464,7 +1542,8 @@ namespace temsAPI.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("PersonnelId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)");
 
                     b.HasIndex("ArchievedById");
 
@@ -1842,15 +1921,6 @@ namespace temsAPI.Migrations
                     b.Navigation("Label");
 
                     b.Navigation("Status");
-                });
-
-            modelBuilder.Entity("temsAPI.Data.Entities.CommunicationEntities.ToDo", b =>
-                {
-                    b.HasOne("temsAPI.Data.Entities.UserEntities.TEMSUser", "CreatedBy")
-                        .WithMany()
-                        .HasForeignKey("CreatedByID");
-
-                    b.Navigation("CreatedBy");
                 });
 
             modelBuilder.Entity("temsAPI.Data.Entities.CommunicationEntities.UserCommonNotification", b =>

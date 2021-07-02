@@ -13,15 +13,15 @@ namespace temsAPI.Data.Entities.CommunicationEntities
 {
     public class Log: IArchiveableItem
     {
-        [Key]
+        [Key] [MaxLength(150)]
         public string Id { get; set; }
         
+        [MaxLength(250)]
         public string Description { get; set; }
 
         public DateTime DateCreated { get; set; }
 
 #nullable enable
-
         [InverseProperty("CreatedLogs")]
         [ForeignKey("CreatedByID")]
         public TEMSUser? CreatedBy { get; set; }
@@ -29,16 +29,22 @@ namespace temsAPI.Data.Entities.CommunicationEntities
 
         [ForeignKey("EquipmentID")]
         public Equipment? Equipment { get; set; }
+
+        [MaxLength(150)]
         public string? EquipmentID { get; set; }
 
         [InverseProperty("Logs")]
         [ForeignKey("RoomID")]
         public Room? Room { get; set; }
+
+        [MaxLength(150)]
         public string? RoomID { get; set; }
 
         [InverseProperty("Logs")]
         [ForeignKey("PersonnelID")]
         public Personnel? Personnel { get; set; }
+
+        [MaxLength(150)]
         public string? PersonnelID { get; set; }
 
         [InverseProperty("ArchivedLogs")]
@@ -66,6 +72,5 @@ namespace temsAPI.Data.Entities.CommunicationEntities
 
         [NotMapped]
         public string Identifier => $"Description: {Description}, Equipment: {Equipment?.TemsIdOrSerialNumber ?? "none"}, Personnel: {Personnel?.Name ?? "none"}, Room: {Room?.Identifier ?? "none"}";
-
     }
 }

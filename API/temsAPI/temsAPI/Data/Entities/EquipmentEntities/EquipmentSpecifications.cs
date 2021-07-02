@@ -15,16 +15,20 @@ namespace temsAPI.Data.Entities.EquipmentEntities
     {
         // Which properties relates to which equipment types.
 
-        [Key]
+        [Key] [MaxLength(150)]
         public string Id { get; set; }
 
         [ForeignKey("EquipmentDefinitionID")]
         public EquipmentDefinition EquipmentDefinition { get; set; }
+
+        [MaxLength(150)]
         public string EquipmentDefinitionID { get; set; }
 
 
         [ForeignKey("PropertyID")]
         public Property Property { get; set; }
+
+        [MaxLength(150)]
         public string PropertyID { get; set; }
 
         public DateTime? DateArchieved { get; set; }
@@ -45,6 +49,7 @@ namespace temsAPI.Data.Entities.EquipmentEntities
         }
 
 #nullable enable
+        [MaxLength(1500)]
         public string? Value { get; set; }
 
         [InverseProperty("ArchivedSpecifications")]

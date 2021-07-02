@@ -13,8 +13,10 @@ namespace temsAPI.Data.Entities.EquipmentEntities
 {
     public class Property: IArchiveableItem
     {
-        [Key]
+        [Key] [MaxLength(150)]
         public string Id { get; set; }
+
+        [MaxLength(100)]
         public string Name { get; set; }
         public bool Required { get; set; } = false;
         public DateTime? DateArchieved { get; set; }
@@ -38,14 +40,22 @@ namespace temsAPI.Data.Entities.EquipmentEntities
         public bool EditablePropertyInfo { get; set; } = true;
 
 #nullable enable
+
+        [MaxLength(250)]
         public string? Description { get; set; }
+
+        [MaxLength(100)]
         public string? DisplayName { get; set; }
         public int? Min { get; set; }
         public int? Max { get; set; }
-        public string? Options { get; set; } // Will be integrated soon, i guess
+
+        [MaxLength(1000)]
+        public string? Options { get; set; } // Will be integrated soon, i guess ;)
 
         [ForeignKey("DataTypeID")]
         public DataType? DataType { get; set; }
+
+        [MaxLength(150)]
         public string? DataTypeID { get; set; }
 
         [InverseProperty("ArchivedProperties")]
@@ -61,6 +71,5 @@ namespace temsAPI.Data.Entities.EquipmentEntities
 
         [NotMapped]
         public string Identifier => DisplayName;
-
     }
 }

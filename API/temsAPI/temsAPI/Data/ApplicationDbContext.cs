@@ -145,7 +145,6 @@ namespace temsAPI.Data
         public DbSet<Announcement> Announcements { get; set; }
         public DbSet<FrequentTicketProblem> FrequentTicketProblems { get; set; }
         public DbSet<Ticket> Tickets { get; set; }
-        public DbSet<ToDo> ToDos { get; set; }
         public DbSet<Log> Logs { get; set; }
         public DbSet<CommonNotification> CommonNotifications { get; set; }
         public DbSet<UserNotification> UserNotifications { get; set; }

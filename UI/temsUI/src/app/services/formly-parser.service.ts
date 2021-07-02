@@ -40,7 +40,8 @@ export class FormlyParserService extends TEMSComponent {
           type: 'input',
           templateOptions: {
             required: true,
-            placeholder: '214'
+            placeholder: '214',
+            maxLength: 100,
           },
           expressionProperties: {
             'templateOptions.label': this.translate.stream('room.identifier'),
@@ -64,6 +65,7 @@ export class FormlyParserService extends TEMSComponent {
           templateOptions: {
             placeholder: '...',
             rows: 5,
+            maxLength: 1500
           },
           expressionProperties: {
             'templateOptions.label': this.translate.stream('form.description'),
@@ -130,6 +132,7 @@ export class FormlyParserService extends TEMSComponent {
               type: 'autocomplete',
               templateOptions: {
                 required: true,
+                maxLength: 100,
                 placeholder: 'Incarcare cartus...',
                 filter: (term) => of(term ? this.filterAutocomplete(term, frequentProblems) : frequentProblems.slice()),
               },
@@ -140,6 +143,9 @@ export class FormlyParserService extends TEMSComponent {
             {
               key: 'problemDescription',
               type: 'textarea',
+              templateOptions: {
+                maxLength: 1000,
+              },
               expressionProperties: {
                 'templateOptions.label': this.translate.stream('ticket.description'),
               },
@@ -221,6 +227,7 @@ export class FormlyParserService extends TEMSComponent {
         type: 'input-tooltip',
         templateOptions: {
           label: 'TEMSID',
+          maxLength: 50,
         },
         expressionProperties: {
           'templateOptions.description': this.translate.stream('form.temsIdDescription')
@@ -231,6 +238,7 @@ export class FormlyParserService extends TEMSComponent {
         type: 'input-tooltip',
         templateOptions: {
           label: 'Serial Number',
+          maxLength: 100,
         },
         expressionProperties: {
           'templateOptions.label': this.translate.stream('form.serialNumber'),
@@ -256,6 +264,9 @@ export class FormlyParserService extends TEMSComponent {
       {
         key: 'description',
         type: 'textarea',
+        templateOptions: {
+          maxLength: 1500
+        },
         expressionProperties: {
           'templateOptions.label': this.translate.stream('form.description'),
         }
@@ -313,6 +324,7 @@ export class FormlyParserService extends TEMSComponent {
           type: 'input-tooltip',
           templateOptions: {
             placeholder: 'model',
+            maxLength: 100,
             required: true
           },
           expressionProperties: {
@@ -328,6 +340,7 @@ export class FormlyParserService extends TEMSComponent {
           type: 'input-tooltip',
           templateOptions: {
             placeholder: 'Model',
+            maxLength: 100,
             required: true,
           },
           expressionProperties: {
@@ -338,6 +351,9 @@ export class FormlyParserService extends TEMSComponent {
         {
           key: 'description',
           type: 'input-tooltip',
+          templateOptions: {
+            maxLength: 250
+          },
           expressionProperties: {
             'templateOptions.label': this.translate.stream('property.description'),
             'templateOptions.description': this.translate.stream('property.descriptionDescription'),
@@ -382,6 +398,7 @@ export class FormlyParserService extends TEMSComponent {
               type: 'input-tooltip',
               templateOptions: {
                 required: true,
+                maxLength: 50,
               },
               expressionProperties: {
                 'templateOptions.label': this.translate.stream('form.identifier'),
@@ -403,6 +420,9 @@ export class FormlyParserService extends TEMSComponent {
             {
               key: 'description',
               type: 'input',
+              templateOptions: {
+                maxLength: 250
+              },
               expressionProperties: {
                 'templateOptions.label': this.translate.stream('form.description'),
               },
@@ -424,6 +444,7 @@ export class FormlyParserService extends TEMSComponent {
               key: 'title',
               type: 'input',
               templateOptions: {
+                maxLength: 100,
                 required: true,
               },
               expressionProperties: {
@@ -435,6 +456,7 @@ export class FormlyParserService extends TEMSComponent {
               type: 'textarea',
               templateOptions: {
                 rows: 3,
+                maxLength: 250,
                 required: true,
               },
               expressionProperties: {
@@ -456,6 +478,7 @@ export class FormlyParserService extends TEMSComponent {
           key: 'identifier',
           type: 'input-tooltip',
           templateOptions: {
+            maxLength: 100,
             required: true,
           },
           expressionProperties: {
@@ -473,6 +496,9 @@ export class FormlyParserService extends TEMSComponent {
       {
         key: 'description',
         type: 'textarea',
+        templateOptions: {
+          maxLength: 500
+        },
         expressionProperties: {
           'templateOptions.label': this.translate.stream('form.description'),
         },
@@ -657,6 +683,7 @@ export class FormlyParserService extends TEMSComponent {
               key: 'description',
               type: 'textarea',
               templateOptions: {
+                maxLength: 250,
                 placeholder: '...',
                 rows: 5,
               },
@@ -773,6 +800,7 @@ export class FormlyParserService extends TEMSComponent {
           key: 'name',
           type: 'input',
           templateOptions: {
+            maxLength: 100,
             required: true,
           },
           expressionProperties: {
@@ -782,6 +810,9 @@ export class FormlyParserService extends TEMSComponent {
         {
           key: 'phoneNumber',
           type: 'input-tooltip',
+          templateOptions: {
+            maxLength: 50
+          },
           expressionProperties: {
             'templateOptions.label': this.translate.stream('personnel.phoneNumber'),
             'templateOptions.description': this.translate.stream('personnel.phoneNumberDescription'),
@@ -792,6 +823,7 @@ export class FormlyParserService extends TEMSComponent {
           type: 'input-tooltip',
           templateOptions: {
             type: 'email',
+            maxLength: 100,
           },
           expressionProperties: {
             'templateOptions.label': this.translate.stream('personnel.email'),

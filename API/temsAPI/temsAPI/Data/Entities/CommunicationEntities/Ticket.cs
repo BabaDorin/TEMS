@@ -46,7 +46,7 @@ namespace temsAPI.Data.Entities.CommunicationEntities
         [MaxLength(100)]
         public string? Problem { get; set; }
 
-        [MaxLength(250)]
+        [MaxLength(1000)]
         public string? Description { get; set; }
 
         [InverseProperty("CreatedTickets")]

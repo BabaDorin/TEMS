@@ -33,6 +33,7 @@
                                 <mat-label>{{ 'library.fileName' | translate }}</mat-label>
                                 <input 
                                     matInput 
+                                    maxlength="150"
                                     name="title"
                                     [disabled]="file?.progress > 0" 
                                     [(ngModel)]="file.myName"
@@ -43,6 +44,7 @@
                                 <mat-label>{{ 'form.description' | translate }}</mat-label>
                                 <textarea 
                                     matInput 
+                                    maxlength="250"
                                     name="description"
                                     placeholder="..." 
                                     [disabled]="file?.progress > 0"

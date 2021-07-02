@@ -123,16 +123,16 @@ namespace temsAPI
                 s.GetService<IHttpContextAccessor>().HttpContext.User);
 
             // TEMS Services
+            services.AddScoped<RoutineCheckService>();
+            services.AddSingleton<SystemConfigurationService>();
+            services.AddSingleton<CurrencyConvertor>();
             services.AddScoped<ReportingService>();
             services.AddScoped<IdentityService>();
             services.AddScoped<EmailService>();
-            services.AddSingleton<CurrencyConvertor>();
             services.AddScoped<EmailNotificationService>();
             services.AddScoped<SMSNotificationService>();
             services.AddScoped<BrowserNotificationService>();
             services.AddScoped<NotificationService>();
-            services.AddSingleton<SystemConfigurationService>();
-            services.AddScoped<RoutineCheckService>();
             services.ConfigureWritable<AppSettings>(Configuration.GetSection("AppSettings"));
 
             // TEMS Entity managers
@@ -162,21 +162,17 @@ namespace temsAPI
             RoleManager<IdentityRole> roleManager,
             ApplicationDbContext dbContext,
             SystemConfigurationService systemConfigurationService,
-            RoutineCheckService routineCheckService,
-            IUnitOfWork unitOfWork)
+            RoutineCheckService routineCheckService)
         {
-
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                //app.UseSwagger();
-                //app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "temsAPI v1"));
+                app.UseSwagger();
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "temsAPI v1"));
             }
 
-            //app.UseHttpsRedirection();
             app.UseSession();
             app.UseRouting();
-            //app.UseCors(MyAllowSpecificOrigins);
             
             SeedData.Seed(userManager, roleManager, dbContext);
             TemsStarter.Start();
@@ -185,7 +181,6 @@ namespace temsAPI
             builder.WithOrigins(Configuration["AppSettings:Client_URL"].ToString())
             .AllowAnyHeader()
             .AllowAnyMethod()
-
             );
 
             app.UseAuthentication();
@@ -198,8 +193,8 @@ namespace temsAPI
                     pattern: "{controller=Home}/{action=Index}/{id?}");
             });
 
-            //var unitOfWork = (IUnitOfWork)serviceProvider.GetService(typeof(IFooService));
-            //(new Scheduler(unitOfWork, systemConfigurationService, routineCheckService)).Start();
+            var scheduler = new Scheduler(systemConfigurationService, routineCheckService);
+            scheduler.Start();
         }
     }
 }

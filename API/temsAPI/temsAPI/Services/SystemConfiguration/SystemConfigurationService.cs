@@ -1,12 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore.Query.Internal;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using temsAPI.Helpers;
 using temsAPI.Helpers.StaticFileHelpers;
+using temsAPI.Services.SystemConfiguration;
 using temsAPI.System_Files;
 using temsAPI.System_Files.TEMSFileLogger;
 
@@ -18,6 +16,8 @@ namespace temsAPI.Services
         private IWritableOptions<AppSettings> _appSettingsOptions; // this is used for file interaction
         private FileLoggerSettings _loggerSettings;
 
+        public RoutineCheckNotifier RoutineNotifier { get; private set; }
+
         public SystemConfigurationService(
             IWritableOptions<AppSettings> appSettingsOptions,
             IOptions<FileLoggerSettings> loggerSettings)
@@ -25,6 +25,7 @@ namespace temsAPI.Services
             AppSettings = appSettingsOptions.Value;
             _appSettingsOptions = appSettingsOptions;
             _loggerSettings = loggerSettings.Value;
+            RoutineNotifier = new RoutineCheckNotifier();
         }
 
         public string SetEmailSender(string address, string password)
@@ -68,6 +69,9 @@ namespace temsAPI.Services
             if (hours <= 0)
                 return "Invalid value provided for hours.";
 
+            if (hours == AppSettings.RoutineCheckIntervalHr)
+                return null;
+
             AppSettings.RoutineCheckIntervalHr = hours;
             
             this._appSettingsOptions.Update(op =>
@@ -75,6 +79,7 @@ namespace temsAPI.Services
                 op.RoutineCheckIntervalHr = hours;
             });
 
+            RoutineNotifier.RoutineCheckIntervalChanged();
             return null;
         }
 

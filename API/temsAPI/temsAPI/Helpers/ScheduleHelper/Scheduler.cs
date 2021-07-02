@@ -12,19 +12,21 @@ namespace temsAPI.Helpers
     public class Scheduler
     {
         private Timer timer;
-        IUnitOfWork _unitOfWork;
         SystemConfigurationService _systemConfigurationService;
         RoutineCheckService _routineCheckService;
 
-        public Scheduler(IUnitOfWork unitOfWork, SystemConfigurationService systemConfigurationService, RoutineCheckService routineCheckService)
+        public Scheduler(
+            SystemConfigurationService systemConfigurationService, 
+            RoutineCheckService routineCheckService)
         {
-            _unitOfWork = unitOfWork;
             _systemConfigurationService = systemConfigurationService;
             _routineCheckService = routineCheckService;
 
             timer = new Timer();
-            timer.Interval = _systemConfigurationService.AppSettings.RoutineCheckIntervalHr * 60 * 60 * 1000;
+            timer.Interval = GetTimerInterval();
             timer.Elapsed += Timer_Elapsed;
+
+            _systemConfigurationService.RoutineNotifier.RoutineCheckInterval_Changed += Interval_Changed;
         }
 
         public void Start()
@@ -35,6 +37,22 @@ namespace temsAPI.Helpers
         private async void Timer_Elapsed(object sender, ElapsedEventArgs e)
         {
             await _routineCheckService.RoutineCheck();
+        }
+
+        private void Interval_Changed(object sender, EventArgs e)
+        {
+            bool enabled = timer.Enabled;
+            if (enabled)
+                timer.Stop();
+
+            timer.Interval = GetTimerInterval();
+            if (enabled)
+                timer.Start();
+        }
+
+        private int GetTimerInterval()
+        {
+            return _systemConfigurationService.AppSettings.RoutineCheckIntervalHr * 60 * 60 * 1000;
         }
     }
 }

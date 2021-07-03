@@ -90,21 +90,7 @@ export function HttpLoaderFactory(http: HttpClient){
     ChartsModule,
     MatIconModule,
     ViewLibraryModule,
-    // NgxPaginationModule,
-    // IssueContainerModule,
-    // IssueSimplifiedModule,
-
-
-    // GenericContainerModule,
-    // TagInputModule,
-    // MatInputModule,
-    // MatFormFieldModule,
     TemsFormsModule,
-    // AnnouncementModule,
-
-    // LibraryModule,
-
-    // for internationalization
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,

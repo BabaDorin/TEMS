@@ -687,14 +687,12 @@ export class FormlyParserService extends TEMSComponent {
             description: addProperty.description,
             label: addProperty.displayName,
             required: addProperty.required,
-            disabled: true,
+            disabled: value != undefined,
           },
         }
         break;
 
       case 'number':
-        console.log('add ' + addProperty.name);
-
         propertyFieldGroup = {
           key: addProperty.name,
           type: 'input-tooltip',
@@ -705,7 +703,7 @@ export class FormlyParserService extends TEMSComponent {
             required: addProperty.required,
             min: (addProperty.min == 0 && addProperty.max == 0) ? undefined : addProperty.min,
             max: (addProperty.min == 0 && addProperty.max == 0) ? undefined : addProperty.max,
-            disabled: true,
+            disabled: value != undefined,
           },
         }
         break;
@@ -718,7 +716,7 @@ export class FormlyParserService extends TEMSComponent {
             label: addProperty.displayName,
             required: addProperty.required,
             options: addProperty.options,
-            disabled: true,
+            disabled: value != undefined,
           },
         }
         break;
@@ -731,20 +729,19 @@ export class FormlyParserService extends TEMSComponent {
             label: addProperty.displayName,
             required: addProperty.required,
             options: addProperty.options,
-            disabled: true,
+            disabled: value != undefined,
           },
         }
         break;
 
       case 'bool':
-        console.log('add ' + addProperty.name);
         propertyFieldGroup = {
           key: addProperty.name,
           type: 'checkbox',
           templateOptions: {
             label: addProperty.displayName,
             required: addProperty.required,
-            disabled: true,
+            disabled: value != undefined,
           },
         }
         break;
@@ -757,7 +754,7 @@ export class FormlyParserService extends TEMSComponent {
             label: addProperty.displayName,
             required: addProperty.required,
             options: addProperty.options,
-            disabled: true,
+            disabled: value != undefined,
           },
         }
         break;

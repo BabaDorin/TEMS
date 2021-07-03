@@ -96,7 +96,6 @@ export class AgGridPersonnelComponent extends TEMSComponent implements OnInit {
     this.loading = true;
     this.subscriptions.push(this.personnelService.getPersonnelSimplified(20, 20)
       .subscribe(result => {
-        console.log(result);
         this.rowData = result;
         this.loading = false;
         this.autoSizeAll();

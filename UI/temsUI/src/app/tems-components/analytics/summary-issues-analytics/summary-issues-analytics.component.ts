@@ -53,7 +53,6 @@ export class SummaryIssuesAnalyticsComponent extends TEMSComponent implements On
     this.subscriptions.push(
       this.analyticsService.getAmountOfCreatedIssues(this.getEntityType(), this.getEntityId())
       .subscribe(result => {
-        console.log(result);
         if(this.snackService.snackIfError(result))
           return;
 
@@ -66,7 +65,6 @@ export class SummaryIssuesAnalyticsComponent extends TEMSComponent implements On
     this.subscriptions.push(
       this.analyticsService.getAmountOfOpenTickets(this.getEntityType(), this.getEntityId())
       .subscribe(result => {
-        console.log(result);
         if(this.snackService.snackIfError(result))
           return;
 
@@ -79,7 +77,6 @@ export class SummaryIssuesAnalyticsComponent extends TEMSComponent implements On
     this.subscriptions.push(
       this.analyticsService.getTicketClosingRate(this.getEntityType(), this.getEntityId())
       .subscribe(result => {
-        console.log(result);
         if(this.snackService.snackIfError(result))
           return;
 
@@ -92,7 +89,6 @@ export class SummaryIssuesAnalyticsComponent extends TEMSComponent implements On
     this.subscriptions.push(
       this.analyticsService.getTicketClosingByRate(this.getEntityType(), this.getEntityId())
       .subscribe(result => {
-        console.log(result);
         if(this.snackService.snackIfError(result))
           return;
 
@@ -105,7 +101,6 @@ export class SummaryIssuesAnalyticsComponent extends TEMSComponent implements On
     this.subscriptions.push(
       this.analyticsService.getOpenTicketStatusRate(this.getEntityType(), this.getEntityId())
       .subscribe(result => {
-        console.log(result);
         if(this.snackService.snackIfError(result))
           return;
 

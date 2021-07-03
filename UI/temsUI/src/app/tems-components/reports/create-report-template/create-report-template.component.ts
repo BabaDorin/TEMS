@@ -113,9 +113,6 @@ export class CreateReportTemplateComponent extends TEMSComponent implements OnIn
         if(this.reportTemplateToUpdate == null)
           return;
 
-        console.log('got this from server to update');
-        console.log(this.reportTemplateToUpdate);
-
         let controls = this.reportFormGroup.controls;
         controls.name.setValue(this.reportTemplateToUpdate.name),
         controls.description.setValue(this.reportTemplateToUpdate.description),
@@ -157,9 +154,6 @@ export class CreateReportTemplateComponent extends TEMSComponent implements OnIn
        validDefinitions = this.reportFormGroup.controls.definitions.value
        .filter(q1 => this.typesEndPointParameter.findIndex(q2 => q2 == q1.additional) > -1);
 
-        console.log('valid');
-        console.log(validDefinitions);
-
     this.definitionsAlreadySelected = validDefinitions;
     this.findCommonAndSpecificProperties();
   }
@@ -175,20 +169,15 @@ export class CreateReportTemplateComponent extends TEMSComponent implements OnIn
        validDefinitions = this.reportFormGroup.controls.definitions.value
         .filter(q1 => this.typesEndPointParameter.findIndex(q2 => q2 == q1.additional) > -1);
        
-        console.log(validDefinitions);
-
     this.definitionsAlreadySelected = validDefinitions;
 
-    console.log('event data:');
     let index = this.typeSpecificProperties.findIndex(q => q.type == eventData);
     if (index > -1) {
-      console.log('typespecific removed');
       this.typeSpecificProperties.splice(index, 1);
     }
 
     index = this.specificProperties.findIndex(q => q.type == eventData);
     if(index > -1){
-      console.log('specific property removed');
       this.specificProperties.splice(index, 1);
   
       this.reportFormGroup.controls.specificProperties.setValue(this.specificProperties);
@@ -217,9 +206,6 @@ export class CreateReportTemplateComponent extends TEMSComponent implements OnIn
         this.subscriptions.push(
           this.equipmentService.getPropertiesOfType(element.value)
             .subscribe(result => {
-              console.log('ELEMENT:');
-              console.log(element);
-
               this.typeSpecificProperties.push(
                 {
                   type: element,
@@ -277,8 +263,6 @@ export class CreateReportTemplateComponent extends TEMSComponent implements OnIn
       element.checked = false;
       if(this.reportTemplateToUpdate.properties.indexOf(element.value) > -1)
         element.checked = true;
-      
-      console.log(element.value + ' ' + element.checked)
     });
 
     this.typeSpecificProperties.forEach(element =>{
@@ -288,10 +272,6 @@ export class CreateReportTemplateComponent extends TEMSComponent implements OnIn
         }
       })
 
-      console.log('adding');
-      console.log(element.properties.filter(q => q.checked));
-      console.log('to')
-      console.log(element.type);
       this.onSpecificPropChange(element.properties
         .filter(q => q.checked)
         .map(q => q.value), element.type);

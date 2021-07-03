@@ -55,8 +55,6 @@ export class KeysAllocationsComponent extends TEMSComponent implements OnInit {
   }
 
   submit(model){
-    console.log('model:');
-    console.log(model);
     if(model.keys.value == undefined 
       || model.keys.value.length == 0 
       || model.personnel.value == undefined

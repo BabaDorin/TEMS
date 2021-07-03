@@ -340,7 +340,10 @@
     },
 
     "type": {
-        "add": "Add new type"
+        "add": "Add new type",
+        "selectParentTypes": "Select parent type / types",
+        "name": "Type name",
+        "selectTypeProperties": "Select type's properties"
     },
 
     "room":{

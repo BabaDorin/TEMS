@@ -56,9 +56,6 @@ export class SystemConfigComponent extends TEMSComponent implements OnInit {
         if(this.snackService.snackIfError(result))
           return;
 
-        console.log('settings fetched');
-        console.log(result);
-
         this.appSettingsModel = result;
 
         this.spaceConstraintsFormGroup.setValue({libraryAllocatedStorageSpace: result.libraryAllocatedStorageSpace});

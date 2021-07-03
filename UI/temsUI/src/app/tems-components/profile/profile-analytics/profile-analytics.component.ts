@@ -47,7 +47,6 @@ export class ProfileAnalyticsComponent extends TEMSComponent implements OnInit {
     this.subscriptions.push(
       this.analyticsService.getAmountOfCreatedIssues("user", this.profile.id)
       .subscribe(result => {
-        console.log(result);
         if(this.snackService.snackIfError(result))
           return;
         this.uamOfCreatedIssues = result;        
@@ -57,7 +56,6 @@ export class ProfileAnalyticsComponent extends TEMSComponent implements OnInit {
     this.subscriptions.push(
       this.analyticsService.getAmountOfCreatedIssues()
       .subscribe(result => {
-        console.log(result);
         if(this.snackService.snackIfError(result))
           return;
         this.amOfCreatedIssues = result;
@@ -69,7 +67,6 @@ export class ProfileAnalyticsComponent extends TEMSComponent implements OnInit {
     this.subscriptions.push(
       this.analyticsService.getAmountOfClosedIssues("user", this.profile.id)
       .subscribe(result => {
-        console.log(result);
         if(this.snackService.snackIfError(result))
           return;
         this.uamOfClosedIssues = result;
@@ -81,7 +78,6 @@ export class ProfileAnalyticsComponent extends TEMSComponent implements OnInit {
     this.subscriptions.push(
       this.analyticsService.getAmountOfTicketsEverCreatedByUser(this.profile.id)
       .subscribe(result => {
-        console.log(result);
         if(this.snackService.snackIfError(result))
           return;
         this.uamOfTicketsEverClosedByUser = result;
@@ -94,7 +90,6 @@ export class ProfileAnalyticsComponent extends TEMSComponent implements OnInit {
     this.subscriptions.push(
       this.analyticsService.getAmountOfTicketsClosedByUserThatWereReopenedAfterwards(this.profile.id)
       .subscribe(result => {
-        console.log(result);
         if(this.snackService.snackIfError(result))
           return;
         this.uamOfTicketsClosedByUserThatWereReopenedAfterwards = result;

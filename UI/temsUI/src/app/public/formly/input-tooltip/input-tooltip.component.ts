@@ -23,6 +23,5 @@ import { FieldType } from '@ngx-formly/core';
 export class InputTooltipComponent extends FieldType implements OnInit{
   ngOnInit(){
     if(this.field.templateOptions.type == undefined) this.field.templateOptions.type = "text";
-    console.log(this.field.templateOptions.type);
   }
 }

@@ -36,7 +36,6 @@ export class ViewTypeComponent extends TEMSComponent implements OnInit {
     this.subscriptions.push(
       this.equipmentService.getFullType(this.typeId)
       .subscribe(result => {
-        console.log(result);
         this.type = result;
       })
     )

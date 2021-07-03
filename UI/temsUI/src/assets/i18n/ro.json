@@ -339,7 +339,10 @@
     },
 
     "type": {
-        "add": "Adaugă un tip"
+        "add": "Adaugă un tip",
+        "selectParentTypes": "Selectează tipul sau tipurile părinte",
+        "name": "Numele tipului",
+        "selectTypeProperties": "Selectează proprietățile tipului"
     },
 
     "room":{

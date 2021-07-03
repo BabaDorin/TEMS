@@ -50,7 +50,6 @@ export class PersonnelDetailsGeneralComponent extends TEMSComponent implements O
     this.subscriptions.push(
       this.personnelService.getPersonnelById(this.personnelId)
       .subscribe(response => {
-        console.log(response);
         this.personnel = response;
         this.headerClass = (this.personnel.isArchieved) ? 'text-muted' : '';
         

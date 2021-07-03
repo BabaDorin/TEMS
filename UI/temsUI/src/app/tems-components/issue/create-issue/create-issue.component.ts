@@ -87,7 +87,6 @@ export class CreateIssueComponent extends TEMSComponent implements OnInit {
 
     let addIssue = model.issue as AddIssue;
     
-    console.log(addIssue);
     this.subscriptions.push(this.issueService.createIssue(addIssue)
       .subscribe(result => {
         this.snackService.snack(result);

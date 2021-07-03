@@ -17,8 +17,6 @@ export class TypeService extends TEMSService{
   }
 
   remove(typeId: string): Observable<any>{
-    console.log('typeId for removing:' + typeId); 
-    
     return this.http.get(
       API_EQTYPE_URL + '/remove/' + typeId,
       this.httpOptions

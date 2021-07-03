@@ -95,8 +95,6 @@ export class SummaryEquipmentAnalyticsComponent extends TEMSComponent implements
         if(this.snackService.snackIfError(result))
           return;
         this.equipmentUtilizationRate = result;
-
-        console.log(result);
       })
     )  
   }
@@ -129,8 +127,6 @@ export class SummaryEquipmentAnalyticsComponent extends TEMSComponent implements
         if(this.snackService.snackIfError(result))
           return;
         this.equipmentAllocationRate = result;
-
-        console.log(result);
       })
     )  
   }
@@ -148,7 +144,6 @@ export class SummaryEquipmentAnalyticsComponent extends TEMSComponent implements
   //         return;
   //       this.equipmentwork = result;
 
-  //       console.log(result);
   //     })
   //   )  
   // }

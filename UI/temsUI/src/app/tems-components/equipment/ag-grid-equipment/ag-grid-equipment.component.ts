@@ -105,9 +105,6 @@ export class AgGridEquipmentComponent extends TEMSComponent implements OnInit, O
 
   
   details(e) {
-    console.log('data from ag-grid-equipment:');
-    console.log(e);
-
     this.dialogService.openDialog(
       EquipmentDetailsGeneralComponent,
       [

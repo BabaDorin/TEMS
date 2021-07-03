@@ -35,9 +35,6 @@ export class ViewSystemLogsComponent extends TEMSComponent implements OnInit {
     if(selectedDate == undefined)
       return;
 
-    console.log('selected date');
-    console.log(selectedDate);
-
     let loggerViewModel = new LoggerViewModel();
     loggerViewModel.date = selectedDate;
     

@@ -33,7 +33,6 @@ export class RoomDetailsComponent extends TEMSComponent implements OnInit {
       
     this.subscriptions.push(this.roomService.getRoomById(this.roomId)
       .subscribe(result => {
-        console.log(result)
         this.room = result;
         this.roomSimplified = this.roomService.getRoomSimplifiedFromRoom(this.room);
         

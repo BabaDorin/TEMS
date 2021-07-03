@@ -57,7 +57,6 @@ export class ViewProfileComponent extends TEMSComponent implements OnInit {
     this.subscriptions.push(
       this.userService.getProfileData(this.userId)
       .subscribe(result => {
-        console.log(result);
         if(this.snackService.snackIfError(result))
           return;
 
@@ -77,8 +76,6 @@ export class ViewProfileComponent extends TEMSComponent implements OnInit {
 
   getActivePage(url?){
     if(url == undefined) url = this.router.url;
-
-    console.log(url);
 
     if(url == undefined || url.indexOf('?active') == -1){
       this.activePage = ProfileGeneralComponent;      

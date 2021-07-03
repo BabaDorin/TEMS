@@ -80,15 +80,11 @@ export class AddDefinitionComponent extends TEMSComponent implements OnInit {
     this.addDefinition = new Definition();
     let parentFullType: EquipmentType;
 
-    console.log('typeId: ' + typeId);
     this.subscriptions.forEach(s => s.unsubscribe);
     this.subscriptions.push(
       this.equipmentService.getFullType(typeId)
         .subscribe(
           response => {
-            console.log('type: ');
-            console.log(response);
-
             parentFullType = response;
             this.addDefinition.equipmentType = { value: parentFullType.id, label: parentFullType.name } as IOption;
 
@@ -113,7 +109,6 @@ export class AddDefinitionComponent extends TEMSComponent implements OnInit {
   }
 
   update() {
-    console.log(this.formlyData.model);
     this.subscriptions.push(
       this.equipmentService.getDefinitionToUpdate(this.updateDefinitionId)
         .subscribe(result => {
@@ -157,7 +152,6 @@ export class AddDefinitionComponent extends TEMSComponent implements OnInit {
 
           this.formlyData.model = {};
           this.formlyData.model = updateDefinition;
-          console.log(this.formlyData.model);
         }));
 
     // let objectFromServer = {
@@ -184,13 +178,8 @@ export class AddDefinitionComponent extends TEMSComponent implements OnInit {
   }
 
   onSubmit(model) {
-    console.log('formly model');
-    console.log(this.formlyData.model);
-
     let addDefinition: AddDefinition = this.generateAddDefinitionModel(model, this.typeId);
     addDefinition.id = this.updateDefinitionId;
-    console.log('add definition');
-    console.log(addDefinition);
 
     let endPoint = this.equipmentService.addDefinition(addDefinition);
     if (addDefinition.id != undefined)

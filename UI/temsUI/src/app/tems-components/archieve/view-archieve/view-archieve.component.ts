@@ -51,7 +51,6 @@ export class ViewArchieveComponent extends TEMSComponent implements OnInit {
       return;
 
     this.selectedType = url.split('?itemType=')[1];
-    console.log(this.selectedType);
 
     if (this.selectedType == undefined || this.selectedType.length == 0)
       return;
@@ -61,7 +60,6 @@ export class ViewArchieveComponent extends TEMSComponent implements OnInit {
         .subscribe(result => {
           if (this.snackService.snackIfError(result))
             return;
-          console.log(result);
           this.archievedItems = result;
         })
     );

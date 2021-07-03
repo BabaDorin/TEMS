@@ -46,8 +46,6 @@ export class BulkUploadComponent extends TEMSComponent implements OnInit {
     this.subscriptions.push(
       this.equipmentService.bulkUpload(formData)
       .subscribe(result => {
-        console.log(result);
-
         if(this.snackService.snackIfError(result))
           return;
 

@@ -37,7 +37,6 @@ export class AddAnnouncementComponent extends TEMSComponent implements OnInit {
   onSubmit() {
 
     let addAnnouncement: AddAnnouncement = this.formlyDataModel.model.announcement;
-    console.log(this.formlyDataModel.model)
 
     this.subscriptions.push(this.communicationService.createAnnouncement(addAnnouncement)
       .subscribe(result => {

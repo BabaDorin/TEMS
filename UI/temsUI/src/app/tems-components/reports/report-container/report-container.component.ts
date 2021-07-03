@@ -29,7 +29,6 @@ export class ReportContainerComponent extends TEMSComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log(this.template)
   }
 
   edit(){

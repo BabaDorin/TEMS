@@ -94,7 +94,6 @@ export class AgGridKeysComponent extends TEMSComponent implements OnInit, OnChan
     if(this.keys == undefined)
       this.subscriptions.push(this.keysService.getKeys()
         .subscribe(result => {
-          console.log(result);
           this.rowData = result;
         }));
     else

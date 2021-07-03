@@ -56,8 +56,6 @@ export class AddRoomComponent extends TEMSComponent implements OnInit {
       this.roomService.getRoomToUpdate(this.roomId)
       .subscribe(result => {
         let roomToUpdate: AddRoom = result;
-        console.log('room to update');
-        console.log(roomToUpdate);
         this.formlyData.model = {};
 
         this.formlyData.model = {
@@ -93,7 +91,6 @@ export class AddRoomComponent extends TEMSComponent implements OnInit {
       .subscribe(result => {
         this.snackService.snack(result);
 
-        console.log(this.dialogRef);
         if(result.status == 1){
           this.formlyData.model = {};
           this.labels.options = [];

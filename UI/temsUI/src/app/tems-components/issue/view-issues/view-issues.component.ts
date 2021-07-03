@@ -72,7 +72,6 @@ export class ViewIssuesComponent extends TEMSComponent implements OnInit {
       this.roomId = value[0].value;
     else
       this.roomId = "any";
-    console.log(this.roomId);
   }
 
   personnelSelected(idk){

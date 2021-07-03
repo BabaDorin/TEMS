@@ -75,7 +75,6 @@ export class ReportsComponent extends TEMSComponent implements OnInit {
     this.subscriptions.push(
       this.reportService.getLastGeneratedReports()
       .subscribe(result => {
-        console.log(result);
         if(this.snackService.snackIfError(result))
           return;
         

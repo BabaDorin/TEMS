@@ -35,7 +35,6 @@ export class ViewDefinitionComponent extends TEMSComponent implements OnInit {
     if(this.definitionId != undefined){
       this.equipmentService.getFullDefinition(this.definitionId)
       .subscribe(result => {
-        console.log(result);
         this.definition = result;
       })
     }

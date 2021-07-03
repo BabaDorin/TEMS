@@ -22,7 +22,7 @@
           <nav aria-label="breadcrumb">
             <ul class="breadcrumb bg-transparent">
                 <li class="breadcrumb-item" aria-current="page">
-                  <button mat-button [matMenuTriggerFor]="menu" aria-label="Add Equipment Menu" class="float-right">
+                  <button mat-button [matMenuTriggerFor]="menu" class="float-right">
                     <mat-icon class="text-primary">more_vert</mat-icon>
                   </button>
                   <mat-menu #menu="matMenu">
@@ -81,7 +81,7 @@
             <hr>  
             <mat-form-field>
                 <mat-label>
-                  {{ 'entities.type' | translate }}
+                  {{ 'entities.definition' | translate }}
                 </mat-label>
                 <mat-select formControlName="equipmentDefinition" [(ngModel)]="selectedDefinition"
                   (selectionChange)="onDefinitionChanged($event)">

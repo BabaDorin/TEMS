@@ -1,9 +1,9 @@
-<div [ngClass]="dialogRef == undefined ? 'card' : 'card cancel-margins'">
+<div [ngClass]="dialogRef == undefined ? 'card limit' : 'card cancel-margins limit'">
     <div class="card-body" *ngIf="sent">
         <h2 class="text-center text-muted" >
             {{ 'ticket.sent' | translate }}
         </h2>
-        <img class="mt-5 center-svg fade-in" src="assets/svgs/technician.svg">
+        <img class="mt-5 center-svg fade-in" src="assets/svgs/technician.svg" style="min-width: 200px;">
     </div>
     
     <div class="card-body animate__bounce" *ngIf="sent==false">

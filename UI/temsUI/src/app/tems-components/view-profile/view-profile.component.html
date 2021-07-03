@@ -1,10 +1,10 @@
 <div>
     <div class="row">
-        <div class="col-md-3 grid-margin">
-            <div class="card stretch-card">
+        <div class="col-md-3">
+            <div class="card w-100">
                 <div class="card-body">
                     <div
-                        style="max-width: 90%; max-height: 90%; margin: auto;">
+                        style="max-width: 90%; margin: auto;">
                         <img src="assets/svgs/default_avatar.svg" style="width: 100%;">
                     </div>
                     <a mat-button class="btn-block mt-3" (click)="viewPage('general')">
@@ -23,7 +23,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-8 grid-margin">
+        <div class="col-md-8">
             <div *ngIf="profile != undefined">
                 <ng-container *ngComponentOutlet="activePage; injector: injector"></ng-container>
             </div>

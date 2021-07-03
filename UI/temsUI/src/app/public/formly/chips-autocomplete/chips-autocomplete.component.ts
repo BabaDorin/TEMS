@@ -93,8 +93,6 @@ export class ChipsAutocompleteComponent implements OnInit, ControlValueAccessor,
 
   listenToServer() {
     this.subscription.unsubscribe();
-    console.log(this.autocompleteOptions);
-    
     if (this.autocompleteOptions != undefined)
       this.getFromAutocompleteOptions();
     else
@@ -118,7 +116,6 @@ export class ChipsAutocompleteComponent implements OnInit, ControlValueAccessor,
             : this.endPoint.getAllAutocompleteOptions(op, this.endPointParameter)
         }))
       .subscribe(data => {
-        console.log(data);
         this.filteredOptions = (data as IOption[]);
 
         if (this.selectedOptions != undefined)
@@ -159,7 +156,6 @@ export class ChipsAutocompleteComponent implements OnInit, ControlValueAccessor,
 
     this.maxOptionsSelectedValidation();
     this.selectedOptions.push(event.option.value);
-    console.log(this.selectedOptions);
     this.onChange(this.selectedOptions);
     this.dataCollected.emit(this.selectedOptions);
 

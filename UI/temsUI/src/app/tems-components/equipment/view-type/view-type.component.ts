@@ -1,8 +1,9 @@
 import { Component, Inject, Input, OnInit, Optional, Output } from '@angular/core';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import EventEmitter from 'events';
-import { ViewPropertyComponent } from '../view-property/view-property.component';
+import { ViewPropertyComponent } from 'src/app/tems-components/equipment/view-property/view-property.component';
 import { EquipmentType } from './../../../models/equipment/view-type.model';
+import { DialogService } from './../../../services/dialog.service';
 import { EquipmentService } from './../../../services/equipment.service';
 import { TEMSComponent } from './../../../tems/tems.component';
 
@@ -17,9 +18,11 @@ export class ViewTypeComponent extends TEMSComponent implements OnInit {
   @Output() viewRelatedType = new EventEmitter();
   type = new EquipmentType();
 
+  dialogRef;
+
   constructor(
     private equipmentService: EquipmentService,
-    private dialog: MatDialog,
+    private dialogService: DialogService,
     @Optional() @Inject(MAT_DIALOG_DATA) public dialogData: any
   ) {
     super();
@@ -33,40 +36,22 @@ export class ViewTypeComponent extends TEMSComponent implements OnInit {
     this.subscriptions.push(
       this.equipmentService.getFullType(this.typeId)
       .subscribe(result => {
-        console.log(result);
         this.type = result;
       })
     )
   }
 
   viewProperty(propertyId: string){
-    let dialogRef: MatDialogRef<any>;
-
-    dialogRef = this.dialog.open(ViewPropertyComponent,
-      {
-        maxHeight: '80vh',
-        autoFocus: false
-      });
-
-    dialogRef.componentInstance.propertyId = propertyId;
-    dialogRef.afterClosed().subscribe(result => {
-    })
+    this.dialogService.openDialog(
+      ViewPropertyComponent,
+      [{ label: 'propertyId', value: propertyId}]
+    )
   }
 
   viewType(typeId: string){
-    let dialogRef: MatDialogRef<any>;
-
-    dialogRef = this.dialog.open(ViewTypeComponent,
-      {
-        maxHeight: '80vh',
-        autoFocus: false
-      });
-
-    dialogRef.componentInstance.typeId = typeId;
-    dialogRef.afterClosed().subscribe(result => {
-    })
+    this.dialogService.openDialog(
+      ViewTypeComponent,
+      [{ label: 'typeId', value: typeId}]
+    )
   }
-
 }
-
-// TODO: Extract methods that display modals to another file

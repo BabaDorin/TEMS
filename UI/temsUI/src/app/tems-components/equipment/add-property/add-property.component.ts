@@ -1,3 +1,4 @@
+import { TranslateService } from '@ngx-translate/core';
 import { Component, Inject, OnInit, Optional } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
@@ -22,12 +23,14 @@ export class AddPropertyComponent extends TEMSComponent implements OnInit {
     model: {} as any,
     fields: [] as FormlyFieldConfig[],
   };
+  
   dialogRef;
 
   constructor(
     private equipmentService: EquipmentService,
     private formlyParser: FormlyParserService,
     private snackService: SnackService,
+    public translate: TranslateService,
     @Optional() @Inject(MAT_DIALOG_DATA) public dialogData: any
   ) { 
     super();
@@ -48,11 +51,6 @@ export class AddPropertyComponent extends TEMSComponent implements OnInit {
 
         let model = this.formlyData.model; 
 
-        console.log('model');
-        console.log(model);
-        console.log(this.formlyData.model)
-        console.log(result);
-        
         this.formlyData.model = {
           name: result.name,
         }
@@ -61,9 +59,6 @@ export class AddPropertyComponent extends TEMSComponent implements OnInit {
         this.formlyData.model.dataType = result.dataType;
         this.formlyData.model.description = result.description;
         this.formlyData.model.required = result.required;
-
-        console.log(model);
-        console.log(this.formlyData.model)
       })
     )
   }

@@ -100,16 +100,11 @@ export class AgGridEquipmentComponent extends TEMSComponent implements OnInit, O
       this.cancelFirstOnChange = false;
       return;
     }
-    
-    console.log('changed');
     this.fetchEquipments();
   }
 
   
   details(e) {
-    console.log('data from ag-grid-equipment:');
-    console.log(e);
-
     this.dialogService.openDialog(
       EquipmentDetailsGeneralComponent,
       [
@@ -176,5 +171,4 @@ export class AgGridEquipmentComponent extends TEMSComponent implements OnInit, O
     });
     this.gridColumnApi.autoSizeColumns(allColumnIds, false);
   }
-
 }

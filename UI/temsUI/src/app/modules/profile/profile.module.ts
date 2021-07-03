@@ -1,3 +1,4 @@
+import { MatButtonModule } from '@angular/material/button';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
@@ -32,6 +33,7 @@ import { ProfileRoutingModule } from './profile-routing.module';
     MatIconModule,
     TranslateModule,
     EntitySharedModule,
+    MatButtonModule
   ]
 })
 export class ProfileModule { }

@@ -334,7 +334,7 @@ export class MenuService {
               {
                 path: '/administration/system-logs',
                 title: menu.systemLogs,
-                icon: 'mdi mdi-playlist-remove',
+                icon: 'mdi mdi-menu menu-icon',
                 isActive: false,
                 isShown: this.tokenService.canManageSystemConfiguration(),
                 showSubmenu: false,

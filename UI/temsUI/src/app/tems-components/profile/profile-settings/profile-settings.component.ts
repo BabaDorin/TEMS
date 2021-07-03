@@ -47,7 +47,6 @@ export class ProfileSettingsComponent extends TEMSComponent implements OnInit {
     private router: Router,
     private formlyParserService: FormlyParserService) {
     super();
-    console.log(prof);
     this.profile = prof;
     this.isCurrentUser = isCurrentUser;
   };

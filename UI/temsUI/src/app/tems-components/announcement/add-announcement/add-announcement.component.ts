@@ -1,3 +1,4 @@
+import { SnackService } from './../../../services/snack.service';
 import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { FormlyFieldConfig } from '@ngx-formly/core';
@@ -19,9 +20,12 @@ export class AddAnnouncementComponent extends TEMSComponent implements OnInit {
     fields: [] as FormlyFieldConfig[],
   }
 
+  dialogRef;
+
   constructor(
     public formlyParserService: FormlyParserService,
-    private communicationService: CommunicationService
+    private communicationService: CommunicationService,
+    private snackService: SnackService
   ) {
     super();
   }
@@ -30,15 +34,18 @@ export class AddAnnouncementComponent extends TEMSComponent implements OnInit {
     this.formlyDataModel.fields = this.formlyParserService.parseAddAnnouncement();
   }
 
-  onSubmit(){
+  onSubmit() {
 
     let addAnnouncement: AddAnnouncement = this.formlyDataModel.model.announcement;
-    console.log(this.formlyDataModel.model)
-    
+
     this.subscriptions.push(this.communicationService.createAnnouncement(addAnnouncement)
       .subscribe(result => {
-        console.log(result);
+        if (this.snackService.snackIfError(result))
+          return;
+
+        if (result?.status == 1 && this.dialogRef != undefined) {
+          this.dialogRef.close();
+        }
       }))
   }
-
 }

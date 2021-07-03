@@ -1,3 +1,4 @@
+import { TranslateService } from '@ngx-translate/core';
 import { Component, Input, OnInit } from '@angular/core';
 import { ViewDefinitionSimplified } from 'src/app/models/equipment/view-definition-simplified.model';
 import { DialogService } from '../../../../services/dialog.service';
@@ -25,6 +26,7 @@ export class EquipmentDefinitionsListComponent extends TEMSComponent implements 
     private equipmentService: EquipmentService,
     private dialogService: DialogService,
     private snackService: SnackService,
+    public translate: TranslateService
   ) {
     super();
   }

@@ -24,13 +24,11 @@ export class FileUploadComponent implements OnInit {
 
   dragOver($event){
     $event.preventDefault();
-    console.log(this.dropContainer);
     this.dropContainer.nativeElement.classList.add('fileover');
   }
 
   dragLeave($event){
     $event.preventDefault();
-    console.log(this.dropContainer);
     this.dropContainer.nativeElement.classList.remove('fileover');
   }
 }

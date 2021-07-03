@@ -13,6 +13,8 @@ export class ViewPropertyComponent extends TEMSComponent implements OnInit {
 
   @Input() propertyId: string;
   property: Property = new Property();
+  
+  dialogRef;
 
   constructor(
     private equipmentService: EquipmentService,

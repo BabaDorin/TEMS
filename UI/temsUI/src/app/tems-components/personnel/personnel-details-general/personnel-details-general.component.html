@@ -34,22 +34,22 @@
                                 </button>
                                 <mat-menu #menu="matMenu">
                                     <ng-container *ngIf="!personnel.isArchieved">
-                                        <button mat-button (click)="edit()" class="btn-block">
-                                            <mat-icon class="text-muted float-right p-1">edit</mat-icon>
+                                        <button mat-menu-item (click)="edit()" class="btn-block">
+                                            <mat-icon class="text-muted">edit</mat-icon>
                                             {{ 'general.edit' | translate }}
                                         </button>
-                                        <button mat-button (click)="archieve()" class="btn-block">
-                                            <mat-icon class="text-muted float-right p-1">auto_delete</mat-icon>
+                                        <button mat-menu-item (click)="archieve()" class="btn-block">
+                                            <mat-icon class="text-muted">auto_delete</mat-icon>
                                             {{ 'general.archive' | translate }}
                                         </button>
-                                        <button *ngIf="claims.canSendEmails" mat-button (click)="sendMail()" class="btn-block">
-                                            <mat-icon class="text-muted float-right p-1">mail</mat-icon>
+                                        <button mat-menu-item *ngIf="claims.canSendEmails" (click)="sendMail()">
+                                            <mat-icon class="text-muted">mail</mat-icon>
                                             {{ 'general.sendEmail' | translate }}
                                         </button>
                                     </ng-container>
                                     <ng-container *ngIf="personnel.isArchieved">
-                                        <button mat-button (click)="archieve()">
-                                            <mat-icon class="text-muted float-right p-1">restore</mat-icon>
+                                        <button mat-menu-item (click)="archieve()">
+                                            <mat-icon class="text-muted">restore</mat-icon>
                                             {{ 'general.dearchive' | translate }}
                                         </button>
                                     </ng-container>

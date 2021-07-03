@@ -1,3 +1,4 @@
+import { AgGridRoomsComponent } from './../ag-grid-rooms/ag-grid-rooms.component';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { IOption } from 'src/app/models/option.model';
 import { DialogService } from '../../../services/dialog.service';
@@ -15,7 +16,7 @@ import { AddRoomComponent } from './../add-room/add-room.component';
 })
 export class ViewRoomsComponent implements OnInit {
 
-  @ViewChild('agGrid') agGridRooms;
+  @ViewChild('agGrid') agGridRooms: AgGridRoomsComponent;
   
   constructor(
     private dialogService: DialogService,
@@ -26,6 +27,11 @@ export class ViewRoomsComponent implements OnInit {
   }
 
   ngOnInit(): void {
+
+  }
+
+  fetchRooms(){
+    this.agGridRooms.fetchRooms();
   }
 
   addLogSelected(){
@@ -72,7 +78,7 @@ export class ViewRoomsComponent implements OnInit {
       AddRoomComponent,
       undefined,
       () => {
-        this.ngOnInit();
+        this.fetchRooms();
       }
     )
   }

@@ -1,4 +1,4 @@
-<ng-container *ngIf="users != undefined && users.length > 0">
+<ng-container *ngIf="users != undefined && users.length > 0; else: noUsers">
   <div class="col-md-12">
     <div class="row justify-content-center">
       <div class="col" *ngFor="let user of users">
@@ -11,3 +11,9 @@
     </div>
   </div>  
 </ng-container>
+
+<ng-template #noUsers>
+  <p class="text-center">
+    {{ 'general.empty' | translate }}
+  </p>
+</ng-template>

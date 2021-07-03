@@ -1,3 +1,4 @@
+import { ClaimService } from './../../../services/claim.service';
 import { Component, Input, OnInit } from '@angular/core';
 import { IOption } from 'src/app/models/option.model';
 import { ViewRoomSimplified } from './../../../models/room/view-room-simplified.model';

@@ -1,6 +1,11 @@
 <mat-card>
   <mat-card-header>
-    <mat-card-title>{{ issue.problem }} [{{ issue.trackingNumber }}]</mat-card-title>
+    <mat-card-title>
+      <span class="badge badge-pill badge-outline-primary d-inline mr-1">
+        {{ issue.trackingNumber }}
+      </span>
+      {{ issue.problem }}
+    </mat-card-title>
     <mat-card-subtitle>
         {{ issue.dateCreated | date:'medium' }}
         <br>

@@ -83,9 +83,6 @@ export class ArchieveService extends TEMSService {
   }
 
   removeEntity(entityType: string, itemId: string): Observable<any> {
-    console.log('entity type:' + entityType);
-    console.log('entity id:' + itemId);
-
     return this.typeRemoveServicesDictionary[entityType](itemId);
   }
 }

@@ -1,3 +1,4 @@
+import { MatButtonModule } from '@angular/material/button';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
@@ -16,6 +17,7 @@ import { AuthenticationRoutingModule } from './authentication-routing.module';
     AuthenticationRoutingModule,
     TemsFormsModule,
     TranslateModule,
+    MatButtonModule
   ]
 })
 export class AuthenticationModule { }

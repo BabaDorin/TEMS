@@ -107,9 +107,6 @@ export class AddUserComponent extends TEMSComponent implements OnInit {
                   this.userService.getUser(this.userIdToUpdate)
                     .subscribe(result => {
                       // 3: Done, user data fetched
-                      console.log('userdata:') 
-                      console.log(result);
-
                       if (this.snackService.snackIfError(result))
                         return;
 
@@ -147,8 +144,6 @@ export class AddUserComponent extends TEMSComponent implements OnInit {
       this.userService.getRoleClaims(selectedRoles)
         .subscribe(result => {
           let roleClaims = result;
-          console.log('role claims:');
-          console.log(roleClaims);
           this.ensureClaimsSelected(roleClaims, true, uncheckUnselected);
         })
     )
@@ -158,8 +153,6 @@ export class AddUserComponent extends TEMSComponent implements OnInit {
     this.subscriptions.push(
       this.userService.getUserClaims(this.userIdToUpdate)
         .subscribe(result => {
-          console.log('user claims i got');
-          console.log(result);
           let userClaims = result;
           this.ensureClaimsSelected(userClaims);
         })

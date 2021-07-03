@@ -41,7 +41,11 @@
   </ItemGroup>
 
   <ItemGroup>
+<<<<<<< HEAD
     <Folder Include="Services\Analytics\" />
+=======
+    <Folder Include="Data\Entities\Analytics\" />
+>>>>>>> cleaning
   </ItemGroup>
 
 </Project>

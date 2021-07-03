@@ -1,7 +1,14 @@
-<app-summary-issues-analytics
-[roomId]="room.id"> 
-</app-summary-issues-analytics>
+<div class="col-md-12">
+   <div class="row flex-container">
+      <div class="mt-2 col-md-12" id="section1">
+         <app-summary-issues-analytics [roomId]="room.id">
+         </app-summary-issues-analytics>
+      </div>
 
-<app-entity-issues-list [rooms]="[roomAlreadySelected]" [roomId]="room.id">
-   {{ 'general.loading' | translate }}
-</app-entity-issues-list>
+      <div class="col-md-12" id="section2">
+         <app-entity-issues-list [rooms]="[roomAlreadySelected]" [roomId]="room.id">
+            {{ 'general.loading' | translate }}
+         </app-entity-issues-list>
+      </div>
+   </div>
+</div>

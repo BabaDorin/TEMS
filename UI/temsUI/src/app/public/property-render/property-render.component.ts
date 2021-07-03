@@ -13,7 +13,5 @@ export class PropertyRenderComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
-    console.log(this.properties);
   }
-
 }

@@ -40,8 +40,6 @@ export class ViewNotificationsComponent extends TEMSComponent implements OnInit 
         if(this.snackService.snackIfError(result))
           return;
 
-        console.log('index: ' + index);
-        console.log(this.notifications);
         this.notifications.splice(index, 1);
       })
     )

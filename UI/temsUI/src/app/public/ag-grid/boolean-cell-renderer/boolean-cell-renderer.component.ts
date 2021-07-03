@@ -21,12 +21,7 @@ export class BooleanCellRendererComponent {
        this.cellValue = this.getValueToDisplay(params);
    }
 
-   buttonClicked() {
-       alert(`${this.cellValue} medals won!`)
-   }
-
    getValueToDisplay(params: ICellRendererParams) {
        return params.valueFormatted ? params.valueFormatted : params.value;
    }
-
 }

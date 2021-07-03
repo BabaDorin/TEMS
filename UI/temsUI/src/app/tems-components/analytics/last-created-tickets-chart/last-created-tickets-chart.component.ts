@@ -48,7 +48,6 @@ export class LastCreatedTicketsChartComponent extends TEMSComponent implements O
       this.subscriptions.push(
         this.analyticsService.getAmountOfLastCreatedTickets(this.start, this.end, this.interval)
         .subscribe(result => {
-          console.log(result);
           if(this.snackService.snackIfError(result))
             return;
           

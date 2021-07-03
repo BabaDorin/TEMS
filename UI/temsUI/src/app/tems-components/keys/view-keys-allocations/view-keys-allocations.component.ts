@@ -44,36 +44,24 @@ export class ViewKeysAllocationsComponent extends TEMSComponent implements OnIni
     
     this.subscriptions.push(this.keysService.getAllAutocompleteOptions()
       .subscribe(result => {
-        console.log(result);
-
         if(this.snackService.snackIfError(result))
           return;
 
-        console.log('keysAutocomplete')
-        console.log(result);
         this.keys = of(result);
         this.filteredKeys = this.keys;
       }));
 
     this.subscriptions.push(this.roomService.getAllAutocompleteOptions()
       .subscribe(result => {
-        console.log(result);
-
         if(this.snackService.snackIfError(result))
           return;
-
-        console.log('rooms autocomplete')
-        console.log(result);
         this.rooms = of(result);
       }));
 
     this.subscriptions.push(this.personnelService.getAllAutocompleteOptions()
       .subscribe(result => {
-        console.log(result);
-
         if(this.snackService.snackIfError(result))
           return;
-        console.log('personnel')
         this.personnel = of(result);
       }));
   }

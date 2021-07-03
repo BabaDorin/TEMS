@@ -1,3 +1,5 @@
+import { MatMenuModule } from '@angular/material/menu';
+import { NgxPaginationModule } from 'ngx-pagination';
 import { TranslateModule } from '@ngx-translate/core';
 import { RouterModule } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
@@ -21,7 +23,9 @@ import { MatButtonModule } from '@angular/material/button';
     DateTimeDisplayModule,
     TranslateModule,
     MatIconModule,
-    RouterModule
+    RouterModule,
+    NgxPaginationModule,
+    MatMenuModule,
   ],
   exports: [
     AnnouncementsListComponent

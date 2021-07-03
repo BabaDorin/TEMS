@@ -33,7 +33,6 @@ export class PersonnelDetailsComponent extends TEMSComponent implements OnInit {
       
     this.subscriptions.push(this.personnelService.getPersonnelById(this.personnelId)
       .subscribe(result => {
-        console.log(result)
         this.personnel = result;
 
         this.personnelSimplified = this.personnelService.getPersonnelSimplifiedFromPersonnel(this.personnel);

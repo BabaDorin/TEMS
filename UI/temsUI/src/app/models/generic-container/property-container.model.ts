@@ -96,7 +96,6 @@ export class PropertyContainerModel extends TEMSComponent implements IGenericCon
 
         this.equipmentService.archieveProperty(this.property.id)
             .subscribe(result => {
-            console.log(result);
                 if (result.status == 1)
                     this.eventEmitted('removed');
             })

@@ -17,6 +17,8 @@ export class ViewDefinitionComponent extends TEMSComponent implements OnInit {
   definitionId: string;
   definition = new Definition();
 
+  dialogRef;
+
   constructor(
     private equipmentService: EquipmentService,
     private dialogService: DialogService,
@@ -33,7 +35,6 @@ export class ViewDefinitionComponent extends TEMSComponent implements OnInit {
     if(this.definitionId != undefined){
       this.equipmentService.getFullDefinition(this.definitionId)
       .subscribe(result => {
-        console.log(result);
         this.definition = result;
       })
     }

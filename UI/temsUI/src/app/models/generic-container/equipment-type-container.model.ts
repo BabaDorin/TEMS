@@ -24,10 +24,6 @@ export class EquipmentTypeContainerModel extends TEMSComponent implements IGener
         private snackService: SnackService,
         private equipmentType: ViewTypeSimplified) {
         super();
-
-        console.log('Equipment type:');
-        console.log(equipmentType);
-
         this.buildContainerModel();
     }
 
@@ -95,7 +91,6 @@ export class EquipmentTypeContainerModel extends TEMSComponent implements IGener
                 this.subscriptions.push(
                     this.equipmentService.getTypeSimplifiedById(this.equipmentType.id)
                         .subscribe(result => {
-                            console.log(result);
                             if(this.equipmentType == result)
                                 return;
 

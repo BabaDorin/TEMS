@@ -1,3 +1,4 @@
+import { TranslateService } from '@ngx-translate/core';
 import { Component, Input, OnInit } from '@angular/core';
 import { ViewTypeSimplified } from 'src/app/models/equipment/view-type-simplified.model';
 import { AddTypeComponent } from 'src/app/tems-components/equipment/add-type/add-type.component';
@@ -24,6 +25,7 @@ export class EquipmentTypesListComponent extends TEMSComponent implements OnInit
     private equipmentService: EquipmentService,
     private dialogService: DialogService,
     private snackService: SnackService,
+    public translate: TranslateService
   ) {
     super();
   }

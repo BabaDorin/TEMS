@@ -257,8 +257,6 @@ export class EquipmentService extends TEMSService {
       if(entityCollection.roomIds == undefined) entityCollection.roomIds = [];
       if(entityCollection.personnelIds == undefined) entityCollection.personnelIds = [];
 
-      console.log(entityCollection.roomIds);
-
       let params = new HttpParams();
       entityCollection.roomIds.forEach(id => {
         params = params.append('rooms', id);

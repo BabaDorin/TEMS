@@ -215,9 +215,6 @@ export class AddEquipmentComponent extends TEMSComponent implements OnInit {
           if (this.snackService.snackIfError(result))
             return;
 
-          console.log('equipment to update model:');
-          console.log(result);
-
           this.formlyData.wipeModel();
 
           this.formlyData.model.equipmentDefinitionID = this.selectedFullDefinition.id;

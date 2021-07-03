@@ -1,6 +1,6 @@
 <div class="card">
   <div class="card-body">
-    <h2>{{ 'report.createTemplate' | translate }}</h2>
+    <h2>{{ 'report.add' | translate }}</h2>
     <hr class="mb-2">
     <form [formGroup]="reportFormGroup">
       <p class="text-muted">
@@ -92,8 +92,8 @@
             <mat-radio-group formControlName="separateBy">
               <mat-radio-button value="none">{{ 'report.noSeparation' | translate }}</mat-radio-button><br>
               <mat-radio-button value="room">{{ 'report.byRoom' | translate }}</mat-radio-button><br>
-              <mat-radio-button value="personnel">{{ 'report.byPersonnel | translate }}</mat-radio-button><br>
-              <mat-radio-button value="type">{{ 'report.bytType' | translate }}</mat-radio-button><br>
+              <mat-radio-button value="personnel">{{ 'report.byPersonnel' | translate }}</mat-radio-button><br>
+              <mat-radio-button value="type">{{ 'report.byType' | translate }}</mat-radio-button><br>
               <mat-radio-button value="definition">{{ 'report.byDefinition' | translate }}</mat-radio-button><br>
             </mat-radio-group>
           </ng-container>

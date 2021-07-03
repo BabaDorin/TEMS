@@ -51,8 +51,6 @@ export class PinnedIssuesComponent extends TEMSComponent implements OnInit {
       .subscribe(result => {
         if(this.snackService.snackIfError(result))
           return;
-        console.log('pinned issues:');
-        console.log(result);
         this.issues = result;
       })
     )

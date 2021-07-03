@@ -7,14 +7,14 @@
                 </app-room-details-general>
             </mat-tab>
             <ng-container *ngIf="roomSimplified.isArchieved == false">
-                <mat-tab label="Logs">
+                <mat-tab [label]="translate.instant('entities.logs')">
                     <ng-template matTabContent>
                         <app-room-details-logs [room]="roomSimplified">
                             {{ 'general.loading' | translate }}
                         </app-room-details-logs>
                     </ng-template>
                 </mat-tab>
-                <mat-tab label="Issues">
+                <mat-tab [label]="translate.instant('entities.tickets')">
                     <ng-container *ngIf="roomSimplified.activeIssues != 0; else elseIssueHeader">
                         <ng-template mat-tab-label>
                             <div [matBadge]="roomSimplified.activeIssues" matBadgeOverlap="false">
@@ -32,7 +32,7 @@
                         </app-room-details-issues>
                     </ng-template>
                 </mat-tab>
-                <mat-tab label="Allocations">
+                <mat-tab [label]="translate.instant('entities.allocations')">
                     <ng-template matTabContent>
                         <app-room-details-allocations [room]="roomSimplified">
                             {{ 'general.loading' | translate }}

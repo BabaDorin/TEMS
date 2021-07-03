@@ -1,3 +1,5 @@
+import { MatButtonModule } from '@angular/material/button';
+import { MatSelectModule } from '@angular/material/select';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { MatOptionModule } from '@angular/material/core';
@@ -32,6 +34,8 @@ import { ArchieveRoutingModule } from './archieve-routing.module';
     MatInputModule,
     MatOptionModule,
     NgxPaginationModule,
+    MatSelectModule,
+    MatButtonModule,
   ]
 })
 export class ArchieveModule { }

@@ -35,7 +35,6 @@ export class BtnCellRendererComponent implements ICellRendererAngularComp, OnDes
       rowData: this.params.node.data
     }
 
-    console.log(params);
     this.params.onClick(params);
   }
 

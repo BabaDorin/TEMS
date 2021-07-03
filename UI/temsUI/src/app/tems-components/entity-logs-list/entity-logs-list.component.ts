@@ -90,7 +90,6 @@ pageNumber=1;
     if(this.equipment == undefined && this.room == undefined && this.personnel == undefined)
       this.subscriptions.push(this.logsService.getLogs()
         .subscribe(result => {
-          console.log(result);
           this.logs = result;
           this.loading = false;
         }));

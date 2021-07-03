@@ -32,7 +32,6 @@ export class ProfileTicketsComponent extends TEMSComponent implements OnInit {
     private issueService: IssuesService,
     private snackService: SnackService) {
     super();
-    console.log(prof);
     this.profile = prof;
     this.isCurrentUser = isCurrentUser;
   };
@@ -53,8 +52,6 @@ export class ProfileTicketsComponent extends TEMSComponent implements OnInit {
 
       this.issueService.getIssuesOfEntity('user created', this.profile.id, true, false, 'recency', 0, 5)
         .subscribe(result => {
-          console.log('ets');
-          console.log(result);
           if (this.snackService.snackIfError(result))
             return;
 

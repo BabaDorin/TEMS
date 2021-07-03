@@ -17,13 +17,13 @@
                                     <mat-icon>more_vert</mat-icon>
                                 </button>
                                 <mat-menu #menu="matMenu">
-                                    <button mat-button (click)="edit()" class="btn-block">
+                                    <button mat-menu-item (click)="edit()" class="btn-block">
                                         {{ 'general.edit' | translate }}
-                                        <mat-icon class="text-muted float-right">edit</mat-icon>
+                                        <mat-icon class="text-muted">edit</mat-icon>
                                     </button>
-                                    <button mat-button (click)="remove()" class="btn-block">
+                                    <button mat-menu-item (click)="remove()" class="btn-block">
                                         {{ 'general.remove' | translate }}
-                                        <mat-icon class="text-muted float-right">delete</mat-icon>
+                                        <mat-icon class="text-muted">delete</mat-icon>
                                     </button>
                                 </mat-menu>
                             </li>
@@ -38,7 +38,7 @@
                 </div>
             </ng-container>
         </div>
-        <p class="text-muted">{{ 'general.createdBy' | translate }} {{template.createdBy.fullName}}</p>
+        <p class="text-muted" *ngIf="template.createdBy.fullName != undefined">{{ 'general.createdBy' | translate }} {{template.createdBy.fullName}}</p>
 
         <p class="template-description text-justify">
             {{template.description}}

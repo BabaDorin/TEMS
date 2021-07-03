@@ -50,9 +50,6 @@ export class PiechartCardComponent implements OnInit{
 
     this.chartLabels = this.rates.rates.map(q => q.item1);
     this.displayRates = this.rates.rates.sort(q => q.item2).slice(0, 3);
-
-    console.log(this.chartData);
-    console.log(this.chartLabels);
   }
 
   // trafficChartColors = [

@@ -5,7 +5,9 @@
         "rooms": "Săli",
         "equipment": "Echipament",
         "registeredEquipment": "Echipamentele înregistrate",
+        "allocatedEquipment": "Echipamente alocate",
         "tickets": "Ticket-uri",
+        "activeTickets": "Ticket-uri active",
         "logs": "Log-uri",
         "allocations": "Alocări",
         "properties": "Proprietăți",
@@ -13,7 +15,9 @@
         "definitions": "Definiții ale echipamentului",
         "currentlyAllocatedEquipment": "Echipamentul alocat la moment",
         "type": "Tipul echipamentului",
-        "types": "Tipurile echipamentului",
+        "types": "Tipurile de echipament",
+        "parentTypes": "Tipurile părinte",
+        "childTypes": "Tipurile copil",
         "deposit": "Depozit"
     },
 
@@ -34,7 +38,8 @@
         "message": "Mesaj",
         "success": "Succes",
         "failed": "Eșuat",
-        "search": "Caută"
+        "search": "Caută",
+        "remove": "Elimină"
     },
 
     "notifications":{
@@ -63,7 +68,7 @@
         "administration": "Administrație",
         "users": "Utilizatori",
         "configuration": "Configurare",
-        "systemLogs": "Log-uri de sistem",
+        "systemLogs": "Loguri sistem",
         "archive": "Arhivă"
     },
     "library": {
@@ -117,7 +122,7 @@
         "fullName" :"Numele complet",
         "username" : "Numele de utilizator",
         "password": "Parola",
-        "submit": "Trimite",
+        "submit": "Salveaza",
         "back": "Înapoi",
         "remove": "Elimină",
         "date" : "Selectează data:",
@@ -329,12 +334,15 @@
         "childIdentifierDescription": "Numele asociat definiției (Dacă definiția este deja înregistrată, o puteți selecta din listă)",
         "choseExistingLabel": "Selecteză o definiție existentă",
         "choseExistingDescription": "Selectează o definiție înregistrată anterior",
-        "add": "Adaugă o definiție nouă",
+        "add": "Adaugă o definiție",
         "children" : "Definițiile copil"
     },
 
     "type": {
-        "add": "Adaugă un tip"
+        "add": "Adaugă un tip",
+        "selectParentTypes": "Selectează tipul sau tipurile părinte",
+        "name": "Numele tipului",
+        "selectTypeProperties": "Selectează proprietățile tipului"
     },
 
     "room":{
@@ -358,7 +366,6 @@
         "send": "Trimite mesajul",
         "sendEmailTip": "Notă: Mesajul va ajunge la persoanele pentru care există o adresă validă de email asociată."
     },
-
 
     "ticket": {
         "urgent": "Urgent",
@@ -438,9 +445,10 @@
         "lastReports": "Ultimele rapoarte generate",
         "templates": "Șabloane personalizate",
         "reports": "Rapoarte",
+        "add": "Crează un șablon",
         "reportsTip": "Selectează un șablon deja existent sau",
-        "selectSubject": "Select the report subject",
-        "selectSubjectTip": "Choose the type of entities that will be present in the report.",
+        "selectSubject": "Selectați subiectul șablonului",
+        "selectSubjectTip": "Selectați tipul entităților care vor apărea în raport",
         "createTemplate": "crează un șablon nou",
         "name": "Nume",
         "header": "Antet",
@@ -467,6 +475,15 @@
         "layoutConfiguration": "Configurarea aspectului",
         "noSubjectSelected": "Mai întâi selectați un subiect suportat",
         "layoutConfigurationTip": "Configurați modul în care TEMS va genera rapoarte.",
-        "createTemplateTip": "Dacă doriți să salvați acest șablon, acordați-i un nume și o descriere dacă este necesar."
+        "createTemplateTip": "Dacă doriți să salvați acest șablon, acordați-i un nume și o descriere dacă este necesar.",
+        "prop_temsid": "TEMSID",
+        "prop_serialNumber": "Numărul de serie",
+        "prop_definition": "Definiția", 
+        "prop_type": "Tipul",
+        "prop_description": "Descrierea",
+        "prop_price": "Prețul",
+        "prop_currency": "Valuta",
+        "prop_purchaseDate": "Data procurării",
+        "prop_allocatee": "Cesionar (La moment)"
     }
 }

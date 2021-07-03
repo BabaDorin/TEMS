@@ -55,7 +55,6 @@ export class EquipmentDetailsGeneralComponent extends TEMSComponent implements O
           return;
         
         this.equipment = response;
-        console.log(response);
         this.headerClass = (this.equipment.isArchieved) ? 'text-muted' : '';
 
         this.generalProperties= [

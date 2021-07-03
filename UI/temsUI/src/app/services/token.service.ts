@@ -1,3 +1,4 @@
+import { CAN_MANAGE_ANNOUNCEMENTS } from './../models/claims';
 import { CAN_VIEW_ENTITIES, CAN_MANAGE_ENTITIES, CAN_MANAGE_SYSTEM_CONFIGURATION, CAN_ALLOCATE_KEYS, CAN_SEND_EMAILS } from '../models/claims';
 import { Injectable } from '@angular/core';
 
@@ -40,5 +41,9 @@ export class TokenService {
 
   canSendEmails() {
     return this.hasClaim(CAN_SEND_EMAILS) || this.hasClaim(CAN_MANAGE_SYSTEM_CONFIGURATION);
+  }
+
+  canManageAnnouncements(){
+    return this.hasClaim(CAN_MANAGE_SYSTEM_CONFIGURATION) || this.hasClaim(CAN_MANAGE_ANNOUNCEMENTS);
   }
 }

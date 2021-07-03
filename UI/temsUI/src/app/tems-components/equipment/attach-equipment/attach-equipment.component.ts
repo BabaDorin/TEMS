@@ -51,7 +51,6 @@ export class AttachEquipmentComponent extends TEMSComponent implements OnInit {
     this.subscriptions.push(
       this.equipmentService.getEquipmentOfDefinitions(definitions)
       .subscribe(result => {
-        console.log(result);
         if(this.snackService.snackIfError(result))
           return;
         
@@ -71,9 +70,6 @@ export class AttachEquipmentComponent extends TEMSComponent implements OnInit {
     let attachEquipment = new AttachEquipment();
     attachEquipment.parentId = this.equipment.id;
     attachEquipment.childrenIds = selectedEq.map(q => q.value);
-
-    console.log('000');
-    console.log(attachEquipment);
 
     this.subscriptions.push(
       this.equipmentService.attach(attachEquipment)

@@ -31,7 +31,6 @@ export class LastIssuesSimplifiedComponent extends TEMSComponent implements OnIn
       this.issuesService.getIssuesOfEntity(
         'any', 'any', true, false, 'recency', 0, this.take)
         .subscribe(result => {
-          console.log(result);
           if(this.snackService.snackIfError(result))
             return;
 

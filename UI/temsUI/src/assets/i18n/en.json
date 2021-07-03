@@ -445,6 +445,7 @@
         "lastReports": "Last generated reports",
         "templates": "Custom templates",
         "reports": "Reports",
+        "add": "Create a template",
         "reportsTip": "Choose of the following templates in order to generate a report or",
         "selectSubject": "Select the report subject",
         "selectSubjectTip": "Choose the type of entities that will be present in the report.",
@@ -474,6 +475,15 @@
         "layoutConfiguration": "Layout configuration",
         "noSubjectSelected": "Please, select a supported subject first",
         "layoutConfigurationTip": "Configure the way how TEMS should generate the report.",
-        "createTemplateTip": "If you want to save this template, provide a name and a description if necessary"
+        "createTemplateTip": "If you want to save this template, provide a name and a description if necessary",
+        "prop_TEMSID": "TEMSID",
+        "prop_serialNumber": "Serial number",
+        "prop_definition": "Definition", 
+        "prop_type": "Type",
+        "prop_description": "Description",
+        "prop_price": "Price",
+        "prop_currency": "Currency",
+        "prop_purchaseDate": "Date of purchase",
+        "prop_allocatee": "Allocatee"
     }
 }

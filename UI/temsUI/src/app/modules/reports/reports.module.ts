@@ -1,3 +1,4 @@
+import { MatSelectModule } from '@angular/material/select';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
@@ -35,6 +36,7 @@ import { ReportsRoutingModule } from './reports-routing.module';
     TemsFormsModule,
     MatStepperModule,
     MatFormFieldModule,
+    MatSelectModule,
     MatInputModule,
     MatIconModule,
     MatRadioModule,

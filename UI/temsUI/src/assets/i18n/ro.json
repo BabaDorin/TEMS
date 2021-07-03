@@ -442,9 +442,10 @@
         "lastReports": "Ultimele rapoarte generate",
         "templates": "Șabloane personalizate",
         "reports": "Rapoarte",
+        "add": "Crează un șablon",
         "reportsTip": "Selectează un șablon deja existent sau",
-        "selectSubject": "Select the report subject",
-        "selectSubjectTip": "Choose the type of entities that will be present in the report.",
+        "selectSubject": "Selectați subiectul șablonului",
+        "selectSubjectTip": "Selectați tipul entităților care vor apărea în raport",
         "createTemplate": "crează un șablon nou",
         "name": "Nume",
         "header": "Antet",
@@ -471,6 +472,15 @@
         "layoutConfiguration": "Configurarea aspectului",
         "noSubjectSelected": "Mai întâi selectați un subiect suportat",
         "layoutConfigurationTip": "Configurați modul în care TEMS va genera rapoarte.",
-        "createTemplateTip": "Dacă doriți să salvați acest șablon, acordați-i un nume și o descriere dacă este necesar."
+        "createTemplateTip": "Dacă doriți să salvați acest șablon, acordați-i un nume și o descriere dacă este necesar.",
+        "prop_temsid": "TEMSID",
+        "prop_serialNumber": "Numărul de serie",
+        "prop_definition": "Definiția", 
+        "prop_type": "Tipul",
+        "prop_description": "Descrierea",
+        "prop_price": "Prețul",
+        "prop_currency": "Valuta",
+        "prop_purchaseDate": "Data procurării",
+        "prop_allocatee": "Cesionar (La moment)"
     }
 }

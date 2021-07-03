@@ -83,18 +83,19 @@ export class CreateReportTemplateComponent extends TEMSComponent implements OnIn
     controls.separateBy.setValue('none');
 
     this.universalProperties = [
-      new CheckboxItem('temsid', 'TEMSID', true),
-      new CheckboxItem('serialNumber', 'Serial Number', true),
-      new CheckboxItem('definition', 'Definition', true),
-      new CheckboxItem('type', 'Type', true),
-      new CheckboxItem('description', 'Description', false),
-      new CheckboxItem('price', 'Price', true),
-      new CheckboxItem('currency', 'Currency', true, "HeheBoai"),
-      new CheckboxItem('purchaseDate', 'Date of purchase', false),
-      new CheckboxItem('allocatee', 'Allocatee'),
+      new CheckboxItem('temsid', this.translate.instant('report.prop_temsid'), true),
+      new CheckboxItem('serialNumber', this.translate.instant('report.prop_serialNumber'), true),
+      new CheckboxItem('definition', this.translate.instant('report.prop_definition'), true),
+      new CheckboxItem('type', this.translate.instant('report.prop_type'), true),
+      new CheckboxItem('description', this.translate.instant('report.prop_description'), false),
+      new CheckboxItem('price', this.translate.instant('report.prop_price'), true),
+      new CheckboxItem('currency', this.translate.instant('report.prop_currency'), true),
+      new CheckboxItem('purchaseDate', this.translate.instant('report.prop_purchaseDate'), false),
+      new CheckboxItem('allocatee', this.translate.instant('report.prop_allocatee')),
     ];
     this.equipmentCommonProperties = this.universalProperties;
-    this.reportFormGroup.controls.commonProperties.setValue(this.equipmentCommonProperties.map(q => q.value));
+    this.reportFormGroup.controls.commonProperties
+      .setValue(this.equipmentCommonProperties.map(q => q.value));
 
     if(this.updateReportId == undefined)
       this.updateReportId = this.activatedroute.snapshot.paramMap.get("id");
@@ -160,7 +161,6 @@ export class CreateReportTemplateComponent extends TEMSComponent implements OnIn
         console.log(validDefinitions);
 
     this.definitionsAlreadySelected = validDefinitions;
-
     this.findCommonAndSpecificProperties();
   }
 
@@ -265,7 +265,8 @@ export class CreateReportTemplateComponent extends TEMSComponent implements OnIn
             .includes(value.label));
       });
   
-      this.equipmentCommonProperties = this.equipmentCommonProperties.concat(localCommonProperties);
+      this.equipmentCommonProperties = this.equipmentCommonProperties
+        .concat(localCommonProperties);
     }
 
     // Marking necessary properties as checked
@@ -291,7 +292,9 @@ export class CreateReportTemplateComponent extends TEMSComponent implements OnIn
       console.log(element.properties.filter(q => q.checked));
       console.log('to')
       console.log(element.type);
-      this.onSpecificPropChange(element.properties.filter(q => q.checked).map(q => q.value), element.type);
+      this.onSpecificPropChange(element.properties
+        .filter(q => q.checked)
+        .map(q => q.value), element.type);
     })
   }
 
@@ -308,7 +311,7 @@ export class CreateReportTemplateComponent extends TEMSComponent implements OnIn
     return this.reportFormGroup.controls;
   }
 
-  save(generateReportAfterSaving: boolean = false) {
+  save() {
     let addReportTemplateModel = this.getReportTemplate();
     let endPoint = this.reportService.addReportTemplate(addReportTemplateModel);
     

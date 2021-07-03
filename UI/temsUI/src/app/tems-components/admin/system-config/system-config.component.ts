@@ -137,8 +137,6 @@ export class SystemConfigComponent extends TEMSComponent implements OnInit {
 
   guestTicketCreationAllowanceChanged(){
     let flag = this.guestTicketConfigFormGroup.controls.creationAllowance.value;
-    alert(flag);
-
     this.subscriptions.push(
       this.systemConfigurationService.guestTicketCreationAllowanceChanged(flag)
       .subscribe()

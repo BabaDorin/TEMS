@@ -299,7 +299,9 @@ formly-field-mat-radio {
 }
 
 .card {
-  min-width: 280px !important;
+  .limit {
+    min-width: 280px !important;
+  }
 }
 
 // Bootstrap component styles overrides

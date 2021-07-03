@@ -1,3 +1,4 @@
+import { TranslateService } from '@ngx-translate/core';
 import { Component, Input, OnInit } from '@angular/core';
 import { SnackService } from 'src/app/services/snack.service';
 import { UserService } from 'src/app/services/user.service';
@@ -19,7 +20,8 @@ export class UserCardsListComponent extends TEMSComponent implements OnInit {
 
   constructor(
     private userService: UserService,
-    private snackService: SnackService
+    private snackService: SnackService,
+    public translate: TranslateService
   ) {
     super();
   }

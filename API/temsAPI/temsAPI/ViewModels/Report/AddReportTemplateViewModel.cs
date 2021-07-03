@@ -156,6 +156,10 @@ namespace temsAPI.ViewModels.Report
 
         public async Task<string> Validate(IUnitOfWork unitOfWork)
         {
+            // No name provided
+            if (String.IsNullOrEmpty(Name))
+                return "Please, provide a name for the template";
+
             // Invalid id provided (When it's the udpate case)
             if (Id != null && !await unitOfWork.ReportTemplates
                 .isExists(q => q.Id == Id))

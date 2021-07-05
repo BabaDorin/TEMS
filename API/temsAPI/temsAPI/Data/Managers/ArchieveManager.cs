@@ -1,10 +1,17 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
+using temsAPI.Data.Entities.CommunicationEntities;
+using temsAPI.Data.Entities.EquipmentEntities;
+using temsAPI.Data.Entities.KeyEntities;
+using temsAPI.Data.Entities.OtherEntities;
+using temsAPI.Data.Entities.UserEntities;
 using temsAPI.Helpers;
+using temsAPI.Repository;
 using temsAPI.ViewModels.Archieve;
 
 namespace temsAPI.Data.Managers
@@ -14,13 +21,46 @@ namespace temsAPI.Data.Managers
         ArchieveHelper _archieveHelper;
         LogManager _logManager;
 
+        AnnouncementManager _announcementManager;
+        EquipmentManager _equipmentManager;
+        EquipmentDefinitionManager _equipmentDefinitionManager;
+        EquipmentTypeManager _equipmentTypeManager;
+        EquipmentPropertyManager _equipmentPropertyManager;
+        KeyManager _keyManager;
+        PersonnelManager _personnelManager;
+        RoomManager _roomManager;
+        TEMSUserManager _temsUserManager;
+        TicketManager _ticketManager;
+
         public ArchieveManager(
             IUnitOfWork unitOfWork, 
             ClaimsPrincipal user,
-            LogManager logManager) : base(unitOfWork, user)
+            LogManager logManager,
+            AnnouncementManager announcementManager,
+            EquipmentManager equipmentManager,
+            EquipmentDefinitionManager equipmentDefinitionManager,
+            EquipmentTypeManager equipmentTypeManager,
+            EquipmentPropertyManager equipmentPropertyManager,
+            KeyManager keyManager,
+            PersonnelManager personnelManager,
+            RoomManager roomManager,
+            TEMSUserManager temsUserManager,
+            TicketManager ticketManager
+            ) : base(unitOfWork, user)
         {
             _logManager = logManager;
             _archieveHelper = new ArchieveHelper(unitOfWork, user);
+
+            _announcementManager = announcementManager;
+            _equipmentManager = equipmentManager;
+            _equipmentDefinitionManager = equipmentDefinitionManager;
+            _equipmentTypeManager = equipmentTypeManager;
+            _equipmentPropertyManager = equipmentPropertyManager;
+            _keyManager = keyManager;
+            _personnelManager = personnelManager;
+            _roomManager = roomManager;
+            _temsUserManager = temsUserManager;
+            _ticketManager = ticketManager;
         }
 
         public async Task<List<ArchievedItemViewModel>> GetArchievedItems(string itemType)
@@ -97,6 +137,116 @@ namespace temsAPI.Data.Managers
                 default:
                     throw new Exception("Unknown item type");
             }
+        }
+
+        /// <summary>
+        /// This method is called by the scheduler. It finds and removes archived items
+        /// using entity managers.
+        /// </summary>
+        /// <returns></returns>
+        public async Task RemoveOverArchivedItems()
+        {
+            // Remove equipment
+            var equipment = (await _unitOfWork.Equipments
+                .FindAll<Equipment>(
+                    where: q => q.IsArchieved,
+                    include: q => q.Include(q => q.Children)))
+                .ToList();
+
+            foreach (var q in equipment)
+                await _equipmentManager.Remove(q);
+
+            // Remove equipment allocations
+            var allocations = (await _unitOfWork.EquipmentAllocations
+                .FindAll<EquipmentAllocation>(q => q.IsArchieved))
+                .ToList();
+
+            foreach (var q in allocations)
+                await _equipmentManager.RemoveAllocation(q);
+
+            // Remove definitions
+            var definitions = (await _unitOfWork.EquipmentDefinitions
+                .FindAll<EquipmentDefinition>(
+                    where: q => q.IsArchieved,
+                    include: q => q.Include(q => q.Children)
+                )).ToList();
+
+            foreach (var q in definitions)
+                await _equipmentDefinitionManager.Remove(q);
+
+            // Remove types
+            var types = (await _unitOfWork.EquipmentTypes
+                .FindAll<EquipmentType>(
+                    where: q => q.IsArchieved,
+                    include: q => q.Include(q => q.Children)
+                )).ToList();
+
+            foreach (var q in types)
+                await _equipmentTypeManager.Remove(q);
+
+            // Remove announcements
+            var announcements = (await _unitOfWork.Announcements
+                .FindAll<Announcement>(q => q.IsArchieved))
+                .ToList();
+
+            foreach (var q in announcements)
+                await _announcementManager.Remove(q);
+
+            // Remove properties
+            var properties = (await _unitOfWork.Properties
+                .FindAll<Property>(q => q.IsArchieved))
+                .ToList();
+
+            foreach (var q in properties)
+                await _equipmentPropertyManager.Remove(q);
+
+            // Remove keys
+            var keys = (await _unitOfWork.Keys
+                .FindAll<Key>(q => q.IsArchieved))
+                .ToList();
+
+            foreach (var q in keys)
+                await _keyManager.Remove(q);
+
+            // Remove key allocations
+            var keyAllocations = (await _unitOfWork.KeyAllocations
+                .FindAll<KeyAllocation>(q => q.IsArchieved))
+                .ToList();
+
+            foreach (var q in keyAllocations)
+                await _keyManager.RemoveAllocation(q);
+
+            // Remove personnel
+            var personnel = (await _unitOfWork.Personnel
+                .FindAll<Personnel>(q => q.IsArchieved))
+                .ToList();
+
+            foreach (var q in personnel)
+                await _personnelManager.Remove(q);
+
+            // Remove rooms
+            var rooms = (await _unitOfWork.Rooms
+                .FindAll<Room>(q => q.IsArchieved))
+                .ToList();
+
+            foreach (var q in rooms)
+                await _roomManager.Remove(q);
+
+            // Remove users
+            var users = (await _unitOfWork.TEMSUsers
+                .FindAll<TEMSUser>(q => q.IsArchieved))
+                .ToList();
+
+            foreach (var q in users)
+                await _temsUserManager.RemoveUser(q.Id);
+
+            // Remove tickets
+            var tickets = (await _unitOfWork.Tickets
+                .FindAll<Ticket>(q => q.IsArchieved))
+                .ToList();
+
+            foreach (var q in tickets)
+                await _ticketManager.Remove(q);
         }
     }
 }

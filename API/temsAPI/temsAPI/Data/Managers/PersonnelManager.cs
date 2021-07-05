@@ -102,6 +102,11 @@ namespace temsAPI.Data.Managers
             if (personnel == null)
                 return "Invalid id provided";
 
+            return await Remove(personnel);
+        }
+
+        public async Task<string> Remove(Personnel personnel)
+        {
             _unitOfWork.Personnel.Delete(personnel);
             await _unitOfWork.Save();
             return null;

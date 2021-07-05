@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Timers;
@@ -13,14 +14,14 @@ namespace temsAPI.Helpers
     {
         private Timer timer;
         SystemConfigurationService _systemConfigurationService;
-        RoutineCheckService _routineCheckService;
+        private readonly IServiceScopeFactory _serviceScopeFactory;
 
         public Scheduler(
-            SystemConfigurationService systemConfigurationService, 
-            RoutineCheckService routineCheckService)
+            SystemConfigurationService systemConfigurationService,
+            IServiceScopeFactory serviceScopeFactory)
         {
             _systemConfigurationService = systemConfigurationService;
-            _routineCheckService = routineCheckService;
+            _serviceScopeFactory = serviceScopeFactory;
 
             timer = new Timer();
             timer.Interval = GetTimerInterval();
@@ -36,7 +37,11 @@ namespace temsAPI.Helpers
 
         private async void Timer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            await _routineCheckService.RoutineCheck();
+            using (var scope = _serviceScopeFactory.CreateScope())
+            {
+                var routineCheckService = scope.ServiceProvider.GetService<RoutineCheckService>();
+                await routineCheckService.RoutineCheck();
+            }
         }
 
         private void Interval_Changed(object sender, EventArgs e)

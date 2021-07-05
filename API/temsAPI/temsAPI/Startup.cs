@@ -120,7 +120,7 @@ namespace temsAPI
             });
 
             services.AddTransient<ClaimsPrincipal>(s =>
-                s.GetService<IHttpContextAccessor>().HttpContext.User);
+                s.GetService<IHttpContextAccessor>().HttpContext?.User ?? null);
 
             // TEMS Services
             services.AddScoped<RoutineCheckService>();
@@ -134,6 +134,9 @@ namespace temsAPI
             services.AddScoped<BrowserNotificationService>();
             services.AddScoped<NotificationService>();
             services.ConfigureWritable<AppSettings>(Configuration.GetSection("AppSettings"));
+
+            // Scheduler
+            services.AddSingleton<Scheduler>();
 
             // TEMS Entity managers
             services.AddScoped<ReportManager>();
@@ -162,7 +165,7 @@ namespace temsAPI
             RoleManager<IdentityRole> roleManager,
             ApplicationDbContext dbContext,
             SystemConfigurationService systemConfigurationService,
-            RoutineCheckService routineCheckService)
+            Scheduler scheduler)
         {
             if (env.IsDevelopment())
             {
@@ -193,7 +196,7 @@ namespace temsAPI
                     pattern: "{controller=Home}/{action=Index}/{id?}");
             });
 
-            var scheduler = new Scheduler(systemConfigurationService, routineCheckService);
+            //var scheduler = new Scheduler(systemConfigurationService, routineCheckService);
             scheduler.Start();
         }
     }

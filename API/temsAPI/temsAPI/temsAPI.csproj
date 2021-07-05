@@ -5,9 +5,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Data\Entities\Analytics\**" />
+    <Compile Remove="Services\Analytics\**" />
     <Compile Remove="StaticFiles\**" />
+    <Content Remove="Data\Entities\Analytics\**" />
+    <Content Remove="Services\Analytics\**" />
     <Content Remove="StaticFiles\**" />
+    <EmbeddedResource Remove="Data\Entities\Analytics\**" />
+    <EmbeddedResource Remove="Services\Analytics\**" />
     <EmbeddedResource Remove="StaticFiles\**" />
+    <None Remove="Data\Entities\Analytics\**" />
+    <None Remove="Services\Analytics\**" />
     <None Remove="StaticFiles\**" />
   </ItemGroup>
 
@@ -39,13 +47,4 @@
     <ProjectReference Include="..\ReportGenerator\ReportGenerator.csproj" />
     <ProjectReference Include="..\SIC-Parser\SIC-Parser.csproj" />
   </ItemGroup>
-
-  <ItemGroup>
-<<<<<<< HEAD
-    <Folder Include="Services\Analytics\" />
-=======
-    <Folder Include="Data\Entities\Analytics\" />
->>>>>>> cleaning
-  </ItemGroup>
-
 </Project>

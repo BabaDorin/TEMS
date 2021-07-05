@@ -292,6 +292,11 @@ namespace temsAPI.Data.Managers
             if (ticket == null)
                 return "Invalid Id provided";
 
+            return await Remove(ticket);
+        }
+
+        public async Task<string> Remove(Ticket ticket)
+        {
             _unitOfWork.Tickets.Delete(ticket);
             await _unitOfWork.Save();
             return null;

@@ -104,10 +104,15 @@ namespace temsAPI.Data.Managers
             if (allocation == null)
                 return "Invalid id provided";
 
+            return await RemoveAllocation(allocation);
+        }   
+
+        public async Task<string> RemoveAllocation(EquipmentAllocation allocation)
+        {
             _unitOfWork.EquipmentAllocations.Delete(allocation);
             await _unitOfWork.Save();
             return null;
-        }   
+        }
 
         public async Task<string> Update(AddEquipmentViewModel viewModel)
         {
@@ -193,8 +198,6 @@ namespace temsAPI.Data.Managers
 
             return equipment;
         }
-
-        
 
         public async Task<Equipment> GetFullEquipmentById(string id)
         {

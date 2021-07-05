@@ -42,6 +42,11 @@ namespace temsAPI.Data.Managers
             if (announcement == null)
                 return "Invalid id provided";
 
+            return await Remove(announcement);
+        }
+
+        public async Task<string> Remove(Announcement announcement)
+        {
             _unitOfWork.Announcements.Delete(announcement);
             await _unitOfWork.Save();
             return null;

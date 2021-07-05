@@ -83,6 +83,11 @@ namespace temsAPI.Data.Managers
             if (room == null)
                 return "Invalid id provided";
 
+            return await Remove(room);
+        }
+
+        public async Task<string> Remove(Room room)
+        {
             _unitOfWork.Rooms.Delete(room);
             await _unitOfWork.Save();
             return null;

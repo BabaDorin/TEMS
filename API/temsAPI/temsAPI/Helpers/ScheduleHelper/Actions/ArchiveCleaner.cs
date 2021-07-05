@@ -9,16 +9,15 @@ namespace temsAPI.Helpers.ScheduleHelper.Actions
 {
     public class ArchiveCleaner : IScheduledAction
     {
-        IUnitOfWork _unitOfWork;
-        public ArchiveCleaner(IUnitOfWork unitOfWork)
+        private ArchieveManager _archiveManager;
+        public ArchiveCleaner(ArchieveManager archiveManager)
         {
-            _unitOfWork = unitOfWork;
+            _archiveManager = archiveManager;
         }
 
         public async Task Start()
         {
-            //Will be implemented after a major testion session on delete behaviour
-            //await _unitOfWork.FindAndRemoveOverArchivedItems();
+            await _archiveManager.RemoveOverArchivedItems();
         }
     }
 }

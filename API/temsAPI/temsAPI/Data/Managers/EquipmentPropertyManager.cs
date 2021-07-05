@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using OfficeOpenXml.FormulaParsing.ExpressionGraph;
+using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -132,6 +131,11 @@ namespace temsAPI.Data.Managers
             if (property == null)
                 return "Invalid Id provided";
 
+            return await Remove(property);
+        }
+
+        public async Task<string> Remove(Property property)
+        {
             _unitOfWork.Properties.Delete(property);
             await _unitOfWork.Save();
             return null;
@@ -144,7 +148,7 @@ namespace temsAPI.Data.Managers
                 return validationResult;
 
             var propertyToUpdate = (await _unitOfWork.Properties
-                .Find<Entities.EquipmentEntities.Property>(
+                .Find<Property>(
                     where: q => q.Id == viewModel.Id,
                     include: q => q.Include(q => q.DataType)
                 )).FirstOrDefault();

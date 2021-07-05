@@ -75,6 +75,11 @@ namespace temsAPI.Data.Managers
             if (key == null)
                 return "Invalid id provided";
 
+            return await Remove(key);
+        }
+
+        public async Task<string> Remove(Key key)
+        {
             _unitOfWork.Keys.Delete(key);
             await _unitOfWork.Save();
             return null;
@@ -86,6 +91,11 @@ namespace temsAPI.Data.Managers
             if (allocation == null)
                 return "Invalid id provided";
 
+            return await RemoveAllocation(allocation);
+        }
+
+        public async Task<string> RemoveAllocation(KeyAllocation allocation)
+        {
             _unitOfWork.KeyAllocations.Delete(allocation);
             await _unitOfWork.Save();
             return null;

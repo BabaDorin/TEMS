@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using temsAPI.Contracts;
 using temsAPI.Data.Managers;
 using temsAPI.Helpers.ScheduleHelper.Actions;
 
@@ -10,17 +7,16 @@ namespace temsAPI.Services
 {
     public class RoutineCheckService
     {
-        ArchieveManager _archieveManager;
         List<IScheduledAction> scheduledActions;
-        IUnitOfWork _unitOfWork;
-
-        public RoutineCheckService(IUnitOfWork unitOfWork)
+        private ArchieveManager _archieveManager;
+        
+        public RoutineCheckService(ArchieveManager archieveManager)
         {
-            _unitOfWork = unitOfWork;
+            _archieveManager = archieveManager;
 
             scheduledActions = new()
             {
-                new ArchiveCleaner(unitOfWork)
+                new ArchiveCleaner(_archieveManager)
             };
         }
 

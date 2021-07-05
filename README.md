@@ -1,7 +1,7 @@
 # TEMS
 ### Technical Equipment Management System
 
-TEMS is an IT Service Management solution which serves for managing IT assets of an institution and provides a set of instruments oriented to the team of technicians. It is built according to the needs of an educational institution and adapted for such an ecosystem, but it can be implemented is any other organization that needs an effective and easy-to-use instrument for managing it's inventory.
+TEMS is an IT Service Management solution which serves for managing IT assets of an institution and provides a set of instruments oriented to the team of technicians. It is built according to the needs of an educational institution and adapted for such an ecosystem, but it can be implemented is any other organization that needs an effective and easy-to-use inventory management instrument.
 
 > Note: The application is still being tested and there is no stable version released yet. When it is 100% ready for production, a detailed documentation will be delivered.
 
@@ -19,7 +19,7 @@ TEMS is an IT Service Management solution which serves for managing IT assets of
     - You define the set of attributes assigned to the equipment types 
         - ex: For my printers, I would like to know the manufacturer, model and whether it supports colour printing or not;
     - Reduce information redundancy via creating definitions for your types;
-        - ex: HP LaserJet 1018 is a printer definition that contains the following property-value associations: Manufacturer - _Hewlett Packard_, Model - _Lasejet 1018_, Colour printing - _false_. When registering a printer of this type, you'll specify the LaserJet 1018 definition, and will provide only the information that uniquely identifies it within the system;
+        - ex: HP LaserJet 1018 is a printer definition that contains the following property-value associations: Manufacturer - _Hewlett Packard_, Model - _Lasejet 1018_, Colour printing - _false_. When registering a printer of this type, you can specify the LaserJet 1018 definition and provide only the information that uniquely identifies it within the system;
     - Uniquely identify equipment via TEMSID (a short and unique ID label, also called as inventory number) and / or serial number;
     - Walk the equipment through the entire IT Asset management life cycle;
     
@@ -48,13 +48,13 @@ A small part of the app, just to have a visual representation of what it is all 
 
 I assume that you already have ms sql server, nodeJs, angular and .net 5 installed on your machine. 
 
-- Initial configuration
+- Initial configuration: 
 Consult the app.settings.json file (`API/temsAPI`) to check some of the configuration data you might be interested in. An admin account is created at the first launch of the app (Login: tems@admin, password: it's indicated in app.settings.json file). Set a secure password before launching the app and, for safety reasons, you can remove it from the configuration file once the account is created.
-- Create the database
+- Create the database: 
 Open the app.settings.json file from `API/temsAPI` and set the `DefaultConnectionString` according to your machine. After that, open the NuGet Package Manager Console and type the `update-database` command in order to create the database.
-- Install npm packages
+- Install npm packages: 
 Open a terminal window inside angular project: `UI/temsUI` and type `npm i` to install all of the required dependencies.
-- Launch the project
+- Launch the project: 
 Launch the ASP.NET WebApi solution (within VS or dotnet cli) and run the `ng-serve` command inside angular project to launch the angular app. By default, the app is accesible at the following address: _localhost:4200_
  
 

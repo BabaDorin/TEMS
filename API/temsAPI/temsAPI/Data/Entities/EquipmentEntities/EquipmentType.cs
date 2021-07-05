@@ -36,10 +36,10 @@ namespace temsAPI.Data.Entities.EquipmentEntities
             }
         }
 
-        [DefaultValue(true)]
-        public bool EditableTypeInfo { get; set; } = true;
-
 #nullable enable
+        [DefaultValue(true)]
+        public bool? EditableTypeInfo { get; set; } = true;
+
         [InverseProperty("ArchivedTypes")]
         [ForeignKey("ArchievedById")]
         public TEMSUser? ArchievedBy { get; set; }

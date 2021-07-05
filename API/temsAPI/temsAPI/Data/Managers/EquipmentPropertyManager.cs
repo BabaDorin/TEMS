@@ -57,7 +57,7 @@ namespace temsAPI.Data.Managers
                         Id = q.Id,
                         Description = q.Description,
                         DisplayName = q.DisplayName,
-                        Editable = q.EditablePropertyInfo
+                        Editable = q.EditablePropertyInfo ?? true
                     }
                 )).ToList();
 

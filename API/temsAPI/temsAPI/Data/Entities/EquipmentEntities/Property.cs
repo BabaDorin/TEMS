@@ -36,10 +36,11 @@ namespace temsAPI.Data.Entities.EquipmentEntities
             }
         }
 
-        [DefaultValue(true)]
-        public bool EditablePropertyInfo { get; set; } = true;
+
 
 #nullable enable
+        [DefaultValue(true)]
+        public bool? EditablePropertyInfo { get; set; } = true;
 
         [MaxLength(250)]
         public string? Description { get; set; }

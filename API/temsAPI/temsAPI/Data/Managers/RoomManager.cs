@@ -27,30 +27,6 @@ namespace temsAPI.Data.Managers
             _logManager = logManager;
         }
 
-        public async Task<List<Option>> GetAutocompleteOptions(string filter)
-        {
-            int take = int.MaxValue;
-            Expression<Func<Room, bool>> expression = q => !q.IsArchieved;
-            if (filter != null)
-            {
-                expression = q => !q.IsArchieved && q.Identifier.Contains(filter);
-                take = 5;
-            }
-
-            var options = (await _unitOfWork.Rooms.FindAll<Option>(
-                where: expression,
-                take: take,
-                orderBy: q => q.OrderBy(q => q.Identifier),
-                select: q => new Option
-                {
-                    Value = q.Id,
-                    Label = q.Identifier,
-                    Additional = q.Description
-                })).ToList();
-
-            return options;
-        }
-
         public async Task<string> Create(AddRoomViewModel viewModel)
         {
             string validationResult = await viewModel.Validate(_unitOfWork);
@@ -74,6 +50,40 @@ namespace temsAPI.Data.Managers
             await _unitOfWork.Rooms.Create(model);
             await _unitOfWork.Save();
 
+            return null;
+        }
+
+        public async Task<string> Update(AddRoomViewModel viewModel)
+        {
+            string validationResult = await viewModel.Validate(_unitOfWork);
+            if (validationResult != null)
+                return validationResult;
+
+            var room = await GetFullById(viewModel.Id);
+            if (room == null)
+                return "Invalid room id provided";
+
+            room.Identifier = viewModel.Identifier;
+            room.Floor = viewModel.Floor;
+            room.Description = viewModel.Description;
+
+            List<string> labelIds = viewModel.Labels.Select(q => q.Value).ToList();
+            List<string> supervisoriesIds = viewModel.Supervisories.Select(q => q.Value).ToList() ?? new();
+
+            await room.AssignLabels(labelIds, _unitOfWork);
+
+            var supervisoriesBefore = room.Supervisories.ToList();
+            await room.AssignSupervisories(supervisoriesIds, _unitOfWork);
+            var supervisoriesAfter = room.Supervisories.ToList();
+
+            if (supervisoriesBefore != supervisoriesAfter)
+            {
+                // Supervisories changed
+                var supervisoriesUpdatedLog = new RoomSupervisoriesChangedLogFactory(room, IdentityService.GetUserId(_user)).Create();
+                await _logManager.Create(supervisoriesUpdatedLog);
+            }
+
+            await _unitOfWork.Save();
             return null;
         }
 
@@ -121,38 +131,28 @@ namespace temsAPI.Data.Managers
             return room;
         }
 
-        public async Task<string> Update(AddRoomViewModel viewModel)
+        public async Task<List<Option>> GetAutocompleteOptions(string filter)
         {
-            string validationResult = await viewModel.Validate(_unitOfWork);
-            if (validationResult != null)
-                return validationResult;
-
-            var room = await GetFullById(viewModel.Id);
-            if (room == null)
-                return "Invalid room id provided";
-
-            room.Identifier = viewModel.Identifier;
-            room.Floor = viewModel.Floor;
-            room.Description = viewModel.Description;
-
-            List<string> labelIds = viewModel.Labels.Select(q => q.Value).ToList();
-            List<string> supervisoriesIds = viewModel.Supervisories.Select(q => q.Value).ToList() ?? new();
-
-            await room.AssignLabels(labelIds, _unitOfWork);
-            
-            var supervisoriesBefore = room.Supervisories.ToList();
-            await room.AssignSupervisories(supervisoriesIds, _unitOfWork);
-            var supervisoriesAfter = room.Supervisories.ToList();
-
-            if (supervisoriesBefore != supervisoriesAfter)
+            int take = int.MaxValue;
+            Expression<Func<Room, bool>> expression = q => !q.IsArchieved;
+            if (filter != null)
             {
-                // Supervisories changed
-                var supervisoriesUpdatedLog = new RoomSupervisoriesChangedLogFactory(room, IdentityService.GetUserId(_user)).Create();
-                await _logManager.Create(supervisoriesUpdatedLog);
+                expression = q => !q.IsArchieved && q.Identifier.Contains(filter);
+                take = 5;
             }
 
-            await _unitOfWork.Save();
-            return null;
+            var options = (await _unitOfWork.Rooms.FindAll<Option>(
+                where: expression,
+                take: take,
+                orderBy: q => q.OrderBy(q => q.Identifier),
+                select: q => new Option
+                {
+                    Value = q.Id,
+                    Label = q.Identifier,
+                    Additional = q.Description
+                })).ToList();
+
+            return options;
         }
 
         public async Task<List<ViewRoomSimplifiedViewModel>> GetRoomsSimplified(

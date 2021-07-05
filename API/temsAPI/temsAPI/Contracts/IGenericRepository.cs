@@ -10,9 +10,6 @@ namespace temsAPI.Contracts
 {
     public interface IGenericRepository<T> where T : class
     {
-        // Interface which defines CRUD
-        // Every domain class should offer CRUD operations
-        
         Task<IList<TType>> FindAll<TType>(
             Expression<Func<T, bool>> where = null,
             Expression<Func<T, TType>> select = null,

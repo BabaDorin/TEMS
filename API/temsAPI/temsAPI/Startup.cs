@@ -177,7 +177,7 @@ namespace temsAPI
             app.UseSession();
             app.UseRouting();
             
-            SeedData.Seed(userManager, roleManager, dbContext);
+            SeedData.Seed(userManager, roleManager, dbContext, systemConfigurationService);
             TemsStarter.Start();
 
             app.UseCors(builder =>

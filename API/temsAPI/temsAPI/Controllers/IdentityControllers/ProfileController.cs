@@ -43,6 +43,5 @@ namespace temsAPI.Controllers.IdentityControllers
                 return ReturnResponse("An error occured while fetching user data", ResponseStatus.Fail);
             }
         }
-
     }
 }

@@ -89,24 +89,6 @@ namespace temsAPI.Controllers.LibraryControllers
             }
         }
 
-        [HttpGet("library/getlibraryitems/{accessPassword?}")]
-        public async Task<JsonResult> GetLibraryItems(string accessPassword)
-        {
-            try
-            {
-                if (!_identityService.IsAuthenticated() && accessPassword != _systemConfigurationService.AppSettings.LibraryGuestPassword)
-                    return ReturnResponse("Incorrect password.", ResponseStatus.Fail);
-
-                var items = await _libraryManager.GetItems();
-                return Json(items);
-            }
-            catch (Exception ex)
-            {
-                LogException(ex);
-                return ReturnResponse("An error occured when fetching library items", ResponseStatus.Fail);
-            }
-        }
-
         [HttpGet("library/remove/{itemId}")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> Remove(string itemId)
@@ -123,6 +105,24 @@ namespace temsAPI.Controllers.LibraryControllers
             {
                 LogException(ex);
                 return ReturnResponse("An error occured when removing an library item.", ResponseStatus.Fail);
+            }
+        }
+
+        [HttpGet("library/getlibraryitems/{accessPassword?}")]
+        public async Task<JsonResult> GetLibraryItems(string accessPassword)
+        {
+            try
+            {
+                if (!_identityService.IsAuthenticated() && accessPassword != _systemConfigurationService.AppSettings.LibraryGuestPassword)
+                    return ReturnResponse("Incorrect password.", ResponseStatus.Fail);
+
+                var items = await _libraryManager.GetItems();
+                return Json(items);
+            }
+            catch (Exception ex)
+            {
+                LogException(ex);
+                return ReturnResponse("An error occured when fetching library items", ResponseStatus.Fail);
             }
         }
 
@@ -178,6 +178,5 @@ namespace temsAPI.Controllers.LibraryControllers
                 return ReturnResponse("An error occured while fetching available library storage space.", ResponseStatus.Fail);
             }
         }
-        
     }
 }

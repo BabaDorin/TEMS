@@ -131,7 +131,7 @@ namespace temsAPI.Data.Managers
                     break;
             }
 
-            return ExpressionCombiner.CombineTwo(expression, secondaryExp);
+            return ExpressionCombiner.And(expression, secondaryExp);
         }
     }
 }

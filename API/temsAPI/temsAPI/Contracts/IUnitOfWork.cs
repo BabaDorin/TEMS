@@ -15,16 +15,12 @@ namespace temsAPI.Contracts
 {
     public interface IUnitOfWork: IDisposable
     {
-        // Communication entities
         IGenericRepository<Announcement> Announcements { get; }
         IGenericRepository<FrequentTicketProblem> FrequentTicketProblems { get; }
         IGenericRepository<Log> Logs { get; }
         IGenericRepository<Ticket> Tickets { get; }
         IGenericRepository<CommonNotification> CommonNotifications { get; }
         IGenericRepository<UserNotification> UserNotifications { get; }
-
-
-        // Equipment entities
         IGenericRepository<Equipment> Equipments { get; }
         IGenericRepository<EquipmentDefinition> EquipmentDefinitions { get; }
         IGenericRepository<EquipmentSpecifications> EquipmentSpecifications { get; }
@@ -32,26 +28,15 @@ namespace temsAPI.Contracts
         IGenericRepository<Property> Properties { get; }
         IGenericRepository<DataType> DataTypes { get; }
         IGenericRepository<PropertyEquipmentTypeAssociation> PropertyEquipmentTypeAssociations { get; }
-
-        // Key entities
         IGenericRepository<Key> Keys { get; }
         IGenericRepository<KeyAllocation> KeyAllocations { get; }
-        
-        // User entities
         IGenericRepository<TEMSUser> TEMSUsers { get; }
         IGenericRepository<Privilege> Privileges { get; }
         IGenericRepository<RolePrivileges> RolePrivileges { get; }
-
-
-        // Library entities
         IGenericRepository<LibraryItem> LibraryItems { get; }
         IGenericRepository<LibraryFolder> LibraryFolders { get; }
-
-        // Report templates
         IGenericRepository<ReportTemplate> ReportTemplates { get; }
         IGenericRepository<Report> Reports { get; }
-
-        // Other entities
         IGenericRepository<Personnel> Personnel { get; }
         IGenericRepository<EquipmentAllocation> EquipmentAllocations { get; }
         IGenericRepository<Room> Rooms { get; }
@@ -60,7 +45,7 @@ namespace temsAPI.Contracts
         IGenericRepository<RoomLabel> RoomLabels { get; }
         IGenericRepository<PersonnelPosition> PersonnelPositions { get; }
         IGenericRepository<TemsJWT> JWTBlacklist { get; }
-
+        
         Task Save();
     }
 }

@@ -12,9 +12,7 @@ namespace temsAPI.Data.Managers
 {
     public class AnnouncementManager : EntityManager
     {
-        public AnnouncementManager(IUnitOfWork unitOfWork, ClaimsPrincipal user) : base(unitOfWork, user)
-        {
-        }
+        public AnnouncementManager(IUnitOfWork unitOfWork, ClaimsPrincipal user) : base(unitOfWork, user) { }
 
         public async Task<string> Create(AddAnnouncementViewModel viewModel)
         {

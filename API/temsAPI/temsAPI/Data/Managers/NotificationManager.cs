@@ -38,6 +38,40 @@ namespace temsAPI.Data.Managers
             _emailNotificationService = emailNotificationService;
         }
 
+        public async Task CreateUserNotification(UserNotification notification)
+        {
+            await _unitOfWork.UserNotifications.Create(notification);
+            await _unitOfWork.Save();
+        }
+
+        public async Task CreateCommonNotification(CommonNotification notification)
+        {
+            await _unitOfWork.CommonNotifications.Create(notification);
+            await _unitOfWork.Save();
+        }
+
+        public async Task RemoveUserNotification(INotification notification)
+        {
+            _unitOfWork.UserNotifications.Delete((UserNotification)notification);
+            await _unitOfWork.Save();
+        }
+
+        public async Task RemoveCommonNotification(INotification notification)
+        {
+            _unitOfWork.CommonNotifications.Delete((CommonNotification)notification);
+            await _unitOfWork.Save();
+        }
+
+        public async Task<string> RemoveNotification(INotification notification)
+        {
+            if (await _unitOfWork.UserNotifications.isExists(q => q.Id == notification.Id))
+                await RemoveUserNotification(notification);
+            else
+                await RemoveCommonNotification(notification);
+
+            return null;
+        }
+
         public async Task<List<NotificationViewModel>> GetLastNotifications(TEMSUser user, int skip = 0, int take = 7)
         {
             var notifications = (await GetLastCommonNotifications(user, take))
@@ -126,41 +160,7 @@ namespace temsAPI.Data.Managers
                 .Find<CommonNotification>(q => q.Id == notificationId))
                 .FirstOrDefault();
         }
-
-        public async Task RemoveUserNotification(INotification notification)
-        {
-            _unitOfWork.UserNotifications.Delete((UserNotification)notification);
-            await _unitOfWork.Save();
-        }
-
-        public async Task RemoveCommonNotification(INotification notification)
-        {
-            _unitOfWork.CommonNotifications.Delete((CommonNotification)notification);
-            await _unitOfWork.Save();
-        }
-
-        public async Task<string> RemoveNotification(INotification notification)
-        {
-            if (await _unitOfWork.UserNotifications.isExists(q => q.Id == notification.Id))
-                await RemoveUserNotification(notification);
-            else
-                await RemoveCommonNotification(notification);
-
-            return null;
-        }
-
-        public async Task CreateUserNotification(UserNotification notification)
-        {
-            await _unitOfWork.UserNotifications.Create(notification);
-            await _unitOfWork.Save();
-        }
-
-        public async Task CreateCommonNotification(CommonNotification notification)
-        {
-            await _unitOfWork.CommonNotifications.Create(notification);
-            await _unitOfWork.Save();
-        }
-
+        
         public async Task NotifyTicketCreation(Ticket ticket)
         {
             // Notify assignees

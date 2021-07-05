@@ -28,22 +28,6 @@ namespace temsAPI.Controllers.PersonnelControllers
             _personnelManager = personnelManager;
         }
 
-        [HttpGet]
-        [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
-        public async Task<JsonResult> GetPositions()
-        {
-            try
-            {
-                var positions = await _personnelManager.GetPositionOptions();
-                return Json(positions);
-            }
-            catch (Exception ex)
-            {
-                LogException(ex);
-                return ReturnResponse("An error occured when fetching positions", ResponseStatus.Fail);
-            }
-        }
-
         [HttpPost]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> Create([FromBody] AddPersonnelViewModel viewModel)
@@ -60,13 +44,13 @@ namespace temsAPI.Controllers.PersonnelControllers
             }
         }
 
-        [HttpGet("personnel/remove/{personnelId}")]
-        [ClaimRequirement(TEMSClaims.CAN_MANAGE_SYSTEM_CONFIGURATION)]
-        public async Task<JsonResult> Remove(string personnelId)
+        [HttpPost]
+        [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
+        public async Task<JsonResult> Update([FromBody] AddPersonnelViewModel viewModel)
         {
             try
             {
-                string result = await _personnelManager.Remove(personnelId);
+                var result = await _personnelManager.Update(viewModel);
                 if (result != null)
                     return ReturnResponse(result, ResponseStatus.Fail);
 
@@ -75,7 +59,8 @@ namespace temsAPI.Controllers.PersonnelControllers
             catch (Exception ex)
             {
                 LogException(ex);
-                return ReturnResponse("An error occured while removing the personnel", ResponseStatus.Fail);
+                return ReturnResponse("An error occured while saving personnel data", ResponseStatus.Fail);
+                throw;
             }
         }
 
@@ -99,6 +84,40 @@ namespace temsAPI.Controllers.PersonnelControllers
             }
         }
 
+        [HttpGet("personnel/remove/{personnelId}")]
+        [ClaimRequirement(TEMSClaims.CAN_MANAGE_SYSTEM_CONFIGURATION)]
+        public async Task<JsonResult> Remove(string personnelId)
+        {
+            try
+            {
+                string result = await _personnelManager.Remove(personnelId);
+                if (result != null)
+                    return ReturnResponse(result, ResponseStatus.Fail);
+
+                return ReturnResponse("Success", ResponseStatus.Success);
+            }
+            catch (Exception ex)
+            {
+                LogException(ex);
+                return ReturnResponse("An error occured while removing the personnel", ResponseStatus.Fail);
+            }
+        }
+
+        [HttpGet]
+        [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
+        public async Task<JsonResult> GetPositions()
+        {
+            try
+            {
+                var positions = await _personnelManager.GetPositionOptions();
+                return Json(positions);
+            }
+            catch (Exception ex)
+            {
+                LogException(ex);
+                return ReturnResponse("An error occured when fetching positions", ResponseStatus.Fail);
+            }
+        }
 
         [HttpGet("/personnel/getsimplified/{pageNumber}/{recordsPerPage}")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
@@ -150,26 +169,6 @@ namespace temsAPI.Controllers.PersonnelControllers
             {
                 LogException(ex);
                 return ReturnResponse("An error occured while getting personnel's information", ResponseStatus.Fail);
-            }
-        }
-
-        [HttpPost]
-        [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
-        public async Task<JsonResult> Update([FromBody] AddPersonnelViewModel viewModel)
-        {
-            try
-        {
-                var result = await _personnelManager.Update(viewModel);
-                if (result != null)
-                    return ReturnResponse(result, ResponseStatus.Fail);
-
-                return ReturnResponse("Success", ResponseStatus.Success);
-            }
-            catch (Exception ex)
-            {
-                LogException(ex);
-                return ReturnResponse("An error occured while saving personnel data", ResponseStatus.Fail);
-                throw;
             }
         }
 

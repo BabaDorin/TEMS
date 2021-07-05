@@ -29,6 +29,83 @@ namespace temsAPI.EquipmentControllers
             _eqPropertyManager = equipmentPropertyManager;
         }
 
+        [HttpPost]
+        [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
+        public async Task<JsonResult> Add([FromBody] AddPropertyViewModel viewModel)
+        {
+            try
+            {
+                string result = await _eqPropertyManager.Create(viewModel);
+                if (result != null)
+                    return ReturnResponse(result, ResponseStatus.Fail);
+
+                return ReturnResponse("Success", ResponseStatus.Success);
+            }
+            catch (Exception ex)
+            {
+                LogException(ex);
+                return ReturnResponse("An error occured while creating the property", ResponseStatus.Fail);
+            }
+        }
+
+        [HttpPost]
+        [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
+        public async Task<JsonResult> Update([FromBody] AddPropertyViewModel viewModel)
+        {
+            try
+            {
+                var result = await _eqPropertyManager.Update(viewModel);
+                if (result != null)
+                    return ReturnResponse(result, ResponseStatus.Fail);
+
+                return ReturnResponse("Success!", ResponseStatus.Success);
+            }
+            catch (Exception ex)
+            {
+                LogException(ex);
+                return ReturnResponse("An error occured when saving the property", ResponseStatus.Fail);
+            }
+        }
+
+        [HttpGet("property/archieve/{propertyId}/{archivationStatus?}")]
+        [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
+        public async Task<JsonResult> Archieve(string propertyId, bool archivationStatus = true)
+        {
+            try
+            {
+                var archievingResult = await (new ArchieveHelper(_unitOfWork, User))
+                     .SetPropertyArchivationStatus(propertyId, archivationStatus);
+                if (archievingResult != null)
+                    return ReturnResponse(archievingResult, ResponseStatus.Fail);
+
+                return ReturnResponse("Success", ResponseStatus.Success);
+            }
+            catch (Exception ex)
+            {
+                LogException(ex);
+                return ReturnResponse("An error occured while changing the archivation status.", ResponseStatus.Fail);
+            }
+        }
+
+        [HttpGet("property/remove/{propertyId}")]
+        [ClaimRequirement(TEMSClaims.CAN_MANAGE_SYSTEM_CONFIGURATION)]
+        public async Task<JsonResult> Remove(string propertyId)
+        {
+            try
+            {
+                string result = await _eqPropertyManager.Remove(propertyId);
+                if (result != null)
+                    return ReturnResponse(result, ResponseStatus.Fail);
+
+                return ReturnResponse("Success", ResponseStatus.Success);
+            }
+            catch (Exception ex)
+            {
+                LogException(ex);
+                return ReturnResponse("An error occured while removing the property.", ResponseStatus.Fail);
+            }
+        }
+        
         [HttpGet]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> Get()
@@ -91,83 +168,6 @@ namespace temsAPI.EquipmentControllers
             {
                 LogException(ex);
                 return ReturnResponse("An error occured when fetching the property", ResponseStatus.Fail);
-            }
-        }
-
-        [HttpPost]
-        [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
-        public async Task<JsonResult> Add([FromBody] AddPropertyViewModel viewModel)
-        {
-            try
-            {
-                string result = await _eqPropertyManager.Create(viewModel);
-                if (result != null)
-                    return ReturnResponse(result, ResponseStatus.Fail);
-
-                return ReturnResponse("Success", ResponseStatus.Success);
-            }
-            catch (Exception ex)
-            {
-                LogException(ex);
-                return ReturnResponse("An error occured while creating the property", ResponseStatus.Fail);
-            }
-        }
-
-        [HttpGet("property/remove/{propertyId}")]
-        [ClaimRequirement(TEMSClaims.CAN_MANAGE_SYSTEM_CONFIGURATION)]
-        public async Task<JsonResult> Remove(string propertyId)
-        {
-            try
-            {
-                string result = await _eqPropertyManager.Remove(propertyId);
-                if (result != null)
-                    return ReturnResponse(result, ResponseStatus.Fail);
-
-                return ReturnResponse("Success", ResponseStatus.Success);
-            }
-            catch (Exception ex)
-            {
-                LogException(ex);
-                return ReturnResponse("An error occured while removing the property.", ResponseStatus.Fail);
-            }
-        }
-
-        [HttpPost]
-        [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
-        public async Task<JsonResult> Update([FromBody] AddPropertyViewModel viewModel)
-        {
-            try
-            {
-                var result = await _eqPropertyManager.Update(viewModel);
-                if (result != null)
-                    return ReturnResponse(result, ResponseStatus.Fail);
-
-                return ReturnResponse("Success!", ResponseStatus.Success);
-            }
-            catch (Exception ex)
-            {
-                LogException(ex);
-                return ReturnResponse("An error occured when saving the property", ResponseStatus.Fail);
-            }
-        }
-
-        [HttpGet("property/archieve/{propertyId}/{archivationStatus?}")]
-        [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
-        public async Task<JsonResult> Archieve(string propertyId, bool archivationStatus = true)
-        {
-            try
-            {
-                var archievingResult = await (new ArchieveHelper(_unitOfWork, User))
-                     .SetPropertyArchivationStatus(propertyId, archivationStatus);
-                if (archievingResult != null)
-                    return ReturnResponse(archievingResult, ResponseStatus.Fail);
-
-                return ReturnResponse("Success", ResponseStatus.Success);
-            }
-            catch (Exception ex)
-            {
-                LogException(ex);
-                return ReturnResponse("An error occured while changing the archivation status.", ResponseStatus.Fail);
             }
         }
     }

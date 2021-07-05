@@ -23,31 +23,7 @@ namespace temsAPI.Data.Managers
 {
     public class TicketManager : EntityManager
     {
-        private enum TicketEntityType
-        {
-            Any,
-            UserClosed,
-            UserCreated,
-            UserAssigned,
-            Equipment,
-            Room,
-            Personnel
-        }
-
-        private enum TicketOrderByCriteria
-        {
-            Priority,
-            Recency,
-            RecencyClosed
-        }
-
-        public enum UserTicketAction
-        {
-            Create,
-            Close,
-            Assigned
-        }
-
+        
         private UserManager<TEMSUser> _userManager;
         private IdentityService _identityService;
         private AppSettings _appSettings;
@@ -66,8 +42,61 @@ namespace temsAPI.Data.Managers
             _identityService = identityService;
             _notificationManager = notificationManager;
         }
+        
+        public async Task<string> Create(AddTicketViewModel viewModel)
+        {
+            string validationResult = await viewModel.Validate(_unitOfWork);
+            if (validationResult != null)
+                return validationResult;
 
-        // BEFREE
+            Ticket model = new Ticket
+            {
+                Id = Guid.NewGuid().ToString(),
+                StatusId = viewModel.Status,
+                Problem = viewModel.Problem,
+                CreatedBy = (_identityService.IsAuthenticated())
+                    ? await _userManager.FindByIdAsync(_identityService.GetUserId())
+                    : null,
+                DateCreated = DateTime.Now,
+                Description = viewModel.ProblemDescription,
+                Rooms = await _unitOfWork.Rooms.FindAll<Room>(
+                    where: q =>
+                        viewModel.Rooms.Select(q => q.Value).Contains(q.Id)),
+                Equipments = await _unitOfWork.Equipments.FindAll<Equipment>(
+                    where: q =>
+                        viewModel.Equipments.Select(q => q.Value).Contains(q.Id)),
+                Personnel = await _unitOfWork.Personnel.FindAll<Personnel>(
+                    where: q =>
+                        viewModel.Personnel.Select(q => q.Value).Contains(q.Id)),
+                Assignees = await _unitOfWork.TEMSUsers.FindAll<TEMSUser>(
+                    where: q =>
+                        viewModel.Assignees.Select(q => q.Value).Contains(q.Id)),
+            };
+
+            await _unitOfWork.Tickets.Create(model);
+            await _unitOfWork.Save();
+
+            await _notificationManager.NotifyTicketCreation(model);
+
+            return null;
+        }
+
+        public async Task<string> Remove(string ticketId)
+        {
+            var ticket = await GetById(ticketId);
+            if (ticket == null)
+                return "Invalid Id provided";
+
+            return await Remove(ticket);
+        }
+
+        public async Task<string> Remove(Ticket ticket)
+        {
+            _unitOfWork.Tickets.Delete(ticket);
+            await _unitOfWork.Save();
+            return null;
+        }
+
         public async Task<List<ViewTicketSimplifiedViewModel>> GetEntityTickets(
             string entityType,
             string entityId,
@@ -218,7 +247,7 @@ namespace temsAPI.Data.Managers
         public async Task<List<ViewTicketSimplifiedViewModel>> GetFullTickets(
             Expression<Func<Ticket, bool>> additionalFilter = null)
         {
-            Expression<Func<Ticket, bool>> expression = ExpressionCombiner.CombineTwo(
+            Expression<Func<Ticket, bool>> expression = ExpressionCombiner.And(
                 additionalFilter,
                 q => !q.IsArchieved);
 
@@ -246,60 +275,6 @@ namespace temsAPI.Data.Managers
             ticket.ClosedById = _identityService.GetUserId();
             ticket.DateClosed = DateTime.Now;
             await _unitOfWork.Save();
-        }
-
-        public async Task<string> Create(AddTicketViewModel viewModel)
-        {
-            string validationResult = await viewModel.Validate(_unitOfWork);
-            if (validationResult != null)
-                return validationResult;
-
-            Ticket model = new Ticket
-            {
-                Id = Guid.NewGuid().ToString(),
-                StatusId = viewModel.Status,
-                Problem = viewModel.Problem,
-                CreatedBy = (_identityService.IsAuthenticated())
-                    ? await _userManager.FindByIdAsync(_identityService.GetUserId())
-                    : null,
-                DateCreated = DateTime.Now,
-                Description = viewModel.ProblemDescription,
-                Rooms = await _unitOfWork.Rooms.FindAll<Room>(
-                    where: q =>
-                        viewModel.Rooms.Select(q => q.Value).Contains(q.Id)),
-                Equipments = await _unitOfWork.Equipments.FindAll<Equipment>(
-                    where: q =>
-                        viewModel.Equipments.Select(q => q.Value).Contains(q.Id)),
-                Personnel = await _unitOfWork.Personnel.FindAll<Personnel>(
-                    where: q =>
-                        viewModel.Personnel.Select(q => q.Value).Contains(q.Id)),
-                Assignees = await _unitOfWork.TEMSUsers.FindAll<TEMSUser>(
-                    where: q =>
-                        viewModel.Assignees.Select(q => q.Value).Contains(q.Id)),
-            };
-
-            await _unitOfWork.Tickets.Create(model);
-            await _unitOfWork.Save();
-
-            await _notificationManager.NotifyTicketCreation(model);
-
-            return null;
-        }
-
-        public async Task<string> Remove(string ticketId)
-        {
-            var ticket = await GetById(ticketId);
-            if (ticket == null)
-                return "Invalid Id provided";
-
-            return await Remove(ticket);
-        }
-
-        public async Task<string> Remove(Ticket ticket)
-        {
-            _unitOfWork.Tickets.Delete(ticket);
-            await _unitOfWork.Save();
-            return null;
         }
 
         public async Task ChangeTicketStatus(Ticket ticket, Status newStatus)
@@ -358,7 +333,34 @@ namespace temsAPI.Data.Managers
             await _unitOfWork.Save();
         }
 
-        // BEFREE
+        // Utilities => To be moved to another file
+
+        private enum TicketEntityType
+        {
+            Any,
+            UserClosed,
+            UserCreated,
+            UserAssigned,
+            Equipment,
+            Room,
+            Personnel
+        }
+
+        private enum TicketOrderByCriteria
+        {
+            Priority,
+            Recency,
+            RecencyClosed
+        }
+
+        public enum UserTicketAction
+        {
+            Create,
+            Close,
+            Assigned
+        }
+
+
         public async Task<List<ViewTicketSimplifiedViewModel>> GetTickets(
             string equipmentId,
             string roomId,
@@ -463,7 +465,7 @@ namespace temsAPI.Data.Managers
                     break;
             }
 
-            expression = ExpressionCombiner.CombineTwo(expression, secondaryExpression);
+            expression = ExpressionCombiner.And(expression, secondaryExpression);
             return expression;
         }
     }

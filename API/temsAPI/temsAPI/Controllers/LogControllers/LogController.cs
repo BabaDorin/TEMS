@@ -28,6 +28,25 @@ namespace temsAPI.Controllers.LogControllers
             _logManager = logManager;
         }
 
+        [HttpPost]
+        [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
+        public async Task<JsonResult> Create([FromBody] AddLogViewModel viewModel)
+        {
+            try
+            {
+                var result = await _logManager.Create(viewModel);
+                if (result != null)
+                    return ReturnResponse(result, ResponseStatus.Fail);
+
+                return ReturnResponse("Success!", ResponseStatus.Success);
+            }
+            catch (Exception ex)
+            {
+                LogException(ex);
+                return ReturnResponse("An error occured while creating the log record. Please try again", ResponseStatus.Fail);
+            }
+        }
+
         [HttpGet("/log/archieve/{logId}/{archivationStatus?}")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> Archieve(string logId, bool archivationStatus = true)
@@ -45,25 +64,6 @@ namespace temsAPI.Controllers.LogControllers
             {
                 LogException(ex);
                 return ReturnResponse("An error occured while changing the archivation status.", ResponseStatus.Fail);
-            }
-        }
-
-        [HttpPost]
-        [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
-        public async Task<JsonResult> Create([FromBody] AddLogViewModel viewModel)
-        {
-            try
-            {
-                var result = await _logManager.Create(viewModel);
-                if (result != null)
-                    return ReturnResponse(result, ResponseStatus.Fail);
-
-                return ReturnResponse("Success!", ResponseStatus.Success);
-            }
-            catch (Exception ex)
-            {
-                LogException(ex);
-                return ReturnResponse("An error occured while creating the log record. Please try again", ResponseStatus.Fail);
             }
         }
 
@@ -124,6 +124,5 @@ namespace temsAPI.Controllers.LogControllers
                 return ReturnResponse("An error occured while fetching log items number", ResponseStatus.Fail);
             }
         }
-
     }
 }

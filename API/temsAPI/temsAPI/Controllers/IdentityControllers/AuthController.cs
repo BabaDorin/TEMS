@@ -19,6 +19,7 @@ namespace temsAPI.Controllers.IdentityControllers
         TEMSUserManager _temsUserManager;
         RoleManager<IdentityRole> _roleManager;
         readonly AppSettings _appSettings;
+
         public AuthController(
             IMapper mapper, 
             IUnitOfWork unitOfWork, 
@@ -34,21 +35,6 @@ namespace temsAPI.Controllers.IdentityControllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> SignOut([FromBody] string token)
-        {
-            try
-            {
-                await _temsUserManager.BlacklistToken(token);
-                return ReturnResponse("Success", ResponseStatus.Success);
-            }
-            catch (Exception ex)
-            {
-                LogException(ex);
-                return ReturnResponse("An error occured while blacklisting the token", ResponseStatus.Fail);
-            }
-        }
-
-        [HttpPost]
         public async Task<IActionResult> LogIn([FromBody] LogInViewModel viewModel)
         {
             try
@@ -60,6 +46,21 @@ namespace temsAPI.Controllers.IdentityControllers
             {
                 LogException(ex);
                 return ReturnResponse("Invalid credentials", ResponseStatus.Fail);
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SignOut([FromBody] string token)
+        {
+            try
+            {
+                await _temsUserManager.BlacklistToken(token);
+                return ReturnResponse("Success", ResponseStatus.Success);
+            }
+            catch (Exception ex)
+            {
+                LogException(ex);
+                return ReturnResponse("An error occured while blacklisting the token", ResponseStatus.Fail);
             }
         }
     }

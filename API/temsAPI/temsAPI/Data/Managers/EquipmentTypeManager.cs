@@ -29,6 +29,93 @@ namespace temsAPI.Data.Managers
             _equipmentManager = equipmentManager;
         }
 
+        public async Task<string> Create(AddEquipmentTypeViewModel viewModel)
+        {
+            string validationResult = await viewModel.Validate(_unitOfWork);
+            if (validationResult != null)
+                return validationResult;
+
+            EquipmentType equipmentType = new EquipmentType
+            {
+                Id = Guid.NewGuid().ToString(),
+                Name = viewModel.Name,
+            };
+
+            await SetProperties(equipmentType, viewModel);
+
+            await _unitOfWork.EquipmentTypes.Create(equipmentType);
+            await _unitOfWork.Save();
+
+            string setParentsResult = await SetParents(equipmentType, viewModel);
+            if (setParentsResult != null)
+                return setParentsResult;
+
+            return null;
+        }
+
+        public async Task<string> Remove(string typeId)
+        {
+            var type = (await _unitOfWork.EquipmentTypes
+                .Find<EquipmentType>(
+                    where: q => q.Id == typeId,
+                    include: q => q
+                    .Include(q => q.Children)
+                    .ThenInclude(q => q.Parents)))
+                .FirstOrDefault();
+
+            if (type == null)
+                return "Invalid Id provided";
+
+            return await Remove(type);
+        }
+
+        public async Task<string> Remove(EquipmentType type)
+        {
+            // Remove ONLY children that are assigned to this type
+            var typeChildren = type.Children.ToList();
+
+            foreach (EquipmentType child in typeChildren)
+            {
+                if (child.Parents.Count > 1)
+                    continue;
+
+                await _equipmentDefinitionManager.RemoveOfType(child.Id);
+                _unitOfWork.EquipmentTypes.Delete(child);
+                await _unitOfWork.Save();
+            }
+
+            await _equipmentDefinitionManager.RemoveOfType(type.Id);
+            _unitOfWork.EquipmentTypes.Delete(type);
+            await _unitOfWork.Save();
+            return null;
+        }
+
+        public async Task<string> Update(AddEquipmentTypeViewModel viewModel)
+        {
+            string validationResult = await viewModel.Validate(_unitOfWork);
+            if (validationResult != null)
+                return validationResult;
+
+            var equipmentTypeToUpdate = await GetFullById(viewModel.Id);
+
+            if (equipmentTypeToUpdate == null)
+                return "An error occured, the type has not been found";
+
+            if ((bool)!equipmentTypeToUpdate.EditableTypeInfo)
+                return "This type can not be edited";
+
+            await SetProperties(equipmentTypeToUpdate, viewModel);
+
+            string setParentsResponse = await SetParents(equipmentTypeToUpdate, viewModel);
+            if (setParentsResponse != null)
+                return setParentsResponse;
+
+            equipmentTypeToUpdate.Name = viewModel.Name;
+            await _unitOfWork.Save();
+
+            return null;
+        }
+
         public async Task<List<Option>> GetAutocompleteOptions(string filter)
         {
             int take = (filter == null) ? int.MaxValue : 5;
@@ -102,95 +189,6 @@ namespace temsAPI.Data.Managers
             return type;
         }
 
-        public async Task<string> Create(AddEquipmentTypeViewModel viewModel)
-        {
-            string validationResult = await viewModel.Validate(_unitOfWork);
-            if (validationResult != null)
-                return validationResult;
-
-            EquipmentType equipmentType = new EquipmentType
-            {
-                Id = Guid.NewGuid().ToString(),
-                Name = viewModel.Name,
-            };
-
-            await SetProperties(equipmentType, viewModel);
-
-            await _unitOfWork.EquipmentTypes.Create(equipmentType);
-            await _unitOfWork.Save();
-
-            string setParentsResult = await SetParents(equipmentType, viewModel);
-            if (setParentsResult != null)
-                return setParentsResult;
-
-            return null;
-        }
-
-        // remove by Id
-        public async Task<string> Remove(string typeId)
-        {
-            var type = (await _unitOfWork.EquipmentTypes
-                .Find<EquipmentType>(
-                    where: q => q.Id == typeId,
-                    include: q => q
-                    .Include(q => q.Children)
-                    .ThenInclude(q => q.Parents)))
-                .FirstOrDefault();
-
-            if (type == null)
-                return "Invalid Id provided";
-
-            return await Remove(type);
-        }
-
-        // remove by reference
-        public async Task<string> Remove(EquipmentType type)
-        {
-            // Remove ONLY children that are assigned to this type
-            var typeChildren = type.Children.ToList();
-
-            foreach (EquipmentType child in typeChildren)
-            {
-                if (child.Parents.Count > 1)
-                    continue;
-
-                await _equipmentDefinitionManager.RemoveOfType(child.Id);
-                _unitOfWork.EquipmentTypes.Delete(child);
-                await _unitOfWork.Save();
-            }
-
-            await _equipmentDefinitionManager.RemoveOfType(type.Id);
-            _unitOfWork.EquipmentTypes.Delete(type);
-            await _unitOfWork.Save();
-            return null;
-        }
-
-        public async Task<string> Update(AddEquipmentTypeViewModel viewModel)
-        {
-            string validationResult = await viewModel.Validate(_unitOfWork);
-            if (validationResult != null)
-                return validationResult;
-
-            var equipmentTypeToUpdate = await GetFullById(viewModel.Id);
-
-            if (equipmentTypeToUpdate == null)
-                return "An error occured, the type has not been found";
-
-            if ((bool)!equipmentTypeToUpdate.EditableTypeInfo)
-                return "This type can not be edited";
-
-            await SetProperties(equipmentTypeToUpdate, viewModel);
-
-            string setParentsResponse = await SetParents(equipmentTypeToUpdate, viewModel);
-            if (setParentsResponse != null)
-                return setParentsResponse;
-
-            equipmentTypeToUpdate.Name = viewModel.Name;
-            await _unitOfWork.Save();
-
-            return null;
-        }
-
         public async Task<List<Option>> GetPropertiesOfType(string typeId)
         {
             List<Option> props = (await _unitOfWork.EquipmentTypes
@@ -208,7 +206,7 @@ namespace temsAPI.Data.Managers
             return props;
         }
 
-        // Utilities
+        // Utilities => To be moved to another file
 
         /// <summary>
         /// Sets properties from view model to the model

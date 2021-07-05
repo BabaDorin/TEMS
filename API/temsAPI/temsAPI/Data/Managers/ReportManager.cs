@@ -41,43 +41,6 @@ namespace temsAPI.Data.Managers
             _reportingService = reportingService;
         }
 
-        public async Task<Report> GetReport(string reportId)
-        {
-            return (await _unitOfWork.Reports
-                .Find<Report>(q => q.Id == reportId))
-                .FirstOrDefault();
-        }
-
-        public async Task<List<ViewGeneratedReportViewModel>> GetLastGeneratedReports(
-            int skip = 0,
-            int take = int.MaxValue)
-        {
-            var reports = (await _unitOfWork.Reports
-                .Find(
-                    include: q => q.Include(q => q.GeneratedBy),
-                    select: q => ViewGeneratedReportViewModel.FromModel(q)
-                )).ToList();
-
-            return reports;
-        }
-
-        public async Task<List<ViewReportTemplateSimplifiedViewModel>> GetReportTemplates(
-            int skip = 0,
-            int take = int.MaxValue)
-        {
-            var reportTemplates = (await _unitOfWork.ReportTemplates
-                .FindAll<ViewReportTemplateSimplifiedViewModel>(
-                    where: q => !q.IsArchieved,
-                    skip: skip,
-                    take: take,
-                    include: q => q
-                    .Include(q => q.CreatedBy),
-                    select: q => ViewReportTemplateSimplifiedViewModel.FromModel(q)
-                )).ToList();
-
-            return reportTemplates;
-        } 
-
         public async Task<string> CreateTemplate(AddReportTemplateViewModel viewModel)
         {
             string validationMessage = await viewModel.Validate(_unitOfWork);
@@ -166,32 +129,6 @@ namespace temsAPI.Data.Managers
             return null;
         }
 
-        public async Task<ReportTemplate> GetTemplate(string templateId)
-        {
-            var template = (await _unitOfWork.ReportTemplates
-                .Find<ReportTemplate>(q => q.Id == templateId))
-                .FirstOrDefault();
-
-            return template;
-        }
-
-        public async Task<ReportTemplate> GetFullTemplate(string templateId)
-        {
-            var template = (await _unitOfWork.ReportTemplates
-                .FindAll<ReportTemplate>(
-                    where: q => q.Id == templateId,
-                    include: q => q
-                    .Include(q => q.EquipmentTypes)
-                    .Include(q => q.EquipmentDefinitions)
-                    .Include(q => q.Rooms)
-                    .Include(q => q.Personnel)
-                    .Include(q => q.Properties).ThenInclude(q => q.DataType)
-                    .Include(q => q.Signatories)
-                )).FirstOrDefault();
-
-            return template;
-        }
-
         public async Task<Report> CreateReport(ReportTemplate template)
         {
             Report report = new();
@@ -233,6 +170,69 @@ namespace temsAPI.Data.Managers
             _unitOfWork.ReportTemplates.Delete(template);
             await _unitOfWork.Save();
             return null;
+        }
+
+        public async Task<Report> GetReport(string reportId)
+        {
+            return (await _unitOfWork.Reports
+                .Find<Report>(q => q.Id == reportId))
+                .FirstOrDefault();
+        }
+
+        public async Task<List<ViewGeneratedReportViewModel>> GetLastGeneratedReports(
+            int skip = 0,
+            int take = int.MaxValue)
+        {
+            var reports = (await _unitOfWork.Reports
+                .Find(
+                    include: q => q.Include(q => q.GeneratedBy),
+                    select: q => ViewGeneratedReportViewModel.FromModel(q)
+                )).ToList();
+
+            return reports;
+        }
+
+        public async Task<List<ViewReportTemplateSimplifiedViewModel>> GetReportTemplates(
+            int skip = 0,
+            int take = int.MaxValue)
+        {
+            var reportTemplates = (await _unitOfWork.ReportTemplates
+                .FindAll<ViewReportTemplateSimplifiedViewModel>(
+                    where: q => !q.IsArchieved,
+                    skip: skip,
+                    take: take,
+                    include: q => q
+                    .Include(q => q.CreatedBy),
+                    select: q => ViewReportTemplateSimplifiedViewModel.FromModel(q)
+                )).ToList();
+
+            return reportTemplates;
+        } 
+
+        public async Task<ReportTemplate> GetTemplate(string templateId)
+        {
+            var template = (await _unitOfWork.ReportTemplates
+                .Find<ReportTemplate>(q => q.Id == templateId))
+                .FirstOrDefault();
+
+            return template;
+        }
+
+        public async Task<ReportTemplate> GetFullTemplate(string templateId)
+        {
+            var template = (await _unitOfWork.ReportTemplates
+                .FindAll<ReportTemplate>(
+                    where: q => q.Id == templateId,
+                    include: q => q
+                    .Include(q => q.EquipmentTypes)
+                    .Include(q => q.EquipmentDefinitions)
+                    .Include(q => q.Rooms)
+                    .Include(q => q.Personnel)
+                    .Include(q => q.Properties).ThenInclude(q => q.DataType)
+                    .Include(q => q.Signatories)
+                )).FirstOrDefault();
+
+            return template;
         }
 
         public async Task CheckForReportsOverflow()

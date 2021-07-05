@@ -130,6 +130,8 @@ namespace temsAPI.Data.Managers
             await _unitOfWork.Save();
         } 
 
+        // Utilities => To be moved to another file
+
         public long GetAvailableSpace_bytes()
         {
             long usedLibraryStorageSpace_bytes = StaticFileHelper.DirSizeBytes(new DirectoryInfo(_fileHandler.FolderPath));

@@ -27,38 +27,6 @@ namespace temsAPI.Controllers.KeyControllers
             _keyManager = keyManager;
         }
 
-        [HttpGet]
-        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES, TEMSClaims.CAN_ALLOCATE_KEYS)]
-        public async Task<JsonResult> Get()
-        {
-            try
-            {
-                var keys = await _keyManager.GetKeysSimplified(); 
-                return Json(keys);
-            }
-            catch (Exception ex)
-            {
-                LogException(ex);
-                return ReturnResponse("An error occured when fetching keys", ResponseStatus.Fail);
-            }
-        }
-
-        [HttpGet]
-        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES, TEMSClaims.CAN_ALLOCATE_KEYS)]
-        public async Task<JsonResult> GetAllAutocompleteOptions()
-        {
-            try
-            {
-                var options = await _keyManager.GetAutocompleteOptions();
-                return Json(options);
-            }
-            catch (Exception ex)
-            {
-                LogException(ex);
-                return ReturnResponse("An error occured when fetching keys autocomplete options", ResponseStatus.Fail);
-            }
-        }
-
         [HttpPost]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES, TEMSClaims.CAN_ALLOCATE_KEYS)]
         public async Task<JsonResult> Create([FromBody] AddKeyViewModel viewModel)
@@ -75,6 +43,26 @@ namespace temsAPI.Controllers.KeyControllers
             {
                 LogException(ex);
                 return ReturnResponse("An error occured when creating the key.", ResponseStatus.Fail);
+            }
+        }
+
+        [HttpGet("key/archieve/{keyId}")]
+        [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES, TEMSClaims.CAN_ALLOCATE_KEYS)]
+        public async Task<JsonResult> Archieve(string keyId)
+        {
+            try
+            {
+                string archivationResult = await new ArchieveHelper(_unitOfWork, User)
+                    .SetKeyArchivationStatus(keyId, true);
+                if (archivationResult != null)
+                    return ReturnResponse(archivationResult, ResponseStatus.Fail);
+
+                return ReturnResponse("Success", ResponseStatus.Success);
+            }
+            catch (Exception ex)
+            {
+                LogException(ex);
+                return ReturnResponse("An error occured while archieving the key and it's related data", ResponseStatus.Fail);
             }
         }
 
@@ -116,7 +104,6 @@ namespace temsAPI.Controllers.KeyControllers
             }
         }
 
-
         [HttpPost]
         [ClaimRequirement(TEMSClaims.CAN_ALLOCATE_KEYS)]
         public async Task<JsonResult> CreateAllocation([FromBody] AddKeyAllocation viewModel)
@@ -133,6 +120,38 @@ namespace temsAPI.Controllers.KeyControllers
             {
                 LogException(ex);
                 return ReturnResponse("An error occured when creating the allocation", ResponseStatus.Fail);
+            }
+        }
+
+        [HttpGet]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES, TEMSClaims.CAN_ALLOCATE_KEYS)]
+        public async Task<JsonResult> Get()
+        {
+            try
+            {
+                var keys = await _keyManager.GetKeysSimplified(); 
+                return Json(keys);
+            }
+            catch (Exception ex)
+            {
+                LogException(ex);
+                return ReturnResponse("An error occured when fetching keys", ResponseStatus.Fail);
+            }
+        }
+
+        [HttpGet]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES, TEMSClaims.CAN_ALLOCATE_KEYS)]
+        public async Task<JsonResult> GetAllAutocompleteOptions()
+        {
+            try
+            {
+                var options = await _keyManager.GetAutocompleteOptions();
+                return Json(options);
+            }
+            catch (Exception ex)
+            {
+                LogException(ex);
+                return ReturnResponse("An error occured when fetching keys autocomplete options", ResponseStatus.Fail);
             }
         }
 
@@ -168,26 +187,6 @@ namespace temsAPI.Controllers.KeyControllers
             {
                 LogException(ex);
                 return ReturnResponse("An error occured while marking the key as returned", ResponseStatus.Fail);
-            }
-        }
-
-        [HttpGet("key/archieve/{keyId}")]
-        [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES, TEMSClaims.CAN_ALLOCATE_KEYS)]
-        public async Task<JsonResult> Archieve(string keyId)
-        {
-            try
-            {
-                string archivationResult = await new ArchieveHelper(_unitOfWork, User)
-                    .SetKeyArchivationStatus(keyId, true);
-                if (archivationResult != null)
-                    return ReturnResponse(archivationResult, ResponseStatus.Fail);
-
-                return ReturnResponse("Success", ResponseStatus.Success);
-            }
-            catch (Exception ex)
-            {
-                LogException(ex);
-                return ReturnResponse("An error occured while archieving the key and it's related data", ResponseStatus.Fail);
             }
         }
 

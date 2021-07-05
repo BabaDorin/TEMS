@@ -23,7 +23,7 @@ namespace temsAPI.Helpers
             return finalExpression;
         }
 
-        public static Expression<Func<T, bool>> CombineTwo<T>(this Expression<Func<T, bool>> exp, Expression<Func<T, bool>> newExp)
+        private static Expression<Func<T, bool>> CombineTwo<T>(this Expression<Func<T, bool>> exp, Expression<Func<T, bool>> newExp)
         {
             if (exp == null && newExp == null)
                 return null;

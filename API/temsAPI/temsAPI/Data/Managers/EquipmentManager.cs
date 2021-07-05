@@ -26,8 +26,7 @@ namespace temsAPI.Data.Managers
         CurrencyConvertor _currencyConvertor;
         LogManager _logManager;
         ILogger<EquipmentManager> _logger;
-
-
+        
         public EquipmentManager(
             IUnitOfWork unitOfWork, 
             ClaimsPrincipal user,
@@ -46,7 +45,6 @@ namespace temsAPI.Data.Managers
             if (validationResult != null)
                 return validationResult;
 
-            // If we got so far, it might be valid
             var equipment = Equipment.FromViewModel(_user, viewModel);
             await _unitOfWork.Equipments.Create(equipment);
             await _unitOfWork.Save();
@@ -54,7 +52,6 @@ namespace temsAPI.Data.Managers
             return null;
         }
 
-        // removeById
         public async Task<string> Remove(string equipmentId)
         {
             var equipment = await GetFullEquipmentById(equipmentId);
@@ -64,7 +61,6 @@ namespace temsAPI.Data.Managers
             return await Remove(equipment);
         }
 
-        // Remove by reference
         public async Task<string> Remove(Equipment equipment)
         {
             // Remove equipment children first
@@ -155,7 +151,7 @@ namespace temsAPI.Data.Managers
                 eqOfPersonnelExpression = q => q.DateReturned == null && personnel.Contains(q.PersonnelID);
 
             Expression<Func<EquipmentAllocation, bool>> finalExpression =
-                ExpressionCombiner.CombineTwo(eqOfRoomsExpression, eqOfPersonnelExpression);
+                ExpressionCombiner.And(eqOfRoomsExpression, eqOfPersonnelExpression);
 
             List<ViewEquipmentSimplifiedViewModel> equipment = (await _unitOfWork.EquipmentAllocations
                 .FindAll<ViewEquipmentSimplifiedViewModel>(
@@ -285,7 +281,7 @@ namespace temsAPI.Data.Managers
                     definitionIds.Contains(q.EquipmentDefinitionID) && !q.IsArchieved;
 
             if (onlyParents)
-                expression = ExpressionCombiner.CombineTwo(expression, q => q.ParentID == null);
+                expression = ExpressionCombiner.And(expression, q => q.ParentID == null);
 
             var equipment = (await _unitOfWork.Equipments
                 .Find<Option>(
@@ -314,7 +310,7 @@ namespace temsAPI.Data.Managers
                 Expression<Func<Equipment, bool>> expression2 =
                     q => q.TEMSID.Contains(filter);
 
-                expression = ExpressionCombiner.CombineTwo(expression, expression2);
+                expression = ExpressionCombiner.And(expression, expression2);
             }
 
             List<Option> autocompleteOptions = new List<Option>();
@@ -477,7 +473,7 @@ namespace temsAPI.Data.Managers
             Expression<Func<EquipmentAllocation, bool>> defaultExpression = q => !q.IsArchieved;
             return (await _unitOfWork.EquipmentAllocations
                 .FindAll<ViewAllocationSimplifiedViewModel>(
-                    where: ExpressionCombiner.CombineTwo(defaultExpression, whereExpression),
+                    where: ExpressionCombiner.And(defaultExpression, whereExpression),
                     include: q => q.Include(q => q.Room)
                                     .Include(q => q.Personnel)
                                     .Include(q => q.Equipment).ThenInclude(q => q.EquipmentDefinition),
@@ -651,7 +647,7 @@ namespace temsAPI.Data.Managers
                     break;
             }
 
-            expression = ExpressionCombiner.CombineTwo(expression, secondaryExpression);
+            expression = ExpressionCombiner.And(expression, secondaryExpression);
             return expression;
         }
     }

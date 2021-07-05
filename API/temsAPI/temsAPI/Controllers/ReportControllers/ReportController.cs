@@ -38,64 +38,6 @@ namespace temsAPI.Controllers.ReportControllers
             _reportManager = reportManager;
         }
 
-        [HttpGet("report/gettemplatetoupdate/{templateId}")]
-        public async Task<JsonResult> GetTemplateToUpdate(string templateId)
-        {
-            try
-            {
-                var template = await _reportManager.GetFullTemplate(templateId);
-                if (template == null)
-                    return ReturnResponse("Invalid id provided", ResponseStatus.Fail);
-
-                var viewModel = AddReportTemplateViewModel.FromModel(template);
-                return Json(viewModel);
-            }
-            catch (Exception ex)
-            {
-                LogException(ex);
-                return ReturnResponse("An error occured while fetching the template", ResponseStatus.Fail);
-            }
-        }
-
-        [HttpGet("report/archievetemplate/{templateId}/{flag?}")]
-        [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
-        public async Task<JsonResult> ArchieveTemplate(string templateId, bool flag = true)
-        {
-            try
-            {
-                string archivationResult = await (new ArchieveHelper(_unitOfWork, User))
-                    .SetReportTemplateArchivationStatus(templateId, flag);
-                if (archivationResult != null)
-                    return ReturnResponse(archivationResult, ResponseStatus.Fail);
-
-                return ReturnResponse("Success", ResponseStatus.Success);
-            }
-            catch (Exception ex)
-            {
-                LogException(ex);
-                return ReturnResponse("An error occured while removing the template", ResponseStatus.Fail);
-            }
-        }
-
-        [HttpGet("report/remove/{templateId}")]
-        [ClaimRequirement(TEMSClaims.CAN_MANAGE_SYSTEM_CONFIGURATION)]
-        public async Task<JsonResult> ArchieveTemplate(string templateId)
-        {
-            try
-            {
-                string result = await _reportManager.Remove(templateId);
-                if (result != null)
-                    return ReturnResponse(result, ResponseStatus.Fail);
-
-                return ReturnResponse("Success", ResponseStatus.Success);
-            }
-            catch (Exception ex)
-            {
-                LogException(ex);
-                return ReturnResponse("An error occured while removing the template", ResponseStatus.Fail);
-            }
-        }
-
         [HttpPost]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> AddTemplate([FromBody] AddReportTemplateViewModel viewModel)
@@ -131,6 +73,87 @@ namespace temsAPI.Controllers.ReportControllers
             {
                 LogException(ex);
                 return ReturnResponse("An error occured while saving the template", ResponseStatus.Fail);
+            }
+        }
+
+        [HttpGet("report/archievetemplate/{templateId}/{flag?}")]
+        [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
+        public async Task<JsonResult> ArchieveTemplate(string templateId, bool flag = true)
+        {
+            try
+            {
+                string archivationResult = await (new ArchieveHelper(_unitOfWork, User))
+                    .SetReportTemplateArchivationStatus(templateId, flag);
+                if (archivationResult != null)
+                    return ReturnResponse(archivationResult, ResponseStatus.Fail);
+
+                return ReturnResponse("Success", ResponseStatus.Success);
+            }
+            catch (Exception ex)
+            {
+                LogException(ex);
+                return ReturnResponse("An error occured while removing the template", ResponseStatus.Fail);
+            }
+        }
+
+        [HttpGet("report/removeReport/{reportId}")]
+        [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
+        public async Task<JsonResult> RemoveReport(string reportId)
+        {
+            try
+            {
+                var report = await _reportManager.GetReport(reportId);
+                if (report == null)
+                    return ReturnResponse("Invalid id provided", ResponseStatus.Fail);
+
+                string result = await _reportManager.RemoveReport(report);
+                if (result != null)
+                    return ReturnResponse(result, ResponseStatus.Fail);
+
+                return ReturnResponse("Success", ResponseStatus.Success);
+            }
+            catch (Exception ex)
+            {
+                LogException(ex);
+                return ReturnResponse("An error occured while removing the report", ResponseStatus.Fail);
+            }
+        }
+
+        [HttpGet("report/gettemplatetoupdate/{templateId}")]
+        public async Task<JsonResult> GetTemplateToUpdate(string templateId)
+        {
+            try
+            {
+                var template = await _reportManager.GetFullTemplate(templateId);
+                if (template == null)
+                    return ReturnResponse("Invalid id provided", ResponseStatus.Fail);
+
+                var viewModel = AddReportTemplateViewModel.FromModel(template);
+                return Json(viewModel);
+            }
+            catch (Exception ex)
+            {
+                LogException(ex);
+                return ReturnResponse("An error occured while fetching the template", ResponseStatus.Fail);
+            }
+        }
+
+        [HttpGet("report/remove/{templateId}")]
+        [ClaimRequirement(TEMSClaims.CAN_MANAGE_SYSTEM_CONFIGURATION)]
+        public async Task<JsonResult> ArchieveTemplate(string templateId)
+        {
+            try
+            {
+                string result = await _reportManager.Remove(templateId);
+                if (result != null)
+                    return ReturnResponse(result, ResponseStatus.Fail);
+
+                return ReturnResponse("Success", ResponseStatus.Success);
+            }
+            catch (Exception ex)
+            {
+                LogException(ex);
+                return ReturnResponse("An error occured while removing the template", ResponseStatus.Fail);
             }
         }
 
@@ -188,29 +211,6 @@ namespace temsAPI.Controllers.ReportControllers
             {
                 LogException(ex);
                 return ReturnResponse("An error occured while fetching last generated reports", ResponseStatus.Fail);
-            }
-        }
-
-        [HttpGet("report/removeReport/{reportId}")]
-        [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
-        public async Task<JsonResult> RemoveReport(string reportId)
-        {
-            try
-            {
-                var report = await _reportManager.GetReport(reportId);
-                if (report == null)
-                    return ReturnResponse("Invalid id provided", ResponseStatus.Fail);
-
-                string result = await _reportManager.RemoveReport(report);
-                if (result != null)
-                    return ReturnResponse(result, ResponseStatus.Fail);
-
-                return ReturnResponse("Success", ResponseStatus.Success);
-            }
-            catch (Exception ex)
-            {
-                LogException(ex);
-                return ReturnResponse("An error occured while removing the report", ResponseStatus.Fail);
             }
         }
 

@@ -29,6 +29,80 @@ namespace temsAPI.EquipmentControllers
             _equipmentTypeManager = eqTypeManager;
         }
 
+        [HttpPost]
+        [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
+        public async Task<JsonResult> Add([FromBody] AddEquipmentTypeViewModel viewModel)
+        {
+            string result = await _equipmentTypeManager.Create(viewModel);
+            if (result != null)
+                return ReturnResponse(result, ResponseStatus.Fail);
+
+            return ReturnResponse($"Success", ResponseStatus.Success);
+        }
+
+        [HttpPost]
+        [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
+        public async Task<JsonResult> Update([FromBody] AddEquipmentTypeViewModel viewModel)
+        {
+            try
+            {
+                string result = await _equipmentTypeManager.Update(viewModel);
+                if (result != null)
+                    return ReturnResponse(result, ResponseStatus.Fail);
+
+                return ReturnResponse($"Success", ResponseStatus.Success);
+            }
+            catch (Exception ex)
+            {
+                LogException(ex);
+                return ReturnResponse("An error occured when saving the type", ResponseStatus.Fail);
+            }
+        }
+
+        [HttpGet("equipmenttype/archieve/{typeId}/{status}")]
+        [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
+        public async Task<JsonResult> Archieve(string typeId, bool status = true)
+        {
+            try
+            {
+                // check if type exists
+                var type = await _equipmentTypeManager.GetById(typeId);
+                if (type == null)
+                    return ReturnResponse("The specified type does not exist", ResponseStatus.Fail);
+
+                string archivationResult = await new ArchieveHelper(_unitOfWork, User)
+                    .SetTypeArchivationStatus(typeId, status);
+                if (archivationResult != null)
+                    return ReturnResponse(archivationResult, ResponseStatus.Fail);
+
+                return ReturnResponse("Success!", ResponseStatus.Success);
+            }
+            catch (Exception ex)
+            {
+                LogException(ex);
+                return ReturnResponse("An error occured when removing the type", ResponseStatus.Fail);
+            }
+        }
+
+        [HttpGet("equipmenttype/remove/{typeId}")]
+        [ClaimRequirement(TEMSClaims.CAN_MANAGE_SYSTEM_CONFIGURATION)]
+        public async Task<JsonResult> Remove(string typeId)
+        {
+            try
+            {
+                string result = await _equipmentTypeManager.Remove(typeId);
+                if (result != null)
+                    return ReturnResponse(result, ResponseStatus.Fail);
+
+                return ReturnResponse("Success", ResponseStatus.Success);
+            }
+            catch (Exception ex)
+            {
+                LogException(ex);
+                return ReturnResponse("An error occured while removing the type.", ResponseStatus.Fail);
+            }
+        }
+
         [HttpGet("equipmenttype/getallautocompleteoptions/{filter?}")]
         public async Task<JsonResult> GetAllAutocompleteOptions(string filter)
         {
@@ -96,80 +170,6 @@ namespace temsAPI.EquipmentControllers
             {
                 LogException(ex);
                 return ReturnResponse("An error occured while fetching type info", ResponseStatus.Fail);
-            }
-        }
-
-        [HttpPost]
-        [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
-        public async Task<JsonResult> Add([FromBody] AddEquipmentTypeViewModel viewModel)
-        {
-            string result = await _equipmentTypeManager.Create(viewModel);
-            if (result != null)
-                return ReturnResponse(result, ResponseStatus.Fail);
-
-            return ReturnResponse($"Success", ResponseStatus.Success);
-        }
-
-        [HttpGet("equipmenttype/remove/{typeId}")]
-        [ClaimRequirement(TEMSClaims.CAN_MANAGE_SYSTEM_CONFIGURATION)]
-        public async Task<JsonResult> Remove(string typeId)
-        {
-            try
-            {
-                string result = await _equipmentTypeManager.Remove(typeId);
-                if (result != null)
-                    return ReturnResponse(result, ResponseStatus.Fail);
-
-                return ReturnResponse("Success", ResponseStatus.Success);
-            }
-            catch (Exception ex)
-            {
-                LogException(ex);
-                return ReturnResponse("An error occured while removing the type.", ResponseStatus.Fail);
-            }
-        }
-
-        [HttpPost]
-        [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
-        public async Task<JsonResult> Update([FromBody] AddEquipmentTypeViewModel viewModel)
-        {
-            try
-            {
-                string result = await _equipmentTypeManager.Update(viewModel);
-                if (result != null)
-                    return ReturnResponse(result, ResponseStatus.Fail);
-
-                return ReturnResponse($"Success", ResponseStatus.Success);
-            }
-            catch (Exception ex)
-            {
-                LogException(ex);
-                return ReturnResponse("An error occured when saving the type", ResponseStatus.Fail);
-            }
-        }
-
-        [HttpGet("equipmenttype/archieve/{typeId}/{status}")]
-        [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
-        public async Task<JsonResult> Archieve(string typeId, bool status = true)
-        {
-            try
-            {
-                // check if type exists
-                var type = await _equipmentTypeManager.GetById(typeId);
-                if (type == null)
-                    return ReturnResponse("The specified type does not exist", ResponseStatus.Fail);
-
-                string archivationResult = await new ArchieveHelper(_unitOfWork, User)
-                    .SetTypeArchivationStatus(typeId, status);
-                if (archivationResult != null)
-                    return ReturnResponse(archivationResult, ResponseStatus.Fail);
-                
-                return ReturnResponse("Success!", ResponseStatus.Success);
-            }
-            catch (Exception ex)
-            {
-                LogException(ex);
-                return ReturnResponse("An error occured when removing the type", ResponseStatus.Fail);
             }
         }
 

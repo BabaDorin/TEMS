@@ -17,41 +17,7 @@ namespace temsAPI.Data.Managers
 {
     public class KeyManager : EntityManager
     {
-        public KeyManager(IUnitOfWork unitOfWork, ClaimsPrincipal user) : base(unitOfWork, user)
-        {
-        }
-
-        public async Task<List<ViewKeySimplifiedViewModel>> GetKeysSimplified(int skip = 0, int take = int.MaxValue)
-        {
-            var keys = (await _unitOfWork.Keys
-                .FindAll<ViewKeySimplifiedViewModel>(
-                    where: q => !q.IsArchieved,
-                    include: q => q
-                    .Include(q => q.Room)
-                    .Include(q => q.KeyAllocations)
-                    .ThenInclude(q => q.Personnel),
-                    select: q => ViewKeySimplifiedViewModel.FromModel(q)
-                    )).ToList();
-
-            return keys;
-        }
-
-        public async Task<List<Option>> GetAutocompleteOptions()
-        {
-            var options = (await _unitOfWork.Keys
-                .FindAll<Option>(
-                    where: q => !q.IsArchieved,
-                    include: q => q.Include(q => q.Room),
-                    orderBy: q => q.OrderBy(q => q.Identifier),
-                    select: q => new Option
-                    {
-                        Value = q.Id,
-                        Label = q.Identifier,
-                        Additional = (q.RoomId != null) ? q.RoomId : "--"
-                    })).ToList();
-
-            return options;
-        }
+        public KeyManager(IUnitOfWork unitOfWork, ClaimsPrincipal user) : base(unitOfWork, user) { }
 
         public async Task<string> Create(AddKeyViewModel viewModel)
         {
@@ -101,6 +67,38 @@ namespace temsAPI.Data.Managers
             return null;
         }
 
+        public async Task<List<ViewKeySimplifiedViewModel>> GetKeysSimplified(int skip = 0, int take = int.MaxValue)
+        {
+            var keys = (await _unitOfWork.Keys
+                .FindAll<ViewKeySimplifiedViewModel>(
+                    where: q => !q.IsArchieved,
+                    include: q => q
+                    .Include(q => q.Room)
+                    .Include(q => q.KeyAllocations)
+                    .ThenInclude(q => q.Personnel),
+                    select: q => ViewKeySimplifiedViewModel.FromModel(q)
+                    )).ToList();
+
+            return keys;
+        }
+
+        public async Task<List<Option>> GetAutocompleteOptions()
+        {
+            var options = (await _unitOfWork.Keys
+                .FindAll<Option>(
+                    where: q => !q.IsArchieved,
+                    include: q => q.Include(q => q.Room),
+                    orderBy: q => q.OrderBy(q => q.Identifier),
+                    select: q => new Option
+                    {
+                        Value = q.Id,
+                        Label = q.Identifier,
+                        Additional = (q.RoomId != null) ? q.RoomId : "--"
+                    })).ToList();
+
+            return options;
+        }
+       
         public async Task<KeyAllocation> GetAllocationById(string allocationId)
         {
             return (await _unitOfWork.KeyAllocations
@@ -186,8 +184,8 @@ namespace temsAPI.Data.Managers
                ? null
                : q => q.PersonnelID == personnelId;
 
-            var finalExpression = ExpressionCombiner.CombineTwo(keyExpression,
-                            ExpressionCombiner.CombineTwo(roomExpression, personnelExpression));
+            var finalExpression = ExpressionCombiner.And(keyExpression,
+                            ExpressionCombiner.And(roomExpression, personnelExpression));
 
             var allocations = (await _unitOfWork.KeyAllocations
                 .FindAll<ViewKeyAllocationViewModel>(

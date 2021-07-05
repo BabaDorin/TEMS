@@ -23,5 +23,7 @@ namespace temsAPI.System_Files
         public int LibraryAllocatedStorageSpaceGb { get; set; }
         public string LibraryGuestPassword { get; set; }
         public bool AllowGuestsToCreateTickets { get; set; }
+
+        public string SuperAdminPassword { get; set; }
     }
 }

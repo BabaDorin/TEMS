@@ -51,13 +51,13 @@ namespace temsAPI.Controllers.Allocation
             }
         }
 
-        [HttpGet("allocation/markasreturned/{allocationId}")]
-        [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
-        public async Task<JsonResult> MarkAsReturned(string allocationId)
+        [HttpGet("allocation/remove/{allocationId}")]
+        [ClaimRequirement(TEMSClaims.CAN_MANAGE_SYSTEM_CONFIGURATION)]
+        public async Task<JsonResult> Remove(string allocationId)
         {
             try
             {
-                var result = await _equipmentManager.MarkAllocationAsReturned(allocationId);
+                string result = await _equipmentManager.RemoveAllocation(allocationId);
                 if (result != null)
                     return ReturnResponse(result, ResponseStatus.Fail);
 
@@ -66,7 +66,7 @@ namespace temsAPI.Controllers.Allocation
             catch (Exception ex)
             {
                 LogException(ex);
-                return ReturnResponse("An error occured while marking the allocation as returned", ResponseStatus.Fail);
+                return ReturnResponse("An error occured while removing the allocation", ResponseStatus.Fail);
             }
         }
 
@@ -89,13 +89,13 @@ namespace temsAPI.Controllers.Allocation
             }
         }
 
-        [HttpGet("allocation/remove/{allocationId}")]
-        [ClaimRequirement(TEMSClaims.CAN_MANAGE_SYSTEM_CONFIGURATION)]
-        public async Task<JsonResult> Remove(string allocationId)
+        [HttpGet("allocation/markasreturned/{allocationId}")]
+        [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
+        public async Task<JsonResult> MarkAsReturned(string allocationId)
         {
             try
             {
-                string result = await _equipmentManager.RemoveAllocation(allocationId);
+                var result = await _equipmentManager.MarkAllocationAsReturned(allocationId);
                 if (result != null)
                     return ReturnResponse(result, ResponseStatus.Fail);
 
@@ -104,7 +104,7 @@ namespace temsAPI.Controllers.Allocation
             catch (Exception ex)
             {
                 LogException(ex);
-                return ReturnResponse("An error occured while removing the allocation", ResponseStatus.Fail);
+                return ReturnResponse("An error occured while marking the allocation as returned", ResponseStatus.Fail);
             }
         }
 
@@ -177,6 +177,5 @@ namespace temsAPI.Controllers.Allocation
                 return ReturnResponse("An error occured while retrieving total allocations number", ResponseStatus.Fail);
             }
         }
-
     }
 }

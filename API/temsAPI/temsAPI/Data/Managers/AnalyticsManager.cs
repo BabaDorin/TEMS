@@ -79,7 +79,7 @@ namespace temsAPI.Data.Managers
             var equipment = (await _unitOfWork.Equipments.FindAll<Equipment>
                 (
                     include: q => q.Include(q => q.EquipmentAllocations),
-                    where: ExpressionCombiner.CombineTwo(filterByEntityExpression, q => q.IsUsed)
+                    where: ExpressionCombiner.And(filterByEntityExpression, q => q.IsUsed)
                 ));
 
             int currentlyInUse = equipment.Count(q => q.IsUsed);
@@ -186,10 +186,10 @@ namespace temsAPI.Data.Managers
                 _ticketManager.Eq_FilterByEntity(entityType, entityId);
 
             var openTickets = (await _unitOfWork.Tickets.Count(
-                ExpressionCombiner.CombineTwo(filterByEntityExpression, q => q.DateClosed == null)));
+                ExpressionCombiner.And(filterByEntityExpression, q => q.DateClosed == null)));
             
             var closedTickets = (await _unitOfWork.Tickets.Count(
-                ExpressionCombiner.CombineTwo(filterByEntityExpression, q => q.DateClosed != null)));
+                ExpressionCombiner.And(filterByEntityExpression, q => q.DateClosed != null)));
 
             PieChartData pieChart = new()
             {
@@ -212,7 +212,7 @@ namespace temsAPI.Data.Managers
                 _ticketManager.Eq_FilterByEntity(entityType, entityId);
 
             Expression<Func<Ticket, bool>> finalExpression =
-                ExpressionCombiner.CombineTwo(
+                ExpressionCombiner.And(
                     filterByEntityExpression,
                     q => q.DateClosed != null);
 
@@ -277,7 +277,7 @@ namespace temsAPI.Data.Managers
             Expression<Func<Ticket, bool>> filterByEntityExpression =
                 _ticketManager.Eq_FilterByEntity(entityType, entityId, TicketManager.UserTicketAction.Close);
 
-            var finalExpression = ExpressionCombiner.CombineTwo(
+            var finalExpression = ExpressionCombiner.And(
                 filterByEntityExpression,
                 q => q.DateClosed != null);
 
@@ -292,7 +292,7 @@ namespace temsAPI.Data.Managers
             Expression<Func<Ticket, bool>> filterByEntityExpression =
                 _ticketManager.Eq_FilterByEntity(entityType, entityId);
 
-            var finalExpression = ExpressionCombiner.CombineTwo(
+            var finalExpression = ExpressionCombiner.And(
                 filterByEntityExpression,
                 q => q.DateClosed == null);
 
@@ -392,7 +392,7 @@ namespace temsAPI.Data.Managers
 
 
         // very good indicator btw =) An user might superficially close many tickets,
-        // and if the problem has not been fully solved, those specific tickets will get reopened by 
+        // and if the problem has not been completely solved, those specific tickets might get reopened by 
         // someone else or by the user himself afterwards.
         public async Task<int> GetAmountOfTicketsClosedByUserThatWereReopenedAfterwards(string userId)
         {
@@ -406,8 +406,8 @@ namespace temsAPI.Data.Managers
             return amount;
         }
 
-        // Get the amount of tickets ever closed by the specified user, including
-        // the one that were reopened afterwards
+        // Get the amount of tickets ever closed by the user, including
+        // the ones that were reopened afterwards
         public async Task<int> GetAmountOfTicketsEverClosedByUser(string userId)
         {
             var user = (await _unitOfWork.TEMSUsers

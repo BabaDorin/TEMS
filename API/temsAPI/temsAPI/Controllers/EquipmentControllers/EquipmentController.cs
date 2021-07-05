@@ -55,22 +55,21 @@ namespace temsAPI.Controllers.EquipmentControllers
             }
         }
 
-        [HttpGet("equipment/remove/{equipmentId}")]
-        [ClaimRequirement(TEMSClaims.CAN_MANAGE_SYSTEM_CONFIGURATION)]
-        public async Task<JsonResult> Remove(string equipmentId)
+        [HttpPost]
+        [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
+        public async Task<JsonResult> BulkUpload()
         {
             try
             {
-                string result = await _equipmentManager.Remove(equipmentId);
-                if (result != null)
-                    return ReturnResponse(result, ResponseStatus.Fail);
+                var files = Request.Form.Files;
+                var bulkUploadResult = await new SICService(_unitOfWork).ValidateAndRegisterComputers(files);
 
-                return ReturnResponse("Success", ResponseStatus.Success);
+                return Json(bulkUploadResult);
             }
             catch (Exception ex)
             {
                 LogException(ex);
-                return ReturnResponse("An error occured while removing the equipment", ResponseStatus.Fail);
+                return ReturnResponse("An error occured while uploading files. Make sure SIC Integration has been enabled(via system configuration interface", ResponseStatus.Fail);
             }
         }
 
@@ -90,6 +89,46 @@ namespace temsAPI.Controllers.EquipmentControllers
             {
                 LogException(ex);
                 return ReturnResponse("An error occured while updating equipment data.", ResponseStatus.Fail);
+            }
+        }
+
+        [HttpGet("equipment/archieve/{equipmentId}/{archivationStatus?}")]
+        [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
+        public async Task<JsonResult> Archieve(string equipmentId, bool archivationStatus = true)
+        {
+            try
+            {
+                string archivationResult = await (new ArchieveHelper(_unitOfWork, User, _logManager))
+                    .SetEquipmentArchivationStatus(equipmentId, archivationStatus);
+
+                if (archivationResult != null)
+                    return ReturnResponse(archivationResult, ResponseStatus.Fail);
+
+                return ReturnResponse("Success", ResponseStatus.Success);
+            }
+            catch (Exception ex)
+            {
+                LogException(ex);
+                return ReturnResponse("An error occured while changing the archivation status.", ResponseStatus.Fail);
+            }
+        }
+
+        [HttpGet("equipment/remove/{equipmentId}")]
+        [ClaimRequirement(TEMSClaims.CAN_MANAGE_SYSTEM_CONFIGURATION)]
+        public async Task<JsonResult> Remove(string equipmentId)
+        {
+            try
+            {
+                string result = await _equipmentManager.Remove(equipmentId);
+                if (result != null)
+                    return ReturnResponse(result, ResponseStatus.Fail);
+
+                return ReturnResponse("Success", ResponseStatus.Success);
+            }
+            catch (Exception ex)
+            {
+                LogException(ex);
+                return ReturnResponse("An error occured while removing the equipment", ResponseStatus.Fail);
             }
         }
 
@@ -213,27 +252,6 @@ namespace temsAPI.Controllers.EquipmentControllers
             }
         }
 
-        [HttpGet("equipment/archieve/{equipmentId}/{archivationStatus?}")]
-        [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
-        public async Task<JsonResult> Archieve(string equipmentId, bool archivationStatus = true)
-        {
-            try
-            {
-                string archivationResult = await (new ArchieveHelper(_unitOfWork, User, _logManager))
-                    .SetEquipmentArchivationStatus(equipmentId, archivationStatus);
-
-                if (archivationResult != null)
-                    return ReturnResponse(archivationResult, ResponseStatus.Fail);
-
-                return ReturnResponse("Success", ResponseStatus.Success);
-            }
-            catch (Exception ex)
-            {
-                LogException(ex);
-                return ReturnResponse("An error occured while changing the archivation status.", ResponseStatus.Fail);
-            }
-        }
-
         [HttpGet("equipment/detach/{equipmentId}")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> Detach(string equipmentId)
@@ -326,24 +344,6 @@ namespace temsAPI.Controllers.EquipmentControllers
             {
                 LogException(ex);
                 return ReturnResponse("An error occured while setting equipment's using state", ResponseStatus.Fail);
-            }
-        }
-
-        [HttpPost]
-        [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
-        public async Task<JsonResult> BulkUpload()
-        {
-            try
-            {
-                var files = Request.Form.Files;
-                var bulkUploadResult = await new SICService(_unitOfWork).ValidateAndRegisterComputers(files);
-
-                return Json(bulkUploadResult);
-            }
-            catch (Exception ex)
-            {
-               LogException(ex);
-                return ReturnResponse("An error occured while uploading files. Make sure SIC Integration has been enabled(via system configuration interface", ResponseStatus.Fail);
             }
         }
     }

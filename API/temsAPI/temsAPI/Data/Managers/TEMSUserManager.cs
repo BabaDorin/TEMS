@@ -50,47 +50,6 @@ namespace temsAPI.Data.Managers
             _identityService = identityService;
         }
 
-        public async Task BlacklistToken(string token)
-        {
-            await _unitOfWork.JWTBlacklist.Create(
-                    new TemsJWT
-                    {
-                        Id = Guid.NewGuid().ToString(),
-                        Content = token,
-                        ExpirationDate = (new JWTHelper()).GetExpiryTimestamp(token)
-                    });
-
-            await _unitOfWork.Save();
-        }
-
-        public async Task<string> GenerateToken(LogInViewModel viewModel)
-        {
-            var user = await _identityService.GetUserByUsername(viewModel.Username);
-            if (user == null || !await _userManager.CheckPasswordAsync(user, viewModel.Password))
-                throw new Exception("Invalid username or password");
-
-            return await _identityService.BuildTokenString(user);
-        }
-
-        public async Task<ViewProfileViewModel> GetProfileInfo(string userId)
-        {
-            var profile = (await _unitOfWork.TEMSUsers
-                    .Find<ViewProfileViewModel>(
-                        where: q => q.Id == userId,
-                        include: q => q
-                        .Include(q => q.AssignedTickets)
-                        .Include(q => q.ClosedTickets)
-                        .Include(q => q.CreatedTickets)
-                        .Include(q => q.Announcements),
-                        select: q => ViewProfileViewModel.FromModel(q)
-                    )).FirstOrDefault();
-
-            profile.Roles = (await _userManager.GetRolesAsync(await _userManager.FindByIdAsync(userId)))
-                .ToList();
-
-            return profile;
-        }
-
         public async Task<string> CreateUser(AddUserViewModel viewModel)
         {
             // Username and password are mandatory
@@ -192,6 +151,60 @@ namespace temsAPI.Data.Managers
             return null;
         }
 
+        public async Task<string> RemoveUser(string userId)
+        {
+            var user = await GetFullUser(userId);
+
+            user.ChildrenSetNull();
+            await _unitOfWork.Save();
+
+            _unitOfWork.TEMSUsers.Delete(user);
+            await _unitOfWork.Save();
+
+            return null;
+        }
+
+        public async Task BlacklistToken(string token)
+        {
+            await _unitOfWork.JWTBlacklist.Create(
+                    new TemsJWT
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        Content = token,
+                        ExpirationDate = (new JWTHelper()).GetExpiryTimestamp(token)
+                    });
+
+            await _unitOfWork.Save();
+        }
+
+        public async Task<string> GenerateToken(LogInViewModel viewModel)
+        {
+            var user = await _identityService.GetUserByUsername(viewModel.Username);
+            if (user == null || !await _userManager.CheckPasswordAsync(user, viewModel.Password))
+                throw new Exception("Invalid username or password");
+
+            return await _identityService.BuildTokenString(user);
+        }
+
+        public async Task<ViewProfileViewModel> GetProfileInfo(string userId)
+        {
+            var profile = (await _unitOfWork.TEMSUsers
+                    .Find<ViewProfileViewModel>(
+                        where: q => q.Id == userId,
+                        include: q => q
+                        .Include(q => q.AssignedTickets)
+                        .Include(q => q.ClosedTickets)
+                        .Include(q => q.CreatedTickets)
+                        .Include(q => q.Announcements),
+                        select: q => ViewProfileViewModel.FromModel(q)
+                    )).FirstOrDefault();
+
+            profile.Roles = (await _userManager.GetRolesAsync(await _userManager.FindByIdAsync(userId)))
+                .ToList();
+
+            return profile;
+        }
+
         public async Task<List<Option>> GetAutocompleteOptions(string filter)
         {
             Expression<Func<TEMSUser, bool>> expression =
@@ -201,7 +214,7 @@ namespace temsAPI.Data.Managers
             {
                 Expression<Func<TEMSUser, bool>> expression2 =
                     q => (q.UserName.Contains(filter) || q.FullName.Contains(filter));
-                expression = ExpressionCombiner.CombineTwo(expression, expression2);
+                expression = ExpressionCombiner.And(expression, expression2);
             }
 
             var options = (await _unitOfWork.TEMSUsers
@@ -340,23 +353,10 @@ namespace temsAPI.Data.Managers
             return user;
         }
 
-        public async Task<string> RemoveUser(string userId)
-        {
-            var user = await GetFullUser(userId);
-
-            user.ChildrenSetNull();
-            await _unitOfWork.Save();
-
-            _unitOfWork.TEMSUsers.Delete(user);
-            await _unitOfWork.Save();
-
-            return null;
-        }
-
         public async Task<string> ChangePassword(ChangePasswordViewModel viewModel)
         {
-            if (viewModel.UserId != _identityService.GetUserId()) ;
-            return "You don't have enough privilleges to change this user's password ;)";
+            if (viewModel.UserId != _identityService.GetUserId())
+                return "You don't have enough privilleges to change this user's password ;)";
 
             string validationResult = viewModel.Validate();
             if (validationResult != null)
@@ -439,7 +439,5 @@ namespace temsAPI.Data.Managers
 
             return roles;
         }
-
-
     }
 }

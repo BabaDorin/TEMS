@@ -29,21 +29,6 @@ namespace temsAPI.Controllers.RoomControllers
             _roomManager = roomManager;
         }
 
-        [HttpGet("room/getallautocompleteoptions/{filter?}")]
-        public async Task<JsonResult> GetAllAutocompleteOptions(string filter)
-        {
-            try
-            {
-                var options = await _roomManager.GetAutocompleteOptions(filter);
-                return Json(options);
-            }
-            catch (Exception ex)
-            {
-                LogException(ex);
-                return ReturnResponse("An error occured when fetching autocomplete options", ResponseStatus.Fail);
-            }
-        }
-
         [HttpPost]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> Create([FromBody] AddRoomViewModel viewModel)
@@ -60,41 +45,6 @@ namespace temsAPI.Controllers.RoomControllers
             {
                 LogException(ex);
                 return ReturnResponse("An error occured when creating the room", ResponseStatus.Fail);
-            }
-        }
-
-        [HttpGet("room/remove/{roomId}")]
-        public async Task<JsonResult> Remove(string roomId)
-        {
-            try
-            {
-                string result = await _roomManager.Remove(roomId);
-                if (result != null)
-                    return ReturnResponse(result, ResponseStatus.Fail);
-
-                return ReturnResponse("Success", ResponseStatus.Success);
-            }
-            catch (Exception ex)
-            {
-                LogException(ex);
-                return ReturnResponse("An error occured while removing the room", ResponseStatus.Fail);
-            }
-        }
-
-        [HttpGet("room/getroomtoupdate/{roomId}")]
-        [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
-        public async Task<JsonResult> GetRoomToUpdate(string roomId)
-        {
-            try
-            {
-                var room = await _roomManager.GetById(roomId);
-                var viewModel = AddRoomViewModel.FromModel(room);
-                return Json(viewModel);
-            }
-            catch (Exception ex)
-            {
-                LogException(ex);
-                return ReturnResponse("An error occured while getting room data", ResponseStatus.Fail);
             }
         }
 
@@ -133,6 +83,56 @@ namespace temsAPI.Controllers.RoomControllers
             {
                 LogException(ex);
                 return ReturnResponse("An error occured while changing the archivation status.", ResponseStatus.Fail);
+            }
+        }
+
+        [HttpGet("room/remove/{roomId}")]
+        public async Task<JsonResult> Remove(string roomId)
+        {
+            try
+            {
+                string result = await _roomManager.Remove(roomId);
+                if (result != null)
+                    return ReturnResponse(result, ResponseStatus.Fail);
+
+                return ReturnResponse("Success", ResponseStatus.Success);
+            }
+            catch (Exception ex)
+            {
+                LogException(ex);
+                return ReturnResponse("An error occured while removing the room", ResponseStatus.Fail);
+            }
+        }
+
+        [HttpGet("room/getallautocompleteoptions/{filter?}")]
+        public async Task<JsonResult> GetAllAutocompleteOptions(string filter)
+        {
+            try
+            {
+                var options = await _roomManager.GetAutocompleteOptions(filter);
+                return Json(options);
+            }
+            catch (Exception ex)
+            {
+                LogException(ex);
+                return ReturnResponse("An error occured when fetching autocomplete options", ResponseStatus.Fail);
+            }
+        }
+
+        [HttpGet("room/getroomtoupdate/{roomId}")]
+        [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
+        public async Task<JsonResult> GetRoomToUpdate(string roomId)
+        {
+            try
+            {
+                var room = await _roomManager.GetById(roomId);
+                var viewModel = AddRoomViewModel.FromModel(room);
+                return Json(viewModel);
+            }
+            catch (Exception ex)
+            {
+                LogException(ex);
+                return ReturnResponse("An error occured while getting room data", ResponseStatus.Fail);
             }
         }
 

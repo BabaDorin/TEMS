@@ -10,6 +10,7 @@ using temsAPI.Data.Entities.CommunicationEntities;
 using temsAPI.Data.Entities.EquipmentEntities;
 using temsAPI.Data.Entities.OtherEntities;
 using temsAPI.Data.Entities.UserEntities;
+using temsAPI.Services;
 
 namespace temsAPI.Data
 {
@@ -18,11 +19,12 @@ namespace temsAPI.Data
         public static void Seed(
             UserManager<TEMSUser> userManager,
             RoleManager<IdentityRole> roleManager,
-            ApplicationDbContext dbContext
+            ApplicationDbContext dbContext,
+            SystemConfigurationService systemConfigurationService
             )
         {
             SeedRoles(roleManager);
-            SeedUsers(userManager);
+            SeedUsers(userManager, systemConfigurationService);
             SeedDataTypes(dbContext);
             SeedTickedStatuses(dbContext);
             SeedRoomLabels(dbContext);
@@ -36,7 +38,7 @@ namespace temsAPI.Data
                 
             foreach(var r in roles)
             {
-                if (roleManager.Roles == null || !roleManager.RoleExistsAsync(r).Result) //null
+                if (roleManager.Roles == null || !roleManager.RoleExistsAsync(r).Result)
                 {
                     var role = new IdentityRole { Name = r };
                     var result = roleManager.CreateAsync(role).Result;
@@ -44,16 +46,16 @@ namespace temsAPI.Data
             }
         }
 
-        private static void SeedUsers(UserManager<TEMSUser> userManager)
+        private static void SeedUsers(UserManager<TEMSUser> userManager, SystemConfigurationService systemConfigurationService)
         {
             if (userManager.FindByNameAsync("tems@dmin").Result == null)
             {
                 var user = new TEMSUser { UserName = "tems@dmin", Email = "tems@dmin" };
-                var result = userManager.CreateAsync(user, "ef2e0d52ca46923e48697b12d565a222").Result; // https://ro.wikisource.org/wiki/Luceafărul_(Eminescu) I x2
+                var userPassword = systemConfigurationService.AppSettings.SuperAdminPassword;
+                var result = userManager.CreateAsync(user, userPassword).Result;
+                
                 if (result.Succeeded)
-                {
                     userManager.AddToRoleAsync(user, "Administrator").Wait();
-                }
             }
         }
 

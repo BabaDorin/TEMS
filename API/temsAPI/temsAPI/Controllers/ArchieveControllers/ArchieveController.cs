@@ -14,9 +14,6 @@ namespace temsAPI.Controllers.ArchieveControllers
 {
     public class ArchieveController : TEMSController
     {
-        // BEFREE: Find a way to get rid of these switch statements via creating a smart way of accessing
-        // the repo by item type.
-
         ArchieveManager _archieveManager;
 
         public ArchieveController(

@@ -20,57 +20,6 @@ namespace temsAPI.Data.Managers
         {
         }
 
-        public async Task<List<Option>> GetPositionOptions()
-        {
-            var positions = (await _unitOfWork.PersonnelPositions.FindAll<Option>(
-                    where: q => !q.IsArchieved,
-                    select: q => new Option
-                    {
-                        Value = q.Id,
-                        Label = q.Name
-                    }
-                    )).ToList();
-
-            return positions;
-        }
-
-        public async Task<Personnel> GetById(string personnelId)
-        {
-            var personnel = (await _unitOfWork.Personnel
-                .Find<Personnel>(
-                    where: q => q.Id == personnelId,
-                    include: q => q
-                    .Include(q => q.Positions)
-                    .Include(q => q.TEMSUser)))
-                .FirstOrDefault();
-
-            return personnel;
-        }
-        
-        public async Task<string> Update(AddPersonnelViewModel viewModel)
-        {
-            string validationResult = await viewModel.Validate(_unitOfWork);
-            if (validationResult != null)
-                return validationResult;
-
-            var personnel = await GetById(viewModel.Id);
-
-            personnel.Name = viewModel.Name;
-            personnel.Email = viewModel.Email;
-            personnel.PhoneNumber = viewModel.PhoneNumber;
-
-            List<string> positionIds = viewModel.Positions.Select(q => q.Value).ToList();
-            await personnel.AssignPositions(positionIds, _unitOfWork);
-
-            if (viewModel.User != null)
-                await personnel.AssignUser(viewModel.User.Value, _unitOfWork);
-            else
-                personnel.CancelUserConnection();
-
-            await _unitOfWork.Save();
-            return null;
-        }
-
         public async Task<string> Create(AddPersonnelViewModel viewModel)
         {
             string validationResult = await viewModel.Validate(_unitOfWork);
@@ -96,6 +45,30 @@ namespace temsAPI.Data.Managers
             return null;
         }
 
+        public async Task<string> Update(AddPersonnelViewModel viewModel)
+        {
+            string validationResult = await viewModel.Validate(_unitOfWork);
+            if (validationResult != null)
+                return validationResult;
+
+            var personnel = await GetById(viewModel.Id);
+
+            personnel.Name = viewModel.Name;
+            personnel.Email = viewModel.Email;
+            personnel.PhoneNumber = viewModel.PhoneNumber;
+
+            List<string> positionIds = viewModel.Positions.Select(q => q.Value).ToList();
+            await personnel.AssignPositions(positionIds, _unitOfWork);
+
+            if (viewModel.User != null)
+                await personnel.AssignUser(viewModel.User.Value, _unitOfWork);
+            else
+                personnel.CancelUserConnection();
+
+            await _unitOfWork.Save();
+            return null;
+        }
+
         public async Task<string> Remove(string personnelId)
         {
             var personnel = await GetById(personnelId);
@@ -110,6 +83,33 @@ namespace temsAPI.Data.Managers
             _unitOfWork.Personnel.Delete(personnel);
             await _unitOfWork.Save();
             return null;
+        }
+
+        public async Task<Personnel> GetById(string personnelId)
+        {
+            var personnel = (await _unitOfWork.Personnel
+                .Find<Personnel>(
+                    where: q => q.Id == personnelId,
+                    include: q => q
+                    .Include(q => q.Positions)
+                    .Include(q => q.TEMSUser)))
+                .FirstOrDefault();
+
+            return personnel;
+        }
+
+        public async Task<List<Option>> GetPositionOptions()
+        {
+            var positions = (await _unitOfWork.PersonnelPositions.FindAll<Option>(
+                    where: q => !q.IsArchieved,
+                    select: q => new Option
+                    {
+                        Value = q.Id,
+                        Label = q.Name
+                    }
+                    )).ToList();
+
+            return positions;
         }
 
         public async Task<List<ViewPersonnelSimplifiedViewModel>> GetSimplified(

@@ -61,6 +61,25 @@ namespace temsAPI.Controllers.IdentityControllers
             }
         }
 
+        [HttpPost]
+        [ClaimRequirement(TEMSClaims.CAN_MANAGE_SYSTEM_CONFIGURATION)]
+        public async Task<JsonResult> UpdateUser([FromBody] AddUserViewModel viewModel)
+        {
+            try
+            {
+                var result = await _temsUserManager.UpdateUser(viewModel);
+                if (result != null)
+                    return ReturnResponse(result, ResponseStatus.Fail);
+
+                return ReturnResponse("Success", ResponseStatus.Success);
+            }
+            catch (Exception ex)
+            {
+                LogException(ex);
+                return ReturnResponse("An error occured when updating the record", ResponseStatus.Fail);
+            }
+        }
+
         [HttpGet("temsuser/remove/{userId}")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_SYSTEM_CONFIGURATION)]
         public async Task<JsonResult> Remove(string userId)
@@ -96,25 +115,6 @@ namespace temsAPI.Controllers.IdentityControllers
             {
                 LogException(ex);
                 return ReturnResponse("An error occured while archieving the user.", ResponseStatus.Fail);
-            }
-        }
-
-        [HttpPost]
-        [ClaimRequirement(TEMSClaims.CAN_MANAGE_SYSTEM_CONFIGURATION)]
-        public async Task<JsonResult> UpdateUser([FromBody] AddUserViewModel viewModel)
-        {
-            try
-            {
-                var result = await _temsUserManager.UpdateUser(viewModel);
-                if (result != null)
-                    return ReturnResponse(result, ResponseStatus.Fail);
-
-                return ReturnResponse("Success", ResponseStatus.Success);
-            }
-            catch (Exception ex)
-            {
-                LogException(ex);
-                return ReturnResponse("An error occured when updating the record", ResponseStatus.Fail);
             }
         }
 

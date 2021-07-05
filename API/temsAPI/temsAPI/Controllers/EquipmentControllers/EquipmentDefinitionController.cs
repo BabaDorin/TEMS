@@ -11,6 +11,7 @@ using temsAPI.Data.Managers;
 using temsAPI.Helpers;
 using temsAPI.System_Files;
 using temsAPI.ViewModels.EquipmentDefinition;
+using static temsAPI.Data.Managers.EquipmentDefinitionManager;
 
 namespace temsAPI.Controllers.EquipmentControllers
 {
@@ -68,6 +69,46 @@ namespace temsAPI.Controllers.EquipmentControllers
             {
                 LogException(ex);
                 return ReturnResponse("An error occured while updating the definition", ResponseStatus.Fail);
+            }
+        }
+
+        [HttpGet("equipmentdefinition/archieve/{definitionId}/{archivationStatus?}")]
+        [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
+        public async Task<JsonResult> Archieve(string definitionId, bool archivationStatus = true)
+        {
+            try
+            {
+                var archievingResult = await (new ArchieveHelper(_unitOfWork, User))
+                    .SetDefinitionArchivationStatus(definitionId, archivationStatus);
+
+                if (archievingResult != null)
+                    return ReturnResponse(archievingResult, ResponseStatus.Fail);
+
+                return ReturnResponse("Success", ResponseStatus.Success);
+            }
+            catch (Exception ex)
+            {
+                LogException(ex);
+                return ReturnResponse("An error occured while changing the archivation status.", ResponseStatus.Fail);
+            }
+        }
+
+        [HttpGet("equipmentdefinition/remove/{definitionId}")]
+        [ClaimRequirement(TEMSClaims.CAN_MANAGE_SYSTEM_CONFIGURATION)]
+        public async Task<JsonResult> Remove(string definitionId)
+        {
+            try
+            {
+                string result = await _equipmentDefinitionManager.Remove(definitionId);
+                if (result != null)
+                    return ReturnResponse(result, ResponseStatus.Fail);
+
+                return ReturnResponse("Success", ResponseStatus.Success);
+            }
+            catch (Exception ex)
+            {
+                LogException(ex);
+                return ReturnResponse("An error occured while removing the definition", ResponseStatus.Fail);
             }
         }
 
@@ -172,46 +213,6 @@ namespace temsAPI.Controllers.EquipmentControllers
             {
                 LogException(ex);
                 return ReturnResponse("An error occured when fetching defintion's data", ResponseStatus.Fail);
-            }
-        }
-
-        [HttpGet("equipmentdefinition/archieve/{definitionId}/{archivationStatus?}")]
-        [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
-        public async Task<JsonResult> Archieve(string definitionId, bool archivationStatus = true)
-        {
-            try
-            {
-                var archievingResult = await (new ArchieveHelper(_unitOfWork, User))
-                    .SetDefinitionArchivationStatus(definitionId, archivationStatus);
-
-                if (archievingResult != null)
-                    return ReturnResponse(archievingResult, ResponseStatus.Fail);
-
-                return ReturnResponse("Success", ResponseStatus.Success);
-            }
-            catch (Exception ex)
-            {
-                LogException(ex);
-                return ReturnResponse("An error occured while changing the archivation status.", ResponseStatus.Fail);
-            }
-        }
-
-        [HttpGet("equipmentdefinition/remove/{definitionId}")]
-        [ClaimRequirement(TEMSClaims.CAN_MANAGE_SYSTEM_CONFIGURATION)]
-        public async Task<JsonResult> Remove(string definitionId)
-        {
-            try
-            {
-                string result = await _equipmentDefinitionManager.Remove(definitionId);
-                if (result != null)
-                    return ReturnResponse(result, ResponseStatus.Fail);
-
-                return ReturnResponse("Success", ResponseStatus.Success);
-            }
-            catch (Exception ex)
-            {
-                LogException(ex);
-                return ReturnResponse("An error occured while removing the definition", ResponseStatus.Fail);
             }
         }
     }

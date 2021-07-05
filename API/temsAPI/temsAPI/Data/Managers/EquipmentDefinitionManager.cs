@@ -13,12 +13,6 @@ using temsAPI.ViewModels.EquipmentDefinition;
 
 namespace temsAPI.Data.Managers
 {
-    public class DefinitionsOfTypesModel
-    {
-        public string Filter { get; set; }
-        public List<string> TypeIds { get; set; }
-    }
-
     public class EquipmentDefinitionManager : EntityManager
     {
         EquipmentManager _equipmentManager;
@@ -45,7 +39,6 @@ namespace temsAPI.Data.Managers
             return null;
         }
 
-        // Remove by Id
         public async Task<string> Remove(string definitionId)
         {
             var definition = await GetFullById(definitionId);
@@ -55,7 +48,6 @@ namespace temsAPI.Data.Managers
             return await Remove(definition);
         }
 
-        // Remove by reference
         public async Task<string> Remove(EquipmentDefinition definition)
         {
             // Remove children definitions along with associated equipment first
@@ -143,12 +135,12 @@ namespace temsAPI.Data.Managers
                     filter.TypeIds = new List<string>();
 
                 if (filter.TypeIds.Count > 0)
-                    expression = ExpressionCombiner.CombineTwo(
+                    expression = ExpressionCombiner.And(
                         expression,
                         q => filter.TypeIds.Contains(q.EquipmentTypeID));
 
                 if (filter.Filter != null)
-                    expression = ExpressionCombiner.CombineTwo(
+                    expression = ExpressionCombiner.And(
                         expression,
                         q => q.Identifier.Contains(filter.Filter));
             }
@@ -228,8 +220,7 @@ namespace temsAPI.Data.Managers
             return definition;
         }
 
-
-        // Utilities
+        // Utilities => To be moved to another file
 
         /// <summary>
         /// Assigns values for definition's properties according to the data being provided by the
@@ -257,6 +248,12 @@ namespace temsAPI.Data.Managers
                     Value = property.Label,
                 });
             }
+        }
+
+        public class DefinitionsOfTypesModel
+        {
+            public string Filter { get; set; }
+            public List<string> TypeIds { get; set; }
         }
     }
 }

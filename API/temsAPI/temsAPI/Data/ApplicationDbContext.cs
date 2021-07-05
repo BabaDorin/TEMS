@@ -96,12 +96,13 @@ namespace temsAPI.Data
                 .WithOne(e => e.Key)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // OnDeleteCascade DataType
+            // OnDeleteCascade DataType => Properties
             modelBuilder.Entity<DataType>()
                 .HasMany(e => e.DataTypeProperties)
                 .WithOne(e => e.DataType)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            // OnDeleteCascade User => UserNotifications
             modelBuilder.Entity<TEMSUser>()
                 .HasMany(e => e.UserNotifications)
                 .WithOne(e => e.User)
@@ -121,13 +122,13 @@ namespace temsAPI.Data
             modelBuilder.Entity<UserCommonNotification>()
                 .HasKey(c => new { c.UserId, c.NotificationId });
 
+            // Identity on TrackingNumber
             modelBuilder.Entity<Ticket>(e =>
             {
                 e.Property(e => e.TrackingNumber).ValueGeneratedOnAdd();
             });
         }
 
-        // Equipment entities
         public DbSet<DataType> DataTypes { get; set; }
         public DbSet<Property> Properties { get; set; }
         public DbSet<EquipmentType> EquipmentTypes { get; set; }
@@ -135,21 +136,15 @@ namespace temsAPI.Data
         public DbSet<EquipmentSpecifications> EquipmentSpecifications { get; set; }
         public DbSet<EquipmentDefinition> EquipmentDefinitions { get; set; }
         public DbSet<Equipment> Equipments { get; set; }
-
-        // User entities
         public DbSet<TEMSUser> TEMSUsers { get; set; }
         public DbSet<Privilege> Privileges { get; set; }
         public DbSet<RolePrivileges> RolePrivileges { get; set; }
-
-        // Communication entitites
         public DbSet<Announcement> Announcements { get; set; }
         public DbSet<FrequentTicketProblem> FrequentTicketProblems { get; set; }
         public DbSet<Ticket> Tickets { get; set; }
         public DbSet<Log> Logs { get; set; }
         public DbSet<CommonNotification> CommonNotifications { get; set; }
         public DbSet<UserNotification> UserNotifications { get; set; }
-
-        // Other entities
         public DbSet<Personnel> Personnel { get; set; }
         public DbSet<PersonnelPosition> PersonnelPositions { get; set; }
         public DbSet<Room> Rooms { get; set; }
@@ -158,16 +153,10 @@ namespace temsAPI.Data
         public DbSet<Status> Statuses { get; set; }
         public DbSet<RoomLabel> RoomLabels { get; set; }
         public DbSet<TemsJWT> JWTBlacklist { get; set; }
-
-        // Library entities
         public DbSet<LibraryFolder> LibraryFolders { get; set; }
         public DbSet<LibraryItem> LibraryItems { get; set; }
-
-        // Report entities
         public DbSet<ReportTemplate> ReportTemplates { get; set; }
         public DbSet<Report> Reports { get; set; }
-
-        // Key entities
         public DbSet<Key> Keys { get; set; }
         public DbSet<KeyAllocation> KeyAllocations { get; set; }
     }

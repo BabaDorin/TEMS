@@ -62,14 +62,13 @@ namespace temsAPI.Data.Managers
         public async Task<List<ViewAnnouncementViewModel>> GetAnnouncements(int skip = 0, int take = int.MaxValue)
         {
             var announcements = (await _unitOfWork.Announcements
-                    .FindAll<ViewAnnouncementViewModel>(
-                        where: q => !q.IsArchieved,
+                    .FindAll(
                         include: q => q.Include(q => q.Author),
                         orderBy: q => q.OrderByDescending(q => q.DateCreated),
                         skip: skip,
                         take: take,
-                        select: q => ViewAnnouncementViewModel.FromModel(q)
-                    )).ToList();
+                        select: q => ViewAnnouncementViewModel.FromModel(q)))
+                    .ToList();
 
             return announcements;
         }

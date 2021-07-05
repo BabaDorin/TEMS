@@ -11,7 +11,7 @@ using temsAPI.Data.Entities.KeyEntities;
 using temsAPI.Data.Entities.OtherEntities;
 using temsAPI.Data.Entities.UserEntities;
 using temsAPI.Helpers;
-using temsAPI.Repository;
+using temsAPI.Services;
 using temsAPI.ViewModels.Archieve;
 
 namespace temsAPI.Data.Managers
@@ -20,8 +20,6 @@ namespace temsAPI.Data.Managers
     {
         ArchieveHelper _archieveHelper;
         LogManager _logManager;
-
-        AnnouncementManager _announcementManager;
         EquipmentManager _equipmentManager;
         EquipmentDefinitionManager _equipmentDefinitionManager;
         EquipmentTypeManager _equipmentTypeManager;
@@ -31,12 +29,13 @@ namespace temsAPI.Data.Managers
         RoomManager _roomManager;
         TEMSUserManager _temsUserManager;
         TicketManager _ticketManager;
+        SystemConfigurationService _systemConfigurationService;
 
         public ArchieveManager(
             IUnitOfWork unitOfWork, 
             ClaimsPrincipal user,
             LogManager logManager,
-            AnnouncementManager announcementManager,
+            SystemConfigurationService systemConfigurationService,
             EquipmentManager equipmentManager,
             EquipmentDefinitionManager equipmentDefinitionManager,
             EquipmentTypeManager equipmentTypeManager,
@@ -50,8 +49,7 @@ namespace temsAPI.Data.Managers
         {
             _logManager = logManager;
             _archieveHelper = new ArchieveHelper(unitOfWork, user);
-
-            _announcementManager = announcementManager;
+            _systemConfigurationService = systemConfigurationService;
             _equipmentManager = equipmentManager;
             _equipmentDefinitionManager = equipmentDefinitionManager;
             _equipmentTypeManager = equipmentTypeManager;
@@ -63,6 +61,11 @@ namespace temsAPI.Data.Managers
             _ticketManager = ticketManager;
         }
 
+        /// <summary>
+        /// Retrieves archived items of the specified item type and maps them to ArchievedItemViewModel
+        /// </summary>
+        /// <param name="itemType"></param>
+        /// <returns></returns>
         public async Task<List<ArchievedItemViewModel>> GetArchievedItems(string itemType)
         {
 
@@ -140,16 +143,18 @@ namespace temsAPI.Data.Managers
         }
 
         /// <summary>
-        /// This method is called by the scheduler. It finds and removes archived items
-        /// using entity managers.
+        /// Finds and removed archived items that excedeed the archivation period and are eligible for
+        /// deletion
         /// </summary>
         /// <returns></returns>
         public async Task RemoveOverArchivedItems()
         {
+            int archivePeriodHours = _systemConfigurationService.AppSettings.ArchiveIntervalHr;
+
             // Remove equipment
             var equipment = (await _unitOfWork.Equipments
                 .FindAll<Equipment>(
-                    where: q => q.IsArchieved,
+                    where: q => IsEntityEligibleForDeletion(q),
                     include: q => q.Include(q => q.Children)))
                 .ToList();
 
@@ -158,7 +163,7 @@ namespace temsAPI.Data.Managers
 
             // Remove equipment allocations
             var allocations = (await _unitOfWork.EquipmentAllocations
-                .FindAll<EquipmentAllocation>(q => q.IsArchieved))
+                .FindAll<EquipmentAllocation>(q => IsEntityEligibleForDeletion(q)))
                 .ToList();
 
             foreach (var q in allocations)
@@ -167,9 +172,9 @@ namespace temsAPI.Data.Managers
             // Remove definitions
             var definitions = (await _unitOfWork.EquipmentDefinitions
                 .FindAll<EquipmentDefinition>(
-                    where: q => q.IsArchieved,
-                    include: q => q.Include(q => q.Children)
-                )).ToList();
+                    where: q => IsEntityEligibleForDeletion(q),
+                    include: q => q.Include(q => q.Children)))
+                .ToList();
 
             foreach (var q in definitions)
                 await _equipmentDefinitionManager.Remove(q);
@@ -177,24 +182,16 @@ namespace temsAPI.Data.Managers
             // Remove types
             var types = (await _unitOfWork.EquipmentTypes
                 .FindAll<EquipmentType>(
-                    where: q => q.IsArchieved,
-                    include: q => q.Include(q => q.Children)
-                )).ToList();
+                    where: q => IsEntityEligibleForDeletion(q),
+                    include: q => q.Include(q => q.Children)))
+                .ToList();
 
             foreach (var q in types)
                 await _equipmentTypeManager.Remove(q);
 
-            // Remove announcements
-            var announcements = (await _unitOfWork.Announcements
-                .FindAll<Announcement>(q => q.IsArchieved))
-                .ToList();
-
-            foreach (var q in announcements)
-                await _announcementManager.Remove(q);
-
             // Remove properties
             var properties = (await _unitOfWork.Properties
-                .FindAll<Property>(q => q.IsArchieved))
+                .FindAll<Property>(q => IsEntityEligibleForDeletion(q)))
                 .ToList();
 
             foreach (var q in properties)
@@ -202,7 +199,7 @@ namespace temsAPI.Data.Managers
 
             // Remove keys
             var keys = (await _unitOfWork.Keys
-                .FindAll<Key>(q => q.IsArchieved))
+                .FindAll<Key>(q => IsEntityEligibleForDeletion(q)))
                 .ToList();
 
             foreach (var q in keys)
@@ -210,7 +207,7 @@ namespace temsAPI.Data.Managers
 
             // Remove key allocations
             var keyAllocations = (await _unitOfWork.KeyAllocations
-                .FindAll<KeyAllocation>(q => q.IsArchieved))
+                .FindAll<KeyAllocation>(q => IsEntityEligibleForDeletion(q)))
                 .ToList();
 
             foreach (var q in keyAllocations)
@@ -218,7 +215,7 @@ namespace temsAPI.Data.Managers
 
             // Remove personnel
             var personnel = (await _unitOfWork.Personnel
-                .FindAll<Personnel>(q => q.IsArchieved))
+                .FindAll<Personnel>(q => IsEntityEligibleForDeletion(q)))
                 .ToList();
 
             foreach (var q in personnel)
@@ -226,7 +223,7 @@ namespace temsAPI.Data.Managers
 
             // Remove rooms
             var rooms = (await _unitOfWork.Rooms
-                .FindAll<Room>(q => q.IsArchieved))
+                .FindAll<Room>(q => IsEntityEligibleForDeletion(q)))
                 .ToList();
 
             foreach (var q in rooms)
@@ -234,7 +231,7 @@ namespace temsAPI.Data.Managers
 
             // Remove users
             var users = (await _unitOfWork.TEMSUsers
-                .FindAll<TEMSUser>(q => q.IsArchieved))
+                .FindAll<TEMSUser>(q => IsEntityEligibleForDeletion(q)))
                 .ToList();
 
             foreach (var q in users)
@@ -242,11 +239,24 @@ namespace temsAPI.Data.Managers
 
             // Remove tickets
             var tickets = (await _unitOfWork.Tickets
-                .FindAll<Ticket>(q => q.IsArchieved))
+                .FindAll<Ticket>(q => IsEntityEligibleForDeletion(q)))
                 .ToList();
 
             foreach (var q in tickets)
                 await _ticketManager.Remove(q);
+        }
+
+        /// <summary>
+        /// Checks an entity for deletion eligibility
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns>true if the item has exceeded the archivation period</returns>
+        private bool IsEntityEligibleForDeletion(IArchiveable entity)
+        {
+            return 
+                entity.IsArchieved
+                && (DateTime.UtcNow - entity.DateArchieved)
+                .Value.Hours >= _systemConfigurationService.AppSettings.ArchiveIntervalHr; 
         }
     }
 }

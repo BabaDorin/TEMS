@@ -9,8 +9,9 @@ namespace temsAPI.Services
     {
         List<IScheduledAction> scheduledActions;
         private ArchieveManager _archieveManager;
-        
-        public RoutineCheckService(ArchieveManager archieveManager)
+
+        public RoutineCheckService(
+            ArchieveManager archieveManager)
         {
             _archieveManager = archieveManager;
 

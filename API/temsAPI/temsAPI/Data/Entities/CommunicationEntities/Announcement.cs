@@ -1,11 +1,6 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Threading.Tasks;
 using temsAPI.Data.Entities.UserEntities;
 
 namespace temsAPI.Data.Entities.CommunicationEntities
@@ -28,7 +23,5 @@ namespace temsAPI.Data.Entities.CommunicationEntities
         public TEMSUser? Author { get; set; }
         public string? AuthorID { get; set; }
 #nullable disable
-
-        public bool IsArchieved { get; set; }
     }
 }

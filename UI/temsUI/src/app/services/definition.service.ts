@@ -17,7 +17,7 @@ export class DefinitionService extends TEMSService {
   }
 
   remove(definitionId: string): Observable<any>{
-    return this.http.get(
+    return this.http.delete(
       API_EQDEF_URL + '/remove/' + definitionId,
       this.httpOptions    
     )

@@ -3,25 +3,16 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Protocols;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
 using System.Text;
-using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data;
 using temsAPI.Data.Entities.UserEntities;
@@ -181,9 +172,9 @@ namespace temsAPI
             TemsStarter.Start();
 
             app.UseCors(builder =>
-            builder.WithOrigins(Configuration["AppSettings:Client_URL"].ToString())
-            .AllowAnyHeader()
-            .AllowAnyMethod()
+                builder.WithOrigins(Configuration["AppSettings:Client_URL"].ToString())
+                .AllowAnyMethod()
+                .AllowAnyHeader()
             );
 
             app.UseAuthentication();

@@ -17,24 +17,18 @@ namespace temsAPI.Controllers.IdentityControllers
     public class AuthController : TEMSController
     {
         TEMSUserManager _temsUserManager;
-        RoleManager<IdentityRole> _roleManager;
-        readonly AppSettings _appSettings;
 
         public AuthController(
             IMapper mapper, 
             IUnitOfWork unitOfWork, 
             UserManager<TEMSUser> userManager,
-            RoleManager<IdentityRole> roleManager,
-            IOptions<AppSettings> appSettings,
             TEMSUserManager temsUserManager,
             ILogger<TEMSController> logger) : base(mapper, unitOfWork, userManager, logger)
         {
-            _roleManager = roleManager;
-            _appSettings = appSettings.Value;
             _temsUserManager = temsUserManager;
         }
 
-        [HttpPost]
+        [HttpPost("auth/LogIn")]
         public async Task<IActionResult> LogIn([FromBody] LogInViewModel viewModel)
         {
             try
@@ -49,7 +43,7 @@ namespace temsAPI.Controllers.IdentityControllers
             }
         }
 
-        [HttpPost]
+        [HttpPost("auth/SignOut")]
         public async Task<IActionResult> SignOut([FromBody] string token)
         {
             try

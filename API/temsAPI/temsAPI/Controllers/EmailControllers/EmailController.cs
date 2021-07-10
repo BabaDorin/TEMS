@@ -31,7 +31,7 @@ namespace temsAPI.Controllers.EmailControllers
             _emailService = emailService;
         }
 
-        [HttpPost]
+        [HttpPost("email/SendEmail")]
         [ClaimRequirement(TEMSClaims.CAN_SEND_EMAILS)]
         public async Task<JsonResult> SendEmail([FromBody] SendEmailViewModel viewModel)
         {

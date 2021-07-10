@@ -27,7 +27,7 @@ namespace temsAPI.Controllers.KeyControllers
             _keyManager = keyManager;
         }
 
-        [HttpPost]
+        [HttpPost("key/Create")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES, TEMSClaims.CAN_ALLOCATE_KEYS)]
         public async Task<JsonResult> Create([FromBody] AddKeyViewModel viewModel)
         {
@@ -46,7 +46,7 @@ namespace temsAPI.Controllers.KeyControllers
             }
         }
 
-        [HttpGet("key/archieve/{keyId}")]
+        [HttpGet("key/Archieve/{keyId}")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES, TEMSClaims.CAN_ALLOCATE_KEYS)]
         public async Task<JsonResult> Archieve(string keyId)
         {
@@ -66,7 +66,7 @@ namespace temsAPI.Controllers.KeyControllers
             }
         }
 
-        [HttpGet("key/remove/{keyId}")]
+        [HttpDelete("key/Remove/{keyId}")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_SYSTEM_CONFIGURATION)]
         public async Task<JsonResult> Remove(string keyId)
         {
@@ -85,7 +85,7 @@ namespace temsAPI.Controllers.KeyControllers
             }
         }
 
-        [HttpGet("key/removeAllocation/{allocationId}")]
+        [HttpDelete("key/RemoveAllocation/{allocationId}")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_SYSTEM_CONFIGURATION)]
         public async Task<JsonResult> RemoveAllocation(string allocationId)
         {
@@ -104,7 +104,7 @@ namespace temsAPI.Controllers.KeyControllers
             }
         }
 
-        [HttpPost]
+        [HttpPost("key/CreateAllocation")]
         [ClaimRequirement(TEMSClaims.CAN_ALLOCATE_KEYS)]
         public async Task<JsonResult> CreateAllocation([FromBody] AddKeyAllocation viewModel)
         {
@@ -123,7 +123,7 @@ namespace temsAPI.Controllers.KeyControllers
             }
         }
 
-        [HttpGet]
+        [HttpGet("key/Get")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES, TEMSClaims.CAN_ALLOCATE_KEYS)]
         public async Task<JsonResult> Get()
         {
@@ -139,7 +139,7 @@ namespace temsAPI.Controllers.KeyControllers
             }
         }
 
-        [HttpGet]
+        [HttpGet("key/GetAllAutocompleteOptions")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES, TEMSClaims.CAN_ALLOCATE_KEYS)]
         public async Task<JsonResult> GetAllAutocompleteOptions()
         {
@@ -155,7 +155,7 @@ namespace temsAPI.Controllers.KeyControllers
             }
         }
 
-        [HttpGet("key/getallocations/{keyId}/{roomId}/{personnelId}")]
+        [HttpGet("key/GetAllocations/{keyId}/{roomId}/{personnelId}")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES, TEMSClaims.CAN_ALLOCATE_KEYS)]
         public async Task<JsonResult> GetAllocations(string keyId, string roomId, string personnelId)
         {
@@ -171,7 +171,7 @@ namespace temsAPI.Controllers.KeyControllers
             }
         }
 
-        [HttpGet("key/markasreturned/{keyId}")]
+        [HttpGet("key/MarkAsReturned/{keyId}")]
         [ClaimRequirement(TEMSClaims.CAN_ALLOCATE_KEYS)]
         public async Task<JsonResult> MarkAsReturned(string keyId)
         {
@@ -190,7 +190,7 @@ namespace temsAPI.Controllers.KeyControllers
             }
         }
 
-        [HttpGet("key/archieveallocation/{allocationId}/{archivationStatus?}")]
+        [HttpGet("key/ArchieveAllocation/{allocationId}/{archivationStatus?}")]
         [ClaimRequirement(TEMSClaims.CAN_ALLOCATE_KEYS)]
         public async Task<JsonResult> ArchieveAllocation(string allocationId, bool? archivationStatus)
         {

@@ -35,13 +35,8 @@ namespace temsAPI.Controllers.NotificationControllers
             _identityService = identityService;
         }
 
-        public IActionResult Index()
-        {
-            return View();
-        }
-
         [Authorize]
-        [HttpGet("notification/getlastnotifications/{take?}")]
+        [HttpGet("notification/GetLastNotifications/{take?}")]
         public async Task<JsonResult> GetLastNotifications(int take = 7)
         {
             try
@@ -59,7 +54,7 @@ namespace temsAPI.Controllers.NotificationControllers
         }
 
         [Authorize]
-        [HttpGet("notification/getallnotifications/{skip?}/{take?}")]
+        [HttpGet("notification/GetAllNotifications/{skip?}/{take?}")]
         public async Task<JsonResult> GetAllNotifications(int skip = 0, int take = int.MaxValue)
         {
             try
@@ -77,7 +72,7 @@ namespace temsAPI.Controllers.NotificationControllers
         }
 
         [Authorize]
-        [HttpGet]
+        [HttpGet("notification/MarkAsSeen")]
         public async Task<JsonResult> MarkAsSeen(List<string> notificationIds)
         {
             try
@@ -99,7 +94,7 @@ namespace temsAPI.Controllers.NotificationControllers
         }
 
         [Authorize]
-        [HttpGet("notification/remove/{notificationId}")]
+        [HttpDelete("notification/Remove/{notificationId}")]
         public async Task<JsonResult> Remove(string notificationId)
         {
             try

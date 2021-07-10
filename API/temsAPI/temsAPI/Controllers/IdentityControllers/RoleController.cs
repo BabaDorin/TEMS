@@ -16,7 +16,6 @@ namespace temsAPI.Controllers.IdentityControllers
 {
     public class RoleController : TEMSController
     {
-
         private RoleManager<IdentityRole> _roleManager;
 
         public RoleController(
@@ -29,11 +28,7 @@ namespace temsAPI.Controllers.IdentityControllers
             _roleManager = roleManager;
         }
 
-        public IActionResult Index()
-        {
-            return View();
-        }
-
+        [HttpGet("role/GetRoles")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_SYSTEM_CONFIGURATION)]
         public JsonResult GetRoles()
         {

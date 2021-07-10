@@ -21,7 +21,6 @@ namespace temsAPI.Controllers.LibraryControllers
 {
     public class LibraryController : TEMSController
     {
-        private readonly IHttpContextAccessor _httpContextAccessor;
         private LibraryItemFileHandler fileHandler = new();
         private LibraryManager _libraryManager;
         private IdentityService _identityService;
@@ -37,20 +36,18 @@ namespace temsAPI.Controllers.LibraryControllers
             LibraryManager libraryManager,
             ILogger<TEMSController> logger) : base(mapper, unitOfWork, userManager, logger)
         {
-            _httpContextAccessor = httpContextAccessor;
             _libraryManager = libraryManager;
             _identityService = identityService;
             _systemConfigurationService = systemConfigurationService;
         }
 
-        [HttpPost, DisableRequestSizeLimit]
+        [HttpPost("library/UploadFile"), DisableRequestSizeLimit]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<IActionResult> UploadFile()
         {
             try
             {
                 // 1: Check if there some space available
-
                 var availableSpace = _libraryManager.GetAvailableSpace_bytes();
                 if (availableSpace <= 0)
                     return StatusCode(500, "There is no more available space allocated for library storage. Free up some space first.");
@@ -89,7 +86,7 @@ namespace temsAPI.Controllers.LibraryControllers
             }
         }
 
-        [HttpGet("library/remove/{itemId}")]
+        [HttpDelete("library/Remove/{itemId}")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> Remove(string itemId)
         {
@@ -108,7 +105,7 @@ namespace temsAPI.Controllers.LibraryControllers
             }
         }
 
-        [HttpGet("library/getlibraryitems/{accessPassword?}")]
+        [HttpGet("library/GetLibraryItems/{accessPassword?}")]
         public async Task<JsonResult> GetLibraryItems(string accessPassword)
         {
             try
@@ -126,7 +123,7 @@ namespace temsAPI.Controllers.LibraryControllers
             }
         }
 
-        [HttpGet("library/download/{itemId}"), DisableRequestSizeLimit]
+        [HttpGet("library/Download/{itemId}"), DisableRequestSizeLimit]
         public async Task<IActionResult> Download(string itemId)
         {
             var item = await _libraryManager.GetById(itemId);
@@ -144,7 +141,7 @@ namespace temsAPI.Controllers.LibraryControllers
             return file;
         }
 
-        [HttpGet]
+        [HttpGet("library/GetSpaceUsageData")]
         public JsonResult GetSpaceUsageData()
         {
             try
@@ -164,8 +161,8 @@ namespace temsAPI.Controllers.LibraryControllers
                 return ReturnResponse("An error occured while fetching space usage data.", ResponseStatus.Fail);
             }
         }
-       
-        [HttpGet]
+
+        [HttpGet("library/GetAvailableLibraryStorageSpace")]
         public JsonResult GetAvailableLibraryStorageSpace()
         {
             try

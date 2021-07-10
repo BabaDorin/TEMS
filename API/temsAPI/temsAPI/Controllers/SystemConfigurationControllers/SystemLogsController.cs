@@ -3,9 +3,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.UserEntities;
 using temsAPI.Services;
@@ -28,7 +25,7 @@ namespace temsAPI.Controllers.SystemConfigurationControllers
             _configService = systemConfigurationService;
         }
 
-        [HttpPost]
+        [HttpPost("systemlogs/GetSystemLogs")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_SYSTEM_CONFIGURATION)]
         public JsonResult GetSystemLogs([FromBody] LoggerViewModel viewModel)
         {

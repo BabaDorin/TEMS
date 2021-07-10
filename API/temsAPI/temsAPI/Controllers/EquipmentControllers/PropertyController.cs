@@ -29,7 +29,7 @@ namespace temsAPI.EquipmentControllers
             _eqPropertyManager = equipmentPropertyManager;
         }
 
-        [HttpPost]
+        [HttpPost("property/Add")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> Add([FromBody] AddPropertyViewModel viewModel)
         {
@@ -48,7 +48,7 @@ namespace temsAPI.EquipmentControllers
             }
         }
 
-        [HttpPost]
+        [HttpPut("property/Update")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> Update([FromBody] AddPropertyViewModel viewModel)
         {
@@ -67,7 +67,7 @@ namespace temsAPI.EquipmentControllers
             }
         }
 
-        [HttpGet("property/archieve/{propertyId}/{archivationStatus?}")]
+        [HttpGet("property/Archieve/{propertyId}/{archivationStatus?}")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> Archieve(string propertyId, bool archivationStatus = true)
         {
@@ -87,7 +87,7 @@ namespace temsAPI.EquipmentControllers
             }
         }
 
-        [HttpGet("property/remove/{propertyId}")]
+        [HttpDelete("property/Remove/{propertyId}")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_SYSTEM_CONFIGURATION)]
         public async Task<JsonResult> Remove(string propertyId)
         {
@@ -106,7 +106,7 @@ namespace temsAPI.EquipmentControllers
             }
         }
         
-        [HttpGet]
+        [HttpGet("property/Get")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> Get()
         {
@@ -122,7 +122,7 @@ namespace temsAPI.EquipmentControllers
             }
         }
 
-        [HttpGet]
+        [HttpGet("property/GetSimplified")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> GetSimplified()
         {
@@ -138,7 +138,7 @@ namespace temsAPI.EquipmentControllers
             }
         }
 
-        [HttpGet("property/getsimplifiedbyid/{propertyId}")]
+        [HttpGet("property/GetSimplifiedById/{propertyId}")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> GetSimplifiedById(string propertyId)
         {
@@ -154,7 +154,7 @@ namespace temsAPI.EquipmentControllers
             }
         }
 
-        [HttpGet("property/getbyid/{propertyId}")]
+        [HttpGet("property/GetById/{propertyId}")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> GetById(string propertyId)
         {

@@ -29,7 +29,7 @@ namespace temsAPI.EquipmentControllers
             _equipmentTypeManager = eqTypeManager;
         }
 
-        [HttpPost]
+        [HttpPost("equipmenttype/Add")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> Add([FromBody] AddEquipmentTypeViewModel viewModel)
         {
@@ -40,7 +40,7 @@ namespace temsAPI.EquipmentControllers
             return ReturnResponse($"Success", ResponseStatus.Success);
         }
 
-        [HttpPost]
+        [HttpPut("equipmenttype/Update")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> Update([FromBody] AddEquipmentTypeViewModel viewModel)
         {
@@ -59,7 +59,7 @@ namespace temsAPI.EquipmentControllers
             }
         }
 
-        [HttpGet("equipmenttype/archieve/{typeId}/{status}")]
+        [HttpGet("equipmenttype/Archieve/{typeId}/{status}")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> Archieve(string typeId, bool status = true)
         {
@@ -84,7 +84,7 @@ namespace temsAPI.EquipmentControllers
             }
         }
 
-        [HttpGet("equipmenttype/remove/{typeId}")]
+        [HttpDelete("equipmenttype/Remove/{typeId}")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_SYSTEM_CONFIGURATION)]
         public async Task<JsonResult> Remove(string typeId)
         {
@@ -103,7 +103,7 @@ namespace temsAPI.EquipmentControllers
             }
         }
 
-        [HttpGet("equipmenttype/getallautocompleteoptions/{filter?}")]
+        [HttpGet("equipmenttype/GetAllAutocompleteOptions/{filter?}")]
         public async Task<JsonResult> GetAllAutocompleteOptions(string filter)
         {
             try
@@ -118,7 +118,7 @@ namespace temsAPI.EquipmentControllers
             }
         }
 
-        [HttpGet]
+        [HttpGet("equipmenttype/GetSimplified")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> GetSimplified()
         {
@@ -153,7 +153,7 @@ namespace temsAPI.EquipmentControllers
             }
         }
 
-        [HttpPost]
+        [HttpPost("equipmenttype/FullType")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> FullType([FromBody] string typeId)
         {
@@ -173,7 +173,7 @@ namespace temsAPI.EquipmentControllers
             }
         }
 
-        [HttpGet("equipmenttype/getpropertiesoftype/{typeId}")]
+        [HttpGet("equipmenttype/GetPropertiesOfType/{typeId}")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> GetPropertiesOfType(string typeId)
         {

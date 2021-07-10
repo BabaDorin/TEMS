@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -8,6 +9,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Web.Http.Filters;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.UserEntities;
 using temsAPI.Data.Managers;
@@ -36,7 +38,7 @@ namespace temsAPI.Controllers.EquipmentControllers
             _logManager = logManager;
         }
 
-        [HttpPost]
+        [HttpPost("equipment/Add")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> Add([FromBody] AddEquipmentViewModel viewModel)
         {
@@ -55,7 +57,7 @@ namespace temsAPI.Controllers.EquipmentControllers
             }
         }
 
-        [HttpPost]
+        [HttpPost("equipment/BulkUpload")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> BulkUpload()
         {
@@ -73,7 +75,7 @@ namespace temsAPI.Controllers.EquipmentControllers
             }
         }
 
-        [HttpPost]
+        [HttpPut("equipment/Update")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> Update([FromBody] AddEquipmentViewModel viewModel)
         {
@@ -92,7 +94,7 @@ namespace temsAPI.Controllers.EquipmentControllers
             }
         }
 
-        [HttpGet("equipment/archieve/{equipmentId}/{archivationStatus?}")]
+        [HttpGet("equipment/Archieve/{equipmentId}/{archivationStatus?}")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> Archieve(string equipmentId, bool archivationStatus = true)
         {
@@ -113,8 +115,8 @@ namespace temsAPI.Controllers.EquipmentControllers
             }
         }
 
-        [HttpGet("equipment/remove/{equipmentId}")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_SYSTEM_CONFIGURATION)]
+        [HttpDelete("equipment/Remove/{equipmentId}")]
         public async Task<JsonResult> Remove(string equipmentId)
         {
             try
@@ -132,7 +134,7 @@ namespace temsAPI.Controllers.EquipmentControllers
             }
         }
 
-        [HttpGet("equipment/getsimplified/{pageNumber}/{equipmentsPerPage}/{onlyParents}")]
+        [HttpGet("equipment/GetSimplified/{pageNumber}/{equipmentsPerPage}/{onlyParents}")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> GetSimplified(
             int pageNumber, 
@@ -159,7 +161,7 @@ namespace temsAPI.Controllers.EquipmentControllers
             }
         }
 
-        [HttpGet("equipment/getsimplified/{id}")]
+        [HttpGet("equipment/GetSimplified/{id}")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> GetSimplified(string id)
         {
@@ -179,7 +181,7 @@ namespace temsAPI.Controllers.EquipmentControllers
             }
         }
 
-        [HttpGet("equipment/getallautocompleteoptions/{onlyParents}/{filter?}")]
+        [HttpGet("equipment/GetAllAutocompleteOptions/{onlyParents}/{filter?}")]
         public async Task<JsonResult> GetAllAutocompleteOptions(bool onlyParents, string filter = null)
         {
             try
@@ -193,7 +195,7 @@ namespace temsAPI.Controllers.EquipmentControllers
             }
         }
 
-        [HttpGet("equipment/getbyid/{id}")]
+        [HttpGet("equipment/GetById/{id}")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> GetById(string id)
         {
@@ -214,7 +216,7 @@ namespace temsAPI.Controllers.EquipmentControllers
             }
         }
 
-        [HttpGet("equipment/getequipmentofdefinitions")]
+        [HttpGet("equipment/GetEquipmentOfDefinitions")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> GetEquipmentOfDefinitions(List<string> definitionIds, bool onlyParents = false)
         {
@@ -234,7 +236,7 @@ namespace temsAPI.Controllers.EquipmentControllers
             }
         }
 
-        [HttpGet("equipment/getequipmenttoupdate/{equipmentId}")]
+        [HttpGet("equipment/GetEquipmentToUpdate/{equipmentId}")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> GetEquipmentToUpdate(string equipmentId)
         {
@@ -252,7 +254,7 @@ namespace temsAPI.Controllers.EquipmentControllers
             }
         }
 
-        [HttpGet("equipment/detach/{equipmentId}")]
+        [HttpGet("equipment/Detach/{equipmentId}")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> Detach(string equipmentId)
         {
@@ -275,7 +277,7 @@ namespace temsAPI.Controllers.EquipmentControllers
             }
         }
 
-        [HttpPost]
+        [HttpPost("equipment/Attach")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> Attach([FromBody] AttachEquipmentViewModel viewModel)
         {
@@ -301,7 +303,7 @@ namespace temsAPI.Controllers.EquipmentControllers
             }
         }
 
-        [HttpGet("equipment/changeworkingstate/{equipmentId}/{isWorking?}")]
+        [HttpGet("equipment/ChangeWorkingState/{equipmentId}/{isWorking?}")]
         public async Task<JsonResult> ChangeWorkingState(string equipmentId, bool? isWorking)
         {
             try
@@ -321,7 +323,7 @@ namespace temsAPI.Controllers.EquipmentControllers
             }
         }
 
-        [HttpGet("equipment/changeusingstate/{equipmentId}/{isUsed?}")]
+        [HttpGet("equipment/ChangeUsingState/{equipmentId}/{isUsed?}")]
         public async Task<JsonResult> ChangeUsingState(string equipmentId, bool? isUsed)
         {
             try

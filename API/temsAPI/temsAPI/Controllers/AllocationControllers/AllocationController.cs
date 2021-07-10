@@ -17,7 +17,6 @@ namespace temsAPI.Controllers.Allocation
 {
     public class AllocationController : TEMSController
     {
-
         private EquipmentManager _equipmentManager;
 
         public AllocationController(
@@ -32,7 +31,7 @@ namespace temsAPI.Controllers.Allocation
             _equipmentManager = equipmentManager;
         }
 
-        [HttpPost]
+        [HttpPost("allocation/Create")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> Create([FromBody] AddAllocationViewModel viewModel)
         {
@@ -51,7 +50,7 @@ namespace temsAPI.Controllers.Allocation
             }
         }
 
-        [HttpGet("allocation/remove/{allocationId}")]
+        [HttpDelete("allocation/Remove/{allocationId}")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_SYSTEM_CONFIGURATION)]
         public async Task<JsonResult> Remove(string allocationId)
         {
@@ -70,7 +69,7 @@ namespace temsAPI.Controllers.Allocation
             }
         }
 
-        [HttpGet("allocation/archieve/{allocationId}/{status?}")]
+        [HttpGet("allocation/Archieve/{allocationId}/{status?}")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> Archieve(string allocationId, bool status = true)
         {
@@ -89,7 +88,7 @@ namespace temsAPI.Controllers.Allocation
             }
         }
 
-        [HttpGet("allocation/markasreturned/{allocationId}")]
+        [HttpGet("allocation/MarkAsReturned/{allocationId}")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> MarkAsReturned(string allocationId)
         {
@@ -108,7 +107,7 @@ namespace temsAPI.Controllers.Allocation
             }
         }
 
-        [HttpGet("allocation/getofentity/{entityType}/{entityId}/{archieve?}")]
+        [HttpGet("allocation/GetOfEntity/{entityType}/{entityId}/{archieve?}")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> GetOfEntity(string entityType, string entityId)
         {
@@ -146,7 +145,7 @@ namespace temsAPI.Controllers.Allocation
             }
         }
         
-        [HttpPost]
+        [HttpPost("allocation/GetAllocations")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> GetAllocations([FromBody] EntityCollection entityCollection)
         {
@@ -162,7 +161,7 @@ namespace temsAPI.Controllers.Allocation
             }
         }
 
-        [HttpPost]
+        [HttpPost("allocation/GetTotalItems")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> GetTotalItems([FromBody] EntityCollection entityCollection)
         {

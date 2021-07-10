@@ -18,8 +18,9 @@ export class ReportService extends TEMSService {
     super();
   }
 
+  // Removes a template
   remove(templateId: string): Observable<any>{
-    return this.http.get(
+    return this.http.delete(
       API_REP_URL + '/remove/' + templateId,
       this.httpOptions
     );
@@ -68,7 +69,7 @@ export class ReportService extends TEMSService {
   }
 
   updateReportTemplate(addReportTemplate: AddReportTemplate): Observable<any>{
-    return this.http.post(
+    return this.http.put(
       API_REP_URL + '/updatetemplate',
       JSON.stringify(addReportTemplate),
       this.httpOptions
@@ -130,8 +131,9 @@ export class ReportService extends TEMSService {
     )
   }
 
+  // removes a report
   removeReport(reportId: string): Observable<any>{
-    return this.http.get(
+    return this.http.delete(
       API_REP_URL + '/removereport/' + reportId,
       this.httpOptions
     )

@@ -19,8 +19,6 @@ namespace temsAPI.Controllers.IdentityControllers
 {
     public class TEMSUserController : TEMSController
     {
-        private RoleManager<IdentityRole> _roleManager;
-        private IdentityService _identityService;
         TEMSUserManager _temsUserManager;
         private ArchieveManager _archieveManager;
 
@@ -34,13 +32,11 @@ namespace temsAPI.Controllers.IdentityControllers
             ArchieveManager archieveManager,
             ILogger<TEMSController> logger) : base(mapper, unitOfWork, userManager, logger)
         {
-            _roleManager = roleManager;
             _archieveManager = archieveManager;
             _temsUserManager = temsUserManager;
-            _identityService = identityService;
         }
 
-        [HttpPost]
+        [HttpPost("temsuser/AddUser")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_SYSTEM_CONFIGURATION)]
         public async Task<JsonResult> AddUser([FromBody] AddUserViewModel viewModel)
         {
@@ -61,7 +57,7 @@ namespace temsAPI.Controllers.IdentityControllers
             }
         }
 
-        [HttpPost]
+        [HttpPut("temsuser/UpdateUser")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_SYSTEM_CONFIGURATION)]
         public async Task<JsonResult> UpdateUser([FromBody] AddUserViewModel viewModel)
         {
@@ -80,7 +76,7 @@ namespace temsAPI.Controllers.IdentityControllers
             }
         }
 
-        [HttpGet("temsuser/remove/{userId}")]
+        [HttpDelete("temsuser/Remove/{userId}")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_SYSTEM_CONFIGURATION)]
         public async Task<JsonResult> Remove(string userId)
         {
@@ -99,7 +95,7 @@ namespace temsAPI.Controllers.IdentityControllers
             }
         }
 
-        [HttpGet("temsuser/archieve/{userId}/{status}")]
+        [HttpGet("temsuser/Archieve/{userId}/{status}")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_SYSTEM_CONFIGURATION)]
         public async Task<JsonResult> Archieve(string userId, bool status = true)
         {
@@ -118,7 +114,7 @@ namespace temsAPI.Controllers.IdentityControllers
             }
         }
 
-        [HttpGet("temsuser/getallautocompleteoptions/{filter?}")]
+        [HttpGet("temsuser/GetAllAutocompleteOptions/{filter?}")]
         public async Task<JsonResult> GetAllAutocompleteOptions(string filter)
         {
             try
@@ -133,7 +129,7 @@ namespace temsAPI.Controllers.IdentityControllers
             }
         }
 
-        [HttpGet("temsuser/getusers/{role?}")]
+        [HttpGet("temsuser/GetUsers/{role?}")]
         public async Task<JsonResult> GetUsers(string role)
         {
             try
@@ -148,7 +144,7 @@ namespace temsAPI.Controllers.IdentityControllers
             }
         }
 
-        [HttpGet]
+        [HttpGet("temsuser/GetClaims")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_SYSTEM_CONFIGURATION)]
         public async Task<JsonResult> GetClaims()
         {
@@ -164,7 +160,7 @@ namespace temsAPI.Controllers.IdentityControllers
             }
         }
 
-        [HttpGet("temsuser/getroleclaims/{roles}")]
+        [HttpGet("temsuser/GetRoleClaims/{roles}")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_SYSTEM_CONFIGURATION)]
         public async Task<JsonResult> GetRoleClaims(string roles)
         {
@@ -185,7 +181,7 @@ namespace temsAPI.Controllers.IdentityControllers
             }
         }
 
-        [HttpGet("temsuser/getuserclaims/{userId}")]
+        [HttpGet("temsuser/GetUserClaims/{userId}")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_SYSTEM_CONFIGURATION)]
         public async Task<JsonResult> GetUserClaims(string userId)
         {
@@ -204,7 +200,7 @@ namespace temsAPI.Controllers.IdentityControllers
             }
         }
 
-        [HttpGet("temsuser/getuser/{userId}")]
+        [HttpGet("temsuser/GetUser/{userId}")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> GetUser(string userId)
         {
@@ -220,7 +216,7 @@ namespace temsAPI.Controllers.IdentityControllers
             }
         }
 
-        [HttpGet("temsuser/getsimplifiedbyid/{userId}")]
+        [HttpGet("temsuser/GetSimplifiedById/{userId}")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> GetSimplifiedById(string userId)
         {
@@ -236,7 +232,7 @@ namespace temsAPI.Controllers.IdentityControllers
             }
         }
 
-        [HttpPost]
+        [HttpPut("temsuser/ChangePassword")]
         [Authorize]
         public async Task<JsonResult> ChangePassword([FromBody] ChangePasswordViewModel viewModel)
         {
@@ -255,7 +251,7 @@ namespace temsAPI.Controllers.IdentityControllers
             }
         }
 
-        [HttpPost]
+        [HttpPut("temsuser/ChangeEmailPreferences")]
         [Authorize]
         public async Task<JsonResult> ChangeEmailPreferences([FromBody] ChangeEmailPreferencesViewModel viewModel)
         {
@@ -274,7 +270,7 @@ namespace temsAPI.Controllers.IdentityControllers
             }
         }
 
-        [HttpPost]
+        [HttpPut("temsuser/EditAccountGeneralInfo")]
         [Authorize]
         public async Task<JsonResult> EditAccountGeneralInfo([FromBody] AccountGeneralInfoViewModel viewModel)
         {

@@ -28,7 +28,7 @@ namespace temsAPI.Controllers.IdentityControllers
             _temsUserManager = temsUserManager;
         }
 
-        [HttpGet("profile/get/{userId}")]
+        [HttpGet("profile/Get/{userId}")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> Get(string userId)
         {

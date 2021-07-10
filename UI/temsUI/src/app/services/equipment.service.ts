@@ -27,21 +27,22 @@ export class EquipmentService extends TEMSService {
   }
 
   removeEquipment(equipmentId: string): Observable<any>{
-    return this.http.get(
+    console.log('here');
+    return this.http.delete(
       API_EQ_URL + '/remove/' + equipmentId,
       this.httpOptions
     );
   }
 
   removeProperty(propertyId: string): Observable<any>{
-    return this.http.get(
+    return this.http.delete(
       API_PROP_URL + '/remove/' + propertyId,
       this.httpOptions
     );
   }
 
   removeAllocation(allocationId: string): Observable<any>{
-    return this.http.get(
+    return this.http.delete(
       API_ALL_URL + '/remove/' + allocationId,
       this.httpOptions
     );
@@ -97,7 +98,7 @@ export class EquipmentService extends TEMSService {
   }
 
   updateType(addType: AddType): Observable<any>{
-    return this.http.post(
+    return this.http.put(
       API_EQTYPE_URL + '/update', 
       JSON.stringify(addType), 
       this.httpOptions);
@@ -145,7 +146,7 @@ export class EquipmentService extends TEMSService {
   }
 
   updateProperty(addProperty: AddProperty): Observable<any>{
-    return this.http.post<AddProperty>(
+    return this.http.put<AddProperty>(
       API_PROP_URL + '/update', 
       JSON.stringify(addProperty), 
       this.httpOptions);
@@ -159,7 +160,7 @@ export class EquipmentService extends TEMSService {
   }
 
   updateDefinition(addDefinition: AddDefinition): Observable<any>{
-    return this.http.post(
+    return this.http.put(
       API_EQDEF_URL + '/update',
       JSON.stringify(addDefinition),
       this.httpOptions
@@ -213,7 +214,7 @@ export class EquipmentService extends TEMSService {
   }
 
   updateEquipment(addEquipment: AddEquipment): Observable<any>{
-    return this.http.post(
+    return this.http.put(
       API_EQ_URL + '/update',
       JSON.stringify(addEquipment),
       this.httpOptions

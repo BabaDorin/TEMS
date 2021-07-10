@@ -28,7 +28,7 @@ namespace temsAPI.Controllers.LogControllers
             _logManager = logManager;
         }
 
-        [HttpPost]
+        [HttpPost("log/Create")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> Create([FromBody] AddLogViewModel viewModel)
         {
@@ -47,7 +47,7 @@ namespace temsAPI.Controllers.LogControllers
             }
         }
 
-        [HttpGet("/log/archieve/{logId}/{archivationStatus?}")]
+        [HttpGet("/log/Archieve/{logId}/{archivationStatus?}")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> Archieve(string logId, bool archivationStatus = true)
         {
@@ -67,7 +67,7 @@ namespace temsAPI.Controllers.LogControllers
             }
         }
 
-        [HttpGet("log/remove/{logId}")]
+        [HttpGet("log/Remove/{logId}")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_SYSTEM_CONFIGURATION)]
         public async Task<JsonResult> Remove(string logId)
         {
@@ -86,7 +86,7 @@ namespace temsAPI.Controllers.LogControllers
             }
         }
 
-        [HttpGet("/log/getentitylogs/{entityType}/{entityId}/{pageNumber?}/{itemsPerPage?}")]
+        [HttpGet("/log/GetEntityLogs/{entityType}/{entityId}/{pageNumber?}/{itemsPerPage?}")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> GetEntityLogs(string entityType, string entityId, int? pageNumber, int? itemsPerPage)
         {
@@ -109,7 +109,7 @@ namespace temsAPI.Controllers.LogControllers
             }
         }
 
-        [HttpGet("log/getitemsnumber/{entityType}/{entityId}")]
+        [HttpGet("log/GetItemsNumber/{entityType}/{entityId}")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<JsonResult> GetItemsNumber(string entityType, string entityId)
         {

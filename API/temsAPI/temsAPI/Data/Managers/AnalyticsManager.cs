@@ -76,14 +76,13 @@ namespace temsAPI.Data.Managers
             Expression<Func<Equipment, bool>> filterByEntityExpression =
                 _equipmentManager.Eq_FilterByEntity(entityType, entityId);
 
-            var equipment = (await _unitOfWork.Equipments.FindAll<Equipment>
-                (
+            var equipment = await _unitOfWork.Equipments.FindAll<Equipment>(
                     include: q => q.Include(q => q.EquipmentAllocations),
-                    where: ExpressionCombiner.And(filterByEntityExpression, q => q.IsUsed)
-                ));
+                    where: filterByEntityExpression
+                );
 
             int currentlyInUse = equipment.Count(q => q.IsUsed);
-            int currentlyUnengaged = equipment.Count(q => !q.IsUsed);
+            int currentlyUnengaged = equipment.Count() - currentlyInUse;
 
             var pieChart = new PieChartData
             {
@@ -135,7 +134,7 @@ namespace temsAPI.Data.Managers
                     where: filterByEntityExpression));
 
             int working = equipment.Count(q => !q.IsDefect);
-            int defect = equipment.Count(q => q.IsDefect);
+            int defect = equipment.Count() - working;
 
             PieChartData pieChart = new()
             {

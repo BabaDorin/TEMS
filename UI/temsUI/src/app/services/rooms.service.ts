@@ -20,7 +20,7 @@ export class RoomsService extends TEMSService {
   }
 
   remove(roomId: string): Observable<any>{
-    return this.http.get(
+    return this.http.delete(
       API_ROOM_URL + '/remove/' + roomId,
       this.httpOptions
     );
@@ -60,7 +60,7 @@ export class RoomsService extends TEMSService {
   } 
 
   updateRoom(room: AddRoom): Observable<any>{
-    return this.http.post(
+    return this.http.put(
       API_ROOM_URL + '/update',
       JSON.stringify(room),
       this.httpOptions

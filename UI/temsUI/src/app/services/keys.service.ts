@@ -21,14 +21,14 @@ export class KeysService extends TEMSService {
   }
 
   remove(keyId: string): Observable<any>{
-    return this.http.get(
+    return this.http.delete(
       API_KEY_URL + '/remove/' + keyId,
       this.httpOptions
     );
   }
 
   removeAllocation(allocationId: string): Observable<any>{
-    return this.http.get(
+    return this.http.delete(
       API_KEY_URL + '/removeAllocation/' + allocationId,
       this.httpOptions
     );

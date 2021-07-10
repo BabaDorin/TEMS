@@ -71,7 +71,7 @@ export class UserService extends TEMSService {
   }
 
   updateUser(user: AddUser): Observable<any>{
-    return this.http.post(
+    return this.http.put(
       API_USER_URL+ '/updateuser',
       JSON.stringify(user),
       this.httpOptions
@@ -112,6 +112,13 @@ export class UserService extends TEMSService {
     );
   }
 
+  remove(userId: string): Observable<any>{
+    return this.http.delete(
+      API_USER_URL + '/remove/' + userId,
+      this.httpOptions 
+    );
+  }
+
   getUser(userId: string): Observable<ViewUser>{
     return this.http.get<ViewUser>(
       API_USER_URL + '/getuser/' + userId,
@@ -127,7 +134,7 @@ export class UserService extends TEMSService {
   }
 
   changePassword(changePasswordModel: ChangePasswordModel): Observable<any>{
-    return this.http.post(
+    return this.http.put(
       API_USER_URL + '/changePassword',
       JSON.stringify(changePasswordModel),
       this.httpOptions
@@ -135,7 +142,7 @@ export class UserService extends TEMSService {
   }
 
   changeEmailPreferences(emailPreferencesModel: EmailPreferencesModel): Observable<any>{
-    return this.http.post(
+    return this.http.put(
       API_USER_URL + '/changeEmailPreferences',
       JSON.stringify(emailPreferencesModel),
       this.httpOptions
@@ -143,7 +150,7 @@ export class UserService extends TEMSService {
   }
 
   editAccountGeneralInfo(accountGeneralInfoModel: AccountGeneralInfoModel): Observable<any>{
-    return this.http.post(
+    return this.http.put(
       API_USER_URL + '/editAccountGeneralInfo',
       JSON.stringify(accountGeneralInfoModel),
       this.httpOptions
@@ -173,7 +180,7 @@ export class UserService extends TEMSService {
   }
   
   removeNotification(notificationId: string): Observable<any>{
-    return this.http.get(
+    return this.http.delete(
       API_NOTIF_URL + '/remove/' + notificationId,
       this.httpOptions
     );

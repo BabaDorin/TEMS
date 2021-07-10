@@ -56,7 +56,7 @@ export class LibraryService extends TEMSService {
   }
 
   removeItem(itemId: string): Observable<any>{
-    return this.http.get(
+    return this.http.delete(
       API_LBR_URL + '/remove/' + itemId,
       this.httpOptions
     );

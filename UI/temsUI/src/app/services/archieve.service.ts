@@ -1,3 +1,4 @@
+import { UserService } from 'src/app/services/user.service';
 import { LogsService } from './logs.service';
 import { TypeService } from './type.service';
 import { DefinitionService } from './definition.service';
@@ -34,6 +35,7 @@ export class ArchieveService extends TEMSService {
     { label: 'Properties', value: 'properties'},
     { label: 'Equipment types', value: 'equipmentTypes'},
     { label: 'Equipment definitions', value: 'equipmentDefinitions'},
+    { label: 'Users', value: 'users'},
   ];
 
   typeRemoveServicesDictionary: IMap<any>;
@@ -49,6 +51,7 @@ export class ArchieveService extends TEMSService {
     private logsService: LogsService,
     private defintionService: DefinitionService,
     private typeService: TypeService,
+    private userService: UserService
   ) {
     super();
 
@@ -64,7 +67,8 @@ export class ArchieveService extends TEMSService {
       ["keyAllocations"]:(id) => this.keysService.removeAllocation(id),
       ["equipmentTypes"]: (id) =>this.typeService.remove(id),
       ["equipmentDefinitions"]: (id) =>this.defintionService.remove(id),
-      ["rooms"]:(id) => this.roomsService.remove(id)
+      ["rooms"]:(id) => this.roomsService.remove(id),
+      ["users"]:(id) => this.userService.remove(id),
     }
   }
 

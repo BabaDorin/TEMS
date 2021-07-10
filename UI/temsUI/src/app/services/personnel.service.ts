@@ -20,7 +20,7 @@ export class PersonnelService extends TEMSService {
   }
 
   remove(personnelId: string): Observable<any>{
-    return this.http.get(
+    return this.http.delete(
       API_PERS_URL + '/remove/' + personnelId,
       this.httpOptions
     );
@@ -45,7 +45,7 @@ export class PersonnelService extends TEMSService {
   }
 
   updatePersonnel(personnel: AddPersonnel): Observable<any>{
-    return this.http.post(
+    return this.http.put(
       API_PERS_URL + '/update',
       JSON.stringify(personnel),
       this.httpOptions

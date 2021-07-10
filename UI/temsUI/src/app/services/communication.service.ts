@@ -37,7 +37,7 @@ export class CommunicationService extends TEMSService {
   }
   
   removeAnnouncement(announcementId: string): Observable<any>{
-    return this.http.get(
+    return this.http.delete(
       API_ANN_URL + '/remove/' + announcementId,
       this.httpOptions
     );

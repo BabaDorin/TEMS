@@ -178,6 +178,7 @@
     },
     
     "user": {
+        "management": "User management",
         "usernameDescription": "Minimum 4 alphanumerics or '.', '_'",
         "passwordDescription": "At least 5 characters long",
         "fullName": "Full name",
@@ -313,6 +314,7 @@
     "allocation": {
         "open": "Open",
         "close": "Close",
+        "closed": "Closed",
         "allocated": "Allocated",
         "returned":"Returned",
         "markAsReturned": "Mark as returned",

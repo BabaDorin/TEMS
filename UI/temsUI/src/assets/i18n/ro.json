@@ -177,6 +177,7 @@
     },
     
     "user": {
+        "management": "Gestionarea utilizatorilor",
         "usernameDescription": "Minimum 4 caractere alfanumerice și caracterele speciale '.', '_'",
         "passwordDescription": "Cel puțin 5 caractere",
         "fullName": "Numele complet",
@@ -312,6 +313,7 @@
     "allocation": {
         "open": "Deschis",
         "close": "Închis",
+        "closed": "Închise",
         "allocated": "Alocat",
         "returned":"Returnat",
         "markAsReturned": "Marchează ca returnat",

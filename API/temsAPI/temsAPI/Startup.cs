@@ -21,6 +21,7 @@ using temsAPI.Helpers;
 using temsAPI.Mappings;
 using temsAPI.Repository;
 using temsAPI.Services;
+using temsAPI.Services.JWT;
 using temsAPI.Services.Notification;
 using temsAPI.Services.Report;
 using temsAPI.System_Files;
@@ -114,9 +115,10 @@ namespace temsAPI
                 s.GetService<IHttpContextAccessor>().HttpContext?.User ?? null);
 
             // TEMS Services
-            services.AddScoped<RoutineCheckService>();
             services.AddSingleton<SystemConfigurationService>();
             services.AddSingleton<CurrencyConvertor>();
+            services.AddSingleton<TokenValidatorService>();
+            services.AddScoped<RoutineCheckService>();
             services.AddScoped<ReportingService>();
             services.AddScoped<IdentityService>();
             services.AddScoped<EmailService>();

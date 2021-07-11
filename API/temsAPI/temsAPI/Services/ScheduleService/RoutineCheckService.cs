@@ -2,22 +2,22 @@
 using System.Threading.Tasks;
 using temsAPI.Data.Managers;
 using temsAPI.Helpers.ScheduleHelper.Actions;
+using temsAPI.Services.JWT;
 
 namespace temsAPI.Services
 {
     public class RoutineCheckService
     {
         List<IScheduledAction> scheduledActions;
-        private ArchieveManager _archieveManager;
 
         public RoutineCheckService(
-            ArchieveManager archieveManager)
+            ArchieveManager archieveManager,
+            TokenValidatorService tokenValidatorService)
         {
-            _archieveManager = archieveManager;
-
             scheduledActions = new()
             {
-                new ArchiveCleaner(_archieveManager)
+                new ArchiveCleaner(archieveManager),
+                new TokenCleaner(tokenValidatorService)
             };
         }
 

@@ -1,23 +1,17 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
-using OfficeOpenXml.Utils;
 using System;
 using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Security.Claims;
-using System.Security.Policy;
-using System.Text;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.UserEntities;
 using temsAPI.Helpers;
 using temsAPI.Services;
+using temsAPI.Services.JWT;
 using temsAPI.System_Files;
 using temsAPI.ViewModels;
 using temsAPI.ViewModels.IdentityViewModels;
@@ -27,12 +21,13 @@ namespace temsAPI.Data.Managers
 {
     public class TEMSUserManager
     {
-        private UserManager<TEMSUser> _userManager;
-        private IUnitOfWork _unitOfWork;
-        private ClaimsPrincipal _user;
-        private AppSettings _appSettings;
-        private IdentityService _identityService;
+        UserManager<TEMSUser> _userManager;
+        IUnitOfWork _unitOfWork;
+        ClaimsPrincipal _user;
+        AppSettings _appSettings;
+        IdentityService _identityService;
         RoleManager<IdentityRole> _roleManager;
+        TokenValidatorService _tokenValidator;
 
         public TEMSUserManager(
             UserManager<TEMSUser> userManager,
@@ -40,6 +35,7 @@ namespace temsAPI.Data.Managers
             ClaimsPrincipal user,
             IOptions<AppSettings> appSettings,
             RoleManager<IdentityRole> roleManager,
+            TokenValidatorService tokenValidatorService,
             IdentityService identityService)
         {
             _unitOfWork = unitOfWork;
@@ -48,6 +44,7 @@ namespace temsAPI.Data.Managers
             _appSettings = appSettings.Value;
             _roleManager = roleManager;
             _identityService = identityService;
+            _tokenValidator = tokenValidatorService;
         }
 
         public async Task<string> CreateUser(AddUserViewModel viewModel)
@@ -166,15 +163,7 @@ namespace temsAPI.Data.Managers
 
         public async Task BlacklistToken(string token)
         {
-            await _unitOfWork.JWTBlacklist.Create(
-                    new TemsJWT
-                    {
-                        Id = Guid.NewGuid().ToString(),
-                        Content = token,
-                        ExpirationDate = (new JWTHelper()).GetExpiryTimestamp(token)
-                    });
-
-            await _unitOfWork.Save();
+            await _tokenValidator.BlacklistToken(token);
         }
 
         public async Task<string> GenerateToken(LogInViewModel viewModel)

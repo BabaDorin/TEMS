@@ -15,11 +15,12 @@ namespace temsAPI.Controllers
 {
     public enum ResponseStatus
     {
+        Fail = 0,
         Success = 1,
-        Fail = 0
+        Neutral = 2
     }
 
-    public class TEMSController : Controller
+    public abstract class TEMSController : Controller
     {
         protected static int maxConcurrentUploads = 2;
         protected static int concurrentUploads = 0;
@@ -55,16 +56,14 @@ namespace temsAPI.Controllers
             _logger.Log(LogLevel.Error, ex, additional.ToString() ?? "");
         }
 
-        protected JsonResult ReturnResponse(string message, ResponseStatus status, object additional = null)
+        protected IActionResult ReturnResponse(string message, ResponseStatus status, object additional = null)
         {
-            return Json(new { Message = message, Status = status, Additional = additional});
-        }
-        
-        public async Task<List<IArchiveable>> GetArchievedItems(IGenericRepository<IArchiveable> repository) 
-        {
-            return (await repository.FindAll<IArchiveable>(
-                    where: q => q.IsArchieved == true
-                )).ToList();
+            var response = new { Message = message, Status = status, Additional = additional };
+
+            if (status == ResponseStatus.Success || status == ResponseStatus.Neutral)
+                return Ok(response);
+            
+            return StatusCode(500, new { Message = message, Status = status, Additional = additional});
         }
     }
 }

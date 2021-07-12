@@ -29,12 +29,12 @@ namespace temsAPI.Controllers.IdentityControllers
 
         [HttpGet("profile/Get/{userId}")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
-        public async Task<JsonResult> Get(string userId)
+        public async Task<IActionResult> Get(string userId)
         {
             try
             {
                 var profileViewModel = await _temsUserManager.GetProfileInfo(userId);
-                return Json(profileViewModel);
+                return Ok(profileViewModel);
             }
             catch (Exception ex)
             {

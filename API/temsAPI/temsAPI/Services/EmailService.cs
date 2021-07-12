@@ -35,7 +35,7 @@ namespace temsAPI.Services
 
         /// <summary>
         /// Sends an email according to the data provided via an instance of SendEmailViewModel.
-        /// Returns a number representing then number of sent emails, or returns the error message in case of
+        /// Returns eather a number representing the number of sent emails, or returns an error message in case of
         /// an error.
         /// </summary>
         /// <param name="emailData"></param>

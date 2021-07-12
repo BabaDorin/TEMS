@@ -38,7 +38,7 @@ namespace temsAPI.Controllers.IdentityControllers
 
         [HttpPost("temsuser/AddUser")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_SYSTEM_CONFIGURATION)]
-        public async Task<JsonResult> AddUser([FromBody] AddUserViewModel viewModel)
+        public async Task<IActionResult> AddUser([FromBody] AddUserViewModel viewModel)
         {
             try
             {
@@ -59,7 +59,7 @@ namespace temsAPI.Controllers.IdentityControllers
 
         [HttpPut("temsuser/UpdateUser")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_SYSTEM_CONFIGURATION)]
-        public async Task<JsonResult> UpdateUser([FromBody] AddUserViewModel viewModel)
+        public async Task<IActionResult> UpdateUser([FromBody] AddUserViewModel viewModel)
         {
             try
             {
@@ -78,7 +78,7 @@ namespace temsAPI.Controllers.IdentityControllers
 
         [HttpDelete("temsuser/Remove/{userId}")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_SYSTEM_CONFIGURATION)]
-        public async Task<JsonResult> Remove(string userId)
+        public async Task<IActionResult> Remove(string userId)
         {
             try
             {
@@ -97,7 +97,7 @@ namespace temsAPI.Controllers.IdentityControllers
 
         [HttpGet("temsuser/Archieve/{userId}/{status}")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_SYSTEM_CONFIGURATION)]
-        public async Task<JsonResult> Archieve(string userId, bool status = true)
+        public async Task<IActionResult> Archieve(string userId, bool status = true)
         {
             try
             {
@@ -115,12 +115,12 @@ namespace temsAPI.Controllers.IdentityControllers
         }
 
         [HttpGet("temsuser/GetAllAutocompleteOptions/{filter?}")]
-        public async Task<JsonResult> GetAllAutocompleteOptions(string filter)
+        public async Task<IActionResult> GetAllAutocompleteOptions(string filter)
         {
             try
             {
                 var options = await _temsUserManager.GetAutocompleteOptions(filter);
-                return Json(options);
+                return Ok(options);
             }
             catch (Exception ex)
             {
@@ -130,12 +130,12 @@ namespace temsAPI.Controllers.IdentityControllers
         }
 
         [HttpGet("temsuser/GetUsers/{role?}")]
-        public async Task<JsonResult> GetUsers(string role)
+        public async Task<IActionResult> GetUsers(string role)
         {
             try
             {
                 var users = await _temsUserManager.GetUsers(role);
-                return Json(users);
+                return Ok(users);
             }
             catch (Exception ex)
             {
@@ -146,12 +146,12 @@ namespace temsAPI.Controllers.IdentityControllers
 
         [HttpGet("temsuser/GetClaims")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_SYSTEM_CONFIGURATION)]
-        public async Task<JsonResult> GetClaims()
+        public async Task<IActionResult> GetClaims()
         {
             try
             {
                 var claims = await _temsUserManager.GetClaims();
-                return Json(claims);
+                return Ok(claims);
             }
             catch (Exception ex)
             {
@@ -162,17 +162,17 @@ namespace temsAPI.Controllers.IdentityControllers
 
         [HttpGet("temsuser/GetRoleClaims/{roles}")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_SYSTEM_CONFIGURATION)]
-        public async Task<JsonResult> GetRoleClaims(string roles)
+        public async Task<IActionResult> GetRoleClaims(string roles)
         {
             try
             {
                 if (roles == null)
-                    return Json(new List<string>());
+                    return Ok(new List<string>());
 
                 List<string> rolesList = roles.Split(",").ToList();
                 
                 var claims = await _temsUserManager.GetRolesCumulativeClaims(rolesList);
-                return Json(claims);
+                return Ok(claims);
             }
             catch (Exception ex)
             {
@@ -183,7 +183,7 @@ namespace temsAPI.Controllers.IdentityControllers
 
         [HttpGet("temsuser/GetUserClaims/{userId}")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_SYSTEM_CONFIGURATION)]
-        public async Task<JsonResult> GetUserClaims(string userId)
+        public async Task<IActionResult> GetUserClaims(string userId)
         {
             try
             {
@@ -191,7 +191,7 @@ namespace temsAPI.Controllers.IdentityControllers
                 if (claims == null) 
                     claims = new List<string>();
 
-                return Json(claims);
+                return Ok(claims);
             }
             catch (Exception ex)
             {
@@ -202,12 +202,12 @@ namespace temsAPI.Controllers.IdentityControllers
 
         [HttpGet("temsuser/GetUser/{userId}")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
-        public async Task<JsonResult> GetUser(string userId)
+        public async Task<IActionResult> GetUser(string userId)
         {
             try
             {
                 var userViewModel = await _temsUserManager.GetUser(userId);
-                return Json(userViewModel);
+                return Ok(userViewModel);
             }
             catch (Exception ex)
             {
@@ -218,12 +218,12 @@ namespace temsAPI.Controllers.IdentityControllers
 
         [HttpGet("temsuser/GetSimplifiedById/{userId}")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
-        public async Task<JsonResult> GetSimplifiedById(string userId)
+        public async Task<IActionResult> GetSimplifiedById(string userId)
         {
             try
             {
                 var user = await _userManager.FindByIdAsync(userId);
-                return Json(ViewUserSimplifiedViewModel.FromModel(user, _userManager));
+                return Ok(ViewUserSimplifiedViewModel.FromModel(user, _userManager));
             }
             catch (Exception ex)
             {
@@ -234,7 +234,7 @@ namespace temsAPI.Controllers.IdentityControllers
 
         [HttpPut("temsuser/ChangePassword")]
         [Authorize]
-        public async Task<JsonResult> ChangePassword([FromBody] ChangePasswordViewModel viewModel)
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordViewModel viewModel)
         {
             try
             {
@@ -253,7 +253,7 @@ namespace temsAPI.Controllers.IdentityControllers
 
         [HttpPut("temsuser/ChangeEmailPreferences")]
         [Authorize]
-        public async Task<JsonResult> ChangeEmailPreferences([FromBody] ChangeEmailPreferencesViewModel viewModel)
+        public async Task<IActionResult> ChangeEmailPreferences([FromBody] ChangeEmailPreferencesViewModel viewModel)
         {
             try
             {
@@ -272,7 +272,7 @@ namespace temsAPI.Controllers.IdentityControllers
 
         [HttpPut("temsuser/EditAccountGeneralInfo")]
         [Authorize]
-        public async Task<JsonResult> EditAccountGeneralInfo([FromBody] AccountGeneralInfoViewModel viewModel)
+        public async Task<IActionResult> EditAccountGeneralInfo([FromBody] AccountGeneralInfoViewModel viewModel)
         {
             try
             {

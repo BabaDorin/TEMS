@@ -73,13 +73,9 @@ export class LibraryService extends TEMSService {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
   }
 
-  getSpaceUsageData(accessPassword): Observable<Fraction>{
-    let endPoint = API_LBR_URL + '/GetSpaceUsageData';
-    if(accessPassword != undefined) 
-      endPoint += "/" + accessPassword;
-
+  getSpaceUsageData(): Observable<Fraction>{
     return this.http.get<Fraction>(
-      endPoint,
+      API_LBR_URL + '/GetSpaceUsageData',
       this.httpOptions
     );
   }

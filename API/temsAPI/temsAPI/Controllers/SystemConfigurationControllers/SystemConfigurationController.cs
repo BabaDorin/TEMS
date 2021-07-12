@@ -29,7 +29,7 @@ namespace temsAPI.Controllers.SystemConfigurationControllers
 
         [HttpGet("systemconfiguration/IntegrateSIC")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_SYSTEM_CONFIGURATION)]
-        public async Task<JsonResult> IntegrateSIC()
+        public async Task<IActionResult> IntegrateSIC()
         {
             try
             {
@@ -47,7 +47,7 @@ namespace temsAPI.Controllers.SystemConfigurationControllers
 
         [HttpGet("systemconfiguration/SetLibraryAllocatedStorageSpace/{gb}")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_SYSTEM_CONFIGURATION)]
-        public JsonResult SetLibraryAllocatedStorageSpace(int gb)
+        public IActionResult SetLibraryAllocatedStorageSpace(int gb)
         {
             try
             {
@@ -66,7 +66,7 @@ namespace temsAPI.Controllers.SystemConfigurationControllers
 
         [HttpPost("systemconfiguration/SetEmailSender")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_SYSTEM_CONFIGURATION)]
-        public JsonResult SetEmailSender(EmailSenderCredentialsViewModel viewModel)
+        public IActionResult SetEmailSender(EmailSenderCredentialsViewModel viewModel)
         {
             try
             {
@@ -85,7 +85,7 @@ namespace temsAPI.Controllers.SystemConfigurationControllers
 
         [HttpGet("systemconfiguration/SetRoutineCheckInterval/{hours}")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_SYSTEM_CONFIGURATION)]
-        public JsonResult SetRoutineCheckInterval(int hours)
+        public IActionResult SetRoutineCheckInterval(int hours)
         {
             try
             {
@@ -104,7 +104,7 @@ namespace temsAPI.Controllers.SystemConfigurationControllers
 
         [HttpGet("systemconfiguration/SetArchieveInterval/{hours}")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_SYSTEM_CONFIGURATION)]
-        public JsonResult SetArchieveInterval(int hours)
+        public IActionResult SetArchieveInterval(int hours)
         {
             try
             {
@@ -123,7 +123,7 @@ namespace temsAPI.Controllers.SystemConfigurationControllers
 
         [HttpGet("systemconfiguration/SetGuestTicketCreationAllowance/{flag}")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_SYSTEM_CONFIGURATION)]
-        public JsonResult SetGuestTicketCreationAllowance(bool flag)
+        public IActionResult SetGuestTicketCreationAllowance(bool flag)
         {
             try
             {
@@ -143,12 +143,12 @@ namespace temsAPI.Controllers.SystemConfigurationControllers
 
         [HttpGet("systemconfiguration/GetAppSettingsModel")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_SYSTEM_CONFIGURATION)]
-        public JsonResult GetAppSettingsModel()
+        public IActionResult GetAppSettingsModel()
         {
             try
             {
                 var viewModel = AppSettingsViewModel.FromModel(_configService.AppSettings);
-                return Json(viewModel);
+                return Ok(viewModel);
             }
             catch (Exception ex)
             {
@@ -159,7 +159,7 @@ namespace temsAPI.Controllers.SystemConfigurationControllers
 
         [HttpGet("systemconfiguration/SetLibraryPassword/{password}")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_SYSTEM_CONFIGURATION)]
-        public JsonResult SetLibraryPassword(string password)
+        public IActionResult SetLibraryPassword(string password)
         {
             try
             {
@@ -183,7 +183,8 @@ namespace temsAPI.Controllers.SystemConfigurationControllers
             catch (Exception ex)
             {
                 LogException(ex);
-                return ReturnResponse("An error occured getting the library password", ResponseStatus.Fail);
+                return null;
+                //return ReturnResponse("An error occured getting the library password", ResponseStatus.Fail);
             }
         }
     }

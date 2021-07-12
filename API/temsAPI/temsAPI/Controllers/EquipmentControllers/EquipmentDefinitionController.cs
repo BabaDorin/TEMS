@@ -31,7 +31,7 @@ namespace temsAPI.Controllers.EquipmentControllers
 
         [HttpPost("equipmentdefinition/Add")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
-        public async Task<JsonResult> Add([FromBody] AddEquipmentDefinitionViewModel viewModel)
+        public async Task<IActionResult> Add([FromBody] AddEquipmentDefinitionViewModel viewModel)
         {
             try
             {
@@ -50,7 +50,7 @@ namespace temsAPI.Controllers.EquipmentControllers
 
         [HttpPut("equipmentdefinition/Update")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
-        public async Task<JsonResult> Update([FromBody] AddEquipmentDefinitionViewModel viewModel)
+        public async Task<IActionResult> Update([FromBody] AddEquipmentDefinitionViewModel viewModel)
         {
             try
             {
@@ -69,7 +69,7 @@ namespace temsAPI.Controllers.EquipmentControllers
 
         [HttpGet("equipmentdefinition/Archieve/{definitionId}/{archivationStatus?}")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
-        public async Task<JsonResult> Archieve(string definitionId, bool archivationStatus = true)
+        public async Task<IActionResult> Archieve(string definitionId, bool archivationStatus = true)
         {
             try
             {
@@ -90,7 +90,7 @@ namespace temsAPI.Controllers.EquipmentControllers
 
         [HttpDelete("equipmentdefinition/Remove/{definitionId}")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_SYSTEM_CONFIGURATION)]
-        public async Task<JsonResult> Remove(string definitionId)
+        public async Task<IActionResult> Remove(string definitionId)
         {
             try
             {
@@ -109,12 +109,12 @@ namespace temsAPI.Controllers.EquipmentControllers
 
         [HttpGet("equipmentdefinition/GetDefinitionsOfType/{typeId}")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
-        public async Task<JsonResult> GetDefinitionsOfType(string typeId)
+        public async Task<IActionResult> GetDefinitionsOfType(string typeId)
         {
             try
             {
                 var options = await _equipmentDefinitionManager.GetOfType(typeId);
-                return Json(options);
+                return Ok(options);
             }
             catch (Exception ex)
             {
@@ -125,12 +125,12 @@ namespace temsAPI.Controllers.EquipmentControllers
 
         [HttpPost("equipmentdefinition/GetDefinitionsOfTypes")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
-        public async Task<JsonResult> GetDefinitionsOfTypes([FromBody] DefinitionsOfTypesModel filter)
+        public async Task<IActionResult> GetDefinitionsOfTypes([FromBody] DefinitionsOfTypesModel filter)
         {
             try
             {
                 var options = await _equipmentDefinitionManager.GetOfTypes(filter);
-                return Json(options);
+                return Ok(options);
             }
             catch (Exception ex)
             {
@@ -141,12 +141,12 @@ namespace temsAPI.Controllers.EquipmentControllers
 
         [HttpGet("equipmentdefinition/GetSimplified")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
-        public async Task<JsonResult> GetSimplified()
+        public async Task<IActionResult> GetSimplified()
         {
             try
             {
                 var definitions = await _equipmentDefinitionManager.GetSimplified();
-                return Json(definitions);
+                return Ok(definitions);
             }
             catch (Exception ex)
             {
@@ -157,12 +157,12 @@ namespace temsAPI.Controllers.EquipmentControllers
 
         [HttpGet("equipmentdefinition/GetSimplifiedById/{definitionId}")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
-        public async Task<JsonResult> GetSimplifiedById(string definitionId)
+        public async Task<IActionResult> GetSimplifiedById(string definitionId)
         {
             try
             {
                 var definition = await _equipmentDefinitionManager.GetSimplifiedById(definitionId);
-                return Json(definition);
+                return Ok(definition);
             }
             catch (Exception ex)
             {
@@ -173,7 +173,7 @@ namespace temsAPI.Controllers.EquipmentControllers
 
         [HttpGet("equipmentdefinition/GetDefinitionToUpdate/{definitionId}")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
-        public async Task<JsonResult> GetDefinitionToUpdate(string definitionId)
+        public async Task<IActionResult> GetDefinitionToUpdate(string definitionId)
         {
             try
             {
@@ -182,7 +182,7 @@ namespace temsAPI.Controllers.EquipmentControllers
                     return ReturnResponse("Invalid definition id provided", ResponseStatus.Fail);
 
                 var viewModel = AddEquipmentDefinitionViewModel.FromModel(definition);
-                return Json(viewModel);
+                return Ok(viewModel);
             }
             catch (Exception ex)
             {
@@ -193,7 +193,7 @@ namespace temsAPI.Controllers.EquipmentControllers
 
         [HttpGet("equipmentdefinition/GetFullDefinition/{definitionId}")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
-        public async Task<JsonResult> GetFullDefinition(string definitionId)
+        public async Task<IActionResult> GetFullDefinition(string definitionId)
         {
             try
             {
@@ -202,7 +202,7 @@ namespace temsAPI.Controllers.EquipmentControllers
                     return ReturnResponse("Invalid definition Id", ResponseStatus.Fail);
 
                 var viewModel = EquipmentDefinitionViewModel.FromModel(definition);
-                return Json(viewModel);
+                return Ok(viewModel);
             }
             catch (Exception ex)
             {

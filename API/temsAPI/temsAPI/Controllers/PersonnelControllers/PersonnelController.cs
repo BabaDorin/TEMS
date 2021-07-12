@@ -30,7 +30,7 @@ namespace temsAPI.Controllers.PersonnelControllers
 
         [HttpPost("personnel/Create")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
-        public async Task<JsonResult> Create([FromBody] AddPersonnelViewModel viewModel)
+        public async Task<IActionResult> Create([FromBody] AddPersonnelViewModel viewModel)
         {
             try
             {
@@ -46,7 +46,7 @@ namespace temsAPI.Controllers.PersonnelControllers
 
         [HttpPut("personnel/Update")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
-        public async Task<JsonResult> Update([FromBody] AddPersonnelViewModel viewModel)
+        public async Task<IActionResult> Update([FromBody] AddPersonnelViewModel viewModel)
         {
             try
             {
@@ -66,7 +66,7 @@ namespace temsAPI.Controllers.PersonnelControllers
 
         [HttpGet("personnel/Archieve/{personnelId}/{archivationStatus?}")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
-        public async Task<JsonResult> Archieve(string personnelId, bool archivationStatus = true)
+        public async Task<IActionResult> Archieve(string personnelId, bool archivationStatus = true)
         {
             try
             {
@@ -86,7 +86,7 @@ namespace temsAPI.Controllers.PersonnelControllers
 
         [HttpDelete("personnel/Remove/{personnelId}")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_SYSTEM_CONFIGURATION)]
-        public async Task<JsonResult> Remove(string personnelId)
+        public async Task<IActionResult> Remove(string personnelId)
         {
             try
             {
@@ -105,12 +105,12 @@ namespace temsAPI.Controllers.PersonnelControllers
 
         [HttpGet("personnel/GetPositions")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
-        public async Task<JsonResult> GetPositions()
+        public async Task<IActionResult> GetPositions()
         {
             try
             {
                 var positions = await _personnelManager.GetPositionOptions();
-                return Json(positions);
+                return Ok(positions);
             }
             catch (Exception ex)
             {
@@ -121,7 +121,7 @@ namespace temsAPI.Controllers.PersonnelControllers
 
         [HttpGet("personnel/GetSimplified/{pageNumber}/{recordsPerPage}")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
-        public async Task<JsonResult> GetSimplified(int pageNumber, int recordsPerPage)
+        public async Task<IActionResult> GetSimplified(int pageNumber, int recordsPerPage)
         {
             try
             {
@@ -131,7 +131,7 @@ namespace temsAPI.Controllers.PersonnelControllers
                         "and how many records are displayed per page", ResponseStatus.Fail);
 
                 var simplifiedPersonnel = await _personnelManager.GetSimplified();
-                return Json(simplifiedPersonnel);
+                return Ok(simplifiedPersonnel);
             }
             catch (Exception ex)
             {
@@ -141,12 +141,12 @@ namespace temsAPI.Controllers.PersonnelControllers
         }
 
         [HttpGet("personnel/GetAllAutocompleteOptions/{filter?}")]
-        public async Task<JsonResult> GetAllAutocompleteOptions(string filter)
+        public async Task<IActionResult> GetAllAutocompleteOptions(string filter)
         {
             try
             {
                 var options = await _personnelManager.GetAutocompleteOptions(filter);
-                return Json(options);
+                return Ok(options);
             }
             catch (Exception ex)
             {
@@ -157,13 +157,13 @@ namespace temsAPI.Controllers.PersonnelControllers
 
         [HttpGet("personnel/GetPersonnelToUpdate/{personnelId}")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
-        public async Task<JsonResult> GetPersonnelToUpdate(string personnelId)
+        public async Task<IActionResult> GetPersonnelToUpdate(string personnelId)
         {
             try
             {
                 var personnel = await _personnelManager.GetById(personnelId);
                 var viewModel = AddPersonnelViewModel.FromModel(personnel);
-                return Json(viewModel);
+                return Ok(viewModel);
             }
             catch (Exception ex)
             {
@@ -174,7 +174,7 @@ namespace temsAPI.Controllers.PersonnelControllers
 
         [HttpGet("personnel/GetById/{id}")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
-        public async Task<JsonResult> GetById(string id)
+        public async Task<IActionResult> GetById(string id)
         {
             try
             {
@@ -183,7 +183,7 @@ namespace temsAPI.Controllers.PersonnelControllers
                     return ReturnResponse("Invalid personnel id", ResponseStatus.Fail);
 
                 var viewModel = ViewPersonnelViewModel.FromModel(personnel);
-                return Json(viewModel);
+                return Ok(viewModel);
             }
             catch (Exception ex)
             {

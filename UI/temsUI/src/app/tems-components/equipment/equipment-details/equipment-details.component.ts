@@ -1,3 +1,4 @@
+import { SnackService } from 'src/app/services/snack.service';
 import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';

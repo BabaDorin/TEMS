@@ -76,7 +76,7 @@ export class ViewLibraryComponent extends TEMSComponent implements OnInit {
 
   fetchSpaceUsageData(){
     this.subscriptions.push(
-      this.libraryService.getSpaceUsageData(this.accessPass)
+      this.libraryService.getSpaceUsageData()
       .subscribe(result => {
         if(this.snackService.snackIfError(result))
           return;

@@ -36,7 +36,7 @@ namespace temsAPI.Controllers.SystemConfigurationControllers
             catch (Exception ex)
             {
                 LogException(ex);
-                return ReturnResponse("An error occured while getting system logs", ResponseStatus.Fail);
+                return null;
             }
         }
     }

@@ -37,14 +37,14 @@ namespace temsAPI.Controllers.NotificationControllers
 
         [Authorize]
         [HttpGet("notification/GetLastNotifications/{take?}")]
-        public async Task<JsonResult> GetLastNotifications(int take = 7)
+        public async Task<IActionResult> GetLastNotifications(int take = 7)
         {
             try
             {
                 var user = await _identityService.GetCurrentUserAsync();
                 var notifications = await _notificationManager.GetLastNotifications(user, 0, take);
 
-                return Json(notifications);
+                return Ok(notifications);
             }
             catch (Exception ex)
             {
@@ -55,14 +55,14 @@ namespace temsAPI.Controllers.NotificationControllers
 
         [Authorize]
         [HttpGet("notification/GetAllNotifications/{skip?}/{take?}")]
-        public async Task<JsonResult> GetAllNotifications(int skip = 0, int take = int.MaxValue)
+        public async Task<IActionResult> GetAllNotifications(int skip = 0, int take = int.MaxValue)
         {
             try
             {
                 var user = await _identityService.GetCurrentUserAsync();
                 var notification = await _notificationManager.GetLastNotifications(user, skip, take);
 
-                return Json(notification);
+                return Ok(notification);
             }
             catch (Exception ex)
             {
@@ -73,7 +73,7 @@ namespace temsAPI.Controllers.NotificationControllers
 
         [Authorize]
         [HttpGet("notification/MarkAsSeen")]
-        public async Task<JsonResult> MarkAsSeen(List<string> notificationIds)
+        public async Task<IActionResult> MarkAsSeen(List<string> notificationIds)
         {
             try
             {
@@ -95,7 +95,7 @@ namespace temsAPI.Controllers.NotificationControllers
 
         [Authorize]
         [HttpDelete("notification/Remove/{notificationId}")]
-        public async Task<JsonResult> Remove(string notificationId)
+        public async Task<IActionResult> Remove(string notificationId)
         {
             try
             {

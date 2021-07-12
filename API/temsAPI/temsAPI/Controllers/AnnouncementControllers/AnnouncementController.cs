@@ -28,7 +28,7 @@ namespace temsAPI.Controllers.AnnouncementControllers
 
         [HttpPost("announcement/Create")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ANNOUNCEMENTS)]
-        public async Task<JsonResult> Create([FromBody] AddAnnouncementViewModel viewModel)
+        public async Task<IActionResult> Create([FromBody] AddAnnouncementViewModel viewModel)
         {
             try
             {
@@ -47,7 +47,7 @@ namespace temsAPI.Controllers.AnnouncementControllers
 
         [HttpDelete("announcement/Remove/{announcementId}")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ANNOUNCEMENTS)]
-        public async Task<JsonResult> Remove(string announcementId)
+        public async Task<IActionResult> Remove(string announcementId)
         {
             try
             {
@@ -65,12 +65,12 @@ namespace temsAPI.Controllers.AnnouncementControllers
         }
 
         [HttpGet("announcement/Get/{skip?}/{take?}")]
-        public async Task<JsonResult> Get(int skip = 0, int take = int.MaxValue)
+        public async Task<IActionResult> Get(int skip = 0, int take = int.MaxValue)
         {
             try
             {
                 var announcements = await _announcementManager.GetAnnouncements(skip, take);
-                return Json(announcements);
+                return Ok(announcements);
             }
             catch (Exception ex)
             {

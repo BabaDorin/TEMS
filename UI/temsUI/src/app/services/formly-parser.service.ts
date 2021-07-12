@@ -1033,7 +1033,7 @@ export class FormlyParserService extends TEMSComponent {
           },
           expressionProperties: {
             'templateOptions.label': this.translate.stream('form.username'),
-            'templateOptions.description': this.translate.stream('form.usernameDescription'),
+            'templateOptions.description': this.translate.stream('user.usernameDescription'),
           },
           validators: {
             validation: ['usernameValidator']

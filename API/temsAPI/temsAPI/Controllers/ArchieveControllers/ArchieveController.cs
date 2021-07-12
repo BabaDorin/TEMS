@@ -28,12 +28,12 @@ namespace temsAPI.Controllers.ArchieveControllers
         
         [HttpGet("/archieve/GetArchievedItems/{itemType}")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
-        public async Task<JsonResult> GetArchievedItems(string itemType)
+        public async Task<IActionResult> GetArchievedItems(string itemType)
         {
             try
             {
                 var items = await _archieveManager.GetArchievedItems(itemType);
-                return Json(items);
+                return Ok(items);
             }
             catch (Exception ex)
             {
@@ -43,7 +43,7 @@ namespace temsAPI.Controllers.ArchieveControllers
         }
 
         [HttpGet("archieve/SetArchivationStatus/{itemType}/{itemId}/{status}")]
-        public async Task<JsonResult> SetArchivationStatus(string itemType, string itemId, bool status)
+        public async Task<IActionResult> SetArchivationStatus(string itemType, string itemId, bool status)
         {
             try
             {

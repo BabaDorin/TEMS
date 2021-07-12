@@ -33,17 +33,17 @@ namespace temsAPI.Controllers.EmailControllers
 
         [HttpPost("email/SendEmail")]
         [ClaimRequirement(TEMSClaims.CAN_SEND_EMAILS)]
-        public async Task<JsonResult> SendEmail([FromBody] SendEmailViewModel viewModel)
+        public async Task<IActionResult> SendEmail([FromBody] SendEmailViewModel viewModel)
         {
             try
             {
                 var mailingResult = await _emailService.SendEmailToPersonnel(viewModel);
-                
+
                 int numbersOfEmailsSent = 0;
                 if (int.TryParse(mailingResult, out numbersOfEmailsSent))
                     return ReturnResponse(mailingResult + " mails have been sent.", ResponseStatus.Success);
                 else
-                    return ReturnResponse(mailingResult, ResponseStatus.Fail);
+                    return ReturnResponse(mailingResult, ResponseStatus.Neutral);
             }
             catch (Exception ex)
             {

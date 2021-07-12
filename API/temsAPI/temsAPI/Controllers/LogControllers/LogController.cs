@@ -30,7 +30,7 @@ namespace temsAPI.Controllers.LogControllers
 
         [HttpPost("log/Create")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
-        public async Task<JsonResult> Create([FromBody] AddLogViewModel viewModel)
+        public async Task<IActionResult> Create([FromBody] AddLogViewModel viewModel)
         {
             try
             {
@@ -49,7 +49,7 @@ namespace temsAPI.Controllers.LogControllers
 
         [HttpGet("/log/Archieve/{logId}/{archivationStatus?}")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
-        public async Task<JsonResult> Archieve(string logId, bool archivationStatus = true)
+        public async Task<IActionResult> Archieve(string logId, bool archivationStatus = true)
         {
             try
             {
@@ -69,7 +69,7 @@ namespace temsAPI.Controllers.LogControllers
 
         [HttpGet("log/Remove/{logId}")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_SYSTEM_CONFIGURATION)]
-        public async Task<JsonResult> Remove(string logId)
+        public async Task<IActionResult> Remove(string logId)
         {
             try
             {
@@ -88,7 +88,7 @@ namespace temsAPI.Controllers.LogControllers
 
         [HttpGet("/log/GetEntityLogs/{entityType}/{entityId}/{pageNumber?}/{itemsPerPage?}")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
-        public async Task<JsonResult> GetEntityLogs(string entityType, string entityId, int? pageNumber, int? itemsPerPage)
+        public async Task<IActionResult> GetEntityLogs(string entityType, string entityId, int? pageNumber, int? itemsPerPage)
         {
             try
             {
@@ -100,7 +100,7 @@ namespace temsAPI.Controllers.LogControllers
                     : int.MaxValue;
 
                 var logs = await _logManager.GetEntityLogs(entityType, entityId, skip, take);
-                return Json(logs);
+                return Ok(logs);
             }
             catch (Exception ex)
             {
@@ -111,12 +111,12 @@ namespace temsAPI.Controllers.LogControllers
 
         [HttpGet("log/GetItemsNumber/{entityType}/{entityId}")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
-        public async Task<JsonResult> GetItemsNumber(string entityType, string entityId)
+        public async Task<IActionResult> GetItemsNumber(string entityType, string entityId)
         {
             try
             {
                 var number = await _logManager.GetItemsNumber(entityType, entityId);
-                return Json(number);
+                return Ok(number);
             }
             catch (Exception ex)
             {

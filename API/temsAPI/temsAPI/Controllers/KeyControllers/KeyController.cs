@@ -29,7 +29,7 @@ namespace temsAPI.Controllers.KeyControllers
 
         [HttpPost("key/Create")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES, TEMSClaims.CAN_ALLOCATE_KEYS)]
-        public async Task<JsonResult> Create([FromBody] AddKeyViewModel viewModel)
+        public async Task<IActionResult> Create([FromBody] AddKeyViewModel viewModel)
         {
             try
             {
@@ -48,7 +48,7 @@ namespace temsAPI.Controllers.KeyControllers
 
         [HttpGet("key/Archieve/{keyId}")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES, TEMSClaims.CAN_ALLOCATE_KEYS)]
-        public async Task<JsonResult> Archieve(string keyId)
+        public async Task<IActionResult> Archieve(string keyId)
         {
             try
             {
@@ -68,7 +68,7 @@ namespace temsAPI.Controllers.KeyControllers
 
         [HttpDelete("key/Remove/{keyId}")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_SYSTEM_CONFIGURATION)]
-        public async Task<JsonResult> Remove(string keyId)
+        public async Task<IActionResult> Remove(string keyId)
         {
             try
             {
@@ -87,7 +87,7 @@ namespace temsAPI.Controllers.KeyControllers
 
         [HttpDelete("key/RemoveAllocation/{allocationId}")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_SYSTEM_CONFIGURATION)]
-        public async Task<JsonResult> RemoveAllocation(string allocationId)
+        public async Task<IActionResult> RemoveAllocation(string allocationId)
         {
             try
             {
@@ -106,7 +106,7 @@ namespace temsAPI.Controllers.KeyControllers
 
         [HttpPost("key/CreateAllocation")]
         [ClaimRequirement(TEMSClaims.CAN_ALLOCATE_KEYS)]
-        public async Task<JsonResult> CreateAllocation([FromBody] AddKeyAllocation viewModel)
+        public async Task<IActionResult> CreateAllocation([FromBody] AddKeyAllocation viewModel)
         {
             try
             {
@@ -125,12 +125,12 @@ namespace temsAPI.Controllers.KeyControllers
 
         [HttpGet("key/Get")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES, TEMSClaims.CAN_ALLOCATE_KEYS)]
-        public async Task<JsonResult> Get()
+        public async Task<IActionResult> Get()
         {
             try
             {
                 var keys = await _keyManager.GetKeysSimplified(); 
-                return Json(keys);
+                return Ok(keys);
             }
             catch (Exception ex)
             {
@@ -141,12 +141,12 @@ namespace temsAPI.Controllers.KeyControllers
 
         [HttpGet("key/GetAllAutocompleteOptions")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES, TEMSClaims.CAN_ALLOCATE_KEYS)]
-        public async Task<JsonResult> GetAllAutocompleteOptions()
+        public async Task<IActionResult> GetAllAutocompleteOptions()
         {
             try
             {
                 var options = await _keyManager.GetAutocompleteOptions();
-                return Json(options);
+                return Ok(options);
             }
             catch (Exception ex)
             {
@@ -157,12 +157,12 @@ namespace temsAPI.Controllers.KeyControllers
 
         [HttpGet("key/GetAllocations/{keyId}/{roomId}/{personnelId}")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES, TEMSClaims.CAN_ALLOCATE_KEYS)]
-        public async Task<JsonResult> GetAllocations(string keyId, string roomId, string personnelId)
+        public async Task<IActionResult> GetAllocations(string keyId, string roomId, string personnelId)
         {
             try
             {
                 var allocations = await _keyManager.GetAllocations(keyId, roomId, personnelId);
-                return Json(allocations);
+                return Ok(allocations);
             }
             catch (Exception ex)
             {
@@ -173,7 +173,7 @@ namespace temsAPI.Controllers.KeyControllers
 
         [HttpGet("key/MarkAsReturned/{keyId}")]
         [ClaimRequirement(TEMSClaims.CAN_ALLOCATE_KEYS)]
-        public async Task<JsonResult> MarkAsReturned(string keyId)
+        public async Task<IActionResult> MarkAsReturned(string keyId)
         {
             try
             {
@@ -192,7 +192,7 @@ namespace temsAPI.Controllers.KeyControllers
 
         [HttpGet("key/ArchieveAllocation/{allocationId}/{archivationStatus?}")]
         [ClaimRequirement(TEMSClaims.CAN_ALLOCATE_KEYS)]
-        public async Task<JsonResult> ArchieveAllocation(string allocationId, bool? archivationStatus)
+        public async Task<IActionResult> ArchieveAllocation(string allocationId, bool? archivationStatus)
         {
             try
             {

@@ -40,7 +40,7 @@ namespace temsAPI.Controllers.TicketControllers
 
         [HttpGet("ticket/GetTicketsOfEntity/{entityType}/{entityId}/{includingClosed}/{onlyClosed}/{orderBy?}/{skip?}/{take?}")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
-        public async Task<JsonResult> GetTicketsOfEntity(
+        public async Task<IActionResult> GetTicketsOfEntity(
             string entityType, // "any", "user closed", "user created", "user assigned", "equipment", "room", "personnel"  
             string entityId,
             bool includingClosed,
@@ -59,7 +59,7 @@ namespace temsAPI.Controllers.TicketControllers
                     orderBy,
                     skip, take);
 
-                return Json(tickets);
+                return Ok(tickets);
             }
             catch (Exception ex)
             {
@@ -70,7 +70,7 @@ namespace temsAPI.Controllers.TicketControllers
 
         [HttpGet("ticket/Reopen/{ticketId}")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
-        public async Task<JsonResult> Reopen(string ticketId)
+        public async Task<IActionResult> Reopen(string ticketId)
         {
             try
             {
@@ -90,7 +90,7 @@ namespace temsAPI.Controllers.TicketControllers
 
         [HttpGet("ticket/Close/{ticketId}")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
-        public async Task<JsonResult> Close(string ticketId)
+        public async Task<IActionResult> Close(string ticketId)
         {
             try
             {
@@ -110,7 +110,7 @@ namespace temsAPI.Controllers.TicketControllers
 
         [HttpGet("ticket/Changestatus/{ticketId}/{statusId}")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
-        public async Task<JsonResult> Changestatus(string ticketId, string statusId)
+        public async Task<IActionResult> Changestatus(string ticketId, string statusId)
         {
             try
             {
@@ -134,7 +134,7 @@ namespace temsAPI.Controllers.TicketControllers
 
         [HttpGet("ticket/Archieve/{ticketId}/{newArchivationState?}")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
-        public async Task<JsonResult> Archieve(string ticketId, bool? newArchivationState = true)
+        public async Task<IActionResult> Archieve(string ticketId, bool? newArchivationState = true)
         {
             try
             {
@@ -158,12 +158,12 @@ namespace temsAPI.Controllers.TicketControllers
         }
 
         [HttpGet("ticket/GetStatuses")]
-        public async Task<JsonResult> GetStatuses()
+        public async Task<IActionResult> GetStatuses()
         {
             try
             {
                 var statuses = await _ticketManager.GetTicketStatuses();
-                return Json(statuses);
+                return Ok(statuses);
             }
             catch (Exception ex)
             {
@@ -173,7 +173,7 @@ namespace temsAPI.Controllers.TicketControllers
         }
 
         [HttpPost("ticket/Create")]
-        public async Task<JsonResult> Create([FromBody] AddTicketViewModel viewModel)
+        public async Task<IActionResult> Create([FromBody] AddTicketViewModel viewModel)
         {
             try
             {
@@ -196,7 +196,7 @@ namespace temsAPI.Controllers.TicketControllers
 
         [HttpDelete("ticket/Remove/{ticketId}")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_SYSTEM_CONFIGURATION)]
-        public async Task<JsonResult> Remove(string ticketId)
+        public async Task<IActionResult> Remove(string ticketId)
         {
             try
             {
@@ -215,7 +215,7 @@ namespace temsAPI.Controllers.TicketControllers
 
         [HttpGet("ticket/GetTickets/{equipmentId}/{roomId}/{personnelId}/{includingClosed}/{onlyClosed}")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
-        public async Task<JsonResult> GetTickets(
+        public async Task<IActionResult> GetTickets(
             string equipmentId,
             string roomId,
             string personnelId,
@@ -231,7 +231,7 @@ namespace temsAPI.Controllers.TicketControllers
                     includingClosed,
                     onlyClosed);
 
-                return Json(tickets);
+                return Ok(tickets);
             }
             catch (Exception ex)
             {
@@ -242,7 +242,7 @@ namespace temsAPI.Controllers.TicketControllers
 
         [HttpGet("ticket/ChangePinStatus/{ticketId}/{status}")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
-        public async Task<JsonResult> ChangePinStatus(string ticketId, bool status)
+        public async Task<IActionResult> ChangePinStatus(string ticketId, bool status)
         {
             try
             {
@@ -265,12 +265,12 @@ namespace temsAPI.Controllers.TicketControllers
 
         [HttpGet("ticket/GetPinnedTickets")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
-        public async Task<JsonResult> GetPinnedTickets()
+        public async Task<IActionResult> GetPinnedTickets()
         {
             try
             {
                 var ticket = await _ticketManager.GetPinnedTickets();
-                return Json(ticket);
+                return Ok(ticket);
             }
             catch (Exception ex)
             {

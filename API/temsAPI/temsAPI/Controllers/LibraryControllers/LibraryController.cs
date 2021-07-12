@@ -88,7 +88,7 @@ namespace temsAPI.Controllers.LibraryControllers
 
         [HttpDelete("library/Remove/{itemId}")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
-        public async Task<JsonResult> Remove(string itemId)
+        public async Task<IActionResult> Remove(string itemId)
         {
             try
             {
@@ -106,7 +106,7 @@ namespace temsAPI.Controllers.LibraryControllers
         }
 
         [HttpGet("library/GetLibraryItems/{accessPassword?}")]
-        public async Task<JsonResult> GetLibraryItems(string accessPassword)
+        public async Task<IActionResult> GetLibraryItems(string accessPassword)
         {
             try
             {
@@ -114,7 +114,7 @@ namespace temsAPI.Controllers.LibraryControllers
                     return ReturnResponse("Incorrect password.", ResponseStatus.Fail);
 
                 var items = await _libraryManager.GetItems();
-                return Json(items);
+                return Ok(items);
             }
             catch (Exception ex)
             {
@@ -142,7 +142,7 @@ namespace temsAPI.Controllers.LibraryControllers
         }
 
         [HttpGet("library/GetSpaceUsageData")]
-        public JsonResult GetSpaceUsageData()
+        public IActionResult GetSpaceUsageData()
         {
             try
             {
@@ -153,7 +153,7 @@ namespace temsAPI.Controllers.LibraryControllers
                 fraction.Numerator = usedSpaceGb;
                 fraction.Denominator = _systemConfigurationService.AppSettings.LibraryAllocatedStorageSpaceGb;
 
-                return Json(fraction);
+                return Ok(fraction);
             }
             catch (Exception ex)
             {
@@ -163,11 +163,11 @@ namespace temsAPI.Controllers.LibraryControllers
         }
 
         [HttpGet("library/GetAvailableLibraryStorageSpace")]
-        public JsonResult GetAvailableLibraryStorageSpace()
+        public IActionResult GetAvailableLibraryStorageSpace()
         {
             try
             {
-                return Json(_libraryManager.GetAvailableSpace_bytes());
+                return Ok(_libraryManager.GetAvailableSpace_bytes());
             }
             catch (Exception ex)
             {

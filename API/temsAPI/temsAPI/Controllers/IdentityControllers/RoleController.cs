@@ -30,7 +30,7 @@ namespace temsAPI.Controllers.IdentityControllers
 
         [HttpGet("role/GetRoles")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_SYSTEM_CONFIGURATION)]
-        public JsonResult GetRoles()
+        public IActionResult GetRoles()
         {
             try
             {
@@ -38,7 +38,7 @@ namespace temsAPI.Controllers.IdentityControllers
                .Select(q => ViewRoleViewModel.FromModel(q, _roleManager))
                .ToList();
 
-                return Json(roles);
+                return Ok(roles);
             }
             catch (Exception ex)
             {

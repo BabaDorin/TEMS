@@ -31,7 +31,7 @@ namespace temsAPI.Controllers.RoomControllers
 
         [HttpPost("room/Create")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
-        public async Task<JsonResult> Create([FromBody] AddRoomViewModel viewModel)
+        public async Task<IActionResult> Create([FromBody] AddRoomViewModel viewModel)
         {
             try
             {
@@ -50,7 +50,7 @@ namespace temsAPI.Controllers.RoomControllers
 
         [HttpPut("room/Update")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
-        public async Task<JsonResult> Update([FromBody] AddRoomViewModel viewModel)
+        public async Task<IActionResult> Update([FromBody] AddRoomViewModel viewModel)
         {
             try
             {
@@ -68,7 +68,7 @@ namespace temsAPI.Controllers.RoomControllers
         }
 
         [HttpGet("room/Archieve/{roomId}/{archivationStatus?}")]
-        public async Task<JsonResult> Archieve(string roomId, bool archivationStatus = true)
+        public async Task<IActionResult> Archieve(string roomId, bool archivationStatus = true)
         {
             try
             {
@@ -87,7 +87,7 @@ namespace temsAPI.Controllers.RoomControllers
         }
 
         [HttpDelete("room/Remove/{roomId}")]
-        public async Task<JsonResult> Remove(string roomId)
+        public async Task<IActionResult> Remove(string roomId)
         {
             try
             {
@@ -105,12 +105,12 @@ namespace temsAPI.Controllers.RoomControllers
         }
 
         [HttpGet("room/GetAllAutocompleteOptions/{filter?}")]
-        public async Task<JsonResult> GetAllAutocompleteOptions(string filter)
+        public async Task<IActionResult> GetAllAutocompleteOptions(string filter)
         {
             try
             {
                 var options = await _roomManager.GetAutocompleteOptions(filter);
-                return Json(options);
+                return Ok(options);
             }
             catch (Exception ex)
             {
@@ -121,13 +121,13 @@ namespace temsAPI.Controllers.RoomControllers
 
         [HttpGet("room/GetRoomToUpdate/{roomId}")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
-        public async Task<JsonResult> GetRoomToUpdate(string roomId)
+        public async Task<IActionResult> GetRoomToUpdate(string roomId)
         {
             try
             {
                 var room = await _roomManager.GetById(roomId);
                 var viewModel = AddRoomViewModel.FromModel(room);
-                return Json(viewModel);
+                return Ok(viewModel);
             }
             catch (Exception ex)
             {
@@ -138,7 +138,7 @@ namespace temsAPI.Controllers.RoomControllers
 
         [HttpGet("room/GetSimplified/{pageNumber}/{recordsPerPage}")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
-        public async Task<JsonResult> GetSimplified(int pageNumber, int recordsPerPage)
+        public async Task<IActionResult> GetSimplified(int pageNumber, int recordsPerPage)
         {
             try
             {
@@ -148,7 +148,7 @@ namespace temsAPI.Controllers.RoomControllers
                         "and how many records are displayed per page", ResponseStatus.Fail);
 
                 var rooms = await _roomManager.GetRoomsSimplified();
-                return Json(rooms);
+                return Ok(rooms);
             }
             catch (Exception ex)
             {
@@ -159,12 +159,12 @@ namespace temsAPI.Controllers.RoomControllers
 
         [HttpGet("room/GetLabels")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
-        public async Task<JsonResult> GetLabels()
+        public async Task<IActionResult> GetLabels()
         {
             try
             {
                 var options = await _roomManager.GetLabelOptions();
-                return Json(options);
+                return Ok(options);
             }
             catch (Exception ex)
             {
@@ -175,7 +175,7 @@ namespace temsAPI.Controllers.RoomControllers
 
         [HttpGet("room/GetById/{id}")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
-        public async Task<JsonResult> GetById(string id)
+        public async Task<IActionResult> GetById(string id)
         {
             try
             {
@@ -184,7 +184,7 @@ namespace temsAPI.Controllers.RoomControllers
                     return ReturnResponse("Invalid id provided", ResponseStatus.Fail);
 
                 var viewModel = ViewRoomViewModel.FromModel(room);
-                return Json(viewModel);
+                return Ok(viewModel);
             }
             catch (Exception ex)
             {

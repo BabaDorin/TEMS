@@ -37,7 +37,7 @@ namespace temsAPI.Controllers.ReportControllers
 
         [HttpPost("report/AddTemplate")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
-        public async Task<JsonResult> AddTemplate([FromBody] AddReportTemplateViewModel viewModel)
+        public async Task<IActionResult> AddTemplate([FromBody] AddReportTemplateViewModel viewModel)
         {
             try
             {
@@ -56,7 +56,7 @@ namespace temsAPI.Controllers.ReportControllers
 
         [HttpPut("report/UpdateTemplate")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
-        public async Task<JsonResult> UpdateTemplate([FromBody] AddReportTemplateViewModel viewModel)
+        public async Task<IActionResult> UpdateTemplate([FromBody] AddReportTemplateViewModel viewModel)
         {
             try
             {
@@ -75,7 +75,7 @@ namespace temsAPI.Controllers.ReportControllers
 
         [HttpGet("report/ArchieveTemplate/{templateId}/{flag?}")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
-        public async Task<JsonResult> ArchieveTemplate(string templateId, bool flag = true)
+        public async Task<IActionResult> ArchieveTemplate(string templateId, bool flag = true)
         {
             try
             {
@@ -95,7 +95,7 @@ namespace temsAPI.Controllers.ReportControllers
 
         [HttpDelete("report/RemoveReport/{reportId}")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
-        public async Task<JsonResult> RemoveReport(string reportId)
+        public async Task<IActionResult> RemoveReport(string reportId)
         {
             try
             {
@@ -117,7 +117,7 @@ namespace temsAPI.Controllers.ReportControllers
         }
 
         [HttpGet("report/GetTemplateToUpdate/{templateId}")]
-        public async Task<JsonResult> GetTemplateToUpdate(string templateId)
+        public async Task<IActionResult> GetTemplateToUpdate(string templateId)
         {
             try
             {
@@ -126,7 +126,7 @@ namespace temsAPI.Controllers.ReportControllers
                     return ReturnResponse("Invalid id provided", ResponseStatus.Fail);
 
                 var viewModel = AddReportTemplateViewModel.FromModel(template);
-                return Json(viewModel);
+                return Ok(viewModel);
             }
             catch (Exception ex)
             {
@@ -137,7 +137,7 @@ namespace temsAPI.Controllers.ReportControllers
 
         [HttpDelete("report/Remove/{templateId}")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_SYSTEM_CONFIGURATION)]
-        public async Task<JsonResult> Remove(string templateId)
+        public async Task<IActionResult> Remove(string templateId)
         {
             try
             {
@@ -181,12 +181,12 @@ namespace temsAPI.Controllers.ReportControllers
 
         [HttpGet("report/GetTemplates")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
-        public async Task<JsonResult> GetTemplates()
+        public async Task<IActionResult> GetTemplates()
         {
             try
             {
                 var reportTemplates = await _reportManager.GetReportTemplates();
-                return Json(reportTemplates);
+                return Ok(reportTemplates);
             }
             catch (Exception ex)
             {
@@ -197,12 +197,12 @@ namespace temsAPI.Controllers.ReportControllers
 
         [HttpGet("report/GetLastGeneratedReports")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
-        public async Task<JsonResult> GetLastGeneratedReports()
+        public async Task<IActionResult> GetLastGeneratedReports()
         {
             try
             {
                 var reports = await _reportManager.GetLastGeneratedReports();
-                return Json(reports);
+                return Ok(reports);
             }
             catch (Exception ex)
             {

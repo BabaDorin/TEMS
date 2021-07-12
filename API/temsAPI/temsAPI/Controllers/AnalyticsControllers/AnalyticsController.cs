@@ -32,14 +32,14 @@ namespace temsAPI.Controllers.AnalyticsControllers
 
         [HttpGet("analytics/GetEquipmentAmount/{entityType?}/{entityId?}")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
-        public async Task<JsonResult> GetEquipmentAmount(
+        public async Task<IActionResult> GetEquipmentAmount(
             string entityType = null,
             string entityId = null)
         {
             try
             {
                 var totalNumberOfEquipment = await _analyticsManager.GetEquipmentAmount(entityType, entityId);
-                return Json(totalNumberOfEquipment);
+                return Ok(totalNumberOfEquipment);
             }
             catch (Exception ex)
             {
@@ -50,14 +50,14 @@ namespace temsAPI.Controllers.AnalyticsControllers
 
         [HttpGet("analytics/GetEquipmentTotalCost/{entityType?}/{entityId?}")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
-        public async Task<JsonResult> GetEquipmentTotalCost(
+        public async Task<IActionResult> GetEquipmentTotalCost(
             string entityType = null,
             string entityId = null)
         {
             try
             {
                 double totalCost = await _analyticsManager.GetEquipmentTotalCost(entityType, entityId);
-                return Json(Math.Round(totalCost, 2));
+                return Ok(Math.Round(totalCost, 2));
             }
             catch (Exception ex)
             {
@@ -68,14 +68,14 @@ namespace temsAPI.Controllers.AnalyticsControllers
 
         [HttpGet("analytics/GetEquipmentUtilizationRate/{entityType?}/{entityId?}")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
-        public async Task<JsonResult> GetEquipmentUtilizationRate(
+        public async Task<IActionResult> GetEquipmentUtilizationRate(
             string entityType = null,
             string entityId = null)
         {
             try
             {
                 var pieChart = await _analyticsManager.GetEquipmentUtilizationRate(entityType, entityId);
-                return Json(pieChart);
+                return Ok(pieChart);
             }
             catch (Exception ex)
             {
@@ -87,14 +87,14 @@ namespace temsAPI.Controllers.AnalyticsControllers
 
         [HttpGet("analytics/GetEquipmentTypeRate/{entityType?}/{entityId?}")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
-        public async Task<JsonResult> GetEquipmentTypeRate(
+        public async Task<IActionResult> GetEquipmentTypeRate(
             string entityType = null,
             string entityId = null)
         {
             try
             {
                 var pieChart = await _analyticsManager.GetEquipmentTypeRate(entityType, entityId);
-                return Json(pieChart);
+                return Ok(pieChart);
             }
             catch (Exception ex)
             {
@@ -106,14 +106,14 @@ namespace temsAPI.Controllers.AnalyticsControllers
 
         [HttpGet("analytics/GetEquipmentAllocationRate/{entityType?}/{entityId?}")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
-        public async Task<JsonResult> GetEquipmentAllocationRate(
+        public async Task<IActionResult> GetEquipmentAllocationRate(
             string entityType = null,
             string entityId = null)
         {
             try
             {
                 var pieChart = await _analyticsManager.GetEquipmentAllocationRate(entityType, entityId);
-                return Json(pieChart);
+                return Ok(pieChart);
             }
             catch (Exception ex)
             {
@@ -124,14 +124,14 @@ namespace temsAPI.Controllers.AnalyticsControllers
 
         [HttpGet("analytics/GetEquipmentWorkabilityRate/{entityType?}/{entityId?}")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
-        public async Task<JsonResult> GetEquipmentWorkabilityRate(
+        public async Task<IActionResult> GetEquipmentWorkabilityRate(
             string entityType = null,
             string entityId = null)
         {
             try
             {
                 var pieChart = await _analyticsManager.GetEquipmentWorkabilityRate(entityType, entityId);
-                return Json(pieChart);
+                return Ok(pieChart);
             }
             catch (Exception ex)
             {
@@ -142,14 +142,14 @@ namespace temsAPI.Controllers.AnalyticsControllers
 
         [HttpGet("analytics/GetTicketClosingRate/{entityType?}/{entityId?}")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
-        public async Task<JsonResult> GetTicketClosingRate(
+        public async Task<IActionResult> GetTicketClosingRate(
             string entityType,
             string entityId)
         {
             try
             {
                 var pieChart = await _analyticsManager.GetTicketClosingRate(entityType, entityId);
-                return Json(pieChart);
+                return Ok(pieChart);
             }
             catch (Exception ex)
             {
@@ -160,14 +160,14 @@ namespace temsAPI.Controllers.AnalyticsControllers
 
         [HttpGet("analytics/GetTicketClosingByRate/{entityType?}/{entityId?}")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
-        public async Task<JsonResult> GetTicketClosingByRate(
+        public async Task<IActionResult> GetTicketClosingByRate(
             string entityType,
             string entityId)
         {
             try
             {
                 var pieChart = await _analyticsManager.GetTicketClosingByRate(entityType, entityId);
-                return Json(pieChart);
+                return Ok(pieChart);
             }
             catch (Exception ex)
             {
@@ -178,14 +178,14 @@ namespace temsAPI.Controllers.AnalyticsControllers
 
         [HttpGet("analytics/GetOpenTicketStatusRate/{entityType?}/{entityId?}")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
-        public async Task<JsonResult> GetOpenTicketStatusRate(
+        public async Task<IActionResult> GetOpenTicketStatusRate(
             string entityType,
             string entityId)
         {
             try
             {
                 var pieChart = await _analyticsManager.GetOpenTicketStatusRate(entityType, entityId);
-                return Json(pieChart);
+                return Ok(pieChart);
             }
             catch (Exception ex)
             {
@@ -196,14 +196,14 @@ namespace temsAPI.Controllers.AnalyticsControllers
         
         [HttpGet("analytics/GetAmountOfCreatedTicketsOfEntity/{entityType?}/{entityId?}")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
-        public async Task<JsonResult> GetAmountOfCreatedTicketsOfEntity(
+        public async Task<IActionResult> GetAmountOfCreatedTicketsOfEntity(
             string entityType,
             string entityId)
         {
             try
             {
                 var amount = await _analyticsManager.GetAmountOfCreatedTickets(entityType, entityId);
-                return Json(amount);
+                return Ok(amount);
             }
             catch (Exception ex)
             {
@@ -214,14 +214,14 @@ namespace temsAPI.Controllers.AnalyticsControllers
 
         [HttpGet("analytics/GetAmountOfClosedTickets/{entityType?}/{entityId?}")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
-        public async Task<JsonResult> GetAmountOfClosedTickets(
+        public async Task<IActionResult> GetAmountOfClosedTickets(
             string entityType,
             string entityId)
         {
             try
             {
                 var amount = await _analyticsManager.GetAmountOfClosedTickets(entityType, entityId);
-                return Json(amount);
+                return Ok(amount);
             }
             catch (Exception ex)
             {
@@ -232,14 +232,14 @@ namespace temsAPI.Controllers.AnalyticsControllers
 
         [HttpGet("analytics/GetAmountOfOpenTickets/{entityType?}/{entityId?}")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
-        public async Task<JsonResult> GetAmountOfOpenTickets(
+        public async Task<IActionResult> GetAmountOfOpenTickets(
             string entityType,
             string entityId)
         {
             try
             {
                 var amount = await _analyticsManager.GetAmountOfOpenTickets(entityType, entityId);
-                return Json(amount);
+                return Ok(amount);
             }
             catch (Exception ex)
             {
@@ -250,12 +250,12 @@ namespace temsAPI.Controllers.AnalyticsControllers
         
         [HttpGet("analytics/GetAmountOfTicketsClosedByUserThatWereReopenedAfterwards/{userId}")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
-        public async Task<JsonResult> GetAmountOfTicketsClosedByUserThatWereReopenedAfterwards(string userId)
+        public async Task<IActionResult> GetAmountOfTicketsClosedByUserThatWereReopenedAfterwards(string userId)
         {
             try
             {
                 var amount = await _analyticsManager.GetAmountOfTicketsClosedByUserThatWereReopenedAfterwards(userId);
-                return Json(amount);
+                return Ok(amount);
             }
             catch (Exception ex)
             {
@@ -266,12 +266,12 @@ namespace temsAPI.Controllers.AnalyticsControllers
         
         [HttpGet("analytics/GetAmountOfTicketsEverClosedByUser/{userId}")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
-        public async Task<JsonResult> GetAmountOfTicketsEverClosedByUser(string userId)
+        public async Task<IActionResult> GetAmountOfTicketsEverClosedByUser(string userId)
         {
             try
             {
                 var amount = await _analyticsManager.GetAmountOfTicketsEverClosedByUser(userId);
-                return Json(amount);
+                return Ok(amount);
             }
             catch (Exception ex)
             {
@@ -281,12 +281,12 @@ namespace temsAPI.Controllers.AnalyticsControllers
         }
 
         [HttpGet("analytics/GetAmountOfLastCreatedTickets")]
-        public async Task<JsonResult> GetAmountOfLastCreatedTickets(DateTime start, DateTime end, string interval)
+        public async Task<IActionResult> GetAmountOfLastCreatedTickets(DateTime start, DateTime end, string interval)
         {
             try
             {
                 PieChartData pieChart = await _analyticsManager.GetAmountOfLastCreatedTickets(start, end, interval);
-                return Json(pieChart);
+                return Ok(pieChart);
             }
             catch (Exception ex)
             {
@@ -296,12 +296,12 @@ namespace temsAPI.Controllers.AnalyticsControllers
         }
 
         [HttpGet("analytics/GetAmountOfLastClosedTickets")]
-        public async Task<JsonResult> GetAmountOfLastClosedTickets(DateTime start, DateTime end, string interval)
+        public async Task<IActionResult> GetAmountOfLastClosedTickets(DateTime start, DateTime end, string interval)
         {
             try
             {
                 PieChartData pieChart = await _analyticsManager.GetAmountOfLastClosedTickets(start, end, interval);
-                return Json(pieChart);
+                return Ok(pieChart);
             }
             catch (Exception ex)
             {

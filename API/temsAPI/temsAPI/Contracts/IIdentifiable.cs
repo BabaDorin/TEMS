@@ -7,7 +7,7 @@ namespace temsAPI.Contracts
 {
     public interface IIdentifiable
     {
-        string Id { get; set; }
-        string Identifier { get; }
+        string Id { get; set; } 
+        string Identifier { get; } 
     }
 }

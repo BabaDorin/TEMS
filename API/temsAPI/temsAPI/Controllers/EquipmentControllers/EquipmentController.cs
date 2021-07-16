@@ -71,7 +71,7 @@ namespace temsAPI.Controllers.EquipmentControllers
             catch (Exception ex)
             {
                 LogException(ex);
-                return ReturnResponse("An error occured while uploading files. Make sure SIC Integration has been enabled(via system configuration interface", ResponseStatus.Fail);
+                return ReturnResponse("An error occured while uploading files. Make sure SIC has been integrated within your system.", ResponseStatus.Fail);
             }
         }
 

@@ -118,6 +118,7 @@ namespace temsAPI
             services.AddSingleton<SystemConfigurationService>();
             services.AddSingleton<CurrencyConvertor>();
             services.AddSingleton<TokenValidatorService>();
+
             services.AddScoped<RoutineCheckService>();
             services.AddScoped<ReportingService>();
             services.AddScoped<IdentityService>();

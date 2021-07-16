@@ -72,7 +72,7 @@ namespace temsAPI.Services.SICServices
                             FileName = file.FileName,
                             Status = (registerResult == null) ? ResponseStatus.Success : ResponseStatus.Fail,
                             EllapsedMiliseconds = (int)sw.ElapsedMilliseconds,
-                            Message = (registerResult == null) ? "Succes!" : registerResult
+                            Message = (registerResult == null) ? "Succes!" : registerResult + " | Make sure SIC has been integrated within your system."
                         });
                     }
                 }

@@ -83,7 +83,7 @@ export class CreateReportTemplateComponent extends TEMSComponent implements OnIn
     controls.separateBy.setValue('none');
 
     this.universalProperties = [
-      new CheckboxItem('temsid', this.translate.instant('report.prop_temsid'), true),
+      new CheckboxItem('temsid', this.translate.instant('report.prop_TEMSID'), true),
       new CheckboxItem('serialNumber', this.translate.instant('report.prop_serialNumber'), true),
       new CheckboxItem('definition', this.translate.instant('report.prop_definition'), true),
       new CheckboxItem('type', this.translate.instant('report.prop_type'), true),

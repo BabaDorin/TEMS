@@ -42,8 +42,7 @@
                                                 <mat-icon class="text-primary">more_vert</mat-icon>
                                             </button>
                                             <mat-menu #menu="matMenu">
-                                                <button mat-menu-item (click)="remove((pageNumber - 1) * itemsPerPage + i)"
-                                                    [disabled]="editing">
+                                                <button mat-menu-item (click)="remove((pageNumber - 1) * itemsPerPage + i)">
                                                     <mat-icon class="text-muted">delete</mat-icon>
                                                     {{ 'general.remove' | translate }}
                                                 </button>

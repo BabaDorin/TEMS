@@ -22,7 +22,7 @@ export class RoomDetailsComponent extends TEMSComponent implements OnInit {
   constructor(
     private activatedroute: ActivatedRoute,
     private roomService: RoomsService,
-    private translate: TranslateService
+    public translate: TranslateService
   ) { 
     super();
   }

@@ -5,6 +5,7 @@
     "types": []
   },
   "angularCompilerOptions": {
+    "enableIvy": true,
     "preserveWhitespaces": true //Not working in angular 8.1.1
   },
   "include": [

@@ -1,3 +1,4 @@
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDialogModule } from '@angular/material/dialog';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { CommonModule } from '@angular/common';
@@ -85,7 +86,7 @@ import { ViewTypeComponent } from './view-type/view-type.component';
     EntitySharedModule,
     AnalyticsModule,
     MatExpansionModule,
-    MatIconModule,
+    MatTooltipModule,
     FileUploadModule,
     MatIconModule,
     EquipmentSummaryAnalyticsModule,

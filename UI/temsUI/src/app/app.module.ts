@@ -16,7 +16,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { TranslateLoader, TranslateModule, TranslatePipe } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { ChartsModule, ThemeService } from 'ng2-charts';
-import { PaginatePipe } from 'ngx-pagination';
+import { PaginatePipe, NgxPaginationModule } from 'ngx-pagination';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AuthInterceptor } from './auth.interceptor';
@@ -83,6 +83,7 @@ export function HttpLoaderFactory(http: HttpClient){
     ChipsAutocompleteModule,
     QuickAccessModule,
     ViewLibraryModule,
+    NgxPaginationModule,
 
     MatDialogModule,
     ReactiveFormsModule,

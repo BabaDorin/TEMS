@@ -14,8 +14,6 @@ import { IssueSimplifiedModule } from '../issue-simplified/issue-simplified.modu
 import { IssueStatusModule } from '../issue-status/issue-status.module';
 import { IssueContainerComponent } from './../../../tems-components/issues/issue-container/issue-container.component';
 
-
-
 @NgModule({
   declarations: [
     IssueContainerComponent,

@@ -1,3 +1,4 @@
+import { IssueContainerSimplifiedModule } from './../issue-container-simplified/issue-container-simplified.module';
 import { RouterModule } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { TranslateModule } from '@ngx-translate/core';
@@ -9,9 +10,6 @@ import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 
 @NgModule({
-  declarations: [
-    IssueContainerSimplifiedComponent
-  ],
   imports: [
     CommonModule,
     IssueStatusModule,
@@ -19,7 +17,8 @@ import { MatButtonModule } from '@angular/material/button';
     RouterModule,
     MatCardModule,
     TranslateModule,
-    MatButtonModule
+    MatButtonModule,
+    IssueContainerSimplifiedModule
   ],
   exports: [
     IssueContainerSimplifiedComponent

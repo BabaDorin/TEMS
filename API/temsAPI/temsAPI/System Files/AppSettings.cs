@@ -15,7 +15,6 @@ namespace temsAPI.System_Files
     {
         public string JWT_Secret { get; set; }
         public string Client_Url { get; set; }
-        public string Server_Url { get; set; }
         public Email Email { get; set; }
         public int GeneratedReportsHistoryLength { get; set; }
         public int RoutineCheckIntervalHr { get; set; }

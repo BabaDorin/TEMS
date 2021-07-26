@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
@@ -16,6 +17,7 @@ using temsAPI.Data.Managers;
 using temsAPI.Helpers;
 using temsAPI.Services.SICServices;
 using temsAPI.System_Files;
+using temsAPI.System_Files.TEMSFileLogger;
 using temsAPI.ViewModels.Equipment;
 
 namespace temsAPI.Controllers.EquipmentControllers
@@ -181,18 +183,13 @@ namespace temsAPI.Controllers.EquipmentControllers
             }
         }
 
+        [DefaultExceptionLogger("An error occured while fetching autocomplete options")]
         [HttpGet("equipment/GetAllAutocompleteOptions/{onlyParents}/{filter?}")]
         public async Task<IActionResult> GetAllAutocompleteOptions(bool onlyParents, string filter = null)
         {
-            try
-            {
-                var viewModel = await _equipmentManager.GetAutocompleteOptions(onlyParents, filter);
-                return Ok(viewModel);
-            }
-            catch (Exception)
-            {
-                return ReturnResponse("An error occured when fetching autocomplete options", ResponseStatus.Fail);
-            }
+            var viewModel = await _equipmentManager.GetAutocompleteOptions(onlyParents, filter);
+            throw new ArgumentException("cf uratule");
+            return Ok(viewModel);
         }
 
         [HttpGet("equipment/GetById/{id}")]

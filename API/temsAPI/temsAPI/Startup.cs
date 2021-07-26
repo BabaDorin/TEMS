@@ -181,7 +181,9 @@ namespace temsAPI
             app.UseCors(builder =>
                 builder
                 .SetIsOriginAllowedToAllowWildcardSubdomains()
-                .WithOrigins(Configuration["AppSettings:Client_Url"].ToString())
+                .WithOrigins(
+                    Configuration["AppSettings:Client_Url"].ToString(), 
+                    Configuration["AppSettings:Client_Url_Development"].ToString())
                 .AllowAnyMethod()
                 .AllowCredentials()
                 .AllowAnyHeader()

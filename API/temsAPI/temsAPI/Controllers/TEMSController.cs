@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.UserEntities;
+using temsAPI.System_Files;
 
 namespace temsAPI.Controllers
 {
@@ -27,8 +28,8 @@ namespace temsAPI.Controllers
 
         protected readonly IUnitOfWork _unitOfWork;
         protected readonly UserManager<TEMSUser> _userManager;
-        protected IMapper _mapper;
-        ILogger<TEMSController> _logger;
+        protected readonly IMapper _mapper;
+        protected readonly ILogger<TEMSController> _logger;
 
         public TEMSController(
             IMapper mapper,
@@ -58,12 +59,12 @@ namespace temsAPI.Controllers
 
         protected IActionResult ReturnResponse(string message, ResponseStatus status, object additional = null)
         {
-            var response = new { Message = message, Status = status, Additional = additional };
+            var response = new Response(message, status, additional);
 
             if (status == ResponseStatus.Success || status == ResponseStatus.Neutral)
                 return Ok(response);
             
-            return StatusCode(500, new { Message = message, Status = status, Additional = additional});
+            return StatusCode(500, response);
         }
     }
 }

@@ -179,9 +179,13 @@ namespace temsAPI
             TemsStarter.Start();
 
             app.UseCors(builder =>
-                builder.WithOrigins(Configuration["AppSettings:Client_URL"].ToString())
+                builder
+                .SetIsOriginAllowedToAllowWildcardSubdomains()
+                .WithOrigins(Configuration["AppSettings:Client_Url"].ToString())
                 .AllowAnyMethod()
+                .AllowCredentials()
                 .AllowAnyHeader()
+                .Build()
             );
 
             app.UseAuthentication();
@@ -194,7 +198,6 @@ namespace temsAPI
                     pattern: "{controller=Home}/{action=Index}/{id?}");
             });
 
-            //var scheduler = new Scheduler(systemConfigurationService, routineCheckService);
             scheduler.Start();
         }
     }

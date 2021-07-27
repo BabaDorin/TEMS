@@ -13,6 +13,7 @@ using temsAPI.Helpers;
 using temsAPI.Helpers.StaticFileHelpers;
 using temsAPI.Services.Report;
 using temsAPI.System_Files;
+using temsAPI.System_Files.Exceptions;
 using temsAPI.ViewModels.Report;
 
 namespace temsAPI.Controllers.ReportControllers

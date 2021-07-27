@@ -11,7 +11,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using Newtonsoft.Json.Serialization;
 using System;
 using System.Security.Claims;
 using System.Text;
@@ -27,6 +26,7 @@ using temsAPI.Services.JWT;
 using temsAPI.Services.Notification;
 using temsAPI.Services.Report;
 using temsAPI.System_Files;
+using temsAPI.System_Files.Exceptions;
 using temsAPI.System_Files.TEMSFileLogger;
 
 namespace temsAPI
@@ -161,7 +161,7 @@ namespace temsAPI
             UserManager<TEMSUser> userManager,
             RoleManager<IdentityRole> roleManager,
             ApplicationDbContext dbContext,
-            ILogger<PostSharpExceptionHandler> logger,
+            ILogger<DefaultExceptionHandler> logger,
             SystemConfigurationService systemConfigurationService,
             Scheduler scheduler)
         {
@@ -205,7 +205,7 @@ namespace temsAPI
             });
 
             scheduler.Start();
-            PostSharpExceptionHandler.logger = logger;
+            DefaultExceptionHandler.logger = logger;
         }
     }
 }

@@ -9,6 +9,7 @@ using temsAPI.Data.Entities.UserEntities;
 using temsAPI.Services;
 using temsAPI.Services.SICServices;
 using temsAPI.System_Files;
+using temsAPI.System_Files.Exceptions;
 using temsAPI.ViewModels.SystemConfiguration;
 
 namespace temsAPI.Controllers.SystemConfigurationControllers

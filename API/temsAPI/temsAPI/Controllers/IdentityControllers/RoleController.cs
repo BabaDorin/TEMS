@@ -4,12 +4,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.UserEntities;
 using temsAPI.System_Files;
+using temsAPI.System_Files.Exceptions;
 using temsAPI.ViewModels.IdentityViewModels;
 
 namespace temsAPI.Controllers.IdentityControllers

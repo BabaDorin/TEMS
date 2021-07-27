@@ -8,6 +8,7 @@ using System.IO;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Controllers;
+using temsAPI.System_Files.Exceptions;
 using temsAPI.ViewModels.Equipment;
 
 namespace temsAPI.Services.SICServices

@@ -11,6 +11,7 @@ using temsAPI.Data.Entities.UserEntities;
 using temsAPI.Data.Managers;
 using temsAPI.Services;
 using temsAPI.System_Files;
+using temsAPI.System_Files.Exceptions;
 using temsAPI.ViewModels.Ticket;
 
 namespace temsAPI.Controllers.TicketControllers

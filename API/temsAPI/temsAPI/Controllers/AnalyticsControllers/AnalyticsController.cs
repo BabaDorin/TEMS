@@ -11,6 +11,7 @@ using temsAPI.Data.Managers;
 using temsAPI.Helpers.AnalyticsHelpers.AnalyticsModels;
 using temsAPI.Services;
 using temsAPI.System_Files;
+using temsAPI.System_Files.Exceptions;
 
 namespace temsAPI.Controllers.AnalyticsControllers
 {

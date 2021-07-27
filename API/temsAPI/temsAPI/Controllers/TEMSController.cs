@@ -11,16 +11,10 @@ using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.UserEntities;
 using temsAPI.System_Files;
+using temsAPI.System_Files.Exceptions;
 
 namespace temsAPI.Controllers
 {
-    public enum ResponseStatus
-    {
-        Fail = 0,
-        Success = 1,
-        Neutral = 2
-    }
-
     public abstract class TEMSController : Controller
     {
         protected static int maxConcurrentUploads = 2;

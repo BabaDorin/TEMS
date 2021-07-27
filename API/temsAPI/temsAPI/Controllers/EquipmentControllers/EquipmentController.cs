@@ -17,6 +17,7 @@ using temsAPI.Data.Managers;
 using temsAPI.Helpers;
 using temsAPI.Services.SICServices;
 using temsAPI.System_Files;
+using temsAPI.System_Files.Exceptions;
 using temsAPI.System_Files.TEMSFileLogger;
 using temsAPI.ViewModels.Equipment;
 
@@ -42,17 +43,13 @@ namespace temsAPI.Controllers.EquipmentControllers
 
         [HttpPost("equipment/Add")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
-        [PostSharpExceptionHandler("An error occured while saving equipment data")]
+        [DefaultExceptionHandler("An error occured while saving equipment data")]
         public async Task<IActionResult> Add([FromBody] AddEquipmentViewModel viewModel)
         {
             string result = await _equipmentManager.Create(viewModel);
             if (result != null)
                 return ReturnResponse(result, ResponseStatus.Fail);
-
-            // Test if Exception handler reacts
-            //List<string> list = new();
-            //Console.WriteLine(list[43]);
-
+            
             return ReturnResponse("Success", ResponseStatus.Success);
         }
 
@@ -180,7 +177,7 @@ namespace temsAPI.Controllers.EquipmentControllers
             }
         }
 
-        [PostSharpExceptionHandler("An error occured while fetching autocomplete options")]
+        [DefaultExceptionHandler("An error occured while fetching autocomplete options")]
         [HttpGet("equipment/GetAllAutocompleteOptions/{onlyParents}/{filter?}")]
         public async Task<IActionResult> GetAllAutocompleteOptions(bool onlyParents, string filter = null)
         {

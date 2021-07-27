@@ -10,6 +10,7 @@ using temsAPI.Data.Entities.UserEntities;
 using temsAPI.Data.Managers;
 using temsAPI.Helpers;
 using temsAPI.System_Files;
+using temsAPI.System_Files.Exceptions;
 using temsAPI.ViewModels.EquipmentDefinition;
 using static temsAPI.Data.Managers.EquipmentDefinitionManager;
 

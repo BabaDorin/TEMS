@@ -16,6 +16,7 @@ using temsAPI.Helpers.AnalyticsHelpers.AnalyticsModels;
 using temsAPI.Helpers.StaticFileHelpers;
 using temsAPI.Services;
 using temsAPI.System_Files;
+using temsAPI.System_Files.Exceptions;
 
 namespace temsAPI.Controllers.LibraryControllers
 {

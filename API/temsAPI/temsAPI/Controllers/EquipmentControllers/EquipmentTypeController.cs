@@ -11,6 +11,7 @@ using temsAPI.Data.Entities.UserEntities;
 using temsAPI.Data.Managers;
 using temsAPI.Helpers;
 using temsAPI.System_Files;
+using temsAPI.System_Files.Exceptions;
 using temsAPI.ViewModels.EquipmentType;
 
 namespace temsAPI.EquipmentControllers

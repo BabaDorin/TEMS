@@ -10,6 +10,7 @@ using temsAPI.Contracts;
 using temsAPI.Data.Entities.UserEntities;
 using temsAPI.Services;
 using temsAPI.System_Files;
+using temsAPI.System_Files.Exceptions;
 using temsAPI.ViewModels.Email;
 
 namespace temsAPI.Controllers.EmailControllers

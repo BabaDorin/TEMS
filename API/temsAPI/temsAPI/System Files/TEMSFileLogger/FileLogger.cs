@@ -47,16 +47,9 @@ namespace temsAPI.System_Files.TEMSFileLogger
         public void Log<TState>(LogLevel logLevel, string message, params object[] args)
         {
             if (!IsEnabled(logLevel))
-            {
                 return;
-            }
 
-            var logRecord = string.Format(
-               "{0} -------------{1}-------------\n{2}\n",
-               "[" + DateTimeOffset.UtcNow.ToString("yyyy-MM-dd HH:mm:ss+00:00") + "]",
-               logLevel.ToString() + ": " + String.Join(' ', args),
-               message);
-
+            var logRecord = string.Format("[{0}] {1}", logLevel.ToString(), message);
             LogRecord(logRecord);
         }
 

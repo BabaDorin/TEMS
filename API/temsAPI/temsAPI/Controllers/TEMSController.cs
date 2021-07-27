@@ -29,7 +29,7 @@ namespace temsAPI.Controllers
         protected readonly IUnitOfWork _unitOfWork;
         protected readonly UserManager<TEMSUser> _userManager;
         protected readonly IMapper _mapper;
-        protected readonly ILogger<TEMSController> _logger;
+        protected readonly ILogger _logger;
 
         public TEMSController(
             IMapper mapper,

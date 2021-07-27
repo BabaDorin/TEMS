@@ -1,7 +1,10 @@
-﻿using Microsoft.AspNetCore.Http.Features;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Logging;
+using PostSharp.Aspects;
+using PostSharp.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -10,38 +13,38 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web.Http;
 using System.Web.Http.Results;
 using temsAPI.Controllers;
 
 namespace temsAPI.System_Files.TEMSFileLogger
 {
-    public class DefaultExceptionLogger : ExceptionFilterAttribute
+    [PSerializable]
+    public class PostSharpExceptionHandler: OnExceptionAspect
     {
-        readonly string _customErrorMessage;
+        public static ILogger logger;
+        string _customErrorMessage;
 
-        public DefaultExceptionLogger(string customErrorMessage = "An error occured")
+        public PostSharpExceptionHandler(string customErrorMessage)
         {
             _customErrorMessage = customErrorMessage;
         }
 
-        public override void OnException(ExceptionContext context)
+        public override void OnException(MethodExecutionArgs args)
         {
-            ILogger<TEMSController> logger = GetLoggerService(context);
-            LogException(logger, context.Exception, null, _customErrorMessage);
+            if (logger == null)
+                throw new Exception("Please, provide a logger instance.");
 
-            // Assign the 500 status code for any exception type for now.
-            var response = new Response(_customErrorMessage, ResponseStatus.Fail);
-            context.Result = new ObjectResult(response)
-            {
-                StatusCode = 500
-            };
-            
-            base.OnException(context);
+            args.ReturnValue = new BadHttpRequestException(_customErrorMessage, 500);
+
+            //var response = new Response(_customErrorMessage, ResponseStatus.Fail);
+            //throw new HttpRequestException()
+            //base.OnException(args);
         }
 
-        protected ILogger<TEMSController> GetLoggerService(ExceptionContext context)
+        protected ILogger GetLoggerService(ExceptionContext context)
         {
-            return (ILogger<TEMSController>)context.HttpContext.RequestServices.GetService(typeof(ILogger<TEMSController>));
+            return (ILogger)context.HttpContext.RequestServices.GetService(typeof(ILogger));
         }
 
         protected void LogException(ILogger logger, Exception ex, object caller = null, string header = null)

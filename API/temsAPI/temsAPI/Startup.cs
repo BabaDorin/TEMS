@@ -8,8 +8,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json.Serialization;
 using System;
 using System.Security.Claims;
 using System.Text;
@@ -55,7 +57,7 @@ namespace temsAPI
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
-            services.AddTransient<IUnitOfWork, UnitOfWork>();
+            
             services.AddAutoMapper(typeof(Maps));
 
             services.AddDefaultIdentity<TEMSUser>()
@@ -111,6 +113,7 @@ namespace temsAPI
                 options.AddPolicy("CanSendEmails", policy => policy.RequireClaim("Can send emails"));
             });
 
+            services.AddTransient<IUnitOfWork, UnitOfWork>();
             services.AddTransient<ClaimsPrincipal>(s =>
                 s.GetService<IHttpContextAccessor>().HttpContext?.User ?? null);
 
@@ -158,6 +161,7 @@ namespace temsAPI
             UserManager<TEMSUser> userManager,
             RoleManager<IdentityRole> roleManager,
             ApplicationDbContext dbContext,
+            ILogger<PostSharpExceptionHandler> logger,
             SystemConfigurationService systemConfigurationService,
             Scheduler scheduler)
         {
@@ -201,6 +205,7 @@ namespace temsAPI
             });
 
             scheduler.Start();
+            PostSharpExceptionHandler.logger = logger;
         }
     }
 }

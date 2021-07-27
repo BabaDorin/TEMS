@@ -42,21 +42,15 @@ namespace temsAPI.Controllers.EquipmentControllers
 
         [HttpPost("equipment/Add")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
+        [DefaultExceptionLogger("An error occured while saving equipment data")]
         public async Task<IActionResult> Add([FromBody] AddEquipmentViewModel viewModel)
         {
-            try
-            {
-                string result = await _equipmentManager.Create(viewModel);
-                if (result != null)
-                    return ReturnResponse(result, ResponseStatus.Fail);
+            string result = await _equipmentManager.Create(viewModel);
+            if (result != null)
+                return ReturnResponse(result, ResponseStatus.Fail);
 
-                return ReturnResponse("Success", ResponseStatus.Success);
-            }
-            catch (Exception ex)
-            {
-                LogException(ex);
-                return ReturnResponse("An error occured while saving equipment data", ResponseStatus.Fail);
-            }
+            throw new ArgumentException();
+            return ReturnResponse("Success", ResponseStatus.Success);
         }
 
         [HttpPost("equipment/BulkUpload")]

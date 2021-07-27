@@ -42,7 +42,9 @@ export class AuthInterceptor implements HttpInterceptor {
                         this.router.navigateByUrl('/auth/login');
                         return;
                     }
-                    // this.snackService.snack({message: "Server error", status: 0})
+                    
+                    if(this.snackService.snackIfError(err))
+                        return;                    
                 }
             )
         )

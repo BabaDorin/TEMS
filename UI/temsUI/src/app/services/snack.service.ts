@@ -23,8 +23,9 @@ export class SnackService {
   ) { }
 
   private sanitarizeResponse(response){
-    // Sometimes, the API might return an http 500 response. In that case,
-    // the response model itself is placed within the 'error' property of the response.
+    // Sometimes, the API might return a http 500 response. In that case,
+    // the response model ({message, status, additional}) is placed within the 'error' property of the response.
+
     if(response?.error != undefined){
       return response.error;
     }
@@ -33,15 +34,15 @@ export class SnackService {
   }
 
   snack(response, sclass?){
-    response = this.sanitarizeResponse(response);
+    let responseModel = this.sanitarizeResponse(response);
 
-    if(response.status == undefined)
+    if(responseModel.status == undefined)
       return false;
     
-    let panelClass = this.statusPanelClasses[response.status];
-    let seconds = this.statusDisplayTimes[response.status];
+    let panelClass = this.statusPanelClasses[responseModel.status];
+    let seconds = this.statusDisplayTimes[responseModel.status];
 
-    this._snack.open(response.message, 'Ok', {
+    this._snack.open(responseModel.message, 'Ok', {
       duration: seconds * 1000,
       panelClass: [sclass ?? panelClass, 'text-center']
     });
@@ -49,12 +50,12 @@ export class SnackService {
 
   // returns true if there is something to display in snack
   snackIfError(response): boolean{
-    response = this.sanitarizeResponse(response);
+    let responseModel = this.sanitarizeResponse(response);
 
-    if(response == undefined || response.status == undefined || response.status == 1)
+    if(responseModel == undefined || responseModel.status == undefined || responseModel.status == 1)
       return false;
 
-    this.snack(response);
+    this.snack(responseModel);
     return true;
   }
 }

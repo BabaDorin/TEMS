@@ -34,7 +34,7 @@ namespace temsAPI.Controllers.LogControllers
         {
             var result = await _logManager.Create(viewModel);
             if (result != null)
-                return ReturnResponse(result, ResponseStatus.Fail);
+                return ReturnResponse(result, ResponseStatus.Neutral);
 
             return ReturnResponse("Success!", ResponseStatus.Success);
         }
@@ -47,7 +47,7 @@ namespace temsAPI.Controllers.LogControllers
             string archievingResult = await (new ArchieveHelper(_unitOfWork, User))
                     .SetLogArchivationStatus(logId, archivationStatus);
             if (archievingResult != null)
-                return ReturnResponse(archievingResult, ResponseStatus.Fail);
+                return ReturnResponse(archievingResult, ResponseStatus.Neutral);
 
             return ReturnResponse("Success", ResponseStatus.Success);
         }
@@ -59,7 +59,7 @@ namespace temsAPI.Controllers.LogControllers
         {
             string result = await _logManager.Remove(logId);
             if (result != null)
-                return ReturnResponse(result, ResponseStatus.Fail);
+                return ReturnResponse(result, ResponseStatus.Neutral);
 
             return ReturnResponse("Success", ResponseStatus.Success);
         }

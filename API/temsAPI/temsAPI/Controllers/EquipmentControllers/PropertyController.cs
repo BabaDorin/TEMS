@@ -35,7 +35,7 @@ namespace temsAPI.EquipmentControllers
         {
             string result = await _eqPropertyManager.Create(viewModel);
             if (result != null)
-                return ReturnResponse(result, ResponseStatus.Fail);
+                return ReturnResponse(result, ResponseStatus.Neutral);
 
             return ReturnResponse("Success", ResponseStatus.Success);
         }
@@ -47,7 +47,7 @@ namespace temsAPI.EquipmentControllers
         {
             var result = await _eqPropertyManager.Update(viewModel);
             if (result != null)
-                return ReturnResponse(result, ResponseStatus.Fail);
+                return ReturnResponse(result, ResponseStatus.Neutral);
 
             return ReturnResponse("Success!", ResponseStatus.Success);
         }
@@ -60,7 +60,7 @@ namespace temsAPI.EquipmentControllers
             var archievingResult = await (new ArchieveHelper(_unitOfWork, User))
                      .SetPropertyArchivationStatus(propertyId, archivationStatus);
             if (archievingResult != null)
-                return ReturnResponse(archievingResult, ResponseStatus.Fail);
+                return ReturnResponse(archievingResult, ResponseStatus.Neutral);
 
             return ReturnResponse("Success", ResponseStatus.Success);
         }
@@ -72,7 +72,7 @@ namespace temsAPI.EquipmentControllers
         {
             string result = await _eqPropertyManager.Remove(propertyId);
             if (result != null)
-                return ReturnResponse(result, ResponseStatus.Fail);
+                return ReturnResponse(result, ResponseStatus.Neutral);
 
             return ReturnResponse("Success", ResponseStatus.Success);
         }

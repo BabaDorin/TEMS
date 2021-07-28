@@ -35,7 +35,7 @@ namespace temsAPI.EquipmentControllers
         {
             string result = await _equipmentTypeManager.Create(viewModel);
             if (result != null)
-                return ReturnResponse(result, ResponseStatus.Fail);
+                return ReturnResponse(result, ResponseStatus.Neutral);
 
             return ReturnResponse($"Success", ResponseStatus.Success);
         }
@@ -47,7 +47,7 @@ namespace temsAPI.EquipmentControllers
         {
             string result = await _equipmentTypeManager.Update(viewModel);
             if (result != null)
-                return ReturnResponse(result, ResponseStatus.Fail);
+                return ReturnResponse(result, ResponseStatus.Neutral);
 
             return ReturnResponse($"Success", ResponseStatus.Success);
         }
@@ -59,12 +59,12 @@ namespace temsAPI.EquipmentControllers
         {
             var type = await _equipmentTypeManager.GetById(typeId);
             if (type == null)
-                return ReturnResponse("The specified type does not exist", ResponseStatus.Fail);
+                return ReturnResponse("The specified type does not exist", ResponseStatus.Neutral);
 
             string archivationResult = await new ArchieveHelper(_unitOfWork, User)
                 .SetTypeArchivationStatus(typeId, status);
             if (archivationResult != null)
-                return ReturnResponse(archivationResult, ResponseStatus.Fail);
+                return ReturnResponse(archivationResult, ResponseStatus.Neutral);
 
             return ReturnResponse("Success!", ResponseStatus.Success);
         }
@@ -76,7 +76,7 @@ namespace temsAPI.EquipmentControllers
         {
             string result = await _equipmentTypeManager.Remove(typeId);
             if (result != null)
-                return ReturnResponse(result, ResponseStatus.Fail);
+                return ReturnResponse(result, ResponseStatus.Neutral);
 
             return ReturnResponse("Success", ResponseStatus.Success);
         }
@@ -105,7 +105,7 @@ namespace temsAPI.EquipmentControllers
         {
             var type = await _equipmentTypeManager.GetSimplifiedById(typeId);
             if (type == null)
-                return ReturnResponse("Invalid id provided", ResponseStatus.Fail);
+                return ReturnResponse("Invalid id provided", ResponseStatus.Neutral);
 
             return Ok(type);
         }
@@ -117,7 +117,7 @@ namespace temsAPI.EquipmentControllers
         {
             var type = await _equipmentTypeManager.GetFullById(typeId);
             if (type == null)
-                return ReturnResponse("Invalid id provided", ResponseStatus.Fail);
+                return ReturnResponse("Invalid id provided", ResponseStatus.Neutral);
 
             var viewModel = ViewEquipmentTypeViewModel.FromModel(type);
             return Ok(viewModel);

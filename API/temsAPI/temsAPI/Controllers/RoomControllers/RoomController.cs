@@ -35,7 +35,7 @@ namespace temsAPI.Controllers.RoomControllers
         {
             var result = await _roomManager.Create(viewModel);
             if (result != null)
-                return ReturnResponse(result, ResponseStatus.Fail);
+                return ReturnResponse(result, ResponseStatus.Neutral);
 
             return ReturnResponse("Success!", ResponseStatus.Success);
         }
@@ -47,7 +47,7 @@ namespace temsAPI.Controllers.RoomControllers
         {
             var result = await _roomManager.Update(viewModel);
             if (result != null)
-                return ReturnResponse(result, ResponseStatus.Fail);
+                return ReturnResponse(result, ResponseStatus.Neutral);
 
             return ReturnResponse("Success", ResponseStatus.Success);
         }
@@ -59,7 +59,7 @@ namespace temsAPI.Controllers.RoomControllers
             var archievingResult = await (new ArchieveHelper(_unitOfWork, User))
                     .SetRoomArchivationStatus(roomId, archivationStatus);
             if (archievingResult != null)
-                return ReturnResponse(archievingResult, ResponseStatus.Fail);
+                return ReturnResponse(archievingResult, ResponseStatus.Neutral);
 
             return ReturnResponse("Success", ResponseStatus.Success);
         }
@@ -70,7 +70,7 @@ namespace temsAPI.Controllers.RoomControllers
         {
             string result = await _roomManager.Remove(roomId);
             if (result != null)
-                return ReturnResponse(result, ResponseStatus.Fail);
+                return ReturnResponse(result, ResponseStatus.Neutral);
 
             return ReturnResponse("Success", ResponseStatus.Success);
         }
@@ -101,7 +101,7 @@ namespace temsAPI.Controllers.RoomControllers
             // Invalid page number or records per page provided
             if (pageNumber < 0 || recordsPerPage < 0 || pageNumber > 1000 || recordsPerPage > 1000)
                 return ReturnResponse("Invalid parameters, please provide real number representing page number" +
-                    "and how many records are displayed per page", ResponseStatus.Fail);
+                    "and how many records are displayed per page", ResponseStatus.Neutral);
 
             var rooms = await _roomManager.GetRoomsSimplified();
             return Ok(rooms);
@@ -123,7 +123,7 @@ namespace temsAPI.Controllers.RoomControllers
         {
             var room = await _roomManager.GetFullById(id);
             if (room == null)
-                return ReturnResponse("Invalid id provided", ResponseStatus.Fail);
+                return ReturnResponse("Invalid id provided", ResponseStatus.Neutral);
 
             var viewModel = ViewRoomViewModel.FromModel(room);
             return Ok(viewModel);

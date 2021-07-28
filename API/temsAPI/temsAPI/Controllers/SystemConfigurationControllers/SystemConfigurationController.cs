@@ -45,7 +45,7 @@ namespace temsAPI.Controllers.SystemConfigurationControllers
         {
             var result = _configService.SetLibraryAllocatedStorageSpace(gb);
             if (result != null)
-                return ReturnResponse(result, ResponseStatus.Fail);
+                return ReturnResponse(result, ResponseStatus.Neutral);
 
             return ReturnResponse("Success", ResponseStatus.Success);
         }
@@ -57,7 +57,7 @@ namespace temsAPI.Controllers.SystemConfigurationControllers
         {
             string result = _configService.SetEmailSender(viewModel.Address, viewModel.Password);
             if (result != null)
-                return ReturnResponse(result, ResponseStatus.Fail);
+                return ReturnResponse(result, ResponseStatus.Neutral);
 
             return ReturnResponse("Success", ResponseStatus.Success);
         }
@@ -69,7 +69,7 @@ namespace temsAPI.Controllers.SystemConfigurationControllers
         {
             string result = _configService.SetRoutineCheckInterval(hours);
             if (result != null)
-                return ReturnResponse(result, ResponseStatus.Fail);
+                return ReturnResponse(result, ResponseStatus.Neutral);
 
             return ReturnResponse("Success", ResponseStatus.Success);
         }
@@ -81,7 +81,7 @@ namespace temsAPI.Controllers.SystemConfigurationControllers
         {
             string result = _configService.SetArchieveIntervalHr(hours);
             if (result != null)
-                return ReturnResponse(result, ResponseStatus.Fail);
+                return ReturnResponse(result, ResponseStatus.Neutral);
 
             return ReturnResponse("Success", ResponseStatus.Success);
         }
@@ -96,7 +96,7 @@ namespace temsAPI.Controllers.SystemConfigurationControllers
             else
                 _configService.ForbidGuestsToCreateTickets();
 
-            return ReturnResponse("Success", ResponseStatus.Fail);
+            return ReturnResponse("Success", ResponseStatus.Success);
         }
 
         [HttpGet("systemconfiguration/GetAppSettingsModel")]

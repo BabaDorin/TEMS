@@ -63,11 +63,11 @@ namespace temsAPI.Controllers.NotificationControllers
         public async Task<IActionResult> MarkAsSeen(List<string> notificationIds)
         {
             if (notificationIds == null)
-                return ReturnResponse("No notifications provided", ResponseStatus.Fail);
+                return ReturnResponse("No notifications provided", ResponseStatus.Neutral);
 
             var result = await _notificationManager.MarkAsSeen(notificationIds);
             if (result != null)
-                return ReturnResponse(result, ResponseStatus.Fail);
+                return ReturnResponse(result, ResponseStatus.Neutral);
 
             return ReturnResponse("Success", ResponseStatus.Success);
         }
@@ -79,11 +79,11 @@ namespace temsAPI.Controllers.NotificationControllers
         {
             var notification = await _notificationManager.GetNotificationById(notificationId);
             if (notification == null)
-                return ReturnResponse("Invalid id provided", ResponseStatus.Fail);
+                return ReturnResponse("Invalid id provided", ResponseStatus.Neutral);
 
             string result = await _notificationManager.RemoveNotification(notification);
             if (result != null)
-                return ReturnResponse(result, ResponseStatus.Fail);
+                return ReturnResponse(result, ResponseStatus.Neutral);
 
             return ReturnResponse("Success", ResponseStatus.Success);
         }

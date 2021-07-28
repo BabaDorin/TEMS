@@ -42,7 +42,7 @@ namespace temsAPI.Controllers.IdentityControllers
         {
             string result = await _temsUserManager.CreateUser(viewModel);
             if (result != null)
-                return ReturnResponse(result, ResponseStatus.Fail);
+                return ReturnResponse(result, ResponseStatus.Neutral);
 
             return ReturnResponse("Success", ResponseStatus.Success);
         }
@@ -54,7 +54,7 @@ namespace temsAPI.Controllers.IdentityControllers
         {
             var result = await _temsUserManager.UpdateUser(viewModel);
             if (result != null)
-                return ReturnResponse(result, ResponseStatus.Fail);
+                return ReturnResponse(result, ResponseStatus.Neutral);
 
             return ReturnResponse("Success", ResponseStatus.Success);
         }
@@ -66,7 +66,7 @@ namespace temsAPI.Controllers.IdentityControllers
         {
             string result = await _temsUserManager.RemoveUser(userId);
             if (result != null)
-                return ReturnResponse(result, ResponseStatus.Fail);
+                return ReturnResponse(result, ResponseStatus.Neutral);
 
             return ReturnResponse("Success", ResponseStatus.Success);
         }
@@ -78,7 +78,7 @@ namespace temsAPI.Controllers.IdentityControllers
         {
             string result = await _archieveManager.SetArchivationStatus("user", userId, true);
             if (result != null)
-                return ReturnResponse(result, ResponseStatus.Fail);
+                return ReturnResponse(result, ResponseStatus.Neutral);
 
             return ReturnResponse("Success", ResponseStatus.Success);
         }
@@ -159,7 +159,7 @@ namespace temsAPI.Controllers.IdentityControllers
         {
             var result = await _temsUserManager.ChangePassword(viewModel);
             if (result != null)
-                return ReturnResponse(result, ResponseStatus.Fail);
+                return ReturnResponse(result, ResponseStatus.Neutral);
 
             return ReturnResponse("Success", ResponseStatus.Success);
         }
@@ -171,7 +171,7 @@ namespace temsAPI.Controllers.IdentityControllers
         {
             var result = await _temsUserManager.ChangeEmailPreferences(viewModel);
             if (result != null)
-                return ReturnResponse(result, ResponseStatus.Fail);
+                return ReturnResponse(result, ResponseStatus.Neutral);
 
             return ReturnResponse("Success", ResponseStatus.Success);
         }
@@ -183,7 +183,7 @@ namespace temsAPI.Controllers.IdentityControllers
         {
             var result = await _temsUserManager.EditAccountInfo(viewModel);
             if (result != null)
-                return ReturnResponse(result, ResponseStatus.Fail);
+                return ReturnResponse(result, ResponseStatus.Neutral);
 
             return ReturnResponse("Success", ResponseStatus.Success);
         }

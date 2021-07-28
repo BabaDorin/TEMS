@@ -93,7 +93,7 @@ namespace temsAPI.Controllers.LibraryControllers
         {
             var result = await _libraryManager.Remove(itemId);
             if (result != null)
-                return ReturnResponse(result, ResponseStatus.Fail);
+                return ReturnResponse(result, ResponseStatus.Neutral);
 
             return ReturnResponse("Success", ResponseStatus.Success);
         }
@@ -103,7 +103,7 @@ namespace temsAPI.Controllers.LibraryControllers
         public async Task<IActionResult> GetLibraryItems(string accessPassword)
         {
             if (!_identityService.IsAuthenticated() && accessPassword != _systemConfigurationService.AppSettings.LibraryGuestPassword)
-                return ReturnResponse("Incorrect password.", ResponseStatus.Fail);
+                return ReturnResponse("Incorrect password.", ResponseStatus.Neutral);
 
             var items = await _libraryManager.GetItems();
             return Ok(items);

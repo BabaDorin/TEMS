@@ -68,7 +68,7 @@ namespace temsAPI.Controllers.TicketControllers
         {
             var ticket = await _ticketManager.GetById(ticketId);
             if (ticket == null)
-                return ReturnResponse("Invalid ticket provided", ResponseStatus.Fail);
+                return ReturnResponse("Invalid ticket provided", ResponseStatus.Neutral);
 
             await _ticketManager.ReopenTicket(ticket);
             return ReturnResponse("Success", ResponseStatus.Success);
@@ -81,7 +81,7 @@ namespace temsAPI.Controllers.TicketControllers
         {
             var ticket = await _ticketManager.GetById(ticketId);
             if (ticket == null)
-                return ReturnResponse("Invalid ticket provided", ResponseStatus.Fail);
+                return ReturnResponse("Invalid ticket provided", ResponseStatus.Neutral);
 
             await _ticketManager.CloseTicket(ticket);
             return ReturnResponse("Success", ResponseStatus.Success);
@@ -94,11 +94,11 @@ namespace temsAPI.Controllers.TicketControllers
         {
             var ticket = await _ticketManager.GetById(ticketId);
             if (ticket == null)
-                return ReturnResponse("Invalid status provided", ResponseStatus.Fail);
+                return ReturnResponse("Invalid status provided", ResponseStatus.Neutral);
 
             var status = await _ticketManager.GetTicketStatusByStatusId(statusId);
             if (status == null)
-                return ReturnResponse("Invalid status provided", ResponseStatus.Fail);
+                return ReturnResponse("Invalid status provided", ResponseStatus.Neutral);
 
             await _ticketManager.ChangeTicketStatus(ticket, status);
             return ReturnResponse("Success!", ResponseStatus.Success);
@@ -114,7 +114,7 @@ namespace temsAPI.Controllers.TicketControllers
                     .FirstOrDefault();
 
             if (ticket == null)
-                return ReturnResponse("Invalid id provided", ResponseStatus.Fail);
+                return ReturnResponse("Invalid id provided", ResponseStatus.Neutral);
 
             ticket.IsArchieved = (bool)newArchivationState;
             await _unitOfWork.Save();
@@ -136,11 +136,11 @@ namespace temsAPI.Controllers.TicketControllers
         {
             // Check if the function has not been disabled by adminstrators for guests
             if (!_identityService.IsAuthenticated() && !_systemConfigService.AppSettings.AllowGuestsToCreateTickets)
-                return ReturnResponse("Creating tickets has been disabled for guets.", ResponseStatus.Fail);
+                return ReturnResponse("Creating tickets has been disabled for guets.", ResponseStatus.Neutral);
 
             var result = await _ticketManager.Create(viewModel);
             if (result != null)
-                return ReturnResponse(result, ResponseStatus.Fail);
+                return ReturnResponse(result, ResponseStatus.Neutral);
 
             return ReturnResponse("Success", ResponseStatus.Success);
         }
@@ -152,7 +152,7 @@ namespace temsAPI.Controllers.TicketControllers
         {
             string result = await _ticketManager.Remove(ticketId);
             if (result != null)
-                return ReturnResponse(result, ResponseStatus.Fail);
+                return ReturnResponse(result, ResponseStatus.Neutral);
 
             return ReturnResponse("Success", ResponseStatus.Success);
         }
@@ -184,11 +184,11 @@ namespace temsAPI.Controllers.TicketControllers
         {
             var ticket = await _ticketManager.GetById(ticketId);
             if (ticket == null)
-                return ReturnResponse("Invalid ticket id", ResponseStatus.Fail);
+                return ReturnResponse("Invalid ticket id", ResponseStatus.Neutral);
 
             string result = await _ticketManager.ChangePinStatus(ticket, status);
             if (result != null)
-                return ReturnResponse(result, ResponseStatus.Fail);
+                return ReturnResponse(result, ResponseStatus.Neutral);
 
             return ReturnResponse("Success", ResponseStatus.Success);
         }

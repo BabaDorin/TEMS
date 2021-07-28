@@ -40,7 +40,7 @@ namespace temsAPI.Controllers.ReportControllers
         {
             var result = await _reportManager.CreateTemplate(viewModel);
             if (result != null)
-                return ReturnResponse(result, ResponseStatus.Fail);
+                return ReturnResponse(result, ResponseStatus.Neutral);
 
             return ReturnResponse($"Success!", ResponseStatus.Success);
         }
@@ -52,7 +52,7 @@ namespace temsAPI.Controllers.ReportControllers
         {
             var result = await _reportManager.UpdateTemplate(viewModel);
             if (result != null)
-                return ReturnResponse(result, ResponseStatus.Fail);
+                return ReturnResponse(result, ResponseStatus.Neutral);
 
             return ReturnResponse("Success!", ResponseStatus.Success);
         }
@@ -65,7 +65,7 @@ namespace temsAPI.Controllers.ReportControllers
             string archivationResult = await (new ArchieveHelper(_unitOfWork, User))
                     .SetReportTemplateArchivationStatus(templateId, flag);
             if (archivationResult != null)
-                return ReturnResponse(archivationResult, ResponseStatus.Fail);
+                return ReturnResponse(archivationResult, ResponseStatus.Neutral);
 
             return ReturnResponse("Success", ResponseStatus.Success);
         }
@@ -77,11 +77,11 @@ namespace temsAPI.Controllers.ReportControllers
         {
             var report = await _reportManager.GetReport(reportId);
             if (report == null)
-                return ReturnResponse("Invalid id provided", ResponseStatus.Fail);
+                return ReturnResponse("Invalid id provided", ResponseStatus.Neutral);
 
             string result = await _reportManager.RemoveReport(report);
             if (result != null)
-                return ReturnResponse(result, ResponseStatus.Fail);
+                return ReturnResponse(result, ResponseStatus.Neutral);
 
             return ReturnResponse("Success", ResponseStatus.Success);
         }
@@ -92,7 +92,7 @@ namespace temsAPI.Controllers.ReportControllers
         {
             var template = await _reportManager.GetFullTemplate(templateId);
             if (template == null)
-                return ReturnResponse("Invalid id provided", ResponseStatus.Fail);
+                return ReturnResponse("Invalid id provided", ResponseStatus.Neutral);
 
             var viewModel = AddReportTemplateViewModel.FromModel(template);
             return Ok(viewModel);
@@ -105,7 +105,7 @@ namespace temsAPI.Controllers.ReportControllers
         {
             string result = await _reportManager.Remove(templateId);
             if (result != null)
-                return ReturnResponse(result, ResponseStatus.Fail);
+                return ReturnResponse(result, ResponseStatus.Neutral);
 
             return ReturnResponse("Success", ResponseStatus.Success);
         }
@@ -117,7 +117,7 @@ namespace temsAPI.Controllers.ReportControllers
         {
             var template = await _reportManager.GetFullTemplate(templateId);
             if (template == null)
-                return ReturnResponse("Invalid id provided", ResponseStatus.Fail);
+                return ReturnResponse("Invalid id provided", ResponseStatus.Neutral);
 
             var report = await _reportManager.CreateReport(template);
 
@@ -153,7 +153,7 @@ namespace temsAPI.Controllers.ReportControllers
         {
             string validationResult = await template.Validate(_unitOfWork);
             if (validationResult != null)
-                return ReturnResponse(validationResult, ResponseStatus.Fail);
+                return ReturnResponse(validationResult, ResponseStatus.Neutral);
 
             var reportTemplate = await template.ToModel(_unitOfWork, new TEMSUser());
 

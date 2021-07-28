@@ -33,7 +33,7 @@ namespace temsAPI.Controllers.KeyControllers
         {
             var result = await _keyManager.Create(viewModel);
             if (result != null)
-                return ReturnResponse(result, ResponseStatus.Fail);
+                return ReturnResponse(result, ResponseStatus.Neutral);
 
             return ReturnResponse("Success", ResponseStatus.Success);
         }
@@ -46,7 +46,7 @@ namespace temsAPI.Controllers.KeyControllers
             string archivationResult = await new ArchieveHelper(_unitOfWork, User)
                     .SetKeyArchivationStatus(keyId, true);
             if (archivationResult != null)
-                return ReturnResponse(archivationResult, ResponseStatus.Fail);
+                return ReturnResponse(archivationResult, ResponseStatus.Neutral);
 
             return ReturnResponse("Success", ResponseStatus.Success);
         }
@@ -58,7 +58,7 @@ namespace temsAPI.Controllers.KeyControllers
         {
             string result = await _keyManager.Remove(keyId);
             if (result != null)
-                return ReturnResponse(result, ResponseStatus.Fail);
+                return ReturnResponse(result, ResponseStatus.Neutral);
 
             return ReturnResponse("Success", ResponseStatus.Success);
         }
@@ -70,7 +70,7 @@ namespace temsAPI.Controllers.KeyControllers
         {
             string result = await _keyManager.RemoveAllocation(allocationId);
             if (result != null)
-                return ReturnResponse(result, ResponseStatus.Fail);
+                return ReturnResponse(result, ResponseStatus.Neutral);
 
             return ReturnResponse("Success", ResponseStatus.Success);
         }
@@ -82,7 +82,7 @@ namespace temsAPI.Controllers.KeyControllers
         {
             var result = await _keyManager.CreateAllocation(viewModel);
             if (result != null)
-                return ReturnResponse(result, ResponseStatus.Fail);
+                return ReturnResponse(result, ResponseStatus.Neutral);
 
             return ReturnResponse("Success", ResponseStatus.Success);
         }
@@ -121,7 +121,7 @@ namespace temsAPI.Controllers.KeyControllers
         {
             string result = await _keyManager.MarkKeyAsReturned(keyId);
             if (result != null)
-                return ReturnResponse(result, ResponseStatus.Fail);
+                return ReturnResponse(result, ResponseStatus.Neutral);
 
             return ReturnResponse("Success", ResponseStatus.Success);
         }
@@ -136,7 +136,7 @@ namespace temsAPI.Controllers.KeyControllers
             string archivationResult = await (new ArchieveHelper(_unitOfWork, User)
                 .SetKeyAllocationArchivationStatus(allocationId, (bool)archivationStatus));
             if (archivationResult != null)
-                return ReturnResponse(archivationResult, ResponseStatus.Fail);
+                return ReturnResponse(archivationResult, ResponseStatus.Neutral);
 
             return ReturnResponse("Success", ResponseStatus.Success);
         }

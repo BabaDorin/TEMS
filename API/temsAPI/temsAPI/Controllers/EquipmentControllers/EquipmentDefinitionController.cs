@@ -35,7 +35,7 @@ namespace temsAPI.Controllers.EquipmentControllers
         {
             string result = await _equipmentDefinitionManager.Create(viewModel);
             if (result != null)
-                return ReturnResponse(result, ResponseStatus.Fail);
+                return ReturnResponse(result, ResponseStatus.Neutral);
 
             return ReturnResponse("Success", ResponseStatus.Success);
         }
@@ -47,7 +47,7 @@ namespace temsAPI.Controllers.EquipmentControllers
         {
             var result = await _equipmentDefinitionManager.Update(viewModel);
             if (result != null)
-                return ReturnResponse(result, ResponseStatus.Fail);
+                return ReturnResponse(result, ResponseStatus.Neutral);
 
             return ReturnResponse("Success!", ResponseStatus.Success);
         }
@@ -61,7 +61,7 @@ namespace temsAPI.Controllers.EquipmentControllers
                     .SetDefinitionArchivationStatus(definitionId, archivationStatus);
 
             if (archievingResult != null)
-                return ReturnResponse(archievingResult, ResponseStatus.Fail);
+                return ReturnResponse(archievingResult, ResponseStatus.Neutral);
 
             return ReturnResponse("Success", ResponseStatus.Success);
         }
@@ -73,7 +73,7 @@ namespace temsAPI.Controllers.EquipmentControllers
         {
             string result = await _equipmentDefinitionManager.Remove(definitionId);
             if (result != null)
-                return ReturnResponse(result, ResponseStatus.Fail);
+                return ReturnResponse(result, ResponseStatus.Neutral);
 
             return ReturnResponse("Success", ResponseStatus.Success);
         }
@@ -121,7 +121,7 @@ namespace temsAPI.Controllers.EquipmentControllers
         {
             var definition = await _equipmentDefinitionManager.GetFullById(definitionId);
             if (definition == null)
-                return ReturnResponse("Invalid definition id provided", ResponseStatus.Fail);
+                return ReturnResponse("Invalid definition id provided", ResponseStatus.Neutral);
 
             var viewModel = AddEquipmentDefinitionViewModel.FromModel(definition);
             return Ok(viewModel);
@@ -134,7 +134,7 @@ namespace temsAPI.Controllers.EquipmentControllers
         {
             var definition = await _equipmentDefinitionManager.GetFullById(definitionId);
             if (definition == null)
-                return ReturnResponse("Invalid definition Id", ResponseStatus.Fail);
+                return ReturnResponse("Invalid definition Id", ResponseStatus.Neutral);
 
             var viewModel = EquipmentDefinitionViewModel.FromModel(definition);
             return Ok(viewModel);

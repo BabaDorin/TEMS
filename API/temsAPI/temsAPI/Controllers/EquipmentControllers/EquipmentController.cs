@@ -42,7 +42,7 @@ namespace temsAPI.Controllers.EquipmentControllers
         {
             string result = await _equipmentManager.Create(viewModel);
             if (result[300] > 10)
-                return ReturnResponse(result, ResponseStatus.Fail);
+                return ReturnResponse(result, ResponseStatus.Neutral);
             
             return ReturnResponse("Success", ResponseStatus.Success);
         }
@@ -65,7 +65,7 @@ namespace temsAPI.Controllers.EquipmentControllers
         {
             string result = await _equipmentManager.Update(viewModel);
             if (result != null)
-                return ReturnResponse(result, ResponseStatus.Fail);
+                return ReturnResponse(result, ResponseStatus.Neutral);
 
             return ReturnResponse("Success!", ResponseStatus.Success);
         }
@@ -79,7 +79,7 @@ namespace temsAPI.Controllers.EquipmentControllers
                      .SetEquipmentArchivationStatus(equipmentId, archivationStatus);
 
             if (archivationResult != null)
-                return ReturnResponse(archivationResult, ResponseStatus.Fail);
+                return ReturnResponse(archivationResult, ResponseStatus.Neutral);
 
             return ReturnResponse("Success", ResponseStatus.Success);
         }
@@ -91,7 +91,7 @@ namespace temsAPI.Controllers.EquipmentControllers
         {
             string result = await _equipmentManager.Remove(equipmentId);
             if (result != null)
-                return ReturnResponse(result, ResponseStatus.Fail);
+                return ReturnResponse(result, ResponseStatus.Neutral);
 
             return ReturnResponse("Success", ResponseStatus.Success);
         }
@@ -108,7 +108,7 @@ namespace temsAPI.Controllers.EquipmentControllers
         {
             // Invalid parameters
             if (pageNumber < 0 || equipmentsPerPage < 1)
-                return ReturnResponse("Invalid parameters", ResponseStatus.Fail);
+                return ReturnResponse("Invalid parameters", ResponseStatus.Neutral);
 
             if (rooms != null && rooms.Count > 0 || personnel != null && personnel.Count > 0)
                 return Ok(await _equipmentManager.GetEquipmentOfEntities(rooms, personnel));
@@ -123,7 +123,7 @@ namespace temsAPI.Controllers.EquipmentControllers
         {
             var equipment = await _equipmentManager.GetFullEquipmentById(id);
             if (equipment == null)
-                return ReturnResponse("Invalid equipment Id", ResponseStatus.Fail);
+                return ReturnResponse("Invalid equipment Id", ResponseStatus.Neutral);
 
             var viewModel = ViewEquipmentSimplifiedViewModel.FromEquipment(equipment);
             return Ok(viewModel);
@@ -144,7 +144,7 @@ namespace temsAPI.Controllers.EquipmentControllers
         {
             var model = await _equipmentManager.GetFullEquipmentById(id);
             if (model == null)
-                return ReturnResponse("Invalid equipment id provided", ResponseStatus.Fail);
+                return ReturnResponse("Invalid equipment id provided", ResponseStatus.Neutral);
 
             var viewModel = ViewEquipmentViewModel.ParseEquipment(_mapper, model);
 
@@ -157,7 +157,7 @@ namespace temsAPI.Controllers.EquipmentControllers
         public async Task<IActionResult> GetEquipmentOfDefinitions(List<string> definitionIds, bool onlyParents = false)
         {
             if (definitionIds == null)
-                return ReturnResponse("Please, provide some definitions", ResponseStatus.Fail);
+                return ReturnResponse("Please, provide some definitions", ResponseStatus.Neutral);
 
             var options = await _equipmentManager.GetEquipmentOfDefinitions(definitionIds, onlyParents);
             return Ok(options);
@@ -181,11 +181,11 @@ namespace temsAPI.Controllers.EquipmentControllers
         {
             var equipment = await _equipmentManager.GetById(equipmentId);
             if (equipment == null)
-                return ReturnResponse("Invalid child ID provided.", ResponseStatus.Fail);
+                return ReturnResponse("Invalid child ID provided.", ResponseStatus.Neutral);
 
             string result = await _equipmentManager.DetachEquipment(equipment);
             if (result != null)
-                return ReturnResponse(result, ResponseStatus.Fail);
+                return ReturnResponse(result, ResponseStatus.Neutral);
 
             return ReturnResponse("Success", ResponseStatus.Success);
         }
@@ -197,7 +197,7 @@ namespace temsAPI.Controllers.EquipmentControllers
         {
             string validationResult = await viewModel.Validate(_unitOfWork);
             if (validationResult != null)
-                return ReturnResponse(validationResult, ResponseStatus.Fail);
+                return ReturnResponse(validationResult, ResponseStatus.Neutral);
 
             var parent = await _equipmentManager.GetFullEquipmentById(viewModel.ParentId);
             foreach (var childId in viewModel.ChildrenIds)
@@ -215,7 +215,7 @@ namespace temsAPI.Controllers.EquipmentControllers
         {
             var equipment = await _equipmentManager.GetById(equipmentId);
             if (equipment == null)
-                return ReturnResponse("Invalid equipment ID", ResponseStatus.Fail);
+                return ReturnResponse("Invalid equipment ID", ResponseStatus.Neutral);
 
             // by default it works like a toggler
             await _equipmentManager.ChangeWorkingState(equipment, isWorking ?? !equipment.IsDefect);
@@ -234,7 +234,7 @@ namespace temsAPI.Controllers.EquipmentControllers
                     .FirstOrDefault();
 
             if (equipment == null)
-                return ReturnResponse("Invalid equipment id provided", ResponseStatus.Fail);
+                return ReturnResponse("Invalid equipment id provided", ResponseStatus.Neutral);
 
             // by default it works like a toggler
             await _equipmentManager.ChangeUsingState(equipment, isUsed ?? !equipment.IsUsed);

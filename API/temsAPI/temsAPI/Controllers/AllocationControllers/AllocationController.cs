@@ -38,7 +38,7 @@ namespace temsAPI.Controllers.Allocation
         {
             var result = await _equipmentManager.CreateAllocation(viewModel);
             if (result != null)
-                return ReturnResponse(result, ResponseStatus.Fail);
+                return ReturnResponse(result, ResponseStatus.Neutral);
 
             return ReturnResponse("Success", ResponseStatus.Success);
         }
@@ -50,7 +50,7 @@ namespace temsAPI.Controllers.Allocation
         {
             string result = await _equipmentManager.RemoveAllocation(allocationId);
             if (result != null)
-                return ReturnResponse(result, ResponseStatus.Fail);
+                return ReturnResponse(result, ResponseStatus.Neutral);
 
             return ReturnResponse("Success", ResponseStatus.Success);
         }
@@ -62,7 +62,7 @@ namespace temsAPI.Controllers.Allocation
         {
             string result = await _equipmentManager.ArchieveAllocation(allocationId, status);
             if (result != null)
-                return ReturnResponse(result, ResponseStatus.Fail);
+                return ReturnResponse(result, ResponseStatus.Neutral);
 
             return ReturnResponse("Success", ResponseStatus.Success);
         }
@@ -74,7 +74,7 @@ namespace temsAPI.Controllers.Allocation
         {
             var result = await _equipmentManager.MarkAllocationAsReturned(allocationId);
             if (result != null)
-                return ReturnResponse(result, ResponseStatus.Fail);
+                return ReturnResponse(result, ResponseStatus.Neutral);
 
             return ReturnResponse("Success", ResponseStatus.Success);
         }
@@ -86,11 +86,11 @@ namespace temsAPI.Controllers.Allocation
         {
             // Invalid identityType
             if ((new List<string>() { "any", "equipment", "room", "personnel" }).IndexOf(entityType) == -1)
-                return ReturnResponse("Invalid entity type or id provided", ResponseStatus.Fail);
+                return ReturnResponse("Invalid entity type or id provided", ResponseStatus.Neutral);
 
             // No entity id provided
             if (String.IsNullOrEmpty(entityId.Trim()))
-                return ReturnResponse($"You have to provide a valid {entityType} Id", ResponseStatus.Fail);
+                return ReturnResponse($"You have to provide a valid {entityType} Id", ResponseStatus.Neutral);
 
             List<ViewAllocationSimplifiedViewModel> allocations = new();
             switch (entityType)

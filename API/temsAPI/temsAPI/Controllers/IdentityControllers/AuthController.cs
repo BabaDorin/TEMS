@@ -30,16 +30,8 @@ namespace temsAPI.Controllers.IdentityControllers
         [DefaultExceptionHandler("Invalid credentials", true)]
         public async Task<IActionResult> LogIn([FromBody] LogInViewModel viewModel)
         {
-            try
-            {
-                var token = await _temsUserManager.GenerateToken(viewModel);
-                return Ok(new { token });
-            }
-            catch (Exception ex)
-            {
-                LogException(ex);
-                return ReturnResponse("Invalid credentials", ResponseStatus.Fail);
-            }
+            var token = await _temsUserManager.GenerateToken(viewModel);
+            return Ok(new { token });
         }
 
         [HttpPost("auth/SignOut")]

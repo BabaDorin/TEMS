@@ -34,7 +34,7 @@ namespace temsAPI.Controllers.AnnouncementControllers
         {
             string result = await _announcementManager.Create(viewModel);
             if (result != null)
-                return ReturnResponse(result, ResponseStatus.Fail);
+                return ReturnResponse(result, ResponseStatus.Neutral);
 
             return ReturnResponse("Success", ResponseStatus.Success);
         }
@@ -46,7 +46,7 @@ namespace temsAPI.Controllers.AnnouncementControllers
         {
             string result = await _announcementManager.Remove(announcementId);
             if (result != null)
-                return ReturnResponse(result, ResponseStatus.Fail);
+                return ReturnResponse(result, ResponseStatus.Neutral);
 
             return ReturnResponse("Success", ResponseStatus.Success);
         }

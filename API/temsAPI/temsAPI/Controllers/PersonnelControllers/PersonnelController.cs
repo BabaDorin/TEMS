@@ -43,7 +43,7 @@ namespace temsAPI.Controllers.PersonnelControllers
         {
             var result = await _personnelManager.Update(viewModel);
             if (result != null)
-                return ReturnResponse(result, ResponseStatus.Fail);
+                return ReturnResponse(result, ResponseStatus.Neutral);
 
             return ReturnResponse("Success", ResponseStatus.Success);
         }
@@ -56,7 +56,7 @@ namespace temsAPI.Controllers.PersonnelControllers
             var archievingResult = await (new ArchieveHelper(_unitOfWork, User))
                    .SetPersonnelArchivationStatus(personnelId, archivationStatus);
             if (archievingResult != null)
-                return ReturnResponse(archievingResult, ResponseStatus.Fail);
+                return ReturnResponse(archievingResult, ResponseStatus.Neutral);
 
             return ReturnResponse("Success", ResponseStatus.Success);
         }
@@ -68,7 +68,7 @@ namespace temsAPI.Controllers.PersonnelControllers
         {
             string result = await _personnelManager.Remove(personnelId);
             if (result != null)
-                return ReturnResponse(result, ResponseStatus.Fail);
+                return ReturnResponse(result, ResponseStatus.Neutral);
 
             return ReturnResponse("Success", ResponseStatus.Success);
         }
@@ -90,7 +90,7 @@ namespace temsAPI.Controllers.PersonnelControllers
             // Invalid page number or records per page provided
             if (pageNumber < 0 || recordsPerPage < 0 || pageNumber > 1000 || recordsPerPage > 1000)
                 return ReturnResponse("Invalid parameters, please provide real number representing page number" +
-                    "and how many records are displayed per page", ResponseStatus.Fail);
+                    "and how many records are displayed per page", ResponseStatus.Neutral);
 
             var simplifiedPersonnel = await _personnelManager.GetSimplified();
             return Ok(simplifiedPersonnel);
@@ -121,7 +121,7 @@ namespace temsAPI.Controllers.PersonnelControllers
         {
             var personnel = await _personnelManager.GetFullById(id);
             if (personnel == null)
-                return ReturnResponse("Invalid personnel id", ResponseStatus.Fail);
+                return ReturnResponse("Invalid personnel id", ResponseStatus.Neutral);
 
             var viewModel = ViewPersonnelViewModel.FromModel(personnel);
             return Ok(viewModel);

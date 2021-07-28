@@ -45,7 +45,7 @@ namespace temsAPI.Controllers.ArchieveControllers
                     itemId,
                     status);
             if (archivationStatus != null)
-                return ReturnResponse(archivationStatus, ResponseStatus.Fail);
+                return ReturnResponse(archivationStatus, ResponseStatus.Neutral);
 
             return ReturnResponse("Success", ResponseStatus.Success);
         }   

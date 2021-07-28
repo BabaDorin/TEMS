@@ -23,13 +23,12 @@ namespace temsAPI.Controllers.EquipmentControllers
         private LogManager _logManager;
 
         public EquipmentController(
-            IMapper mapper, 
             IUnitOfWork unitOfWork, 
             UserManager<TEMSUser> userManager,
             ILogger<TEMSController> logger,
             EquipmentManager equipmentManager,
             LogManager logManager)
-           : base(mapper, unitOfWork, userManager, logger)
+           : base(unitOfWork, userManager, logger)
         {
             _equipmentManager = equipmentManager;
             _logManager = logManager;
@@ -146,7 +145,7 @@ namespace temsAPI.Controllers.EquipmentControllers
             if (model == null)
                 return ReturnResponse("Invalid equipment id provided", ResponseStatus.Neutral);
 
-            var viewModel = ViewEquipmentViewModel.ParseEquipment(_mapper, model);
+            var viewModel = ViewEquipmentViewModel.ParseEquipment(model);
 
             return Ok(viewModel);
         }

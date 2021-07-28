@@ -17,11 +17,10 @@ namespace temsAPI.Controllers.IdentityControllers
         private RoleManager<IdentityRole> _roleManager;
 
         public RoleController(
-            IMapper mapper,
             IUnitOfWork unitOfWork,
             UserManager<TEMSUser> userManager,
             RoleManager<IdentityRole> roleManager,
-            ILogger<TEMSController> logger) : base(mapper, unitOfWork, userManager, logger)
+            ILogger<TEMSController> logger) : base(unitOfWork, userManager, logger)
         {
             _roleManager = roleManager;
         }

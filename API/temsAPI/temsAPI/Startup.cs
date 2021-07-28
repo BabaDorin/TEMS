@@ -19,7 +19,6 @@ using temsAPI.Data;
 using temsAPI.Data.Entities.UserEntities;
 using temsAPI.Data.Managers;
 using temsAPI.Helpers;
-using temsAPI.Mappings;
 using temsAPI.Repository;
 using temsAPI.Services;
 using temsAPI.Services.JWT;
@@ -58,8 +57,6 @@ namespace temsAPI
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
             
-            services.AddAutoMapper(typeof(Maps));
-
             services.AddDefaultIdentity<TEMSUser>()
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();

@@ -18,11 +18,10 @@ namespace temsAPI.Controllers.IdentityControllers
         private TEMSUserManager _temsUserManager;
 
         public ProfileController(
-            IMapper mapper, 
             IUnitOfWork unitOfWork, 
             UserManager<TEMSUser> userManager,
             TEMSUserManager temsUserManager,
-            ILogger<TEMSController> logger) : base(mapper, unitOfWork, userManager, logger)
+            ILogger<TEMSController> logger) : base(unitOfWork, userManager, logger)
         {
             _temsUserManager = temsUserManager;
         }

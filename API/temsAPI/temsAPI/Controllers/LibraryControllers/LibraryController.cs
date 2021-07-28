@@ -26,14 +26,12 @@ namespace temsAPI.Controllers.LibraryControllers
         private SystemConfigurationService _systemConfigurationService;
 
         public LibraryController(
-            IMapper mapper,
             IUnitOfWork unitOfWork,
             UserManager<TEMSUser> userManager,
-            IHttpContextAccessor httpContextAccessor,
             IdentityService identityService,
             SystemConfigurationService systemConfigurationService,
             LibraryManager libraryManager,
-            ILogger<TEMSController> logger) : base(mapper, unitOfWork, userManager, logger)
+            ILogger<TEMSController> logger) : base(unitOfWork, userManager, logger)
         {
             _libraryManager = libraryManager;
             _identityService = identityService;

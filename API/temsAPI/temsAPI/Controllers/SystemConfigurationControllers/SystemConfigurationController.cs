@@ -19,11 +19,10 @@ namespace temsAPI.Controllers.SystemConfigurationControllers
         private SystemConfigurationService _configService;
 
         public SystemConfigurationController(
-            IMapper mapper,
             IUnitOfWork unitOfWork,
             UserManager<TEMSUser> userManager,
             SystemConfigurationService configService,
-            ILogger<TEMSController> logger) : base(mapper, unitOfWork, userManager, logger)
+            ILogger<TEMSController> logger) : base(unitOfWork, userManager, logger)
         {
             _configService = configService;
         }

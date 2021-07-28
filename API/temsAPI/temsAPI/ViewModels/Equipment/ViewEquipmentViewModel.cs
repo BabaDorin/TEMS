@@ -31,7 +31,7 @@ namespace temsAPI.ViewModels.Equipment
             Photos = new List<string>();
         }
 
-        public static ViewEquipmentViewModel ParseEquipment(IMapper  mapper, Data.Entities.EquipmentEntities.Equipment model)
+        public static ViewEquipmentViewModel ParseEquipment(Data.Entities.EquipmentEntities.Equipment model)
         {
             var activeRoomAllocation = model.EquipmentAllocations
                     .Where(q => q.DateReturned == null && q.RoomID != null)

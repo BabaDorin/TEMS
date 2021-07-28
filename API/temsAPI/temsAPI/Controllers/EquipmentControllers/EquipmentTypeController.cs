@@ -18,12 +18,11 @@ namespace temsAPI.EquipmentControllers
     {
         EquipmentTypeManager _equipmentTypeManager;
         public EquipmentTypeController(
-            IMapper mapper, 
             IUnitOfWork unitOfWork, 
             UserManager<TEMSUser> userManager,
             EquipmentTypeManager eqTypeManager,
             ILogger<TEMSController> logger)
-            : base(mapper, unitOfWork, userManager, logger)
+            : base(unitOfWork, userManager, logger)
         {
             _equipmentTypeManager = eqTypeManager;
         }

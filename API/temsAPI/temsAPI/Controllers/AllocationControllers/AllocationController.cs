@@ -20,13 +20,11 @@ namespace temsAPI.Controllers.Allocation
         private EquipmentManager _equipmentManager;
 
         public AllocationController(
-            IMapper mapper, 
-            IUnitOfWork 
-            unitOfWork, 
+            IUnitOfWork unitOfWork, 
             UserManager<TEMSUser> userManager,
             EquipmentManager equipmentManager,
             ILogger<TEMSController> logger) 
-            : base(mapper, unitOfWork, userManager, logger)
+            : base(unitOfWork, userManager, logger)
         {
             _equipmentManager = equipmentManager;
         }

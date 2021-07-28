@@ -1,13 +1,9 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.UserEntities;
 using temsAPI.System_Files;
@@ -17,22 +13,16 @@ namespace temsAPI.Controllers
 {
     public abstract class TEMSController : Controller
     {
-        protected static int maxConcurrentUploads = 2;
-        protected static int concurrentUploads = 0;
-
         protected readonly IUnitOfWork _unitOfWork;
         protected readonly UserManager<TEMSUser> _userManager;
-        protected readonly IMapper _mapper;
         protected readonly ILogger _logger;
 
         public TEMSController(
-            IMapper mapper,
             IUnitOfWork unitOfWork,
             UserManager<TEMSUser> userManager,
             ILogger<TEMSController> logger
             )
         {
-            _mapper = mapper;
             _unitOfWork = unitOfWork;
             _userManager = userManager;
             _logger = logger;

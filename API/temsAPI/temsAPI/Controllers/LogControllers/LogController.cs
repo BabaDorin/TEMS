@@ -18,11 +18,10 @@ namespace temsAPI.Controllers.LogControllers
         private LogManager _logManager;
 
         public LogController(
-            IMapper mapper, 
             IUnitOfWork unitOfWork, 
             UserManager<TEMSUser> userManager,
             LogManager logManager,
-            ILogger<TEMSController> logger) : base(mapper, unitOfWork, userManager, logger)
+            ILogger<TEMSController> logger) : base(unitOfWork, userManager, logger)
         {
             _logManager = logManager;
         }

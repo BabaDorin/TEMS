@@ -22,14 +22,13 @@ namespace temsAPI.Controllers.IdentityControllers
         private ArchieveManager _archieveManager;
 
         public TEMSUserController(
-            IMapper mapper,
             IUnitOfWork unitOfWork,
             UserManager<TEMSUser> userManager,
             RoleManager<IdentityRole> roleManager,
             TEMSUserManager temsUserManager,
             IdentityService identityService,
             ArchieveManager archieveManager,
-            ILogger<TEMSController> logger) : base(mapper, unitOfWork, userManager, logger)
+            ILogger<TEMSController> logger) : base(unitOfWork, userManager, logger)
         {
             _archieveManager = archieveManager;
             _temsUserManager = temsUserManager;

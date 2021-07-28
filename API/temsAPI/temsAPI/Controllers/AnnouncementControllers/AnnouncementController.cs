@@ -18,11 +18,10 @@ namespace temsAPI.Controllers.AnnouncementControllers
     {
         private AnnouncementManager _announcementManager;
         public AnnouncementController(
-            IMapper mapper, 
             IUnitOfWork unitOfWork, 
             UserManager<TEMSUser> userManager,
             AnnouncementManager announcementManager,
-            ILogger<TEMSController> logger) : base(mapper, unitOfWork, userManager, logger)
+            ILogger<TEMSController> logger) : base(unitOfWork, userManager, logger)
         {
             _announcementManager = announcementManager;
         }

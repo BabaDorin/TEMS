@@ -19,12 +19,11 @@ namespace temsAPI.Controllers.EmailControllers
         private EmailService _emailService;
 
         public EmailController(
-            IMapper mapper, 
             IUnitOfWork unitOfWork, 
             UserManager<TEMSUser> userManager,
             IOptions<AppSettings> appSettings,
             EmailService emailService,
-            ILogger<TEMSController> logger) : base(mapper, unitOfWork, userManager, logger)
+            ILogger<TEMSController> logger) : base(unitOfWork, userManager, logger)
         {
             _appSettings = appSettings.Value;
             _emailService = emailService;

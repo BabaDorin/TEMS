@@ -18,11 +18,10 @@ namespace temsAPI.Controllers.ArchieveControllers
         ArchieveManager _archieveManager;
 
         public ArchieveController(
-            IMapper mapper, 
             IUnitOfWork unitOfWork, 
             UserManager<TEMSUser> userManager,
             ArchieveManager archieveManager,
-            ILogger<TEMSController> logger) : base(mapper, unitOfWork, userManager, logger)
+            ILogger<TEMSController> logger) : base(unitOfWork, userManager, logger)
         {
             _archieveManager = archieveManager;
         }

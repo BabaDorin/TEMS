@@ -22,13 +22,12 @@ namespace temsAPI.Controllers.NotificationControllers
         private IdentityService _identityService;
 
         public NotificationController(
-            IMapper mapper, 
             IUnitOfWork unitOfWork, 
             UserManager<TEMSUser> userManager,
             NotificationService notificationService,
             NotificationManager notificationManager,
             IdentityService identityService,
-            ILogger<TEMSController> logger) : base(mapper, unitOfWork, userManager, logger)
+            ILogger<TEMSController> logger) : base(unitOfWork, userManager, logger)
         {
             _notificationService = notificationService;
             _notificationManager = notificationManager;

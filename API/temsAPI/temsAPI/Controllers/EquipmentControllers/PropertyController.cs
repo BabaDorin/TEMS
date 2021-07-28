@@ -18,12 +18,11 @@ namespace temsAPI.EquipmentControllers
     {
         EquipmentPropertyManager _eqPropertyManager;
         public PropertyController(
-            IMapper mapper, 
             IUnitOfWork unitOfWork, 
             UserManager<TEMSUser> userManager,
             EquipmentPropertyManager equipmentPropertyManager,
             ILogger<TEMSController> logger) 
-            : base(mapper, unitOfWork, userManager, logger)
+            : base(unitOfWork, userManager, logger)
         {
             _eqPropertyManager = equipmentPropertyManager;
         }

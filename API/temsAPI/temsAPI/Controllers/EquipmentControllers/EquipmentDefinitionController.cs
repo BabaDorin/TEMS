@@ -18,12 +18,11 @@ namespace temsAPI.Controllers.EquipmentControllers
     {
         private EquipmentDefinitionManager _equipmentDefinitionManager;
         public EquipmentDefinitionController(
-            IMapper mapper, 
             IUnitOfWork unitOfWork, 
             UserManager<TEMSUser> userManager,
             EquipmentDefinitionManager equipmentDefinitionManager,
             ILogger<TEMSController> logger)
-           : base(mapper, unitOfWork, userManager, logger)
+           : base(unitOfWork, userManager, logger)
         {
             _equipmentDefinitionManager = equipmentDefinitionManager;
         }

@@ -20,12 +20,11 @@ namespace temsAPI.Controllers.AnalyticsControllers
         private AnalyticsManager _analyticsManager;
 
         public AnalyticsController(
-            IMapper mapper,
             IUnitOfWork unitOfWork,
             UserManager<TEMSUser> userManager,
             AnalyticsManager analyticsManager,
             CurrencyConvertor currencyConvertor,
-            ILogger<TEMSController> logger) : base(mapper, unitOfWork, userManager, logger)
+            ILogger<TEMSController> logger) : base(unitOfWork, userManager, logger)
         {
             _analyticsManager = analyticsManager;
 

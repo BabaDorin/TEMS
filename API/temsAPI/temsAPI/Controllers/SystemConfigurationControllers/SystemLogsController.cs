@@ -16,11 +16,10 @@ namespace temsAPI.Controllers.SystemConfigurationControllers
         SystemConfigurationService _configService;
 
         public SystemLogsController(
-            IMapper mapper, 
             IUnitOfWork unitOfWork, 
             UserManager<TEMSUser> userManager, 
             ILogger<TEMSController> logger,
-            SystemConfigurationService systemConfigurationService) : base(mapper, unitOfWork, userManager, logger)
+            SystemConfigurationService systemConfigurationService) : base(unitOfWork, userManager, logger)
         {
             _configService = systemConfigurationService;
         }

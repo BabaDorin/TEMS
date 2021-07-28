@@ -18,11 +18,10 @@ namespace temsAPI.Controllers.PersonnelControllers
         private PersonnelManager _personnelManager;
 
         public PersonnelController(
-            IMapper mapper, 
             IUnitOfWork unitOfWork, 
             UserManager<TEMSUser> userManager,
             PersonnelManager personnelManager,
-            ILogger<TEMSController> logger) : base(mapper, unitOfWork, userManager, logger)
+            ILogger<TEMSController> logger) : base(unitOfWork, userManager, logger)
         {
             _personnelManager = personnelManager;
         }

@@ -17,11 +17,10 @@ namespace temsAPI.Controllers.KeyControllers
     {
         private KeyManager _keyManager;
         public KeyController(
-            IMapper mapper, 
             IUnitOfWork unitOfWork, 
             UserManager<TEMSUser> userManager,
             KeyManager keyManager,
-            ILogger<TEMSController> logger) : base(mapper, unitOfWork, userManager, logger)
+            ILogger<TEMSController> logger) : base(unitOfWork, userManager, logger)
         {
             _keyManager = keyManager;
         }

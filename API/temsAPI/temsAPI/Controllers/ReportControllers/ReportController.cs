@@ -22,12 +22,11 @@ namespace temsAPI.Controllers.ReportControllers
         GeneratedReportFileHandler fileHandler = new();
         
         public ReportController(
-            IMapper mapper,
             IUnitOfWork unitOfWork, 
             UserManager<TEMSUser> userManager,
             ReportingService reportingService,
             ReportManager reportManager,
-            ILogger<TEMSController> logger) : base(mapper, unitOfWork, userManager, logger)
+            ILogger<TEMSController> logger) : base(unitOfWork, userManager, logger)
         {
             _reportingService = reportingService;
             _reportManager = reportManager;

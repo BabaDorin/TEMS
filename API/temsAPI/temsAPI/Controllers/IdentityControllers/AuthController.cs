@@ -17,11 +17,10 @@ namespace temsAPI.Controllers.IdentityControllers
         TEMSUserManager _temsUserManager;
 
         public AuthController(
-            IMapper mapper, 
             IUnitOfWork unitOfWork, 
             UserManager<TEMSUser> userManager,
             TEMSUserManager temsUserManager,
-            ILogger<TEMSController> logger) : base(mapper, unitOfWork, userManager, logger)
+            ILogger<TEMSController> logger) : base(unitOfWork, userManager, logger)
         {
             _temsUserManager = temsUserManager;
         }

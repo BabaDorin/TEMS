@@ -25,13 +25,12 @@ namespace temsAPI.Controllers.TicketControllers
         private SystemConfigurationService _systemConfigService;
 
         public TicketController(
-            IMapper mapper,
             IUnitOfWork unitOfWork,
             UserManager<TEMSUser> userManager,
             TicketManager ticketManager,
             ILogger<TEMSController> logger,
             IdentityService identityService,
-            SystemConfigurationService systemConfigService) : base(mapper, unitOfWork, userManager, logger)
+            SystemConfigurationService systemConfigService) : base(unitOfWork, userManager, logger)
         {
             _ticketManager = ticketManager;
             _identityService = identityService;

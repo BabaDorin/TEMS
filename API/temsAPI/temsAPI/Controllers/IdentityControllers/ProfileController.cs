@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using System;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.UserEntities;
@@ -30,18 +29,11 @@ namespace temsAPI.Controllers.IdentityControllers
 
         [HttpGet("profile/Get/{userId}")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
+        [DefaultExceptionHandler("An error occured while fetching user data")]
         public async Task<IActionResult> Get(string userId)
         {
-            try
-            {
-                var profileViewModel = await _temsUserManager.GetProfileInfo(userId);
-                return Ok(profileViewModel);
-            }
-            catch (Exception ex)
-            {
-                LogException(ex);
-                return ReturnResponse("An error occured while fetching user data", ResponseStatus.Fail);
-            }
+            var profileViewModel = await _temsUserManager.GetProfileInfo(userId);
+            return Ok(profileViewModel);
         }
     }
 }

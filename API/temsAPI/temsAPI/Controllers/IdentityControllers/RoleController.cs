@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using temsAPI.Contracts;
@@ -29,21 +28,14 @@ namespace temsAPI.Controllers.IdentityControllers
 
         [HttpGet("role/GetRoles")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_SYSTEM_CONFIGURATION)]
+        [DefaultExceptionHandler("An error occured while fetching roles")]
         public IActionResult GetRoles()
         {
-            try
-            {
-                List<ViewRoleViewModel> roles = _roleManager.Roles
+            List<ViewRoleViewModel> roles = _roleManager.Roles
                .Select(q => ViewRoleViewModel.FromModel(q, _roleManager))
                .ToList();
 
-                return Ok(roles);
-            }
-            catch (Exception ex)
-            {
-                LogException(ex);
-                return ReturnResponse("An error occured while fetching roles", ResponseStatus.Fail);
-            }
+            return Ok(roles);
         }
     }
 }

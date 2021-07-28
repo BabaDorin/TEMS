@@ -5,8 +5,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
@@ -42,6 +40,7 @@ namespace temsAPI.Controllers.LibraryControllers
             _systemConfigurationService = systemConfigurationService;
         }
 
+        // BEFREE: Optimize & move logic to library manager
         [HttpPost("library/UploadFile"), DisableRequestSizeLimit]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
         public async Task<IActionResult> UploadFile()
@@ -89,42 +88,30 @@ namespace temsAPI.Controllers.LibraryControllers
 
         [HttpDelete("library/Remove/{itemId}")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
+        [DefaultExceptionHandler("An error occured while removing an library item")]
         public async Task<IActionResult> Remove(string itemId)
         {
-            try
-            {
-                var result = await _libraryManager.Remove(itemId);
-                if (result != null)
-                    return ReturnResponse(result, ResponseStatus.Fail);
+            var result = await _libraryManager.Remove(itemId);
+            if (result != null)
+                return ReturnResponse(result, ResponseStatus.Fail);
 
-                return ReturnResponse("Success", ResponseStatus.Success);
-            }
-            catch (Exception ex)
-            {
-                LogException(ex);
-                return ReturnResponse("An error occured when removing an library item.", ResponseStatus.Fail);
-            }
+            return ReturnResponse("Success", ResponseStatus.Success);
         }
 
         [HttpGet("library/GetLibraryItems/{accessPassword?}")]
+        [DefaultExceptionHandler("An error occured while fetching library items")]
         public async Task<IActionResult> GetLibraryItems(string accessPassword)
         {
-            try
-            {
-                if (!_identityService.IsAuthenticated() && accessPassword != _systemConfigurationService.AppSettings.LibraryGuestPassword)
-                    return ReturnResponse("Incorrect password.", ResponseStatus.Fail);
+            if (!_identityService.IsAuthenticated() && accessPassword != _systemConfigurationService.AppSettings.LibraryGuestPassword)
+                return ReturnResponse("Incorrect password.", ResponseStatus.Fail);
 
-                var items = await _libraryManager.GetItems();
-                return Ok(items);
-            }
-            catch (Exception ex)
-            {
-                LogException(ex);
-                return ReturnResponse("An error occured when fetching library items", ResponseStatus.Fail);
-            }
+            var items = await _libraryManager.GetItems();
+            return Ok(items);
         }
 
+        // BEFREE: Optimizations needed
         [HttpGet("library/Download/{itemId}"), DisableRequestSizeLimit]
+        [DefaultExceptionHandler("An error occured while downloading the file")]
         public async Task<IActionResult> Download(string itemId)
         {
             var item = await _libraryManager.GetById(itemId);
@@ -143,38 +130,25 @@ namespace temsAPI.Controllers.LibraryControllers
         }
 
         [HttpGet("library/GetSpaceUsageData")]
+        [DefaultExceptionHandler("An error occured while fetching space usage data")]
         public IActionResult GetSpaceUsageData()
         {
-            try
-            {
-                double usedSpaceBytes = StaticFileHelper.DirSizeBytes(new System.IO.DirectoryInfo(fileHandler.FolderPath));
-                double usedSpaceGb = usedSpaceBytes / 1073741824;
-                
-                Fraction fraction = new();
-                fraction.Numerator = usedSpaceGb;
-                fraction.Denominator = _systemConfigurationService.AppSettings.LibraryAllocatedStorageSpaceGb;
+            double usedSpaceBytes = StaticFileHelper.DirSizeBytes(new System.IO.DirectoryInfo(fileHandler.FolderPath));
+            double usedSpaceGb = usedSpaceBytes / 1073741824;
 
-                return Ok(fraction);
-            }
-            catch (Exception ex)
-            {
-                LogException(ex);
-                return ReturnResponse("An error occured while fetching space usage data.", ResponseStatus.Fail);
-            }
+            Fraction fraction = new();
+            fraction.Numerator = usedSpaceGb;
+            fraction.Denominator = _systemConfigurationService.AppSettings.LibraryAllocatedStorageSpaceGb;
+
+            return Ok(fraction);
         }
 
         [HttpGet("library/GetAvailableLibraryStorageSpace")]
+        [DefaultExceptionHandler("An error occured while fetching available library storage space")]
         public IActionResult GetAvailableLibraryStorageSpace()
         {
-            try
-            {
-                return Ok(_libraryManager.GetAvailableSpace_bytes());
-            }
-            catch (Exception ex)
-            {
-                LogException(ex);
-                return ReturnResponse("An error occured while fetching available library storage space.", ResponseStatus.Fail);
-            }
+            var availableSpace = _libraryManager.GetAvailableSpace_bytes();
+            return Ok(availableSpace);
         }
     }
 }

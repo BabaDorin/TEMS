@@ -1,11 +1,8 @@
-﻿using FluentEmail.Core;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime.Workdays;
 using PostSharp.Aspects;
 using PostSharp.Serialization;
 using System;
-using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using temsAPI.System_Files.Exceptions.MethodData;
@@ -17,10 +14,12 @@ namespace temsAPI.System_Files.Exceptions
     {
         public static ILogger logger;
         string _customErrorMessage;
+        bool _ignoreArgumentLogging;
 
-        public DefaultExceptionHandler(string customErrorMessage)
+        public DefaultExceptionHandler(string customErrorMessage, bool ignoreArgumentLogging = false)
         {
             _customErrorMessage = customErrorMessage;
+            _ignoreArgumentLogging = ignoreArgumentLogging;
         }
 
         public override void OnException(MethodExecutionArgs args)
@@ -50,9 +49,9 @@ namespace temsAPI.System_Files.Exceptions
             StringBuilder additional = new StringBuilder();
             additional.Append("\n\n\n\n");
 
-            // [Date | Time] Exception message
+            // [Date | Time] Custom message (Exception message)
             additional.Append(DateTime.Now.ToString("[ dd.MM.yyyy | HH:mm:ss ]") + "   ");
-            additional.Append(exception.Message);
+            additional.Append(String.Format("{0} ({1})", _customErrorMessage, exception.Message));
             additional.Append("\n\n");
 
             // MethodName(Parameter names)
@@ -63,7 +62,7 @@ namespace temsAPI.System_Files.Exceptions
             additional.Append("\n\n");
 
             // Parameters as JSON formatted list 
-            if(parameters != null)
+            if(parameters != null && !_ignoreArgumentLogging)
             {
                 var parametersModel = new MethodExceptionData()
                 {

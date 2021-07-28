@@ -2,11 +2,11 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using System;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.UserEntities;
 using temsAPI.Services;
 using temsAPI.System_Files;
+using temsAPI.System_Files.Exceptions;
 using temsAPI.ViewModels.SystemConfiguration;
 
 namespace temsAPI.Controllers.SystemConfigurationControllers
@@ -27,17 +27,10 @@ namespace temsAPI.Controllers.SystemConfigurationControllers
 
         [HttpPost("systemlogs/GetSystemLogs")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_SYSTEM_CONFIGURATION)]
+        [DefaultExceptionHandler("An error occured while retrieving system logs")]
         public JsonResult GetSystemLogs([FromBody] LoggerViewModel viewModel)
         {
-            try
-            {
-                return Json(_configService.GetLogsByDate(viewModel.Date));
-            }
-            catch (Exception ex)
-            {
-                LogException(ex);
-                return null;
-            }
+            return Json(_configService.GetLogsByDate(viewModel.Date));
         }
     }
 }

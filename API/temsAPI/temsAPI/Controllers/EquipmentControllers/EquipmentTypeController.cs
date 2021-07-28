@@ -2,8 +2,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Diagnostics;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Controllers;
@@ -32,6 +30,7 @@ namespace temsAPI.EquipmentControllers
 
         [HttpPost("equipmenttype/Add")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
+        [DefaultExceptionHandler("An error occured while registering the type")]
         public async Task<IActionResult> Add([FromBody] AddEquipmentTypeViewModel viewModel)
         {
             string result = await _equipmentTypeManager.Create(viewModel);
@@ -43,151 +42,94 @@ namespace temsAPI.EquipmentControllers
 
         [HttpPut("equipmenttype/Update")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
+        [DefaultExceptionHandler("An error occured while updating the type")]
         public async Task<IActionResult> Update([FromBody] AddEquipmentTypeViewModel viewModel)
         {
-            try
-            {
-                string result = await _equipmentTypeManager.Update(viewModel);
-                if (result != null)
-                    return ReturnResponse(result, ResponseStatus.Fail);
+            string result = await _equipmentTypeManager.Update(viewModel);
+            if (result != null)
+                return ReturnResponse(result, ResponseStatus.Fail);
 
-                return ReturnResponse($"Success", ResponseStatus.Success);
-            }
-            catch (Exception ex)
-            {
-                LogException(ex);
-                return ReturnResponse("An error occured when saving the type", ResponseStatus.Fail);
-            }
+            return ReturnResponse($"Success", ResponseStatus.Success);
         }
 
         [HttpGet("equipmenttype/Archieve/{typeId}/{status}")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
+        [DefaultExceptionHandler("An error occured while removing the type")]
         public async Task<IActionResult> Archieve(string typeId, bool status = true)
         {
-            try
-            {
-                // check if type exists
-                var type = await _equipmentTypeManager.GetById(typeId);
-                if (type == null)
-                    return ReturnResponse("The specified type does not exist", ResponseStatus.Fail);
+            var type = await _equipmentTypeManager.GetById(typeId);
+            if (type == null)
+                return ReturnResponse("The specified type does not exist", ResponseStatus.Fail);
 
-                string archivationResult = await new ArchieveHelper(_unitOfWork, User)
-                    .SetTypeArchivationStatus(typeId, status);
-                if (archivationResult != null)
-                    return ReturnResponse(archivationResult, ResponseStatus.Fail);
+            string archivationResult = await new ArchieveHelper(_unitOfWork, User)
+                .SetTypeArchivationStatus(typeId, status);
+            if (archivationResult != null)
+                return ReturnResponse(archivationResult, ResponseStatus.Fail);
 
-                return ReturnResponse("Success!", ResponseStatus.Success);
-            }
-            catch (Exception ex)
-            {
-                LogException(ex);
-                return ReturnResponse("An error occured when removing the type", ResponseStatus.Fail);
-            }
+            return ReturnResponse("Success!", ResponseStatus.Success);
         }
 
         [HttpDelete("equipmenttype/Remove/{typeId}")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_SYSTEM_CONFIGURATION)]
+        [DefaultExceptionHandler("An error occured while removing the type")]
         public async Task<IActionResult> Remove(string typeId)
         {
-            try
-            {
-                string result = await _equipmentTypeManager.Remove(typeId);
-                if (result != null)
-                    return ReturnResponse(result, ResponseStatus.Fail);
+            string result = await _equipmentTypeManager.Remove(typeId);
+            if (result != null)
+                return ReturnResponse(result, ResponseStatus.Fail);
 
-                return ReturnResponse("Success", ResponseStatus.Success);
-            }
-            catch (Exception ex)
-            {
-                LogException(ex);
-                return ReturnResponse("An error occured while removing the type.", ResponseStatus.Fail);
-            }
+            return ReturnResponse("Success", ResponseStatus.Success);
         }
 
         [HttpGet("equipmenttype/GetAllAutocompleteOptions/{filter?}")]
+        [DefaultExceptionHandler("An error occured while fetching type autocomplete options")]
         public async Task<IActionResult> GetAllAutocompleteOptions(string filter)
         {
-            try
-            {
-                var options = await _equipmentTypeManager.GetAutocompleteOptions(filter);
-                return Ok(options);
-            }
-            catch (Exception ex)
-            {
-                LogException(ex);
-                return ReturnResponse("An error occured when fetching types", ResponseStatus.Fail);
-            }
+            var options = await _equipmentTypeManager.GetAutocompleteOptions(filter);
+            return Ok(options);
         }
 
         [HttpGet("equipmenttype/GetSimplified")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
+        [DefaultExceptionHandler("An error occured while fetching types")]
         public async Task<IActionResult> GetSimplified()
         {
-            try
-            {
-                var simplifiedType = await _equipmentTypeManager.GetSimplified();
-                return Ok(simplifiedType);
-            }
-            catch (Exception ex)
-            {
-                LogException(ex);
-                return ReturnResponse("An error occured when fetching types", ResponseStatus.Fail);
-            }
+            var simplifiedType = await _equipmentTypeManager.GetSimplified();
+            return Ok(simplifiedType);
         }
 
         [HttpGet("equipmenttype/getsimplifiedbyid/{typeId}")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
+        [DefaultExceptionHandler("An error occured while fetching the type")]
         public async Task<IActionResult> GetSimplifiedById(string typeId)
         {
-            try
-            {
-                var type = await _equipmentTypeManager.GetSimplifiedById(typeId);
-                if (type == null)
-                    return ReturnResponse("Invalid id provided", ResponseStatus.Fail);
+            var type = await _equipmentTypeManager.GetSimplifiedById(typeId);
+            if (type == null)
+                return ReturnResponse("Invalid id provided", ResponseStatus.Fail);
 
-                return Ok(type);
-            }
-            catch (Exception ex)
-            {
-                LogException(ex);
-                return ReturnResponse("An error occured while fetching type", ResponseStatus.Fail);
-            }
+            return Ok(type);
         }
 
         [HttpPost("equipmenttype/FullType")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
+        [DefaultExceptionHandler("An error occured while fetching the type")]
         public async Task<IActionResult> FullType([FromBody] string typeId)
         {
-            try
-            {
-                var type = await _equipmentTypeManager.GetFullById(typeId);
-                if (type == null)
-                    return ReturnResponse("Invalid id provided", ResponseStatus.Fail);
+            var type = await _equipmentTypeManager.GetFullById(typeId);
+            if (type == null)
+                return ReturnResponse("Invalid id provided", ResponseStatus.Fail);
 
-                var viewModel = ViewEquipmentTypeViewModel.FromModel(type);
-                return Ok(viewModel);
-            }
-            catch (Exception ex)
-            {
-                LogException(ex);
-                return ReturnResponse("An error occured while fetching type info", ResponseStatus.Fail);
-            }
+            var viewModel = ViewEquipmentTypeViewModel.FromModel(type);
+            return Ok(viewModel);
         }
 
         [HttpGet("equipmenttype/GetPropertiesOfType/{typeId}")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
+        [DefaultExceptionHandler("An error occured while fetching properties.")]
         public async Task<IActionResult> GetPropertiesOfType(string typeId)
         {
-            try
-            {
-                var options = await _equipmentTypeManager.GetPropertiesOfType(typeId);
-                return Ok(options);
-            }
-            catch (Exception ex)
-            {
-                LogException(ex);
-                return ReturnResponse("An error occured while fetching properties.", ResponseStatus.Fail);
-            }
+            var options = await _equipmentTypeManager.GetPropertiesOfType(typeId);
+            return Ok(options);
         }
     }
 }

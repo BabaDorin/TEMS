@@ -3,8 +3,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using System;
-using System.Diagnostics;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.UserEntities;
@@ -34,23 +32,15 @@ namespace temsAPI.Controllers.EmailControllers
 
         [HttpPost("email/SendEmail")]
         [ClaimRequirement(TEMSClaims.CAN_SEND_EMAILS)]
+        [DefaultExceptionHandler("An error occured while sending the email")]
         public async Task<IActionResult> SendEmail([FromBody] SendEmailViewModel viewModel)
         {
-            try
-            {
-                var mailingResult = await _emailService.SendEmailToPersonnel(viewModel);
+            var mailingResult = await _emailService.SendEmailToPersonnel(viewModel);
 
-                int numbersOfEmailsSent = 0;
-                if (int.TryParse(mailingResult, out numbersOfEmailsSent))
-                    return ReturnResponse(mailingResult + " mails have been sent.", ResponseStatus.Success);
-                else
-                    return ReturnResponse(mailingResult, ResponseStatus.Neutral);
-            }
-            catch (Exception ex)
-            {
-                LogException(ex);
-                return ReturnResponse("An error occured while sending the email", ResponseStatus.Fail);
-            }
+            if (int.TryParse(mailingResult, out _))
+                return ReturnResponse(mailingResult + " mails have been sent.", ResponseStatus.Success);
+            else
+                return ReturnResponse(mailingResult, ResponseStatus.Neutral);
         }
     }
 }

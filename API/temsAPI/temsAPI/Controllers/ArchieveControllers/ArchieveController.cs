@@ -29,39 +29,25 @@ namespace temsAPI.Controllers.ArchieveControllers
         
         [HttpGet("/archieve/GetArchievedItems/{itemType}")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES)]
+        [DefaultExceptionHandler("An error occured while fetching archieved items")]
         public async Task<IActionResult> GetArchievedItems(string itemType)
         {
-            try
-            {
-                var items = await _archieveManager.GetArchievedItems(itemType);
-                return Ok(items);
-            }
-            catch (Exception ex)
-            {
-                LogException(ex);
-                return ReturnResponse("An error occured while retrieveing archieved items", ResponseStatus.Fail);
-            }
+            var items = await _archieveManager.GetArchievedItems(itemType);
+            return Ok(items);
         }
 
         [HttpGet("archieve/SetArchivationStatus/{itemType}/{itemId}/{status}")]
+        [DefaultExceptionHandler("An error occured while setting the archivation status")]
         public async Task<IActionResult> SetArchivationStatus(string itemType, string itemId, bool status)
         {
-            try
-            {
-                string archivationStatus = await _archieveManager.SetArchivationStatus(
+            string archivationStatus = await _archieveManager.SetArchivationStatus(
                     itemType,
                     itemId,
                     status);
-                if (archivationStatus != null)
-                    return ReturnResponse(archivationStatus, ResponseStatus.Fail);
+            if (archivationStatus != null)
+                return ReturnResponse(archivationStatus, ResponseStatus.Fail);
 
-                return ReturnResponse("Success", ResponseStatus.Success);
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.Message);
-                return ReturnResponse("An error occured while setting the archivation status", ResponseStatus.Fail);
-            }
+            return ReturnResponse("Success", ResponseStatus.Success);
         }   
     }
 }

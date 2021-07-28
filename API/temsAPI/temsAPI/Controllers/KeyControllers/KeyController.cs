@@ -2,8 +2,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Diagnostics;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.UserEntities;
@@ -30,187 +28,117 @@ namespace temsAPI.Controllers.KeyControllers
 
         [HttpPost("key/Create")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES, TEMSClaims.CAN_ALLOCATE_KEYS)]
+        [DefaultExceptionHandler("An error occured while creating the key.")]
         public async Task<IActionResult> Create([FromBody] AddKeyViewModel viewModel)
         {
-            try
-            {
-                var result = await _keyManager.Create(viewModel);
-                if (result != null)
-                    return ReturnResponse(result, ResponseStatus.Fail);
+            var result = await _keyManager.Create(viewModel);
+            if (result != null)
+                return ReturnResponse(result, ResponseStatus.Fail);
 
-                return ReturnResponse("Success", ResponseStatus.Success);
-            }
-            catch (Exception ex)
-            {
-                LogException(ex);
-                return ReturnResponse("An error occured when creating the key.", ResponseStatus.Fail);
-            }
+            return ReturnResponse("Success", ResponseStatus.Success);
         }
 
         [HttpGet("key/Archieve/{keyId}")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES, TEMSClaims.CAN_ALLOCATE_KEYS)]
+        [DefaultExceptionHandler("An error occured while archieving the key and it's related data")]
         public async Task<IActionResult> Archieve(string keyId)
         {
-            try
-            {
-                string archivationResult = await new ArchieveHelper(_unitOfWork, User)
+            string archivationResult = await new ArchieveHelper(_unitOfWork, User)
                     .SetKeyArchivationStatus(keyId, true);
-                if (archivationResult != null)
-                    return ReturnResponse(archivationResult, ResponseStatus.Fail);
+            if (archivationResult != null)
+                return ReturnResponse(archivationResult, ResponseStatus.Fail);
 
-                return ReturnResponse("Success", ResponseStatus.Success);
-            }
-            catch (Exception ex)
-            {
-                LogException(ex);
-                return ReturnResponse("An error occured while archieving the key and it's related data", ResponseStatus.Fail);
-            }
+            return ReturnResponse("Success", ResponseStatus.Success);
         }
 
         [HttpDelete("key/Remove/{keyId}")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_SYSTEM_CONFIGURATION)]
+        [DefaultExceptionHandler("An error occured while removing the key")]
         public async Task<IActionResult> Remove(string keyId)
         {
-            try
-            {
-                string result = await _keyManager.Remove(keyId);
-                if (result != null)
-                    return ReturnResponse(result, ResponseStatus.Fail);
+            string result = await _keyManager.Remove(keyId);
+            if (result != null)
+                return ReturnResponse(result, ResponseStatus.Fail);
 
-                return ReturnResponse("Success", ResponseStatus.Success);
-            }
-            catch (Exception ex)
-            {
-                LogException(ex);
-                return ReturnResponse("An error occured while removing the key", ResponseStatus.Fail);
-            }
+            return ReturnResponse("Success", ResponseStatus.Success);
         }
 
         [HttpDelete("key/RemoveAllocation/{allocationId}")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_SYSTEM_CONFIGURATION)]
+        [DefaultExceptionHandler("An error occured while removing the allocation")]
         public async Task<IActionResult> RemoveAllocation(string allocationId)
         {
-            try
-            {
-                string result = await _keyManager.RemoveAllocation(allocationId);
-                if (result != null)
-                    return ReturnResponse(result, ResponseStatus.Fail);
+            string result = await _keyManager.RemoveAllocation(allocationId);
+            if (result != null)
+                return ReturnResponse(result, ResponseStatus.Fail);
 
-                return ReturnResponse("Success", ResponseStatus.Success);
-            }
-            catch (Exception ex)
-            {
-                LogException(ex);
-                return ReturnResponse("An error occured while removing the allocation", ResponseStatus.Fail);
-            }
+            return ReturnResponse("Success", ResponseStatus.Success);
         }
 
         [HttpPost("key/CreateAllocation")]
         [ClaimRequirement(TEMSClaims.CAN_ALLOCATE_KEYS)]
+        [DefaultExceptionHandler("An error occured while creating the allocation")]
         public async Task<IActionResult> CreateAllocation([FromBody] AddKeyAllocation viewModel)
         {
-            try
-            {
-                var result = await _keyManager.CreateAllocation(viewModel);
-                if (result != null)
-                    return ReturnResponse(result, ResponseStatus.Fail);
+            var result = await _keyManager.CreateAllocation(viewModel);
+            if (result != null)
+                return ReturnResponse(result, ResponseStatus.Fail);
 
-                return ReturnResponse("Success", ResponseStatus.Success);
-            }
-            catch (Exception ex)
-            {
-                LogException(ex);
-                return ReturnResponse("An error occured when creating the allocation", ResponseStatus.Fail);
-            }
+            return ReturnResponse("Success", ResponseStatus.Success);
         }
 
         [HttpGet("key/Get")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES, TEMSClaims.CAN_ALLOCATE_KEYS)]
+        [DefaultExceptionHandler("An error occured while fetching keys")]
         public async Task<IActionResult> Get()
         {
-            try
-            {
-                var keys = await _keyManager.GetKeysSimplified(); 
-                return Ok(keys);
-            }
-            catch (Exception ex)
-            {
-                LogException(ex);
-                return ReturnResponse("An error occured when fetching keys", ResponseStatus.Fail);
-            }
+            var keys = await _keyManager.GetKeysSimplified();
+            return Ok(keys);
         }
 
         [HttpGet("key/GetAllAutocompleteOptions")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES, TEMSClaims.CAN_ALLOCATE_KEYS)]
+        [DefaultExceptionHandler("An error occured while fetching keys autocomplete options")]
         public async Task<IActionResult> GetAllAutocompleteOptions()
         {
-            try
-            {
-                var options = await _keyManager.GetAutocompleteOptions();
-                return Ok(options);
-            }
-            catch (Exception ex)
-            {
-                LogException(ex);
-                return ReturnResponse("An error occured when fetching keys autocomplete options", ResponseStatus.Fail);
-            }
+            var options = await _keyManager.GetAutocompleteOptions();
+            return Ok(options);
         }
 
         [HttpGet("key/GetAllocations/{keyId}/{roomId}/{personnelId}")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES, TEMSClaims.CAN_ALLOCATE_KEYS)]
+        [DefaultExceptionHandler("An error occured while fetching key allocations")]
         public async Task<IActionResult> GetAllocations(string keyId, string roomId, string personnelId)
         {
-            try
-            {
-                var allocations = await _keyManager.GetAllocations(keyId, roomId, personnelId);
-                return Ok(allocations);
-            }
-            catch (Exception ex)
-            {
-                LogException(ex);
-                return ReturnResponse("An error occured when fetching key allocations", ResponseStatus.Fail);
-            }
+            var allocations = await _keyManager.GetAllocations(keyId, roomId, personnelId);
+            return Ok(allocations);
         }
 
         [HttpGet("key/MarkAsReturned/{keyId}")]
         [ClaimRequirement(TEMSClaims.CAN_ALLOCATE_KEYS)]
+        [DefaultExceptionHandler("An error occured while marking the key as returned")]
         public async Task<IActionResult> MarkAsReturned(string keyId)
         {
-            try
-            {
-                string result = await _keyManager.MarkKeyAsReturned(keyId);
-                if (result != null)
-                    return ReturnResponse(result, ResponseStatus.Fail);
+            string result = await _keyManager.MarkKeyAsReturned(keyId);
+            if (result != null)
+                return ReturnResponse(result, ResponseStatus.Fail);
 
-                return ReturnResponse("Success", ResponseStatus.Success);
-            }
-            catch (Exception ex)
-            {
-                LogException(ex);
-                return ReturnResponse("An error occured while marking the key as returned", ResponseStatus.Fail);
-            }
+            return ReturnResponse("Success", ResponseStatus.Success);
         }
 
         [HttpGet("key/ArchieveAllocation/{allocationId}/{archivationStatus?}")]
         [ClaimRequirement(TEMSClaims.CAN_ALLOCATE_KEYS)]
+        [DefaultExceptionHandler("An error occured while archieving the specified allocation")]
         public async Task<IActionResult> ArchieveAllocation(string allocationId, bool? archivationStatus)
         {
-            try
-            {
-                if (archivationStatus == null) archivationStatus = true;
+            if (archivationStatus == null) archivationStatus = true;
 
-                string archivationResult = await (new ArchieveHelper(_unitOfWork, User)
-                    .SetKeyAllocationArchivationStatus(allocationId, (bool)archivationStatus));
-                if (archivationResult != null)
-                    return ReturnResponse(archivationResult, ResponseStatus.Fail);
+            string archivationResult = await (new ArchieveHelper(_unitOfWork, User)
+                .SetKeyAllocationArchivationStatus(allocationId, (bool)archivationStatus));
+            if (archivationResult != null)
+                return ReturnResponse(archivationResult, ResponseStatus.Fail);
 
-                return ReturnResponse("Success", ResponseStatus.Success);
-            }
-            catch (Exception ex)
-            {
-                LogException(ex);
-                return ReturnResponse("An error occured while archieving the specified allocation", ResponseStatus.Fail);
-            }
+            return ReturnResponse("Success", ResponseStatus.Success);
         }
     }
 }

@@ -29,55 +29,34 @@ namespace temsAPI.Controllers.AnnouncementControllers
 
         [HttpPost("announcement/Create")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ANNOUNCEMENTS)]
+        [DefaultExceptionHandler("An error occured while creating the announcement")]
         public async Task<IActionResult> Create([FromBody] AddAnnouncementViewModel viewModel)
         {
-            try
-            {
-                string result = await _announcementManager.Create(viewModel);
-                if (result != null)
-                    return ReturnResponse(result, ResponseStatus.Fail);
+            string result = await _announcementManager.Create(viewModel);
+            if (result != null)
+                return ReturnResponse(result, ResponseStatus.Fail);
 
-                return ReturnResponse("Success", ResponseStatus.Success);
-            }
-            catch (Exception ex)
-            {
-                LogException(ex);
-                return ReturnResponse("An error occured when creating the announcement", ResponseStatus.Fail);
-            }
+            return ReturnResponse("Success", ResponseStatus.Success);
         }
 
         [HttpDelete("announcement/Remove/{announcementId}")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ANNOUNCEMENTS)]
+        [DefaultExceptionHandler("An error occured while removing the announcement")]
         public async Task<IActionResult> Remove(string announcementId)
         {
-            try
-            {
-                string result = await _announcementManager.Remove(announcementId);
-                if (result != null)
-                    return ReturnResponse(result, ResponseStatus.Fail);
+            string result = await _announcementManager.Remove(announcementId);
+            if (result != null)
+                return ReturnResponse(result, ResponseStatus.Fail);
 
-                return ReturnResponse("Success", ResponseStatus.Success);
-            }
-            catch (Exception ex)
-            {
-                LogException(ex);
-                return ReturnResponse("An error occured when removing the announcement", ResponseStatus.Fail);
-            }
+            return ReturnResponse("Success", ResponseStatus.Success);
         }
 
         [HttpGet("announcement/Get/{skip?}/{take?}")]
+        [DefaultExceptionHandler("An error occured while fetching announcements")]
         public async Task<IActionResult> Get(int skip = 0, int take = int.MaxValue)
         {
-            try
-            {
-                var announcements = await _announcementManager.GetAnnouncements(skip, take);
-                return Ok(announcements);
-            }
-            catch (Exception ex)
-            {
-                LogException(ex);
-                return ReturnResponse("An error occured when fetching announcements", ResponseStatus.Fail);
-            }
+            var announcements = await _announcementManager.GetAnnouncements(skip, take);
+            return Ok(announcements);
         }
     }
 }

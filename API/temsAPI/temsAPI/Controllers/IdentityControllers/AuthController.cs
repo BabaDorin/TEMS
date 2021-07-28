@@ -2,14 +2,11 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using System;
-using System.Diagnostics;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.UserEntities;
 using temsAPI.Data.Managers;
-using temsAPI.System_Files;
 using temsAPI.System_Files.Exceptions;
 using temsAPI.ViewModels.IdentityViewModels;
 
@@ -30,6 +27,7 @@ namespace temsAPI.Controllers.IdentityControllers
         }
 
         [HttpPost("auth/LogIn")]
+        [DefaultExceptionHandler("Invalid credentials", true)]
         public async Task<IActionResult> LogIn([FromBody] LogInViewModel viewModel)
         {
             try
@@ -45,18 +43,11 @@ namespace temsAPI.Controllers.IdentityControllers
         }
 
         [HttpPost("auth/SignOut")]
+        [DefaultExceptionHandler("An error occured while blacklisting the token")]
         public async Task<IActionResult> SignOut([FromBody] string token)
         {
-            try
-            {
-                await _temsUserManager.BlacklistToken(token);
-                return ReturnResponse("Success", ResponseStatus.Success);
-            }
-            catch (Exception ex)
-            {
-                LogException(ex);
-                return ReturnResponse("An error occured while blacklisting the token", ResponseStatus.Fail);
-            }
+            await _temsUserManager.BlacklistToken(token);
+            return ReturnResponse("Success", ResponseStatus.Success);
         }
     }
 }

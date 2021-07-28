@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.UserEntities;
@@ -38,83 +37,55 @@ namespace temsAPI.Controllers.NotificationControllers
 
         [Authorize]
         [HttpGet("notification/GetLastNotifications/{take?}")]
+        [DefaultExceptionHandler("An error occured while fetching user notifications")]
         public async Task<IActionResult> GetLastNotifications(int take = 7)
         {
-            try
-            {
-                var user = await _identityService.GetCurrentUserAsync();
-                var notifications = await _notificationManager.GetLastNotifications(user, 0, take);
+            var user = await _identityService.GetCurrentUserAsync();
+            var notifications = await _notificationManager.GetLastNotifications(user, 0, take);
 
-                return Ok(notifications);
-            }
-            catch (Exception ex)
-            {
-                LogException(ex);
-                return ReturnResponse("An error occured while fetching user notifications", ResponseStatus.Fail);
-            }
+            return Ok(notifications);
         }
 
         [Authorize]
         [HttpGet("notification/GetAllNotifications/{skip?}/{take?}")]
+        [DefaultExceptionHandler("An error occured while fetching notifications")]
         public async Task<IActionResult> GetAllNotifications(int skip = 0, int take = int.MaxValue)
         {
-            try
-            {
-                var user = await _identityService.GetCurrentUserAsync();
-                var notification = await _notificationManager.GetLastNotifications(user, skip, take);
+            var user = await _identityService.GetCurrentUserAsync();
+            var notification = await _notificationManager.GetLastNotifications(user, skip, take);
 
-                return Ok(notification);
-            }
-            catch (Exception ex)
-            {
-                LogException(ex);
-                return ReturnResponse("An error occured while fetching notifications", ResponseStatus.Fail);
-            }
+            return Ok(notification);
         }
 
         [Authorize]
         [HttpGet("notification/MarkAsSeen")]
+        [DefaultExceptionHandler("An error occured while marking notifications as seen")]
         public async Task<IActionResult> MarkAsSeen(List<string> notificationIds)
         {
-            try
-            {
-                if (notificationIds == null)
-                    return ReturnResponse("No notifications provided", ResponseStatus.Fail);
+            if (notificationIds == null)
+                return ReturnResponse("No notifications provided", ResponseStatus.Fail);
 
-                var result = await _notificationManager.MarkAsSeen(notificationIds);
-                if (result != null)
-                    return ReturnResponse(result, ResponseStatus.Fail);
+            var result = await _notificationManager.MarkAsSeen(notificationIds);
+            if (result != null)
+                return ReturnResponse(result, ResponseStatus.Fail);
 
-                return ReturnResponse("Success", ResponseStatus.Success);
-            }
-            catch (Exception ex)
-            {
-                LogException(ex);
-                return ReturnResponse("An error occured while marking notifications as seen", ResponseStatus.Fail);
-            }
+            return ReturnResponse("Success", ResponseStatus.Success);
         }
 
         [Authorize]
         [HttpDelete("notification/Remove/{notificationId}")]
+        [DefaultExceptionHandler("An error occured while removing the specified notification")]
         public async Task<IActionResult> Remove(string notificationId)
         {
-            try
-            {
-                var notification = await _notificationManager.GetNotificationById(notificationId);
-                if (notification == null)
-                    return ReturnResponse("Invalid id provided", ResponseStatus.Fail);
+            var notification = await _notificationManager.GetNotificationById(notificationId);
+            if (notification == null)
+                return ReturnResponse("Invalid id provided", ResponseStatus.Fail);
 
-                string result = await _notificationManager.RemoveNotification(notification);
-                if (result != null)
-                    return ReturnResponse(result, ResponseStatus.Fail);
+            string result = await _notificationManager.RemoveNotification(notification);
+            if (result != null)
+                return ReturnResponse(result, ResponseStatus.Fail);
 
-                return ReturnResponse("Success", ResponseStatus.Success);
-            }
-            catch (Exception ex)
-            {
-                LogException(ex);
-                return ReturnResponse("An error occured while removing the specified notification", ResponseStatus.Fail);
-            }
+            return ReturnResponse("Success", ResponseStatus.Success);
         }
     }
 }

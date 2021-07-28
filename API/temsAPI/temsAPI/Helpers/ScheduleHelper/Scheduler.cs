@@ -12,9 +12,9 @@ namespace temsAPI.Helpers
 {
     public class Scheduler
     {
-        private Timer timer;
-        SystemConfigurationService _systemConfigurationService;
-        private readonly IServiceScopeFactory _serviceScopeFactory;
+        readonly Timer timer;
+        readonly SystemConfigurationService _systemConfigurationService;
+        readonly IServiceScopeFactory _serviceScopeFactory;
 
         public Scheduler(
             SystemConfigurationService systemConfigurationService,
@@ -23,8 +23,10 @@ namespace temsAPI.Helpers
             _systemConfigurationService = systemConfigurationService;
             _serviceScopeFactory = serviceScopeFactory;
 
-            timer = new Timer();
-            timer.Interval = GetTimerInterval();
+            timer = new Timer
+            {
+                Interval = GetTimerInterval(),
+            };
             timer.Elapsed += Timer_Elapsed;
 
             _systemConfigurationService.RoutineNotifier.RoutineCheckInterval_Changed += Interval_Changed;
@@ -37,11 +39,9 @@ namespace temsAPI.Helpers
 
         private async void Timer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            using (var scope = _serviceScopeFactory.CreateScope())
-            {
-                var routineCheckService = scope.ServiceProvider.GetService<RoutineCheckService>();
-                await routineCheckService.RoutineCheck();
-            }
+            using var scope = _serviceScopeFactory.CreateScope();
+            var routineCheckService = scope.ServiceProvider.GetService<RoutineCheckService>();
+            await routineCheckService.RoutineCheck();
         }
 
         private void Interval_Changed(object sender, EventArgs e)

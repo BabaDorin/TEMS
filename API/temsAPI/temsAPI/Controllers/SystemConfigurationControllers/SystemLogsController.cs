@@ -13,7 +13,7 @@ namespace temsAPI.Controllers.SystemConfigurationControllers
 {
     public class SystemLogsController : TEMSController
     {
-        SystemConfigurationService _configService;
+        readonly SystemConfigurationService _configService;
 
         public SystemLogsController(
             IUnitOfWork unitOfWork, 

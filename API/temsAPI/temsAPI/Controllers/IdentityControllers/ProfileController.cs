@@ -15,7 +15,7 @@ namespace temsAPI.Controllers.IdentityControllers
     [Authorize]
     public class ProfileController : TEMSController
     {
-        private TEMSUserManager _temsUserManager;
+        readonly TEMSUserManager _temsUserManager;
 
         public ProfileController(
             IUnitOfWork unitOfWork, 

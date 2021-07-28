@@ -41,7 +41,7 @@ namespace temsAPI.ViewModels.Equipment
                 .Where(q => q.DateReturned == null && q.PersonnelID != null)
                 ?.FirstOrDefault();
 
-            ViewEquipmentViewModel viewModel = new ViewEquipmentViewModel
+            ViewEquipmentViewModel viewModel = new()
             {
                 Id = model.Id,
                 Definition = EquipmentDefinitionViewModel.FromModel(model.EquipmentDefinition),
@@ -72,10 +72,7 @@ namespace temsAPI.ViewModels.Equipment
                             Value = model.Parent.Id,
                             Label = model.Parent.EquipmentDefinition.Identifier,
                         },
-                Children = (model.Children == null)
-                        ? null
-                        : model.Children
-                        .Select(q => new Option
+                Children = model.Children?.Select(q => new Option
                         {
                             Value = q.Id,
                             Label = q.EquipmentDefinition.Identifier,

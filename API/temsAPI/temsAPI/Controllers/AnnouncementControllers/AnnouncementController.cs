@@ -16,7 +16,7 @@ namespace temsAPI.Controllers.AnnouncementControllers
 {
     public class AnnouncementController : TEMSController
     {
-        private AnnouncementManager _announcementManager;
+        readonly AnnouncementManager _announcementManager;
         public AnnouncementController(
             IUnitOfWork unitOfWork, 
             UserManager<TEMSUser> userManager,

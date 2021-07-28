@@ -23,8 +23,8 @@ namespace temsAPI.Services
             public string Name { get; set; }
         }
 
-        private IUnitOfWork _unitOfWork;
-        private readonly AppSettings _appSettings;
+        readonly IUnitOfWork _unitOfWork;
+        readonly AppSettings _appSettings;
         public EmailService(
             IUnitOfWork unitOfWork, 
             IOptions<AppSettings> appSettings)

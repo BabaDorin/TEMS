@@ -20,8 +20,8 @@ namespace temsAPI.Services
         public double EUR_MDL_rate { get; set; }
         public double USD_MDL_rate { get; set; }
 
-        string mdl_eur_uri = "https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies/eur/mdl.json";
-        string mdl_usd_uri = "https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies/usd/mdl.json";
+        readonly string mdl_eur_uri = "https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies/eur/mdl.json";
+        readonly string mdl_usd_uri = "https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies/usd/mdl.json";
         
         private Timer timer;
 
@@ -51,28 +51,27 @@ namespace temsAPI.Services
 
         private void RefreshRates()
         {
-            using (var client = new HttpClient())
+            using var client = new HttpClient();
+            try
             {
-                try
-                {
-                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                    client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                client.DefaultRequestHeaders.Accept.Clear();
 
-                    HttpResponseMessage response = client.GetAsync(mdl_eur_uri).Result;
-                    if (response.IsSuccessStatusCode)
-                        EUR_MDL_rate = response.Content.ReadFromJsonAsync<CurrencyRate>().Result.Mdl;
+                HttpResponseMessage response = client.GetAsync(mdl_eur_uri).Result;
+                if (response.IsSuccessStatusCode)
+                    EUR_MDL_rate = response.Content.ReadFromJsonAsync<CurrencyRate>().Result.Mdl;
 
-                    response = client.GetAsync(mdl_usd_uri).Result;
-                    if (response.IsSuccessStatusCode)
-                        USD_MDL_rate = response.Content.ReadFromJsonAsync<CurrencyRate>().Result.Mdl;
-                }
-                catch (Exception ex)
-                {
-                    // Here we set at least an aproximative value for each rate.
-                    // (08.06.2021)
-                    USD_MDL_rate = 18;
-                    EUR_MDL_rate = 21;
-                }
+                response = client.GetAsync(mdl_usd_uri).Result;
+                if (response.IsSuccessStatusCode)
+                    USD_MDL_rate = response.Content.ReadFromJsonAsync<CurrencyRate>().Result.Mdl;
+            }
+            catch (Exception)
+            {
+                // Here we set at least an aproximative value for each rate.
+                // (08.06.2021)
+                // BEFREE: Take values from appsettings.json
+                USD_MDL_rate = 18;
+                EUR_MDL_rate = 21;
             }
         }
     }

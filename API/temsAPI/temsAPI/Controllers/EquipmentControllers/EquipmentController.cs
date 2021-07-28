@@ -19,8 +19,8 @@ namespace temsAPI.Controllers.EquipmentControllers
 {
     public class EquipmentController : TEMSController
     {
-        private EquipmentManager _equipmentManager;
-        private LogManager _logManager;
+        readonly EquipmentManager _equipmentManager;
+        readonly LogManager _logManager;
 
         public EquipmentController(
             IUnitOfWork unitOfWork, 

@@ -14,7 +14,7 @@ namespace temsAPI.Controllers.IdentityControllers
 {
     public class AuthController : TEMSController
     {
-        TEMSUserManager _temsUserManager;
+        readonly TEMSUserManager _temsUserManager;
 
         public AuthController(
             IUnitOfWork unitOfWork, 

@@ -15,7 +15,7 @@ namespace temsAPI.Controllers.LogControllers
 {
     public class LogController : TEMSController
     {
-        private LogManager _logManager;
+        readonly LogManager _logManager;
 
         public LogController(
             IUnitOfWork unitOfWork, 

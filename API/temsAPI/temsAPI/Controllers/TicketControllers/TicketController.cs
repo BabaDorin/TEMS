@@ -20,9 +20,9 @@ namespace temsAPI.Controllers.TicketControllers
 
     public class TicketController : TEMSController
     {
-        private TicketManager _ticketManager;
-        private IdentityService _identityService;
-        private SystemConfigurationService _systemConfigService;
+        readonly TicketManager _ticketManager;
+        readonly IdentityService _identityService;
+        readonly SystemConfigurationService _systemConfigService;
 
         public TicketController(
             IUnitOfWork unitOfWork,

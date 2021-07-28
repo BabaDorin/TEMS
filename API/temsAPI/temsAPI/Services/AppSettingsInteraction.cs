@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -16,13 +16,13 @@ namespace temsAPI.Services
 
     public class WritableOptions<T> : IWritableOptions<T> where T : class, new()
     {
-        private readonly IHostingEnvironment _environment;
-        private readonly IOptionsMonitor<T> _options;
-        private readonly string _section;
-        private readonly string _file;
+        readonly IHostEnvironment _environment;
+        readonly IOptionsMonitor<T> _options;
+        readonly string _section;
+        readonly string _file;
 
         public WritableOptions(
-            IHostingEnvironment environment,
+            IHostEnvironment environment,
             IOptionsMonitor<T> options,
             string section,
             string file)
@@ -63,7 +63,7 @@ namespace temsAPI.Services
             services.Configure<T>(section);
             services.AddTransient<IWritableOptions<T>>(provider =>
             {
-                var environment = provider.GetService<IHostingEnvironment>();
+                var environment = provider.GetService<IHostEnvironment>();
                 var options = provider.GetService<IOptionsMonitor<T>>();
                 return new WritableOptions<T>(environment, options, section.Key, file);
             });

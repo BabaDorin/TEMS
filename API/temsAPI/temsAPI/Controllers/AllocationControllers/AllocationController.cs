@@ -17,7 +17,7 @@ namespace temsAPI.Controllers.Allocation
 {
     public class AllocationController : TEMSController
     {
-        private EquipmentManager _equipmentManager;
+        readonly EquipmentManager _equipmentManager;
 
         public AllocationController(
             IUnitOfWork unitOfWork, 

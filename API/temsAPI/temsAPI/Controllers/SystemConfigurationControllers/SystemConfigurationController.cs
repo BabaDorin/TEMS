@@ -16,7 +16,7 @@ namespace temsAPI.Controllers.SystemConfigurationControllers
 {
     public class SystemConfigurationController : TEMSController
     {
-        private SystemConfigurationService _configService;
+        readonly SystemConfigurationService _configService;
 
         public SystemConfigurationController(
             IUnitOfWork unitOfWork,

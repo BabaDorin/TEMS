@@ -12,13 +12,13 @@ namespace temsAPI.Helpers
     {
         private class JwtToken_Helper
         {
-            public long exp { get; set; }
+            public long Exp { get; set; }
         }
 
-        private IJsonSerializer _serializer = new JsonNetSerializer();
-        private IDateTimeProvider _provider = new UtcDateTimeProvider();
-        private IBase64UrlEncoder _urlEncoder = new JwtBase64UrlEncoder();
-        private IJwtAlgorithm _algorithm = new HMACSHA256Algorithm();
+        readonly IJsonSerializer _serializer = new JsonNetSerializer();
+        readonly IDateTimeProvider _provider = new UtcDateTimeProvider();
+        readonly IBase64UrlEncoder _urlEncoder = new JwtBase64UrlEncoder();
+        readonly IJwtAlgorithm _algorithm = new HMACSHA256Algorithm();
 
         public DateTime GetExpiryTimestamp(string accessToken)
         {
@@ -27,7 +27,7 @@ namespace temsAPI.Helpers
                 IJwtValidator _validator = new JwtValidator(_serializer, _provider);
                 IJwtDecoder decoder = new JwtDecoder(_serializer, _validator, _urlEncoder, _algorithm);
                 var token = decoder.DecodeToObject<JwtToken_Helper>(accessToken);
-                DateTimeOffset dateTimeOffset = DateTimeOffset.FromUnixTimeSeconds(token.exp);
+                DateTimeOffset dateTimeOffset = DateTimeOffset.FromUnixTimeSeconds(token.Exp);
                 return dateTimeOffset.LocalDateTime;
             }
             catch (TokenExpiredException)
@@ -38,7 +38,7 @@ namespace temsAPI.Helpers
             {
                 return DateTime.MinValue;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return DateTime.MinValue;
             }

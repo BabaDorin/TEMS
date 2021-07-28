@@ -16,7 +16,7 @@ namespace temsAPI.Controllers.EquipmentControllers
 {
     public class EquipmentDefinitionController : TEMSController
     {
-        private EquipmentDefinitionManager _equipmentDefinitionManager;
+        readonly EquipmentDefinitionManager _equipmentDefinitionManager;
         public EquipmentDefinitionController(
             IUnitOfWork unitOfWork, 
             UserManager<TEMSUser> userManager,

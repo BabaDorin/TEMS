@@ -59,7 +59,16 @@ namespace temsAPI.Data.Entities.EquipmentEntities
         [NotMapped]
         public string Assignee
         {
-            get => (Room == null) ? Personnel?.Name : Room?.Identifier;
+            get 
+            {
+                if (Personnel != null)
+                    return Personnel.Name;
+
+                if (Room != null)
+                    return Room.Identifier;
+
+                return "Undefined";
+            }
         }
 
         [NotMapped]

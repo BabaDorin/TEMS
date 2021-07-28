@@ -18,8 +18,8 @@ namespace temsAPI.Controllers.IdentityControllers
 {
     public class TEMSUserController : TEMSController
     {
-        TEMSUserManager _temsUserManager;
-        private ArchieveManager _archieveManager;
+        readonly TEMSUserManager _temsUserManager;
+        readonly ArchieveManager _archieveManager;
 
         public TEMSUserController(
             IUnitOfWork unitOfWork,

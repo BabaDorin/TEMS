@@ -12,8 +12,8 @@ namespace temsAPI.Repository
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
-        private readonly ApplicationDbContext _context;
-        private readonly DbSet<T> _db;
+        readonly ApplicationDbContext _context;
+        readonly DbSet<T> _db;
 
         public GenericRepository(ApplicationDbContext context)
         {

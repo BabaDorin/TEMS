@@ -15,7 +15,7 @@ namespace temsAPI.Controllers.KeyControllers
 {
     public class KeyController : TEMSController
     {
-        private KeyManager _keyManager;
+        readonly KeyManager _keyManager;
         public KeyController(
             IUnitOfWork unitOfWork, 
             UserManager<TEMSUser> userManager,

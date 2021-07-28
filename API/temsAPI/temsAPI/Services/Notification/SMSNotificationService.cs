@@ -10,6 +10,9 @@ namespace temsAPI.Services.Notification
     {
         public async Task<string> SendNotification(INotification notification)
         {
+            // Remove this on implementation
+            await Task.Yield();
+
             throw new NotImplementedException();
         }
     }

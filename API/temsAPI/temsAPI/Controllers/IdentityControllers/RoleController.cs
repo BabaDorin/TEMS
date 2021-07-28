@@ -14,7 +14,7 @@ namespace temsAPI.Controllers.IdentityControllers
 {
     public class RoleController : TEMSController
     {
-        private RoleManager<IdentityRole> _roleManager;
+        readonly RoleManager<IdentityRole> _roleManager;
 
         public RoleController(
             IUnitOfWork unitOfWork,

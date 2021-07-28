@@ -17,7 +17,7 @@ namespace temsAPI.Repository
 {
     public class UnitOfWork : IUnitOfWork
     {
-        private readonly ApplicationDbContext _context;
+        readonly ApplicationDbContext _context;
 
         private IGenericRepository<Announcement> _announcements;
         private IGenericRepository<FrequentTicketProblem> _frequentTicketProblems;

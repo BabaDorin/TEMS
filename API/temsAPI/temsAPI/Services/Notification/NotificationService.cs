@@ -12,6 +12,10 @@ namespace temsAPI.Services.Notification
         {
             // Create the collection of notification senders based on notification fields
             // Send notifications, collect results, return results.
+
+            // Remove this on implementation
+            await Task.Yield();
+
             return null;
         }
     }

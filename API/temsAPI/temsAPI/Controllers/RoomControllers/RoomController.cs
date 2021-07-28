@@ -15,7 +15,7 @@ namespace temsAPI.Controllers.RoomControllers
 {
     public class RoomController : TEMSController
     {
-        private RoomManager _roomManager;
+        readonly RoomManager _roomManager;
         
         public RoomController(
             IUnitOfWork unitOfWork, 

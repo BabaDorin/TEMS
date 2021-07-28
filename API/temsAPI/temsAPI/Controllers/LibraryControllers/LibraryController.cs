@@ -20,10 +20,10 @@ namespace temsAPI.Controllers.LibraryControllers
 {
     public class LibraryController : TEMSController
     {
-        private LibraryItemFileHandler fileHandler = new();
-        private LibraryManager _libraryManager;
-        private IdentityService _identityService;
-        private SystemConfigurationService _systemConfigurationService;
+        readonly LibraryItemFileHandler fileHandler = new();
+        readonly LibraryManager _libraryManager;
+        readonly IdentityService _identityService;
+        readonly SystemConfigurationService _systemConfigurationService;
 
         public LibraryController(
             IUnitOfWork unitOfWork,
@@ -51,7 +51,7 @@ namespace temsAPI.Controllers.LibraryControllers
                     return StatusCode(500, "There is no more available space allocated for library storage. Free up some space first.");
 
                 var formCollection = await Request.ReadFormAsync();
-                var file = formCollection.Files.First();
+                var file = formCollection.Files[0];
 
                 // 2: Check if the current file size won't overflow available library storage space
                 if (availableSpace - file.Length <= 0)

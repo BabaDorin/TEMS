@@ -15,7 +15,7 @@ namespace temsAPI.Controllers.PersonnelControllers
 {
     public class PersonnelController : TEMSController
     {
-        private PersonnelManager _personnelManager;
+        readonly PersonnelManager _personnelManager;
 
         public PersonnelController(
             IUnitOfWork unitOfWork, 
@@ -32,6 +32,9 @@ namespace temsAPI.Controllers.PersonnelControllers
         public async Task<IActionResult> Create([FromBody] AddPersonnelViewModel viewModel)
         {
             var result = await _personnelManager.Create(viewModel);
+            if (result != null)
+                return ReturnResponse(result, ResponseStatus.Neutral);
+
             return ReturnResponse("Success", ResponseStatus.Success);
         }
 

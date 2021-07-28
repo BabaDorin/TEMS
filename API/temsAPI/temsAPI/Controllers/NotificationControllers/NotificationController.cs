@@ -17,19 +17,16 @@ namespace temsAPI.Controllers.NotificationControllers
 {
     public class NotificationController : TEMSController
     {
-        private NotificationService _notificationService;
-        private NotificationManager _notificationManager;
-        private IdentityService _identityService;
+        readonly NotificationManager _notificationManager;
+        readonly IdentityService _identityService;
 
         public NotificationController(
             IUnitOfWork unitOfWork, 
             UserManager<TEMSUser> userManager,
-            NotificationService notificationService,
             NotificationManager notificationManager,
             IdentityService identityService,
             ILogger<TEMSController> logger) : base(unitOfWork, userManager, logger)
         {
-            _notificationService = notificationService;
             _notificationManager = notificationManager;
             _identityService = identityService;
         }

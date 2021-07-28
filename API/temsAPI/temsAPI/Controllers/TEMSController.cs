@@ -30,7 +30,7 @@ namespace temsAPI.Controllers
 
         protected void LogException(Exception ex, object caller = null, string header = null)
         {
-            StringBuilder additional = new StringBuilder();
+            StringBuilder additional = new();
             
             if(caller != null)
                 additional.Append(caller.GetType().Name + " - " + new StackTrace().GetFrame(1).GetMethod().Name);

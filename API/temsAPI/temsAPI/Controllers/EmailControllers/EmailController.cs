@@ -15,17 +15,14 @@ namespace temsAPI.Controllers.EmailControllers
 {
     public class EmailController : TEMSController
     {
-        private readonly AppSettings _appSettings;
-        private EmailService _emailService;
+        readonly EmailService _emailService;
 
         public EmailController(
             IUnitOfWork unitOfWork, 
             UserManager<TEMSUser> userManager,
-            IOptions<AppSettings> appSettings,
             EmailService emailService,
             ILogger<TEMSController> logger) : base(unitOfWork, userManager, logger)
         {
-            _appSettings = appSettings.Value;
             _emailService = emailService;
         }
 

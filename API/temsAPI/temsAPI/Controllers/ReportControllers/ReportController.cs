@@ -17,9 +17,9 @@ namespace temsAPI.Controllers.ReportControllers
 {
     public class ReportController : TEMSController
     {
-        ReportingService _reportingService;
-        ReportManager _reportManager;
-        GeneratedReportFileHandler fileHandler = new();
+        readonly ReportingService _reportingService;
+        readonly ReportManager _reportManager;
+        readonly GeneratedReportFileHandler fileHandler = new();
         
         public ReportController(
             IUnitOfWork unitOfWork, 
@@ -157,7 +157,7 @@ namespace temsAPI.Controllers.ReportControllers
             var reportTemplate = await template.ToModel(_unitOfWork, new TEMSUser());
 
             string filePath = fileHandler.GetTempDBPath();
-            var excelFile = await _reportingService.GenerateReport(reportTemplate, filePath);
+            await _reportingService.GenerateReport(reportTemplate, filePath);
 
             var memory = await _reportManager.GetReportMemoryStream(filePath);
             return File(memory, fileHandler.GetContentType(filePath), "Report.xlsx");

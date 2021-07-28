@@ -15,7 +15,7 @@ namespace temsAPI.Controllers.ArchieveControllers
 {
     public class ArchieveController : TEMSController
     {
-        ArchieveManager _archieveManager;
+        readonly ArchieveManager _archieveManager;
 
         public ArchieveController(
             IUnitOfWork unitOfWork, 

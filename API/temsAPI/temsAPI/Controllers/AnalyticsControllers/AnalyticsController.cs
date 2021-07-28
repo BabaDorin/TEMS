@@ -17,7 +17,7 @@ namespace temsAPI.Controllers.AnalyticsControllers
 {
     public class AnalyticsController : TEMSController
     {
-        private AnalyticsManager _analyticsManager;
+        readonly AnalyticsManager _analyticsManager;
 
         public AnalyticsController(
             IUnitOfWork unitOfWork,

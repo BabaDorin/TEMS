@@ -16,7 +16,7 @@ namespace temsAPI.EquipmentControllers
 {
     public class PropertyController : TEMSController
     {
-        EquipmentPropertyManager _eqPropertyManager;
+        readonly EquipmentPropertyManager _eqPropertyManager;
         public PropertyController(
             IUnitOfWork unitOfWork, 
             UserManager<TEMSUser> userManager,

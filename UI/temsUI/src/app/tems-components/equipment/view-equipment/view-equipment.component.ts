@@ -1,3 +1,5 @@
+import { TranslateService } from '@ngx-translate/core';
+import { FormControl } from '@angular/forms';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { ViewEquipmentSimplified } from 'src/app/models/equipment/view-equipment-simplified.model';
@@ -17,20 +19,30 @@ import { AgGridEquipmentComponent } from './../ag-grid-equipment/ag-grid-equipme
 })
 export class ViewEquipmentComponent implements OnInit {
 
-  @ViewChild('agGridEquipment') agGridEquipment: AgGridEquipmentComponent;
+  testOptions: IOption[] = [{value: '1', label: '1'}, {value: '2', label: '2'}, {value: '3', label: '3'}];
+  testPreOptions: IOption[] = [{value: 'any', label: 'Any'}];
 
+  @ViewChild('agGridEquipment') agGridEquipment: AgGridEquipmentComponent;
   includeDerived:boolean = false;
 
   constructor(
     public dialogService: DialogService,
     public router: Router,
     private snackService: SnackService,
-    public claims: ClaimService
+    public claims: ClaimService,
   ) {
-
   }
 
   ngOnInit(): void {
+  }
+
+  typesChanged(eventData){
+    console.log('\ntypes changed:');
+    console.log(eventData);
+  }
+
+  fetchTypes(){
+    this
   }
 
   addLogSelected(){

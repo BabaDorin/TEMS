@@ -32,6 +32,7 @@
     "@ngx-translate/core": "^13.0.0",
     "@ngx-translate/http-loader": "^6.0.0",
     "@schematics/angular": "^11.2.14",
+    "@types/ts-nameof": "^4.2.1",
     "ag-grid-angular": "^25.3.0",
     "ag-grid-community": "^25.3.0",
     "angular-file-uploader": "^7.0.3",

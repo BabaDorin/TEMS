@@ -32,6 +32,14 @@
                             </ul>
                         </nav>
                     </div>
+                    <div class="d-block">
+                        <app-multiple-selection-dropdown
+                            label="Test label" 
+                            [options]="testOptions"
+                            (selectionChanged)="typesChanged($event)"
+                            [preOptions]="testPreOptions">
+                        </app-multiple-selection-dropdown>
+                    </div>
                     <ng-container *ngIf="claims.canManage">
                         <button mat-button class="d-md-inline d-block" (click)="addNew()">
                             <mat-icon class="text-primary">add</mat-icon>

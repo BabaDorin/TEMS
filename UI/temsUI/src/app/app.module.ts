@@ -48,8 +48,6 @@ import { TEMSComponent } from './tems/tems.component';
 import { UserCardsModule } from './user-cards/user-cards.module';
 import { TemsFormsModule } from './modules/tems-forms/tems-forms.module';
 
-
-
 export function HttpLoaderFactory(http: HttpClient){
   return new TranslateHttpLoader(http);
 }

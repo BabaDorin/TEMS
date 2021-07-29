@@ -1,3 +1,4 @@
+import { MultipleSelectionDropdownModule } from './../../modules/forms/multiple-selection-dropdown/multiple-selection-dropdown.module';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDialogModule } from '@angular/material/dialog';
 import { ScrollingModule } from '@angular/cdk/scrolling';
@@ -69,6 +70,7 @@ import { ViewTypeComponent } from './view-type/view-type.component';
   imports: [
     CommonModule,
     EquipmentRoutingModule,
+    MultipleSelectionDropdownModule,
     ScrollingModule,
     TranslateModule,
     TemsFormsModule,

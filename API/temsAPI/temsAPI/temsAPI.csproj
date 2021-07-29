@@ -48,4 +48,8 @@
     <ProjectReference Include="..\ReportGenerator\ReportGenerator.csproj" />
     <ProjectReference Include="..\SIC-Parser\SIC-Parser.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="System Files\Logs\" />
+  </ItemGroup>
 </Project>

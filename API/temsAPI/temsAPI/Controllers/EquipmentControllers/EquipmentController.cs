@@ -40,7 +40,7 @@ namespace temsAPI.Controllers.EquipmentControllers
         public async Task<IActionResult> Add([FromBody] AddEquipmentViewModel viewModel)
         {
             string result = await _equipmentManager.Create(viewModel);
-            if (result[300] > 10)
+            if (result!= null)
                 return ReturnResponse(result, ResponseStatus.Neutral);
             
             return ReturnResponse("Success", ResponseStatus.Success);

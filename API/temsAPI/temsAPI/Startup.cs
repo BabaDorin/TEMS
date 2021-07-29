@@ -27,6 +27,7 @@ using temsAPI.Services.Report;
 using temsAPI.System_Files;
 using temsAPI.System_Files.Exceptions;
 using temsAPI.System_Files.TEMSFileLogger;
+using temsAPI.System_Files.TEMSInitializer;
 
 namespace temsAPI
 {
@@ -162,6 +163,10 @@ namespace temsAPI
             SystemConfigurationService systemConfigurationService,
             Scheduler scheduler)
         {
+            Initializer.PrepareSolution();
+            SeedData.Seed(userManager, roleManager, dbContext, systemConfigurationService);
+            DefaultExceptionHandler.logger = logger;
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -175,10 +180,6 @@ namespace temsAPI
 
             app.UseSession();
             app.UseRouting();
-            
-            SeedData.Seed(userManager, roleManager, dbContext, systemConfigurationService);
-            TemsStarter.Start();
-
             app.UseCors(builder =>
                 builder
                 .SetIsOriginAllowedToAllowWildcardSubdomains()
@@ -190,7 +191,6 @@ namespace temsAPI
                 .AllowAnyHeader()
                 .Build()
             );
-
             app.UseAuthentication();
             app.UseRouting();
             app.UseAuthorization();
@@ -202,7 +202,6 @@ namespace temsAPI
             });
 
             scheduler.Start();
-            DefaultExceptionHandler.logger = logger;
         }
     }
 }

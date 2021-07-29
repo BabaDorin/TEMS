@@ -1,10 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace temsAPI.System_Files.TEMSFileLogger
 {
@@ -49,8 +46,8 @@ namespace temsAPI.System_Files.TEMSFileLogger
             if (!IsEnabled(logLevel))
                 return;
 
-            var logRecord = string.Format("[{0}] {1}", logLevel.ToString(), message);
-            LogRecord(logRecord);
+            //var logRecord = string.Format("[{0}] {1}", logLevel.ToString(), message);
+            LogRecord(message);
         }
 
         private string GetFullFilePath()

@@ -253,23 +253,11 @@ export class EquipmentService extends TEMSService {
     pageNumber: number, 
     recordsPerPage: number,
     filter: EquipmentFilter): Observable<any>{
-      throw new Error('Not implemented yet');
+    
+      let params = filter.getParams();
       
-      // if(onlyParent == undefined) onlyParent = true;
-      // if(entityCollection.roomIds == undefined) entityCollection.roomIds = [];
-      // if(entityCollection.personnelIds == undefined) entityCollection.personnelIds = [];
-
-      // let params = new HttpParams();
-      // entityCollection.roomIds.forEach(id => {
-      //   params = params.append('rooms', id);
-      // })
-
-      // entityCollection.personnelIds.forEach(id => {
-      //   params = params.append('personnel', id);
-      // })
-      
-      // return this.http.get(API_EQ_URL + '/getsimplified/'+pageNumber+'/'+recordsPerPage+'/'+onlyParent,
-      // {params: params});      
+      return this.http.get(API_EQ_URL + '/getsimplified/'+pageNumber+'/'+recordsPerPage,
+      {params: params});      
   }
 
   getEquipmentSimplifiedById(id: string): Observable<any>{

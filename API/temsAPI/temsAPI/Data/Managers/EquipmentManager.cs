@@ -13,6 +13,8 @@ using temsAPI.Contracts;
 using temsAPI.Data.Entities.EquipmentEntities;
 using temsAPI.Data.Factories.LogFactories;
 using temsAPI.Helpers;
+using temsAPI.Helpers.EquipmentManagementHelpers;
+using temsAPI.Helpers.Filters;
 using temsAPI.Services;
 using temsAPI.System_Files;
 using temsAPI.ViewModels;
@@ -26,6 +28,7 @@ namespace temsAPI.Data.Managers
         CurrencyConvertor _currencyConvertor;
         LogManager _logManager;
         ILogger<EquipmentManager> _logger;
+        EquipmentFetcher _equipmentFetcher;
         
         public EquipmentManager(
             IUnitOfWork unitOfWork, 
@@ -37,6 +40,7 @@ namespace temsAPI.Data.Managers
             _currencyConvertor = currencyConvertor;
             _logger = logger;
             _logManager = logManager;
+            _equipmentFetcher = new EquipmentFetcher(_unitOfWork);
         }
 
         public async Task<string> Create(AddEquipmentViewModel viewModel)
@@ -137,6 +141,7 @@ namespace temsAPI.Data.Managers
             return null;
         }
 
+        [Obsolete]
         public async Task<List<ViewEquipmentSimplifiedViewModel>> GetEquipmentOfEntities(
             List<string> rooms,
             List<string> personnel,
@@ -163,12 +168,13 @@ namespace temsAPI.Data.Managers
                     .ThenInclude(q => q.EquipmentType)
                     .Include(q => q.Room)
                     .Include(q => q.Personnel),
-                    select: q => ViewEquipmentSimplifiedViewModel.FromEquipment(q.Equipment)
+                    select: q => ViewEquipmentSimplifiedViewModel.FromModel(q.Equipment)
                     )).ToList();
 
             return equipment;
         }
 
+        [Obsolete]
         public async Task<List<ViewEquipmentSimplifiedViewModel>> GetEquipment(
             bool onlyParents,
             int skip = 0,
@@ -189,8 +195,17 @@ namespace temsAPI.Data.Managers
                     .ThenInclude(q => q.Personnel)
                     .Include(q => q.EquipmentDefinition)
                     .ThenInclude(q => q.EquipmentType),
-                    select: q => ViewEquipmentSimplifiedViewModel.FromEquipment(q)
+                    select: q => ViewEquipmentSimplifiedViewModel.FromModel(q)
                     )).ToList();
+
+            return equipment;
+        }
+
+        public async Task<List<ViewEquipmentSimplifiedViewModel>> GetEquipment(EquipmentFilter filter)
+        {
+            var equipment = (await _equipmentFetcher.Fetch(filter))
+                .Select(q => ViewEquipmentSimplifiedViewModel.FromModel(q))
+                .ToList();
 
             return equipment;
         }

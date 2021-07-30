@@ -22,6 +22,6 @@ export class PersonnelDetailsAllocationsComponent implements OnInit {
       return;
     
     this.equipmentFilter.personnel = [this.personnel.id];
-    this.equipmentFilter = Object.assign({}, this.equipmentFilter);
+    this.equipmentFilter = Object.assign(new EquipmentFilter(), this.equipmentFilter);
   }
 }

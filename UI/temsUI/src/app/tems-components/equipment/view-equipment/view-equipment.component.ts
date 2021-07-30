@@ -53,7 +53,7 @@ export class ViewEquipmentComponent implements OnInit {
       return;
     
     this.equipmentFilter.types = eventData;
-    this.equipmentFilter = Object.assign({}, this.equipmentFilter);
+    this.equipmentFilter = Object.assign(new EquipmentFilter(), this.equipmentFilter);
   }
 
   addLogSelected(){

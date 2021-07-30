@@ -18,7 +18,7 @@ namespace temsAPI.ViewModels.Equipment
         public bool IsDefect { get; set; }
         public bool IsArchieved { get; set; }
 
-        public static ViewEquipmentSimplifiedViewModel FromEquipment(Data.Entities.EquipmentEntities.Equipment eq)
+        public static ViewEquipmentSimplifiedViewModel FromModel(Data.Entities.EquipmentEntities.Equipment eq)
         {
             ViewEquipmentSimplifiedViewModel viewEquipmentSimplified = new ViewEquipmentSimplifiedViewModel
             {

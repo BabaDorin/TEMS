@@ -10,6 +10,7 @@ using temsAPI.Contracts;
 using temsAPI.Data.Entities.UserEntities;
 using temsAPI.Data.Managers;
 using temsAPI.Helpers;
+using temsAPI.Helpers.Filters;
 using temsAPI.Services.SICServices;
 using temsAPI.System_Files;
 using temsAPI.System_Files.Exceptions;
@@ -95,24 +96,31 @@ namespace temsAPI.Controllers.EquipmentControllers
             return ReturnResponse("Success", ResponseStatus.Success);
         }
 
-        [HttpGet("equipment/GetSimplified/{pageNumber}/{equipmentsPerPage}/{onlyParents}")]
+        [HttpGet("equipment/GetSimplified/{pageNumber}/{itemsPerPage}")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
         [DefaultExceptionHandler("Unknown error occured while fetching equipment records.")]
         public async Task<IActionResult> GetSimplified(
             int pageNumber, 
-            int equipmentsPerPage, 
+            int itemsPerPage, 
             bool onlyParents,
             List<string> rooms,
-            List<string> personnel)
+            List<string> personnel,
+            List<string> types)
         {
-            // Invalid parameters
-            if (pageNumber < 0 || equipmentsPerPage < 1)
-                return ReturnResponse("Invalid parameters", ResponseStatus.Neutral);
+            EquipmentFilter filter = new()
+            {
+                PageNumber = pageNumber,
+                ItemsPerPage = itemsPerPage,
+                OnlyParents = onlyParents,
+                Rooms = rooms,
+                Personnel = personnel,
+                Types = types
+            };
 
-            if (rooms != null && rooms.Count > 0 || personnel != null && personnel.Count > 0)
-                return Ok(await _equipmentManager.GetEquipmentOfEntities(rooms, personnel));
+            if(filter.Validate())
+                return Ok(await _equipmentManager.GetEquipment(filter));
 
-            return Ok(await _equipmentManager.GetEquipment(onlyParents));
+            return ReturnResponse("Invalid filters provided", ResponseStatus.Neutral);
         }
 
         [HttpGet("equipment/GetSimplified/{id}")]
@@ -124,7 +132,7 @@ namespace temsAPI.Controllers.EquipmentControllers
             if (equipment == null)
                 return ReturnResponse("Invalid equipment Id", ResponseStatus.Neutral);
 
-            var viewModel = ViewEquipmentSimplifiedViewModel.FromEquipment(equipment);
+            var viewModel = ViewEquipmentSimplifiedViewModel.FromModel(equipment);
             return Ok(viewModel);
         }
 

@@ -21,6 +21,6 @@ export class RoomDetailsAllocationsComponent implements OnInit {
       return;
     
     this.equipmentFilter.rooms = [this.room.id];
-    this.equipmentFilter = Object.assign({}, this.equipmentFilter);
+    this.equipmentFilter = Object.assign(new EquipmentFilter(), this.equipmentFilter);
   }
 }

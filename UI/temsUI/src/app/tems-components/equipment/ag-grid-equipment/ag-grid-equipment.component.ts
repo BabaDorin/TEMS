@@ -1,3 +1,4 @@
+import { EquipmentFilter } from './../../../helpers/filters/equipment.filter';
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { BtnCellRendererComponent } from 'src/app/public/ag-grid/btn-cell-renderer/btn-cell-renderer.component';
@@ -7,6 +8,7 @@ import { BooleanCellRendererComponent } from './../../../public/ag-grid/boolean-
 import { EquipmentService } from './../../../services/equipment.service';
 import { TEMSComponent } from './../../../tems/tems.component';
 import { EquipmentDetailsGeneralComponent } from './../equipment-details/equipment-details-general/equipment-details-general.component';
+import { propertyChanged } from 'src/app/helpers/onchanges-helper';
 
 @Component({
   selector: 'app-ag-grid-equipment',
@@ -16,13 +18,10 @@ import { EquipmentDetailsGeneralComponent } from './../equipment-details/equipme
 
 export class AgGridEquipmentComponent extends TEMSComponent implements OnInit, OnChanges {
 
-  @Input() includeDerived = false;
-  @Input() rooms: string[];
-  @Input() personnel: string[];
+  @Input() equipmentFilter: EquipmentFilter;
 
-  private gridApi;
-  private gridColumnApi;
-
+  gridApi;
+  gridColumnApi;
   columnDefs;
   defaultColDef;
   rowSelection;
@@ -41,7 +40,6 @@ export class AgGridEquipmentComponent extends TEMSComponent implements OnInit, O
 
     // enables pagination in the grid
     this.pagination = true;
-
     this.paginationPageSize = 20;
 
     this.frameworkComponents = {
@@ -96,11 +94,9 @@ export class AgGridEquipmentComponent extends TEMSComponent implements OnInit, O
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if(this.cancelFirstOnChange){
-      this.cancelFirstOnChange = false;
-      return;
+    if(propertyChanged(changes, "equipmentFilter")){
+        this.fetchEquipments();
     }
-    this.fetchEquipments();
   }
 
   
@@ -141,12 +137,8 @@ export class AgGridEquipmentComponent extends TEMSComponent implements OnInit, O
 
   fetchEquipments(){
     this.loading = true;
-    let entityCollection = {
-      roomIds: this.rooms,
-      personnelIds: this.personnel
-    }
 
-    this.subscriptions.push(this.equipmentService.getEquipmentSimplified(20, 20, !this.includeDerived, entityCollection)
+    this.subscriptions.push(this.equipmentService.getEquipmentSimplified(20, 20, this.equipmentFilter)
     .subscribe(result => {
       this.rowData = result;
       this.loading = false;

@@ -1,3 +1,4 @@
+import { EquipmentFilter } from './../../../helpers/filters/equipment.filter';
 import { Component, Input, OnInit } from '@angular/core';
 import { ViewRoomSimplified } from './../../../models/room/view-room-simplified.model';
 
@@ -9,10 +10,17 @@ import { ViewRoomSimplified } from './../../../models/room/view-room-simplified.
 export class RoomDetailsAllocationsComponent implements OnInit {
 
   @Input() room: ViewRoomSimplified;
-  roomsParameter;
-  constructor() { }
+  equipmentFilter: EquipmentFilter;
+
+  constructor() { 
+    this.equipmentFilter = new EquipmentFilter();
+  }
 
   ngOnInit(): void {
-    this.roomsParameter = [this.room.id];
+    if(this.room == undefined)
+      return;
+    
+    this.equipmentFilter.rooms = [this.room.id];
+    this.equipmentFilter = Object.assign({}, this.equipmentFilter);
   }
 }

@@ -1,9 +1,8 @@
+import { EquipmentFilter } from './../../../helpers/filters/equipment.filter';
 import { MultipleSelectionDropdownComponent } from './../../../shared/forms/multiple-selection-dropdown/multiple-selection-dropdown.component';
 import { TypeService } from './../../../services/type.service';
 import { TypeEndpoint } from './../../../helpers/endpoints/type.endpoint';
-import { IOptionsEndpoint } from './../../../models/form/options-endpoint.model';
 import { TranslateService } from '@ngx-translate/core';
-import { FormControl } from '@angular/forms';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { ViewEquipmentSimplified } from 'src/app/models/equipment/view-equipment-simplified.model';
@@ -25,6 +24,7 @@ export class ViewEquipmentComponent implements OnInit {
 
   typePreOptions: IOption[] = [];
   typeEndpoint: TypeEndpoint;
+  equipmentFilter: EquipmentFilter;
 
   @ViewChild('typeSelection') typeSelection: MultipleSelectionDropdownComponent;
   @ViewChild('agGridEquipment') agGridEquipment: AgGridEquipmentComponent;
@@ -40,12 +40,20 @@ export class ViewEquipmentComponent implements OnInit {
   ) {
     this.typeEndpoint = new TypeEndpoint(this.typeService, this.includeDerived);
     this.typePreOptions = [{value: 'any', label: this.translate.instant('form.any')}];
+
+    this.equipmentFilter = new EquipmentFilter();
+    this.equipmentFilter.includeDerived = this.includeDerived;
   }
 
   ngOnInit(): void {
   }
 
   typesChanged(eventData){
+    if(eventData == undefined)
+      return;
+    
+    this.equipmentFilter.types = eventData;
+    this.equipmentFilter = Object.assign({}, this.equipmentFilter);
   }
 
   addLogSelected(){
@@ -115,6 +123,7 @@ export class ViewEquipmentComponent implements OnInit {
   }
 
   includeDerivedChanged(){
+    this.equipmentFilter.includeDerived = this.includeDerived;
     this.typeEndpoint = new TypeEndpoint(this.typeService, this.includeDerived);
   }
 }

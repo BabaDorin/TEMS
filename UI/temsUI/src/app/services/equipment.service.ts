@@ -1,3 +1,4 @@
+import { EquipmentFilter } from './../helpers/filters/equipment.filter';
 import { ViewPropertySimplified } from './../models/equipment/view-property-simplified.model';
 import { AddEquipment } from 'src/app/models/equipment/add-equipment.model';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
@@ -251,23 +252,24 @@ export class EquipmentService extends TEMSService {
   getEquipmentSimplified(
     pageNumber: number, 
     recordsPerPage: number,
-    onlyParent: boolean,
-    entityCollection: IEntityCollection): Observable<any>{
-      if(onlyParent == undefined) onlyParent = true;
-      if(entityCollection.roomIds == undefined) entityCollection.roomIds = [];
-      if(entityCollection.personnelIds == undefined) entityCollection.personnelIds = [];
-
-      let params = new HttpParams();
-      entityCollection.roomIds.forEach(id => {
-        params = params.append('rooms', id);
-      })
-
-      entityCollection.personnelIds.forEach(id => {
-        params = params.append('personnel', id);
-      })
+    filter: EquipmentFilter): Observable<any>{
+      throw new Error('Not implemented yet');
       
-      return this.http.get(API_EQ_URL + '/getsimplified/'+pageNumber+'/'+recordsPerPage+'/'+onlyParent,
-      {params: params});      
+      // if(onlyParent == undefined) onlyParent = true;
+      // if(entityCollection.roomIds == undefined) entityCollection.roomIds = [];
+      // if(entityCollection.personnelIds == undefined) entityCollection.personnelIds = [];
+
+      // let params = new HttpParams();
+      // entityCollection.roomIds.forEach(id => {
+      //   params = params.append('rooms', id);
+      // })
+
+      // entityCollection.personnelIds.forEach(id => {
+      //   params = params.append('personnel', id);
+      // })
+      
+      // return this.http.get(API_EQ_URL + '/getsimplified/'+pageNumber+'/'+recordsPerPage+'/'+onlyParent,
+      // {params: params});      
   }
 
   getEquipmentSimplifiedById(id: string): Observable<any>{

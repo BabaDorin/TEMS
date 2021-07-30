@@ -1,4 +1,5 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { EquipmentFilter } from 'src/app/helpers/filters/equipment.filter';
 import { ViewPersonnelSimplified } from 'src/app/models/personnel/view-personnel-simplified.model';
 import { AgGridEquipmentComponent } from './../../equipment/ag-grid-equipment/ag-grid-equipment.component';
 
@@ -8,17 +9,19 @@ import { AgGridEquipmentComponent } from './../../equipment/ag-grid-equipment/ag
   styleUrls: ['./personnel-details-allocations.component.scss']
 })
 export class PersonnelDetailsAllocationsComponent implements OnInit {
-
+  
   @Input() personnel: ViewPersonnelSimplified;
-  @ViewChild('agGridEquipment') adGridEquipment: AgGridEquipmentComponent;
-  personnelParameter;
-  constructor() { }
+  equipmentFilter: EquipmentFilter;
 
-  ngOnInit(): void {
-    this.personnelParameter = [this.personnel.id];
+  constructor() { 
+    this.equipmentFilter = new EquipmentFilter();
   }
 
-  refreshAgGrid(){
-    this.adGridEquipment.fetchEquipments();
+  ngOnInit(): void {
+    if(this.personnel == undefined)
+      return;
+    
+    this.equipmentFilter.personnel = [this.personnel.id];
+    this.equipmentFilter = Object.assign({}, this.equipmentFilter);
   }
 }

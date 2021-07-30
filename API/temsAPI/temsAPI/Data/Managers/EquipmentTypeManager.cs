@@ -9,6 +9,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.EquipmentEntities;
+using temsAPI.Helpers;
 using temsAPI.ViewModels;
 using temsAPI.ViewModels.EquipmentType;
 
@@ -116,16 +117,26 @@ namespace temsAPI.Data.Managers
             return null;
         }
 
-        public async Task<List<Option>> GetAutocompleteOptions(string filter)
+        public async Task<List<Option>> GetAutocompleteOptions(string filter, bool includeChildTypes)
         {
             int take = (filter == null) ? int.MaxValue : 5;
-            Expression<Func<EquipmentType, bool>> expression = (filter == null)
-               ? q => !q.IsArchieved
-               : q => !q.IsArchieved && q.Name.Contains(filter);
+
+            Expression<Func<EquipmentType, bool>> expression = q => !q.IsArchieved;
+
+            if (!includeChildTypes)
+                expression = expression.Concat(q => q.Parents.Count() == 0);
+
+            if (filter != null)
+                expression = expression.Concat(q => q.Name.Contains(filter));
+
+            Func<IQueryable<EquipmentType>, IOrderedQueryable<EquipmentType>> orderBy =
+                q => q.OrderBy(q => q.Name);
 
             List<Option> options = (await _unitOfWork.EquipmentTypes.FindAll<Option>(
+                include: q => q.Include(q => q.Parents),
                 where: expression,
                 take: take,
+                orderBy: orderBy,
                 select: q => new Option
                 {
                     Value = q.Id,

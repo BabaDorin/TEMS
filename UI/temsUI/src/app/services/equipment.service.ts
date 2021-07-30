@@ -27,7 +27,6 @@ export class EquipmentService extends TEMSService {
   }
 
   removeEquipment(equipmentId: string): Observable<any>{
-    console.log('here');
     return this.http.delete(
       API_EQ_URL + '/remove/' + equipmentId,
       this.httpOptions

@@ -8,6 +8,13 @@ namespace temsAPI.Helpers
 {
     public static class ExpressionCombiner
     {
+        public static Expression<Func<T, bool>> Concat<T>(
+            this Expression<Func<T, bool>> baseExpression,
+            Expression<Func<T, bool>> otherExpression)
+        {
+            return And(baseExpression, otherExpression);
+        }
+
         public static Expression<Func<T, bool>> And<T>(params Expression<Func<T, bool>>[] expressions)
         {
             Expression<Func<T, bool>> finalExpression = expressions[0];

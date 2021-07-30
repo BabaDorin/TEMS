@@ -20,7 +20,9 @@
                                     </button>
                                     <mat-menu #menu="matMenu">
                                         <div class="p-2 text-center">
-                                            <mat-slide-toggle class="d-block" [(ngModel)]="includeDerived">
+                                            <mat-slide-toggle class="d-block" 
+                                                [(ngModel)]="includeDerived" 
+                                                (change)="includeDerivedChanged()">
                                                 {{ 'equipment.includeChild' | translate }}
                                             </mat-slide-toggle>
                                             <small class="text-muted">
@@ -34,10 +36,10 @@
                     </div>
                     <div class="d-block">
                         <app-multiple-selection-dropdown
-                            label="Test label" 
-                            [options]="testOptions"
+                            [label]="translate.instant('equipment.selectTypes')" 
+                            [endPoint]="typeEndpoint"
                             (selectionChanged)="typesChanged($event)"
-                            [preOptions]="testPreOptions">
+                            [preOptions]="typePreOptions">
                         </app-multiple-selection-dropdown>
                     </div>
                     <ng-container *ngIf="claims.canManage">

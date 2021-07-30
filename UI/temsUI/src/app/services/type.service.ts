@@ -8,7 +8,8 @@ import { API_EQTYPE_URL } from 'src/app/models/backend.config';
 @Injectable({
   providedIn: 'root'
 })
-export class TypeService extends TEMSService{
+export class TypeService extends TEMSService {
+  typeService: Observable<IOption[]>;
 
   constructor(
     private http: HttpClient
@@ -23,10 +24,11 @@ export class TypeService extends TEMSService{
     );
   }
 
-  getAllAutocompleteOptions(filter?: string): Observable<IOption[]> {
+  getAllAutocompleteOptions(filter?: string, includeChildren: boolean = true): Observable<IOption[]> {
     let endPoint = API_EQTYPE_URL + '/getallautocompleteoptions';
-    if(filter != undefined)
-      endPoint += '/' + filter;
+    filter == undefined || filter == '' ? endPoint += '/ ' : endPoint += '/' + filter;
+
+    endPoint += '/' + includeChildren;
      
     return this.http.get<IOption[]>(
       endPoint,

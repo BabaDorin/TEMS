@@ -148,6 +148,7 @@
         "bulkUpload": "Bulk upload",
         "step": "Step",
         "selectType": "Select the type",
+        "selectTypes": "Select equipment types",
         "selectDefinition": "Select the definition",
         "priceDescription": "The price can be overwritten equipments having this definition",
         "provideEquipmentInformation": "Provide equipment information",

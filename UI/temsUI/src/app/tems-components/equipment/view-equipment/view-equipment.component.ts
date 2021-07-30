@@ -1,3 +1,7 @@
+import { MultipleSelectionDropdownComponent } from './../../../shared/forms/multiple-selection-dropdown/multiple-selection-dropdown.component';
+import { TypeService } from './../../../services/type.service';
+import { TypeEndpoint } from './../../../helpers/endpoints/type.endpoint';
+import { IOptionsEndpoint } from './../../../models/form/options-endpoint.model';
 import { TranslateService } from '@ngx-translate/core';
 import { FormControl } from '@angular/forms';
 import { Component, OnInit, ViewChild } from '@angular/core';
@@ -19,9 +23,10 @@ import { AgGridEquipmentComponent } from './../ag-grid-equipment/ag-grid-equipme
 })
 export class ViewEquipmentComponent implements OnInit {
 
-  testOptions: IOption[] = [{value: '1', label: '1'}, {value: '2', label: '2'}, {value: '3', label: '3'}];
-  testPreOptions: IOption[] = [{value: 'any', label: 'Any'}];
+  typePreOptions: IOption[] = [];
+  typeEndpoint: TypeEndpoint;
 
+  @ViewChild('typeSelection') typeSelection: MultipleSelectionDropdownComponent;
   @ViewChild('agGridEquipment') agGridEquipment: AgGridEquipmentComponent;
   includeDerived:boolean = false;
 
@@ -30,19 +35,17 @@ export class ViewEquipmentComponent implements OnInit {
     public router: Router,
     private snackService: SnackService,
     public claims: ClaimService,
+    public translate: TranslateService,
+    private typeService: TypeService
   ) {
+    this.typeEndpoint = new TypeEndpoint(this.typeService, this.includeDerived);
+    this.typePreOptions = [{value: 'any', label: this.translate.instant('form.any')}];
   }
 
   ngOnInit(): void {
   }
 
   typesChanged(eventData){
-    console.log('\ntypes changed:');
-    console.log(eventData);
-  }
-
-  fetchTypes(){
-    this
   }
 
   addLogSelected(){
@@ -111,7 +114,7 @@ export class ViewEquipmentComponent implements OnInit {
     this.router.navigate(["/equipment/add"]);
   }
 
-  toggleIncludeDerived(){
-    this.includeDerived = !this.includeDerived;
+  includeDerivedChanged(){
+    this.typeEndpoint = new TypeEndpoint(this.typeService, this.includeDerived);
   }
 }

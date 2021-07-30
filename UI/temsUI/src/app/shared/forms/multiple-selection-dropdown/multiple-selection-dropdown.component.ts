@@ -1,8 +1,9 @@
+import { Subscription } from 'rxjs';
 import { FormControl } from '@angular/forms';
 import { SnackService } from './../../../services/snack.service';
 import { IOptionsEndpoint } from './../../../models/form/options-endpoint.model';
 import { IOption } from './../../../models/option.model';
-import { Component, Input, OnInit, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
+import { Component, Input, OnInit, OnChanges, Output, EventEmitter, OnDestroy, SimpleChange, SimpleChanges } from '@angular/core';
 import { propertyChanged } from 'src/app/helpers/onchanges-helper';
 
 @Component({
@@ -10,7 +11,7 @@ import { propertyChanged } from 'src/app/helpers/onchanges-helper';
   templateUrl: './multiple-selection-dropdown.component.html',
   styleUrls: ['./multiple-selection-dropdown.component.scss']
 })
-export class MultipleSelectionDropdownComponent implements OnInit, OnChanges{
+export class MultipleSelectionDropdownComponent implements OnInit, OnChanges, OnDestroy{
 
   // Multiple selection dropdown: The input label is reprezented by the property with the same name.
   
@@ -32,11 +33,13 @@ export class MultipleSelectionDropdownComponent implements OnInit, OnChanges{
 
   @Output() selectionChanged = new EventEmitter();
 
+  private subscriptions: Subscription[] = [];
+
   constructor(
     private snackService: SnackService
   ) { }
 
-  ngOnChanges(changes: SimpleChanges): void {
+  ngOnChanges(changes: { [propName: string]: SimpleChange }): void {
     // Reloads options if either options or endPoint suffered changes
 
     if(propertyChanged(changes, "options")){
@@ -51,7 +54,7 @@ export class MultipleSelectionDropdownComponent implements OnInit, OnChanges{
   }
 
   ngOnInit(): void {
-    if(this.options != undefined){
+    if(this.options != undefined && this.options.length > 0){
       this.readOptionsFromInput();
       return;
     }
@@ -67,7 +70,8 @@ export class MultipleSelectionDropdownComponent implements OnInit, OnChanges{
   }
 
   private readOptionsFromEndpoint() {
-    this.endPoint.getOptions()
+    this.subscriptions.push(
+      this.endPoint.getOptions()
       .subscribe(result => {
         if (this.snackService.snackIfError(result)) {
           this.dropdownOptions = [];
@@ -75,10 +79,15 @@ export class MultipleSelectionDropdownComponent implements OnInit, OnChanges{
         }
 
         this.dropdownOptions = this.preOptions.concat(result);
-      });
+      })
+    );
   }
 
   private readOptionsFromInput() {
     this.dropdownOptions = this.preOptions.concat(this.options);
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(s => s.unsubscribe());
   }
 }

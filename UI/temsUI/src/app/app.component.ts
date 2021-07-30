@@ -87,8 +87,6 @@ export class AppComponent extends TEMSComponent implements OnInit{
     this.subscriptions.push(
       this.systemConfigurationService.getLibraryPassword()
       .subscribe(result => {
-        console.log('result: ');
-        console.log(result);
         this.libraryPassword = result.toLowerCase();
       })
     )

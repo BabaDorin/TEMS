@@ -80,11 +80,11 @@ namespace temsAPI.EquipmentControllers
             return ReturnResponse("Success", ResponseStatus.Success);
         }
 
-        [HttpGet("equipmenttype/GetAllAutocompleteOptions/{filter?}")]
+        [HttpGet("equipmenttype/GetAllAutocompleteOptions/{filter?}/{includeChildTypes?}")]
         [DefaultExceptionHandler("An error occured while fetching type autocomplete options")]
-        public async Task<IActionResult> GetAllAutocompleteOptions(string filter)
+        public async Task<IActionResult> GetAllAutocompleteOptions(string filter, bool includeChildTypes)
         {
-            var options = await _equipmentTypeManager.GetAutocompleteOptions(filter);
+            var options = await _equipmentTypeManager.GetAutocompleteOptions(filter, includeChildTypes);
             return Ok(options);
         }
 

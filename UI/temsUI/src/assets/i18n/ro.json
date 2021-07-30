@@ -147,6 +147,7 @@
         "bulkUpload": "Încărcare fișiere SIC",
         "step": "Pasul",
         "selectType": "Selectează tipul",
+        "selectTypes": "Selectează tipurile de echipament",
         "selectDefinition": "Selectează definiția",
         "priceDescription": "Prețul va fi moștenit, dar putea fi supradefinit de către fiecare echipament în parte",
         "provideEquipmentInformation": "Furnizează informații despre echipament",

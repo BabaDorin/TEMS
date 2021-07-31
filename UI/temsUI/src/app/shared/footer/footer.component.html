@@ -3,6 +3,18 @@
   <!-- </div> -->
 
   <p *ngIf="currentYear != undefined" class="text-muted text-center">
-    @ {{currentYear}} BeFree | <small>Dorin Baba</small> | All Rights Reserved 
+    <span *ngIf="!bugReportOn; else elseBlock">
+      @
+    </span> 
+    <ng-template #elseBlock>
+      <mat-icon class="btn-bug-report" (click)="reportBug()">
+        bug_report
+      </mat-icon>
+    </ng-template>
+    {{currentYear}} BeFree | <small>
+      <span (click)="bugReportOn = !bugReportOn">
+        Dorin Baba
+      </span>
+    </small> | All Rights Reserved 
   </p>
 </footer>

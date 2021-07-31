@@ -17,7 +17,7 @@ export class DialogService {
   }
 
   openDialog(component: ComponentType<any>, keyValue?: IOption[], afterClosed?: Function){
-    
+    console.log('openiiiiiiiiing');
     let data = {
       dialogRef: this.dialogRef, 
     };

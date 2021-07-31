@@ -1,10 +1,11 @@
+import { LazyComponentService } from './services/lazy-loader.service';
 import { DialogService } from 'src/app/services/dialog.service';
 import { ReactiveFormsModule } from '@angular/forms';
 import { DialogModule } from './modules/dialog/dialog.module';
 import { MatMenuModule } from '@angular/material/menu';
 import { CurrencyPipe, DatePipe, DecimalPipe } from '@angular/common';
 import { HttpClient, HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { NgModule } from '@angular/core';
+import { NgModule, NgModuleFactoryLoader, SystemJsNgModuleLoader } from '@angular/core';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -47,6 +48,7 @@ import { ViewNotificationsComponent } from './tems-components/notifications/view
 import { TEMSComponent } from './tems/tems.component';
 import { UserCardsModule } from './user-cards/user-cards.module';
 import { TemsFormsModule } from './modules/tems-forms/tems-forms.module';
+import { BugReportComponent } from './tems-components/forms/bug-report/bug-report.component';
 
 export function HttpLoaderFactory(http: HttpClient){
   return new TranslateHttpLoader(http);
@@ -125,6 +127,7 @@ export function HttpLoaderFactory(http: HttpClient){
     PaginatePipe,
     DecimalPipe,
     TranslatePipe,
+    LazyComponentService
   ],
   bootstrap: [AppComponent],
 })

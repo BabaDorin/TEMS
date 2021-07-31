@@ -1,10 +1,12 @@
 ﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
+using temsAPI.Helpers.ReusableSnippets;
 
 namespace temsAPI.ViewModels.Equipment
 {
@@ -92,12 +94,26 @@ namespace temsAPI.ViewModels.Equipment
             if (updateModel != null && viewModel.EquipmentDefinitionID != updateModel.EquipmentDefinitionID)
                 return "The new equipment definition should match the old one.";
 
+            // Check if children are valid and if the 2 level hierarchy is not violated
+            // (Equipment's children can't have children)
             StringBuilder stringBuilder = new StringBuilder("");
             foreach(var child in viewModel.Children)
             {
                 string validationResult = await Validate(unitOfWork, child);
                 if (validationResult != null)
                     stringBuilder.Append(validationResult + Environment.NewLine);
+
+                var childEquipment = (await unitOfWork.Equipments
+                    .Find<Data.Entities.EquipmentEntities.Equipment>(
+                        where: q => q.Id == child.Id,
+                        include: q => q.Include(q => q.Children)))
+                    .FirstOrDefault();
+
+                if(childEquipment != null && !childEquipment.Children.IsNullOrEmpty())
+                {
+                    stringBuilder.Append($"2 level hierarchy violation: {childEquipment.GetIdentified()} can not be " +
+                        $"a child because it is a parent for other children" + Environment.NewLine);
+                }
             }
 
             return (stringBuilder.ToString() == "") ? null : stringBuilder.ToString();

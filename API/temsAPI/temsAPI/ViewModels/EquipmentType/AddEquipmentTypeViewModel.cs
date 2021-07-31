@@ -1,8 +1,10 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
+using temsAPI.Helpers.ReusableSnippets;
 
 namespace temsAPI.ViewModels.EquipmentType
 {
@@ -36,11 +38,26 @@ namespace temsAPI.ViewModels.EquipmentType
                     .isExists(q => q.Name.ToLower() == Name.ToLower() && !q.IsArchieved))
                     return $"{Name} already exists";
 
-            // Invalid parents
+            // Invalid parents (Check is parents exist and if the 2 level hierachy is not violated
+            // (Parents don't have parents)
             if (Parents != null)
+            {
                 foreach (Option parent in Parents)
-                    if (!await unitOfWork.EquipmentTypes.isExists(q => q.Id == parent.Value))
+                {
+                    var parentType = (await unitOfWork.EquipmentTypes
+                        .Find<Data.Entities.EquipmentEntities.EquipmentType>(
+                            where: q => q.Id == parent.Value,
+                            include: q => q.Include(q => q.Parents)))
+                        .FirstOrDefault();
+
+                    if(parentType == null)
                         return $"Parent {parent.Label} not found.";
+
+                    if(!parentType.Parents.IsNullOrEmpty())
+                        return $"2 level hierarchy violation: {parent.Label} can not be a parent because " +
+                            $"it is a child for another type";
+                }
+            }
 
             // Invalid properties
             if (Properties != null)

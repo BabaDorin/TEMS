@@ -121,5 +121,17 @@ namespace temsAPI.Data.Entities.EquipmentEntities
 
             return model;
         }
+
+        /// <summary>
+        /// Returns equipments's TEMSID if exists, otherwise - returns it's serial number
+        /// </summary>
+        /// <returns></returns>
+        public string GetIdentified()
+        {
+            if (!String.IsNullOrEmpty(TEMSID))
+                return TEMSID;
+
+            return SerialNumber;
+        }
     }
 }

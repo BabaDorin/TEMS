@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using Microsoft.Extensions.Primitives;
 using System;
 using System.Collections.Generic;
@@ -6,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
+using temsAPI.Helpers.ReusableSnippets;
 using temsAPI.Validation;
 
 namespace temsAPI.ViewModels.EquipmentDefinition
@@ -92,12 +94,30 @@ namespace temsAPI.ViewModels.EquipmentDefinition
                     return "One or more properties are invalid. Please review your data";
             }
 
+            // Check if children are valid and if the 2 level hierarchy is not violated
+            // (There aren't children that also have children)
             StringBuilder stringBuilder = new StringBuilder("");
             foreach(var child in viewModel.Children)
             {
                 string validationResult = await Validate(unitOfWork, child, true);
+                
                 if (validationResult != null)
+                {
                     stringBuilder.Append(validationResult + Environment.NewLine);
+                    continue;
+                }
+
+                var childDefintion = (await unitOfWork.EquipmentDefinitions
+                    .Find<Data.Entities.EquipmentEntities.EquipmentDefinition>(
+                        where: q => q.Id == child.Id,
+                        include: q => q.Include(q => q.Children)))
+                    .FirstOrDefault();
+
+                if (childDefintion != null && !childDefintion.Children.IsNullOrEmpty())
+                {
+                    stringBuilder.Append($"2 level hierarchy violated: {child.Identifier} can not be a child " +
+                        $"because it a parent for other definitions" + Environment.NewLine);
+                }
             }
 
             return (stringBuilder.ToString() == "") ? null : stringBuilder.ToString();  

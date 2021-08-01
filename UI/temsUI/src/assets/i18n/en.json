@@ -129,7 +129,8 @@
         "date" : "Select the date:",
         "any": "Any",
         "upload": "Upload",
-        "find": "Find"
+        "find": "Find",
+        "attachments": "Attachments"
     },
     
     "equipment": {
@@ -491,5 +492,12 @@
         "prop_currency": "Currency",
         "prop_purchaseDate": "Date of purchase",
         "prop_allocatee": "Allocatee"
+    },
+
+    "bugReport": {
+        "typeLabel": "Report type",
+        "bug": "Bug",
+        "featureRequest": "Feature request",
+        "attachmentDescription": "Upload something if necessary. Max 4mb allowed"
     }
 }

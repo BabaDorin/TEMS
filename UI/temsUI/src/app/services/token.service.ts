@@ -16,6 +16,11 @@ export class TokenService {
     return JSON.parse(window.atob(token.split('.')[1]))[claim] != undefined;
   }
 
+  tokenExists(){
+    let token = localStorage.getItem('token');
+    return token != undefined && token.trim() != 'bearer'; 
+  }
+
   getClaimValue(claim: string) {
     let token = localStorage.getItem('token');
     if (token == null) return false;

@@ -128,7 +128,8 @@
         "date" : "Selectează data:",
         "any": "Oricare",
         "upload": "Încarcă",
-        "find": "Caută"
+        "find": "Caută",
+        "attachments": "Atașamente"
     },
     
     "equipment": {
@@ -488,5 +489,12 @@
         "prop_currency": "Valuta",
         "prop_purchaseDate": "Data procurării",
         "prop_allocatee": "Cesionar (La moment)"
+    },
+
+    "bugReport": {
+        "typeLabel": "Tipul raportului",
+        "bug": "Bug",
+        "featureRequest": "Solicitare funcționalități noi",
+        "attachmentDescription": "Încarcă careva fișiere dacă consideri că este necesar. Dimensiunea maxima cumulată este de 4mb"
     }
 }

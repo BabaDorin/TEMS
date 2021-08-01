@@ -10,6 +10,7 @@ using System.Net;
 using System.Net.Mail;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
+using temsAPI.Helpers.ReusableSnippets;
 using temsAPI.System_Files;
 using temsAPI.ViewModels.Email;
 
@@ -21,6 +22,17 @@ namespace temsAPI.Services
         {
             public string Email { get; set; }
             public string Name { get; set; }
+
+            public EmailTo()
+            {
+
+            }
+
+            public EmailTo(string email, string name)
+            {
+                Email = email;
+                Name = name;
+            }
         }
 
         readonly IUnitOfWork _unitOfWork;
@@ -33,6 +45,8 @@ namespace temsAPI.Services
             _appSettings = appSettings.Value;
         }
 
+        // BEFREE: Something is wrong here, I feel it => DRY principle Violated
+
         /// <summary>
         /// Sends an email according to the data provided via an instance of SendEmailViewModel.
         /// Returns eather a number representing the number of sent emails, or returns an error message in case of
@@ -43,7 +57,7 @@ namespace temsAPI.Services
         public async Task<string> SendEmailToPersonnel(SendEmailViewModel emailData)
         {
             List<EmailTo> addresses = await GetEmailAddresses_Personnel(emailData.Addressees);
-            if (addresses == null || addresses.Count == 0)
+            if (addresses.IsNullOrEmpty())
                 return "No email addresses found. No mail has been sent";
 
             return await SendEmail(addresses, emailData);
@@ -52,11 +66,21 @@ namespace temsAPI.Services
         public async Task<string> SendEmailToUsers(SendEmailViewModel emailData)
         {
             List<EmailTo> addresses = await GetEmailAddresses_Users(emailData.Addressees);
-            if (addresses == null || addresses.Count == 0)
+            if (addresses.IsNullOrEmpty())
                 return "No email addresses found. No mail has been sent";
             
             return await SendEmail(addresses, emailData);
         }
+
+        public async Task<string> SendEmailToAddresses(SendEmailViewModel emailData)
+        {
+            List<EmailTo> addressees = emailData.Addressees.Select(q => new EmailTo(q, q.Split('@')[0])).ToList();
+            if (addressees.IsNullOrEmpty())
+                return "No email addresses found. No mail has been sent";
+
+            return await SendEmail(addressees, emailData);
+        }
+
 
         private async Task<string> SendEmail(List<EmailTo> addresses, SendEmailViewModel emailData)
         {
@@ -64,6 +88,7 @@ namespace temsAPI.Services
             return await SendEmailsTo(addresses, emailData);
         }
 
+        // BEFREE: Create email only once and send to multiple recipients
         private async Task<string> SendEmailsTo(List<EmailTo> addresses, SendEmailViewModel emailData)
         {
             int numberOfEmailsSent = 0;
@@ -74,6 +99,14 @@ namespace temsAPI.Services
                     .To(item.Email, item.Name)
                     .Subject(emailData.Subject)
                     .Body(emailData.Text + "\n\n\nThis email has been send by TEMS platform. Cheers <3.");
+
+                if (!emailData.Attachments.IsNullOrEmpty())
+                {
+                    emailData.Attachments.ForEach(file =>
+                    {
+                        email.AttachFromFilename(file);
+                    });
+                }
 
                 await email.SendAsync();
                 ++numberOfEmailsSent;

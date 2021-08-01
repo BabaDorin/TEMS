@@ -1,12 +1,15 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.OtherEntities;
+using temsAPI.Data.Factories.Email;
 using temsAPI.Helpers.StaticFileHelpers;
 using temsAPI.Services;
+using temsAPI.System_Files;
 using temsAPI.ViewModels.BugReport;
 
 namespace temsAPI.Data.Managers
@@ -16,28 +19,39 @@ namespace temsAPI.Data.Managers
         EmailService _emailService;
         IdentityService _identityService;
         IUnitOfWork _unitOfWork;
+        SystemConfigurationService _configurationService;
 
         public BugReportManager(
             EmailService emailService,
             IdentityService identityService,
-            IUnitOfWork unitOfWork)
+            IUnitOfWork unitOfWork,
+            SystemConfigurationService configurationService)
         {
             _emailService = emailService;
             _identityService = identityService;
             _unitOfWork = unitOfWork;
+            _configurationService = configurationService;
         }
 
         /// <summary>
         /// Processes the bug report, which includes saving the report & notifying 
         /// </summary>
-        /// <returns>Null if everything is ok, otherwise - returns an error message</returns>
+        /// <returns>Null if everything is ok, otherwise - an error message</returns>
         public async Task<string> ProcessBugReport(BugReportViewModel viewModel)
         {
             var bugReport = await CreateBugReport(viewModel);
-            await NotifyBugReport(bugReport);
+            var notificationResult = await NotifyBugReport(bugReport);
+            if (notificationResult != null && !int.TryParse(notificationResult, out _))
+                return notificationResult;
+            
             return null;
         }
 
+        /// <summary>
+        /// Creates the bug report model, saves attachments to disk, saves the model into the db
+        /// </summary>
+        /// <param name="viewModel"></param>
+        /// <returns>The resulted BugReport model</returns>
         private async Task<BugReport> CreateBugReport(BugReportViewModel viewModel)
         {
             BugReport bugReport = new()
@@ -88,8 +102,9 @@ namespace temsAPI.Data.Managers
         /// <returns>Null if everything is OK, otherwise - return an error message</returns>
         private async Task<string> NotifyBugReport(BugReport report)
         {
-            //await Task.Yield();
-            return "not implemented";
+            var emailBuilder = new BugReportEmailBuilder(report, _configurationService.AppSettings);
+            var emailModel = await emailBuilder.BuildEmailModel();
+            return await _emailService.SendEmailToAddresses(emailModel);
         }
     }
 }

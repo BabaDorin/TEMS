@@ -24,5 +24,6 @@ namespace temsAPI.System_Files
         public bool AllowGuestsToCreateTickets { get; set; }
 
         public string SuperAdminPassword { get; set; }
+        public string[] BugReportMailRecipients { get; set; }
     }
 }

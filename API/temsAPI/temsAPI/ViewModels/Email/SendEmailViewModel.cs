@@ -11,5 +11,6 @@ namespace temsAPI.ViewModels.Email
         public List<string> Addressees { get; set; }
         public string Subject { get; set; }
         public string Text { get; set; }
+        public IEnumerable<string> Attachments { get; set; } = new List<string>();
     }
 }

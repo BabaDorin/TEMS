@@ -492,9 +492,11 @@
     },
 
     "bugReport": {
+        "header": "Raportează un bug sau solicită integrarea unei noi funcționalități",
+        "info": "Descrie cât mai detailat bug-ul sau funcționalitatea",
         "typeLabel": "Tipul raportului",
         "bug": "Bug",
         "featureRequest": "Solicitare funcționalități noi",
-        "attachmentDescription": "Încarcă careva fișiere dacă consideri că este necesar. Dimensiunea maxima cumulată este de 4mb"
+        "attachmentsDescription": "Încarcă careva fișiere dacă consideri că este necesar. Dimensiunea maxima cumulată este de 20mb"
     }
 }

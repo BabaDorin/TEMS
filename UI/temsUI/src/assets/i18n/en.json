@@ -495,9 +495,11 @@
     },
 
     "bugReport": {
+        "header": "Bug report or feature request",
+        "info": "Provide a broad description of the problem or required feature",
         "typeLabel": "Report type",
         "bug": "Bug",
         "featureRequest": "Feature request",
-        "attachmentDescription": "Upload something if necessary. Max 4mb allowed"
+        "attachmentsDescription": "Upload something if necessary. Max 20mb allowed"
     }
 }

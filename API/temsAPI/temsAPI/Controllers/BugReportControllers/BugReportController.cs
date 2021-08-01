@@ -9,7 +9,7 @@ namespace temsAPI.Controllers.BugReportControllers
     {
         [HttpPost("BugReport/SendReport")]
         [Authorize]
-        [RequestSizeLimit(4_299_162)] // 4.1 MB
+        [RequestSizeLimit(22_020_096)] // 21 MB
         [DefaultExceptionHandler("An error occured while sending the report")]
         public IActionResult SendReport ([FromForm] BugReportViewModel theFile)
         {

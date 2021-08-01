@@ -1,3 +1,4 @@
+import { SnackService } from './../../../services/snack.service';
 import { TokenService } from './../../../services/token.service';
 import { BugReportService } from './../../../services/bug-report.service';
 import { BugReport } from './../../../models/bug-report/bug-report.model';
@@ -13,6 +14,7 @@ import { Component, OnInit } from '@angular/core';
 export class BugReportComponent implements OnInit {
 
   dialogRef;
+  selectedFilesLabel = "";
 
   reportFormGroup = new FormGroup({
      reportType: new FormControl("bug", Validators.required),
@@ -23,7 +25,7 @@ export class BugReportComponent implements OnInit {
   constructor(
     public translate: TranslateService,
     private bugReportService: BugReportService,
-    private tokenService: TokenService
+    private snackService: SnackService
   ) { }
 
   ngOnInit(): void {
@@ -42,13 +44,23 @@ export class BugReportComponent implements OnInit {
   }
 
   onFilesSelected(files) {
+    this.selectedFilesLabel = '';
     if(files == undefined || files.length == 0)
       return;
     
     let modelFiles = [] as File[];
+    let totalLength = 0;
 
     for(let  i = 0; i < files.length; i++){
       modelFiles.push(files[i]);
+      totalLength += files[i].size;
+      this.selectedFilesLabel += files[i].name + ', ';
+    };
+
+    if(totalLength > 20 * 1024 * 1024){
+      this.snackService.snack({ message: "Maximum size limit of 20mb was excedeed. NO files selected.", status: 2 })
+      this.selectedFilesLabel = '';
+      modelFiles = [];
     }
 
     this.reportFormGroup.controls["attachments"].setValue(modelFiles);

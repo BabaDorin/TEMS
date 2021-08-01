@@ -131,7 +131,7 @@ namespace temsAPI.Controllers.LibraryControllers
         [DefaultExceptionHandler("An error occured while fetching space usage data")]
         public IActionResult GetSpaceUsageData()
         {
-            double usedSpaceBytes = StaticFileHelper.DirSizeBytes(new System.IO.DirectoryInfo(fileHandler.FolderPath));
+            double usedSpaceBytes = StaticFileHandler.DirSizeBytes(new System.IO.DirectoryInfo(fileHandler.FolderPath));
             double usedSpaceGb = usedSpaceBytes / 1073741824;
 
             Fraction fraction = new();

@@ -44,6 +44,7 @@ namespace temsAPI.Helpers.StaticFileHelpers
             return finalFileName;
         }
 
+        [Obsolete]
         public string AddGuidSuffix(string fileName)
         {
             string finalFileName =
@@ -51,6 +52,15 @@ namespace temsAPI.Helpers.StaticFileHelpers
                 "_" +
                 Guid.NewGuid().ToString();
             return finalFileName;
+        }
+
+        public string AddGuidSuffixKeepExtension(string fileName)
+        {
+            string extension = Path.GetExtension(fileName);
+            string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(fileName);
+            fileNameWithoutExtension = String.Format("{0}_{1}", fileNameWithoutExtension, Guid.NewGuid().ToString());
+            
+            return fileNameWithoutExtension + extension;
         }
 
         public void DeleteFile(string filePath)
@@ -62,6 +72,29 @@ namespace temsAPI.Helpers.StaticFileHelpers
         public bool FileExists(string filePath)
         {
             return File.Exists(filePath);
+        }
+
+        public static long DirSizeBytes(DirectoryInfo d)
+        {
+            long size = 0;
+            // Add file sizes.
+            FileInfo[] fis = d.GetFiles();
+            foreach (FileInfo fi in fis)
+            {
+                size += fi.Length;
+            }
+            // Add subdirectory sizes.
+            DirectoryInfo[] dis = d.GetDirectories();
+            foreach (DirectoryInfo di in dis)
+            {
+                size += DirSizeBytes(di);
+            }
+            return size;
+        }
+
+        protected string GetStaticFilesFolderPath()
+        {
+            return Path.Combine(Directory.GetCurrentDirectory(), "StaticFiles");
         }
     }
 }

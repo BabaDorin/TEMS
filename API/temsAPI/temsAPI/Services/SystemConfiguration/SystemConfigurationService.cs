@@ -103,8 +103,8 @@ namespace temsAPI.Services
             if (gb <= 0)
                 return "Invalid value provided for gb.";
 
-            var libraryFileHanler = StaticFileHelper.GetFileHandler(StaticFileHandlers.LibraryItem);
-            if (gb <= StaticFileHelper.DirSizeBytes(new System.IO.DirectoryInfo(libraryFileHanler.FolderPath)) / 1073741824)
+            var libraryFileHandler = new GeneratedReportFileHandler();
+            if (gb <= StaticFileHandler.DirSizeBytes(new System.IO.DirectoryInfo(libraryFileHandler.FolderPath)) / 1073741824)
                 return "The indicated value is less than the storage space which is already used";
 
             AppSettings.LibraryAllocatedStorageSpaceGb = gb;

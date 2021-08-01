@@ -134,7 +134,7 @@ namespace temsAPI.Data.Managers
 
         public long GetAvailableSpace_bytes()
         {
-            long usedLibraryStorageSpace_bytes = StaticFileHelper.DirSizeBytes(new DirectoryInfo(_fileHandler.FolderPath));
+            long usedLibraryStorageSpace_bytes = StaticFileHandler.DirSizeBytes(new DirectoryInfo(_fileHandler.FolderPath));
             long freeLibraryStorageSpace_bytes = _systemConfigurationService.AppSettings.LibraryAllocatedStorageSpaceGb * (long)Math.Pow(1024, 3);
 
             return freeLibraryStorageSpace_bytes;

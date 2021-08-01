@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using temsAPI.Data.Entities.UserEntities;
+using temsAPI.ViewModels.BugReport;
 
 namespace temsAPI.Data.Entities.OtherEntities
 {

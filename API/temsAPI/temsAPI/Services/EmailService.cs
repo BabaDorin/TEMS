@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Formats.Asn1;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Mail;
@@ -104,7 +105,7 @@ namespace temsAPI.Services
                 {
                     emailData.Attachments.ForEach(file =>
                     {
-                        email.AttachFromFilename(file);
+                        email.AttachFromFilename(file, null, Path.GetFileName(file));
                     });
                 }
 

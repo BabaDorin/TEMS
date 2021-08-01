@@ -29,7 +29,7 @@ export class DialogService {
 
     this.dialogRef = this.dialog.open(component,
     {
-      maxHeight: '80vh',
+      maxHeight: '900px',
       autoFocus: false,
       data: data
     });

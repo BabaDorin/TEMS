@@ -13,6 +13,7 @@ namespace temsAPI.Controllers.BugReportControllers
         [DefaultExceptionHandler("An error occured while sending the report")]
         public IActionResult SendReport ([FromForm] BugReportViewModel theFile)
         {
+
             var req = Request.Form;
 
             return Ok("nice");

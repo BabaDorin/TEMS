@@ -45,6 +45,7 @@ namespace temsAPI.Contracts
         IGenericRepository<RoomLabel> RoomLabels { get; }
         IGenericRepository<PersonnelPosition> PersonnelPositions { get; }
         IGenericRepository<TemsJWT> JWTBlacklist { get; }
+        IGenericRepository<BugReport> BugReports { get; }
         
         Task Save();
     }

@@ -150,6 +150,7 @@ namespace temsAPI
             services.AddScoped<TicketManager>();
             services.AddScoped<AnalyticsManager>();
             services.AddScoped<NotificationManager>();
+            services.AddScoped<BugReportManager>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

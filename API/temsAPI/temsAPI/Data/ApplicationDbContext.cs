@@ -159,5 +159,6 @@ namespace temsAPI.Data
         public DbSet<Report> Reports { get; set; }
         public DbSet<Key> Keys { get; set; }
         public DbSet<KeyAllocation> KeyAllocations { get; set; }
+        public DbSet<BugReport> BugReports { get; set; }
     }
 }

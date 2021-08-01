@@ -50,6 +50,7 @@ namespace temsAPI.Repository
         private IGenericRepository<TemsJWT> _jwtBlacklist;
         private IGenericRepository<CommonNotification> _commonNotifications;
         private IGenericRepository<UserNotification> _userNotifications;
+        private IGenericRepository<BugReport> _bugReports;
 
         public IGenericRepository<Announcement> Announcements 
             => _announcements ??= new GenericRepository<Announcement>(_context);
@@ -113,6 +114,8 @@ namespace temsAPI.Repository
             => _commonNotifications ??= new GenericRepository<CommonNotification>(_context);
         public IGenericRepository<UserNotification> UserNotifications
             => _userNotifications ??= new GenericRepository<UserNotification>(_context);
+        public IGenericRepository<BugReport> BugReports
+            => _bugReports ??= new GenericRepository<BugReport>(_context);
 
         public UnitOfWork(ApplicationDbContext context)
         {

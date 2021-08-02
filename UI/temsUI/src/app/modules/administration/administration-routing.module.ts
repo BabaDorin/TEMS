@@ -1,3 +1,4 @@
+import { ViewBugReportsComponent } from './../../tems-components/view-bug-reports/view-bug-reports.component';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { EquipmentManagementComponent } from '../../tems-components/admin/equipment-management/equipment-management.component';
@@ -11,6 +12,7 @@ const routes: Routes = [
   { path: 'users', component: UserManagementComponent },
   { path: 'system-configuration', component: SystemConfigComponent },
   { path: 'system-logs', component: ViewSystemLogsComponent },
+  { path: 'bug-reports', component: ViewBugReportsComponent }
 ];
 
 @NgModule({

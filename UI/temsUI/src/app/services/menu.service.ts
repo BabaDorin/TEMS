@@ -339,7 +339,16 @@ export class MenuService {
                 isShown: this.tokenService.canManageSystemConfiguration(),
                 showSubmenu: false,
                 submenu: []
-              }
+              },
+              {
+                path: '/administration/bug-reports',
+                title: menu.bugReports,
+                icon: 'mdi mdi-bug menu-icon',
+                isActive: false,
+                isShown: this.tokenService.canManageSystemConfiguration(),
+                showSubmenu: false,
+                submenu: []
+              },
             ]
           },
           //   path: '/analytics',

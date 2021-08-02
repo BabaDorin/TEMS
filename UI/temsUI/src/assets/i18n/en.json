@@ -47,6 +47,7 @@
     },
 
     "menu": {
+        "bugReports": "Bug reports",
         "equipment": "Equipment",
         "view": "View",
         "add": "Add",

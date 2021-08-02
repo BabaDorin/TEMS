@@ -1,3 +1,4 @@
+import { BugReportListingModule } from './../bug-report/bug-report-listing/bug-report-listing.module';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
@@ -31,6 +32,7 @@ import { DialogModule } from '../dialog/dialog.module';
 import { PersonnelModule } from '../personnel/personnel.module';
 import { TemsFormsModule } from '../tems-forms/tems-forms.module';
 import { AdministrationRoutingModule } from './administration-routing.module';
+import { BugReportModule } from '../bug-report/bug-report.module';
 
 
 
@@ -70,6 +72,7 @@ declarations: [
     MatIconModule,
     MatCheckboxModule,
     MatCardModule,
+    BugReportListingModule
   ]
 })
 export class AdministrationModule { }

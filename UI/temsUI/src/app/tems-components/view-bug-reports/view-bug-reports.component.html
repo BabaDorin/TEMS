@@ -1,0 +1,25 @@
+<div class="card">
+    <div class="card-body">
+        <h2>
+            {{ 'menu.bugReports' | translate }}
+        </h2>
+        <hr class="separator">
+
+        <ng-container *ngIf="reports != undefined && reports.length > 0; else elseBlock">
+            <ng-container
+                *ngFor="let rep of reports | paginate: { itemsPerPage: itemsPerPage, currentPage: pageNumber,  totalItems: totalItems };">
+                <app-bug-report-container [bugReportSimplified]="rep">
+
+                </app-bug-report-container>
+            </ng-container>
+            <pagination-controls class="text-center mb-2" (pageChange)="pageNumber = $event; fetchBugReports()"
+                *ngIf="reports != undefined && reports.length >= itemsPerPage">
+            </pagination-controls>
+        </ng-container>
+
+        <ng-template #elseBlock>
+            {{ 'general.empty' | translate }}
+        </ng-template>
+
+    </div>
+</div>

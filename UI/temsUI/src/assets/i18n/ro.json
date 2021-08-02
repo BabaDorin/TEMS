@@ -47,6 +47,7 @@
     },
 
     "menu": {
+        "bugReports": "Raportări bug-uri",
         "equipment": "Echipament",
         "view": "Vizualizare",
         "add": "Adaugă",

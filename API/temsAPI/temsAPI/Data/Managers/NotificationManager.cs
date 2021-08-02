@@ -9,8 +9,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.CommunicationEntities;
+using temsAPI.Data.Entities.OtherEntities;
 using temsAPI.Data.Entities.UserEntities;
-using temsAPI.Data.Factories.NotificationFactories;
+using temsAPI.Data.Factories.Notification;
 using temsAPI.Services;
 using temsAPI.Services.Notification;
 using temsAPI.ViewModels.Notification;
@@ -167,7 +168,7 @@ namespace temsAPI.Data.Managers
             var assigneeIds = ticket.Assignees?.Select(q => q.Id).ToList();
             if(assigneeIds != null && assigneeIds.Count > 0)
             {
-                var notification = (new TicketAssignedNotiFactory().Create(ticket));
+                var notification = (new TicketAssignedNotificationBuilder(ticket).Create());
                 await CreateCommonNotification(notification);
                 await _emailNotificationService.SendNotification(notification);
             }
@@ -181,12 +182,29 @@ namespace temsAPI.Data.Managers
 
             if(techIds != null && techIds.Count > 0)
             {
-                var notification = new TicketCreatedNotiFactory().Create(ticket, techIds);
+                var notification = new TicketCreatedNotificationBuilder(ticket, techIds).Create();
                 await CreateCommonNotification(notification);
                 await _emailNotificationService.SendNotification(notification);
             }
 
             // BEFREE -> Notify supervisories
+        }
+
+        public async Task NotifyBugReport(BugReport report)
+        {
+            //// Notify administrators
+            var adminIds = (await _userManager.GetUsersInRoleAsync("Administrator"))
+                .Select(q => q.Id)
+                .ToList();
+
+            adminIds.Remove(report.CreatedByID);
+
+            if (adminIds != null && adminIds.Count > 0)
+            {
+                var notification = (new BugReportCreatedNotificationBuilder(report, adminIds).Create());
+                await CreateCommonNotification(notification);
+                await _emailNotificationService.SendNotification(notification);
+            }
         }
     }
 }

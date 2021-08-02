@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -6,10 +7,14 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
+using temsAPI.Controllers.IdentityControllers;
 using temsAPI.Data.Entities.OtherEntities;
+using temsAPI.Data.Entities.UserEntities;
 using temsAPI.Data.Factories.Email;
+using temsAPI.Data.Factories.Notification;
 using temsAPI.Helpers.StaticFileHelpers;
 using temsAPI.Services;
 using temsAPI.System_Files;
@@ -25,17 +30,23 @@ namespace temsAPI.Data.Managers
         IdentityService _identityService;
         IUnitOfWork _unitOfWork;
         SystemConfigurationService _configurationService;
+        UserManager<TEMSUser> _userManager;
+        NotificationManager _notificationManager;
 
         public BugReportManager(
             EmailService emailService,
             IdentityService identityService,
             IUnitOfWork unitOfWork,
-            SystemConfigurationService configurationService)
+            SystemConfigurationService configurationService,
+            UserManager<TEMSUser> userManager,
+            NotificationManager notificationManager)
         {
             _emailService = emailService;
             _identityService = identityService;
             _unitOfWork = unitOfWork;
             _configurationService = configurationService;
+            _userManager = userManager;
+            _notificationManager = notificationManager;
         }
 
         /// <summary>
@@ -102,10 +113,23 @@ namespace temsAPI.Data.Managers
 
         /// <summary>
         /// Sends an email with attachments to e-mail addresses specified in appsettings.json
+        /// and creates a notification addressed to system administrators
         /// </summary>
         /// <param name="report"></param>
         /// <returns>Null if everything is OK, otherwise - return an error message</returns>
         private async Task<string> NotifyBugReport(BugReport report)
+        {
+            string result = await NotifyBugReportEmail(report);
+            await _notificationManager.NotifyBugReport(report);
+            return result;
+        }
+
+        /// <summary>
+        /// Notifies about bug report via e-mail
+        /// </summary>
+        /// <param name="report"></param>
+        /// <returns>Null if everything is ok, otherwise - an error message</returns>
+        private async Task<string> NotifyBugReportEmail(BugReport report)
         {
             var emailBuilder = new BugReportEmailBuilder(report, _configurationService.AppSettings);
             var emailModel = await emailBuilder.BuildEmailModel();

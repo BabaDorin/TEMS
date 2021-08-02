@@ -12,7 +12,7 @@ using temsAPI.Data.Entities.CommunicationEntities;
 using temsAPI.Data.Entities.EquipmentEntities;
 using temsAPI.Data.Entities.OtherEntities;
 using temsAPI.Data.Entities.UserEntities;
-using temsAPI.Data.Factories.NotificationFactories;
+using temsAPI.Data.Factories.Notification;
 using temsAPI.Helpers;
 using temsAPI.Services;
 using temsAPI.System_Files;
@@ -231,7 +231,7 @@ namespace temsAPI.Data.Managers
                     .Select(q => q.Id)
                     .ToList();
 
-                var notification = new TicketPinnedNotiFactory().Create(ticket, techIds);
+                var notification = new TicketPinnedNotificationBuilder(ticket, techIds).Create();
                 await _notificationManager.CreateCommonNotification(notification);
             }
 

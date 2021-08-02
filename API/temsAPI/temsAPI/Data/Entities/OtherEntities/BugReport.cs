@@ -3,17 +3,18 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using temsAPI.Contracts;
 using temsAPI.Data.Entities.UserEntities;
-using temsAPI.ViewModels.BugReport;
 
 namespace temsAPI.Data.Entities.OtherEntities
 {
-    public class BugReport
+    public class BugReport : IIdentifiable
     {
         [Key]
         public string Id { get; set; }
+
+        [NotMapped]
+        public string Identifier => String.Format($"{ReportType},     created by {CreatedBy.Identifier}");
 
         [MaxLength(150)]
         public string ReportType { get; set; }
@@ -26,7 +27,7 @@ namespace temsAPI.Data.Entities.OtherEntities
 #nullable enable
 
         [MaxLength(10000)]
-        private string? Attachments { get; set; }
+        public string? Attachments { get; set; }
 
         [ForeignKey(nameof(CreatedByID))]
         public TEMSUser? CreatedBy { get; set; }
@@ -39,6 +40,10 @@ namespace temsAPI.Data.Entities.OtherEntities
             Attachments = String.Join(',', attachmentUris);
         }
 
+        /// <summary>
+        /// Returns the list of relative attachment paths
+        /// </summary>
+        /// <returns></returns>
         public List<string> GetAttachmentUris()
         {
             if (String.IsNullOrEmpty(Attachments))

@@ -7,13 +7,13 @@
 
         <ng-container *ngIf="reports != undefined && reports.length > 0; else elseBlock">
             <ng-container
-                *ngFor="let rep of reports | paginate: { itemsPerPage: itemsPerPage, currentPage: pageNumber,  totalItems: totalItems };">
-                <app-bug-report-container [bugReportSimplified]="rep">
+                *ngFor="let rep of reports | paginate: { itemsPerPage: itemsPerPage, currentPage: pageNumber,  totalItems: totalItems }; let i = index">
+                <app-bug-report-container [bugReportSimplified]="rep" (removed)="reportRemoved(i)">
 
                 </app-bug-report-container>
             </ng-container>
             <pagination-controls class="text-center mb-2" (pageChange)="pageNumber = $event; fetchBugReports()"
-                *ngIf="reports != undefined && reports.length >= itemsPerPage">
+                *ngIf="reports != undefined && reports.length > 0">
             </pagination-controls>
         </ng-container>
 

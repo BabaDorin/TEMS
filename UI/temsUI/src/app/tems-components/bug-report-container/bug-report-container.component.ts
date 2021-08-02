@@ -1,3 +1,4 @@
+import { Downloader } from './../../shared/downloader/fileDownloader';
 import { TranslateService } from '@ngx-translate/core';
 import { SnackService } from './../../services/snack.service';
 import { BugReportService } from './../../services/bug-report.service';
@@ -5,7 +6,7 @@ import { TEMSComponent } from './../../tems/tems.component';
 import { IOption } from './../../models/option.model';
 import { ClaimService } from './../../services/claim.service';
 import { ViewBugReport } from './../../models/bug-report/bug-report.model';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'app-bug-report-container',
@@ -16,6 +17,10 @@ export class BugReportContainerComponent extends TEMSComponent implements OnInit
 
   @Input() bugReportSimplified: IOption;
   bugReport: ViewBugReport;
+  loading: boolean = false;
+  downloader: Downloader;
+  
+  @Output() removed = new EventEmitter();
 
   constructor(
     public claims: ClaimService,
@@ -30,13 +35,19 @@ export class BugReportContainerComponent extends TEMSComponent implements OnInit
   }
 
   fetchFullBugReport(){
+    if(this.bugReport != undefined)
+      return;
+
+    this.loading = true;
     this.subscriptions.push(
       this.bugReportService.getFullBugReport(this.bugReportSimplified.value)
       .subscribe(result => {
+        this.loading = false;
         if(this.snack.snackIfError(result))
           return;
 
         this.bugReport = result;
+        console.log(this.bugReport);
       })
     );
   }
@@ -47,8 +58,11 @@ export class BugReportContainerComponent extends TEMSComponent implements OnInit
       .subscribe(result => {
         if(this.snack.snackIfError(result))
           return;
-        
-        console.log(result);
+
+        if(this.downloader == undefined)
+          this.downloader = new Downloader();
+
+        this.downloader.downloadFile(result, this.bugReport.attachments[i]);
       })
     );
   }
@@ -60,7 +74,11 @@ export class BugReportContainerComponent extends TEMSComponent implements OnInit
     this.subscriptions.push(
       this.bugReportService.removeReport(this.bugReport.id)
       .subscribe(result => {
-        this.snack.snackIfError(result);
+        if(this.snack.snackIfError(result))
+          return;
+        
+        if(result.status == 1)
+          this.removed.emit();
       })
     );
   }

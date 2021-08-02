@@ -40,5 +40,10 @@ namespace temsAPI.Helpers.StaticFileHelpers
         {
             return Path.Combine("StaticFiles", "BugReportAttachments", attachmentName);
         }
+
+        public string GetFullAttachmentPath(string attachment)
+        {
+            return Path.Combine(Directory.GetCurrentDirectory(), attachment);
+        }
     }
 }

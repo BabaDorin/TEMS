@@ -53,4 +53,8 @@ export class ViewBugReportsComponent extends TEMSComponent implements OnInit {
       })
     )
   }
+
+  reportRemoved(index: number){
+    this.reports.splice(index, 1);
+  }
 }

@@ -48,7 +48,7 @@ export class MenuService {
               {
                 path: '/quick-access/equipment',
                 title: menu.quickAccess,
-                icon: 'mdi mdi-format-horizontal-align-right menu-icon',
+                icon: 'mdi mdi-crosshairs-gps menu-icon',
                 isShown: this.tokenService.canViewEntities(),
                 isActive: false,
                 showSubmenu: false,
@@ -66,7 +66,7 @@ export class MenuService {
               {
                 path: '/equipment/allocations',
                 title: menu.allocations,
-                icon: 'mdi mdi-transfer menu-icon',
+                icon: 'mdi mdi-history menu-icon',
                 isActive: false,
                 isShown: this.tokenService.canViewEntities(),
                 showSubmenu: false,
@@ -103,7 +103,7 @@ export class MenuService {
               {
                 path: '/quick-access/rooms',
                 title: menu.quickAccess,
-                icon: 'mdi mdi-format-horizontal-align-right menu-icon',
+                icon: 'mdi mdi-crosshairs-gps menu-icon',
                 isShown: this.tokenService.canViewEntities(),
                 isActive: false,
                 showSubmenu: false,
@@ -149,7 +149,7 @@ export class MenuService {
               {
                 path: '/quick-access/personnel',
                 title: menu.quickAccess,
-                icon: 'mdi mdi-format-horizontal-align-right menu-icon',
+                icon: 'mdi mdi-crosshairs-gps menu-icon',
                 isShown: this.tokenService.canViewEntities(),
                 isActive: false,
                 showSubmenu: false,

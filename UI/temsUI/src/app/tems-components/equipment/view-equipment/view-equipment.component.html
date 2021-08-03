@@ -38,8 +38,7 @@
                         <app-multiple-selection-dropdown
                             [label]="translate.instant('equipment.selectTypes')" 
                             [endPoint]="typeEndpoint"
-                            (selectionChanged)="typesChanged($event)"
-                            [preOptions]="typePreOptions">
+                            (selectionChanged)="typesChanged($event)">
                         </app-multiple-selection-dropdown>
                     </div>
                     <ng-container *ngIf="claims.canManage">

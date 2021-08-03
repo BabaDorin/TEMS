@@ -1,3 +1,4 @@
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSelectModule } from '@angular/material/select';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
@@ -47,6 +48,7 @@ import { ReportsRoutingModule } from './reports-routing.module';
     TranslateModule,
     NgxPaginationModule,
     MatOptionModule,
+    MatTooltipModule
   ],
   exports: [
     ReportsComponent,

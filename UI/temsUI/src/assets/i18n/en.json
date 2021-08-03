@@ -450,6 +450,7 @@
     },
     
     "report": {
+        "staticFilesInfo": "These are references to generated report files, which means that data within these reports is static and reflects the state at the moment of generation.",
         "lastReports": "Last generated reports",
         "templates": "Custom templates",
         "reports": "Reports",

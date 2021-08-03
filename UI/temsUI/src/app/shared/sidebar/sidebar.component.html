@@ -7,7 +7,7 @@
       <!-- if it contains submenu -->
       <div *ngIf="sidebarNavItem.isShown && sidebarNavItem.submenu.length != 0">
         <a class="nav-link"
-          (click)="sidebarNavItem.showSubmenu = !sidebarNavItem.showSubmenu; sidebarNavItem.isActive = !sidebarNavItem.isActive"
+          (click)="closePreviousSubmenu(sidebarNavItem);"
           [attr.aria-expanded]="sidebarNavItem.showSubmenu" aria-controls="ui-basic">
           <span class="menu-title">{{ sidebarNavItem.title }}</span>
           <i class="menu-arrow"></i>
@@ -26,7 +26,8 @@
       </div>
 
       <div *ngIf="sidebarNavItem.isShown && sidebarNavItem.submenu.length == 0">
-        <a class="nav-link" [routerLink]="sidebarNavItem.path" (click)="optionSelected()">
+        <a class="nav-link" [routerLink]="sidebarNavItem.path" 
+        (click)="optionSelected(); closePreviousSubmenu(sidebarNavItem);">
           <span class="menu-title">{{ sidebarNavItem.title }}</span>
           <i [class]="sidebarNavItem.icon"></i>
         </a>

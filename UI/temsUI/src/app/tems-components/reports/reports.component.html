@@ -71,9 +71,8 @@
     <div class="card-body">
         <div class="card-title align-text-center">
             {{ 'report.lastReports' | translate }}
-            <mat-icon matSuffix class="mr-1">
-                <i class="mdi mdi-information-outline" matTooltip="These are references to generated report files, which means that data within these
-                    reports is static and reflects the state at the moment of generation."></i>
+            <mat-icon matSuffix class="mr-1" [matTooltip]="translate.instant('report.staticFilesInfo')">
+                info_outline
             </mat-icon>
         </div>
         <hr>

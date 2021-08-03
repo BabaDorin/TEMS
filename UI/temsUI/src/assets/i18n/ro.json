@@ -447,6 +447,7 @@
     },
     
     "report": {
+        "staticFilesInfo": "Lista conține ultimele rapoarte generate. Datele acestora sunt statice si reflecta starea din momentul generării.",
         "lastReports": "Ultimele rapoarte generate",
         "templates": "Șabloane personalizate",
         "reports": "Rapoarte",

@@ -22,7 +22,7 @@ import { AgGridEquipmentComponent } from './../ag-grid-equipment/ag-grid-equipme
 })
 export class ViewEquipmentComponent implements OnInit {
 
-  typePreOptions: IOption[] = [];
+  // typePreOptions: IOption[] = [];
   typeEndpoint: TypeEndpoint;
   equipmentFilter: EquipmentFilter;
 
@@ -39,7 +39,7 @@ export class ViewEquipmentComponent implements OnInit {
     private typeService: TypeService
   ) {
     this.typeEndpoint = new TypeEndpoint(this.typeService, this.includeDerived);
-    this.typePreOptions = [{value: 'any', label: this.translate.instant('form.any')}];
+    // this.typePreOptions = [{value: 'any', label: this.translate.instant('form.any')}];
 
     this.equipmentFilter = new EquipmentFilter();
     this.equipmentFilter.includeDerived = this.includeDerived;

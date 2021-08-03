@@ -77,11 +77,12 @@
           </a>
           <div class="dropdown-menu navbar-dropdown" ngbDropdownMenu aria-labelledby="profileDropdown">
             <a class="dropdown-item" routerLink="profile/view">
-              <mat-icon class="text-warning">person</mat-icon>{{ 'user.profile' | translate }}
+              <mat-icon class="text-primary mr-4">person</mat-icon>
+              {{ 'user.profile' | translate }}
             </a>
             <div class="dropdown-divider"></div>
             <a class="dropdown-item" (click)="signOut()" href="#">
-              <i class="mdi mdi-logout mr-2 text-primary"></i>
+              <mat-icon class="text-primary mr-4">logout</mat-icon>
               {{ 'user.signOut' | translate }}
             </a>
           </div>

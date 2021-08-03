@@ -51,4 +51,25 @@ export class SidebarComponent implements OnInit {
       this.sidebarManager.toggleSidebar();
     }
   }
+
+  closePreviousSubmenu(clickedNavItem: RouteInfo){
+    let toBeSet = false;
+
+    if(clickedNavItem.showSubmenu != undefined)
+      toBeSet = !clickedNavItem.showSubmenu;
+
+    this.menuService.ROUTES.forEach(q => {
+      q.showSubmenu = false;
+      q.isActive = false;
+      q.submenu.forEach(q => q.isActive = false)
+    });
+
+    if(clickedNavItem.submenu != undefined){
+      clickedNavItem.showSubmenu = toBeSet;
+      clickedNavItem.isActive = toBeSet;
+      return;
+    }
+
+    clickedNavItem.isActive = !clickedNavItem.isActive;
+  }
 }

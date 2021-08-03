@@ -1,7 +1,7 @@
 <div [ngClass]="updateEquipmentId == undefined ? 'card' : 'card cancel-margins'">
   <div class="card-body">
     <div>
-      <div class="page-header">
+      <div class="page-header m-0">
         <div class="page-title mt-4 mb-0">
   
           <!-- Header for Add equipment case -->
@@ -36,9 +36,9 @@
           </nav>
         </ng-container>
       </div>
-      <small *ngIf="updateEquipmentId == undefined">
+      <p class="text-muted" *ngIf="updateEquipmentId == undefined">
         {{ 'equipment.addTip' | translate }}
-      </small>
+      </p>
       <hr>
     </div>
     

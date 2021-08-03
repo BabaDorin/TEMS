@@ -1,3 +1,4 @@
+import { TranslateService } from '@ngx-translate/core';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CAN_MANAGE_ENTITIES } from 'src/app/models/claims';
@@ -29,7 +30,8 @@ export class ReportsComponent extends TEMSComponent implements OnInit {
     private reportService: ReportService,
     private router: Router,
     private snackService: SnackService,
-    private tokenService: TokenService
+    private tokenService: TokenService,
+    public translate: TranslateService
   ) {
     super();
   }

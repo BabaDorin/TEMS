@@ -323,7 +323,8 @@ button {
   }
 }
 
-.mat-icon {
+.mat-icon{
+  margin: 0 !important;
   vertical-align: middle !important;
 }
 
@@ -331,4 +332,11 @@ button {
   margin: 0 !important;
   padding: 0 !important;
   border: 0 !important;
+}
+
+.container, .container-fluid, .container-lg, .container-md, .container-sm, .container-xl {
+  padding-right: 0 !important;
+  padding-left: 0 !important;
+  margin-right: 0 !important; 
+  margin-left: 0 !important;
 }

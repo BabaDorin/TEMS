@@ -24,20 +24,25 @@ export class ViewBugReportsComponent extends TEMSComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.fetchTotalBugReportsAmount();
     this.fetchBugReports();
   }
 
-  fetchBugReports(){
+  fetchBugReports(
+    appendToExistingReports: boolean = false, 
+    skip: number = (this.pageNumber - 1) * this.itemsPerPage,
+    take: number = this.itemsPerPage){
+
+    this.fetchTotalBugReportsAmount();
     this.subscriptions.push(
-      this.bugReportService.getBugReportsSimplified(this.pageNumber, this.itemsPerPage)
+      this.bugReportService.getBugReportsSimplified(skip, take)
       .subscribe(result => {
         if(this.snack.snackIfError(result))
           return;
 
-        console.log('reports fetched');
-        console.log(this.reports);
-        this.reports = result;
+        if(appendToExistingReports)
+          this.reports = this.reports.concat(result);
+        else
+          this.reports = result;
       })
     );
   }
@@ -56,5 +61,13 @@ export class ViewBugReportsComponent extends TEMSComponent implements OnInit {
 
   reportRemoved(index: number){
     this.reports.splice(index, 1);
+    this.totalItems--;
+
+    // Fetch one more
+    let skip = this.pageNumber * this.itemsPerPage - 1;
+    if(skip < 0) skip = 0;
+    let take = 1;
+
+    this.fetchBugReports(true, skip, take);
   }
 }

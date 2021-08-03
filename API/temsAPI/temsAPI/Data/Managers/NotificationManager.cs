@@ -11,7 +11,9 @@ using temsAPI.Contracts;
 using temsAPI.Data.Entities.CommunicationEntities;
 using temsAPI.Data.Entities.OtherEntities;
 using temsAPI.Data.Entities.UserEntities;
+using temsAPI.Data.Factories.Email;
 using temsAPI.Data.Factories.Notification;
+using temsAPI.Helpers.ReusableSnippets;
 using temsAPI.Services;
 using temsAPI.Services.Notification;
 using temsAPI.ViewModels.Notification;
@@ -20,10 +22,12 @@ namespace temsAPI.Data.Managers
 {
     public class NotificationManager : EntityManager
     {
-        private IdentityService _identityService;
-        private UserManager<TEMSUser> _userManager;
-        private RoleManager<IdentityRole> _roleManager;
+        IdentityService _identityService;
+        UserManager<TEMSUser> _userManager;
+        RoleManager<IdentityRole> _roleManager;
         EmailNotificationService _emailNotificationService;
+        SystemConfigurationService _configService;
+        EmailService _emailService;
 
         public NotificationManager(
             IUnitOfWork unitOfWork, 
@@ -31,12 +35,16 @@ namespace temsAPI.Data.Managers
             IdentityService identityService,
             UserManager<TEMSUser> userManager,
             RoleManager<IdentityRole> roleManager,
-            EmailNotificationService emailNotificationService) : base(unitOfWork, user)
+            EmailNotificationService emailNotificationService,
+            SystemConfigurationService configService,
+            EmailService emailService) : base(unitOfWork, user)
         {
             _identityService = identityService;
             _userManager = userManager;
             _roleManager = roleManager;
             _emailNotificationService = emailNotificationService;
+            _configService = configService;
+            _emailService = emailService;
         }
 
         public async Task CreateUserNotification(UserNotification notification)
@@ -165,7 +173,11 @@ namespace temsAPI.Data.Managers
         public async Task NotifyTicketCreation(Ticket ticket)
         {
             // Notify assignees
-            var assigneeIds = ticket.Assignees?.Select(q => q.Id).ToList();
+            var assigneeIds = ticket.Assignees?
+                .Where(q => !String.IsNullOrEmpty(q.Email))
+                .Select(q => q.Id)
+                .ToList();
+
             if(assigneeIds != null && assigneeIds.Count > 0)
             {
                 var notification = (new TicketAssignedNotificationBuilder(ticket).Create());
@@ -175,7 +187,7 @@ namespace temsAPI.Data.Managers
 
             // Notify technicians
             var techIds = (await _userManager.GetUsersInRoleAsync("technician"))
-                ?.Where(q => q.GetEmailNotifications)
+                ?.Where(q => q.GetEmailNotifications && !String.IsNullOrEmpty(q.Email))
                 .Select(q => q.Id)
                 .Except(assigneeIds)
                 .ToList();
@@ -190,7 +202,36 @@ namespace temsAPI.Data.Managers
             // BEFREE -> Notify supervisories
         }
 
-        public async Task NotifyBugReport(BugReport report)
+        /// <summary>
+        /// Sends an email with attachments to e-mail addresses specified in appsettings.json
+        /// and creates a notification addressed to system administrators
+        /// </summary>
+        /// <param name="report"></param>
+        /// <returns></returns>
+        public async Task<string> NotifyBugReport(BugReport report)
+        {
+            await NotifyBugReportAppNotifications(report);
+            string emailNotifyingResult = await NotifyBugReportEmail(report);
+            return emailNotifyingResult;
+        }
+
+        /// <summary>
+        /// Notifies about bug report via e-mail
+        /// </summary>
+        /// <param name="report"></param>
+        /// <returns>Null if everything is ok, otherwise - an error message</returns>
+        private async Task<string> NotifyBugReportEmail(BugReport report)
+        {
+            var emailBuilder = new BugReportEmailBuilder(report, _configService.AppSettings);
+            var emailModel = await emailBuilder.BuildEmailModel();
+
+            if (emailModel.Addressees.IsNullOrEmpty())
+                return "Your report has been saved, but no e-mail was sent because there aren't any recipients specified";
+            
+            return await _emailService.SendEmailToAddresses(emailModel);
+        }
+
+        private async Task NotifyBugReportAppNotifications(BugReport report)
         {
             //// Notify administrators
             var adminIds = (await _userManager.GetUsersInRoleAsync("Administrator"))
@@ -203,7 +244,6 @@ namespace temsAPI.Data.Managers
             {
                 var notification = (new BugReportCreatedNotificationBuilder(report, adminIds).Create());
                 await CreateCommonNotification(notification);
-                await _emailNotificationService.SendNotification(notification);
             }
         }
     }

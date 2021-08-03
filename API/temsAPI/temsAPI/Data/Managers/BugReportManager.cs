@@ -56,7 +56,7 @@ namespace temsAPI.Data.Managers
         public async Task<string> ProcessBugReport(BugReportViewModel viewModel)
         {
             var bugReport = await CreateBugReport(viewModel);
-            var notificationResult = await NotifyBugReport(bugReport);
+            var notificationResult = await _notificationManager.NotifyBugReport(bugReport);
             if (notificationResult != null && !int.TryParse(notificationResult, out _))
                 return notificationResult;
             
@@ -109,31 +109,6 @@ namespace temsAPI.Data.Managers
             }
 
             return attachmentRelativePaths;
-        }
-
-        /// <summary>
-        /// Sends an email with attachments to e-mail addresses specified in appsettings.json
-        /// and creates a notification addressed to system administrators
-        /// </summary>
-        /// <param name="report"></param>
-        /// <returns>Null if everything is OK, otherwise - return an error message</returns>
-        private async Task<string> NotifyBugReport(BugReport report)
-        {
-            string result = await NotifyBugReportEmail(report);
-            await _notificationManager.NotifyBugReport(report);
-            return result;
-        }
-
-        /// <summary>
-        /// Notifies about bug report via e-mail
-        /// </summary>
-        /// <param name="report"></param>
-        /// <returns>Null if everything is ok, otherwise - an error message</returns>
-        private async Task<string> NotifyBugReportEmail(BugReport report)
-        {
-            var emailBuilder = new BugReportEmailBuilder(report, _configurationService.AppSettings);
-            var emailModel = await emailBuilder.BuildEmailModel();
-            return await _emailService.SendEmailToAddresses(emailModel);
         }
 
         public async Task<ViewBugReportViewModel> GetFullBugReport(string reportId)

@@ -15,7 +15,7 @@ export class SnackService {
   statusDisplayTimes = {
     "0": 10, // Fail
     "1": 3, // Success
-    "2": 5 // Neutral
+    "2": 10 // Neutral
   }
 
   constructor(

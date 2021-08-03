@@ -27,12 +27,12 @@ export class BugReportService extends TEMSService {
       formData.append(prop , report[prop]);
     }
 
-    for(let i = 0; i < report.attachments.length; i++){
-      formData.append("attachments" , report.attachments[i]);
-    }
+    if(report.attachments != undefined)
+      for(let i = 0; i < report.attachments.length; i++){
+        formData.append("attachments" , report.attachments[i]);
+      }
 
-    console.log(formData["attachments"]);
-    return this.http.post(
+      return this.http.post(
         API_BUG_URL + '/sendReport',
         formData
     );
@@ -62,11 +62,7 @@ export class BugReportService extends TEMSService {
     );
   }
 
-  getBugReportsSimplified(pageNumber: number, itemsPerPage: number): Observable<IOption[]>{
-
-    let skip = (pageNumber - 1) * itemsPerPage;
-    let take = itemsPerPage;
-
+  getBugReportsSimplified(skip: number, take: number): Observable<IOption[]>{
     let params = new HttpParams()
       .append('skip', skip.toString())
       .append('take', take.toString());

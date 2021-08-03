@@ -42,7 +42,7 @@
             </div>
     
             <button type="submit" class="btn btn-gradient-primary mt-2" (click)="onSubmit()"
-                [disabled]="reportFormGroup.status=='INVALID'">
+                [disabled]="reportFormGroup.status=='INVALID' || sending">
                 {{ 'form.submit' | translate }}
             </button>
         </form>

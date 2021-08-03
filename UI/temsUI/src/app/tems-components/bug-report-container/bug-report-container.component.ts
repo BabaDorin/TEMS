@@ -47,7 +47,6 @@ export class BugReportContainerComponent extends TEMSComponent implements OnInit
           return;
 
         this.bugReport = result;
-        console.log(this.bugReport);
       })
     );
   }

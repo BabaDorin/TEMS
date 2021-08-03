@@ -15,6 +15,7 @@ export class BugReportComponent implements OnInit {
 
   dialogRef;
   selectedFilesLabel = "";
+  sending = false;
 
   reportFormGroup = new FormGroup({
      reportType: new FormControl("bug", Validators.required),
@@ -31,16 +32,22 @@ export class BugReportComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  onSubmit(){
+  onSubmit(){    
     let model = new BugReport();
     model.reportType = this.reportFormGroup.value["reportType"];
     model.description = this.reportFormGroup.value["description"];
     model.attachments = this.reportFormGroup.value["attachments"];
 
     this.snackService.snack({message:"Sending the report... It may take a while, please be patient ;)", status: 1}, 'default-snackbar');
+
+    this.sending = true;
     this.bugReportService.sendReport(model)
     .subscribe(result => {
+      this.sending = false;
+
       this.snackService.snack(result);
+      if(result.status = 1)
+        this.dialogRef.close();
     })
   }
 

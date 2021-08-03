@@ -1,14 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Timers;
-using temsAPI.Contracts;
-using temsAPI.Helpers.ScheduleHelper.Actions;
-using temsAPI.Helpers.StaticFileHelpers;
-using temsAPI.Services;
 
-namespace temsAPI.Helpers
+namespace temsAPI.Services
 {
     public class Scheduler
     {

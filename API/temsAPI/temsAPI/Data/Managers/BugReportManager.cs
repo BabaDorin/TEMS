@@ -32,6 +32,7 @@ namespace temsAPI.Data.Managers
         SystemConfigurationService _configurationService;
         UserManager<TEMSUser> _userManager;
         NotificationManager _notificationManager;
+        BugReportAttachmentFileHandler fileHandler;
 
         public BugReportManager(
             EmailService emailService,
@@ -153,6 +154,11 @@ namespace temsAPI.Data.Managers
             if (toRemove == null)
                 return "Invalid id provided";
 
+            if (fileHandler == null)
+                fileHandler = new BugReportAttachmentFileHandler();
+
+            fileHandler.RemoveAttachments(toRemove);
+            
             _unitOfWork.BugReports.Delete(toRemove);
             await _unitOfWork.Save();
             return null;

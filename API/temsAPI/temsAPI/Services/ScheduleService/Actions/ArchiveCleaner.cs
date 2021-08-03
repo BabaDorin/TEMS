@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using temsAPI.Contracts;
+﻿using System.Threading.Tasks;
 using temsAPI.Data.Managers;
-using temsAPI.Services;
 
-namespace temsAPI.Helpers.ScheduleHelper.Actions
+namespace temsAPI.Services.Actions
 {
     public class ArchiveCleaner : IScheduledAction
     {

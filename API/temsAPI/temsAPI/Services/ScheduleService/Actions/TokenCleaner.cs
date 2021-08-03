@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using temsAPI.Services.JWT;
 
-namespace temsAPI.Helpers.ScheduleHelper.Actions
+namespace temsAPI.Services.Actions
 {
     public class TokenCleaner : IScheduledAction
     {

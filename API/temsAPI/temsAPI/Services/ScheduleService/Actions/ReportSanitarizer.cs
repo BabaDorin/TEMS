@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Razor.Language;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -8,7 +6,7 @@ using temsAPI.Contracts;
 using temsAPI.Data.Entities.Report;
 using temsAPI.Helpers.StaticFileHelpers;
 
-namespace temsAPI.Helpers.ScheduleHelper.Actions
+namespace temsAPI.Services.Actions
 {
     public class ReportSanitarizer : IScheduledAction
     {
@@ -26,9 +24,9 @@ namespace temsAPI.Helpers.ScheduleHelper.Actions
         /// </summary>
         public async Task Start()
         {
-            var reports = (await _unitOfWork.Reports.FindAll<Report>()).ToList();
+            var reports = (await _unitOfWork.Reports.FindAll<Data.Entities.Report.Report>()).ToList();
 
-            List<Report> toBeRemoved = new List<Report>();
+            List<Data.Entities.Report.Report> toBeRemoved = new List<Data.Entities.Report.Report>();
             foreach (var report in reports)
             {
                 if (!fileHandler.FileExists(report.DBPath))

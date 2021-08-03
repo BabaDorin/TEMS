@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Http;
+using PostSharp.Patterns.Contracts;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using temsAPI.Data.Entities.OtherEntities;
 
 namespace temsAPI.Helpers.StaticFileHelpers
 {
@@ -44,6 +46,26 @@ namespace temsAPI.Helpers.StaticFileHelpers
         public string GetFullAttachmentPath(string attachment)
         {
             return Path.Combine(Directory.GetCurrentDirectory(), attachment);
+        }
+
+        public void RemoveAttachments(BugReport report)
+        {
+            if (String.IsNullOrEmpty(report.Attachments))
+                return;
+
+            var attachments = report.GetAttachmentUris();
+
+            foreach(var att in attachments)
+            {
+                RemoveAttachment(att);
+            }
+        }
+
+        public void RemoveAttachment(string attachmentRelativePath)
+        {
+            string fullAttachmentPath = GetFullAttachmentPath(attachmentRelativePath);
+            if (FileExists(fullAttachmentPath))
+                File.Delete(fullAttachmentPath);
         }
     }
 }

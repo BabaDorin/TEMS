@@ -96,19 +96,16 @@ $demo1-theme: mat-light-theme((color: (primary: $demo1-primary,
 /* === Layout === */
 @import "./assets/scss/layout";
 
-html,
-body {
+html {
   height: 100%;
+}
+body {
+  min-height: 100%;
 }
 
 body {
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
-}
-
-.mat-dialog {
-  max-height: calc(100vh - 210px);
-  overflow-y: auto;
 }
 
 formly-field-mat-radio {

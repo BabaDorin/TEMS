@@ -15,5 +15,8 @@
       [rowSelection]="rowSelection"
       [frameworkComponents]="frameworkComponents"
       [rowData]="rowData"
-      (gridReady)="onGridReady($event)">
+      (gridReady)="onGridReady($event)"
+      
+      [suppressExcelExport]="true"
+      [popupParent]="popupParent">
 </ag-grid-angular>

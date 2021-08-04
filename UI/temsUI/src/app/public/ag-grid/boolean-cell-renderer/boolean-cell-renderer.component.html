@@ -1,5 +1,12 @@
 <div class="cell-wrapper text-center">
-    <mat-icon [ngClass]="cellValue ? 'text-success' : 'text-danger'">
-        fiber_manual_record
-    </mat-icon>
+    <ng-container *ngIf="cellValue; else elseBlock">
+        <mat-icon class="text-success">
+            toggle_on
+        </mat-icon>
+    </ng-container>
+    <ng-template #elseBlock>
+        <mat-icon class="text-muted">
+            toggle_off
+        </mat-icon>
+    </ng-template>
 </div>

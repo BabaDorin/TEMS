@@ -15,15 +15,14 @@ export class AgGridArchievedItemsComponent extends TEMSComponent implements OnIn
   @Input() items: ArchievedItem[];
   @Input() itemsType: string;
 
-  public gridApi;
-  private gridColumnApi;
-
-  public columnDefs;
-  public defaultColDef;
-  public rowSelection;
-  public rowData: ArchievedItem[];
-  public pagination
-  public paginationPageSize;
+  gridApi;
+  gridColumnApi;
+  columnDefs;
+  defaultColDef;
+  rowSelection;
+  rowData: ArchievedItem[];
+  pagination
+  paginationPageSize;
   loading: boolean = true;
 
   constructor(
@@ -31,15 +30,20 @@ export class AgGridArchievedItemsComponent extends TEMSComponent implements OnIn
     private snackService: SnackService
   ) {
     super();
-    // enables pagination in the grid
     this.pagination = true;
-
-    // sets 10 rows per page (default is 100)
     this.paginationPageSize = 20;
 
     this.columnDefs = [
-      { headerName: 'Identifier', field: 'identifier', sortable: true, filter: true },
-      { headerName: 'Archieved on', field: 'dateArchieved', valueFormatter: dateFormatter, sortable: true, filter: true },
+      { 
+        headerName: 'Identifier', 
+        field: 'identifier',
+        lockPosition: true,
+      },
+      { 
+        headerName: 'Archieved on', 
+        field: 'dateArchieved', 
+        valueFormatter: dateFormatter, 
+      },
     ];
 
     this.defaultColDef = {

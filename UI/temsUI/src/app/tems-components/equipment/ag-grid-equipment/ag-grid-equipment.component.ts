@@ -16,7 +16,7 @@ import { propertyChanged } from 'src/app/helpers/onchanges-helper';
   styleUrls: ['./ag-grid-equipment.component.scss']
 })
 
-export class AgGridEquipmentComponent extends TEMSComponent implements OnInit, OnChanges {
+export class AgGridEquipmentComponent extends TEMSComponent implements OnChanges {
 
   @Input() equipmentFilter: EquipmentFilter;
 
@@ -38,7 +38,6 @@ export class AgGridEquipmentComponent extends TEMSComponent implements OnInit, O
     private snackService: SnackService) {
     super();
 
-    // enables pagination in the grid
     this.pagination = true;
     this.paginationPageSize = 20;
 
@@ -48,58 +47,87 @@ export class AgGridEquipmentComponent extends TEMSComponent implements OnInit, O
     };
 
     this.defaultColDef = {
-      resizable: true
+      flex: 1,
+      resizable: true,
+      filter: true,
+      sortable: true,
+      width: 150,
+      minWidth: 50,
     }
 
     this.columnDefs = [
-      { headerName: this.translate.instant('equipment.TEMSID'), field: 'temsId', sortable: true, filter: true, resizable: true },
-      { headerName: this.translate.instant('equipment.serialNumber'), field: 'serialNumber', sortable: true, filter: true, resizable: true },
-      { headerName: this.translate.instant('equipment.definition'), field: 'definition', sortable: true, filter: true, resizable: true },
-      { headerName: this.translate.instant('equipment.assignee'), field: 'assignee', sortable: true, filter: true, resizable: true },
-      { headerName: this.translate.instant('equipment.type'), field: 'type', sortable: true, filter: true, resizable: true },
-      {
-        headerName: this.translate.instant('equipment.isUsed'), field: 'isUsed', sortable: false, filter: true, resizable: true,
-        cellRenderer: 'booleanCellRendererComponent',
+      { 
+        headerName: this.translate.instant('equipment.TEMSID'), 
+        field: 'temsId',
+        headerCheckboxSelection: true,
+        headerCheckboxSelectionFilteredOnly: true,
+        checkboxSelection: true,
+        maxWidth: 180,
+        lockPosition: true,
+      },
+      { 
+        headerName: this.translate.instant('equipment.serialNumber'), 
+        field: 'serialNumber',
+        width: 130
+      },
+      { 
+        headerName: this.translate.instant('equipment.definition'), 
+        field: 'definition',
+      },
+      { 
+        headerName: this.translate.instant('equipment.assignee'), 
+        field: 'assignee' 
+      },
+      { 
+        headerName: this.translate.instant('equipment.type'), 
+        field: 'type' 
       },
       {
-        headerName: this.translate.instant('equipment.isDefect'), field: 'isDefect', sortable: false, filter: true, resizable: true,
+        headerName: this.translate.instant('equipment.isUsed'), 
+        field: 'isUsed', 
+        sortable: false,
         cellRenderer: 'booleanCellRendererComponent',
+        width: 100
       },
       {
+        headerName: this.translate.instant('equipment.isDefect'), 
+        field: 'isDefect', 
+        sortable: false,
+        cellRenderer: 'booleanCellRendererComponent',
+        width: 100
+      },
+      {
+        filter: false,
+        sorable: false,
         cellRenderer: 'btnCellRendererComponent',
         cellRendererParams: {
           onClick: this.details.bind(this),
           matIcon: 'more_horiz'
-        }
+        },
+        width: 100,
+        suppressSizeToFit: true,
       },
       {
         cellRenderer: 'btnCellRendererComponent',
+        filter: false,
+        sorable: false,
         cellRendererParams: {
           onClick: this.archieve.bind(this),
           matIcon: 'delete',
           matIconClass: 'text-muted'
-        }
+        },
+        width: 100,
+        suppressSizeToFit: true,
       }
     ];
-
-    this.defaultColDef = {
-      flex: 1,
-      minWidth: 100,
-      resizable: true,
-      headerCheckboxSelection: this.isFirstColumn,
-      checkboxSelection: this.isFirstColumn,
-    };
-
-    this.rowSelection = 'multiple';
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if(propertyChanged(changes, "equipmentFilter")){
-        this.fetchEquipments();
+        this.fetchEquipment();
     }
   }
 
-  
   details(e) {
     this.dialogService.openDialog(
       EquipmentDetailsGeneralComponent,
@@ -112,7 +140,7 @@ export class AgGridEquipmentComponent extends TEMSComponent implements OnInit, O
 
   archieve(e){
     if(!confirm("Are you sure you want to archive this item? It will result in archieving all of it's logs and allocations"))
-    return;
+      return;
 
     this.subscriptions.push(
       this.equipmentService.archieveEquipment(e.rowData.id)
@@ -124,43 +152,27 @@ export class AgGridEquipmentComponent extends TEMSComponent implements OnInit, O
     )
   }
 
-  ngOnInit() {
-
-  }
-
   onGridReady(params) {
     this.gridApi = params.api;
     this.gridColumnApi = params.columnApi;
-
-    this.fetchEquipments();
+    this.fetchEquipment();
   }
 
-  fetchEquipments(){
+  fetchEquipment(){
     this.loading = true;
-
     this.subscriptions.push(this.equipmentService.getEquipmentSimplified(0, 0, this.equipmentFilter)
     .subscribe(result => {
       this.rowData = result;
       this.loading = false;
-      this.autoSizeAll();
+      this.sizeToFit();
     }));
-  }
-
-  isFirstColumn(params) {
-    var displayedColumns = params.columnApi.getAllDisplayedColumns();
-    var thisIsFirstColumn = displayedColumns[0] === params.column;
-    return thisIsFirstColumn;
   }
 
   getSelectedNodes(){
     return this.gridApi.getSelectedNodes().map(q => q.data);
   }
 
-  autoSizeAll() {
-    var allColumnIds = [];
-    this.gridColumnApi.getAllColumns().forEach(function (column) {
-      allColumnIds.push(column.colId);
-    });
-    this.gridColumnApi.autoSizeColumns(allColumnIds, false);
+  sizeToFit() {
+    this.gridApi.sizeColumnsToFit();
   }
 }

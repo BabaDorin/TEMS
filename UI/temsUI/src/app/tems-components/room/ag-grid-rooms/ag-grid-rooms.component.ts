@@ -13,11 +13,10 @@ import { RoomDetailsGeneralComponent } from './../room-details-general/room-deta
   templateUrl: './ag-grid-rooms.component.html',
   styleUrls: ['./ag-grid-rooms.component.scss']
 })
-export class AgGridRoomsComponent extends TEMSComponent implements OnInit {
+export class AgGridRoomsComponent extends TEMSComponent {
 
-  private gridApi;
-  private gridColumnApi;
-
+  gridApi;
+  gridColumnApi;
   columnDefs;
   defaultColDef;
   rowSelection;
@@ -37,10 +36,7 @@ export class AgGridRoomsComponent extends TEMSComponent implements OnInit {
   ) {
     super();
 
-    // enables pagination in the grid
     this.pagination = true;
-
-    // sets 10 rows per page (default is 100)
     this.paginationPageSize = 20;
 
     this.frameworkComponents = {
@@ -48,22 +44,46 @@ export class AgGridRoomsComponent extends TEMSComponent implements OnInit {
     };
 
     this.defaultColDef = {
-      resizable: true
+      flex: 1,
+      resizable: true,
+      filter: true,
+      sortable: true,
+      minWidth: 80,
+      width: 150
     }
 
-
     this.columnDefs = [
-      { headerName: this.translate.instant('form.identifier'), field: 'identifier', sortable: true, filter: true, checkboxSelection: true, headerCheckboxSelection: true, resizeable: true },
-      { headerName: this.translate.instant('room.labels'), field: 'label', sortable: true, filter: true, resizeable: true },
-      { headerName: this.translate.instant('form.description'), field: 'description', sortable: true, filter: true, resizeable: true },
-      { headerName: this.translate.instant('entities.activeTickets'), field: 'activeTickets', sortable: true, filter: true, resizeable: true },
-      { headerName: this.translate.instant('entities.allocatedEquipment'), field: 'allocatedEquipments', sortable: true, filter: true, resizeable: true },
+      { 
+        headerName: this.translate.instant('form.identifier'), 
+        field: 'identifier', 
+        checkboxSelection: true, 
+        headerCheckboxSelection: true,
+        lockPosition: true
+      },
+      { 
+        headerName: this.translate.instant('room.labels'), 
+        field: 'label'
+      },
+      { 
+        headerName: this.translate.instant('form.description'), 
+        field: 'description', 
+      },
+      { 
+        headerName: this.translate.instant('entities.activeTickets'), 
+        field: 'activeTickets', 
+      },
+      { 
+        headerName: this.translate.instant('entities.allocatedEquipment'), 
+        field: 'allocatedEquipments'
+      },
       {
         cellRenderer: 'btnCellRendererComponent',
         cellRendererParams: {
           onClick: this.details.bind(this),
           matIcon: 'more_horiz'
-        }
+        },
+        width: 100,
+        suppressSizeToFit: true,
       },
       {
         cellRenderer: 'btnCellRendererComponent',
@@ -71,22 +91,11 @@ export class AgGridRoomsComponent extends TEMSComponent implements OnInit {
           onClick: this.archieve.bind(this),
           matIcon: 'delete',
           matIconClass: 'text-muted'
-        }
+        },
+        width: 100,
+        suppressSizeToFit: true,
       }
     ];
-
-    this.defaultColDef = {
-      flex: 1,
-      minWidth: 100,
-      resizable: true,
-      headerCheckboxSelection: this.isFirstColumn,
-      checkboxSelection: this.isFirstColumn,
-    };
-
-    this.rowSelection = 'multiple';
-  }
-
-  ngOnInit(): void {
   }
 
   details(e) {
@@ -117,35 +126,27 @@ export class AgGridRoomsComponent extends TEMSComponent implements OnInit {
     this.gridApi = params.api;
     this.gridColumnApi = params.columnApi;
 
-    this.loading = true;
     this.fetchRooms();
   }
 
   fetchRooms() {
+    this.loading = true;
     this.subscriptions.push(this.roomService.getRoomsSimplified(20, 20)
       .subscribe(result => {
+        this.loading = false;
+
         if(this.rowData != result)
           this.rowData = result;
-        this.loading = false;
-        this.autoSizeAll();
+        
+        this.sizeToFit();
       }));
-  }
-
-  autoSizeAll() {
-    var allColumnIds = [];
-    this.gridColumnApi.getAllColumns().forEach(function (column) {
-      allColumnIds.push(column.colId);
-    });
-    this.gridColumnApi.autoSizeColumns(allColumnIds, false);
-  }
-
-  isFirstColumn(params) {
-    var displayedColumns = params.columnApi.getAllDisplayedColumns();
-    var thisIsFirstColumn = displayedColumns[0] === params.column;
-    return thisIsFirstColumn;
   }
 
   getSelectedNodes() {
     return this.gridApi.getSelectedNodes().map(q => q.data);
+  }
+
+  sizeToFit() {
+    this.gridApi.sizeColumnsToFit();
   }
 }

@@ -1,3 +1,4 @@
+import { TranslateService } from '@ngx-translate/core';
 import { Component, OnInit } from '@angular/core';
 import { BtnCellRendererComponent } from 'src/app/public/ag-grid/btn-cell-renderer/btn-cell-renderer.component';
 import { DialogService } from 'src/app/services/dialog.service';
@@ -12,11 +13,10 @@ import { PersonnelDetailsGeneralComponent } from './../personnel-details-general
   templateUrl: './ag-grid-personnel.component.html',
   styleUrls: ['./ag-grid-personnel.component.scss']
 })
-export class AgGridPersonnelComponent extends TEMSComponent implements OnInit {
+export class AgGridPersonnelComponent extends TEMSComponent {
 
-  private gridApi;
-  private gridColumnApi;
-
+  gridApi;
+  gridColumnApi;
   columnDefs;
   defaultColDef;
   rowSelection;
@@ -31,14 +31,12 @@ export class AgGridPersonnelComponent extends TEMSComponent implements OnInit {
   constructor(
     private personnelService: PersonnelService,
     private dialogService: DialogService,
-    private snackService: SnackService
+    private snackService: SnackService,
+    private translate: TranslateService
   ) { 
     super();
 
-    // enables pagination in the grid
     this.pagination = true;
-
-    // sets 10 rows per page (default is 100)
     this.paginationPageSize = 20;
 
     this.frameworkComponents = {
@@ -46,20 +44,42 @@ export class AgGridPersonnelComponent extends TEMSComponent implements OnInit {
     };
 
     this.defaultColDef = {
-      resizable: true
+      flex: 1,
+      resizable: true,
+      filter: true,
+      sortable: true,
+      width: 150,
+      minWidth: 80,
     }
 
     this.columnDefs = [
-      { field: 'name', sortable: true, filter: true, checkboxSelection: true, resizeable: true},
-      { field: 'positions', sortable: true, filter: true, resizeable: true },
-      { field: 'allocatedEquipments', sortable: true, filter: true, resizeable: true },
-      { field: 'activeTickets', sortable: true, filter: true, resizeable: true },
+      { 
+        headerName: this.translate.instant('personnel.name'),
+        field: 'name', 
+        width: 200,
+        checkboxSelection: true,
+        lockPosition: true
+      },
+      { 
+        headerName: this.translate.instant('personnel.positions'),
+        field: 'positions', 
+      },
+      { 
+        headerName: this.translate.instant('entities.allocatedEquipment'),
+        field: 'allocatedEquipments'
+      },
+      { 
+        headerName: this.translate.instant('entities.activeTickets'),
+        field: 'activeTickets'
+      },
       {
         cellRenderer: 'btnCellRendererComponent',
         cellRendererParams: {
           onClick: this.details.bind(this),
           matIcon: 'more_horiz'
-        }
+        },
+        width: 100,
+        suppressSizeToFit: true,
       },
       {
         cellRenderer: 'btnCellRendererComponent',
@@ -67,22 +87,11 @@ export class AgGridPersonnelComponent extends TEMSComponent implements OnInit {
           onClick: this.archieve.bind(this),
           matIcon: 'delete',
           matIconClass: 'text-muted'
-        }
+        },
+        width: 100,
+        suppressSizeToFit: true,
       }
     ];
-
-    this.defaultColDef = {
-      flex: 1,
-      minWidth: 100,
-      resizable: true,
-      headerCheckboxSelection: this.isFirstColumn,
-      checkboxSelection: this.isFirstColumn,
-    };
-
-    this.rowSelection = 'multiple';
-  }
-
-  ngOnInit(): void {
   }
 
   onGridReady(params) {
@@ -98,26 +107,13 @@ export class AgGridPersonnelComponent extends TEMSComponent implements OnInit {
       .subscribe(result => {
         this.rowData = result;
         this.loading = false;
-        this.autoSizeAll();
       }));
-  }
-
-  autoSizeAll() {
-    var allColumnIds = [];
-    this.gridColumnApi.getAllColumns().forEach(function (column) {
-      allColumnIds.push(column.colId);
-    });
-    this.gridColumnApi.autoSizeColumns(allColumnIds, false);
   }
 
   isFirstColumn(params) {
     var displayedColumns = params.columnApi.getAllDisplayedColumns();
     var thisIsFirstColumn = displayedColumns[0] === params.column;
     return thisIsFirstColumn;
-  }
-
-  getSelectedNodes(){
-    return this.gridApi.getSelectedNodes().map(q => q.data);
   }
 
   details(e) {
@@ -127,7 +123,7 @@ export class AgGridPersonnelComponent extends TEMSComponent implements OnInit {
         { label: "displayViewMore", value: true },
         { label: "personnelId", value: e.rowData.id },
       ]
-    )
+    );
   }
 
   archieve(e){
@@ -141,6 +137,10 @@ export class AgGridPersonnelComponent extends TEMSComponent implements OnInit {
           this.gridApi.applyTransaction({ remove: [e.rowData] });
         }
       })
-    )
+    );
+  }
+
+  getSelectedNodes(){
+    return this.gridApi.getSelectedNodes().map(q => q.data);
   }
 }

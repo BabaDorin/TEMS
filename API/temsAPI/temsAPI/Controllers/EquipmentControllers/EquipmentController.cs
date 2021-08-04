@@ -125,7 +125,7 @@ namespace temsAPI.Controllers.EquipmentControllers
 
         [HttpGet("equipment/GetSimplified/{id}")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
-        [DefaultExceptionHandler("An unhandled error occured when fetching equipment")]
+        [DefaultExceptionHandler("An unhandled error occured while fetching equipment")]
         public async Task<IActionResult> GetSimplified(string id)
         {
             var equipment = await _equipmentManager.GetFullEquipmentById(id);

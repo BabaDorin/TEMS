@@ -10,7 +10,7 @@ export class EquipmentFilter extends BaseFilter {
     getParams(): HttpParams {
         let params = new HttpParams();
 
-        params = params.append('onlyParent', String(!this.includeDerived));
+        params = params.append('onlyParents', String(!this.includeDerived));
 
         params = this.listToParams(this.rooms, params, "rooms");
         params = this.listToParams(this.personnel, params, "personnel");

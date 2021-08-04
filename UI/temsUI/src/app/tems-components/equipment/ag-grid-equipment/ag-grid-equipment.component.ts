@@ -123,6 +123,7 @@ export class AgGridEquipmentComponent extends TEMSComponent implements OnChanges
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    console.log('changes detected');
     if(propertyChanged(changes, "equipmentFilter")){
         this.fetchEquipment();
     }

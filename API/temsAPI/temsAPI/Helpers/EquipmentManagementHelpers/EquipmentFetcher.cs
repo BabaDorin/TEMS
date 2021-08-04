@@ -49,14 +49,20 @@ namespace temsAPI.Helpers.EquipmentManagementHelpers
 
         private async Task<IEnumerable<Equipment>> FetchFromEquipment(EquipmentFilter filter)
         {
+            // Type filtering
             Expression<Func<Equipment, bool>> eqOfTypeExp = null;
             if (!filter.Types.IsNullOrEmpty() && filter.Types.IndexOf("any") == -1)
                 eqOfTypeExp = q => filter.Types.Contains(q.EquipmentDefinition.EquipmentTypeID);
 
+            // Parent inclusion
+            Expression<Func<Equipment, bool>> parentInclusionExp = null;
+            if (filter.OnlyParents)
+                parentInclusionExp = q => q.EquipmentDefinition.ParentID == null;
+
             // Place for more where filters
-            
+
             // WHERE
-            var finalWhereExp = eqOfTypeExp;
+            var finalWhereExp = eqOfTypeExp.Concat(parentInclusionExp);
 
             // INCLUDE
             Func<IQueryable<Equipment>, IIncludableQueryable<Equipment, object>> finalIncludeExp =
@@ -70,8 +76,8 @@ namespace temsAPI.Helpers.EquipmentManagementHelpers
                 .FindAll<Equipment>(
                     skip: 0,
                     take: 1111,
-                    where: finalWhereExp,
-                    include: finalIncludeExp
+                    include: finalIncludeExp,
+                    where: finalWhereExp
                 );
         }
 
@@ -85,14 +91,20 @@ namespace temsAPI.Helpers.EquipmentManagementHelpers
             if (!filter.Personnel.IsNullOrEmpty())
                 eqOfPersonnelExp = q => q.DateReturned == null && filter.Personnel.Contains(q.PersonnelID);
 
+            // Type filtering
             Expression<Func<EquipmentAllocation, bool>> eqOfTypeExp = null;
             if (!filter.Types.IsNullOrEmpty() && filter.Types.IndexOf("any") == -1)
                 eqOfTypeExp = q => filter.Types.Contains(q.Equipment.EquipmentDefinition.EquipmentTypeID);
 
+            // Parent inclusion
+            Expression<Func<EquipmentAllocation, bool>> parentInclusionExp = null;
+            if (filter.OnlyParents)
+                parentInclusionExp = q => q.Equipment.EquipmentDefinition.ParentID == null;
+
             // Place for more where filters
 
             // WHERE
-            var finalWhereExp = ExpressionCombiner.And(eqOfRoomsExp, eqOfPersonnelExp, eqOfTypeExp);
+            var finalWhereExp = ExpressionCombiner.And(eqOfRoomsExp, eqOfPersonnelExp, eqOfTypeExp, parentInclusionExp);
 
             // INCLUDE
             Func<IQueryable<EquipmentAllocation>, IIncludableQueryable<EquipmentAllocation, object>> finalIncludeExp =
@@ -104,8 +116,8 @@ namespace temsAPI.Helpers.EquipmentManagementHelpers
                 .FindAll(
                     skip: filter.GetSkip(),
                     take: filter.GetTake(),
-                    where: finalWhereExp,
                     include: finalIncludeExp,
+                    where: finalWhereExp,
                     select: q => q.Equipment
                 );
         }

@@ -124,6 +124,7 @@ export class ViewEquipmentComponent implements OnInit {
 
   includeDerivedChanged(){
     this.equipmentFilter.includeDerived = this.includeDerived;
+    this.equipmentFilter = Object.assign(new EquipmentFilter(), this.equipmentFilter);
     this.typeEndpoint = new TypeEndpoint(this.typeService, this.includeDerived);
   }
 }

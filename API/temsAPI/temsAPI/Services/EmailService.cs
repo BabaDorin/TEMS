@@ -95,6 +95,10 @@ namespace temsAPI.Services
             int numberOfEmailsSent = 0;
             foreach (var item in addresses)
             {
+                // Little addressee validation here, just to be sure
+                if (item.Email.Length <= 3 || item.Email.IndexOf('@') <= 0)
+                    continue;
+
                 var email = FluentEmail.Core.Email
                     .From(_appSettings.Email.EmailSenderAddress, emailData.From)
                     .To(item.Email, item.Name)
@@ -136,7 +140,7 @@ namespace temsAPI.Services
         {
             return (await _unitOfWork.Personnel
                 .FindAll<EmailTo>(
-                    where: q => addreseeIds.Contains(q.Id) && q.Email != null,
+                    where: q => addreseeIds.Contains(q.Id) && !String.IsNullOrEmpty(q.Email),
                     select: q => new EmailTo
                     {
                         Email = q.Email,
@@ -148,7 +152,7 @@ namespace temsAPI.Services
         {
             List<EmailTo> addresses = (await _unitOfWork.TEMSUsers
                 .FindAll<EmailTo>(
-                    where: q => addreseeIds.Contains(q.Id) && q.Email != null,
+                    where: q => addreseeIds.Contains(q.Id) && !String.IsNullOrEmpty(q.Email),
                     select: q => new EmailTo
                     {
                         Email = q.Email,

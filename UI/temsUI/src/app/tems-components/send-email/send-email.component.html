@@ -1,4 +1,4 @@
-<div class="card">
+<div [ngClass]="dialogRef == undefined ? 'card limit' : 'card cancel-margins limit'">
     <div class="card-body">
         <h2>
             {{ 'email.sendEmailHeader' | translate }}
@@ -21,9 +21,5 @@
                 {{ 'email.send' | translate }}
             </button>
         </form>
-
-        <!-- <p class="text-muted">
-            Recievers: {{ personnelNames }}
-        </p> -->
     </div>
 </div>

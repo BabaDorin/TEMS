@@ -58,6 +58,7 @@ export class AgGridPersonnelComponent extends TEMSComponent {
         field: 'name', 
         width: 200,
         checkboxSelection: true,
+        headerCheckboxSelection: true,
         lockPosition: true
       },
       { 

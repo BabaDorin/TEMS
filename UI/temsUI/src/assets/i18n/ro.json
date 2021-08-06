@@ -231,6 +231,7 @@
     },
 
     "profile": {
+        "changePhoto": "Schimbă fotografia de profil",
         "generalInformation": "Informații generale",
         "tickets": "Ticket-uri",
         "analytics": "Date analitice",

@@ -17,6 +17,10 @@
             </button>
         </form>
         <hr>
+            <button mat-button type="submit" class="btn-gradient-primary" (click)="changePhoto()">
+                {{ 'profile.changePhoto' | translate }}
+            </button>
+        <hr>
         <h3>{{ 'profile.changePassowrd' | translate }}</h3>
         <form [formGroup]="changePasswordFormlyData.form" (ngSubmit)="changePass(changePasswordFormlyData.model)">
             <formly-form [form]="changePasswordFormlyData.form" [fields]="changePasswordFormlyData.fields"

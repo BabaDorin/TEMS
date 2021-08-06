@@ -232,6 +232,7 @@
     },
 
     "profile": {
+        "changePhoto": "Change profile photo",
         "generalInformation": "General information",
         "tickets": "Tickets",
         "analytics": "Analytics",

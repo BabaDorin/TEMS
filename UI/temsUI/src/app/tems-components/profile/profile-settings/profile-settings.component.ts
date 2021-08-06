@@ -1,9 +1,12 @@
+import { UploadProfilePhotoComponent } from './../upload-profile-photo/upload-profile-photo.component';
+import { DialogService } from './../../../services/dialog.service';
 import { Component, Inject, Input, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { ViewProfile } from 'src/app/models/profile/view-profile.model';
 import { FormlyParserService } from 'src/app/services/formly-parser.service';
+import { LazyLoaderService } from 'src/app/services/lazy-loader.service';
 import { SnackService } from 'src/app/services/snack.service';
 import { UserService } from 'src/app/services/user.service';
 import { AccountGeneralInfoModel } from './../../../models/identity/account-general-info.model';
@@ -45,7 +48,9 @@ export class ProfileSettingsComponent extends TEMSComponent implements OnInit {
     private userService: UserService,
     private snackService: SnackService,
     private router: Router,
-    private formlyParserService: FormlyParserService) {
+    private formlyParserService: FormlyParserService,
+    private lazyLoader: LazyLoaderService,
+    private dialogService: DialogService) {
     super();
     this.profile = prof;
     this.isCurrentUser = isCurrentUser;
@@ -105,5 +110,12 @@ export class ProfileSettingsComponent extends TEMSComponent implements OnInit {
       .subscribe(result => {
         this.snackService.snack(result);
       });
+  }
+
+  changePhoto(){
+    this.lazyLoader.loadModule('profile/profile-photo-upload.module.ts')
+    .then(()=> {
+      this.dialogService.openDialog(UploadProfilePhotoComponent);
+    });
   }
 }

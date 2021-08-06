@@ -8,7 +8,7 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 })
 export class DialogService {
 
-  dialogRef: MatDialogRef<any>;
+  // public dialogRef: MatDialogRef<any>;
 
   constructor(
     private dialog: MatDialog,
@@ -16,9 +16,11 @@ export class DialogService {
 
   }
 
-  openDialog(component: ComponentType<any>, keyValue?: IOption[], afterClosed?: Function){
+  openDialog(component: ComponentType<any>, keyValue?: IOption[], afterClosed?: Function): MatDialogRef<any> {
+    let dialogRef: MatDialogRef<any>;
+    
     let data = {
-      dialogRef: this.dialogRef, 
+      dialogRef: dialogRef, 
     };
 
     if(keyValue != undefined){
@@ -27,19 +29,21 @@ export class DialogService {
       });
     }
 
-    this.dialogRef = this.dialog.open(component,
+    dialogRef = this.dialog.open(component,
     {
       maxHeight: '80vh',
       autoFocus: false,
       data: data
     });
 
-    this.dialogRef.componentInstance["dialogRef"] = this.dialogRef;
+    dialogRef.componentInstance["dialogRef"] = dialogRef;
     
     if(afterClosed != undefined){
-      this.dialogRef.afterClosed().subscribe(result => {
+      dialogRef.afterClosed().subscribe(() => {
         afterClosed();
       })
     }
+
+    return dialogRef;
   }
 }

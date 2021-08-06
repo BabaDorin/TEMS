@@ -130,7 +130,9 @@
         "any": "Oricare",
         "upload": "Încarcă",
         "find": "Caută",
-        "attachments": "Atașamente"
+        "attachments": "Atașamente",
+        "chooseFile": "Selectează fișierul",
+        "chooseFiles": "Selectează fișierele"
     },
     
     "equipment": {

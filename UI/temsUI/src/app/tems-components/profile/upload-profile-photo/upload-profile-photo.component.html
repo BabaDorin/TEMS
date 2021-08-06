@@ -1,1 +1,27 @@
-<p>upload-profile-photo works!</p>
+<div [ngClass]="dialogRef == undefined ? 'card limit' : 'card cancel-margins limit'">
+    <div class="card-body">
+
+        <button class="btn-block" type="button mt-1" mat-raised-button (click)="fileInput.click()">
+            {{ 'form.chooseFile' | translate }}
+        </button>
+        <input hidden #fileInput (change)="fileChangeEvent($event)" type="file" multiple="false" accept="image/*">
+
+        <div class="cropper-container">
+            <ng-container *ngIf="fileSelected != undefined; else noFileSelected">
+                <div class="mt-4">
+                    <image-cropper [imageChangedEvent]="imageChangedEvent" [maintainAspectRatio]="true" [aspectRatio]="4 / 4"
+                    [resizeToWidth]="256" format="png" (imageCropped)="imageCropped($event)" (imageLoaded)="imageLoaded()"
+                    (cropperReady)="cropperReady()" (loadImageFailed)="loadImageFailed()">
+                    </image-cropper>
+                </div>
+            </ng-container>
+            <ng-template #noFileSelected>
+                <img class="mt-5 center-svg fade-in no-photo-placeholder" src="assets/svgs/photo.svg">
+            </ng-template>
+        </div>
+
+        <button mat-button class="mt-4 btn-gradient-primary btn-block" (click)="submit()" [disabled]="fileSelected == undefined">
+            {{ 'form.submit' | translate }}
+        </button>
+    </div>
+</div>

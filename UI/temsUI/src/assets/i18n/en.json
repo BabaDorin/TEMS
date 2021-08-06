@@ -131,7 +131,9 @@
         "any": "Any",
         "upload": "Upload",
         "find": "Find",
-        "attachments": "Attachments"
+        "attachments": "Attachments",
+        "chooseFile": "Choose file",
+        "chooseFiles": "Choose files"
     },
     
     "equipment": {

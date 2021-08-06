@@ -37,7 +37,9 @@
                         {{ selectedFilesLabel }}
                     </p>
                 </mat-label>
-                <button type="button mt-1" mat-raised-button (click)="fileInput.click()">Choose File</button>
+                <button type="button mt-1" mat-raised-button (click)="fileInput.click()">
+                    {{ 'form.selectFiles' | translate }}
+                </button>
                 <input hidden #fileInput (change)="onFilesSelected($event.target.files)" type="file" multiple="true">
             </div>
     

@@ -1,3 +1,4 @@
+import { ProfilePhotoViewModel } from './../models/profile/change-profile-photo.model';
 import { AccountGeneralInfoModel } from '../models/identity/account-general-info.model';
 import { EmailPreferencesModel } from '../models/identity/email-preferences.model';
 import { ChangePasswordModel } from '../models/identity/change-password.model';
@@ -185,6 +186,15 @@ export class UserService extends TEMSService {
       this.httpOptions
     );
   }
+
+  changeProfilePhoto(profilePhotoViewModel: ProfilePhotoViewModel): Observable<any>{  
+    return this.http.post(
+      API_USER_URL + '/changeProfilePhoto',
+      JSON.stringify(profilePhotoViewModel)
+    );
+  }
+  
+
 
   markNotificationsAsSeen(notificationIds: string[]): Observable<any>{
     let params = new HttpParams();

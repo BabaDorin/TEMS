@@ -174,13 +174,11 @@ export class AddEquipmentComponent extends TEMSComponent implements OnInit {
 
   // Opens the BulkUploadComponent in a dialog
   bulkUpload() {
-    this.dialogService.openDialog(
-      BulkUploadComponent,
-      undefined,
-      () => {
-        this.bulkUploadResults = this.dialogService.dialogRef.componentInstance["uploadResults"];
-      }
-    );
+    let dialogRef = this.dialogService.openDialog(BulkUploadComponent);
+
+    dialogRef.afterClosed().subscribe(() => {
+      this.bulkUploadResults = dialogRef.componentInstance["uploadResults"];
+    });
   }
 
   // Clear bulk upload results

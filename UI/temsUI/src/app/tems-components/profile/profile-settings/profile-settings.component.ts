@@ -13,6 +13,7 @@ import { AccountGeneralInfoModel } from './../../../models/identity/account-gene
 import { ChangePasswordModel } from './../../../models/identity/change-password.model';
 import { EmailPreferencesModel } from './../../../models/identity/email-preferences.model';
 import { TEMSComponent } from './../../../tems/tems.component';
+import { ProfilePhotoViewModel } from 'src/app/models/profile/change-profile-photo.model';
 
 @Component({
   selector: 'app-profile-settings',
@@ -46,7 +47,7 @@ export class ProfileSettingsComponent extends TEMSComponent implements OnInit {
     @Inject(ViewProfile) prof,
     @Inject(Boolean) isCurrentUser,
     private userService: UserService,
-    private snackService: SnackService,
+    private snack: SnackService,
     private router: Router,
     private formlyParserService: FormlyParserService,
     private lazyLoader: LazyLoaderService,
@@ -59,7 +60,6 @@ export class ProfileSettingsComponent extends TEMSComponent implements OnInit {
   ngOnInit(): void {
     if(!this.isCurrentUser)
       this.router.navigate(['/error-pages/403'])
-
 
     this.changePasswordFormlyData.fields = this.formlyParserService.parseChangePassword();
 
@@ -77,14 +77,13 @@ export class ProfileSettingsComponent extends TEMSComponent implements OnInit {
   };
 
   changePass(model){
-
     let changePasswordModel: ChangePasswordModel = model;
     changePasswordModel.userId = this.profile.id;
 
     this.subscriptions.push(
       this.userService.changePassword(changePasswordModel)
       .subscribe(result => {
-        this.snackService.snack(result);
+        this.snack.snack(result);
 
         if(result.status == 1)
           this.changePasswordFormlyData.model = {};
@@ -98,7 +97,7 @@ export class ProfileSettingsComponent extends TEMSComponent implements OnInit {
 
     this.userService.changeEmailPreferences(emailPreferencesModel)
       .subscribe(result => {
-        this.snackService.snack(result);
+        this.snack.snack(result);
       });
   }
 
@@ -108,14 +107,28 @@ export class ProfileSettingsComponent extends TEMSComponent implements OnInit {
     
     this.userService.editAccountGeneralInfo(accountGeneralInfoModel)
       .subscribe(result => {
-        this.snackService.snack(result);
+        this.snack.snack(result);
       });
   }
 
   changePhoto(){
     this.lazyLoader.loadModule('profile/profile-photo-upload.module.ts')
     .then(()=> {
-      this.dialogService.openDialog(UploadProfilePhotoComponent);
+      let dialogRef = this.dialogService.openDialog(UploadProfilePhotoComponent);
+      dialogRef.componentInstance.imageSelected.subscribe(file => this.photoSelected(file));
     });
+  }
+
+  photoSelected(file){
+    let profilePhotoViewModel = new ProfilePhotoViewModel();
+    profilePhotoViewModel.userId = this.profile.id;
+    profilePhotoViewModel.photo = file;
+
+    this.subscriptions.push(
+      this.userService.changeProfilePhoto(profilePhotoViewModel)
+      .subscribe((result) => {
+        this.snack.snack(result);
+      }
+    ));
   }
 }

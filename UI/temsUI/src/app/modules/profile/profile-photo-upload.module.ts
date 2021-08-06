@@ -1,3 +1,4 @@
+import { TranslateModule } from '@ngx-translate/core';
 import { MatButtonModule } from '@angular/material/button';
 import { UploadProfilePhotoComponent } from './../../tems-components/profile/upload-profile-photo/upload-profile-photo.component';
 import { NgModule } from '@angular/core';
@@ -13,7 +14,8 @@ import { ImageCropperModule } from 'ngx-image-cropper';
   imports: [
     CommonModule,
     ImageCropperModule,
-    MatButtonModule
+    MatButtonModule,
+    TranslateModule
   ],
   exports: [
     UploadProfilePhotoComponent

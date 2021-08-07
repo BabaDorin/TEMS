@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using temsAPI.Data.Entities.UserEntities;
 
@@ -32,6 +34,24 @@ namespace temsAPI.Helpers.StaticFileHelpers
             string fullPath = Path.Combine(FolderPath, user.ProfilePhotoFileName);
             if (File.Exists(fullPath))
                 File.Delete(fullPath);
+        }
+
+        public string GetProfilePhotoBase64(TEMSUser user)
+        {
+            if (user.ProfilePhotoFileName == null)
+                return null;
+
+            string path = Path.Combine(FolderPath, user.ProfilePhotoFileName);
+
+            if (!File.Exists(path))
+                return null;
+
+            byte[] bytes = File.ReadAllBytes(path);
+            var b64Data = Convert.ToBase64String(bytes);
+            
+            string imageType = Path.GetExtension(user.ProfilePhotoFileName).Substring(1);
+
+            return String.Format($"data:image/{imageType};base64,{b64Data}");
         }
     }
 }

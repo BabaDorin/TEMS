@@ -25,6 +25,8 @@ export class ViewProfileComponent extends TEMSComponent implements OnInit {
   profile;
   activePage: any = ProfileGeneralComponent;
   injector: Injector;
+  
+  profilePhotoUrl = "assets/svgs/default_avatar.svg";
 
   constructor(
     private userService: UserService,

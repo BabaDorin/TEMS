@@ -12,6 +12,7 @@ export interface IViewProfile{
     allocatedKey: IOption;
     roles: string[];
     getEmailNotifications: boolean,
+    photoBase64: string;
 }
 
 export class ViewProfile implements IViewProfile{
@@ -27,4 +28,5 @@ export class ViewProfile implements IViewProfile{
     allocatedKey: IOption;
     roles: string[];
     getEmailNotifications: boolean;
+    photoBase64: string;
 }

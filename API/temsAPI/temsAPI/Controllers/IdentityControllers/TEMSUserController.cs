@@ -9,10 +9,12 @@ using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.UserEntities;
 using temsAPI.Data.Managers;
+using temsAPI.Helpers.StaticFileHelpers;
 using temsAPI.Services;
 using temsAPI.System_Files;
 using temsAPI.System_Files.Exceptions;
 using temsAPI.ViewModels.IdentityViewModels;
+using temsAPI.ViewModels.Profile;
 
 namespace temsAPI.Controllers.IdentityControllers
 {
@@ -184,6 +186,25 @@ namespace temsAPI.Controllers.IdentityControllers
             if (result != null)
                 return ReturnResponse(result, ResponseStatus.Neutral);
 
+            return ReturnResponse("Success", ResponseStatus.Success);
+        }
+
+        [HttpPost("temsuser/ChangeProfilePhoto")]
+        [Authorize]
+        [RequestSizeLimit(1_048_576)] // 5 MB
+        [DefaultExceptionHandler("An error occured while setting the profile image")]
+        public async Task<IActionResult> ChangeProfilePhoto(ProfilePhotoViewModel viewModel)
+        {
+            var validationResult = viewModel.Validate();
+            if (validationResult != null)
+                return ReturnResponse(validationResult, ResponseStatus.Neutral);
+
+
+            var user = await _userManager.FindByIdAsync(viewModel.UserId);
+            if(user == null)
+                return ReturnResponse("Invalid userId provided", ResponseStatus.Neutral);
+
+            await _temsUserManager.SetProfilePhoto(user, viewModel.Photo);
             return ReturnResponse("Success", ResponseStatus.Success);
         }
     }

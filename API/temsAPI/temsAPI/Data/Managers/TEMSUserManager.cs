@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Security.Claims;
@@ -10,6 +12,8 @@ using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.UserEntities;
 using temsAPI.Helpers;
+using temsAPI.Helpers.ReusableSnippets;
+using temsAPI.Helpers.StaticFileHelpers;
 using temsAPI.Services;
 using temsAPI.Services.JWT;
 using temsAPI.System_Files;
@@ -427,6 +431,22 @@ namespace temsAPI.Data.Managers
                 }).ToListAsync();
 
             return roles;
+        }
+
+        public async Task SetProfilePhoto(TEMSUser user, IFormFile photo)
+        {
+            var handler = new ProfilePhotoHandler();
+
+            if(user.ProfilePhotoFileName != null)
+            {
+                handler.RemoveProfilePhoto(user);
+            }
+
+            string fileName = user.Id + Path.GetExtension(photo.FileName);
+            await handler.SaveProfilePhoto(photo, fileName);
+            user.ProfilePhotoFileName = fileName;
+
+            await _unitOfWork.Save();
         }
     }
 }

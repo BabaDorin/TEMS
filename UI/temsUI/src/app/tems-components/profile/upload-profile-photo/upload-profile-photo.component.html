@@ -4,15 +4,23 @@
         <button class="btn-block" type="button mt-1" mat-raised-button (click)="fileInput.click()">
             {{ 'form.chooseFile' | translate }}
         </button>
-        <input hidden #fileInput (change)="fileChangeEvent($event)" type="file" multiple="false" accept="image/*">
+        <input hidden #fileInput (change)="fileChangeEvent($event)" type="file" multiple="false" 
+        accept=".jpg, .jpeg, .gif, .png">
 
         <div class="cropper-container">
             <ng-container *ngIf="fileSelected != undefined; else noFileSelected">
                 <div class="mt-4">
-                    <image-cropper [imageChangedEvent]="imageChangedEvent" [maintainAspectRatio]="true" [aspectRatio]="4 / 4"
-                    [resizeToWidth]="256" format="png" (imageCropped)="imageCropped($event)" (imageLoaded)="imageLoaded()"
-                    (cropperReady)="cropperReady()" (loadImageFailed)="loadImageFailed()">
-                    </image-cropper>
+                    <ng-container *ngIf="!restrictCropping; else croppingRestricted">
+                        <image-cropper [imageChangedEvent]="imageChangedEvent" [maintainAspectRatio]="true" [aspectRatio]="4 / 4"
+                        [resizeToWidth]="600" [format]="selectedFileFormat" (imageCropped)="imageCropped($event)" (imageLoaded)="imageLoaded()"
+                        (cropperReady)="cropperReady()" (loadImageFailed)="loadImageFailed()">
+                        </image-cropper>
+                    </ng-container>
+                    <ng-template #croppingRestricted>
+                        <div *ngIf="fileUrl != undefined" class="text-center">
+                            <img [src]="fileUrl" width="400" height="400">
+                        </div>
+                    </ng-template>
                 </div>
             </ng-container>
             <ng-template #noFileSelected>

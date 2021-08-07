@@ -115,11 +115,11 @@ export class ProfileSettingsComponent extends TEMSComponent implements OnInit {
     this.lazyLoader.loadModule('profile/profile-photo-upload.module.ts')
     .then(()=> {
       let dialogRef = this.dialogService.openDialog(UploadProfilePhotoComponent);
-      dialogRef.componentInstance.imageSelected.subscribe(file => this.photoSelected(file));
+      dialogRef.componentInstance.imageSelected.subscribe(file => this.photoSelected(file, dialogRef));
     });
   }
 
-  photoSelected(file){
+  photoSelected(file, dialogRef= undefined){
     let profilePhotoViewModel = new ProfilePhotoViewModel();
     profilePhotoViewModel.userId = this.profile.id;
     profilePhotoViewModel.photo = file;
@@ -127,7 +127,11 @@ export class ProfileSettingsComponent extends TEMSComponent implements OnInit {
     this.subscriptions.push(
       this.userService.changeProfilePhoto(profilePhotoViewModel)
       .subscribe((result) => {
-        this.snack.snack(result);
+        if(this.snack.snackIfError(result))
+          return;
+        
+        if(dialogRef != undefined && result.status == 1)
+          dialogRef.close();
       }
     ));
   }

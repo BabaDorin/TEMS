@@ -188,13 +188,15 @@ export class UserService extends TEMSService {
   }
 
   changeProfilePhoto(profilePhotoViewModel: ProfilePhotoViewModel): Observable<any>{  
+    const formData = new FormData();
+    formData.append('userId', profilePhotoViewModel.userId);
+    formData.append('photo', profilePhotoViewModel.photo, profilePhotoViewModel.photo?.name ?? 'photo.jpg');
+
     return this.http.post(
       API_USER_URL + '/changeProfilePhoto',
-      JSON.stringify(profilePhotoViewModel)
+      formData
     );
   }
-  
-
 
   markNotificationsAsSeen(notificationIds: string[]): Observable<any>{
     let params = new HttpParams();

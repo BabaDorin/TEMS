@@ -45,6 +45,8 @@ namespace temsAPI.Data.Entities.UserEntities
         public bool GetEmailNotifications { get; set; }
 
 #nullable enable
+        public string? ProfilePhotoFileName { get; set; }
+
         [ForeignKey("PersonnelId")]
         [InverseProperty("TEMSUser")]
         public Personnel? Personnel { get; set; }

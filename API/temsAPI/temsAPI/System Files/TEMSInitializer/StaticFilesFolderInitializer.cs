@@ -21,6 +21,7 @@ namespace temsAPI.System_Files.TEMSInitializer
             CreateFolderIfDoesntExist(Path.Combine(staticFilesDirectory, "LibraryUploads"));
             CreateFolderIfDoesntExist(Path.Combine(staticFilesDirectory, "TempReports"));
             CreateFolderIfDoesntExist(Path.Combine(staticFilesDirectory, "BugReportAttachments"));
+            CreateFolderIfDoesntExist(Path.Combine(staticFilesDirectory, "ProfilePhotos"));
         }
 
         private void CreateFolderIfDoesntExist(string folderPath)

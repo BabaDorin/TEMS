@@ -83,6 +83,10 @@ export class UploadProfilePhotoComponent {
     this.snack.snack({ message: 'An error occured while processing the image', status: 0 });
   }
 
+  cancelCurrent(){
+    this.imageSelected.emit(undefined);
+  }
+
   submit() {
     this.imageSelected.emit(this.croppedImage);
   }

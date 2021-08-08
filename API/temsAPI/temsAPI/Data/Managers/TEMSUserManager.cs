@@ -436,8 +436,18 @@ namespace temsAPI.Data.Managers
 
         public async Task SetProfilePhoto(TEMSUser user, IFormFile photo)
         {
+            // If photo is null, then the existing photo is removed (works like canceling the current profile photo)
+
             var handler = new ProfilePhotoHandler();
             handler.RemoveProfilePhotoIfAny(user);
+            
+            if (photo == null)
+            {
+                user.ProfilePhotoFileName = null;
+                user.ProfilePhotoMinifiedFileName = null;
+                await _unitOfWork.Save();
+                return;
+            }
 
             string fullPhotoName = user.Id + Path.GetExtension(photo.FileName);
             string minifiedPhotoName = user.Id + "_min" + Path.GetExtension(photo.FileName);

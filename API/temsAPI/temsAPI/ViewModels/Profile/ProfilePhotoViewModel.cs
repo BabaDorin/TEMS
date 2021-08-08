@@ -17,10 +17,7 @@ namespace temsAPI.ViewModels.Profile
             if (string.IsNullOrEmpty(UserId))
                 return "UserId is required";
 
-            if (Photo == null || Photo.Length == 0)
-                return "Photo is required";
-
-            if (!new List<string>() { ".jpg", ".jpeg", ".gif", ".png" }.Contains(Path.GetExtension(Photo.FileName)))
+            if (Photo != null && !new List<string>() { ".jpg", ".jpeg", ".gif", ".png" }.Contains(Path.GetExtension(Photo.FileName)))
                 return "Invalid file type. Types supported: .jpg, .jpeg, .gif, .png";
 
             return null;

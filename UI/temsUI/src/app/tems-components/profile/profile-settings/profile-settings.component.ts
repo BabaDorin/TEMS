@@ -127,8 +127,7 @@ export class ProfileSettingsComponent extends TEMSComponent implements OnInit {
     this.subscriptions.push(
       this.userService.changeProfilePhoto(profilePhotoViewModel)
       .subscribe((result) => {
-        if(this.snack.snackIfError(result))
-          return;
+        this.snack.snack(result);
         
         if(dialogRef != undefined && result.status == 1)
           dialogRef.close();

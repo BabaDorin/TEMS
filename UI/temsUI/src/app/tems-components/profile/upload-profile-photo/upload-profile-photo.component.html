@@ -1,12 +1,21 @@
 <div [ngClass]="dialogRef == undefined ? 'card limit' : 'card cancel-margins limit'">
     <div class="card-body">
 
-        <button class="btn-block" type="button mt-1" mat-raised-button (click)="fileInput.click()">
-            {{ 'form.chooseFile' | translate }}
-        </button>
-        <input hidden #fileInput (change)="fileChangeEvent($event)" type="file" multiple="false" 
-        accept=".jpg, .jpeg, .gif, .png">
-
+        <div class="row">
+            <div class="col-6">
+                <button mat-raised-button class="btn-block" type="button mt-1"  (click)="fileInput.click()">
+                    {{ 'form.chooseFile' | translate }}
+                </button>
+                <input hidden #fileInput (change)="fileChangeEvent($event)" type="file" multiple="false" 
+                accept=".jpg, .jpeg, .gif, .png">
+            </div>
+            <div class="col-6">
+                <button mat-raised-button class="btn-block text-danger" (click)="cancelCurrent()">
+                    Remove current
+                </button> 
+            </div>
+        </div>
+        
         <div class="cropper-container">
             <ng-container *ngIf="fileSelected != undefined; else noFileSelected">
                 <div class="mt-4">

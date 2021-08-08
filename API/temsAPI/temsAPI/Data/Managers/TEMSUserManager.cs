@@ -242,7 +242,8 @@ namespace temsAPI.Data.Managers
                 users = await GetUsersOfRole(role, skip, take);
             }
 
-            return users.Select(q => ViewUserSimplifiedViewModel.FromModel(q, _userManager)).ToList();
+            ProfilePhotoHandler handler = new();
+            return users.Select(q => ViewUserSimplifiedViewModel.FromModel(q, _userManager, handler)).ToList();
         }
 
         public async Task<IEnumerable<TEMSUser>> GetUsersOfRole(string role, int skip = 0, int take = int.MaxValue)

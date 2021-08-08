@@ -150,7 +150,8 @@ namespace temsAPI.Controllers.IdentityControllers
         public async Task<IActionResult> GetSimplifiedById(string userId)
         {
             var user = await _userManager.FindByIdAsync(userId);
-            return Ok(ViewUserSimplifiedViewModel.FromModel(user, _userManager));
+            ProfilePhotoHandler handler = new();
+            return Ok(ViewUserSimplifiedViewModel.FromModel(user, _userManager, handler));
         }
 
         [HttpPut("temsuser/ChangePassword")]

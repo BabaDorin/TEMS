@@ -13,6 +13,7 @@ export class ViewUserSimplified implements IViewUserSimplified{
     username: string;
     fullName: string;
     phoneNumber: string;
+    profilePhotoB64: string;
     email: string;
     roles: string[];
 }

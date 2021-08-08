@@ -12,7 +12,7 @@
                 <div class="mt-4">
                     <ng-container *ngIf="!restrictCropping; else croppingRestricted">
                         <image-cropper [imageChangedEvent]="imageChangedEvent" [maintainAspectRatio]="true" [aspectRatio]="4 / 4"
-                        [resizeToWidth]="600" [format]="selectedFileFormat" (imageCropped)="imageCropped($event)" (imageLoaded)="imageLoaded()"
+                        [resizeToWidth]="640" [format]="selectedFileFormat" (imageCropped)="imageCropped($event)" (imageLoaded)="imageLoaded()"
                         (cropperReady)="cropperReady()" (loadImageFailed)="loadImageFailed()">
                         </image-cropper>
                     </ng-container>

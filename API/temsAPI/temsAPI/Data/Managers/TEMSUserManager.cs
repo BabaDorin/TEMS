@@ -436,15 +436,13 @@ namespace temsAPI.Data.Managers
         public async Task SetProfilePhoto(TEMSUser user, IFormFile photo)
         {
             var handler = new ProfilePhotoHandler();
+            handler.RemoveProfilePhotoIfAny(user);
 
-            if(user.ProfilePhotoFileName != null)
-            {
-                handler.RemoveProfilePhoto(user);
-            }
-
-            string fileName = user.Id + Path.GetExtension(photo.FileName);
-            await handler.SaveProfilePhoto(photo, fileName);
-            user.ProfilePhotoFileName = fileName;
+            string fullPhotoName = user.Id + Path.GetExtension(photo.FileName);
+            string minifiedPhotoName = user.Id + "_min" + Path.GetExtension(photo.FileName);
+            await handler.SaveProfilePhoto(photo, fullPhotoName, minifiedPhotoName);
+            user.ProfilePhotoFileName = fullPhotoName;
+            user.ProfilePhotoMinifiedFileName = minifiedPhotoName;
 
             await _unitOfWork.Save();
         }

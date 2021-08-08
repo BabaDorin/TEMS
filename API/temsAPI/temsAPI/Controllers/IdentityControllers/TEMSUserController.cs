@@ -191,8 +191,8 @@ namespace temsAPI.Controllers.IdentityControllers
 
         [HttpPost("temsuser/ChangeProfilePhoto")]
         [Authorize]
-        [RequestSizeLimit(1_048_576)] // 5 MB
-        [DefaultExceptionHandler("An error occured while setting the profile image")]
+        [RequestSizeLimit(1_048_576)] // 1 MB
+        [DefaultExceptionHandler("An error occured while setting the profile image. Also, make sure the image is less than 1MB")]
         public async Task<IActionResult> ChangeProfilePhoto(ProfilePhotoViewModel viewModel)
         {
             var validationResult = viewModel.Validate();

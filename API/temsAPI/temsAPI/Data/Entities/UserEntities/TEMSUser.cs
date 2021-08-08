@@ -46,6 +46,7 @@ namespace temsAPI.Data.Entities.UserEntities
 
 #nullable enable
         public string? ProfilePhotoFileName { get; set; }
+        public string? ProfilePhotoMinifiedFileName { get; set; }
 
         [ForeignKey("PersonnelId")]
         [InverseProperty("TEMSUser")]

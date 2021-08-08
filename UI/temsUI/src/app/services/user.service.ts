@@ -19,7 +19,7 @@ import { ViewNotification } from 'src/app/models/communication/notification/view
   providedIn: 'root'
 })
 export class UserService extends TEMSService {
-
+  
   role: Role;
 
   constructor(
@@ -55,6 +55,18 @@ export class UserService extends TEMSService {
     );
   }
   
+  fetchMinifiedProfilePhoto(userId: string = undefined): Observable<any> {
+    let params = new HttpParams()
+    
+    if(userId != undefined)
+      params = params.append('userId', userId);
+
+    return this.http.get(
+      API_PROFILE_URL + '/getMinifiedProfilePhoto',
+      { params: params }
+    )
+  }
+
   fetchClaims(): Observable<IOption[]>{
     return this.http.get<IOption[]>(
       API_USER_URL + '/getclaims',

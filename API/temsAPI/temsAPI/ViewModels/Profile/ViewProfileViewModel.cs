@@ -47,7 +47,7 @@ namespace temsAPI.ViewModels.Profile
                     },
                 PhotoBase64 = user.ProfilePhotoFileName == null
                     ? null
-                    : new ProfilePhotoHandler().GetProfilePhotoBase64(user)
+                    : new ProfilePhotoHandler().GetFullProfilePhotoBase64(user)
             };
         }
     }

@@ -19,6 +19,7 @@ export class NavbarComponent extends TEMSComponent implements OnInit {
   public iconOnlyToggled = false;
   public sidebarToggled = false;
   public username: string;
+  public profilePhotoB64: string;
   public loggedIn: boolean;
   public refreshing: boolean = false;
 
@@ -78,6 +79,16 @@ export class NavbarComponent extends TEMSComponent implements OnInit {
     let decodedJwtData = JSON.parse(decodedJwtJsonData)
     this.username = decodedJwtData.Username;
     this.fetchLastNotifications();
+    this.fetchMinifiedProfilePhoto();
+  }
+
+  fetchMinifiedProfilePhoto(){
+    this.subscriptions.push(
+      this.userService.fetchMinifiedProfilePhoto()
+      .subscribe(result => {
+        this.profilePhotoB64 = result;
+      })
+    );
   }
 
   fetchLastNotifications(refreshTriggered: boolean = false){

@@ -11,7 +11,7 @@
           <button type="submit" class="btn btn-block btn-gradient-primary btn-lg font-weight-medium auth-form-btn"
           [disabled]="formlyData.form.status == 'INVALID'">{{ 'authentication.signIn' | translate }}</button>
           <div class="text-center mt-4">
-            <button mat-button (click)="forgotPassword()">
+            <button type="button" mat-button (click)="forgotPassword()">
               {{ 'authentication.forgotPassword' | translate }}
             </button>
           </div>

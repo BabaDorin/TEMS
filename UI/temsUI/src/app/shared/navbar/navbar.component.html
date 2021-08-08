@@ -69,7 +69,7 @@
         <li class="nav-item nav-profile dropdown" ngbDropdown>
           <a class="nav-link dropdown-toggle" id="profileDropdown" ngbDropdownToggle>
             <div class="nav-profile-img">
-              <img src="assets/svgs/default_avatar.svg" alt="image">
+                <img class="profile-photo" [src]="profilePhotoB64 != undefined ? profilePhotoB64 : 'assets/svgs/default_avatar.svg'" alt="profile photo">
             </div>
             <div class="nav-profile-text">
               <p class="mb-1 text-black">{{ username }}</p>

@@ -1,12 +1,17 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.UserEntities;
 using temsAPI.Data.Managers;
+using temsAPI.Helpers.StaticFileHelpers;
+using temsAPI.Services;
 using temsAPI.System_Files;
 using temsAPI.System_Files.Exceptions;
 
@@ -33,6 +38,28 @@ namespace temsAPI.Controllers.IdentityControllers
         {
             var profileViewModel = await _temsUserManager.GetProfileInfo(userId);
             return Ok(profileViewModel);
+        }
+
+        [HttpGet("profile/getMinifiedProfilePhoto")]
+        [Authorize]
+        public async Task<JsonResult> GetMinifiedProfilePhoto(string userId = null)
+        {
+            try
+            {
+                string actualUserId = userId ?? IdentityService.GetUserId(User);
+
+                var user = await _userManager.FindByIdAsync(actualUserId);
+                if (user == null)
+                    throw new System.Exception("invalid userId provided");
+
+                ProfilePhotoHandler handler = new();
+                return Json(handler.GetMinifiedProfilePhotoBase64(user));
+            }
+            catch (Exception ex)
+            {
+                LogException(ex);
+                return null;
+            }
         }
     }
 }

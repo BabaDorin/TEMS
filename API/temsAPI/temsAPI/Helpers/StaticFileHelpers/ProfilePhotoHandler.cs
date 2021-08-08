@@ -74,20 +74,33 @@ namespace temsAPI.Helpers.StaticFileHelpers
             }
         }
 
-        public string GetProfilePhotoBase64(TEMSUser user)
+        public string GetFullProfilePhotoBase64(TEMSUser user)
         {
             if (user.ProfilePhotoFileName == null)
                 return null;
 
             string path = Path.Combine(FolderPath, user.ProfilePhotoFileName);
+            return GetPhotoBase64(path);
+        }
 
+        public string GetMinifiedProfilePhotoBase64(TEMSUser user)
+        {
+            if (user.ProfilePhotoMinifiedFileName == null)
+                return null;
+
+            string path = Path.Combine(FolderPath, user.ProfilePhotoMinifiedFileName);
+            return GetPhotoBase64(path);
+        }
+
+        private string GetPhotoBase64(string path)
+        {
             if (!File.Exists(path))
                 return null;
 
             byte[] bytes = File.ReadAllBytes(path);
             var b64Data = Convert.ToBase64String(bytes);
-            
-            string imageType = Path.GetExtension(user.ProfilePhotoFileName).Substring(1);
+
+            string imageType = Path.GetExtension(path).Substring(1);
 
             return String.Format($"data:image/{imageType};base64,{b64Data}");
         }

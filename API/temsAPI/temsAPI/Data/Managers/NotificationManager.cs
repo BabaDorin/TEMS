@@ -1,11 +1,10 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Security.Claims;
-using System.Threading;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.CommunicationEntities;
@@ -13,9 +12,10 @@ using temsAPI.Data.Entities.OtherEntities;
 using temsAPI.Data.Entities.UserEntities;
 using temsAPI.Data.Factories.Email;
 using temsAPI.Data.Factories.Notification;
+using temsAPI.Helpers.NotificationProviders;
 using temsAPI.Helpers.ReusableSnippets;
 using temsAPI.Services;
-using temsAPI.Services.Notification;
+using temsAPI.ViewModels.Email;
 using temsAPI.ViewModels.Notification;
 
 namespace temsAPI.Data.Managers
@@ -25,7 +25,6 @@ namespace temsAPI.Data.Managers
         IdentityService _identityService;
         UserManager<TEMSUser> _userManager;
         RoleManager<IdentityRole> _roleManager;
-        EmailNotificationService _emailNotificationService;
         SystemConfigurationService _configService;
         EmailService _emailService;
 
@@ -35,14 +34,12 @@ namespace temsAPI.Data.Managers
             IdentityService identityService,
             UserManager<TEMSUser> userManager,
             RoleManager<IdentityRole> roleManager,
-            EmailNotificationService emailNotificationService,
             SystemConfigurationService configService,
             EmailService emailService) : base(unitOfWork, user)
         {
             _identityService = identityService;
             _userManager = userManager;
             _roleManager = roleManager;
-            _emailNotificationService = emailNotificationService;
             _configService = configService;
             _emailService = emailService;
         }
@@ -172,34 +169,43 @@ namespace temsAPI.Data.Managers
         
         public async Task NotifyTicketCreation(Ticket ticket)
         {
-            // Notify assignees
-            var assigneeIds = ticket.Assignees?
-                .Where(q => !String.IsNullOrEmpty(q.Email))
-                .Select(q => q.Id)
-                .ToList();
-
-            if(assigneeIds != null && assigneeIds.Count > 0)
+            // Notify ticket assignees & technicians about the newly created ticket
+            try
             {
-                var notification = (new TicketAssignedNotificationBuilder(ticket).Create());
-                await CreateCommonNotification(notification);
-                await _emailNotificationService.SendNotification(notification);
+                // Notify assignees
+                var assignees = ticket.Assignees?
+                    .Where(q => !String.IsNullOrEmpty(q.Email))
+                    .ToList();
+
+                if (assignees != null && assignees.Count > 0)
+                {
+                    var notification = (new TicketAssignedNotificationBuilder(ticket, assignees).Create());
+                    await CreateCommonNotification(notification);
+                    var emailData = EmailData.FromNotification(notification);
+                    _ = Task.Factory.StartNew(() => new EmailNotificationProvider(_emailService, emailData).SendNotification());
+                }
+
+                // Notify technicians
+                var technicians = (await _userManager.GetUsersInRoleAsync("technician"))
+                    .Where(q => q.GetEmailNotifications && !String.IsNullOrEmpty(q.Email))
+                    .Except(assignees)
+                    .ToList();
+                
+                // BEFREE: DRY Violated
+                if (technicians != null && technicians.Count > 0)
+                {
+                    var notification = new TicketCreatedNotificationBuilder(ticket, technicians).Create();
+                    await CreateCommonNotification(notification);
+                    var emailData = EmailData.FromNotification(notification);
+                    _ = Task.Factory.StartNew(() => new EmailNotificationProvider(_emailService, emailData).SendNotification());
+                }
+
+                // BEFREE -> Notify supervisories
             }
-
-            // Notify technicians
-            var techIds = (await _userManager.GetUsersInRoleAsync("technician"))
-                ?.Where(q => q.GetEmailNotifications && !String.IsNullOrEmpty(q.Email))
-                .Select(q => q.Id)
-                .Except(assigneeIds)
-                .ToList();
-
-            if(techIds != null && techIds.Count > 0)
+            catch (Exception ex)
             {
-                var notification = new TicketCreatedNotificationBuilder(ticket, techIds).Create();
-                await CreateCommonNotification(notification);
-                await _emailNotificationService.SendNotification(notification);
+                Debug.Write(ex);
             }
-
-            // BEFREE -> Notify supervisories
         }
 
         /// <summary>
@@ -223,26 +229,23 @@ namespace temsAPI.Data.Managers
         private async Task<string> NotifyBugReportEmail(BugReport report)
         {
             var emailBuilder = new BugReportEmailBuilder(report, _configService.AppSettings);
-            var emailModel = await emailBuilder.BuildEmailModel();
-
-            if (emailModel.Addressees.IsNullOrEmpty())
+            var emailData = await emailBuilder.BuildEmailModel();
+            if (emailData.Recipients.IsNullOrEmpty())
                 return "Your report has been saved, but no e-mail was sent because there aren't any recipients specified";
+
+            _ = Task.Factory.StartNew(() => new EmailNotificationProvider(_emailService, emailData).SendNotification());
             
-            return await _emailService.SendEmailToAddresses(emailModel);
+            return null;
         }
 
         private async Task NotifyBugReportAppNotifications(BugReport report)
         {
-            //// Notify administrators
-            var adminIds = (await _userManager.GetUsersInRoleAsync("Administrator"))
-                .Select(q => q.Id)
-                .ToList();
+            // Notify administrators
+            var administrators = await _userManager.GetUsersInRoleAsync("Administrator");
 
-            adminIds.Remove(report.CreatedByID);
-
-            if (adminIds != null && adminIds.Count > 0)
+            if (administrators != null && administrators.Count > 0)
             {
-                var notification = (new BugReportCreatedNotificationBuilder(report, adminIds).Create());
+                var notification = (new BugReportCreatedNotificationBuilder(report, administrators).Create());
                 await CreateCommonNotification(notification);
             }
         }

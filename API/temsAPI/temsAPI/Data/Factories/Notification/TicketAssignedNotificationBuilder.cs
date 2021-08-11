@@ -11,23 +11,23 @@ namespace temsAPI.Data.Factories.Notification
     public class TicketAssignedNotificationBuilder : INotificationBuilder
     {
         Ticket _ticket;
-        List<string> _userIds;
+        IEnumerable<TEMSUser> _recipients;
 
-        public TicketAssignedNotificationBuilder(Ticket ticket, List<string> userIds = null)
+        public TicketAssignedNotificationBuilder(Ticket ticket, IEnumerable<TEMSUser> recipients)
         {
             _ticket = ticket;
-            _userIds = userIds;
+            _recipients = recipients;
         }
 
         public CommonNotification Create()
         {
-            if (_userIds == null)
-                _userIds = _ticket.Assignees.Select(q => q.Id).ToList();
+            if (_recipients == null)
+                throw new Exception("No recipients specified for the notification");
 
             return new CommonNotification(
                 "You've been assigned a ticket",
                 $"A ticket [Tr. No. {_ticket.TrackingNumber}] has been assigned to you, make sure to check it out.",
-                _userIds,
+                _recipients,
                 sendEmail: true,
                 sendPush: true,
                 sendBrowser: true

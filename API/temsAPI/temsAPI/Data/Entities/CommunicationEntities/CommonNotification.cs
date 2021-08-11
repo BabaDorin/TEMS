@@ -51,7 +51,7 @@ namespace temsAPI.Data.Entities.CommunicationEntities
         public CommonNotification(
             string title,
             string message,
-            List<string> userIds,
+            IEnumerable<TEMSUser> recipients,
             bool sendSMS = false,
             bool sendEmail = false,
             bool sendBrowser = false,
@@ -66,13 +66,13 @@ namespace temsAPI.Data.Entities.CommunicationEntities
             SendBrowser = sendBrowser;
             SendPush = sendPush;
 
-            if(userIds != null)
-                foreach(string id in userIds)
+            if(recipients != null)
+                foreach(TEMSUser user in recipients)
                 {
                     UserCommonNotifications.Add(new UserCommonNotification()
                     {
                         NotificationId = Id,
-                        UserId = id,
+                        User = user
                     });
                 }
         }

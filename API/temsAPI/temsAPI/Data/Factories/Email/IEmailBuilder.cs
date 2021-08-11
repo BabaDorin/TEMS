@@ -8,6 +8,6 @@ namespace temsAPI.Data.Factories.Email
 {
     interface IEmailBuilder
     {
-        public Task<SendEmailViewModel> BuildEmailModel();
+        public Task<EmailData> BuildEmailModel();
     }
 }

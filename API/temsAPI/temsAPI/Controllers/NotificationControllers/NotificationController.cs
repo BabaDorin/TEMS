@@ -10,7 +10,6 @@ using temsAPI.Contracts;
 using temsAPI.Data.Entities.UserEntities;
 using temsAPI.Data.Managers;
 using temsAPI.Services;
-using temsAPI.Services.Notification;
 using temsAPI.System_Files.Exceptions;
 
 namespace temsAPI.Controllers.NotificationControllers

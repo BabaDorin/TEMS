@@ -4,18 +4,19 @@ using System.Linq;
 using System.Threading.Tasks;
 using temsAPI.Data.Entities.CommunicationEntities;
 using temsAPI.Data.Entities.OtherEntities;
+using temsAPI.Data.Entities.UserEntities;
 
 namespace temsAPI.Data.Factories.Notification
 {
     public class BugReportCreatedNotificationBuilder : INotificationBuilder
     {
         BugReport _bugReport;
-        List<string> _recipientIds;
+        IEnumerable<TEMSUser> _recipients;
 
-        public BugReportCreatedNotificationBuilder(BugReport bugReport, List<string> recipientIds)
+        public BugReportCreatedNotificationBuilder(BugReport bugReport, IEnumerable<TEMSUser> recipients)
         {
             _bugReport = bugReport;
-            _recipientIds = recipientIds;
+            _recipients = recipients;
         }
 
         public CommonNotification Create()
@@ -23,7 +24,7 @@ namespace temsAPI.Data.Factories.Notification
             return new CommonNotification(
                 "New bug report has been created",
                 String.Format($"{_bugReport.CreatedBy.Identifier} created a new bug report. Make sure to check it out."),
-                _recipientIds,
+                _recipients,
                 sendPush: true
                 );
         }

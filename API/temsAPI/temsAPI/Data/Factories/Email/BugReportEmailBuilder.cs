@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using temsAPI.Data.Entities.OtherEntities;
+using temsAPI.Helpers.EMail;
 using temsAPI.Helpers.ReusableSnippets;
 using temsAPI.Helpers.StaticFileHelpers;
 using temsAPI.Services;
@@ -26,16 +27,16 @@ namespace temsAPI.Data.Factories.Email
             _appSettings = appSettings;
         }
 
-        public async Task<SendEmailViewModel> BuildEmailModel()
+        public async Task<EmailData> BuildEmailModel()
         {
             var _recipients = _appSettings.BugReportMailRecipients;
 
             if (_recipients.IsNullOrEmpty())
-                return new SendEmailViewModel();
+                return new EmailData();
 
             string currentDirectory = Directory.GetCurrentDirectory();
 
-            SendEmailViewModel model = new()
+            EmailData model = new()
             {
                 From = "TEMS CIH Cahul",
                 Subject = String.Format($"TEMS: {_bugReport.ReportType} from {_bugReport.CreatedBy.Identifier}"),
@@ -43,7 +44,7 @@ namespace temsAPI.Data.Factories.Email
                     _bugReport.DateCreated.ToString("dd.MMM.yyyy  hh:mm"),
                     _bugReport.Description),
                 Attachments = _bugReport.GetAttachmentUris().Select(q => Path.Combine(currentDirectory, q)).ToList(),
-                Addressees = _recipients.ToList()
+                Recipients = _recipients.Select(q => new EmailTo(q, q.Split('@')[0])).ToList()
             };
 
             return await Task.FromResult(model);

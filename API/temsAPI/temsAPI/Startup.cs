@@ -18,11 +18,9 @@ using temsAPI.Contracts;
 using temsAPI.Data;
 using temsAPI.Data.Entities.UserEntities;
 using temsAPI.Data.Managers;
-using temsAPI.Helpers;
 using temsAPI.Repository;
 using temsAPI.Services;
 using temsAPI.Services.JWT;
-using temsAPI.Services.Notification;
 using temsAPI.Services.Report;
 using temsAPI.System_Files;
 using temsAPI.System_Files.Exceptions;
@@ -124,10 +122,7 @@ namespace temsAPI
             services.AddScoped<ReportingService>();
             services.AddScoped<IdentityService>();
             services.AddScoped<EmailService>();
-            services.AddScoped<EmailNotificationService>();
-            services.AddScoped<SMSNotificationService>();
-            services.AddScoped<BrowserNotificationService>();
-            services.AddScoped<NotificationService>();
+
             services.ConfigureWritable<AppSettings>(Configuration.GetSection("AppSettings"));
 
             // Scheduler

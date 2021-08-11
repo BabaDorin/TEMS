@@ -49,7 +49,7 @@ namespace temsAPI.Data.Managers
             if (validationResult != null)
                 return validationResult;
 
-            Ticket model = new Ticket
+            Ticket ticket = new Ticket
             {
                 Id = Guid.NewGuid().ToString(),
                 StatusId = viewModel.Status,
@@ -73,11 +73,11 @@ namespace temsAPI.Data.Managers
                         viewModel.Assignees.Select(q => q.Value).Contains(q.Id)),
             };
 
-            await _unitOfWork.Tickets.Create(model);
+            await _unitOfWork.Tickets.Create(ticket);
             await _unitOfWork.Save();
 
-            await _notificationManager.NotifyTicketCreation(model);
-
+            await _notificationManager.NotifyTicketCreation(ticket);
+           
             return null;
         }
 
@@ -227,11 +227,8 @@ namespace temsAPI.Data.Managers
             // Notify technicians if pinned == true
             if (ticket.IsPinned)
             {
-                var techIds = (await _userManager.GetUsersInRoleAsync("technician"))
-                    .Select(q => q.Id)
-                    .ToList();
-
-                var notification = new TicketPinnedNotificationBuilder(ticket, techIds).Create();
+                var technicians = await _userManager.GetUsersInRoleAsync("technician");
+                var notification = new TicketPinnedNotificationBuilder(ticket, technicians).Create();
                 await _notificationManager.CreateCommonNotification(notification);
             }
 
@@ -359,7 +356,6 @@ namespace temsAPI.Data.Managers
             Close,
             Assigned
         }
-
 
         public async Task<List<ViewTicketSimplifiedViewModel>> GetTickets(
             string equipmentId,

@@ -169,43 +169,24 @@ namespace temsAPI.Data.Managers
         
         public async Task NotifyTicketCreation(Ticket ticket)
         {
-            // Notify ticket assignees & technicians about the newly created ticket
-            try
-            {
-                // Notify assignees
-                var assignees = ticket.Assignees?
-                    .Where(q => !String.IsNullOrEmpty(q.Email))
-                    .ToList();
+            // Notify assignees
+            var assignees = ticket.Assignees?
+                .Where(q => !String.IsNullOrEmpty(q.Email))
+                .ToList();
 
-                if (assignees != null && assignees.Count > 0)
-                {
-                    var notification = (new TicketAssignedNotificationBuilder(ticket, assignees).Create());
-                    await CreateCommonNotification(notification);
-                    var emailData = EmailData.FromNotification(notification);
-                    _ = Task.Factory.StartNew(() => new EmailNotificationProvider(_emailService, emailData).SendNotification());
-                }
+            if (assignees != null && assignees.Count > 0)
+                await CreateAndSendNotification(new TicketAssignedNotificationBuilder(ticket, assignees).Create());
 
-                // Notify technicians
-                var technicians = (await _userManager.GetUsersInRoleAsync("technician"))
-                    .Where(q => q.GetEmailNotifications && !String.IsNullOrEmpty(q.Email))
-                    .Except(assignees)
-                    .ToList();
-                
-                // BEFREE: DRY Violated
-                if (technicians != null && technicians.Count > 0)
-                {
-                    var notification = new TicketCreatedNotificationBuilder(ticket, technicians).Create();
-                    await CreateCommonNotification(notification);
-                    var emailData = EmailData.FromNotification(notification);
-                    _ = Task.Factory.StartNew(() => new EmailNotificationProvider(_emailService, emailData).SendNotification());
-                }
+            // Notify technicians
+            var technicians = (await _userManager.GetUsersInRoleAsync("technician"))
+                .Where(q => q.GetEmailNotifications && !String.IsNullOrEmpty(q.Email))
+                .Except(assignees)
+                .ToList();
 
-                // BEFREE -> Notify supervisories
-            }
-            catch (Exception ex)
-            {
-                Debug.Write(ex);
-            }
+            if (technicians != null && technicians.Count > 0)
+                await CreateAndSendNotification(new TicketCreatedNotificationBuilder(ticket, technicians).Create());
+
+            // BEFREE -> Notify supervisories
         }
 
         /// <summary>
@@ -248,6 +229,22 @@ namespace temsAPI.Data.Managers
                 var notification = (new BugReportCreatedNotificationBuilder(report, administrators).Create());
                 await CreateCommonNotification(notification);
             }
+        }
+
+        /// <summary>
+        /// Saved the notification and notifies according to the data being provided by the notification itself
+        /// </summary>
+        /// <param name="notification"></param>
+        /// <returns></returns>
+        private async Task CreateAndSendNotification(INotification notification)
+        {
+            if(notification is CommonNotification)
+                await CreateCommonNotification(notification as CommonNotification);
+            else
+                await CreateUserNotification(notification as UserNotification);
+
+            var emailData = EmailData.FromNotification(notification);
+            _ = Task.Factory.StartNew(() => new EmailNotificationProvider(_emailService, emailData).SendNotification());
         }
     }
 }

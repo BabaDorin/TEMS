@@ -41,6 +41,7 @@ namespace temsAPI.System_Files.Exceptions
             // - [Date & Time] Exception message
             // - API endpoint where the exception has been thrown
             // - Method's arugments (JSON)
+            // - Inner exception
             // - Stack trace
 
             var exception = args.Exception;
@@ -74,6 +75,15 @@ namespace temsAPI.System_Files.Exceptions
                 additional.Append("\n\n");
             }
 
+            // Inner exception (if any)
+            if(exception.InnerException != null)
+            {
+                additional.Append("Inner exception:");
+                additional.Append(exception.InnerException);
+
+                additional.Append("\n\n- - - - - - - - - - - - - - -");
+            }
+            
             // Stack trace
             additional.Append("Stack trace:");
             additional.Append(exception.StackTrace);

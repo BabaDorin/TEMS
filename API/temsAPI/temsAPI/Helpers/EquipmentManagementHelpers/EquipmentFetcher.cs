@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
+using Microsoft.EntityFrameworkCore.Storage;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -49,6 +50,9 @@ namespace temsAPI.Helpers.EquipmentManagementHelpers
 
         private async Task<IEnumerable<Equipment>> FetchFromEquipment(EquipmentFilter filter)
         {
+            // Default filter
+            Expression<Func<Equipment, bool>> ignoreArchived = q => !q.IsArchieved;
+
             // Type filtering
             Expression<Func<Equipment, bool>> eqOfTypeExp = null;
             if (!filter.Types.IsNullOrEmpty() && filter.Types.IndexOf("any") == -1)
@@ -62,7 +66,7 @@ namespace temsAPI.Helpers.EquipmentManagementHelpers
             // Place for more where filters
 
             // WHERE
-            var finalWhereExp = eqOfTypeExp.Concat(parentInclusionExp);
+            var finalWhereExp = ExpressionCombiner.And(ignoreArchived, eqOfTypeExp, parentInclusionExp);
 
             // INCLUDE
             Func<IQueryable<Equipment>, IIncludableQueryable<Equipment, object>> finalIncludeExp =
@@ -83,6 +87,10 @@ namespace temsAPI.Helpers.EquipmentManagementHelpers
 
         private async Task<IEnumerable<Equipment>> FetchFromAllocations(EquipmentFilter filter)
         {
+            // Default expression
+            Expression<Func<EquipmentAllocation, bool>> ignoreArchived = q => !q.Equipment.IsArchieved;
+
+
             Expression<Func<EquipmentAllocation, bool>> eqOfRoomsExp = null;
             if (!filter.Rooms.IsNullOrEmpty())
                 eqOfRoomsExp = q => q.DateReturned == null && filter.Rooms.Contains(q.RoomID);
@@ -104,7 +112,12 @@ namespace temsAPI.Helpers.EquipmentManagementHelpers
             // Place for more where filters
 
             // WHERE
-            var finalWhereExp = ExpressionCombiner.And(eqOfRoomsExp, eqOfPersonnelExp, eqOfTypeExp, parentInclusionExp);
+            var finalWhereExp = ExpressionCombiner.And(
+                ignoreArchived,
+                eqOfRoomsExp, 
+                eqOfPersonnelExp, 
+                eqOfTypeExp, 
+                parentInclusionExp);
 
             // INCLUDE
             Func<IQueryable<EquipmentAllocation>, IIncludableQueryable<EquipmentAllocation, object>> finalIncludeExp =

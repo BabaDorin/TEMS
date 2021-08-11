@@ -96,6 +96,8 @@ namespace temsAPI.Data.Managers
                     items = await _archieveHelper.GetArchievedItemsFromRepo(_unitOfWork.EquipmentTypes); break;
                 case "equipmentDefinitions":
                     items = await _archieveHelper.GetArchievedItemsFromRepo(_unitOfWork.EquipmentDefinitions); break;
+                case "users":
+                    items = await _archieveHelper.GetArchievedItemsFromRepo(_unitOfWork.TEMSUsers); break;
                 default:
                     throw new Exception("Invalid item type");
             }

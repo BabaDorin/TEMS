@@ -25,7 +25,6 @@ export class ViewArchieveComponent extends TEMSComponent implements OnInit {
   constructor(
     public archieveService: ArchieveService,
     private snackService: SnackService,
-    private route: ActivatedRoute,
     private router: Router,
     private location: Location,
     private tokenService: TokenService
@@ -39,30 +38,14 @@ export class ViewArchieveComponent extends TEMSComponent implements OnInit {
 
   ngOnInit(): void {
     this.canRemove = this.tokenService.hasClaim(CAN_MANAGE_SYSTEM_CONFIGURATION);
-    this.CheckUrlAndFetchArchievedItems(this.router.url);
-
-    this.location.onUrlChange(url => {
-      this.CheckUrlAndFetchArchievedItems(url);
-    });
+    this.selectedType = this.getSelectedTypeFromUrl(this.router.url);
   }
 
-  CheckUrlAndFetchArchievedItems(url) {
-    if (url == undefined)
-      return;
+  getSelectedTypeFromUrl(url) {
+    if (url == undefined || url.split('?itemType=')[1])
+      return undefined;
 
-    this.selectedType = url.split('?itemType=')[1];
-
-    if (this.selectedType == undefined || this.selectedType.length == 0)
-      return;
-
-    this.subscriptions.push(
-      this.archieveService.getArchievedItems(this.selectedType)
-        .subscribe(result => {
-          if (this.snackService.snackIfError(result))
-            return;
-          this.archievedItems = result;
-        })
-    );
+    return url.split('?itemType=')[1];
   }
 
   validateSelectedNodes(selectedNodes: ArchievedItem[]): boolean {
@@ -77,13 +60,13 @@ export class ViewArchieveComponent extends TEMSComponent implements OnInit {
     return true;
   }
 
-  getSelectedNodes(): ArchievedItem[]{
+  getSelectedNodes(): ArchievedItem[] {
     return this.agArchievedItems.getSelectedNodes() as ArchievedItem[];
   }
 
   remove() {
     let selected = this.getSelectedNodes();
-    if(!this.validateSelectedNodes(selected))
+    if (!this.validateSelectedNodes(selected))
       return;
 
     let removingResult = "Success";
@@ -99,8 +82,8 @@ export class ViewArchieveComponent extends TEMSComponent implements OnInit {
           if (i == selected.length - 1) {
             let status = 1;
 
-          if (removingResult != "Success")
-            status = 0;
+            if (removingResult != "Success")
+              status = 0;
 
             this.snackService.snack(removingResult, status);
           }
@@ -110,7 +93,7 @@ export class ViewArchieveComponent extends TEMSComponent implements OnInit {
 
   dearchive() {
     let selected = this.getSelectedNodes();
-    if(!this.validateSelectedNodes(selected))
+    if (!this.validateSelectedNodes(selected))
       return;
 
     let archivationResult = "Success";

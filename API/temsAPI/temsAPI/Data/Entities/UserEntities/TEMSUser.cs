@@ -18,7 +18,7 @@ using temsAPI.Data.Managers;
 
 namespace temsAPI.Data.Entities.UserEntities
 {
-    public class TEMSUser : IdentityUser, IArchiveable, IIdentifiable
+    public class TEMSUser : IdentityUser, IArchiveableItem
     {
         public DateTime DateRegistered { get; set; }
 
@@ -88,6 +88,8 @@ namespace temsAPI.Data.Entities.UserEntities
         public virtual ICollection<ReportTemplate> CreatedReportTemplates { get; set; } = new List<ReportTemplate>();
         public virtual ICollection<ReportTemplate> ArchivedReportTemplates { get; set; } = new List<ReportTemplate>();
         public virtual ICollection<Status> ArchivedStatuses { get; set; } = new List<Status>();
+        public virtual ICollection<BugReport> BugReports { get; set; } = new List<BugReport>();
+
 
         /// <summary>
         /// Simultates the OnDeleteBehaviour: SetNull, which does not seem to be supported by default by entityframeworkcore.
@@ -119,6 +121,7 @@ namespace temsAPI.Data.Entities.UserEntities
             ArchivedReportTemplates.ForEach(q => q.ArchievedById = null);
             ArchivedStatuses.ForEach(q => q.ArchievedById = null);
             Announcements.ForEach(q => q.AuthorID = null);
+            BugReports.ForEach(q => q.CreatedByID = null);
         }
 
         [NotMapped]

@@ -1,4 +1,5 @@
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { propertyChanged } from 'src/app/helpers/onchanges-helper';
 import { dateFormatter } from 'src/app/public/ag-grid/ag-grid-formatters';
 import { ArchieveService } from 'src/app/services/archieve.service';
 import { TEMSComponent } from 'src/app/tems/tems.component';
@@ -12,7 +13,6 @@ import { ArchievedItem } from './../../../models/archieve/archieved-item.model';
 })
 export class AgGridArchievedItemsComponent extends TEMSComponent implements OnInit, OnChanges {
 
-  @Input() items: ArchievedItem[];
   @Input() itemsType: string;
 
   gridApi;
@@ -58,12 +58,8 @@ export class AgGridArchievedItemsComponent extends TEMSComponent implements OnIn
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if(this.cancelFirstOnChange){
-      this.cancelFirstOnChange = false;
-      return;
-    }
-
-    this.fetchArchievedItems();
+    if(propertyChanged(changes, 'itemsType'))
+      this.fetchArchievedItems();
   }
 
   onGridReady(params) {
@@ -74,13 +70,14 @@ export class AgGridArchievedItemsComponent extends TEMSComponent implements OnIn
   }
 
   fetchArchievedItems(){
+    this.loading = true;
+
     if(this.itemsType == undefined){
       this.loading = false;
       this.rowData = [];
       return;
     }
 
-    this.loading = true;
     this.subscriptions.push(
       this.archieveService.getArchievedItems(this.itemsType)
       .subscribe(result => {
@@ -90,7 +87,7 @@ export class AgGridArchievedItemsComponent extends TEMSComponent implements OnIn
         
         this.rowData = result;
       })
-    )
+    );
   }
 
   removeItem(item){

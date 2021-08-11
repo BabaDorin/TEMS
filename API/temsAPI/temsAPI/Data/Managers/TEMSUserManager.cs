@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
@@ -342,6 +343,7 @@ namespace temsAPI.Data.Managers
                         .Include(q => q.CreatedReportTemplates)
                         .Include(q => q.CreatedTickets)
                         .Include(q => q.UserNotifications)
+                        .Include(q => q.BugReports)
                     )).FirstOrDefault();
 
             return user;

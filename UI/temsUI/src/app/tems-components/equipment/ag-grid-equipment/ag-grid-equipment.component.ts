@@ -62,7 +62,7 @@ export class AgGridEquipmentComponent extends TEMSComponent implements OnChanges
         headerCheckboxSelection: true,
         headerCheckboxSelectionFilteredOnly: true,
         checkboxSelection: true,
-        maxWidth: 180,
+        width: 180,
         lockPosition: true,
       },
       { 
@@ -146,11 +146,13 @@ export class AgGridEquipmentComponent extends TEMSComponent implements OnChanges
     this.subscriptions.push(
       this.equipmentService.archieveEquipment(e.rowData.id)
       .subscribe(result => {
-        if(this.snackService.snack(result)){
+        if(this.snackService.snackIfError(result))
+          return;
+
+        if(result.status == 1)
           this.gridApi.applyTransaction({ remove: [e.rowData] });
-        }
       })
-    )
+    );
   }
 
   onGridReady(params) {

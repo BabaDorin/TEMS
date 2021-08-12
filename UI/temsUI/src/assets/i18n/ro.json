@@ -158,6 +158,8 @@
         "updateTip": "Aceast formular poate fi utilizat doar pentru a modifica datele echipamentului curent (a părintelui). Dacă se dorește editarea informațiilor echipamentelor copil, acestea trebuie să fie accesate individual. Deasemenea, puteți utiliza opțiunile de Atașare sau Detașare pentru a atașa și respectiv - detașa echipamentel copil.",
         "TEMSID": "TEMSID",
         "serialNumber":"Numărul de serie",
+        "identifier": "Indentificator",
+        "description": "Descriere",
         "definition": "Definiție",
         "assignee": "Cesionar", 
         "type": "Tip",

@@ -69,7 +69,7 @@
 
                 <!-- Actual equipment information -->
                 <h2 class="text-muted text-bold">
-                    <mat-icon class="text-primary">double_arrow</mat-icon> {{ 'equipment.allocatedTo' | translate }}:
+                    <mat-icon class="text-primary">double_arrow</mat-icon> {{ 'equipment.allocatedTo' | translate }}
                 </h2>
                 <hr>
                 <button mat-button *ngIf="equipment.room != undefined" (click)="viewAllocatee()">
@@ -79,11 +79,11 @@
                     <mat-icon class="text-primary">account_circle</mat-icon> {{ equipment.personnel.label }}
                 </button>
                 <ng-container *ngIf="equipment.room == undefined && equipment.personnel == undefined">
-                    <mat-icon class="text-muted">storage</mat-icon> {{ 'entities.deposit' | translate }}:
+                    <mat-icon class="text-muted">storage</mat-icon> {{ 'entities.deposit' | translate }}
                 </ng-container>
 
                 <h2 class="text-muted text-bold mt-5">
-                    <mat-icon class="text-primary">sell</mat-icon> {{ 'equipment.indexedBy' | translate }}:
+                    <mat-icon class="text-primary">sell</mat-icon> {{ 'equipment.indexedBy' | translate }}
                 </h2>
                 <hr>
                 <div class="d-flex align-items-center d-flex flex-wrap">

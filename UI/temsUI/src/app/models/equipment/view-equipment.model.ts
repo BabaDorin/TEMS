@@ -25,6 +25,7 @@ export interface IViewEquipment{
     isUsed: boolean,
     isDefect: boolean,
     price: number,
+    description: string,
     isArchieved: boolean,
 }
 
@@ -42,5 +43,6 @@ export class ViewEquipment implements IViewEquipment{
     isDefect: boolean;
     price: number;
     specificProperties: Property[];
+    description: string;
     isArchieved: boolean;
 }

@@ -22,6 +22,7 @@ using temsAPI.Repository;
 using temsAPI.Services;
 using temsAPI.Services.JWT;
 using temsAPI.Services.Report;
+using temsAPI.Services.SICServices;
 using temsAPI.System_Files;
 using temsAPI.System_Files.Exceptions;
 using temsAPI.System_Files.TEMSFileLogger;
@@ -122,6 +123,7 @@ namespace temsAPI
             services.AddScoped<ReportingService>();
             services.AddScoped<IdentityService>();
             services.AddScoped<EmailService>();
+            services.AddScoped<SICService>();
 
             services.ConfigureWritable<AppSettings>(Configuration.GetSection("AppSettings"));
 

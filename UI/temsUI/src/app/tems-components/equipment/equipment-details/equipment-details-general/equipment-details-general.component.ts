@@ -1,3 +1,4 @@
+import { TranslateService } from '@ngx-translate/core';
 import { Component, EventEmitter, Inject, Input, OnInit, Optional, Output } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ViewEquipment } from 'src/app/models/equipment/view-equipment.model';
@@ -39,6 +40,7 @@ export class EquipmentDetailsGeneralComponent extends TEMSComponent implements O
     public claims: ClaimService,
     private dialogService: DialogService,
     private snackService: SnackService,
+    private translate: TranslateService,
     @Optional() @Inject(MAT_DIALOG_DATA) public dialogData: any) {
     super();
 
@@ -51,6 +53,8 @@ export class EquipmentDetailsGeneralComponent extends TEMSComponent implements O
   ngOnInit(): void {
     this.subscriptions.push(this.equipmentService.getEquipmentByID(this.equipmentId)
       .subscribe(response => {
+        console.log(response);
+
         if(this.snackService.snackIfError(response))
           return;
         
@@ -58,12 +62,13 @@ export class EquipmentDetailsGeneralComponent extends TEMSComponent implements O
         this.headerClass = (this.equipment.isArchieved) ? 'text-muted' : '';
 
         this.generalProperties= [
-          { displayName: 'Identifier', value: this.equipment.definition.identifier},
-          { displayName: 'Type', value: this.equipment.type.name},
-          { displayName: 'TemsID', value: this.equipment.temsId },
-          { displayName: 'Serial Number', value: this.equipment.serialNumber},
-          { displayName: 'Is Used', dataType: 'boolean', name: 'isUsed', value: this.equipment.isUsed},
-          { displayName: 'Is Defect', dataType: 'boolean', name: 'isUsed', value: this.equipment.isDefect},
+          { displayName: this.translate.instant('equipment.identifier'), value: this.equipment.definition.identifier},
+          { displayName: this.translate.instant('equipment.type'), value: this.equipment.type.name},
+          { displayName: this.translate.instant('equipment.TEMSID'), value: this.equipment.temsId },
+          { displayName: this.translate.instant('equipment.serialNumber'), value: this.equipment.serialNumber},
+          { displayName: this.translate.instant('equipment.isUsed'), dataType: 'boolean', name: 'isUsed', value: this.equipment.isUsed},
+          { displayName: this.translate.instant('equipment.isDefect'), dataType: 'boolean', name: 'isUsed', value: this.equipment.isDefect},
+          { displayName: this.translate.instant('equipment.description'), dataType: 'string', name: 'description', value: this.equipment.description},
         ];
     
         if(this.detachedEquipments != undefined){

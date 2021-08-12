@@ -22,6 +22,7 @@ namespace temsAPI.ViewModels.Equipment
         public bool IsUsed { get; set; }
         public bool IsDefect { get; set; }
         public bool IsArchieved { get; set; }
+        public string Description { get; set; }
         public List<string> Photos { get; set; }
 
         public ViewEquipmentViewModel()
@@ -50,6 +51,7 @@ namespace temsAPI.ViewModels.Equipment
                 IsArchieved = model.IsArchieved,
                 SerialNumber = model.SerialNumber,
                 TemsId = model.TEMSID,
+                Description = model.Description,
                 Type = ViewEquipmentTypeViewModel.FromModel(model.EquipmentDefinition.EquipmentType),
                 Personnel = (activePersonnelAllocation == null)
                         ? null

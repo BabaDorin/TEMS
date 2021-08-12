@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -22,17 +21,20 @@ namespace temsAPI.Controllers.EquipmentControllers
     {
         readonly EquipmentManager _equipmentManager;
         readonly LogManager _logManager;
+        readonly SICService _sicService;
 
         public EquipmentController(
             IUnitOfWork unitOfWork, 
             UserManager<TEMSUser> userManager,
             ILogger<TEMSController> logger,
             EquipmentManager equipmentManager,
-            LogManager logManager)
+            LogManager logManager,
+            SICService sicService)
            : base(unitOfWork, userManager, logger)
         {
             _equipmentManager = equipmentManager;
             _logManager = logManager;
+            _sicService = sicService;
         }
 
         [HttpPost("equipment/Add")]
@@ -53,7 +55,7 @@ namespace temsAPI.Controllers.EquipmentControllers
         public async Task<IActionResult> BulkUpload()
         {
             var files = Request.Form.Files;
-            var bulkUploadResult = await new SICService(_unitOfWork).ValidateAndRegisterComputers(files);
+            var bulkUploadResult = await _sicService.ValidateAndRegisterComputers(files);
 
             return Ok(bulkUploadResult);
         }
@@ -154,7 +156,6 @@ namespace temsAPI.Controllers.EquipmentControllers
                 return ReturnResponse("Invalid equipment id provided", ResponseStatus.Neutral);
 
             var viewModel = ViewEquipmentViewModel.ParseEquipment(model);
-
             return Ok(viewModel);
         }
 

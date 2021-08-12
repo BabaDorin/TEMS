@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using SIC_Parser.Models;
 using System;
@@ -16,10 +17,12 @@ namespace temsAPI.Services.SICServices
     public class SICService
     {
         IUnitOfWork _unitOfWork;
+        ILogger _logger;
 
-        public SICService(IUnitOfWork unitOfWork)
+        public SICService(IUnitOfWork unitOfWork, ILogger<SICService> logger)
         {
             _unitOfWork = unitOfWork;
+            _logger = logger;
         }
 
         /// <summary>
@@ -79,6 +82,8 @@ namespace temsAPI.Services.SICServices
                 }
                 catch (Exception ex)
                 {
+                    _logger.Log(LogLevel.Error, ex, "Error SIC Parsing");
+                    
                     sw.Stop();
                     bulkUploadResult.Add(new SICFileUploadResultViewModel
                     {

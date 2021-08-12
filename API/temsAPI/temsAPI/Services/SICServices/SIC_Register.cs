@@ -1,14 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SIC_Parser.Models;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.EquipmentEntities;
-using temsAPI.Validation;
 
 namespace temsAPI.Services.SICServices
 {
@@ -47,6 +44,7 @@ namespace temsAPI.Services.SICServices
             //      if there isn't >> set the serial number.
             //   Add description for types that have this property
             //   Description for computer will be TV data.
+
             string validationResult = sicComputer.Validate();
             if (validationResult != null)
                 return validationResult;
@@ -73,7 +71,14 @@ namespace temsAPI.Services.SICServices
             {
                 Id = Guid.NewGuid().ToString(),
                 TEMSID = sicComputer.TEMSID,
+                IsUsed = sicComputer.IsUsed,
+                IsDefect = sicComputer.IsDefect
             };
+
+            if(!String.IsNullOrEmpty(sicComputer.TeamViewerID) && !String.IsNullOrEmpty(sicComputer.TeamViewerPassword))
+            {
+                computer.Description = String.Format("Team Viewer ID: {0}\nTeam Viewer Password: {1}", sicComputer.TeamViewerID, sicComputer.TeamViewerPassword);
+            }
 
             if (computerDefinition != null)
                 computer.EquipmentDefinition = computerDefinition;

@@ -159,6 +159,8 @@
         "updateTip": "This form can be used to update information related only to this specific equipment. If you want to edit children's information, you have to access them individually. Also, use 'attach' and 'dettach' options to add or remove children equipment.",
         "TEMSID": "TEMSID",
         "serialNumber":"Serial number",
+        "identifier": "Identifier",
+        "description": "Description",
         "definition": "Definition",
         "assignee": "Assignee", 
         "type": "Type",

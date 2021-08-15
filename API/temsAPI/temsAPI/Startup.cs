@@ -124,6 +124,7 @@ namespace temsAPI
             services.AddScoped<IdentityService>();
             services.AddScoped<EmailService>();
             services.AddScoped<SICService>();
+            services.AddScoped<SICIntegrationService>();
 
             services.ConfigureWritable<AppSettings>(Configuration.GetSection("AppSettings"));
 

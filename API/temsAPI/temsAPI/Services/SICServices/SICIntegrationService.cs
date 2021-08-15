@@ -15,14 +15,14 @@ namespace temsAPI.Services.SICServices
     /// Contains the logic for making TEMS compatible with SIC
     /// Registers SIC Types
     /// </summary>
-    internal class SIC_IntegrationService
+    public class SICIntegrationService
     {
         public List<string> SICProperties { get; }
         public List<string> SICTypes { get; private set; }
 
         private IUnitOfWork _unitOfWork;
 
-        public SIC_IntegrationService(IUnitOfWork unitOfWork)
+        public SICIntegrationService(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
 
@@ -55,10 +55,13 @@ namespace temsAPI.Services.SICServices
             return null;
         }
 
+        /// <summary>
+        /// Declares which are those datatypes, properties and Types that SIC needs to operate with and ensures
+        /// their creation if case if they're absent
+        /// </summary>
+        /// <returns></returns>
         private async Task AddNecessaryTypesAndProperties()
         {
-            //await RemoveSICTypesAndProperties();
-
             // DataTypes:
             var textDT = (await _unitOfWork.DataTypes
                 .Find<DataType>(q => q.Name.ToLower() == "text"))
@@ -447,50 +450,6 @@ namespace temsAPI.Services.SICServices
             await _unitOfWork.Save();
         }
 
-        private async Task RemoveSICTypesAndProperties()
-        {
-            // Remove properties that are used excusively by SIC equipments.
-            foreach(var sicProp in SICProperties)
-            {
-                var property = (await _unitOfWork.Properties
-                    .Find<Property>(
-                        where: q => q.Name == sicProp,
-                        include: q => q.Include(q => q.EquipmentTypes)))
-                    .FirstOrDefault();
-
-                if (property == null)
-                    continue;
-
-                bool propertyUsedByOtherTypes = false;
-                foreach(var eqType in property.EquipmentTypes)
-                    if (!SICTypes.Contains(eqType.Name))
-                    {
-                        propertyUsedByOtherTypes = true;
-                        break;
-                    }
-
-                if (propertyUsedByOtherTypes)
-                    continue;
-
-                _unitOfWork.Properties.Delete(property);
-            }
-            await _unitOfWork.Save();
-
-            // Remove types
-            foreach (var sicType in SICTypes)
-            {
-                var eqType = (await _unitOfWork.EquipmentTypes
-                    .Find<EquipmentType>(q => q.Name == sicType))
-                    .FirstOrDefault();
-
-                if (eqType == null)
-                    continue;
-
-                _unitOfWork.EquipmentTypes.Delete(eqType);
-                await _unitOfWork.Save();
-            }
-        }
-
         private async Task<List<Property>> GetProperties(params string[] propertyNames)
         {
             return (await _unitOfWork.Properties
@@ -498,49 +457,64 @@ namespace temsAPI.Services.SICServices
                 .ToList();
         }
 
+        /// <summary>
+        /// Checks for conflicts and register the provided property.
+        /// </summary>
+        /// <param name="property"></param>
+        /// <returns>True if registering process succedeed or the property already exists and has the same structure and the desired one.</returns>
         private async Task<bool> RegisterProperty(Property property)
         {
             // Check if another property with the same name already exists and differs from
             // our property
+            // If so, check if the existing one is the same as the property that we're willing to register.
+            // If not, return an error message that promts user to manualy remove the existing conflicting property 
 
-            var propertyAlreadyRegistered = (await _unitOfWork.Properties
-                .Find<Property>(q => q.Name.ToLower() == property.Name.ToLower()))
+            var conflictingProperty = (await _unitOfWork.Properties
+                .Find<Property>(
+                    where: q => q.Name.ToLower() == property.Name.ToLower(),
+                    include: q => q.Include(q => q.DataType)))
                 .FirstOrDefault();
 
-            if (propertyAlreadyRegistered != null)
+            if (conflictingProperty != null)
             {
-                if (propertyAlreadyRegistered.DisplayName != property.DisplayName
-                    || propertyAlreadyRegistered.DataType != property.DataType)
-                    throw new Exception($"Another property with the name: {propertyAlreadyRegistered.Name} " +
-                        $"already exists and it's different from what SIC needs. Please, change the name" +
-                        $" of that property and run this process again.");
-                else
-                    return true;
+                if (conflictingProperty.DisplayName != property.DisplayName
+                    || conflictingProperty.DataType != property.DataType)
+                    throw new Exception($"Conflict: There already exists a property with the name: {conflictingProperty.Name} it's different from what SIC needs. Please, change the name of that property and run this process again. (If the type conflicting property is archived, remove it completely from the archive).");
+                  
+                return true;
             }
 
             await _unitOfWork.Properties.Create(property);
             return true;
         }
 
+        /// <summary>
+        /// Checks for conflicts and registers the provided equipment type, along with it's children.
+        /// </summary>
+        /// <param name="equipmentType"></param>
+        /// <returns>True if registering process succedeed or the type already exists and has the same structure and the desired one.</returns>
         private async Task<bool> RegisterType(EquipmentType equipmentType)
         {
             // Check if type exists.
-            // Throws an error if the type aldreay exista and it differs from what 
+            // Throws an error if the type already exists and it differs from what 
             // SIC needs.
 
-            var typeAlreadyRegistered = (await _unitOfWork.EquipmentTypes
-                .Find<EquipmentType>(q => q.Name.ToLower() == equipmentType.Name.ToLower()))
+            var conflictingType = (await _unitOfWork.EquipmentTypes
+                .Find<EquipmentType>(
+                    where: q => q.Name.ToLower() == equipmentType.Name.ToLower(),
+                    include: q => q.Include(q => q.Parents)
+                                   .Include(q => q.Children)
+                                   .Include(q => q.Properties)))
                 .FirstOrDefault();
-            if(typeAlreadyRegistered != null)
+
+            if(conflictingType != null)
             {
-                if (typeAlreadyRegistered.Parents != equipmentType.Parents
-                    || typeAlreadyRegistered.Children != equipmentType.Children
-                    || typeAlreadyRegistered.Properties != equipmentType.Properties)
-                    throw new Exception($"Another type with the name: {equipmentType.Name} " +
-                        $"already exists and it's different from what SIC needs. Please, change the name" +
-                        $" of that type and run this process again.");
-                else
-                    return true;
+                if (conflictingType.Parents != equipmentType.Parents
+                    || conflictingType.Children != equipmentType.Children
+                    || conflictingType.Properties != equipmentType.Properties)
+                    throw new Exception($"Another type with the name: {equipmentType.Name} already exists and it's different from what SIC needs. Please, change the name of that type and run this process again. (If the type conflicting type is archived, remove it completely from the archive).");
+                    
+                return true;
             }
 
             await _unitOfWork.EquipmentTypes.Create(equipmentType);

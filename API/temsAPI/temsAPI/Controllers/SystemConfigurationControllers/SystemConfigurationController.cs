@@ -17,14 +17,17 @@ namespace temsAPI.Controllers.SystemConfigurationControllers
     public class SystemConfigurationController : TEMSController
     {
         readonly SystemConfigurationService _configService;
+        readonly SICIntegrationService _sicIntegrationService;
 
         public SystemConfigurationController(
             IUnitOfWork unitOfWork,
             UserManager<TEMSUser> userManager,
             SystemConfigurationService configService,
-            ILogger<TEMSController> logger) : base(unitOfWork, userManager, logger)
+            ILogger<TEMSController> logger,
+            SICIntegrationService sicIntegrationService) : base(unitOfWork, userManager, logger)
         {
             _configService = configService;
+            _sicIntegrationService = sicIntegrationService;
         }
 
         [HttpGet("systemconfiguration/IntegrateSIC")]
@@ -32,8 +35,10 @@ namespace temsAPI.Controllers.SystemConfigurationControllers
         [DefaultExceptionHandler("An error occured while integrating SIC")]
         public async Task<IActionResult> IntegrateSIC()
         {
-            var sicIntegrationService = new SIC_IntegrationService(_unitOfWork);
-            await sicIntegrationService.PrepareDBForSICIntegration();
+            var result = await _sicIntegrationService.PrepareDBForSICIntegration();
+            if (result != null)
+                return ReturnResponse(result, ResponseStatus.Neutral);
+
             return ReturnResponse("Success", ResponseStatus.Success);
         }
 

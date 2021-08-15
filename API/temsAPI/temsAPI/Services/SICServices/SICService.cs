@@ -33,7 +33,7 @@ namespace temsAPI.Services.SICServices
         /// <returns>Returns null if everything is ok, otherwise - the error message.</returns>
         public async Task<string> IntegrateSIC()
         {
-            var sicIntegrationService = new SIC_IntegrationService(_unitOfWork);
+            var sicIntegrationService = new SICIntegrationService(_unitOfWork);
             return await sicIntegrationService.PrepareDBForSICIntegration();
         }
 

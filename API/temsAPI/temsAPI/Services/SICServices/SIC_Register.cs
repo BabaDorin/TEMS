@@ -72,7 +72,8 @@ namespace temsAPI.Services.SICServices
                 Id = Guid.NewGuid().ToString(),
                 TEMSID = sicComputer.TEMSID,
                 IsUsed = sicComputer.IsUsed,
-                IsDefect = sicComputer.IsDefect
+                IsDefect = sicComputer.IsDefect,
+                RegisterDate = DateTime.Now
             };
 
             if(!String.IsNullOrEmpty(sicComputer.TeamViewerID) && !String.IsNullOrEmpty(sicComputer.TeamViewerPassword))

@@ -77,7 +77,13 @@ namespace temsAPI.Services.SICServices
 
             if(!String.IsNullOrEmpty(sicComputer.TeamViewerID) && !String.IsNullOrEmpty(sicComputer.TeamViewerPassword))
             {
-                computer.Description = String.Format("Team Viewer ID: {0}\nTeam Viewer Password: {1}", sicComputer.TeamViewerID, sicComputer.TeamViewerPassword);
+                computer.Description = String.Format(
+                    "Team Viewer ID: [ {0} ], {1}Team Viewer Password: [ {2} ], {3} {4}", 
+                    sicComputer.TeamViewerID, 
+                    Environment.NewLine,
+                    sicComputer.TeamViewerPassword,
+                    Environment.NewLine,
+                    sicComputer.Description);
             }
 
             if (computerDefinition != null)

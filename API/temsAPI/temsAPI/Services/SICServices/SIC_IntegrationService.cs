@@ -13,6 +13,7 @@ namespace temsAPI.Services.SICServices
 {
     /// <summary>
     /// Contains the logic for making TEMS compatible with SIC
+    /// Registers SIC Types
     /// </summary>
     internal class SIC_IntegrationService
     {

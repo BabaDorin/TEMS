@@ -226,7 +226,13 @@
         "roomsSupervised": "Rooms supervised",
         "includeSelectedInATicket": "Include selected in a ticket",
         "sendEmailToSelected": "Send e-mail to selected",
-        "userAssociationsInfo": "If this personnel record is here to represent someone who already has an account, provide the properly Personnel - User association in order to make these entities connected. Make sure the indicated user does not have another personnel association."
+        "userAssociationsInfo": "If this personnel record is here to represent someone who already has an account, provide the properly Personnel - User association in order to make these entities connected. Make sure the indicated user does not have another personnel association.",
+        "positionOptions": {
+            "Professor": "Professor",
+            "Auxiliary Worker": "Auxiliary Worker",
+            "Technician": "Technician",
+            "Management": "Management"
+        }
     },
 
     "fileUpload": {
@@ -365,7 +371,15 @@
         "labels": "Room labels", 
         "supervisories": "Room supervisories", 
         "addLogForSelected": "Add log for selected",
-        "includeSelectedInATicket": "Include selected in a ticket"
+        "includeSelectedInATicket": "Include selected in a ticket",
+        "labelOptions": {
+            "Deposit": "Deposit",
+            "Library": "Library",
+            "Office": "Office",
+            "Meeting Room": "Meeting Room",
+            "Class Room": "Class Room",
+            "Laboratory": "Laboratory"
+        }
     },
 
     "email":{

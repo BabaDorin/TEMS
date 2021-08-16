@@ -225,7 +225,13 @@
         "roomsSupervised": "Săli gestionate",
         "includeSelectedInATicket": "Include într-un ticket",
         "sendEmailToSelected": "Transmite un e-mail",
-        "userAssociationsInfo": "Dacă această înregistrare a personalului reprezintă o persoană care deține un cont de utilizator, Furnizează asocierea personal - utilizator pentru a conecta aceste entități. Asigurați-vă că utiliztorul indicat nu este asociat cu o altă înregistrare a personalului."
+        "userAssociationsInfo": "Dacă această înregistrare a personalului reprezintă o persoană care deține un cont de utilizator, Furnizează asocierea personal - utilizator pentru a conecta aceste entități. Asigurați-vă că utiliztorul indicat nu este asociat cu o altă înregistrare a personalului.",
+        "positionOptions": {
+            "Professor": "Profesor",
+            "Auxiliary Worker": "Angajat auxiliar",
+            "Technician": "Tehnician",
+            "Management": "Management"
+        }
     },
 
     "fileUpload": {
@@ -364,7 +370,15 @@
         "labels": "Etichetele sălii", 
         "supervisories": "Gestionarii sălii", 
         "addLogForSelected": "Adaugă un log",
-        "includeSelectedInATicket": "Include într-un ticket"
+        "includeSelectedInATicket": "Include într-un ticket",
+        "labelOptions": {
+            "Deposit": "Depozit",
+            "Library": "Biblioteca",
+            "Office": "Oficiu",
+            "Meeting Room": "Sala de sedinte",
+            "Class Room": "Sala de clasa",
+            "Laboratory": "Laborator"
+        }
     },
 
     "email":{

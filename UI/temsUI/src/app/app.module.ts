@@ -32,7 +32,6 @@ import { EquipmentService } from './services/equipment.service';
 import { MenuService } from './services/menu.service';
 import { PersonnelService } from './services/personnel.service';
 import { RoleService } from './services/role.service';
-import { RoomLabelService } from './services/room-label.service';
 import { RoomsService } from './services/rooms.service';
 import { TokenService } from './services/token.service';
 import { TypeService } from './services/type.service';
@@ -119,7 +118,6 @@ export function HttpLoaderFactory(http: HttpClient){
     MatSnackBar,
     TypeService,
     DefinitionService,
-    RoomLabelService,
     CurrencyPipe,
     DatePipe,
     PaginatePipe,

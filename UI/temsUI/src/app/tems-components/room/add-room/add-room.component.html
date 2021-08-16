@@ -11,7 +11,7 @@
             <app-chips-autocomplete
                 #labels
                 [label]="translate.instant('room.labels')"
-                [endPoint]="roomLabelService">
+                [autocompleteOptions]="roomLabels">
             </app-chips-autocomplete>
             <app-chips-autocomplete
                 #supervisories

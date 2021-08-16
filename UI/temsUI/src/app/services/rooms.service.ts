@@ -107,4 +107,11 @@ export class RoomsService extends TEMSService {
       this.httpOptions
     );
   }
+
+  getLabels(): Observable<IOption[]>{
+    return this.http.get<IOption[]>(
+      API_ROOM_URL + '/getlabels',
+      this.httpOptions
+    );
+  }
 }

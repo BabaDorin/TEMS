@@ -9,7 +9,6 @@ import { PersonnelService } from '../../../services/personnel.service';
 import { RoomsService } from '../../../services/rooms.service';
 import { SnackService } from '../../../services/snack.service';
 import { ChipsAutocompleteComponent } from './../../../public/formly/chips-autocomplete/chips-autocomplete.component';
-import { RoomLabelService } from './../../../services/room-label.service';
 import { TEMSComponent } from './../../../tems/tems.component';
 
 @Component({
@@ -26,14 +25,13 @@ export class AddRoomComponent extends TEMSComponent implements OnInit {
 
   public formlyData = new FormlyData();
 
-  roomLabels: IOption[];
+  roomLabels: IOption[] = [];
   dialogRef;
 
   constructor(
     private formlyParserService: FormlyParserService,
     public roomService: RoomsService,
     private snackService: SnackService,
-    public roomLabelService: RoomLabelService,
     public personnelService: PersonnelService,
     public translate: TranslateService,
     @Optional() @Inject(MAT_DIALOG_DATA) public dialogData: any
@@ -48,6 +46,16 @@ export class AddRoomComponent extends TEMSComponent implements OnInit {
   ngOnInit(): void {
     this.formlyData.model ={};
     this.formlyData.fields = this.formlyParserService.parseAddRoom();
+
+    this.subscriptions.push(
+      this.roomService.getLabels()
+      .subscribe(result => {
+        this.roomLabels = result.map(q => ({ 
+          label: this.translate.instant('room.labelOptions.' + q.label), 
+          value: q.value 
+        } as IOption));
+      })
+    )
 
     if(this.roomId == undefined)
       return;
@@ -66,7 +74,10 @@ export class AddRoomComponent extends TEMSComponent implements OnInit {
           labels: roomToUpdate.labels,
         }
 
-        this.labels.options = roomToUpdate.labels;
+        this.labels.options = roomToUpdate.labels.map(q => ({ 
+          label: this.translate.instant('room.labelOptions.' + q.label), 
+          value: q.value 
+        } as IOption));
         this.supervisories.options = roomToUpdate.supervisories;
       })
     )

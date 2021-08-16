@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace SIC_Parser.Models
 {
@@ -38,6 +39,18 @@ namespace SIC_Parser.Models
         public List<Monitor> Monitors { get; set; }
         public List<RAM> RAMs { get; set; }
         public List<Storage> Storages { get; set; }
+
+        [OnDeserialized]
+        private void OnDeserialized(StreamingContext context)
+        {
+            CPUs.ForEach(q => q.Computer = this);
+            GPUs.ForEach(q => q.Computer = this);
+            PSUs.ForEach(q => q.Computer = this);
+            Motherboards.ForEach(q => q.Computer = this);
+            NetworkInterfaces.ForEach(q => q.Computer = this);
+            RAMs.ForEach(q => q.Computer = this);
+            Storages.ForEach(q => q.Computer = this);
+        }
 
         /// <summary>
         /// Assigns serial numbers to itself and it's children equipment

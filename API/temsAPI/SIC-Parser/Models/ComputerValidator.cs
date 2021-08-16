@@ -183,7 +183,10 @@ namespace SIC_Parser.Models
 
         private void TrimStringProperties(object obj)
         {
-            var properties = obj.GetType().GetProperties().Where(q => q.PropertyType == typeof(string));
+            var properties = obj.GetType().GetProperties().Where(q => q.CanWrite && q.PropertyType == typeof(string));
+
+            if (properties == null || properties.Count() == 0)
+                return;
 
             foreach(PropertyInfo prop in properties)
             {

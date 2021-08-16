@@ -43,8 +43,7 @@ export class NavbarComponent extends TEMSComponent implements OnInit {
       this.authService.signOut()
       .subscribe());
       
-    // this.route.navigateByUrl('');
-    window.location.reload()
+    window.location.href = '';
   }
 
   markNotificationsAsSeen(){

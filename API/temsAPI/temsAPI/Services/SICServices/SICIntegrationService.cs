@@ -70,7 +70,7 @@ namespace temsAPI.Services.SICServices
                 .Find<DataType>(q => q.Name.ToLower() == "number"))
                 .FirstOrDefault();
             var booleanDT = (await _unitOfWork.DataTypes
-                .Find<DataType>(q => q.Name.ToLower() == "boolean"))
+                .Find<DataType>(q => q.Name.ToLower() == "bool"))
                 .FirstOrDefault();
 
             // SIC Properties:
@@ -370,7 +370,6 @@ namespace temsAPI.Services.SICServices
             {
                 Id = Guid.NewGuid().ToString(),
                 Name = "Computer",
-                Properties = await GetProperties("TeamViewerID", "TeamViewerPassword"),
             };
             await RegisterType(computerType);
             await _unitOfWork.Save();
@@ -492,7 +491,7 @@ namespace temsAPI.Services.SICServices
         /// Checks for conflicts and registers the provided equipment type, along with it's children.
         /// </summary>
         /// <param name="equipmentType"></param>
-        /// <returns>True if registering process succedeed or the type already exists and has the same structure and the desired one.</returns>
+        /// <returns>True if registering process succedeed</returns>
         private async Task<bool> RegisterType(EquipmentType equipmentType)
         {
             // Check if type exists.
@@ -508,14 +507,7 @@ namespace temsAPI.Services.SICServices
                 .FirstOrDefault();
 
             if(conflictingType != null)
-            {
-                if (conflictingType.Parents != equipmentType.Parents
-                    || conflictingType.Children != equipmentType.Children
-                    || conflictingType.Properties != equipmentType.Properties)
-                    throw new Exception($"Another type with the name: {equipmentType.Name} already exists and it's different from what SIC needs. Please, change the name of that type and run this process again. (If the type conflicting type is archived, remove it completely from the archive).");
-                    
-                return true;
-            }
+                throw new Exception($"Another type with the name: {equipmentType.Name} already exists. If SIC has not been integrated yet, please, change the name of that type and run this process again. (If the type conflicting type is archived, remove it completely from the archive).");
 
             await _unitOfWork.EquipmentTypes.Create(equipmentType);
             return true;

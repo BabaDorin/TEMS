@@ -53,7 +53,11 @@ namespace temsAPI.Services.SICServices
                 if(await SerialNumberExists(serialNumber))
                     errorStringBuilder.Append(serialNumber.ToString() + "already exists \n");
 
-            return errorStringBuilder.ToString();
+            var result = errorStringBuilder.ToString();
+            if (!String.IsNullOrEmpty(result))
+                return result;
+
+            return null;
         }
 
         private async Task<bool> TEMSIDExists(string temsID)

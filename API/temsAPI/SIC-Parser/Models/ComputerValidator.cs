@@ -77,10 +77,6 @@ namespace SIC_Parser.Models
                     continue;
                 }
 
-                // SerialNumber is empty
-                if (string.IsNullOrEmpty(psu.SerialNumber))
-                    stringBuilder.Append("PSU: SerialNumber is empty\n");
-
                 // Model is empty (the identifier)
                 if (string.IsNullOrEmpty(psu.Model))
                     stringBuilder.Append("PSU: Model is empty\n");

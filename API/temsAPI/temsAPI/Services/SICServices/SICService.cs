@@ -67,6 +67,7 @@ namespace temsAPI.Services.SICServices
                         var fileContent = await reader.ReadToEndAsync();
 
                         sw.Start();
+
                         var computer = JsonConvert.DeserializeObject<Computer>(fileContent);
                         string registerResult = await RegisterComputer(computer);
                         sw.Stop();
@@ -105,7 +106,8 @@ namespace temsAPI.Services.SICServices
         /// <returns>Returns null if everythink is ok, otherwise - error message.</returns>
         public async Task<string> RegisterComputer(Computer sicComputer)
         {
-            SIC_Register sicRegister = new SIC_Register(_unitOfWork);
+            var validator = new SICValidator(_unitOfWork);
+            SIC_Register sicRegister = new SIC_Register(_unitOfWork, validator);
             return await sicRegister.RegisterComputer(sicComputer);
         }
     }

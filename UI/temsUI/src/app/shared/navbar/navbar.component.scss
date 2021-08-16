@@ -98,7 +98,7 @@
     }
 
     .ellipsis {
-      width: 300px;
+      min-width: 300px;
       overflow: hidden;
       text-overflow: ellipsis;
     }
@@ -233,7 +233,7 @@
               }
             }
           }
-          @media (max-width: 1150px) {
+          @media (max-width: 700px) {
             position: static;
             .navbar-dropdown {
               left: 20px;
@@ -404,4 +404,13 @@
       }
     }
   }
+}
+
+.notifications-container{
+  max-height: 64vh;
+  overflow: auto;
+}
+
+.new-notification{
+  background-color: #beb9f8;
 }

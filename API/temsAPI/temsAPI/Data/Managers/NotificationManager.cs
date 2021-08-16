@@ -82,7 +82,7 @@ namespace temsAPI.Data.Managers
         {
             var notifications = (await GetLastCommonNotifications(user, take))
                 .Concat(await GetLastUserNotifications(user, take))
-                .OrderBy(q => q.DateCreated)
+                .OrderByDescending(q => q.DateCreated)
                 .Take(take)
                 .ToList();
 

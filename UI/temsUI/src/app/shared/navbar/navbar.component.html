@@ -91,8 +91,8 @@
 
       <ng-container *ngIf="loggedIn == false">
         <a routerLink="auth/login">
-          <p class="text-gray ellipsis mb-0">
-            {{ 'user.logIn' | translate }}
+          <p class="text-gray mb-0">
+            <mat-icon class="text-primary">person</mat-icon> {{ 'user.logIn' | translate }}
           </p>
         </a>
       </ng-container>

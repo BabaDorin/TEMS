@@ -208,5 +208,28 @@ namespace temsAPI.Controllers.IdentityControllers
             await _temsUserManager.SetProfilePhoto(user, viewModel.Photo);
             return ReturnResponse("Success", ResponseStatus.Success);
         }
+
+        [HttpGet("temsuser/ChangePrefferedLang")]
+        [Authorize]
+        [DefaultExceptionHandler("An error occured while setting user's preffered language")]
+        public async Task<IActionResult> ChangePrefferedLang(string userId, string newLang)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+                return ReturnResponse("Invalid userId provided", ResponseStatus.Neutral);
+
+            await _temsUserManager.ChangePrefferedLang(user, newLang);
+            return ReturnResponse("Success", ResponseStatus.Success);
+        }
+
+        [HttpGet("temsuser/GetPrefferedLang")]
+        [Authorize]
+        [DefaultExceptionHandler("An error occured while fetching user's preffered language")]
+        public async Task<JsonResult> GetPrefferedLang()
+        {
+            var user = await _userManager.FindByIdAsync(IdentityService.GetUserId(User));
+            var lang = user.PrefferedLang ?? "en";
+            return Json(lang);
+        }
     }
 }

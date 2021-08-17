@@ -1,3 +1,5 @@
+import { SnackService } from './services/snack.service';
+import { UserService } from 'src/app/services/user.service';
 import { Component, HostListener, OnInit } from '@angular/core';
 import { NavigationEnd, NavigationStart, RouteConfigLoadEnd, RouteConfigLoadStart, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
@@ -26,15 +28,12 @@ export class AppComponent extends TEMSComponent implements OnInit{
     private router: Router,
     private dialogService: DialogService,
     private tokenService: TokenService,
-    private systemConfigurationService: SystemConfigurationService) {
+    private systemConfigurationService: SystemConfigurationService,
+    private userService: UserService,
+    private snackService: SnackService) {
     
     super();
-
-    // translate.addLangs(['en', 'ro']);
-    translate.setDefaultLang('ro');
-    // const browserLang = translate.getBrowserLang(); 
-    const browserLang = 'ro';
-    translate.use(browserLang.match(/en|ro/) ? browserLang: 'ro');
+    this.setupBrowserlang();
 
     // Removing Sidebar, Navbar, Footer for Documentation, Error and Auth pages
     // When needed (For example, when loading the page...), Feel free to add more cases here.
@@ -75,11 +74,32 @@ export class AppComponent extends TEMSComponent implements OnInit{
   }
 
   setupBrowserlang(){
-    // by default, the interface will be translated to the browserlang (language) if any 
     this.translate.addLangs(['en', 'ro']);
     this.translate.setDefaultLang('ro');
+
+    if(!this.tokenService.tokenExists()){
+      // user not logged in
+      this.translate.use(this.getBrowserLang());
+      return;
+    }
+
+    this.subscriptions.push(
+      this.userService.getUserPrefferedLang()
+      .subscribe(result => {
+        if(this.snackService.snackIfError(result))  
+        {
+          this.translate.use(this.getBrowserLang());
+          return;
+        }
+
+        this.translate.use(result);
+      })
+    )
+  }
+
+  getBrowserLang(): string{
     const browserLang = this.translate.getBrowserLang(); 
-    this.translate.use(browserLang.match(/en|ro/) ? browserLang: 'ro');
+    return browserLang.match(/en|ro/) ? browserLang: 'ro';
   }
   
   ngOnInit() {

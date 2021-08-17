@@ -459,5 +459,11 @@ namespace temsAPI.Data.Managers
 
             await _unitOfWork.Save();
         }
+
+        public async Task ChangePrefferedLang(TEMSUser user, string newLang)
+        {
+            user.PrefferedLang = newLang;
+            await _unitOfWork.Save();
+        }
     }
 }

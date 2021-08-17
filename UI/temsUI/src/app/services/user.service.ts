@@ -19,7 +19,7 @@ import { ViewNotification } from 'src/app/models/communication/notification/view
   providedIn: 'root'
 })
 export class UserService extends TEMSService {
-  
+
   role: Role;
 
   constructor(
@@ -223,4 +223,24 @@ export class UserService extends TEMSService {
       {params: params}
     );
   }
-}
+
+  changePrefferedLang(userId: string, newLang: string): Observable<any> {
+    let params = new HttpParams()
+      .append('userId', userId)
+      .append('newLang', newLang);
+
+    console.log('params');
+    console.log(params);
+
+    return this.http.get(
+      API_USER_URL + '/changePrefferedLang',
+      { params: params }
+    );
+  }
+
+  getUserPrefferedLang() : Observable<any> {
+    return this.http.get(
+      API_USER_URL + '/getPrefferedLang'
+    );    
+  }
+} 

@@ -10,10 +10,24 @@ export class TokenService {
   constructor() { }
 
   hasClaim(claim: string): boolean {
-    let token = localStorage.getItem('token');
-    if (token == null) return false;
+    return this.getTokenObject()[claim] != undefined;
+  }
 
-    return JSON.parse(window.atob(token.split('.')[1]))[claim] != undefined;
+  getTokenObject(){
+    let token = localStorage.getItem('token');
+    if(token == undefined)
+      return undefined;
+
+    return JSON.parse(window.atob(token.split('.')[1]))
+  }
+
+  getUserId(){
+    let token = this.getTokenObject();
+
+    if(token == undefined)
+      return undefined;
+    
+    return token.UserID;
   }
 
   tokenExists(){
@@ -22,10 +36,7 @@ export class TokenService {
   }
 
   getClaimValue(claim: string) {
-    let token = localStorage.getItem('token');
-    if (token == null) return false;
-
-    return JSON.parse(window.atob(token.split('.')[1]))[claim];
+    return this.getTokenObject()[claim];
   }
 
   canViewEntities() {

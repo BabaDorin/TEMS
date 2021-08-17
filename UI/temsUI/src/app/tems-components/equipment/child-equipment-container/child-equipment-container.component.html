@@ -11,10 +11,18 @@
                     <ng-container *ngIf="canManage && detachable">
                         <nav aria-label="breadcrumb" (click)="$event.stopPropagation()">
                             <ng-container>
-                                <button mat-button (click)="detach()">
-                                    <mat-icon class="text-muted">link_off</mat-icon>
-                                    {{ 'equipment.detach' | translate }}
-                                </button>
+                                <ng-container *ngIf="isAttached == true; else notAttached">
+                                    <button mat-button (click)="detach()">
+                                        <mat-icon class="text-muted">link_off</mat-icon>
+                                        {{ 'equipment.detach' | translate }}
+                                    </button>
+                                </ng-container>
+                                <ng-template #notAttached>
+                                    <button mat-button (click)="attach()">
+                                        <mat-icon class="text-muted">link_on</mat-icon>
+                                        {{ 'equipment.attachBack' | translate }}
+                                    </button>
+                                </ng-template>
                             </ng-container>
                         </nav>
                     </ng-container>

@@ -152,8 +152,9 @@
                     <h2 class="text-muted text-bold mt-5">
                         {{ 'equipment.detachedEquipment' | translate }}
                     </h2>
-                    <div *ngFor="let detachedEq of detachedEquipments">
-                        <app-child-equipment-container [childEquipment]="detachedEq" canManage="false" detachable="false">
+                    <div *ngFor="let detachedEq of detachedEquipments; let i = index">
+                        <app-child-equipment-container [childEquipment]="detachedEq" [canManage]="claims.canManage" detachable="true"
+                            (attached)="attached(i)" isAttached="false" [parentId]="equipment.id">
                         </app-child-equipment-container>
                     </div>
                 </ng-container>

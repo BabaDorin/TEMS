@@ -143,9 +143,19 @@ export class EquipmentDetailsGeneralComponent extends TEMSComponent implements O
     )
   }
 
+  // equipment's index within equipment's children list
   detached(index: number){
-    this.detachedEquipments.push(this.equipment.children[index]);
+    // child is of type IOption, label => identifier, value => id, additional => flag indicating whether is it atached or not.
+    let detachedChild = this.equipment.children[index];
+    this.detachedEquipments.push(detachedChild);
     this.equipment.children.splice(index, 1);
+  };
+
+  // equipment's index within detachedEquipment list (makes sense)
+  attached(index: number){
+    let attachedChild = this.detachedEquipments[index];
+    this.detachedEquipments.splice(index, 1);
+    this.equipment.children.push(attachedChild);
   }
 
   viewAllocatee(){

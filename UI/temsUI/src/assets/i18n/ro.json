@@ -143,6 +143,7 @@
         "allocatedTo":"Alocat către",
         "add": "Adaugă un echipament",
         "attach": "Atașează un echipament",
+        "attachBack": "Atașează înapoi", 
         "attachTip": "Atașează un echipament existent. Pot fi atașate doar echipamentele a căror definiții sunt suportate drept copii de către definiția părite:",
         "detach": "Detașează",
         "detachTip": "Doar echipamentele detașate sunt incluse",

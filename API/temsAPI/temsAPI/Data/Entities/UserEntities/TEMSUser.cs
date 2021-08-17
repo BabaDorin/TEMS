@@ -4,9 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.Design.Serialization;
-using System.Linq;
-using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.CommunicationEntities;
 using temsAPI.Data.Entities.EquipmentEntities;
@@ -14,7 +11,6 @@ using temsAPI.Data.Entities.KeyEntities;
 using temsAPI.Data.Entities.LibraryEntities;
 using temsAPI.Data.Entities.OtherEntities;
 using temsAPI.Data.Entities.Report;
-using temsAPI.Data.Managers;
 
 namespace temsAPI.Data.Entities.UserEntities
 {
@@ -41,6 +37,9 @@ namespace temsAPI.Data.Entities.UserEntities
 
         [MaxLength(50)]
         public string FullName { get; set; }
+
+        [MaxLength(10)]
+        public string PrefferedLang { get; set; }
 
         public bool GetEmailNotifications { get; set; }
 

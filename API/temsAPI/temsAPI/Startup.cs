@@ -110,6 +110,7 @@ namespace temsAPI
                 options.AddPolicy("CanSendEmails", policy => policy.RequireClaim("Can send emails"));
             });
 
+            services.AddTransient<IDBDesigner, DBDesigner>();
             services.AddTransient<IUnitOfWork, UnitOfWork>();
             services.AddTransient<ClaimsPrincipal>(s =>
                 s.GetService<IHttpContextAccessor>().HttpContext?.User ?? null);

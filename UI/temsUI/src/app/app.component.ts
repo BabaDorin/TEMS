@@ -74,6 +74,13 @@ export class AppComponent extends TEMSComponent implements OnInit{
     });
   }
 
+  setupBrowserlang(){
+    // by default, the interface will be translated to the browserlang (language) if any 
+    this.translate.addLangs(['en', 'ro']);
+    this.translate.setDefaultLang('ro');
+    const browserLang = this.translate.getBrowserLang(); 
+    this.translate.use(browserLang.match(/en|ro/) ? browserLang: 'ro');
+  }
   
   ngOnInit() {
     // Scroll to top after route change

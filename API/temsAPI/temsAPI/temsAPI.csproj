@@ -10,15 +10,19 @@
     <Compile Remove="Data\Entities\Analytics\**" />
     <Compile Remove="Services\Analytics\**" />
     <Compile Remove="StaticFiles\**" />
+    <Compile Remove="System Files\Logs\**" />
     <Content Remove="Data\Entities\Analytics\**" />
     <Content Remove="Services\Analytics\**" />
     <Content Remove="StaticFiles\**" />
+    <Content Remove="System Files\Logs\**" />
     <EmbeddedResource Remove="Data\Entities\Analytics\**" />
     <EmbeddedResource Remove="Services\Analytics\**" />
     <EmbeddedResource Remove="StaticFiles\**" />
+    <EmbeddedResource Remove="System Files\Logs\**" />
     <None Remove="Data\Entities\Analytics\**" />
     <None Remove="Services\Analytics\**" />
     <None Remove="StaticFiles\**" />
+    <None Remove="System Files\Logs\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -52,10 +56,6 @@
   <ItemGroup>
     <ProjectReference Include="..\ReportGenerator\ReportGenerator.csproj" />
     <ProjectReference Include="..\SIC-Parser\SIC-Parser.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="System Files\Logs\" />
   </ItemGroup>
 
   <ItemGroup>

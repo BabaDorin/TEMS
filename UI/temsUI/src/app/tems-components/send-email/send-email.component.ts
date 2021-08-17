@@ -65,7 +65,6 @@ export class SendEmailComponent extends TEMSComponent implements OnInit {
 
     if(!sendEmailModel.validate())
     {
-      console.log(sendEmailModel);
       this.snackService.snack({message: "Complete all of the fields, please", status: 0});
       return;  
     }

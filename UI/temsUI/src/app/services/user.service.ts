@@ -229,9 +229,6 @@ export class UserService extends TEMSService {
       .append('userId', userId)
       .append('newLang', newLang);
 
-    console.log('params');
-    console.log(params);
-
     return this.http.get(
       API_USER_URL + '/changePrefferedLang',
       { params: params }

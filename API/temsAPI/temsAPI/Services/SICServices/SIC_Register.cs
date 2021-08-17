@@ -73,6 +73,7 @@ namespace temsAPI.Services.SICServices
             {
                 Id = Guid.NewGuid().ToString(),
                 TEMSID = sicComputer.TEMSID,
+                SerialNumber = sicComputer.TEMSSerialNumber,
                 IsUsed = sicComputer.IsUsed,
                 IsDefect = sicComputer.IsDefect,
                 RegisterDate = DateTime.Now

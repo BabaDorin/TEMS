@@ -56,12 +56,13 @@ namespace temsAPI.System_Files.TEMSFileLogger
                 .Replace("{date}", DateTimeOffset.UtcNow.ToString("yyyyMMdd"));
         }
 
+        // BEFREEE => Not thread save (at all).
         private void LogRecord(string record)
         {
-            using (var streamWriter = new StreamWriter(GetFullFilePath(), true))
-            {
-                streamWriter.WriteLine(record);
-            }
+           using (var streamWriter = new StreamWriter(GetFullFilePath(), true))
+           {
+                    streamWriter.WriteLine(record);
+           }
         }
     }
 }

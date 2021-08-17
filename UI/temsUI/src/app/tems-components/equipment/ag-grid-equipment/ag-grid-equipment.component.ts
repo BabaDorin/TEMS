@@ -1,4 +1,4 @@
-import { EquipmentFilter } from './../../../helpers/filters/equipment.filter';
+import { propertyChanged } from 'src/app/helpers/onchanges-helper';
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { BtnCellRendererComponent } from 'src/app/public/ag-grid/btn-cell-renderer/btn-cell-renderer.component';
@@ -8,7 +8,7 @@ import { BooleanCellRendererComponent } from './../../../public/ag-grid/boolean-
 import { EquipmentService } from './../../../services/equipment.service';
 import { TEMSComponent } from './../../../tems/tems.component';
 import { EquipmentDetailsGeneralComponent } from './../equipment-details/equipment-details-general/equipment-details-general.component';
-import { propertyChanged } from 'src/app/helpers/onchanges-helper';
+import { EquipmentFilter } from 'src/app/helpers/filters/equipment.filter';
 
 @Component({
   selector: 'app-ag-grid-equipment',
@@ -123,7 +123,6 @@ export class AgGridEquipmentComponent extends TEMSComponent implements OnChanges
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log('changes detected');
     if(propertyChanged(changes, "equipmentFilter")){
         this.fetchEquipment();
     }

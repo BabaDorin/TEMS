@@ -10,6 +10,10 @@ export class TokenService {
   constructor() { }
 
   hasClaim(claim: string): boolean {
+    let token = this.getTokenObject();
+    if(token == undefined)
+      return false;
+      
     return this.getTokenObject()[claim] != undefined;
   }
 

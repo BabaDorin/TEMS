@@ -73,7 +73,6 @@ export class ArchieveService extends TEMSService {
   }
 
   getArchievedItems(itemType: string): Observable<ArchievedItem[]> {
-    console.log('called service');
     return this.http.get<ArchievedItem[]>(
       API_ARCH_URL + '/getarchieveditems/' + itemType,
       this.httpOptions

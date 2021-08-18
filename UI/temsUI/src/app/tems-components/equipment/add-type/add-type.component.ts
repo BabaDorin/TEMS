@@ -63,7 +63,7 @@ export class AddTypeComponent extends TEMSComponent implements OnInit {
 
   update() {
     this.subscriptions.push(
-      this.equipmentService.getFullType(this.updateTypeId)
+      this.typeService.getFullType(this.updateTypeId)
         .subscribe(result => {
           let resultType: EquipmentType = result;
           let updateType = new AddType();

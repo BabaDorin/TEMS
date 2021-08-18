@@ -7,30 +7,49 @@
         <p class="text-muted">
             {{ 'equipment.attachTip' | translate }} {{ equipment.definition.identifier }}.
         </p>
-        <form [formGroup]="attachEquipmentFormGroup" (submit)="onSubmit(attachEquipmentFormGroup.controls)">
-            <mat-form-field>
-                <mat-label>
-                    {{ 'equipment.availableDefinitions' | translate }}
-                </mat-label>
-                <mat-select formControlName="equipmentDefinition" 
-                (selectionChange)="onDefinitionChanged($event)">
-                  <mat-option *ngFor="let def of equipment.definition.children" [value]="def.id">{{ def.identifier }}</mat-option>
-                </mat-select>
-              </mat-form-field>
-              <app-chips-autocomplete formControlName="equipmentToAttach"
-              label="Chose one or more equipemnt to attach" 
-              [autocompleteOptions]="availableEquipment">
-              </app-chips-autocomplete>
-              <p class="text-muted">
-                  <mat-icon class="text-muted">info</mat-icon> 
-                  {{ 'equipment.detachTip' | translate }}
-              </p>
-               <button 
-                mat-button
-                type="submit" 
-                class="btn-gradient-primary mr-2">
-                {{ 'equipment.attach' | translate }}
-            </button>
-        </form>
+
+        <div class="row">
+            <div class="col-md-4">
+                <form [formGroup]="attachEquipmentFormGroup" (submit)="onSubmit(attachEquipmentFormGroup.controls)">
+                    <mat-form-field>
+                        <!-- Select type -->
+                        <mat-label>
+                            {{ 'entities.types' | translate }}
+                        </mat-label>
+                        <mat-select formControlName="equipmentType"
+                            (selectionChange)="filterChanged()">
+                            <mat-option *ngFor="let type of types" [value]="type.value">
+                                {{ type.label }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <mat-form-field>
+                        <!-- Select within definitions of that type -->
+                        <mat-label>
+                            {{ 'equipment.availableDefinitions' | translate }}
+                        </mat-label>
+                        <mat-select formControlName="equipmentDefinition"
+                            (selectionChange)="filterChanged()">
+                            <mat-option *ngFor="let def of equipment.definition.children" [value]="def.id">
+                                {{ def.identifier }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <!-- <app-chips-autocomplete formControlName="equipmentToAttach"
+                        label="Chose one or more equipemnt to attach" [autocompleteOptions]="availableEquipment">
+                    </app-chips-autocomplete> -->
+                    <p class="text-muted">
+                        <mat-icon class="text-muted">info</mat-icon>
+                        {{ 'equipment.detachTip' | translate }}
+                    </p>
+                    <button mat-button type="submit" class="btn-gradient-primary mr-2">
+                        {{ 'equipment.attach' | translate }}
+                    </button>
+                </form>
+            </div>
+            <div class="col-md-6">
+
+            </div>
+        </div>
     </div>
 </div>

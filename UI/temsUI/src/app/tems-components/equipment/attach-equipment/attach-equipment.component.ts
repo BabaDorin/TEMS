@@ -1,3 +1,7 @@
+import { ViewType } from './../../../models/equipment/view-type.model';
+import { TypeService } from './../../../services/type.service';
+import { ViewAllocationSimplified } from './../../../models/equipment/view-equipment-allocation.model';
+import { EquipmentFilter } from 'src/app/helpers/filters/equipment.filter';
 import { Component, Inject, Input, OnInit, Optional } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
@@ -15,55 +19,103 @@ import { TEMSComponent } from './../../../tems/tems.component';
 })
 export class AttachEquipmentComponent extends TEMSComponent implements OnInit {
 
+  dialogRef;
   @Input() equipment: ViewEquipment;
+
+  // Equipment's child types
+  types: IOption[] = [];
+  // Definitions of selected type
+  definitions: IOption[] = [];
+
+  relevantEquipment: ViewAllocationSimplified[] = [];
 
   attachEquipmentFormGroup = new FormGroup({
     equipmentDefinition: new FormControl(),
-    equipmentToAttach: new FormControl()
+    equipmentType: new FormControl(),
   });
-  dialogRef;
-  
-  availableEquipment = [] as IOption[];
+
+  private getSelectedType() {
+    return this.attachEquipmentFormGroup.controls.equipmentType.value;
+  }
+
+  private getSelectedDefinition() {
+    return this.attachEquipmentFormGroup.controls.equipmentDefinition.value;
+  }
 
   constructor(
     public equipmentService: EquipmentService,
     private snackService: SnackService,
+    private typeService: TypeService,
     @Optional() @Inject(MAT_DIALOG_DATA) public dialogData: any
   ) {
     super();
 
-    if(dialogData != undefined){
+    if (dialogData != undefined) {
       this.equipment = dialogData.equipment;
     }
   }
 
-  onDefinitionChanged(newDefinition){
-    this.fetchEquipmentOfDefinitions([newDefinition.value]);
-  }
-
   ngOnInit(): void {
-    this.fetchEquipmentOfDefinitions(this.equipment.definition.children.map(q => q.id));
+    console.log(this.equipment);
+
+    this.fetchRelevandTypes()
+    .then(() => this.fetchEquipment());
   }
 
-  fetchEquipmentOfDefinitions(definitions: string[]){
-    this.unsubscribeFromAll();
+  filterChanged() {
+    this.fetchEquipment();
+  }
 
-    this.subscriptions.push(
-      this.equipmentService.getEquipmentOfDefinitions(definitions)
+  fetchRelevandTypes() : Promise<any> {
+    // relevant types = child types of current equipment
+    return new Promise((resolve, reject) => {
+      this.typeService.getFullType(this.equipment.definition.equipmentType.value)
       .subscribe(result => {
         if(this.snackService.snackIfError(result))
-          return;
+          reject();
         
-        this.availableEquipment = result;
-      })
-    )
+        this.types = (result as ViewType).children.map(q => ({ value: q.id, label: q.name } as IOption));
+        console.log(this.types);
+        resolve(true);
+      });
+    });
   }
 
-  onSubmit(model){
+  fetchEquipment() {
+    var filter = new EquipmentFilter();
+
+    filter.onlyDetached = true;
+
+    // ether equipment of selected type, or equipment of any type which is child of equipment's type
+    let selectedType = this.getSelectedType();
+    if (selectedType != undefined)
+      filter.types = [selectedType]
+    else
+      filter.types = this.types.map(q => q.value);
+
+    let selectedDefinition = this.getSelectedDefinition();
+    if (selectedDefinition != undefined)
+      filter.definitions = [selectedDefinition];
+
+    this.subscriptions.push(
+      this.equipmentService.getEquipmentSimplified(filter)
+        .subscribe(result => {
+          if (this.snackService.snackIfError(result))
+            return;
+
+          this.relevantEquipment = result;
+          console.log(this.relevantEquipment);
+        })
+    );
+  }
+
+
+
+  onSubmit(model) {
     let selectedEq = model.equipmentToAttach.value;
-    
-    if(selectedEq == undefined || selectedEq.length == 0){
-      this.snackService.snack({message: "Please, provide at least one equipment to allocate", status: 0});
+
+    if (selectedEq == undefined || selectedEq.length == 0) {
+      this.snackService.snack({ message: "Please, provide at least one equipment to allocate", status: 0 });
       return;
     }
 
@@ -73,12 +125,12 @@ export class AttachEquipmentComponent extends TEMSComponent implements OnInit {
 
     this.subscriptions.push(
       this.equipmentService.attach(attachEquipment)
-      .subscribe(result => {
-        this.snackService.snack(result);
+        .subscribe(result => {
+          this.snackService.snack(result);
 
-        if(result.status == 1)
-          this.dialogRef.close();
-      })      
+          if (result.status == 1)
+            this.dialogRef.close();
+        })
     )
   }
 }

@@ -23,7 +23,7 @@ export interface IViewType{
     name: string,
     editable: boolean,
     parents: IOption[],
-    children: IOption[],
+    children: ViewType[],
     properties: IOption[]
 }
 
@@ -32,6 +32,6 @@ export class ViewType implements IViewType{
     name: string;
     editable: boolean;
     parents: IOption[];
-    children: IOption[];
+    children: ViewType[];
     properties: IOption[];
 }

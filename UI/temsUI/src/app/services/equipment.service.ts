@@ -287,10 +287,6 @@ export class EquipmentService extends TEMSService {
       );
   }
 
-  getFullType(typeId: string): Observable<any> {
-    return this.http.post(API_EQTYPE_URL + '/fulltype', JSON.stringify(typeId), this.httpOptions);
-  }
-
   generateAddEquipmentOfDefinition(definition: Definition): AddEquipment {
     return new AddEquipment(definition);
   }

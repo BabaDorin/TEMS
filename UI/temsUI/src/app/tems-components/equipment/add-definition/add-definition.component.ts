@@ -82,7 +82,7 @@ export class AddDefinitionComponent extends TEMSComponent implements OnInit {
 
     this.subscriptions.forEach(s => s.unsubscribe);
     this.subscriptions.push(
-      this.equipmentService.getFullType(typeId)
+      this.typeService.getFullType(typeId)
         .subscribe(
           response => {
             parentFullType = response;

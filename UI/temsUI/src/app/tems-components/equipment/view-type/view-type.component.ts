@@ -1,10 +1,10 @@
+import { TypeService } from './../../../services/type.service';
 import { Component, Inject, Input, OnInit, Optional, Output } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import EventEmitter from 'events';
 import { ViewPropertyComponent } from 'src/app/tems-components/equipment/view-property/view-property.component';
 import { EquipmentType } from './../../../models/equipment/view-type.model';
 import { DialogService } from './../../../services/dialog.service';
-import { EquipmentService } from './../../../services/equipment.service';
 import { TEMSComponent } from './../../../tems/tems.component';
 
 @Component({
@@ -21,7 +21,7 @@ export class ViewTypeComponent extends TEMSComponent implements OnInit {
   dialogRef;
 
   constructor(
-    private equipmentService: EquipmentService,
+    private typeService: TypeService,
     private dialogService: DialogService,
     @Optional() @Inject(MAT_DIALOG_DATA) public dialogData: any
   ) {
@@ -34,7 +34,7 @@ export class ViewTypeComponent extends TEMSComponent implements OnInit {
 
   ngOnInit(): void {
     this.subscriptions.push(
-      this.equipmentService.getFullType(this.typeId)
+      this.typeService.getFullType(this.typeId)
       .subscribe(result => {
         this.type = result;
       })

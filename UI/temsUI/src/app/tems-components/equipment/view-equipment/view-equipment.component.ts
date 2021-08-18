@@ -42,7 +42,7 @@ export class ViewEquipmentComponent implements OnInit {
     // this.typePreOptions = [{value: 'any', label: this.translate.instant('form.any')}];
 
     this.equipmentFilter = new EquipmentFilter();
-    this.equipmentFilter.includeDerived = this.includeDerived;
+    this.equipmentFilter.onlyParents = !this.includeDerived;
   }
 
   ngOnInit(): void {
@@ -123,7 +123,7 @@ export class ViewEquipmentComponent implements OnInit {
   }
 
   includeDerivedChanged(){
-    this.equipmentFilter.includeDerived = this.includeDerived;
+    this.equipmentFilter.onlyParents = !this.includeDerived;
     this.equipmentFilter = Object.assign(new EquipmentFilter(), this.equipmentFilter);
     this.typeEndpoint = new TypeEndpoint(this.typeService, this.includeDerived);
   }

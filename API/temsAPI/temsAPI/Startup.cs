@@ -18,6 +18,7 @@ using temsAPI.Contracts;
 using temsAPI.Data;
 using temsAPI.Data.Entities.UserEntities;
 using temsAPI.Data.Managers;
+using temsAPI.Services.EquipmentManagementHelpers;
 using temsAPI.Repository;
 using temsAPI.Services;
 using temsAPI.Services.JWT;
@@ -126,6 +127,7 @@ namespace temsAPI
             services.AddScoped<EmailService>();
             services.AddScoped<SICService>();
             services.AddScoped<SICIntegrationService>();
+            services.AddScoped<IEquipmentFetcher, EquipmentFetcher>();
 
             services.ConfigureWritable<AppSettings>(Configuration.GetSection("AppSettings"));
 

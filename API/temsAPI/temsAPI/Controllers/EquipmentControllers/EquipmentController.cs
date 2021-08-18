@@ -98,31 +98,15 @@ namespace temsAPI.Controllers.EquipmentControllers
             return ReturnResponse("Success", ResponseStatus.Success);
         }
 
-        [HttpGet("equipment/GetSimplified/{pageNumber}/{itemsPerPage}")]
+        [HttpPost("equipment/GetSimplified")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
         [DefaultExceptionHandler("Unknown error occured while fetching equipment records.")]
-        public async Task<IActionResult> GetSimplified(
-            int pageNumber, 
-            int itemsPerPage, 
-            bool onlyParents,
-            List<string> rooms,
-            List<string> personnel,
-            List<string> types)
+        public async Task<IActionResult> GetSimplified([FromBody] EquipmentFilter filter)
         {
-            EquipmentFilter filter = new()
-            {
-                PageNumber = pageNumber,
-                ItemsPerPage = itemsPerPage,
-                OnlyParents = onlyParents,
-                Rooms = rooms,
-                Personnel = personnel,
-                Types = types
-            };
+            if(!filter.Validate())
+                return ReturnResponse("Invalid filter provided", ResponseStatus.Neutral);
 
-            if(filter.Validate())
-                return Ok(await _equipmentManager.GetEquipment(filter));
-
-            return ReturnResponse("Invalid filters provided", ResponseStatus.Neutral);
+            return Ok(await _equipmentManager.GetEquipment(filter));
         }
 
         [HttpGet("equipment/GetSimplified/{id}")]

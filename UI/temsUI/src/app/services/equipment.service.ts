@@ -20,7 +20,6 @@ import { IOption } from '../models/option.model';
 })
 export class EquipmentService extends TEMSService {
 
-  
   constructor(
     private http: HttpClient
   ) { 
@@ -249,15 +248,14 @@ export class EquipmentService extends TEMSService {
     );
   } 
 
-  getEquipmentSimplified(
-    pageNumber: number, 
-    recordsPerPage: number,
-    filter: EquipmentFilter): Observable<any>{
-    
-      let params = filter.getParams();
-      
-      return this.http.get(API_EQ_URL + '/getsimplified/'+pageNumber+'/'+recordsPerPage,
-      {params: params});      
+  getEquipmentSimplified(filter: EquipmentFilter): Observable<any>{
+    console.log(filter);
+
+    return this.http.post(
+      API_EQ_URL + '/GetSimplified',
+      JSON.stringify(filter),
+      this.httpOptions 
+    );      
   }
 
   getEquipmentSimplifiedById(id: string): Observable<any>{

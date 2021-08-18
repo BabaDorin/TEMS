@@ -162,7 +162,7 @@ export class AgGridEquipmentComponent extends TEMSComponent implements OnChanges
 
   fetchEquipment(){
     this.loading = true;
-    this.subscriptions.push(this.equipmentService.getEquipmentSimplified(0, 0, this.equipmentFilter)
+    this.subscriptions.push(this.equipmentService.getEquipmentSimplified(this.equipmentFilter)
     .subscribe(result => {
       this.rowData = result;
       this.loading = false;

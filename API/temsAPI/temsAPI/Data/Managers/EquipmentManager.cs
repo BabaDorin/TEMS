@@ -11,7 +11,7 @@ using temsAPI.Contracts;
 using temsAPI.Data.Entities.EquipmentEntities;
 using temsAPI.Data.Factories.LogFactories;
 using temsAPI.Helpers;
-using temsAPI.Helpers.EquipmentManagementHelpers;
+using temsAPI.Services.EquipmentManagementHelpers;
 using temsAPI.Helpers.Filters;
 using temsAPI.Services;
 using temsAPI.System_Files;
@@ -26,19 +26,20 @@ namespace temsAPI.Data.Managers
         CurrencyConvertor _currencyConvertor;
         LogManager _logManager;
         ILogger<EquipmentManager> _logger;
-        EquipmentFetcher _equipmentFetcher;
+        IEquipmentFetcher _equipmentFetcher;
         
         public EquipmentManager(
             IUnitOfWork unitOfWork, 
             ClaimsPrincipal user,
             CurrencyConvertor currencyConvertor,
             ILogger<EquipmentManager> logger,
-            LogManager logManager) : base(unitOfWork, user)
+            LogManager logManager,
+            IEquipmentFetcher equipmentFetcher) : base(unitOfWork, user)
         {
             _currencyConvertor = currencyConvertor;
             _logger = logger;
             _logManager = logManager;
-            _equipmentFetcher = new EquipmentFetcher(_unitOfWork);
+            _equipmentFetcher = equipmentFetcher;
         }
 
         public async Task<string> Create(AddEquipmentViewModel viewModel)
@@ -311,6 +312,11 @@ namespace temsAPI.Data.Managers
             return equipment;
         }
 
+        public async Task<IEnumerable<Equipment>> GetDetachedEquipment(EquipmentFilter filter)
+        {
+            return await _equipmentFetcher.Fetch(filter);
+        }
+
         public async Task<List<Option>> GetAutocompleteOptions(bool onlyParents, string filter)
         {
             Expression<Func<Equipment, bool>> expression =
@@ -462,7 +468,8 @@ namespace temsAPI.Data.Managers
             var allocations = await GetEntityAllocations();
             return allocations;
         }
-
+        
+        // BEFREE: Make it generic
         public double GetEquipmentPriceInLei(Equipment equipment)
         {
             switch (equipment.Currency)

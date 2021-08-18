@@ -7,7 +7,7 @@ namespace temsAPI.Helpers.Filters.Contracts
 {
     interface IPaginationFilter
     {
-        public int PageNumber { get; set; }
-        public int ItemsPerPage { get; set; }
+        public int Skip { get; set; }
+        public int Take { get; set; }
     }
 }

@@ -144,6 +144,7 @@
         "allocatedTo":"Allocated to",
         "add": "Add equipment",
         "attach": "Attach an equipment",
+        "attachBack": "Attach back", 
         "attachTip": "Attach an existing equipment. You can choose only withing equipment that are supported as children by the parent definition:",
         "detach": "Detach",
         "detachTip": "Only deatached equipment are included in the dropdown",

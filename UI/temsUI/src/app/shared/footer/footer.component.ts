@@ -32,7 +32,7 @@ export class FooterComponent extends TEMSComponent implements OnInit {
   }
 
   async reportBug(){
-    await this.lazyLoader.loadModule('bug-report/bug-report.module');
+    await this.lazyLoader.loadModuleAsync('bug-report/bug-report.module');
     this.dialgoService.openDialog(BugReportComponent);
   }
 

@@ -1,0 +1,18 @@
+<ng-container *ngIf="loading == true">
+    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+</ng-container>
+
+<ag-grid-angular
+    #agGrid
+    style="width: 100%; height: 600px;"
+    class="ag-theme-material"
+    [pagination]="pagination"
+    [paginationPageSize]="paginationPageSize"
+    [columnDefs]="columnDefs"
+    [defaultColDef]="defaultColDef"
+    [suppressRowClickSelection]="true"
+    [rowSelection]="rowSelection"
+    [frameworkComponents]="frameworkComponents"
+    [rowData]="rowData"
+    (gridReady)="onGridReady($event)">
+</ag-grid-angular>

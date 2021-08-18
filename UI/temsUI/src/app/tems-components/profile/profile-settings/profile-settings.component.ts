@@ -112,7 +112,7 @@ export class ProfileSettingsComponent extends TEMSComponent implements OnInit {
   }
 
   changePhoto(){
-    this.lazyLoader.loadModule('profile/profile-photo-upload.module.ts')
+    this.lazyLoader.loadModuleAsync('profile/profile-photo-upload.module.ts')
     .then(()=> {
       let dialogRef = this.dialogService.openDialog(UploadProfilePhotoComponent);
       dialogRef.componentInstance.imageSelected.subscribe(file => this.photoSelected(file, dialogRef));

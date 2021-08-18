@@ -20,7 +20,7 @@ export interface IViewEquipment{
     personnel: IOption,
     type: EquipmentType,
     specificProperties: Property[],
-    children: IOption[],
+    children,
     parent: IOption;
     isUsed: boolean,
     isDefect: boolean,
@@ -37,7 +37,7 @@ export class ViewEquipment implements IViewEquipment{
     room: IOption;
     personnel: IOption;
     type: EquipmentType;
-    children: IOption[];
+    children;
     parent: IOption;
     isUsed: boolean;
     isDefect: boolean;

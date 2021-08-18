@@ -1,3 +1,4 @@
+import { AttachEquipmentAgGridModule } from './../../modules/tems-ag-grid/attach-equipment-ag-grid.module';
 import { MultipleSelectionDropdownModule } from './../../modules/forms/multiple-selection-dropdown/multiple-selection-dropdown.module';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -65,7 +66,7 @@ import { ViewTypeComponent } from './view-type/view-type.component';
     BulkUploadResultsComponent,
     EquipmentLabelComponent,
     EquipmentSerialNumberComponent,
-    ChildEquipmentContainerComponent
+    ChildEquipmentContainerComponent,
   ],
   imports: [
     CommonModule,
@@ -92,9 +93,10 @@ import { ViewTypeComponent } from './view-type/view-type.component';
     FileUploadModule,
     MatIconModule,
     EquipmentSummaryAnalyticsModule,
+
+    AttachEquipmentAgGridModule,
   ],
   exports: [
   ],
-  entryComponents: []
 })
 export class EquipmentModule { }

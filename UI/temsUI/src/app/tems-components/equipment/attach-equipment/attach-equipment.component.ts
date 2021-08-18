@@ -1,8 +1,8 @@
+import { DefinitionService } from './../../../services/definition.service';
 import { ViewType } from './../../../models/equipment/view-type.model';
 import { TypeService } from './../../../services/type.service';
-import { ViewAllocationSimplified } from './../../../models/equipment/view-equipment-allocation.model';
 import { EquipmentFilter } from 'src/app/helpers/filters/equipment.filter';
-import { Component, Inject, Input, OnInit, Optional } from '@angular/core';
+import { Component, Inject, Input, OnInit, Optional, Output, EventEmitter } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { AttachEquipment } from 'src/app/models/equipment/attach-equipment.model';
@@ -21,13 +21,14 @@ export class AttachEquipmentComponent extends TEMSComponent implements OnInit {
 
   dialogRef;
   @Input() equipment: ViewEquipment;
+  @Output() childAttached = new EventEmitter();
 
   // Equipment's child types
   types: IOption[] = [];
   // Definitions of selected type
   definitions: IOption[] = [];
 
-  relevantEquipment: ViewAllocationSimplified[] = [];
+  equipmentFilter: EquipmentFilter;
 
   attachEquipmentFormGroup = new FormGroup({
     equipmentDefinition: new FormControl(),
@@ -46,6 +47,7 @@ export class AttachEquipmentComponent extends TEMSComponent implements OnInit {
     public equipmentService: EquipmentService,
     private snackService: SnackService,
     private typeService: TypeService,
+    private definitionService: DefinitionService,
     @Optional() @Inject(MAT_DIALOG_DATA) public dialogData: any
   ) {
     super();
@@ -58,15 +60,48 @@ export class AttachEquipmentComponent extends TEMSComponent implements OnInit {
   ngOnInit(): void {
     console.log(this.equipment);
 
-    this.fetchRelevandTypes()
-    .then(() => this.fetchEquipment());
+    this.fetchRelevantTypes()
+    .then(() => {
+      let filter = new EquipmentFilter();
+      filter.onlyDetached = true;
+      filter.types = this.types.map(q => q.value);
+      this.equipmentFilter = filter;
+    });
+
+    this.definitions = this.equipment.definition.children.map(q => ({ value: q.id, label: q.identifier } as IOption));
+  }
+
+  typeChanged(newTypeId){
+    this.subscriptions.push(
+      this.definitionService.getDefinitionsOfType(newTypeId)
+      .subscribe(result => {
+        if(this.snackService.snackIfError(result))
+          return;
+      
+        this.definitions = result;
+        this.filterChanged();
+      })
+    )
   }
 
   filterChanged() {
-    this.fetchEquipment();
+    this.equipmentFilter.onlyDetached = true;
+
+    // ether equipment of selected type, or equipment of any type which is child of equipment's type
+    let selectedType = this.getSelectedType();
+    if (selectedType != undefined)
+      this.equipmentFilter.types = [selectedType]
+    else
+      this.equipmentFilter.types = this.types.map(q => q.value);
+
+    let selectedDefinition = this.getSelectedDefinition();
+    if (selectedDefinition != undefined)
+      this.equipmentFilter.definitions = [selectedDefinition];
+
+    this.equipmentFilter = Object.assign(new EquipmentFilter(), this.equipmentFilter);
   }
 
-  fetchRelevandTypes() : Promise<any> {
+  fetchRelevantTypes() : Promise<any> {
     // relevant types = child types of current equipment
     return new Promise((resolve, reject) => {
       this.typeService.getFullType(this.equipment.definition.equipmentType.value)
@@ -80,36 +115,6 @@ export class AttachEquipmentComponent extends TEMSComponent implements OnInit {
       });
     });
   }
-
-  fetchEquipment() {
-    var filter = new EquipmentFilter();
-
-    filter.onlyDetached = true;
-
-    // ether equipment of selected type, or equipment of any type which is child of equipment's type
-    let selectedType = this.getSelectedType();
-    if (selectedType != undefined)
-      filter.types = [selectedType]
-    else
-      filter.types = this.types.map(q => q.value);
-
-    let selectedDefinition = this.getSelectedDefinition();
-    if (selectedDefinition != undefined)
-      filter.definitions = [selectedDefinition];
-
-    this.subscriptions.push(
-      this.equipmentService.getEquipmentSimplified(filter)
-        .subscribe(result => {
-          if (this.snackService.snackIfError(result))
-            return;
-
-          this.relevantEquipment = result;
-          console.log(this.relevantEquipment);
-        })
-    );
-  }
-
-
 
   onSubmit(model) {
     let selectedEq = model.equipmentToAttach.value;
@@ -132,5 +137,12 @@ export class AttachEquipmentComponent extends TEMSComponent implements OnInit {
             this.dialogRef.close();
         })
     )
+  }
+
+  attached(rowData){
+    console.log('got that something was attached. Hi from attach-equipment');
+    console.log('this is what i got');
+    console.log(rowData);
+    this.childAttached.emit(rowData.id);
   }
 }

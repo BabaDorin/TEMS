@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
@@ -26,6 +27,8 @@ namespace temsAPI.ViewModels.Equipment
 
             if (!await unitOfWork.Equipments.isExists(q => q.Id == ParentId))
                 return "Invalid parent ID provided";
+
+            var s = CultureInfo.InvariantCulture;
 
             foreach(var child in ChildrenIds)
             {

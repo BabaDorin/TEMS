@@ -69,8 +69,6 @@ export class AttachEquipmentComponent extends TEMSComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log(this.equipment);
-
     this.fetchRelevantTypes()
     .then(() => {
       let filter = new EquipmentFilter();
@@ -91,7 +89,6 @@ export class AttachEquipmentComponent extends TEMSComponent implements OnInit {
       .subscribe(result => {
         if(this.snackService.snackIfError(result))
           return;
-        console.log(result);
         this.definitions = result;
       })
     );
@@ -125,7 +122,6 @@ export class AttachEquipmentComponent extends TEMSComponent implements OnInit {
           reject();
         
         this.types = (result as ViewType).children.map(q => ({ value: q.id, label: q.name } as IOption));
-        console.log(this.types);
         resolve(true);
       });
     });
@@ -155,9 +151,12 @@ export class AttachEquipmentComponent extends TEMSComponent implements OnInit {
   }
 
   attached(rowData){
-    console.log('got that something was attached. Hi from attach-equipment');
-    console.log('this is what i got');
-    console.log(rowData);
-    this.childAttached.emit(rowData.id);
+    let attachedEq = {
+      value: rowData.id,
+      label: rowData.definition,
+      additional: rowData.type,
+    } as IOption;
+
+    this.childAttached.emit(attachedEq);
   }
 }

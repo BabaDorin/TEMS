@@ -1,3 +1,4 @@
+import { BooleanCellRendererComponent } from './../../../public/ag-grid/boolean-cell-renderer/boolean-cell-renderer.component';
 import { AttachEquipment } from './../../../models/equipment/attach-equipment.model';
 import { EquipmentService } from 'src/app/services/equipment.service';
 import { SnackService } from './../../../services/snack.service';
@@ -43,14 +44,14 @@ export class AgGridAttachEquipmentComponent extends TEMSComponent implements OnI
 
     this.frameworkComponents = {
       btnCellRendererComponent: BtnCellRendererComponent,
+      booleanCellRendererComponent: BooleanCellRendererComponent
     };
 
     this.defaultColDef = {
-      flex: 1,
       resizable: true,
       filter: true,
       sortable: true,
-      width: 150,
+      width: 100,
       minWidth: 50,
     }
 
@@ -78,7 +79,8 @@ export class AgGridAttachEquipmentComponent extends TEMSComponent implements OnI
         field: 'isDefect',
         sortable: false,
         cellRenderer: 'booleanCellRendererComponent',
-        width: 100
+        width: 120,
+        suppressSizeToFit: true
       },
       {
         filter: false,
@@ -88,8 +90,6 @@ export class AgGridAttachEquipmentComponent extends TEMSComponent implements OnI
           onClick: this.attach.bind(this),
           label: this.translate.instant('equipment.attach')
         },
-        width: 100,
-        suppressSizeToFit: true,
       },
     ];
   }
@@ -110,15 +110,10 @@ export class AgGridAttachEquipmentComponent extends TEMSComponent implements OnI
     model.parentId = this.parentId;
     model.childrenIds = [eventData.rowData.id];
 
-    console.log('you want me to attach according to this data');
-    console.log(model);
-
     this.subscriptions.push(
       this.equipmentService.attach(model)
         .subscribe(result => {
           this.snackService.snack(result);
-          console.log('alright, here is the result');
-          console.log(result);
 
           if (result.status == 1) {
             this.gridApi.applyTransaction({ remove: [eventData.rowData] });

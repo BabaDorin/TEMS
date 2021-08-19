@@ -16,8 +16,6 @@ import { CommonModule } from '@angular/common';
     AgGridModule,
     MatButtonModule,
     MatProgressBarModule,
-    MatTooltipModule,
-    MatCheckboxModule
   ],
   exports: [
     AgGridAttachEquipmentComponent

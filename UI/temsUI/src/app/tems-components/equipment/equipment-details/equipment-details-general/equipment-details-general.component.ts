@@ -1,3 +1,4 @@
+import { IOption } from './../../../../models/option.model';
 import { LazyLoaderService } from './../../../../services/lazy-loader.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Component, EventEmitter, Inject, Input, OnInit, Optional, Output } from '@angular/core';
@@ -145,30 +146,8 @@ export class EquipmentDetailsGeneralComponent extends TEMSComponent implements O
 
     this.subscriptions.push(
       dialog.componentInstance.childAttached
-      .subscribe(childId => {
-        console.log('got that something was attached. Hi from equipment details.');
-        console.log('this is what i got');
-        console.log(childId);
-
-        let childEqIndexFromDetached = this.detachedEquipments.indexOf(q => q.id == childId);
-        if(childEqIndexFromDetached != -1)
-          this.detachedEquipments.splice(childEqIndexFromDetached, 1);
-
-        this.subscriptions.push(
-          this.equipmentService.getEquipmentByID(childId)
-          .subscribe(result => {
-            console.log('this is the equipment attached');
-            console.log(result);
-            
-            if(this.snackService.snackIfError(result))
-              return;
-
-            this.equipment.children.push(result);
-          })
-        )
-      })
-    )
-
+      .subscribe(attachedEq => this.attachedFromAttachView(attachedEq))
+    );
   }
 
   // equipment's index within equipment's children list
@@ -184,6 +163,15 @@ export class EquipmentDetailsGeneralComponent extends TEMSComponent implements O
     let attachedChild = this.detachedEquipments[index];
     this.detachedEquipments.splice(index, 1);
     this.equipment.children.push(attachedChild);
+  }
+
+  // when some equipment is attached via AttachEquipmentComponent
+  attachedFromAttachView(attachedEq: IOption){
+    let childEqIndexFromDetached = this.detachedEquipments.findIndex(q => q.value == attachedEq.value);
+    if(childEqIndexFromDetached != -1)
+      this.detachedEquipments.splice(childEqIndexFromDetached, 1);
+    
+    this.equipment.children.push(attachedEq);
   }
 
   viewAllocatee(){

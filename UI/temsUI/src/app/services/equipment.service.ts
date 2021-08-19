@@ -249,8 +249,6 @@ export class EquipmentService extends TEMSService {
   } 
 
   getEquipmentSimplified(filter: EquipmentFilter): Observable<any>{
-    console.log(filter);
-
     return this.http.post(
       API_EQ_URL + '/GetSimplified',
       JSON.stringify(filter),

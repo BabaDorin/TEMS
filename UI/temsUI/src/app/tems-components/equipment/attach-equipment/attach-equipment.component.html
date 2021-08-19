@@ -1,12 +1,12 @@
 <div [ngClass]="dialogRef == undefined ? 'card' : 'card cancel-margins'">
     <div class="card-body">
         <h2>
-            {{ 'equipment.attach' | translate }}
+            {{ 'equipment.attachEquipment' | translate }}
         </h2>
-        <hr>
         <p class="text-muted">
             {{ 'equipment.attachTip' | translate }} {{ equipment.definition.identifier }}.
         </p>
+        <hr>
         <form [formGroup]="attachEquipmentFormGroup" (submit)="onSubmit(attachEquipmentFormGroup.controls)">
             <div class="row">
                 <div class="col-md-4 text-center">

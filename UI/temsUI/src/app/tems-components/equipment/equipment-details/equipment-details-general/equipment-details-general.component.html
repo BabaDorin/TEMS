@@ -137,7 +137,7 @@
                     <hr>
                     <button *ngIf="claims.canManage" mat-button (click)="attach()">
                         <mat-icon class="text-primary">add</mat-icon>
-                        {{ 'equipment.attach' | translate }}
+                        {{ 'equipment.attachEquipment' | translate }}
                     </button>
                     <ng-container *ngIf="equipment.children != undefined && equipment.children.length > 0">
                         <div *ngFor="let child of equipment.children; let i = index">

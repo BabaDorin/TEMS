@@ -555,6 +555,9 @@ namespace temsAPI.Data.Managers
 
         public async Task Attach(Equipment parent, Equipment child)
         {
+            if(child.ParentID != null)
+                await DetachEquipment(child);
+
             parent.Children.Add(child);
             await _unitOfWork.Save();
 

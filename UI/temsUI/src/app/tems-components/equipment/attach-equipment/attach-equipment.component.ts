@@ -1,3 +1,4 @@
+import { TranslateService } from '@ngx-translate/core';
 import { DefinitionService } from './../../../services/definition.service';
 import { ViewType } from './../../../models/equipment/view-type.model';
 import { TypeService } from './../../../services/type.service';
@@ -33,7 +34,12 @@ export class AttachEquipmentComponent extends TEMSComponent implements OnInit {
   attachEquipmentFormGroup = new FormGroup({
     equipmentDefinition: new FormControl(),
     equipmentType: new FormControl(),
+    includeAttached: new FormControl(false)
   });
+
+  private getIncludeAttached() {
+    return this.attachEquipmentFormGroup.controls.includeAttached.value;
+  }
 
   private getSelectedType() {
     return this.attachEquipmentFormGroup.controls.equipmentType.value;
@@ -43,11 +49,16 @@ export class AttachEquipmentComponent extends TEMSComponent implements OnInit {
     return this.attachEquipmentFormGroup.controls.equipmentDefinition.value;
   }
 
+  private setSelectedDefinition(value){
+    this.attachEquipmentFormGroup.controls.equipmentDefinition.setValue(value);
+  }
+
   constructor(
     public equipmentService: EquipmentService,
     private snackService: SnackService,
     private typeService: TypeService,
     private definitionService: DefinitionService,
+    public translate: TranslateService,
     @Optional() @Inject(MAT_DIALOG_DATA) public dialogData: any
   ) {
     super();
@@ -71,21 +82,25 @@ export class AttachEquipmentComponent extends TEMSComponent implements OnInit {
     this.definitions = this.equipment.definition.children.map(q => ({ value: q.id, label: q.identifier } as IOption));
   }
 
-  typeChanged(newTypeId){
+  typeChanged(newType){
+    // Cancel current selected definition
+    this.setSelectedDefinition(undefined);
+
     this.subscriptions.push(
-      this.definitionService.getDefinitionsOfType(newTypeId)
+      this.definitionService.getDefinitionsOfType(newType.value)
       .subscribe(result => {
         if(this.snackService.snackIfError(result))
           return;
-      
+        console.log(result);
         this.definitions = result;
-        this.filterChanged();
       })
-    )
+    );
+
+    this.filterChanged();
   }
 
   filterChanged() {
-    this.equipmentFilter.onlyDetached = true;
+    this.equipmentFilter.onlyDetached = !this.getIncludeAttached();
 
     // ether equipment of selected type, or equipment of any type which is child of equipment's type
     let selectedType = this.getSelectedType();

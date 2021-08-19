@@ -30,9 +30,9 @@ namespace temsAPI.ViewModels.Equipment
             foreach(var child in ChildrenIds)
             {
                 if (!await unitOfWork.Equipments
-                    .isExists(q => q.Id == child && q.ParentID == null && !q.IsArchieved))
+                    .isExists(q => q.Id == child && !q.IsArchieved && q.ParentID != ParentId))
                     return "One or more children equipment are invalid." +
-                        " Only deatached and un-archieved equipment allowed";
+                        " Only un-archieved equipment allowed. Also, make sure you're not re-attaching the same equipment again to it's parent";
             }
 
             return null;

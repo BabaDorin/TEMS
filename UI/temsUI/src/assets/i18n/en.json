@@ -143,6 +143,8 @@
         "allocateTo":"Allocate to",
         "allocatedTo":"Allocated to",
         "add": "Add equipment",
+        "includeAttached": "Include attached equipment",
+        "includeAttached_info": "If you attach an equipment that is already attached to another equipment, it will be detached automatically from it's current parent",
         "attach": "Attach an equipment",
         "attachBack": "Attach back", 
         "attachTip": "Attach an existing equipment. You can choose only withing equipment that are supported as children by the parent definition:",

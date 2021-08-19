@@ -2,17 +2,18 @@ import { AttachEquipment } from './../../../models/equipment/attach-equipment.mo
 import { EquipmentService } from 'src/app/services/equipment.service';
 import { SnackService } from './../../../services/snack.service';
 import { TranslateService } from '@ngx-translate/core';
-import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, Input, OnInit, Output, EventEmitter, SimpleChanges, OnChanges } from '@angular/core';
 import { EquipmentFilter } from 'src/app/helpers/filters/equipment.filter';
 import { BtnCellRendererComponent } from 'src/app/public/ag-grid/btn-cell-renderer/btn-cell-renderer.component';
 import { TEMSComponent } from 'src/app/tems/tems.component';
+import { propertyChanged } from 'src/app/helpers/onchanges-helper';
 
 @Component({
   selector: 'app-ag-grid-attach-equipment',
   templateUrl: './ag-grid-attach-equipment.component.html',
   styleUrls: ['./ag-grid-attach-equipment.component.scss']
 })
-export class AgGridAttachEquipmentComponent extends TEMSComponent implements OnInit {
+export class AgGridAttachEquipmentComponent extends TEMSComponent implements OnInit, OnChanges {
 
   @Input() equipmentFilter: EquipmentFilter;
   @Input() parentId: string;
@@ -91,6 +92,12 @@ export class AgGridAttachEquipmentComponent extends TEMSComponent implements OnI
         suppressSizeToFit: true,
       },
     ];
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if(propertyChanged(changes, "equipmentFilter")){
+        this.fetchEquipment();
+    }
   }
 
   attach(eventData) {

@@ -44,6 +44,7 @@ import { ViewDefinitionComponent } from './view-definition/view-definition.compo
 import { ViewEquipmentComponent } from './view-equipment/view-equipment.component';
 import { ViewPropertyComponent } from './view-property/view-property.component';
 import { ViewTypeComponent } from './view-type/view-type.component';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 @NgModule({
   declarations: [
@@ -93,7 +94,7 @@ import { ViewTypeComponent } from './view-type/view-type.component';
     FileUploadModule,
     MatIconModule,
     EquipmentSummaryAnalyticsModule,
-
+    MatCheckboxModule,
     AttachEquipmentAgGridModule,
   ],
   exports: [

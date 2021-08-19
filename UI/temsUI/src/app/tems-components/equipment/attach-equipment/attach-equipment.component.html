@@ -7,9 +7,9 @@
         <p class="text-muted">
             {{ 'equipment.attachTip' | translate }} {{ equipment.definition.identifier }}.
         </p>
-        <div class="row">
-            <form [formGroup]="attachEquipmentFormGroup" (submit)="onSubmit(attachEquipmentFormGroup.controls)">
-                <div class="col-md-6">
+        <form [formGroup]="attachEquipmentFormGroup" (submit)="onSubmit(attachEquipmentFormGroup.controls)">
+            <div class="row">
+                <div class="col-md-4 text-center">
                     <mat-form-field>
                         <!-- Select type -->
                         <mat-label>
@@ -22,38 +22,33 @@
                         </mat-select>
                     </mat-form-field>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-4 text-center">
                     <mat-form-field>
                         <!-- Select within definitions of that type -->
                         <mat-label>
                             {{ 'equipment.availableDefinitions' | translate }}
                         </mat-label>
                         <mat-select formControlName="equipmentDefinition" (selectionChange)="filterChanged()">
-                            <mat-option *ngFor="let def of definitions" [value]="def.id">
-                                {{ def.identifier }}
+                            <mat-option *ngFor="let def of definitions" [value]="def.value">
+                                {{ def.label }}
                             </mat-option>
                         </mat-select>
                     </mat-form-field>
                 </div>
-            </form>
-            <div class="col-md-12">
-                <!-- <app-chips-autocomplete formControlName="equipmentToAttach"
-                        label="Chose one or more equipemnt to attach" [autocompleteOptions]="availableEquipment">
-                    </app-chips-autocomplete> -->
-                <p class="text-muted">
-                    <mat-icon class="text-muted">info</mat-icon>
-                    {{ 'equipment.detachTip' | translate }}
-                </p>
+                <div class="col-md-4 text-center">
+                    <mat-checkbox formControlName="includeAttached" (change)="filterChanged()">
+                        {{ 'equipment.includeAttached' | translate }}
+                    </mat-checkbox>
+                    <small class="d-block">
+                        {{ 'equipment.includeAttached_info' | translate }}
+                    </small>
+                </div>
             </div>
-            <div class="col-md-12">
-                <ng-container *ngIf="equipmentFilter != undefined">
-                    <app-ag-grid-attach-equipment 
-                        [parentId]="equipment.id"
-                        [equipmentFilter]="equipmentFilter" 
-                        (attached)="attached($event)">
-                    </app-ag-grid-attach-equipment>
-                </ng-container>
-            </div>
-        </div>
+        </form>
+        <ng-container *ngIf="equipmentFilter != undefined">
+            <app-ag-grid-attach-equipment [parentId]="equipment.id" [equipmentFilter]="equipmentFilter"
+                (attached)="attached($event)">
+            </app-ag-grid-attach-equipment>
+        </ng-container>
     </div>
 </div>

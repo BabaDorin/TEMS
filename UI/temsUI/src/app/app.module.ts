@@ -46,6 +46,8 @@ import { ViewNotificationsComponent } from './tems-components/notifications/view
 import { TEMSComponent } from './tems/tems.component';
 import { UserCardsModule } from './user-cards/user-cards.module';
 import { TemsFormsModule } from './modules/tems-forms/tems-forms.module';
+import { UsedCellRenderedComponent } from './public/ag-grid/used-cell-rendered/used-cell-rendered.component';
+import { DefectCellRenderedComponent } from './public/ag-grid/defect-cell-rendered/defect-cell-rendered.component';
 
 export function HttpLoaderFactory(http: HttpClient){
   return new TranslateHttpLoader(http);
@@ -64,6 +66,8 @@ export function HttpLoaderFactory(http: HttpClient){
     SnackComponent,
     LastCreatedTicketsChartComponent,
     ViewNotificationsComponent,
+    UsedCellRenderedComponent,
+    DefectCellRenderedComponent,
     ],
   imports: [
     LastIssuesSimplifiedModule,

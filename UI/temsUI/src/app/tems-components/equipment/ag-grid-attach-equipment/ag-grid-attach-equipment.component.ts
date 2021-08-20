@@ -1,3 +1,4 @@
+import { DefectCellRenderedComponent } from './../../../public/ag-grid/defect-cell-rendered/defect-cell-rendered.component';
 import { ResponseFactory } from './../../../models/system/response.model';
 import { BooleanCellRendererComponent } from './../../../public/ag-grid/boolean-cell-renderer/boolean-cell-renderer.component';
 import { AttachEquipment } from './../../../models/equipment/attach-equipment.model';
@@ -44,7 +45,7 @@ export class AgGridAttachEquipmentComponent extends TEMSComponent implements OnC
 
     this.frameworkComponents = {
       btnCellRendererComponent: BtnCellRendererComponent,
-      booleanCellRendererComponent: BooleanCellRendererComponent
+      defectCellRenderedComponent: DefectCellRenderedComponent
     };
 
     this.defaultColDef = {
@@ -75,10 +76,10 @@ export class AgGridAttachEquipmentComponent extends TEMSComponent implements OnC
         field: 'type'
       },
       {
-        headerName: this.translate.instant('equipment.isDefect'),
+        headerName: this.translate.instant('equipment.functional'),
         field: 'isDefect',
         sortable: false,
-        cellRenderer: 'booleanCellRendererComponent',
+        cellRenderer: 'defectCellRenderedComponent',
         width: 120,
         suppressSizeToFit: true
       },

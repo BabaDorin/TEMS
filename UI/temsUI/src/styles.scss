@@ -349,3 +349,27 @@ button {
   -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.16); 
   box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.16);
 }
+
+// Intermitent light effect
+
+@keyframes taadaa { 
+  0% {
+      opacity: 0.2;
+  }
+  
+  30% {
+      opacity: 1;
+  }
+      
+  70% {
+      opacity: 1
+  }
+
+  100% {
+      opacity: 0.2;
+  }
+}
+
+.intermitent-light{
+  animation: taadaa 5s infinite;
+}

@@ -1,3 +1,5 @@
+import { DefectCellRenderedComponent } from './../../public/ag-grid/defect-cell-rendered/defect-cell-rendered.component';
+import { UsedCellRenderedComponent } from './../../public/ag-grid/used-cell-rendered/used-cell-rendered.component';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
@@ -26,7 +28,12 @@ import { AgGridRoomsComponent } from './../../tems-components/room/ag-grid-rooms
     MatIconModule,
     MatButtonModule,
     MatProgressBarModule,
-    AgGridModule.withComponents([BtnCellRendererComponent, BooleanCellRendererComponent]),
+    AgGridModule.withComponents([
+      BtnCellRendererComponent, 
+      BooleanCellRendererComponent,
+      UsedCellRenderedComponent,
+      DefectCellRenderedComponent
+    ]),
   ],
   exports: [
     AgGridEquipmentComponent,

@@ -73,8 +73,6 @@ export class EquipmentDetailsGeneralComponent extends TEMSComponent implements O
         { displayName: this.translate.instant('equipment.type'), value: this.equipment.type.name},
         { displayName: this.translate.instant('equipment.TEMSID'), value: this.equipment.temsId },
         { displayName: this.translate.instant('equipment.serialNumber'), value: this.equipment.serialNumber},
-        { displayName: this.translate.instant('equipment.isUsed'), dataType: 'boolean', name: 'isUsed', value: this.equipment.isUsed},
-        { displayName: this.translate.instant('equipment.isDefect'), dataType: 'boolean', name: 'isUsed', value: this.equipment.isDefect},
         { displayName: this.translate.instant('equipment.description'), dataType: 'string', name: 'description', value: this.equipment.description},
       ];
   

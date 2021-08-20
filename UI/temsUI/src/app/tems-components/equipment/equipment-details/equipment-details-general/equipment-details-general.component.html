@@ -10,6 +10,20 @@
                     <h1 class="font-weight-light">
                         <h3 class="font-weight-light d-inline">{{ equipment.type.name }}</h3>
                         {{ equipment.definition.identifier }}
+                        <ng-container *ngIf="equipment.isDefect == true; else working">
+                            <mat-icon class="text-muted" [matTooltip]="translate.instant('equipment.isDefect')">
+                                cancel
+                            </mat-icon>
+                        </ng-container>
+                        <ng-template #working>
+                            <mat-icon [ngClass]="equipment.isUsed == true ? 'text-success intermitent-light' : 'text-muted'"
+                                [matTooltip]="translate.instant('equipment.isUsed')">
+                                radio_button_unchecked
+                            </mat-icon>
+                            <mat-icon class="text-success" [matTooltip]="translate.instant('equipment.functional')">
+                                check_circle_outline
+                            </mat-icon>
+                        </ng-template>
                     </h1>
                 </div>
                 <ng-container *ngIf="claims.canManage">

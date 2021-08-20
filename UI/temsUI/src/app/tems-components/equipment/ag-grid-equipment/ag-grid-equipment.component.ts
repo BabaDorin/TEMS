@@ -1,10 +1,11 @@
+import { UsedCellRenderedComponent } from './../../../public/ag-grid/used-cell-rendered/used-cell-rendered.component';
+import { DefectCellRenderedComponent } from './../../../public/ag-grid/defect-cell-rendered/defect-cell-rendered.component';
 import { propertyChanged } from 'src/app/helpers/onchanges-helper';
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { BtnCellRendererComponent } from 'src/app/public/ag-grid/btn-cell-renderer/btn-cell-renderer.component';
 import { DialogService } from '../../../services/dialog.service';
 import { SnackService } from '../../../services/snack.service';
-import { BooleanCellRendererComponent } from './../../../public/ag-grid/boolean-cell-renderer/boolean-cell-renderer.component';
 import { EquipmentService } from './../../../services/equipment.service';
 import { TEMSComponent } from './../../../tems/tems.component';
 import { EquipmentDetailsGeneralComponent } from './../equipment-details/equipment-details-general/equipment-details-general.component';
@@ -43,7 +44,8 @@ export class AgGridEquipmentComponent extends TEMSComponent implements OnChanges
 
     this.frameworkComponents = {
       btnCellRendererComponent: BtnCellRendererComponent,
-      booleanCellRendererComponent: BooleanCellRendererComponent
+      defectCellRenderedComponent: DefectCellRenderedComponent,
+      usedCellRendererComponent: UsedCellRenderedComponent
     };
 
     this.defaultColDef = {
@@ -86,14 +88,14 @@ export class AgGridEquipmentComponent extends TEMSComponent implements OnChanges
         headerName: this.translate.instant('equipment.isUsed'), 
         field: 'isUsed', 
         sortable: false,
-        cellRenderer: 'booleanCellRendererComponent',
+        cellRenderer: 'usedCellRendererComponent',
         width: 100
       },
       {
-        headerName: this.translate.instant('equipment.isDefect'), 
+        headerName: this.translate.instant('equipment.functional'), 
         field: 'isDefect', 
         sortable: false,
-        cellRenderer: 'booleanCellRendererComponent',
+        cellRenderer: 'defectCellRenderedComponent',
         width: 100
       },
       {

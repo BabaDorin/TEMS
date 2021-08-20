@@ -7,6 +7,10 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./tems.component.scss']
 })
 export class TEMSComponent implements OnDestroy{
+  
+  // If a component is opened using Mat-Dialog, this will contain the dialog reference.
+  dialogRef;
+  
   // Parent component for many others
   cancelFirstOnChange = true;
 

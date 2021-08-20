@@ -6,7 +6,6 @@ import { EquipmentFilter } from 'src/app/helpers/filters/equipment.filter';
 import { Component, Inject, Input, OnInit, Optional, Output, EventEmitter } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { AttachEquipment } from 'src/app/models/equipment/attach-equipment.model';
 import { ViewEquipment } from 'src/app/models/equipment/view-equipment.model';
 import { EquipmentService } from 'src/app/services/equipment.service';
 import { SnackService } from '../../../services/snack.service';
@@ -20,7 +19,6 @@ import { TEMSComponent } from './../../../tems/tems.component';
 })
 export class AttachEquipmentComponent extends TEMSComponent implements OnInit {
 
-  dialogRef;
   @Input() equipment: ViewEquipment;
   @Output() childAttached = new EventEmitter();
 
@@ -125,29 +123,6 @@ export class AttachEquipmentComponent extends TEMSComponent implements OnInit {
         resolve(true);
       });
     });
-  }
-
-  onSubmit(model) {
-    let selectedEq = model.equipmentToAttach.value;
-
-    if (selectedEq == undefined || selectedEq.length == 0) {
-      this.snackService.snack({ message: "Please, provide at least one equipment to allocate", status: 0 });
-      return;
-    }
-
-    let attachEquipment = new AttachEquipment();
-    attachEquipment.parentId = this.equipment.id;
-    attachEquipment.childrenIds = selectedEq.map(q => q.value);
-
-    this.subscriptions.push(
-      this.equipmentService.attach(attachEquipment)
-        .subscribe(result => {
-          this.snackService.snack(result);
-
-          if (result.status == 1)
-            this.dialogRef.close();
-        })
-    )
   }
 
   attached(rowData){

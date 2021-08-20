@@ -25,15 +25,16 @@ export class EquipmentDetailsGeneralComponent extends TEMSComponent implements O
   @Input() displayViewMore: boolean = false;
   @Output() archivationStatusChanged = new EventEmitter();
   
-  dialogRef;
   headerClass; // muted when archieved
+  editing = false;
+
   equipment: ViewEquipment;
   generalProperties: Property[];
-  detachedEquipments = [];
-  editing = false;
+  detachedEquipment = [];
 
   get canAttach(){
     // returns true if equipment can have children
+    // BEFREE: True if type has children. We don't care that much about definition children here.
     return this.equipment.definition.children.length > 0;
   }
 
@@ -54,55 +55,40 @@ export class EquipmentDetailsGeneralComponent extends TEMSComponent implements O
   }
 
   ngOnInit(): void {
-    this.subscriptions.push(this.equipmentService.getEquipmentByID(this.equipmentId)
-      .subscribe(response => {
-        if(this.snackService.snackIfError(response))
-          return;
-        
-        this.equipment = response;
-        this.headerClass = (this.equipment.isArchieved) ? 'text-muted' : '';
-
-        this.generalProperties= [
-          { displayName: this.translate.instant('equipment.identifier'), value: this.equipment.definition.identifier},
-          { displayName: this.translate.instant('equipment.type'), value: this.equipment.type.name},
-          { displayName: this.translate.instant('equipment.TEMSID'), value: this.equipment.temsId },
-          { displayName: this.translate.instant('equipment.serialNumber'), value: this.equipment.serialNumber},
-          { displayName: this.translate.instant('equipment.isUsed'), dataType: 'boolean', name: 'isUsed', value: this.equipment.isUsed},
-          { displayName: this.translate.instant('equipment.isDefect'), dataType: 'boolean', name: 'isUsed', value: this.equipment.isDefect},
-          { displayName: this.translate.instant('equipment.description'), dataType: 'string', name: 'description', value: this.equipment.description},
-        ];
-    
-        if(this.detachedEquipments != undefined){
-          this.detachedEquipments = this.detachedEquipments.filter(q => {
-            return this.equipment.children.findIndex(eq => eq.value == q.value) == -1
-          })
-        }
-      }))
+    this.fetchEquipment();
   }
 
+  // Fetch equipment data having it's ID and prepare it to be displayed on the view 
+  fetchEquipment(){
+    this.subscriptions.push(this.equipmentService.getEquipmentByID(this.equipmentId)
+    .subscribe(response => {
+      if(this.snackService.snackIfError(response))
+        return;
+      
+      this.equipment = response;
+      this.headerClass = (this.equipment.isArchieved) ? 'text-muted' : '';
+
+      this.generalProperties= [
+        { displayName: this.translate.instant('equipment.identifier'), value: this.equipment.definition.identifier},
+        { displayName: this.translate.instant('equipment.type'), value: this.equipment.type.name},
+        { displayName: this.translate.instant('equipment.TEMSID'), value: this.equipment.temsId },
+        { displayName: this.translate.instant('equipment.serialNumber'), value: this.equipment.serialNumber},
+        { displayName: this.translate.instant('equipment.isUsed'), dataType: 'boolean', name: 'isUsed', value: this.equipment.isUsed},
+        { displayName: this.translate.instant('equipment.isDefect'), dataType: 'boolean', name: 'isUsed', value: this.equipment.isDefect},
+        { displayName: this.translate.instant('equipment.description'), dataType: 'string', name: 'description', value: this.equipment.description},
+      ];
+  
+      if(this.detachedEquipment != undefined){
+        this.detachedEquipment = this.detachedEquipment.filter(q => {
+          return this.equipment.children.findIndex(eq => eq.value == q.value) == -1
+        });
+      }
+    }));
+  }
+
+  // Toggles the 'editing' property, which triggers the view to display it's data is a more "muted" way
   edit(){
     this.editing = true;    
-  }
-
-  archieve(){
-    if(!this.equipment.isArchieved && !confirm("Are you sure you want to archive this item? It will result in archieving all of it's logs and allocations"))
-      return;
-
-    let newArchivationStatus = !this.equipment.isArchieved;
-    this.subscriptions.push(
-      this.equipmentService.archieveEquipment(this.equipmentId, newArchivationStatus)
-      .subscribe(result => {
-        this.snackService.snack(result);
-
-        if(result.status == 1)
-          this.equipment.isArchieved = newArchivationStatus;
-          this.headerClass = (this.equipment.isArchieved) ? 'text-muted' : '';
-
-        this.archivationStatusChanged.emit(this.equipment.isArchieved);
-
-        this.ngOnInit();
-      })
-    )
   }
 
   viewMore(){
@@ -110,32 +96,7 @@ export class EquipmentDetailsGeneralComponent extends TEMSComponent implements O
       this.dialogRef.close();
   }
 
-  changeWorkingState(){
-    this.subscriptions.push(
-      this.equipmentService.changeWorkingState(this.equipmentId)
-      .subscribe(result => {
-        if(this.snackService.snackIfError(result))
-          return;
-
-        this.equipment.isDefect = !this.equipment.isDefect;
-        this.generalProperties[this.generalProperties.length-1].value = this.equipment.isDefect;
-      })
-    )
-  }
-
-  changeUsingState(){
-    this.subscriptions.push(
-      this.equipmentService.changeUsingState(this.equipmentId)
-      .subscribe(result =>{
-        if(this.snackService.snackIfError(result))
-          return;
-      
-        this.equipment.isUsed = !this.equipment.isUsed;
-        this.generalProperties[this.generalProperties.length-2].value = this.equipment.isUsed;
-      })
-    )
-  }
-
+  // Displays the 'AttachEquipmentComponent' in a mat-dialog
   async attach(){
     await this.lazyLoader.loadModuleAsync('tems-ag-grid/attach-equipment-ag-grid.module.ts');
 
@@ -154,26 +115,27 @@ export class EquipmentDetailsGeneralComponent extends TEMSComponent implements O
   detached(index: number){
     // child is of type IOption, label => identifier, value => id, additional => flag indicating whether is it atached or not.
     let detachedChild = this.equipment.children[index];
-    this.detachedEquipments.push(detachedChild);
+    this.detachedEquipment.push(detachedChild);
     this.equipment.children.splice(index, 1);
   };
 
   // equipment's index within detachedEquipment list (makes sense)
-  attached(index: number){
-    let attachedChild = this.detachedEquipments[index];
-    this.detachedEquipments.splice(index, 1);
+  attached(indexFromDetachedEqList: number){
+    let attachedChild = this.detachedEquipment[indexFromDetachedEqList];
+    this.detachedEquipment.splice(indexFromDetachedEqList, 1);
     this.equipment.children.push(attachedChild);
   }
 
   // when some equipment is attached via AttachEquipmentComponent
   attachedFromAttachView(attachedEq: IOption){
-    let childEqIndexFromDetached = this.detachedEquipments.findIndex(q => q.value == attachedEq.value);
+    let childEqIndexFromDetached = this.detachedEquipment.findIndex(q => q.value == attachedEq.value);
     if(childEqIndexFromDetached != -1)
-      this.detachedEquipments.splice(childEqIndexFromDetached, 1);
+      this.detachedEquipment.splice(childEqIndexFromDetached, 1);
     
     this.equipment.children.push(attachedEq);
   }
 
+  // Display allocatee information in a mat-dialog
   viewAllocatee(){
     // Allocated to personnel
     if(this.equipment.personnel != undefined){
@@ -196,5 +158,53 @@ export class EquipmentDetailsGeneralComponent extends TEMSComponent implements O
         ]
       );
     }
+  }
+
+  // Menu actions
+  archieve(){
+    if(!this.equipment.isArchieved && !confirm("Are you sure you want to archive this item? It will result in archieving all of it's logs and allocations"))
+      return;
+
+    let newArchivationStatus = !this.equipment.isArchieved;
+    this.subscriptions.push(
+      this.equipmentService.archieveEquipment(this.equipmentId, newArchivationStatus)
+      .subscribe(result => {
+        this.snackService.snack(result);
+
+        if(result.status == 1)
+          this.equipment.isArchieved = newArchivationStatus;
+          this.headerClass = (this.equipment.isArchieved) ? 'text-muted' : '';
+
+        this.archivationStatusChanged.emit(this.equipment.isArchieved);
+
+        this.ngOnInit();
+      })
+    )
+  }
+
+  changeWorkingState(){
+    this.subscriptions.push(
+      this.equipmentService.changeWorkingState(this.equipmentId)
+      .subscribe(result => {
+        if(this.snackService.snackIfError(result))
+          return;
+
+        this.equipment.isDefect = !this.equipment.isDefect;
+        this.generalProperties[this.generalProperties.length-1].value = this.equipment.isDefect;
+      })
+    );
+  }
+
+  changeUsingState(){
+    this.subscriptions.push(
+      this.equipmentService.changeUsingState(this.equipmentId)
+      .subscribe(result =>{
+        if(this.snackService.snackIfError(result))
+          return;
+      
+        this.equipment.isUsed = !this.equipment.isUsed;
+        this.generalProperties[this.generalProperties.length-2].value = this.equipment.isUsed;
+      })
+    );
   }
 }

@@ -7,11 +7,12 @@
             {{ 'equipment.attachTip' | translate }} {{ equipment.definition.identifier }}.
         </p>
         <hr>
-        <form [formGroup]="attachEquipmentFormGroup" (submit)="onSubmit(attachEquipmentFormGroup.controls)">
+        <form [formGroup]="attachEquipmentFormGroup">
             <div class="row">
+
+                <!-- Select type -->
                 <div class="col-md-4 text-center">
                     <mat-form-field>
-                        <!-- Select type -->
                         <mat-label>
                             {{ 'entities.types' | translate }}
                         </mat-label>
@@ -22,9 +23,10 @@
                         </mat-select>
                     </mat-form-field>
                 </div>
+
+                <!-- Select definition -->
                 <div class="col-md-4 text-center">
                     <mat-form-field>
-                        <!-- Select within definitions of that type -->
                         <mat-label>
                             {{ 'equipment.availableDefinitions' | translate }}
                         </mat-label>
@@ -35,6 +37,8 @@
                         </mat-select>
                     </mat-form-field>
                 </div>
+
+                <!-- Include Attached mat-checkbox -->
                 <div class="col-md-4 text-center">
                     <mat-checkbox formControlName="includeAttached" (change)="filterChanged()">
                         {{ 'equipment.includeAttached' | translate }}
@@ -45,6 +49,8 @@
                 </div>
             </div>
         </form>
+
+        <!-- Ag Grid containing relevand equipment to be attached -->
         <ng-container *ngIf="equipmentFilter != undefined">
             <app-ag-grid-attach-equipment [parentId]="equipment.id" [equipmentFilter]="equipmentFilter"
                 (attached)="attached($event)">

@@ -1,3 +1,4 @@
+import { IResponse } from './../models/system/response.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Injectable } from '@angular/core';
 
@@ -33,7 +34,7 @@ export class SnackService {
     return response;
   }
 
-  snack(response, sclass?){
+  snack(response: IResponse, sclass?){
     let responseModel = this.sanitarizeResponse(response);
 
     if(responseModel.status == undefined)

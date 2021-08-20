@@ -1,3 +1,4 @@
+import { ResponseFactory } from './../../../models/system/response.model';
 import { BooleanCellRendererComponent } from './../../../public/ag-grid/boolean-cell-renderer/boolean-cell-renderer.component';
 import { AttachEquipment } from './../../../models/equipment/attach-equipment.model';
 import { EquipmentService } from 'src/app/services/equipment.service';
@@ -14,23 +15,22 @@ import { propertyChanged } from 'src/app/helpers/onchanges-helper';
   templateUrl: './ag-grid-attach-equipment.component.html',
   styleUrls: ['./ag-grid-attach-equipment.component.scss']
 })
-export class AgGridAttachEquipmentComponent extends TEMSComponent implements OnInit, OnChanges {
+export class AgGridAttachEquipmentComponent extends TEMSComponent implements OnChanges {
 
   @Input() equipmentFilter: EquipmentFilter;
   @Input() parentId: string;
-
   @Output() attached = new EventEmitter();
+
+  loading: boolean = true;
 
   gridApi;
   gridColumnApi;
   columnDefs;
   defaultColDef;
-  rowSelection;
   rowData: [];
   frameworkComponents: any;
   pagination
   paginationPageSize;
-  loading: boolean = true;
 
   constructor(
     private translate: TranslateService,
@@ -95,14 +95,13 @@ export class AgGridAttachEquipmentComponent extends TEMSComponent implements OnI
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if(propertyChanged(changes, "equipmentFilter")){
-        this.fetchEquipment();
-    }
+    if (propertyChanged(changes, "equipmentFilter"))
+      this.fetchEquipment();
   }
 
   attach(eventData) {
     if (this.parentId == undefined) {
-      this.snackService.snack({ message: 'Parent not specified', status: 0 });
+      this.snackService.snack(ResponseFactory.Neutral("Parent not specified"));
       return;
     }
 
@@ -120,10 +119,7 @@ export class AgGridAttachEquipmentComponent extends TEMSComponent implements OnI
             this.attached.emit(eventData.rowData);
           }
         })
-    )
-  }
-
-  ngOnInit(): void {
+    );
   }
 
   onGridReady(params) {
@@ -134,7 +130,7 @@ export class AgGridAttachEquipmentComponent extends TEMSComponent implements OnI
 
   fetchEquipment() {
     if (this.equipmentFilter == undefined) {
-      this.snackService.snack({ message: "filter not provided", status: 1 });
+      this.snackService.snack(ResponseFactory.Neutral("filter not provided"));
       return;
     }
 

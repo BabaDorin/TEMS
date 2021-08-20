@@ -69,25 +69,14 @@ export class ViewArchieveComponent extends TEMSComponent implements OnInit {
     if (!this.validateSelectedNodes(selected))
       return;
 
-    let removingResult = "Success";
-
     for (let i = 0; i < selected.length; i++) {
       this.archieveService.removeEntity(this.selectedType, selected[i].id)
         .subscribe(result => {
-          if (result.status == 0)
-            removingResult += selected[i].identifier + " failed, [" + result.message + "]\n";
-          else
-            this.agArchievedItems.removeItem(selected[i]);
+          if(this.snackService.snackIfError(result))
+            return;
 
-          if (i == selected.length - 1) {
-            let status = 1;
-
-            if (removingResult != "Success")
-              status = 0;
-
-            this.snackService.snack(removingResult, status);
-          }
-        })
+          this.agArchievedItems.removeItem(selected[i]);
+        });
     }
   }
 
@@ -96,25 +85,16 @@ export class ViewArchieveComponent extends TEMSComponent implements OnInit {
     if (!this.validateSelectedNodes(selected))
       return;
 
-    let archivationResult = "Success";
     for (let i = 0; i < selected.length; i++) {
       this.subscriptions.push(
         this.archieveService.setArchivationStatus(this.selectedType, selected[i].id, false)
           .subscribe(result => {
-            if (result.status == 0)
-              archivationResult += selected[i].identifier + " failed, [" + result.message + "]\n";
-            else
-              this.agArchievedItems.removeItem(selected[i]);
-
-            if (i == selected.length - 1) {
-              let status = 1;
-              if (archivationResult != "Success")
-                status = 0;
-
-              this.snackService.snack(archivationResult, status);
-            }
+            if(this.snackService.snackIfError(result))
+              return;
+              
+            this.agArchievedItems.removeItem(selected[i]);
           })
-      )
+      );
     }
   }
 }

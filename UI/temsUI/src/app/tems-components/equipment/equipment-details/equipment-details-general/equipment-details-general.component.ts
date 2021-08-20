@@ -62,6 +62,7 @@ export class EquipmentDetailsGeneralComponent extends TEMSComponent implements O
   fetchEquipment(){
     this.subscriptions.push(this.equipmentService.getEquipmentByID(this.equipmentId)
     .subscribe(response => {
+      console.log(response);
       if(this.snackService.snackIfError(response))
         return;
       
@@ -92,6 +93,19 @@ export class EquipmentDetailsGeneralComponent extends TEMSComponent implements O
   viewMore(){
     if(this.dialogRef != undefined)
       this.dialogRef.close();
+  }
+
+  viewParent(){
+    if(this.equipment.parent == undefined)
+      return;
+    
+    this.dialogService.openDialog(
+      EquipmentDetailsGeneralComponent,
+      [
+        { label: "displayViewMore", value: true },
+        { label: "equipmentId", value: this.equipment.parent.value },
+      ]
+    );
   }
 
   // Displays the 'AttachEquipmentComponent' in a mat-dialog

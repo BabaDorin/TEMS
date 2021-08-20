@@ -136,6 +136,7 @@
     },
     
     "equipment": {
+        "parent": "Părinte",
         "allocation": "Alocare de echipament",
         "selectEquipmentToAllocateLabel": "Selectează echipamentele spre alocare",
         "createAllocation": "Alocă",

@@ -81,8 +81,19 @@
             <ng-container *ngIf="!editing; else elseBlock">
                 <!-- Actual equipment information -->
                 
+                <!-- Parent (if any) -->
+                <ng-container *ngIf="equipment.parent != undefined">
+                    <h2 class="text-muted text-bold">
+                        <mat-icon class="text-primary">link</mat-icon> {{ 'equipment.parent' | translate }}
+                    </h2>
+                    <hr>
+                    <button mat-button (click)="viewParent()">
+                        <mat-icon class="text-primary">computer</mat-icon> {{ equipment.parent.label }}
+                    </button>    
+                </ng-container>
+
                 <!-- Allocated to: -->
-                <h2 class="text-muted text-bold">
+                <h2 class="text-muted text-bold mt-5">
                     <mat-icon class="text-primary">double_arrow</mat-icon> {{ 'equipment.allocatedTo' | translate }}
                 </h2>
                 <hr>

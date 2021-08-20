@@ -137,6 +137,7 @@
     },
     
     "equipment": {
+        "parent": "Parent",
         "allocation": "Equipment allocation",
         "selectEquipmentToAllocateLabel": "Select the equipment you want to allocate",
         "createAllocation": "Create allocation",

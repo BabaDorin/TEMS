@@ -10,10 +10,12 @@ namespace temsAPI.Data.Factories.LogFactories
     public class AllocationRoomLogFactory : ILogFactory
     {
         private EquipmentAllocation _allocation;
+        private string _createdById;
 
-        public AllocationRoomLogFactory(EquipmentAllocation equipmentAllocation)
+        public AllocationRoomLogFactory(EquipmentAllocation equipmentAllocation, string createdById = null)
         {
             _allocation = equipmentAllocation;
+            _createdById = createdById;
         }
 
         public Log Create()
@@ -21,6 +23,7 @@ namespace temsAPI.Data.Factories.LogFactories
             return new Log()
             {
                 Id = Guid.NewGuid().ToString(),
+                CreatedByID = _createdById,
                 RoomID = _allocation.RoomID,
                 DateCreated = DateTime.Now,
                 Description = String.Format(

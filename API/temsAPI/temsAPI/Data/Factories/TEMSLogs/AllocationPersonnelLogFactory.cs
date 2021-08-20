@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using temsAPI.Data.Entities.CommunicationEntities;
 using temsAPI.Data.Entities.EquipmentEntities;
 
@@ -10,10 +7,12 @@ namespace temsAPI.Data.Factories.LogFactories
     public class AllocationPersonnelLogFactory : ILogFactory
     {
         private EquipmentAllocation _allocation;
+        private string _createdById;
 
-        public AllocationPersonnelLogFactory(EquipmentAllocation equipmentAllocation)
+        public AllocationPersonnelLogFactory(EquipmentAllocation equipmentAllocation, string createdById = null)
         {
             _allocation = equipmentAllocation;
+            _createdById = createdById;
         }
 
         public Log Create()
@@ -21,6 +20,7 @@ namespace temsAPI.Data.Factories.LogFactories
             return new Log()
             {
                 Id = Guid.NewGuid().ToString(),
+                CreatedByID = _createdById,
                 PersonnelID = _allocation.PersonnelID,
                 DateCreated = DateTime.Now,
                 Description = String.Format(

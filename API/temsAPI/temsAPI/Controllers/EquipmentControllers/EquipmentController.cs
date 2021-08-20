@@ -139,7 +139,7 @@ namespace temsAPI.Controllers.EquipmentControllers
             if (model == null)
                 return ReturnResponse("Invalid equipment id provided", ResponseStatus.Neutral);
 
-            var viewModel = ViewEquipmentViewModel.ParseEquipment(model);
+            var viewModel = ViewEquipmentViewModel.FromModel(model);
             return Ok(viewModel);
         }
 

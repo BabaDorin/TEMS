@@ -11,10 +11,12 @@ namespace temsAPI.Data.Factories.LogFactories
     public class AllocationEquipmentLogFactory : ILogFactory
     {
         private EquipmentAllocation _allocation;
+        private string _createdById;
 
-        public AllocationEquipmentLogFactory(EquipmentAllocation equipmentAllocation)
+        public AllocationEquipmentLogFactory(EquipmentAllocation equipmentAllocation, string createdById = null)
         {
             _allocation = equipmentAllocation;
+            _createdById = createdById;
         }
 
         public Log Create()
@@ -22,6 +24,7 @@ namespace temsAPI.Data.Factories.LogFactories
             return new Log()
             {
                 Id = Guid.NewGuid().ToString(),
+                CreatedByID = _createdById,
                 DateCreated = DateTime.Now,
                 EquipmentID = _allocation.EquipmentID,
                 Description = String.Format("Has been allocated to {0}.",

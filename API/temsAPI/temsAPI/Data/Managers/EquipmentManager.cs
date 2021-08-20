@@ -18,6 +18,8 @@ using temsAPI.System_Files;
 using temsAPI.ViewModels;
 using temsAPI.ViewModels.Allocation;
 using temsAPI.ViewModels.Equipment;
+using temsAPI.Helpers.ReusableSnippets;
+using FluentEmail.Core;
 
 namespace temsAPI.Data.Managers
 {
@@ -373,30 +375,53 @@ namespace temsAPI.Data.Managers
                 {
                     await ClosePreviousAllocations(equipment.Value);
 
-                    var model = new EquipmentAllocation
+                    // Allocate parent along with it's children
+                    var equipmentIdsToBeAllocated = (await _unitOfWork.Equipments
+                        .Find<Equipment>(
+                            where: q => q.Id == equipment.Value,
+                            include: q => q.Include(q => q.Children)))
+                        .Select(q =>
+                        {
+                            // ids = parent id + children ids
+                            List<string> ids = new List<string>() { q.Id };
+
+                            if (q.Children.IsNullOrEmpty())
+                                return ids;
+
+                            q.Children.ForEach(ch => ids.Add(ch.Id));
+                            return ids;
+                        })
+                        .FirstOrDefault();
+
+                    string currentUserId = IdentityService.GetUserId(_user);
+
+                    foreach(string eqToAllocate in equipmentIdsToBeAllocated)
                     {
-                        Id = Guid.NewGuid().ToString(),
-                        DateAllocated = DateTime.Now,
-                        EquipmentID = equipment.Value,
-                    };
+                        var model = new EquipmentAllocation
+                        {
+                            Id = Guid.NewGuid().ToString(),
+                            DateAllocated = DateTime.Now,
+                            EquipmentID = eqToAllocate,
+                        };
 
-                    if (viewModel.AllocateToType == "personnel")
-                        model.PersonnelID = viewModel.AllocateToId;
-                    else
-                        model.RoomID = viewModel.AllocateToId;
+                        if (viewModel.AllocateToType == "personnel")
+                            model.PersonnelID = viewModel.AllocateToId;
+                        else
+                            model.RoomID = viewModel.AllocateToId;
 
-                    await _unitOfWork.EquipmentAllocations.Create(model);
-                    await _unitOfWork.Save();
+                        await _unitOfWork.EquipmentAllocations.Create(model);
+                        await _unitOfWork.Save();
 
-                    var logModel = await GetFullAllocationById(model.Id);
+                        var logModel = await GetFullAllocationById(model.Id);
 
-                    var eqAllocationLog = new AllocationEquipmentLogFactory(logModel).Create();
-                    var allocateeAllocationLog = (logModel.RoomID != null)
-                        ? new AllocationRoomLogFactory(logModel).Create()
-                        : new AllocationPersonnelLogFactory(logModel).Create();
+                        var eqAllocationLog = new AllocationEquipmentLogFactory(logModel, currentUserId).Create();
+                        var allocateeAllocationLog = (logModel.RoomID != null)
+                            ? new AllocationRoomLogFactory(logModel, currentUserId).Create()
+                            : new AllocationPersonnelLogFactory(logModel, currentUserId).Create();
 
-                    await _logManager.Create(eqAllocationLog);
-                    await _logManager.Create(allocateeAllocationLog);
+                        await _logManager.Create(eqAllocationLog);
+                        await _logManager.Create(allocateeAllocationLog);
+                    }
                 }
                 catch (Exception ex)
                 {

@@ -32,7 +32,7 @@ namespace temsAPI.ViewModels.Equipment
             Photos = new List<string>();
         }
 
-        public static ViewEquipmentViewModel ParseEquipment(Data.Entities.EquipmentEntities.Equipment model)
+        public static ViewEquipmentViewModel FromModel(Data.Entities.EquipmentEntities.Equipment model)
         {
             var activeRoomAllocation = model.EquipmentAllocations
                     .Where(q => q.DateReturned == null && q.RoomID != null)
@@ -53,6 +53,13 @@ namespace temsAPI.ViewModels.Equipment
                 TemsId = model.TEMSID,
                 Description = model.Description,
                 Type = ViewEquipmentTypeViewModel.FromModel(model.EquipmentDefinition.EquipmentType),
+                Parent = (model.Parent == null)
+                        ? null
+                        : new Option
+                        {
+                            Value = model.Parent.Id,
+                            Label = $"{model.Parent.EquipmentDefinition.Identifier} [{model.Parent.TemsIdOrSerialNumber}]",
+                        },
                 Personnel = (activePersonnelAllocation == null)
                         ? null
                         : new Option
@@ -66,13 +73,6 @@ namespace temsAPI.ViewModels.Equipment
                         {
                             Value = activeRoomAllocation.RoomID,
                             Label = activeRoomAllocation.Room.Identifier
-                        },
-                Parent = (model.Parent == null)
-                        ? null
-                        : new Option
-                        {
-                            Value = model.Parent.Id,
-                            Label = model.Parent.EquipmentDefinition.Identifier,
                         },
                 Children = model.Children?.Select(q => new Option
                         {

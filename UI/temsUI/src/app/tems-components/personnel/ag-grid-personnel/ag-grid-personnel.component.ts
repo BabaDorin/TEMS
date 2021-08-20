@@ -19,7 +19,6 @@ export class AgGridPersonnelComponent extends TEMSComponent {
   gridColumnApi;
   columnDefs;
   defaultColDef;
-  rowSelection;
   rowData: [];
   frameworkComponents: any;
   pagination

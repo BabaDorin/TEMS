@@ -19,7 +19,6 @@ export class AgGridArchievedItemsComponent extends TEMSComponent implements OnIn
   gridColumnApi;
   columnDefs;
   defaultColDef;
-  rowSelection;
   rowData: ArchievedItem[];
   pagination
   paginationPageSize;
@@ -53,8 +52,6 @@ export class AgGridArchievedItemsComponent extends TEMSComponent implements OnIn
       headerCheckboxSelection: this.isFirstColumn,
       checkboxSelection: this.isFirstColumn,
     };
-
-    this.rowSelection = 'multiple';
   }
 
   ngOnChanges(changes: SimpleChanges): void {

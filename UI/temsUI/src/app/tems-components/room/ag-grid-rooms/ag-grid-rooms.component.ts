@@ -19,7 +19,6 @@ export class AgGridRoomsComponent extends TEMSComponent {
   gridColumnApi;
   columnDefs;
   defaultColDef;
-  rowSelection;
   rowData: [];
   frameworkComponents: any;
   pagination

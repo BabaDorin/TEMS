@@ -103,6 +103,12 @@ namespace temsAPI.Data.Managers
                     .ToList()
                     : new List<Personnel>();
             model.SeparateBy = viewModel.SeparateBy;
+            model.IncludeInUse = viewModel.IncludeInUse;
+            model.IncludeUnused = viewModel.IncludeUnused;  
+            model.IncludeFunctional = viewModel.IncludeFunctional;
+            model.IncludeDefect = viewModel.IncludeDefect;
+            model.IncludeParent = viewModel.IncludeParent;
+            model.IncludeChildren = viewModel.IncludeChildren;
             model.Properties = (propertyIds != null)
                     ? (await _unitOfWork.Properties
                     .FindAll<Property>(q => propertyIds.Contains(q.Name)))

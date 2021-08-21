@@ -1,6 +1,6 @@
 import { DownloadService } from './../../../download.service';
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { IOption } from 'src/app/models/option.model';
@@ -14,6 +14,7 @@ import { RoomsService } from '../../../services/rooms.service';
 import { SnackService } from '../../../services/snack.service';
 import { TypeService } from '../../../services/type.service';
 import { TEMSComponent } from '../../../tems/tems.component';
+import { atLeastOne } from 'src/app/models/validators';
 
 @Component({
   selector: 'app-create-report-template',
@@ -57,7 +58,12 @@ export class CreateReportTemplateComponent extends TEMSComponent implements OnIn
     header: new FormControl(),
     footer: new FormControl(),
     signatories: new FormControl()
-  });
+  }, 
+  { validators: [
+    atLeastOne(Validators.requiredTrue, ['includeInUse', 'includeUnused']),
+    atLeastOne(Validators.requiredTrue, ['includeFunctional', 'includeDefect']),
+    atLeastOne(Validators.requiredTrue, ['includeParent', 'includeChildren']),
+  ]});
 
   constructor(
     public roomService: RoomsService,
@@ -106,7 +112,6 @@ export class CreateReportTemplateComponent extends TEMSComponent implements OnIn
       this.reportService.getReportTemplateToUpdate(this.updateReportId)
       .subscribe(result => {
         this.templateToUpdate = result;
-
         if(this.templateToUpdate == null)
           return;
 
@@ -299,7 +304,6 @@ export class CreateReportTemplateComponent extends TEMSComponent implements OnIn
 
   save() {
     let addReportTemplateModel = this.getReportTemplate();
-    console.log(addReportTemplateModel);
     let endPoint = this.reportService.addReportTemplate(addReportTemplateModel);
     
     if(addReportTemplateModel.id != undefined)

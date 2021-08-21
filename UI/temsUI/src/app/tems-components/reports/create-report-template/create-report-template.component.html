@@ -169,11 +169,11 @@
           </app-chips-autocomplete>
         </mat-step>
       </mat-vertical-stepper>
-      <button mat-button (click)="save()" class="d-block">
+      <button mat-button (click)="save()" class="d-block" [disabled]="reportFormGroup.invalid">
         <mat-icon class="text-primary">save</mat-icon>
         {{ 'report.save' | translate }}
       </button>
-      <button mat-button (click)="generateReport()" class="d-block">
+      <button mat-button (click)="generateReport()" class="d-block" [disabled]="reportFormGroup.invalid">
         <mat-icon class="text-primary">print</mat-icon>
         {{ 'report.generate' | translate }}
       </button>

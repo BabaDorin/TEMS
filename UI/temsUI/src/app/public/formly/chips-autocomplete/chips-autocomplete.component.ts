@@ -131,8 +131,13 @@ export class ChipsAutocompleteComponent implements OnInit, ControlValueAccessor,
     let typedOption = { value: undefined, label: value };
 
     // If accepting only values from dropdown
+    console.log(this.onlyValuesFromAutocomplete)
     if (this.onlyValuesFromAutocomplete == true) {
+      console.log('typed: ' + value);
+      console.log('filtered options: ');
+      console.log(this.filteredOptions);
       typedOption = this.filteredOptions.find(q => q.label.toLowerCase() == value.toLowerCase());
+      console.log(typedOption);
     }
 
     if (typedOption != undefined) {

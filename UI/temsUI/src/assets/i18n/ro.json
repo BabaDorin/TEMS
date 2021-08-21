@@ -507,7 +507,7 @@
         "dataSelection": "Selectarea datelor",
         "dataSelectionTip": "Specifică modurile de filtrare și grupare a datelor",
         "createTemplateTip": "Dacă doriți să salvați acest șablon, acordați-i un nume și o descriere dacă este necesar.",
-        "prop_temsid": "TEMSID",
+        "prop_TEMSID": "TEMSID",
         "prop_serialNumber": "Numărul de serie",
         "prop_definition": "Definiția", 
         "prop_type": "Tipul",

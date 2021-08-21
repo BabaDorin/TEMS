@@ -38,7 +38,10 @@
                 </div>
             </ng-container>
         </div>
-        <p class="text-muted" *ngIf="template.createdBy.fullName != undefined">{{ 'general.createdBy' | translate }} {{template.createdBy.fullName}}</p>
+
+        <p class="text-muted" *ngIf="template.createdBy != undefined">
+            {{ 'general.createdBy' | translate }} {{template.createdBy.fullName}}
+        </p>
 
         <p class="template-description text-justify">
             {{template.description}}
@@ -54,5 +57,3 @@
         </div>
     </mat-card-content>
 </mat-card>
-
-<!-- <img src="assets/svgs/report-icon.svg"> -->

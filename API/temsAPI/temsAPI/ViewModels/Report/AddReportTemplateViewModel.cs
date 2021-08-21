@@ -79,6 +79,12 @@ namespace temsAPI.ViewModels.Report
                     .ToList()
                     : new List<Data.Entities.OtherEntities.Personnel>(),
                 SeparateBy = SeparateBy,
+                IncludeInUse = IncludeInUse,
+                IncludeUnused = IncludeUnused,
+                IncludeFunctional = IncludeFunctional,
+                IncludeDefect = IncludeDefect,
+                IncludeChildren = IncludeChildren,
+                IncludeParent = IncludeParent,
                 Properties = (propertyIds != null)
                     ? (await unitOfWork.Properties
                     .FindAll<Data.Entities.EquipmentEntities.Property>(
@@ -102,13 +108,6 @@ namespace temsAPI.ViewModels.Report
                     ? String.Join(" ", commonProperties)
                     : null
             };
-
-            if (author.Email == "tems@dmin" || author.UserName == "tems@dmin")
-            {
-                model.CreatedBy = null;
-                model.CreatedById = null;
-            }
-
             return model;
         }
         
@@ -141,6 +140,12 @@ namespace temsAPI.ViewModels.Report
                 }).ToList(),
                 Properties = template.Properties.Select(q => q.Name).ToList(),
                 SeparateBy = template.SeparateBy,
+                IncludeInUse = template.IncludeInUse,
+                IncludeUnused = template.IncludeUnused,
+                IncludeFunctional = template.IncludeFunctional,
+                IncludeDefect = template.IncludeDefect,
+                IncludeChildren = template.IncludeChildren,
+                IncludeParent = template.IncludeParent,
                 Header = template.Header,
                 Footer = template.Footer,
                 Signatories = template.Signatories.Select(q => new Option
@@ -198,6 +203,16 @@ namespace temsAPI.ViewModels.Report
                 foreach (var item in Signatories)
                     if (!await unitOfWork.Personnel.isExists(q => q.Id == item.Value))
                         return $"{item.Label} is not a valid personnel";
+
+            // Validate is there is any logig regardless some filter flags
+            if (!IncludeInUse && !IncludeUnused)
+                return "Do not include in use, do not include unused :| What to include then?";
+
+            if (!IncludeFunctional && !IncludeDefect)
+                return "Do not include functional, do not include defect :| What to include then?";
+
+            if (!IncludeParent && !IncludeChildren)
+                return "Do not include parent, do not include children :| What to include then?";
 
             // Invalid SepparateBy
             if (new List<string>() { "none", "room", "personnel", "type", "definition" }

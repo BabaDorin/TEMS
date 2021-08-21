@@ -503,9 +503,9 @@
         "definitions": "Definițiile tipurilor selectate",
         "roomsFilter": "Include doar echipamentele alocate către aceste săli",
         "personnelFilter": "Include doar echipamentele alocate către aceste persoane",
-        "layoutConfiguration": "Configurarea aspectului",
         "noSubjectSelected": "Mai întâi selectați un subiect suportat",
-        "layoutConfigurationTip": "Configurați modul în care TEMS va genera rapoarte.",
+        "dataSelection": "Selectarea datelor",
+        "dataSelectionTip": "Specifică modurile de filtrare și grupare a datelor",
         "createTemplateTip": "Dacă doriți să salvați acest șablon, acordați-i un nume și o descriere dacă este necesar.",
         "prop_temsid": "TEMSID",
         "prop_serialNumber": "Numărul de serie",
@@ -515,7 +515,17 @@
         "prop_price": "Prețul",
         "prop_currency": "Valuta",
         "prop_purchaseDate": "Data procurării",
-        "prop_allocatee": "Cesionar (La moment)"
+        "prop_allocatee": "Cesionar (La moment)",
+        "filterEquipmentLabel": "Filtreză după tip, definiție și cesionar",
+        "usingState": "Starea de utilizare",
+        "includeInUse": "În uz",
+        "includeUnused": "Neutilizate",
+        "functionalState": "Starea de funcționare",
+        "includeFunctional": "Funcționale",
+        "includeDefect": "Defecte",
+        "other": "Altele",
+        "includeParent": "Include echipamente părinte",
+        "includeChildren": "Include echipamentele copil (componente)"
     },
 
     "bugReport": {

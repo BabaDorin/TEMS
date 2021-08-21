@@ -3,17 +3,17 @@ export interface IAddReportTemplate{
     id: string,
     name: string,
     description: string,
-    subject: string, // equipment, room ...
     definitions: IOption[],
     personnel: IOption[],
     types: IOption[],
     rooms: IOption[],
     separateBy: string,
-    commonProperties: string[],
-    specificProperties: {
-        type: string,
-        properties: string[]
-    }[],
+    includeInUse: boolean,
+    includeUnused: boolean,
+    includeFunctional: boolean,
+    includeDefect: boolean,
+    includeParent: boolean,
+    includeChildren: boolean,
     properties?: string[],
     header: string,
     footer: string,
@@ -24,12 +24,17 @@ export class AddReportTemplate implements IAddReportTemplate{
     id: string;
     name: string;
     description: string;
-    subject: string;
     definitions: IOption[] = [];
     personnel: IOption[] = [];
     types: IOption[] = [];
     rooms: IOption[] = [];
     separateBy: string;
+    includeInUse: boolean;
+    includeUnused: boolean;
+    includeFunctional: boolean;
+    includeDefect: boolean;
+    includeParent: boolean;
+    includeChildren: boolean;
     commonProperties: string[];
     specificProperties: { type: string; properties: string[]; }[] = [];
     properties?: string[] = [];

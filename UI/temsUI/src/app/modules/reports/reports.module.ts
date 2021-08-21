@@ -1,3 +1,4 @@
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSelectModule } from '@angular/material/select';
 import { CommonModule } from '@angular/common';
@@ -48,7 +49,8 @@ import { ReportsRoutingModule } from './reports-routing.module';
     TranslateModule,
     NgxPaginationModule,
     MatOptionModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatCheckboxModule
   ],
   exports: [
     ReportsComponent,

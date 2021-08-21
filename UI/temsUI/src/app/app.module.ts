@@ -1,3 +1,4 @@
+import { DownloadService } from './download.service';
 import { LazyLoaderService } from './services/lazy-loader.service';
 import { DialogService } from 'src/app/services/dialog.service';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -127,7 +128,8 @@ export function HttpLoaderFactory(http: HttpClient){
     PaginatePipe,
     DecimalPipe,
     TranslatePipe,
-    LazyLoaderService
+    LazyLoaderService,
+    DownloadService
   ],
   bootstrap: [AppComponent],
 })

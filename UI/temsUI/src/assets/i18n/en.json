@@ -506,9 +506,9 @@
         "defintions": "Definitions of selected types",
         "roomsFilter": "Include only equipment from these rooms",
         "personnelFilter": "Include only equipment allocated to these people",
-        "layoutConfiguration": "Layout configuration",
         "noSubjectSelected": "Please, select a supported subject first",
-        "layoutConfigurationTip": "Configure the way how TEMS should generate the report.",
+        "dataSelection": "Data selection",
+        "dataSelectionTip": "Specify data filters and grouping strategy",
         "createTemplateTip": "If you want to save this template, provide a name and a description if necessary",
         "prop_TEMSID": "TEMSID",
         "prop_serialNumber": "Serial number",
@@ -518,7 +518,17 @@
         "prop_price": "Price",
         "prop_currency": "Currency",
         "prop_purchaseDate": "Date of purchase",
-        "prop_allocatee": "Allocatee"
+        "prop_allocatee": "Allocatee",
+        "filterEquipmentLabel": "Filter by type, definition and allocatee",
+        "usingState": "Using state",
+        "includeInUse": "Include in use",
+        "includeUnused": "Include unused",
+        "functionalState": "Functional state",
+        "includeFunctional": "Include functiona",
+        "includeDefect": "Include defect",
+        "other": "Other",
+        "includeParent": "Include parent equipment",
+        "includeChildren": "Include children equipment"
     },
 
     "bugReport": {

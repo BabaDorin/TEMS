@@ -1,3 +1,4 @@
+import { DownloadService } from './../../../download.service';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
@@ -13,7 +14,6 @@ import { RoomsService } from '../../../services/rooms.service';
 import { SnackService } from '../../../services/snack.service';
 import { TypeService } from '../../../services/type.service';
 import { TEMSComponent } from '../../../tems/tems.component';
-import { Downloader } from './../../../shared/downloader/fileDownloader';
 
 @Component({
   selector: 'app-create-report-template',
@@ -23,21 +23,12 @@ import { Downloader } from './../../../shared/downloader/fileDownloader';
 export class CreateReportTemplateComponent extends TEMSComponent implements OnInit {
 
   updateReportId: string;
-  reportTemplateToUpdate: AddReportTemplate;
-  downloader: Downloader;
+  templateToUpdate: AddReportTemplate;
 
-  reportFormGroup: FormGroup;
   equipmentCommonProperties: CheckboxItem[];
   specificProperties: { type: IOption, properties: CheckboxItem[] }[] = [];
   universalProperties: CheckboxItem[];
   typeSpecificProperties: { type: IOption, properties: CheckboxItem[] }[] = [];
-
-  reportObjectOptions = [
-    { value: 'equipment', label: 'Equipment' },
-    { value: 'rooms', label: 'Rooms (Not supported yet)' },
-    { value: 'Personnel', label: 'Personnel (Not supported yet)' },
-    { value: 'Allocations', label: 'Allocations (Not supported yet)' }
-  ];
 
   typesAlreadySelected: IOption[] = [];
   definitionsAlreadySelected: IOption[] = [];
@@ -46,6 +37,27 @@ export class CreateReportTemplateComponent extends TEMSComponent implements OnIn
   signatoriesAlreadySelected: IOption[] = [];
 
   typesEndPointParameter;
+
+  reportFormGroup = new FormGroup({
+    name: new FormControl(),
+    description: new FormControl(),
+    types: new FormControl(),
+    definitions: new FormControl(),
+    rooms: new FormControl(),
+    personnel: new FormControl(),
+    includeInUse: new FormControl(true),
+    includeUnused: new FormControl(true),
+    includeFunctional: new FormControl(true),
+    includeDefect: new FormControl(true),
+    includeParent: new FormControl(true),
+    includeChildren: new FormControl(false),
+    separateBy: new FormControl(),
+    commonProperties: new FormControl(),
+    specificProperties: new FormControl(),
+    header: new FormControl(),
+    footer: new FormControl(),
+    signatories: new FormControl()
+  });
 
   constructor(
     public roomService: RoomsService,
@@ -56,30 +68,14 @@ export class CreateReportTemplateComponent extends TEMSComponent implements OnIn
     private reportService: ReportService,
     private activatedroute: ActivatedRoute,
     public translate: TranslateService,
-    private snackService: SnackService
+    private snackService: SnackService,
+    private downloadService: DownloadService
   ) {
     super();
   }
 
   ngOnInit(): void {
-    this.reportFormGroup = new FormGroup({
-      name: new FormControl(),
-      description: new FormControl(),
-      subject: new FormControl(),
-      types: new FormControl(),
-      definitions: new FormControl(),
-      rooms: new FormControl(),
-      personnel: new FormControl(),
-      separateBy: new FormControl(),
-      commonProperties: new FormControl(),
-      specificProperties: new FormControl(),
-      header: new FormControl(),
-      footer: new FormControl(),
-      signatories: new FormControl()
-    });
-
     let controls = this.reportFormGroup.controls;
-    controls.subject.setValue('equipment'),
     controls.separateBy.setValue('none');
 
     this.universalProperties = [
@@ -93,6 +89,7 @@ export class CreateReportTemplateComponent extends TEMSComponent implements OnIn
       new CheckboxItem('purchaseDate', this.translate.instant('report.prop_purchaseDate'), false),
       new CheckboxItem('allocatee', this.translate.instant('report.prop_allocatee')),
     ];
+
     this.equipmentCommonProperties = this.universalProperties;
     this.reportFormGroup.controls.commonProperties
       .setValue(this.equipmentCommonProperties.map(q => q.value));
@@ -108,42 +105,51 @@ export class CreateReportTemplateComponent extends TEMSComponent implements OnIn
     this.subscriptions.push(
       this.reportService.getReportTemplateToUpdate(this.updateReportId)
       .subscribe(result => {
-        this.reportTemplateToUpdate = result;
+        this.templateToUpdate = result;
 
-        if(this.reportTemplateToUpdate == null)
+        if(this.templateToUpdate == null)
           return;
 
         let controls = this.reportFormGroup.controls;
-        controls.name.setValue(this.reportTemplateToUpdate.name),
-        controls.description.setValue(this.reportTemplateToUpdate.description),
-        controls.subject.setValue(this.reportTemplateToUpdate.subject),
-        controls.types.setValue(this.reportTemplateToUpdate.types),
-        controls.definitions.setValue(this.reportTemplateToUpdate.definitions),
-        controls.rooms.setValue(this.reportTemplateToUpdate.rooms),
-        controls.personnel.setValue(this.reportTemplateToUpdate.personnel),
-        controls.separateBy.setValue(this.reportTemplateToUpdate.separateBy),
-        controls.header.setValue(this.reportTemplateToUpdate.header),
-        controls.footer.setValue(this.reportTemplateToUpdate.footer),
-        controls.signatories.setValue(this.reportTemplateToUpdate.signatories),
-        controls.name.setValue(this.reportTemplateToUpdate.name);
+        controls.name.setValue(this.templateToUpdate.name),
+        controls.description.setValue(this.templateToUpdate.description),
+        controls.types.setValue(this.templateToUpdate.types),
+        controls.definitions.setValue(this.templateToUpdate.definitions),
+        controls.rooms.setValue(this.templateToUpdate.rooms),
+        controls.personnel.setValue(this.templateToUpdate.personnel),
+        controls.separateBy.setValue(this.templateToUpdate.separateBy),
+        controls.includeInUse.setValue(this.templateToUpdate.includeInUse),
+        controls.includeUnused.setValue(this.templateToUpdate.includeUnused),
+        controls.includeFunctional.setValue(this.templateToUpdate.includeFunctional),
+        controls.includeDefect.setValue(this.templateToUpdate.includeDefect),
+        controls.includeParent.setValue(this.templateToUpdate.includeParent),
+        controls.includeChildren.setValue(this.templateToUpdate.includeChildren),
+        controls.header.setValue(this.templateToUpdate.header),
+        controls.footer.setValue(this.templateToUpdate.footer),
+        controls.signatories.setValue(this.templateToUpdate.signatories),
+        controls.name.setValue(this.templateToUpdate.name);
 
-        if(this.reportTemplateToUpdate.types != undefined)
-          this.typesAlreadySelected = this.reportTemplateToUpdate.types;
-        if(this.reportTemplateToUpdate.definitions != undefined)
-          this.definitionsAlreadySelected = this.reportTemplateToUpdate.definitions;
-        if(this.reportTemplateToUpdate.rooms != undefined)
-          this.roomsAlreadySelected = this.reportTemplateToUpdate.rooms;
-        if(this.reportTemplateToUpdate.personnel != undefined)
-          this.personnelAlreadySelected = this.reportTemplateToUpdate.personnel;
-        if(this.reportTemplateToUpdate.signatories != undefined)
-          this.signatoriesAlreadySelected = this.reportTemplateToUpdate.signatories;
+        if(this.templateToUpdate.types != undefined)
+          this.typesAlreadySelected = this.templateToUpdate.types;
+        
+        if(this.templateToUpdate.definitions != undefined)
+          this.definitionsAlreadySelected = this.templateToUpdate.definitions;
+        
+        if(this.templateToUpdate.rooms != undefined)
+          this.roomsAlreadySelected = this.templateToUpdate.rooms;
+        
+        if(this.templateToUpdate.personnel != undefined)
+          this.personnelAlreadySelected = this.templateToUpdate.personnel;
+        
+        if(this.templateToUpdate.signatories != undefined)
+          this.signatoriesAlreadySelected = this.templateToUpdate.signatories;
 
         this.findCommonAndSpecificProperties();      
       })
-    )
+    );
   }
 
-  typeAdded(eventData) {
+  typeAdded() {
     this.typesEndPointParameter = this.reportFormGroup.controls.types.value == undefined
         ? null
         : this.reportFormGroup.controls.types.value.map(q => q.value);
@@ -256,18 +262,18 @@ export class CreateReportTemplateComponent extends TEMSComponent implements OnIn
     }
 
     // Marking necessary properties as checked
-    if(this.reportTemplateToUpdate == undefined)
+    if(this.templateToUpdate == undefined)
       return;
   
     this.equipmentCommonProperties.forEach(element => {
       element.checked = false;
-      if(this.reportTemplateToUpdate.properties.indexOf(element.value) > -1)
+      if(this.templateToUpdate.properties.indexOf(element.value) > -1)
         element.checked = true;
     });
 
     this.typeSpecificProperties.forEach(element =>{
       element.properties.forEach(elementProperty =>{
-        if(this.reportTemplateToUpdate.properties.indexOf(elementProperty.value) > -1){
+        if(this.templateToUpdate.properties.indexOf(elementProperty.value) > -1){
           elementProperty.checked = true;
         }
       })
@@ -293,6 +299,7 @@ export class CreateReportTemplateComponent extends TEMSComponent implements OnIn
 
   save() {
     let addReportTemplateModel = this.getReportTemplate();
+    console.log(addReportTemplateModel);
     let endPoint = this.reportService.addReportTemplate(addReportTemplateModel);
     
     if(addReportTemplateModel.id != undefined)
@@ -311,12 +318,17 @@ export class CreateReportTemplateComponent extends TEMSComponent implements OnIn
       id: this.updateReportId,
       name: this.controls.name.value,
       description: this.controls.description.value,
-      subject: this.controls.subject.value,
       types: this.controls.types.value,
       definitions: this.controls.definitions.value,
       rooms: this.controls.rooms.value,
       personnel: this.controls.personnel.value,
       separateBy: this.controls.separateBy.value,
+      includeInUse: this.controls.includeInUse.value,
+      includeUnused: this.controls.includeUnused.value,
+      includeFunctional: this.controls.includeFunctional.value,
+      includeDefect: this.controls.includeDefect.value,
+      includeParent: this.controls.includeParent.value,
+      includeChildren: this.controls.includeChildren.value,
       commonProperties: this.controls.commonProperties.value,
       specificProperties: (this.controls.specificProperties.value != null)
         ? this.controls.specificProperties.value.map(q => ({properties: q.properties, type: q.type.value}))
@@ -339,9 +351,8 @@ export class CreateReportTemplateComponent extends TEMSComponent implements OnIn
         if(this.snackService.snackIfError(result))
           return;
 
-        if(this.downloader == undefined) this.downloader = new Downloader();
-        this.downloader.downloadFile(result, "Report.xlsx");
+        this.downloadService.downloadFile(result, "Report.xlsx");
       })
-    )
+    );
   }
 }

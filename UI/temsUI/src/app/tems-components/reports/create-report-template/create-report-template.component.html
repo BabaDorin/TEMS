@@ -7,6 +7,7 @@
         {{ 'report.createTemplateTip' | translate }}
       </p>
       
+      <!-- Provide name & description -->
       <mat-form-field class="reportFormControl mb-2 d-block">
         <mat-label>{{ 'report.name' | translate }}</mat-label>
         <input matInput formControlName="name" maxlength="100">
@@ -19,76 +20,101 @@
       <hr class="mt-3 mb-3">
 
       <mat-vertical-stepper>
-        <!-- STEP 1- Subject choice -->
-        <mat-step>
-          <ng-template matStepLabel>{{ 'report.selectSubject' | translate }}</ng-template>
-          <p class="text-muted">
-            {{ 'report.selectSubjectTip' | translate }}
-          </p>
-          <mat-form-field class="reportFormControl">
-            <mat-label>{{ 'report.selectSubject' | translate }}</mat-label>
-            <mat-select formControlName="subject">
-              <mat-option *ngFor="let option of reportObjectOptions" [value]="option.value">
-                {{ option.label }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
-          <button mat-button class="d-block" matStepperNext>{{ 'general.next' | translate }}</button>
-        </mat-step>
-
         <!-- STEP 2 - Layout configuration (For equipment: Types, definitions, personnel, room, SeparateBy) -->
         <mat-step>
           <ng-template matStepLabel>
-            {{ 'report.layoutConfiguration' | translate }}
+            {{ 'report.dataSelection' | translate }}
           </ng-template>
           <p class="text-muted">
-            {{ 'report.layoutConfigurationTip' | translate }}
+            {{ 'report.dataSelectionTip' | translate }}
           </p>
-          <ng-container *ngIf="reportFormGroup.controls.subject.value != 'equipment'">
-            <p class="text-muted">
-              {{ 'report.noSubjectSelected' | translate }}
-            </p>
-          </ng-container>
-          <ng-container *ngIf="reportFormGroup.controls.subject.value == 'equipment'">
-            <div class="row">
-              <div class="col-md-5">
-                <app-chips-autocomplete [label]="translate.instant('report.types')" formControlName="types"
-                  [placeholder]="translate.instant('report.noSelection')" 
-                  [alreadySelected]="typesAlreadySelected"s
-                  [endPoint]="typeService"
-                  (dataCollected)="typeAdded($event)"
-                  (dataRemoved)="typeRemoved($event)">
-                </app-chips-autocomplete>
-              </div>
-              <div class="col-md-5">
-                <app-chips-autocomplete [label]="translate.instant('report.definitions')" formControlName="definitions"
-                  [placeholder]="translate.instant('report.noSelection')" 
-                  [endPoint]="definitionService"
-                  [endPointParameter]="typesEndPointParameter"
-                  [alreadySelected]="definitionsAlreadySelected">
-                </app-chips-autocomplete>
-              </div>
+          <div class="row">
+            <div class="col-md-12">
+              <h3 class="mb-0">
+                {{ 'report.filterEquipmentLabel' | translate }}
+              </h3>
+              <hr class="mt-1">
             </div>
-            <br>
-            <div class="row">
-              <div class="col-md-5">
-                <app-chips-autocomplete [label]="translate.instant('report.roomsFilter')" formControlName="rooms"
-                  [placeholder]="translate.instant('report.noSelection')" 
-                  [endPoint]="roomService" 
-                  [alreadySelected]="roomsAlreadySelected">
-                </app-chips-autocomplete>
-              </div>
-              <div class="col-md-5">
-                <app-chips-autocomplete [label]="translate.instant('report.personnelFilter')"
-                  formControlName="personnel" placeholder="No selection = all personnel"
-                  [endPoint]="personnelService"
-                  [alreadySelected]="personnelAlreadySelected">
-                </app-chips-autocomplete>
-              </div>
+            <div class="col-md-6">
+              <app-chips-autocomplete [label]="translate.instant('report.types')" formControlName="types"
+                [placeholder]="translate.instant('report.noSelection')" 
+                [alreadySelected]="typesAlreadySelected"s
+                [endPoint]="typeService"
+                (dataCollected)="typeAdded($event)"
+                (dataRemoved)="typeRemoved($event)">
+              </app-chips-autocomplete>
             </div>
-            <br>
-            <mat-label>{{ 'report.separateBy' | translate }}</mat-label><br><br>
-            
+            <div class="col-md-6">
+              <app-chips-autocomplete [label]="translate.instant('report.definitions')" formControlName="definitions"
+                [placeholder]="translate.instant('report.noSelection')" 
+                [endPoint]="definitionService"
+                [endPointParameter]="typesEndPointParameter"
+                [alreadySelected]="definitionsAlreadySelected">
+              </app-chips-autocomplete>
+            </div>
+          </div>
+          <div class="row mt-3">
+            <div class="col-md-6">
+              <app-chips-autocomplete [label]="translate.instant('report.roomsFilter')" formControlName="rooms"
+                [placeholder]="translate.instant('report.noSelection')" 
+                [endPoint]="roomService" 
+                [alreadySelected]="roomsAlreadySelected">
+              </app-chips-autocomplete>
+            </div>
+            <div class="col-md-6">
+              <app-chips-autocomplete [label]="translate.instant('report.personnelFilter')"
+                formControlName="personnel" placeholder="No selection = all personnel"
+                [endPoint]="personnelService"
+                [alreadySelected]="personnelAlreadySelected">
+              </app-chips-autocomplete>
+            </div>
+          </div>
+          <div class="row mt-3">
+            <div class="col-md-4">
+              <h3 class="mb-0">
+                {{ 'report.usingState' | translate }}
+              </h3>
+              <hr class="mt-1">
+              <mat-checkbox formControlName="includeInUse">
+                {{ 'report.includeInUse' | translate }}
+              </mat-checkbox>
+              <br>
+              <mat-checkbox formControlName="includeUnused">
+                {{ 'report.includeUnused' | translate }}
+              </mat-checkbox>
+            </div>
+            <div class="col-md-4">
+              <h3 class="mb-0">
+                {{ 'report.functionalState' | translate }}
+              </h3>
+              <hr class="mt-1">
+              <mat-checkbox formControlName="includeFunctional">
+                {{ 'report.includeFunctional' | translate }}
+              </mat-checkbox>
+              <br>
+              <mat-checkbox formControlName="includeDefect">
+                {{ 'report.includeDefect' | translate }}
+              </mat-checkbox>
+            </div>
+            <div class="col-md-4">
+              <h3 class="mb-0">
+                {{ 'report.other' | translate }}
+              </h3>
+              <hr class="mt-1">
+              <mat-checkbox formControlName="includeParent">
+                {{ 'report.includeParent' | translate }}
+              </mat-checkbox>
+              <br>
+              <mat-checkbox formControlName="includeChildren">
+                {{ 'report.includeChildren' | translate }}
+              </mat-checkbox>
+            </div>
+          </div>
+          <div class="mt-3">
+            <h3  class="mb-0">
+              {{ 'report.separateBy' | translate }}
+            </h3>
+            <hr  class="mt-1">
             <mat-radio-group formControlName="separateBy">
               <mat-radio-button value="none">{{ 'report.noSeparation' | translate }}</mat-radio-button><br>
               <mat-radio-button value="room">{{ 'report.byRoom' | translate }}</mat-radio-button><br>
@@ -96,34 +122,27 @@
               <mat-radio-button value="type">{{ 'report.byType' | translate }}</mat-radio-button><br>
               <mat-radio-button value="definition">{{ 'report.byDefinition' | translate }}</mat-radio-button><br>
             </mat-radio-group>
-          </ng-container>
-          <button mat-button matStepperNext>{{ 'general.next' | translate }}</button>
+          </div>
+          <button mat-button matStepperNext class="mt-3">{{ 'general.next' | translate }}</button>
         </mat-step>
 
         <!-- STEP - Select report properties -->
         <mat-step>
           <ng-template matStepLabel>{{ 'report.selectColumns' | translate }}</ng-template>
 
-          <!-- No subject selected -->
-          <ng-container *ngIf="reportFormGroup.controls.subject.value != 'equipment'">
-            <p class="text-muted">{{ 'report.noSubjectSelected' | translate }}</p>
-          </ng-container>
-
           <!-- Equipment subject -->
-          <ng-container *ngIf="reportFormGroup.controls.subject.value == 'equipment'">
-            <!-- Common properties for all equipment records -->
-            <app-checkbox-group [options]="equipmentCommonProperties"[label]="translate.instant('report.commonProperties')"
-            (toggle)="onCommonPropChange($event)">
-            </app-checkbox-group>
+          <!-- Common properties for all equipment records -->
+          <app-checkbox-group [options]="equipmentCommonProperties"[label]="translate.instant('report.commonProperties')"
+          (toggle)="onCommonPropChange($event)">
+          </app-checkbox-group>
 
-            <!-- Type specific properties -->
-            <ng-container *ngFor="let type of typeSpecificProperties">
-            <div class="mt-2">
-              <app-checkbox-group [options]="type.properties" [label]="translate.instant('report.specificProperties') + type.type.label"
-              (toggle)="onSpecificPropChange($event, type.type)">
-              </app-checkbox-group>
-            </div>
-            </ng-container>
+          <!-- Type specific properties -->
+          <ng-container *ngFor="let type of typeSpecificProperties">
+          <div class="mt-2">
+            <app-checkbox-group [options]="type.properties" [label]="translate.instant('report.specificProperties') + type.type.label"
+            (toggle)="onSpecificPropChange($event, type.type)">
+            </app-checkbox-group>
+          </div>
           </ng-container>
           <button mat-button matStepperNext>{{ 'general.next' | translate }}</button>
         </mat-step>

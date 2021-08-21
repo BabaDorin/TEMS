@@ -60,8 +60,6 @@ namespace temsAPI.Services.Report
 
             // Executing step 1:
             // Build the main lambda expression, based on template.
-            if (template.Subject.ToLower() != "equipment")
-                throw new Exception("Only Equipment subject supported for now.");
 
             var equipment = await FetchEquipmentItems(template);
 

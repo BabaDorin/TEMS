@@ -15,11 +15,17 @@ namespace temsAPI.ViewModels.Report
         public string Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-        public string Subject { get; set; }
         public List<Option> Types { get; set; } = new List<Option>();
         public List<Option> Definitions { get; set; } = new List<Option>();
         public List<Option> Personnel { get; set; } = new List<Option>();
         public List<Option> Rooms { get; set; } = new List<Option>();
+        public bool IncludeInUse { get; set; }
+        public bool IncludeUnused { get; set; }
+        public bool IncludeFunctional { get; set; }
+        public bool IncludeDefect { get; set; }
+        public bool IncludeParent { get; set; }
+        public bool IncludeChildren { get; set; }
+
         public string SeparateBy { get; set; }
         public List<string> CommonProperties { get; set; } = new List<string>();
         public List<SpecificPropertyWrapper> SpecificProperties { get; set; } = new List<SpecificPropertyWrapper>();
@@ -52,7 +58,6 @@ namespace temsAPI.ViewModels.Report
                 Id = Guid.NewGuid().ToString(),
                 Name = Name,
                 Description = Description,
-                Subject = Subject,
                 EquipmentTypes = (typeIds != null)
                     ? (await unitOfWork.EquipmentTypes
                     .FindAll<Data.Entities.EquipmentEntities.EquipmentType>(q => typeIds.Contains(q.Id)))
@@ -89,7 +94,7 @@ namespace temsAPI.ViewModels.Report
                     .ToList()
                     : new List<Data.Entities.OtherEntities.Personnel>(),
                 CreatedBy = (await unitOfWork.TEMSUsers
-                    .Find<Data.Entities.UserEntities.TEMSUser>(
+                    .Find<TEMSUser>(
                         where: q => q.Id == author.Id
                     )).FirstOrDefault(),
                 DateCreated = DateTime.Now,
@@ -98,7 +103,7 @@ namespace temsAPI.ViewModels.Report
                     : null
             };
 
-            if (author.Email == "tems@admin")
+            if (author.Email == "tems@dmin" || author.UserName == "tems@dmin")
             {
                 model.CreatedBy = null;
                 model.CreatedById = null;
@@ -114,7 +119,6 @@ namespace temsAPI.ViewModels.Report
                 Id = template.Id,
                 Name = template.Name,
                 Description = template.Description,
-                Subject = template.Subject,
                 Types = template.EquipmentTypes.Select(q => new Option
                 {
                     Value = q.Id,
@@ -164,11 +168,6 @@ namespace temsAPI.ViewModels.Report
             if (Id != null && !await unitOfWork.ReportTemplates
                 .isExists(q => q.Id == Id))
                 return "Invalid id provided";
-
-            // Invalid subject
-            if (new List<string>() { "equipment", "rooms", "personnel", "allocations" }
-                .IndexOf(Subject) == -1)
-                return "Invalid subject";
 
             // Invalid types provided
             if (Types != null)

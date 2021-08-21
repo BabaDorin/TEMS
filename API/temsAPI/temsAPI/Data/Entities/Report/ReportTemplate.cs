@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.EquipmentEntities;
 using temsAPI.Data.Entities.OtherEntities;
@@ -22,8 +20,12 @@ namespace temsAPI.Data.Entities.Report
         [MaxLength(250)]
         public string Description { get; set; }
 
-        [MaxLength(100)]
-        public string Subject { get; set; }
+        public bool IncludeInUse { get; set; }
+        public bool IncludeUnused { get; set; }
+        public bool IncludeFunctional { get; set; }
+        public bool IncludeDefect { get; set; }
+        public bool IncludeParent { get; set; }
+        public bool IncludeChildren { get; set; }
 
         [MaxLength(100)]
         public string SeparateBy { get; set; }

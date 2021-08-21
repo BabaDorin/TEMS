@@ -82,7 +82,6 @@ namespace temsAPI.Data.Managers
 
             model.Name = viewModel.Name;
             model.Description = viewModel.Description;
-            model.Subject = viewModel.Subject;
             model.EquipmentTypes = (typeIds != null)
                     ? (await _unitOfWork.EquipmentTypes
                     .FindAll<EquipmentType>(q => typeIds.Contains(q.Id)))

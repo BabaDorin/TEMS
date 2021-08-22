@@ -48,31 +48,51 @@ namespace temsAPI.Services.EquipmentManagementHelpers
             if (!filter.Definitions.IsNullOrEmpty() && filter.Definitions.IndexOf("any") == -1)
                 eqOfDefinitionsExp = q => filter.Definitions.Contains(q.Equipment.EquipmentDefinitionID);
 
-            // OnlyParents (aka Parent inclusion)
-            Expression<Func<EquipmentAllocation, bool>> parentInclusionExp = null;
-            if (filter.OnlyParents)
-                parentInclusionExp = q => q.Equipment.EquipmentDefinition.ParentID == null;
+            // Include In Use / Unused
+            Expression<Func<EquipmentAllocation, bool>> eqUsingStateExp = null;
+            if (!(filter.IncludeInUse && filter.IncludeUnused))
+            {
+                eqUsingStateExp = q => q.Equipment.IsUsed == filter.IncludeInUse;
+            }
 
-            // OnlyDetached
-            Expression<Func<EquipmentAllocation, bool>> onlyDetachedExp = null;
-            if (filter.OnlyDetached)
-                onlyDetachedExp = q => q.Equipment.ParentID == null;
+            // Include Functional / Defect
+            Expression<Func<EquipmentAllocation, bool>> eqFunctionalityStateExp = null;
+            if (!(filter.IncludeFunctional && filter.IncludeDefect))
+            {
+                eqFunctionalityStateExp = q => q.Equipment.IsDefect == !filter.IncludeFunctional;
+            }
 
-            // Place for more where filters
+            // Include Parent / children
+            Expression<Func<EquipmentAllocation, bool>> eqParentalBasedInclusionExp = null;
+            if (!(filter.IncludeParents && filter.IncludeChildren))
+            {
+                eqParentalBasedInclusionExp = q => q.Equipment.EquipmentDefinition.ParentID == null;
+            }
+
+            // Include Attached / Detached
+            Expression<Func<EquipmentAllocation, bool>> eqAttachmentExp = null;
+            if (!(filter.IncludeAttached && filter.IncludeDetached))
+            {
+                eqAttachmentExp = q => (q.Equipment.ParentID != null) == filter.IncludeAttached;
+            }
 
             // WHERE
             var finalWhereExp = ExpressionCombiner.And(
-                ignoreArchived,
-                eqOfRoomsExp,
-                eqOfPersonnelExp,
-                eqOfTypeExp,
-                eqOfDefinitionsExp,
-                parentInclusionExp,
-                onlyDetachedExp);
+            ignoreArchived,
+            eqOfRoomsExp,
+            eqOfPersonnelExp,
+            eqOfTypeExp,
+            eqOfDefinitionsExp,
+            eqUsingStateExp,
+            eqFunctionalityStateExp,
+            eqParentalBasedInclusionExp,
+            eqAttachmentExp);
 
             // INCLUDE
             Func<IQueryable<EquipmentAllocation>, IIncludableQueryable<EquipmentAllocation, object>> finalIncludeExp =
-                q => q.Include(q => q.Equipment).ThenInclude(q => q.EquipmentDefinition).ThenInclude(q => q.EquipmentType)
+                q => q.Include(q => q.Equipment)
+                    .ThenInclude(q => q.EquipmentDefinition)
+                    .ThenInclude(q => q.EquipmentType)
                     .Include(q => q.Room)
                     .Include(q => q.Personnel);
 

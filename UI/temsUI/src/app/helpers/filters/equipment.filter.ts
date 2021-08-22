@@ -1,8 +1,14 @@
 export class EquipmentFilter {
     skip: number = 0;
     take: number = 2_147_483_647; // C# Int.MaxValue
-    onlyParents: boolean = false;
-    onlyDetached: boolean = false;
+    includeInUse: boolean = true;
+    includeUnused: boolean = true;
+    includeFunctional: boolean = true;
+    includeDefect: boolean = true;
+    includeParents: boolean = true;
+    includeChildren: boolean = true;
+    includeAttached: boolean = true;
+    includeDetached: boolean = true;
     rooms: string[];
     personnel: string[];
     types: string[];

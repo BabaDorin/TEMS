@@ -40,29 +40,48 @@ namespace temsAPI.Services.EquipmentManagementHelpers
             if (!filter.Definitions.IsNullOrEmpty() && filter.Definitions.IndexOf("any") == -1)
                 eqOfDefinitionsExp = q => filter.Definitions.Contains(q.EquipmentDefinitionID);
 
-            // OnlyParents (aka Parent inclusion)
-            Expression<Func<Equipment, bool>> parentInclusionExp = null;
-            if (filter.OnlyParents)
-                parentInclusionExp = q => q.EquipmentDefinition.ParentID == null;
+            // Include In Use / Unused
+            Expression<Func<Equipment, bool>> eqUsingStateExp = null;
+            if (!(filter.IncludeInUse && filter.IncludeUnused))
+            {
+                eqUsingStateExp = q => q.IsUsed == filter.IncludeInUse;
+            }
 
-            // OnlyDetached
-            Expression<Func<Equipment, bool>> onlyDetachedExp = null;
-            if (filter.OnlyDetached)
-                onlyDetachedExp = q => q.ParentID == null;
+            // Include Functional / Defect
+            Expression<Func<Equipment, bool>> eqFunctionalityStateExp = null;
+            if (!(filter.IncludeFunctional && filter.IncludeDefect))
+            {
+                eqFunctionalityStateExp = q => q.IsDefect == !filter.IncludeFunctional;
+            }
 
-            // Place for more where filters
+            // Include Parent / children
+            Expression<Func<Equipment, bool>> eqParentalBasedInclusionExp = null;
+            if (!(filter.IncludeParents && filter.IncludeChildren))
+            {
+                eqParentalBasedInclusionExp = q => (q.EquipmentDefinition.ParentID == null) == filter.IncludeParents;
+            }
+
+            // Include Attached / Detached
+            Expression<Func<Equipment, bool>> eqAttachmentExp = null;
+            if (!(filter.IncludeAttached && filter.IncludeDetached))
+            {
+                eqAttachmentExp = q => (q.ParentID != null) == filter.IncludeAttached;
+            }
 
             // WHERE
             var finalWhereExp = ExpressionCombiner.And(
                 ignoreArchived, 
                 eqOfTypeExp,
                 eqOfDefinitionsExp,
-                parentInclusionExp,
-                onlyDetachedExp);
+                eqUsingStateExp,
+                eqFunctionalityStateExp,
+                eqParentalBasedInclusionExp,
+                eqAttachmentExp);
 
             // INCLUDE
             Func<IQueryable<Equipment>, IIncludableQueryable<Equipment, object>> finalIncludeExp =
-                q => q.Include(q => q.EquipmentDefinition).ThenInclude(q => q.EquipmentType)
+                q => q.Include(q => q.EquipmentDefinition)
+                    .ThenInclude(q => q.EquipmentType)
                     .Include(q => q.EquipmentAllocations.Where(q => q.DateReturned == null))
                     .ThenInclude(q => q.Room)
                     .Include(q => q.EquipmentAllocations.Where(q => q.DateReturned == null))

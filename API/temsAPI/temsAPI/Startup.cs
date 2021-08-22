@@ -128,6 +128,7 @@ namespace temsAPI
             services.AddScoped<SICService>();
             services.AddScoped<SICIntegrationService>();
             services.AddScoped<IEquipmentFetcher, EquipmentFetcher>();
+            services.AddScoped<ReportDataGenerator>();
 
             services.ConfigureWritable<AppSettings>(Configuration.GetSection("AppSettings"));
 

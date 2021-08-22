@@ -70,7 +70,10 @@ export class AttachEquipmentComponent extends TEMSComponent implements OnInit {
     this.fetchRelevantTypes()
     .then(() => {
       let filter = new EquipmentFilter();
-      filter.onlyDetached = true;
+      filter.includeParents = false;
+      filter.includeChildren = true;
+      filter.includeAttached = false;
+      filter.includeDetached = true;
       filter.types = this.types.map(q => q.value);
       this.equipmentFilter = filter;
     });
@@ -95,7 +98,7 @@ export class AttachEquipmentComponent extends TEMSComponent implements OnInit {
   }
 
   filterChanged() {
-    this.equipmentFilter.onlyDetached = !this.getIncludeAttached();
+    this.equipmentFilter.includeAttached = this.getIncludeAttached();
 
     // ether equipment of selected type, or equipment of any type which is child of equipment's type
     let selectedType = this.getSelectedType();

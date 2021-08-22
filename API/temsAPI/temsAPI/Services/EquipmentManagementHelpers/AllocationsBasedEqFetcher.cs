@@ -27,6 +27,43 @@ namespace temsAPI.Services.EquipmentManagementHelpers
 
         public async Task<IEnumerable<Equipment>> Fetch(EquipmentFilter filter)
         {
+            Expression<Func<EquipmentAllocation, bool>> whereExp = GetWhereExp(filter);
+
+            // INCLUDE
+            Func<IQueryable<EquipmentAllocation>, IIncludableQueryable<EquipmentAllocation, object>> finalIncludeExp =
+                q => q.Include(q => q.Equipment)
+                    .ThenInclude(q => q.EquipmentDefinition)
+                    .ThenInclude(q => q.EquipmentType)
+                    .Include(q => q.Room)
+                    .Include(q => q.Personnel);
+
+            return await _unitOfWork.EquipmentAllocations
+                .FindAll(
+                    skip: filter.Skip,
+                    take: filter.Take,
+                    include: finalIncludeExp,
+                    where: whereExp,
+                    select: q => q.Equipment
+                );
+        }
+
+        public async Task<int> GetAmount(EquipmentFilter filter)
+        {
+            Expression<Func<EquipmentAllocation, bool>> whereExp = GetWhereExp(filter);
+
+            // INCLUDE
+            Func<IQueryable<EquipmentAllocation>, IIncludableQueryable<EquipmentAllocation, object>> finalIncludeExp =
+                q => q.Include(q => q.Equipment)
+                    .ThenInclude(q => q.EquipmentDefinition)
+                    .ThenInclude(q => q.EquipmentType);
+
+            return await _unitOfWork.EquipmentAllocations.Count(
+                where: whereExp,
+                include: finalIncludeExp);
+        }
+
+        private Expression<Func<EquipmentAllocation, bool>> GetWhereExp(EquipmentFilter filter)
+        {
             // Default expression
             Expression<Func<EquipmentAllocation, bool>> ignoreArchived = q => !q.Equipment.IsArchieved;
 
@@ -76,7 +113,6 @@ namespace temsAPI.Services.EquipmentManagementHelpers
                 eqAttachmentExp = q => (q.Equipment.ParentID != null) == filter.IncludeAttached;
             }
 
-            // WHERE
             var finalWhereExp = ExpressionCombiner.And(
             ignoreArchived,
             eqOfRoomsExp,
@@ -88,22 +124,7 @@ namespace temsAPI.Services.EquipmentManagementHelpers
             eqParentalBasedInclusionExp,
             eqAttachmentExp);
 
-            // INCLUDE
-            Func<IQueryable<EquipmentAllocation>, IIncludableQueryable<EquipmentAllocation, object>> finalIncludeExp =
-                q => q.Include(q => q.Equipment)
-                    .ThenInclude(q => q.EquipmentDefinition)
-                    .ThenInclude(q => q.EquipmentType)
-                    .Include(q => q.Room)
-                    .Include(q => q.Personnel);
-
-            return await _unitOfWork.EquipmentAllocations
-                .FindAll(
-                    skip: filter.Skip,
-                    take: filter.Take,
-                    include: finalIncludeExp,
-                    where: finalWhereExp,
-                    select: q => q.Equipment
-                );
+            return finalWhereExp;
         }
     }
 }

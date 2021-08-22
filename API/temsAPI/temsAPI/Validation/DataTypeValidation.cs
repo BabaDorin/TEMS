@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -20,7 +21,7 @@ namespace temsAPI.Validation
         public static async Task<bool> IsValidAsync(Option vmProperty, IUnitOfWork unitOfWork)
         {
             Property fullProp = (await unitOfWork.Properties.Find<Property>(q => q.Name == vmProperty.Value,
-                    includes: new List<string> { nameof(fullProp.DataType) })).FirstOrDefault();
+                    include: q => q.Include(q => q.DataType))).FirstOrDefault();
 
             if (fullProp == null)
                 return false;

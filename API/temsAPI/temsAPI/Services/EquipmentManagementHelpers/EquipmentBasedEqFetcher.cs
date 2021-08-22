@@ -27,6 +27,41 @@ namespace temsAPI.Services.EquipmentManagementHelpers
 
         public async Task<IEnumerable<Equipment>> Fetch(EquipmentFilter filter)
         {
+            Expression<Func<Equipment, bool>> whereExp = GetWhereExp(filter);
+
+            // INCLUDE
+            Func<IQueryable<Equipment>, IIncludableQueryable<Equipment, object>> finalIncludeExp =
+                q => q.Include(q => q.EquipmentDefinition)
+                    .ThenInclude(q => q.EquipmentType)
+                    .Include(q => q.EquipmentAllocations.Where(q => q.DateReturned == null))
+                    .ThenInclude(q => q.Room)
+                    .Include(q => q.EquipmentAllocations.Where(q => q.DateReturned == null))
+                    .ThenInclude(q => q.Personnel);
+
+            return await _unitOfWork.Equipments
+                .FindAll<Equipment>(
+                    skip: filter.Skip,
+                    take: filter.Take,
+                    include: finalIncludeExp,
+                    where: whereExp
+                );
+        }
+
+        public async Task<int> GetAmount(EquipmentFilter filter)
+        {
+            Expression<Func<Equipment, bool>> whereExp = GetWhereExp(filter);
+
+            Func<IQueryable<Equipment>, IIncludableQueryable<Equipment, object>> finalIncludeExp =
+                q => q.Include(q => q.EquipmentDefinition)
+                    .ThenInclude(q => q.EquipmentType);
+
+            return await _unitOfWork.Equipments.Count(
+                where: whereExp,
+                include: finalIncludeExp);
+        }
+
+        private Expression<Func<Equipment, bool>> GetWhereExp(EquipmentFilter filter)
+        {
             // Default filter
             Expression<Func<Equipment, bool>> ignoreArchived = q => !q.IsArchieved;
 
@@ -70,7 +105,7 @@ namespace temsAPI.Services.EquipmentManagementHelpers
 
             // WHERE
             var finalWhereExp = ExpressionCombiner.And(
-                ignoreArchived, 
+                ignoreArchived,
                 eqOfTypeExp,
                 eqOfDefinitionsExp,
                 eqUsingStateExp,
@@ -78,22 +113,7 @@ namespace temsAPI.Services.EquipmentManagementHelpers
                 eqParentalBasedInclusionExp,
                 eqAttachmentExp);
 
-            // INCLUDE
-            Func<IQueryable<Equipment>, IIncludableQueryable<Equipment, object>> finalIncludeExp =
-                q => q.Include(q => q.EquipmentDefinition)
-                    .ThenInclude(q => q.EquipmentType)
-                    .Include(q => q.EquipmentAllocations.Where(q => q.DateReturned == null))
-                    .ThenInclude(q => q.Room)
-                    .Include(q => q.EquipmentAllocations.Where(q => q.DateReturned == null))
-                    .ThenInclude(q => q.Personnel);
-
-            return await _unitOfWork.Equipments
-                .FindAll<Equipment>(
-                    skip: filter.Skip,
-                    take: filter.Take,
-                    include: finalIncludeExp,
-                    where: finalWhereExp
-                );
+            return finalWhereExp;
         }
     }
 }

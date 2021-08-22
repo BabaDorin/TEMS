@@ -8,5 +8,6 @@ namespace temsAPI.Services.EquipmentManagementHelpers
     public interface IEquipmentFetcher
     {
         Task<IEnumerable<Equipment>> Fetch(EquipmentFilter filter);
+        Task<int> GetAmount(EquipmentFilter filter);
     }
 }

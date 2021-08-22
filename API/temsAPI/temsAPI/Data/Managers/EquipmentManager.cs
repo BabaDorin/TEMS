@@ -667,11 +667,13 @@ namespace temsAPI.Data.Managers
 
         // Extract to sepparate classes
         
-        public Expression<Func<Equipment, bool>> Eq_FilterByEntity(
+        [Obsolete("Build an instance of EquipmentFilter and use EquipmentFetcher service for this scope")]
+        public Expression<Func<Equipment, bool>> Eq_FilterByAllocateeEntity(
             string entityType = null, 
             string entityId = null)
         {
-            Expression<Func<Equipment, bool>> expression = q => !q.IsArchieved && q.ParentID == null;
+            // Not interested in archived items, and those for which 
+            Expression<Func<Equipment, bool>> expression = q => !q.IsArchieved && q.EquipmentDefinition.ParentID == null;
 
             if (entityType == null)
                 return expression;

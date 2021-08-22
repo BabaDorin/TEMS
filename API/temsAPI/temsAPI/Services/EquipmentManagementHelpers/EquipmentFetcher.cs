@@ -11,7 +11,35 @@ namespace temsAPI.Services.EquipmentManagementHelpers
     /// </summary>
     public class EquipmentFetcher : IEquipmentFetcher
     {
-        private IUnitOfWork _unitOfWork;
+        // EquipmentFetcher delegates it's tasks to one of the following specialized equipment fetchers:
+        // AllocationsBasedEqFetcher => Fetches equipment based on Allocations table, useful when working with allocatees
+        // EquipmentBasedEqFetcher => Fetches equipment based on Equipment table (When there is no allocatee specified)
+
+        readonly IUnitOfWork _unitOfWork;
+
+        private AllocationsBasedEqFetcher allocationsBasedEquipmentFetcher;
+        private AllocationsBasedEqFetcher AllocationsBasedEquipmentFetcher
+        {
+            get 
+            {
+                if(allocationsBasedEquipmentFetcher == null)
+                    allocationsBasedEquipmentFetcher = new AllocationsBasedEqFetcher(_unitOfWork);
+
+                return allocationsBasedEquipmentFetcher; 
+            }
+        }
+
+        private EquipmentBasedEqFetcher equipmentBasedEquipmentFetcher;
+        private EquipmentBasedEqFetcher EquipmentBasedEquipmentFetcher
+        {
+            get
+            {
+                if (equipmentBasedEquipmentFetcher == null)
+                    equipmentBasedEquipmentFetcher = new EquipmentBasedEqFetcher(_unitOfWork);
+
+                return equipmentBasedEquipmentFetcher;
+            }
+        }
 
         public EquipmentFetcher(IUnitOfWork unitOfWork)
         {
@@ -27,11 +55,26 @@ namespace temsAPI.Services.EquipmentManagementHelpers
             // Fetch equipment from EquipmentAllocations if there is any allocatee specified
             // Otherwise - from Equipment table
 
-            IEquipmentFetcher equipmentFetcher = filter.IsAnyAllocateeSpecified() 
-                ? new AllocationsBasedEqFetcher(_unitOfWork)
-                : new EquipmentBasedEqFetcher(_unitOfWork);
-
+            IEquipmentFetcher equipmentFetcher = SelectEqFetcher(filter);
             return await equipmentFetcher.Fetch(filter);
+        }
+
+        /// <summary>
+        /// Get the amount of equipment that satisfy the specified filter
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        public async Task<int> GetAmount(EquipmentFilter filter)
+        {
+            IEquipmentFetcher equipmentFetcher = SelectEqFetcher(filter);
+            return await equipmentFetcher.GetAmount(filter);
+        }
+
+        private IEquipmentFetcher SelectEqFetcher(EquipmentFilter filter)
+        {
+            return filter.IsAnyAllocateeSpecified()
+                ? AllocationsBasedEquipmentFetcher
+                : EquipmentBasedEquipmentFetcher;
         }
     }
 }

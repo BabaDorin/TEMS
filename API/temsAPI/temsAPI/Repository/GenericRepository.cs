@@ -21,9 +21,23 @@ namespace temsAPI.Repository
             _db = _context.Set<T>();
         }
 
-        public async Task<int> Count(Expression<Func<T, bool>> expression = null)
+        public async Task<int> Count(
+            Expression<Func<T, bool>> where = null,
+            Func<IQueryable<T>, IIncludableQueryable<T, object>> include = null)
         {
-            return (expression != null) ? await _db.CountAsync(expression) : await _db.CountAsync();
+            IQueryable<T> query = _db;
+
+            if (where != null)
+            {
+                query = query.Where(where);
+            }
+
+            if (include != null)
+            {
+                query = include(query);
+            }
+
+            return (query != null) ? await query.CountAsync() : await _db.CountAsync();
         }
 
         public async Task Create(T entity)
@@ -44,8 +58,7 @@ namespace temsAPI.Repository
         public async Task<IList<TType>> Find<TType>(
             Expression<Func<T, bool>> where = null,
             Expression<Func<T, TType>> select = null,
-            Func<IQueryable<T>, IIncludableQueryable<T, object>> include = null,
-            List<string> includes = null)
+            Func<IQueryable<T>, IIncludableQueryable<T, object>> include = null)
         {
             IQueryable<T> query = _db;
 
@@ -54,23 +67,10 @@ namespace temsAPI.Repository
                 query = query.Where(where);
             }
 
-            if (includes != null)
-            {
-                foreach (var table in includes)
-                {
-                    query = query.Include(table);
-                }
-            }
-
             if (include != null)
             {
                 query = include(query);
             }
-
-            //if (select != null)
-            //{
-            //    query = (IQueryable<T>)query.Select(select);
-            //}
 
             return
                 (select != null)

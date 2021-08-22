@@ -62,7 +62,6 @@ export class EquipmentDetailsGeneralComponent extends TEMSComponent implements O
   fetchEquipment(){
     this.subscriptions.push(this.equipmentService.getEquipmentByID(this.equipmentId)
     .subscribe(response => {
-      console.log(response);
       if(this.snackService.snackIfError(response))
         return;
       

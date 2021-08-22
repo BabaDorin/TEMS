@@ -23,12 +23,12 @@ namespace temsAPI.Contracts
         Task<IList<TType>> Find<TType>(
            Expression<Func<T, bool>> where = null,
            Expression<Func<T, TType>> select = null,
-           Func<IQueryable<T>, IIncludableQueryable<T, object>> include = null,
-           List<string> includes = null
-           );
+           Func<IQueryable<T>, IIncludableQueryable<T, object>> include = null);
 
         Task<bool> isExists(Expression<Func<T, bool>> expression = null);
-        Task<int> Count(Expression<Func<T, bool>> expression = null);
+        Task<int> Count(
+            Expression<Func<T, bool>> where = null,
+            Func<IQueryable<T>, IIncludableQueryable<T, object>> include = null);
         Task Create(T entity);
         void Update(T entity);
         void Delete(T entity);

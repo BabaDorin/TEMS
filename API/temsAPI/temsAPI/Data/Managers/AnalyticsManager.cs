@@ -13,43 +13,55 @@ using temsAPI.Data.Entities.EquipmentEntities;
 using temsAPI.Data.Entities.UserEntities;
 using temsAPI.Helpers;
 using temsAPI.Helpers.AnalyticsHelpers.AnalyticsModels;
+using temsAPI.Helpers.Filters;
 using temsAPI.Services;
+using temsAPI.Services.EquipmentManagementHelpers;
 using temsAPI.System_Files;
 
 namespace temsAPI.Data.Managers
 {
     public class AnalyticsManager : EntityManager
     {
-        private EquipmentManager _equipmentManager;
-        private TicketManager _ticketManager;
-        private CurrencyConvertor _currencyConvertor;
+        readonly EquipmentManager _equipmentManager;
+        readonly TicketManager _ticketManager;
+        readonly CurrencyConvertor _currencyConvertor;
+        readonly IEquipmentFetcher _equipmentFetcher;
 
         public AnalyticsManager(
             IUnitOfWork unitOfWork, 
             ClaimsPrincipal user,
             EquipmentManager equipmentManager,
             CurrencyConvertor currencyConvertor,
-            TicketManager ticketManager) : base(unitOfWork, user)
+            TicketManager ticketManager,
+            IEquipmentFetcher equipmentFetcher) : base(unitOfWork, user)
         {
             _equipmentManager = equipmentManager;
             _currencyConvertor = currencyConvertor;
             _ticketManager = ticketManager;
+            _equipmentFetcher = equipmentFetcher;
         }
 
         // ------------------< Equipment >--------------------
 
-        public async Task<int> GetEquipmentAmount(
-            string entityType = null,
-            string entityId = null)
+        public async Task<int> GetEquipmentAmount(string entityType, string entityId)
         {
-            Expression<Func<Equipment, bool>> filterByEntityExpression =
-                _equipmentManager.Eq_FilterByEntity(entityType, entityId);
+            // Get the amount of equipment allocated to entity
 
-            return (await _unitOfWork.Equipments
-                .FindAll<Equipment>(
-                    include: q => q.Include(q => q.EquipmentAllocations),
-                    where: filterByEntityExpression))
-                .Count;
+            var filter = new EquipmentFilter()
+            {
+                IncludeChildren = false
+            };
+
+            if(entityType != null && entityId != null)
+            {
+                if(entityType == "room")
+                    filter.Rooms.Add(entityId);
+
+                if (entityType == "personnel")
+                    filter.Personnel.Add(entityId);
+            }
+
+            return await _equipmentFetcher.GetAmount(filter);
         }
 
         public async Task<double> GetEquipmentTotalCost(
@@ -57,7 +69,7 @@ namespace temsAPI.Data.Managers
             string entityId = null)
         {
             Expression<Func<Equipment, bool>> filterByEntityExpression =
-                _equipmentManager.Eq_FilterByEntity(entityType, entityId);
+                _equipmentManager.Eq_FilterByAllocateeEntity(entityType, entityId);
 
             double sum = (double)(await _unitOfWork.Equipments
                 .FindAll(
@@ -74,7 +86,7 @@ namespace temsAPI.Data.Managers
             string entityId)
         {
             Expression<Func<Equipment, bool>> filterByEntityExpression =
-                _equipmentManager.Eq_FilterByEntity(entityType, entityId);
+                _equipmentManager.Eq_FilterByAllocateeEntity(entityType, entityId);
 
             var equipment = await _unitOfWork.Equipments.FindAll<Equipment>(
                     include: q => q.Include(q => q.EquipmentAllocations),
@@ -102,7 +114,7 @@ namespace temsAPI.Data.Managers
             string entityId)
         {
             Expression<Func<Equipment, bool>> filterByEntityExpression =
-                _equipmentManager.Eq_FilterByEntity(entityType, entityId);
+                _equipmentManager.Eq_FilterByAllocateeEntity(entityType, entityId);
 
             var rates = (await _unitOfWork.Equipments
                 .FindAll<Equipment>(
@@ -127,7 +139,7 @@ namespace temsAPI.Data.Managers
         public async Task<PieChartData> GetEquipmentWorkabilityRate(string entityType, string entityId)
         {
             Expression<Func<Equipment, bool>> filterByEntityExpression =
-                _equipmentManager.Eq_FilterByEntity(entityType, entityId);
+                _equipmentManager.Eq_FilterByAllocateeEntity(entityType, entityId);
 
             var equipment = (await _unitOfWork.Equipments.FindAll<Equipment>(
                     include: q => q.Include(q => q.EquipmentAllocations),
@@ -154,7 +166,7 @@ namespace temsAPI.Data.Managers
             string entityId = null)
         {
             Expression<Func<Equipment, bool>> filterByEntityExpression =
-                _equipmentManager.Eq_FilterByEntity(entityType, entityId);
+                _equipmentManager.Eq_FilterByAllocateeEntity(entityType, entityId);
 
             var rates = (await _unitOfWork.Equipments
                 .FindAll<Equipment>(

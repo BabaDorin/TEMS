@@ -1,14 +1,13 @@
 ﻿using OfficeOpenXml;
 using OfficeOpenXml.Style;
 using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Text;
 
 namespace ReportGenerator.Helpers
 {
     class ReportStylingHelper
     {
+
         public double MeasureTextHeight(string text, ExcelFont font, double width)
         {
             if (String.IsNullOrEmpty(text)) return 0;

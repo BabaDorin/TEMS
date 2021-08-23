@@ -1,13 +1,7 @@
 ﻿using OfficeOpenXml;
 using ReportGenerator.Models;
-using ReportGenerator.Models.Styles;
 using ReportGenerator.Templates;
-using System;
-using System.Collections.Generic;
-using System.Data;
 using System.IO;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ReportGenerator.Services
 {
@@ -30,13 +24,6 @@ namespace ReportGenerator.Services
             reportTemplate.GenerateReport();
 
             return file;
-        }
-
-        private void SaveExcelFile(ReportData reportData, FileInfo file)
-        {
-            
-            
-            
         }
     }
 }

@@ -1,10 +1,7 @@
 ﻿using OfficeOpenXml;
-using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Reflection;
-using System.Text;
 
 namespace ReportGenerator.Helpers
 {
@@ -15,8 +12,8 @@ namespace ReportGenerator.Helpers
         /// </summary>
         /// <param name="imageName">file name (including extension) from the Resources folder</param>
         /// <param name="ws"></param>
-        /// <param name="row"></param>
-        /// <param name="column"></param>
+        /// <param name="row">Row number (starts with 1)</param>
+        /// <param name="column">Column number (starts with 1)</param>
         /// <returns>True if the image has been inserted successfuly</returns>
         public bool InsertImage(string imageName, ExcelWorksheet ws, int row, int column)
         {
@@ -30,7 +27,7 @@ namespace ReportGenerator.Helpers
             {
                 string imageNameWithoutExtension = Path.GetFileNameWithoutExtension(imageName);
                 var excelImage = ws.Drawings.AddPicture(imageNameWithoutExtension, image);
-                excelImage.SetPosition(row, 0, column, 0);
+                excelImage.SetPosition(row - 1, 0, column - 1, 0);
                 return true;
             }
         }

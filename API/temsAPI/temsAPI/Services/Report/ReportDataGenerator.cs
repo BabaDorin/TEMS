@@ -144,7 +144,19 @@ namespace temsAPI.Services.Report
 
         public List<string> FetchSignatories(ReportTemplate template)
         {
-            return template.Signatories?.Select(q => q.Name).ToList();
+            var signatories = template.Signatories?.Select(q =>
+            {
+                string name = q.Name.Trim();
+                if (name.IndexOf(' ') != -1)
+                {
+                    var firstNameLastName = name.Split(' ');
+                    name = firstNameLastName[0][0] + ". " + firstNameLastName[1]; // B. Dorin
+                }
+
+                return name;
+            }).ToList();
+
+            return signatories;
         }
 
         public async Task<List<Equipment>> FetchEquipmentItems(ReportTemplate template)

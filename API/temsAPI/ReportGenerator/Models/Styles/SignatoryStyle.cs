@@ -3,13 +3,13 @@ using OfficeOpenXml.Style.XmlAccess;
 
 namespace ReportGenerator.Models.Styles
 {
-    class SmallTextStyle : IWorkBookStyle
+    class SignatoryStyle : IWorkBookStyle
     {
-        public string StyleName => "SmallTextStyle";
+        public string StyleName => "SignatoryStyle";
 
         public void AppendStyles(ExcelNamedStyleXml namedStyle)
         {
-            namedStyle.Style.Font.Size = 9;
+            namedStyle.Style.ShrinkToFit = true;
         }
     }
 }

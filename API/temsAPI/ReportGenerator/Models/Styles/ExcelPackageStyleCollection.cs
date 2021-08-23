@@ -1,8 +1,6 @@
 ﻿using OfficeOpenXml;
-using OfficeOpenXml.Style.XmlAccess;
-using System;
+using ReportGenerator.Models.Styles.TemplateDefaults;
 using System.Collections.Generic;
-using System.Text;
 
 namespace ReportGenerator.Models.Styles
 {
@@ -17,39 +15,42 @@ namespace ReportGenerator.Models.Styles
 
     public enum ExcelStyleNames
     {
-        ReportTitle,
-        PrimaryHeader,
-        SecondaryHeader,
-        TertiaryHeader,
-        Bordered,
+        ReportTitleStyle,
+        HeaderStyle,
+        FooterStyle,
+        BorderedStyle,
         SmallTextStyle,
-        ItemGroupLabelStyle
+        ItemGroupLabelStyle,
+        ItemGroupTableHeaderStyle,
+        ItemGroupTableContentStyle,
+        SignatoryStyle,
+        UnderlineStyle
     }
 
     class ExcelPackageStyleCollection
     {
-        private ExcelPackage _pck;
-
         public string GetStyleName(ExcelStyleNames styleName) => styleName.ToString();
 
-        public ExcelPackageStyleCollection(ExcelPackage pck)
+        public ExcelPackageStyleCollection(ExcelPackage pck, ITemplateDefaultStyles templateDefaultStyles)
         {
-            _pck = pck;
-
             List<IWorkBookStyle> styles = new List<IWorkBookStyle>()
             {
-                new PrimaryHeader(),
-                new SecondaryHeader(),
+                new HeaderStyle(),
                 new BorderedStyle(),
-                new TertiaryHeader(),
                 new ReportTitleStyle(),
                 new SmallTextStyle(),
                 new ItemGroupLabelStyle(),
+                new ItemGroupTableHeaderStyle(),
+                new ItemGroupTableContentStyle(),
+                new FooterStyle(),
+                new SignatoryStyle(),
+                new UnderlineStyle()
             };
 
             foreach (var style in styles)
             {
-                style.CreateStyle(pck);
+                var defaultNamedStyle = templateDefaultStyles.GetStyleWithDefaultsSet(pck, style.StyleName);
+                style.AppendStyles(defaultNamedStyle);
             }
         }
     }

@@ -1,12 +1,12 @@
 ﻿using OfficeOpenXml;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using OfficeOpenXml.Style.XmlAccess;
 
 namespace ReportGenerator.Models.Styles
 {
     interface IWorkBookStyle
     {
-        public void CreateStyle(ExcelPackage pck);
+        public string StyleName { get; }
+
+        public void AppendStyles(ExcelNamedStyleXml namedStyle);
     }
 }

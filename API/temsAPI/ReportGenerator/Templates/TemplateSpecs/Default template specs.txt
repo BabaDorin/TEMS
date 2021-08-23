@@ -82,3 +82,5 @@ GROUPS ARE SEPARATED BY 3 Rows [+3 rows]
 report footer
 column: 1 - 6 merge, center + auto height
 
+[+2 rows]
+signatory: fontsize 12pt, Shrink to fit.

@@ -1,6 +1,7 @@
 ﻿using OfficeOpenXml;
 using ReportGenerator.Models;
 using ReportGenerator.Models.Styles;
+using ReportGenerator.Templates;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -19,84 +20,23 @@ namespace ReportGenerator.Services
             _filePath = filePath;
         }
 
-        public FileInfo GenerateReport(ReportData reportData)
+        public FileInfo GenerateReport(ReportData reportData, SICReportTemplate template = SICReportTemplate.Default)
         {
             // Logic of creating an excel file, based on provided ReportData
             var file = new FileInfo(_filePath);
-            SaveExcelFile(reportData, file);
+            if (file.Exists) file.Delete();
+
+            var reportTemplate = new TemplateFactory().GetTemplate(template, reportData, file);
+            reportTemplate.GenerateReport();
+
             return file;
         }
 
         private void SaveExcelFile(ReportData reportData, FileInfo file)
         {
-            if (file.Exists) file.Delete();
             
-            using (var pck = new ExcelPackage(file))
-            {
-                var styles = new ExcelPackageStyleCollection(pck);
-                ExcelWorksheet ws = pck.Workbook.Worksheets.Add(reportData.Name ?? "Items");
-
-                for (int i = 2; i < 20; i++)
-                    ws.Column(i).Width = 13;
-                
-                // Used for tracking the last written row
-                int lastRowTracker = 2;
-
-                // Write report header (if any)
-                if(reportData.Header != null)
-                {
-                    ws.Cells[$"B{lastRowTracker}"].StyleName = styles.GetStyleName(ExcelStyleNames.PrimaryHeader);
-                    ws.Cells[$"B{lastRowTracker}"].Value = reportData.Header;
-                    lastRowTracker += 3;
-                }
-
-                // Write report data
-                for (int i = 0; i < reportData.ReportItemGroups.Count; i++)
-                {
-                    ReportItemGroup itemGroup = reportData.ReportItemGroups[i];
-
-                    // Write report item group name (delimitator)
-                    ws.Cells[$"B{lastRowTracker}"].Value = itemGroup.Name == null ? "" : "🔖 " + itemGroup.Name;
-                    ws.Cells[$"B{lastRowTracker}"].StyleName = styles.GetStyleName(ExcelStyleNames.SecondaryHeader);
-                    lastRowTracker += 2;
-
-                    // Write item group data, represented by a data table
-                    var writtenCells = ws.Cells[$"B{lastRowTracker}"].LoadFromDataTable(itemGroup.ItemsTable, true);
-                    
-                    // Table styling
-                    writtenCells.StyleName = styles.GetStyleName(ExcelStyleNames.Bordered);
-                    writtenCells.Style.WrapText = true;
-
-                    lastRowTracker += itemGroup.ItemsTable.Rows.Count + 3;
-                }
-
-                // Write report footer (if any)
-                if (reportData.Footer != null)
-                {
-                    ws.Cells[$"B{lastRowTracker}"].StyleName = styles.GetStyleName(ExcelStyleNames.SecondaryHeader);
-                    ws.Cells[$"B{lastRowTracker}"].Value = reportData.Footer;
-
-                    lastRowTracker += 3;
-                }
-
-                if(reportData.Signatories != null && reportData.Signatories.Count > 0)
-                {
-                    ws.Cells[$"B{lastRowTracker}"].StyleName = styles.GetStyleName(ExcelStyleNames.SecondaryHeader);
-                    ws.Cells[$"B{lastRowTracker}"].Value = "Signatories list";
-                    lastRowTracker += 2;
-
-                    foreach (string s in reportData.Signatories)
-                    {
-                        ws.Cells[$"B{lastRowTracker}"].StyleName = styles.GetStyleName(ExcelStyleNames.TertiaryHeader);
-                        ws.Cells[$"B{lastRowTracker}"].Value = s;
-                        ws.Cells[$"B{++lastRowTracker}"].Value = "________________________ (Signature)";
-
-                        lastRowTracker++;
-                    }
-                }
-
-                pck.Save();
-            }
+            
+            
         }
     }
 }

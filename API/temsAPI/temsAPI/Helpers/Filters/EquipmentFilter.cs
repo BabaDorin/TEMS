@@ -6,15 +6,16 @@ namespace temsAPI.Helpers.Filters
 {
     public class EquipmentFilter : IPaginationFilter
     {
-        private int skip;
-        public int Skip {
+        private int skip = 0;
+        public int Skip
+        {
             get
             {
                 return skip;
             }
             set
             {
-                if(value < 0)
+                if (value < 0)
                 {
                     skip = 0;
                     return;
@@ -24,7 +25,7 @@ namespace temsAPI.Helpers.Filters
             }
         }
 
-        private int take;
+        private int take = int.MaxValue;
         public int Take { get 
             {
                 return take;

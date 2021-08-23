@@ -8,4 +8,19 @@
     <PackageReference Include="EPPlus" Version="5.6.3" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Resources\cihc_logo.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Resources\cihc_logo_small.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Resources\tems_logo.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Resources\tems_logo_small.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

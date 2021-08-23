@@ -1,4 +1,5 @@
 ﻿using OfficeOpenXml;
+using OfficeOpenXml.Style;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -10,8 +11,7 @@ namespace ReportGenerator.Models.Styles
         public void CreateStyle(ExcelPackage pck)
         {
             var namedStyle = pck.Workbook.Styles.CreateNamedStyle("PrimaryHeader");
-            namedStyle.Style.Font.Bold = true;
-            namedStyle.Style.Font.Size = 22;
+            namedStyle.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
         }
     }
 

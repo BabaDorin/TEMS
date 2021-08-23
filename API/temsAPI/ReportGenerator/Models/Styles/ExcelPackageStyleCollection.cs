@@ -17,10 +17,13 @@ namespace ReportGenerator.Models.Styles
 
     public enum ExcelStyleNames
     {
+        ReportTitle,
         PrimaryHeader,
         SecondaryHeader,
         TertiaryHeader,
-        Bordered
+        Bordered,
+        SmallTextStyle,
+        ItemGroupLabelStyle
     }
 
     class ExcelPackageStyleCollection
@@ -38,7 +41,10 @@ namespace ReportGenerator.Models.Styles
                 new PrimaryHeader(),
                 new SecondaryHeader(),
                 new BorderedStyle(),
-                new TertiaryHeader()
+                new TertiaryHeader(),
+                new ReportTitleStyle(),
+                new SmallTextStyle(),
+                new ItemGroupLabelStyle(),
             };
 
             foreach (var style in styles)

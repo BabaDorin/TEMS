@@ -21,18 +21,12 @@ namespace temsAPI.Services.Report
 {
     public class ReportDataGenerator
     {
-        IUnitOfWork _unitOfWork;
-        UserManager<TEMSUser> _userManager;
         List<string> reportCommonPropertiesList = new List<string>();
         IEquipmentFetcher _equipmentFetcher;
 
         public ReportDataGenerator(
-            IUnitOfWork unitOfWork, 
-            UserManager<TEMSUser> userManager,
             IEquipmentFetcher equipmentFetcher)
         {
-            _unitOfWork = unitOfWork;
-            _userManager = userManager;
             _equipmentFetcher = equipmentFetcher;
         }
 
@@ -41,10 +35,11 @@ namespace temsAPI.Services.Report
         /// </summary>
         /// <param name="template"></param>
         /// <returns></returns>
-        public async Task<ReportData> GenerateReportData(ReportTemplate template)
+        public async Task<ReportData> GenerateReportData(ReportTemplate template, string generatedBy)
         {
             var reportData = new ReportData
             {
+                GeneratedBy = generatedBy,
                 Footer = template.Footer,
                 Header = template.Header,
                 Name = template.Name,

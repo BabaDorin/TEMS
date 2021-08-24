@@ -10,7 +10,12 @@ namespace temsAPI.Helpers
     {
         public interface IEquipmentSeparator
         {
-            IEnumerable<IGrouping<IIdentifiable, Equipment>> GroupEquipment(List<Equipment> equipment);
+            /// <summary>
+            /// Key name when grouping by null
+            /// </summary>
+            public string DefaultKeyName { get; set; }
+
+            IEnumerable<IGrouping<IIdentifiable, Equipment>> GroupEquipment(IEnumerable<Equipment> equipment);
         }
     }
 }

@@ -10,7 +10,9 @@ namespace temsAPI.Helpers
     {
         public class NoneSeparator : IEquipmentSeparator
         {
-            public IEnumerable<IGrouping<IIdentifiable, Equipment>> GroupEquipment(List<Equipment> equipment)
+            public string DefaultKeyName { get; set; } = "Other";
+
+            public IEnumerable<IGrouping<IIdentifiable, Equipment>> GroupEquipment(IEnumerable<Equipment> equipment)
             {
                 var groups = new List<Grouping<IIdentifiable, Equipment>>();
                 groups.Add(new Grouping<IIdentifiable, Equipment>(null, equipment));

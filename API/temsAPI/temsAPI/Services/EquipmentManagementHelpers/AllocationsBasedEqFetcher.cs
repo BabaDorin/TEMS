@@ -19,7 +19,7 @@ namespace temsAPI.Services.EquipmentManagementHelpers
     public class AllocationsBasedEqFetcher : IEquipmentFetcher
     {
         private IUnitOfWork _unitOfWork;
-
+        
         public AllocationsBasedEqFetcher(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;

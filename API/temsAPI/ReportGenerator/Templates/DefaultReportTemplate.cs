@@ -42,7 +42,7 @@ namespace ReportGenerator.Templates
 
             // Default column width: 15
             for (int i = 1; i < 20; i++)
-                ws.Column(i).Width = 13;
+                ws.Column(i).Width = 14;
         }
 
         private void PopulateExcelPackage(ExcelPackage pck)
@@ -80,7 +80,7 @@ namespace ReportGenerator.Templates
                 ws.Row(lastRowTracker).Height = stylingHelper.MeasureTextHeight(
                     _reportData.Name,
                     cell.Style.Font,
-                    13 * 6);
+                    14 * 6);
                 lastRowTracker += 2;
             }
 
@@ -94,7 +94,7 @@ namespace ReportGenerator.Templates
                 ws.Row(lastRowTracker).Height = stylingHelper.MeasureTextHeight(
                     _reportData.Header,
                     cell.Style.Font,
-                    13 * 6);
+                    14 * 6);
                 lastRowTracker += 2;
             }
 
@@ -107,8 +107,13 @@ namespace ReportGenerator.Templates
 
                 // Write report item group name (delimitator)
                 stylingHelper.MergeRowWithWrap(ws, lastRowTracker, 1, pageWidthInCols);
+                var cell = ws.Cells[lastRowTracker, 1];
                 ws.Cells[lastRowTracker, 1, lastRowTracker, pageWidthInCols].StyleName = styles.GetStyleName(ExcelStyleNames.ItemGroupLabelStyle);
-                ws.Cells[lastRowTracker, 1].Value = itemGroup.Name;
+                cell.Value = itemGroup.Name;
+                ws.Row(lastRowTracker).Height = stylingHelper.MeasureTextHeight(
+                    _reportData.Header,
+                    cell.Style.Font,
+                    14 * 6);
                 lastRowTracker += 2;
 
                 // Write item group data, represented by a data table
@@ -135,7 +140,7 @@ namespace ReportGenerator.Templates
                 ws.Row(lastRowTracker).Height = stylingHelper.MeasureTextHeight(
                     _reportData.Footer,
                     cell.Style.Font,
-                    13 * 6);
+                    14 * 6);
                 lastRowTracker += 2;
             }
 

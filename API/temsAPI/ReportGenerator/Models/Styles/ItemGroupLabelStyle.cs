@@ -11,6 +11,7 @@ namespace ReportGenerator.Models.Styles
         public void AppendStyles(ExcelNamedStyleXml namedStyle)
         {
             namedStyle.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+            namedStyle.Style.WrapText = true;
             namedStyle.Style.Font.Bold = true;
         }
     }

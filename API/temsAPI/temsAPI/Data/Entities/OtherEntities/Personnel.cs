@@ -71,6 +71,19 @@ namespace temsAPI.Data.Entities.OtherEntities
         [NotMapped]
         public string Identifier => Name;
 
+        // Baba Dorin => B. Dorin
+        [NotMapped]
+        public string ShortName { 
+            get
+            {
+                string trimmedName = Name.Trim();
+                if (trimmedName.IndexOf(' ') == -1)
+                    return trimmedName;
+
+                var names = trimmedName.Split(' ');
+                return $"{names[0][0]}. {names[1]}";
+            } 
+        }
         // BEFREE: Add multiple Emails and Phone numbers support later if needed.
 
         public async Task AssignPositions(List<string> positionIds, IUnitOfWork unitOfWork)

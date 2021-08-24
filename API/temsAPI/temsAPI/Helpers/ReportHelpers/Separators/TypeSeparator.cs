@@ -10,7 +10,9 @@ namespace temsAPI.Helpers
     {
         public class TypeSeparator : IEquipmentSeparator
         {
-            public IEnumerable<IGrouping<IIdentifiable, Equipment>> GroupEquipment(List<Equipment> equipment)
+            public string DefaultKeyName { get; set; } = "Other";
+
+            public IEnumerable<IGrouping<IIdentifiable, Equipment>> GroupEquipment(IEnumerable<Equipment> equipment)
             {
                 return equipment.GroupBy(q => q.EquipmentDefinition.EquipmentType).ToList();
             }

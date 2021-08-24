@@ -1,4 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.EntityFrameworkCore.Query;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using temsAPI.Data.Entities.EquipmentEntities;
 using temsAPI.Helpers.Filters.Contracts;
 using temsAPI.Helpers.ReusableSnippets;
 
@@ -68,6 +73,10 @@ namespace temsAPI.Helpers.Filters
         public bool IncludeDefect { get; set; } = true;
         public bool IncludeAttached { get; set; } = true;
         public bool IncludeDetached { get; set; } = true;
+
+        // Additional include queries that will be merged with default ones
+        public Expression<Func<IQueryable<Equipment>, IIncludableQueryable<Equipment, object>>> IncludeFromEquipment { get; set; }
+        public Expression<Func<IQueryable<EquipmentAllocation>, IIncludableQueryable<EquipmentAllocation, object>>> IncludeFromEquipmentAllocation { get; set; }
 
         // Type & Definition filtering (Ids are provided here).
         // Empty or the presence of "any" members => Include all types & all definitions

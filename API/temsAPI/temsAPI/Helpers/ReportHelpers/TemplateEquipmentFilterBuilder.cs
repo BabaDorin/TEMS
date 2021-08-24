@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -11,7 +12,7 @@ namespace temsAPI.Helpers.ReportHelpers
     {
         public EquipmentFilter GetFilter(ReportTemplate template)
         {
-            return new EquipmentFilter()
+            var filter = new EquipmentFilter()
             {
                 Types = template.EquipmentTypes?.Select(q => q.Id).ToList(),
                 Definitions = template.EquipmentDefinitions?.Select(q => q.Id).ToList(),
@@ -24,6 +25,8 @@ namespace temsAPI.Helpers.ReportHelpers
                 IncludeParents = template.IncludeParent,
                 IncludeChildren = template.IncludeChildren,
             };
+
+            return filter;
         }
     }
 }

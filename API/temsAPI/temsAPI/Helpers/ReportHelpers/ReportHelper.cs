@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using temsAPI.Contracts;
 using temsAPI.Data.Entities.EquipmentEntities;
 using temsAPI.Data.Entities.Report;
 using temsAPI.Helpers.ReportHelpers;
@@ -44,14 +45,14 @@ namespace temsAPI.Helpers
             Allocatee
         }
 
-        public static IEquipmentSeparator GetSeparator(ReportTemplate reportTemplate)
+        public static IEquipmentSeparator GetSeparator(ReportTemplate reportTemplate, IUnitOfWork unitOfWork)
         {
             switch (reportTemplate.SeparateBy.ToLower())
             {
                 case "type": return new TypeSeparator();
                 case "definition": return new DefinitionSeparator();
-                case "personnel": return new PersonnelSeparator();
-                case "room": return new RoomSeparator();
+                case "personnel": return new PersonnelSeparator(unitOfWork);
+                case "room": return new RoomSeparator(unitOfWork);
                 default: return new NoneSeparator();
             }
         }

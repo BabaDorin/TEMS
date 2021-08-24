@@ -22,12 +22,15 @@ namespace temsAPI.Services.Report
     public class ReportDataGenerator
     {
         List<string> reportCommonPropertiesList = new List<string>();
-        IEquipmentFetcher _equipmentFetcher;
+        readonly IEquipmentFetcher _equipmentFetcher;
+        readonly IUnitOfWork _unitOfWork;
 
         public ReportDataGenerator(
-            IEquipmentFetcher equipmentFetcher)
+            IEquipmentFetcher equipmentFetcher,
+            IUnitOfWork unitOfWork)
         {
             _equipmentFetcher = equipmentFetcher;
+            _unitOfWork = unitOfWork;
         }
 
         /// <summary>
@@ -73,7 +76,7 @@ namespace temsAPI.Services.Report
 
             var equipment = await FetchEquipmentItems(template);
 
-            var separator = ReportHelper.GetSeparator(template);
+            var separator = ReportHelper.GetSeparator(template, _unitOfWork);
             var groupedItems = separator.GroupEquipment(equipment);
 
             List<ReportItemGroup> reportItemGroups = new List<ReportItemGroup>();
@@ -88,6 +91,24 @@ namespace temsAPI.Services.Report
 
                 reportItemGroups.Add(reportItemGroup);
             }
+
+            // Sort by key
+            reportItemGroups = reportItemGroups.OrderBy(q => q.Name).ToList();
+            
+            // Put the item grou with null key (if exists) at the end
+            var nullKeyItemGroup = reportItemGroups.FirstOrDefault(q => q.Name == null);
+
+            if(nullKeyItemGroup != null)
+            {
+                reportItemGroups.Remove(nullKeyItemGroup);
+                reportItemGroups.Add(nullKeyItemGroup);
+            }
+
+            reportItemGroups.ForEach(q =>
+            {
+                if (String.IsNullOrEmpty(q.Name))
+                    q.Name = separator.DefaultKeyName ?? "Other";
+            });
 
             return reportItemGroups;
         }
@@ -159,10 +180,10 @@ namespace temsAPI.Services.Report
             return signatories;
         }
 
-        public async Task<List<Equipment>> FetchEquipmentItems(ReportTemplate template)
+        public async Task<IEnumerable<Equipment>> FetchEquipmentItems(ReportTemplate template)
         {
             var filter = new TemplateEquipmentFilterBuilder().GetFilter(template);
-            return (await _equipmentFetcher.Fetch(filter)).ToList();
+            return await _equipmentFetcher.Fetch(filter);
         }
     }
 }

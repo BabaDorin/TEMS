@@ -71,7 +71,9 @@ namespace temsAPI.Data.Managers
             List<string> definitionIds = viewModel.Definitions?.Select(q => q.Value).ToList();
             List<string> roomIds = viewModel.Rooms?.Select(q => q.Value).ToList();
             List<string> personnelIds = viewModel.Personnel?.Select(q => q.Value).ToList();
-            List<string> specificProperties = viewModel.SpecificProperties?.SelectMany(q => q.Properties).ToList();
+            List<string> specificProperties = viewModel.SpecificProperties?
+                .SelectMany(q => q.Properties.Select(q => q.Value))
+                .ToList();
             List<string> propertyIds = viewModel.CommonProperties?
                 .Concat(specificProperties == null ? new List<string>() : specificProperties)
                 .ToList();
@@ -230,6 +232,7 @@ namespace temsAPI.Data.Managers
                     where: q => q.Id == templateId,
                     include: q => q
                     .Include(q => q.EquipmentTypes)
+                    .ThenInclude(q => q.Properties)
                     .Include(q => q.EquipmentDefinitions)
                     .Include(q => q.Rooms)
                     .Include(q => q.Personnel)

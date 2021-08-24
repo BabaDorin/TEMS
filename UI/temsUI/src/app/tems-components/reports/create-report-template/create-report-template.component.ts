@@ -115,6 +115,8 @@ export class CreateReportTemplateComponent extends TEMSComponent implements OnIn
         if(this.templateToUpdate == null)
           return;
 
+        console.log(this.templateToUpdate);
+
         let controls = this.reportFormGroup.controls;
         controls.name.setValue(this.templateToUpdate.name),
         controls.description.setValue(this.templateToUpdate.description),
@@ -202,16 +204,33 @@ export class CreateReportTemplateComponent extends TEMSComponent implements OnIn
     this.reportFormGroup.controls.commonProperties.setValue(eventData);
   }
 
+
+
   findCommonAndSpecificProperties() {
-    // 1. Put all common props back to where they belong
+    // 1. Put all common (that were not natively common) props back to where they belong (to their types)
     // 2. Add or remove type specific properties
     // 3. Find common properties
+    
+    let types = this.reportFormGroup.controls.types.value;
+    
+    if(types != undefined && types.length > 0)
+      this.putBackCommonProps();
+    else
+    {
+      this.equipmentCommonProperties = this.universalProperties;
+      this.equipmentCommonProperties.forEach(element => {
+        element.checked = false;
+        if(this.templateToUpdate.properties.indexOf(element.value) > -1)
+          element.checked = true;
+      });
 
-    this.putBackCommonProps();
+      return;
+    }
+
     this.unsubscribeFromAll();
+
     // Getting specific properties of selected types
-    let length = this.reportFormGroup.controls.types.value.length;
-    for (let i = 0; i < length; i++) {
+    for (let i = 0; i < types.length; i++) {
       let element = this.reportFormGroup.controls.types.value[i];
       if (this.typeSpecificProperties.find(q => q.type == element) == undefined) {
         this.subscriptions.push(
@@ -232,6 +251,11 @@ export class CreateReportTemplateComponent extends TEMSComponent implements OnIn
   }
 
   putBackCommonProps() {
+    // When there are multiple types selected, sometimes there might be common properties among those types.
+    // For example, both CPU and GPU have Name property. In this case, Name won't be placed in CPU and GPU
+    // selection group, but will be brought up to Common properites, due to the fact that It indeed is a common property
+    // along all of CURRENTLY SELECTED TYPES.
+
     this.equipmentCommonProperties = this.equipmentCommonProperties
       .filter((el) => !this.universalProperties.map(q => q.label).includes(el.label));
 
@@ -304,6 +328,7 @@ export class CreateReportTemplateComponent extends TEMSComponent implements OnIn
 
   save() {
     let addReportTemplateModel = this.getReportTemplate();
+    console.log(addReportTemplateModel);
     let endPoint = this.reportService.addReportTemplate(addReportTemplateModel);
     
     if(addReportTemplateModel.id != undefined)
@@ -335,7 +360,7 @@ export class CreateReportTemplateComponent extends TEMSComponent implements OnIn
       includeChildren: this.controls.includeChildren.value,
       commonProperties: this.controls.commonProperties.value,
       specificProperties: (this.controls.specificProperties.value != null)
-        ? this.controls.specificProperties.value.map(q => ({properties: q.properties, type: q.type.value}))
+        ? this.controls.specificProperties.value.map(q => ({properties: q.properties.map(q => ({ value: q})), type: q.type}))
         : null,
       header: this.controls.header.value,
       footer: this.controls.footer.value,

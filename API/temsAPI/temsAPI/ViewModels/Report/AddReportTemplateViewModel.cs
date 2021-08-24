@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
@@ -29,7 +30,7 @@ namespace temsAPI.ViewModels.Report
         public string SeparateBy { get; set; }
         public List<string> CommonProperties { get; set; } = new List<string>();
         public List<SpecificPropertyWrapper> SpecificProperties { get; set; } = new List<SpecificPropertyWrapper>();
-        public List<string> Properties { get; set; } = new List<string>();
+        //public List<string> Properties { get; set; } = new List<string>();
         public string Header { get; set; }
         public string Footer { get; set; }
         public List<Option> Signatories { get; set; } = new List<Option>();
@@ -42,8 +43,8 @@ namespace temsAPI.ViewModels.Report
             List<string> roomIds = Rooms?.Select(q => q.Value).ToList();
             List<string> personnelIds = Personnel?.Select(q => q.Value).ToList();
             List<string> specificProperties = SpecificProperties?
-                .Where(q => Types.Any(q1 => q1.Value == q.Type))
-                .SelectMany(q => q.Properties).ToList();
+                .Where(q => Types.Any(q1 => q1.Value == q.Type.Value))
+                .SelectMany(q => q.Properties.Select(q => q.Value)).ToList();
             List<string> propertyIds = CommonProperties?
                 .Concat(specificProperties ?? new List<string>())
                 .ToList();
@@ -110,7 +111,7 @@ namespace temsAPI.ViewModels.Report
             };
             return model;
         }
-        
+
         public static AddReportTemplateViewModel FromModel(ReportTemplate template)
         {
             var viewModel = new AddReportTemplateViewModel
@@ -138,7 +139,14 @@ namespace temsAPI.ViewModels.Report
                     Value = q.Id,
                     Label = q.Name
                 }).ToList(),
-                Properties = template.Properties.Select(q => q.Name).ToList(),
+                CommonProperties = template.CommonProperties.Split(' ').ToList(),
+                SpecificProperties = template.EquipmentTypes.Select(q => new SpecificPropertyWrapper
+                {
+                    Type = new Option(q.Id, q.Name),
+                    Properties = q.Properties?.Intersect(template.Properties)
+                        ?.Select(q => new Option(q.Name, q.DisplayName))
+                        .ToList()
+                }).ToList(),
                 SeparateBy = template.SeparateBy,
                 IncludeInUse = template.IncludeInUse,
                 IncludeUnused = template.IncludeUnused,
@@ -154,11 +162,6 @@ namespace temsAPI.ViewModels.Report
                     Label = q.Name
                 }).ToList(),
             };
-
-            if (template.CommonProperties != null)
-                viewModel.Properties = viewModel.Properties
-                    .Concat(template.CommonProperties.Split(' '))
-                    .ToList();
 
             return viewModel;
         }
@@ -232,7 +235,7 @@ namespace temsAPI.ViewModels.Report
             var specificProperties = SpecificProperties?.SelectMany(q => q.Properties).ToList();
             if (specificProperties != null)
                 foreach (var item in specificProperties)
-                    if (!await unitOfWork.Properties.isExists(q => q.Name == item))
+                    if (!await unitOfWork.Properties.isExists(q => q.Name == item.Value))
                         return $"{item} is not a valid property";
 
             return null;
@@ -241,7 +244,7 @@ namespace temsAPI.ViewModels.Report
 
     public class SpecificPropertyWrapper
     {
-        public string Type { get; set; }
-        public List<string> Properties { get; set; } = new List<string>();
+        public Option Type { get; set; }
+        public List<Option> Properties { get; set; } = new List<Option>();
     }
 }

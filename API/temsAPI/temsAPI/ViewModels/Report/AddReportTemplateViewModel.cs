@@ -139,7 +139,7 @@ namespace temsAPI.ViewModels.Report
                     Value = q.Id,
                     Label = q.Name
                 }).ToList(),
-                CommonProperties = template.CommonProperties.Split(' ').ToList(),
+                CommonProperties = template.CommonProperties?.Split(' ').ToList(),
                 SpecificProperties = template.EquipmentTypes.Select(q => new SpecificPropertyWrapper
                 {
                     Type = new Option(q.Id, q.Name),
@@ -224,10 +224,10 @@ namespace temsAPI.ViewModels.Report
 
             // Invalid properties
             if (CommonProperties != null)
-                for(int i = 0; i < CommonProperties.Count; i++)
+                for (int i = 0; i < CommonProperties.Count; i++)
                 {
                     CommonProperties[i] = CommonProperties[i].ToLower();
-                    if (!ReportHelper.CommonProperties.Contains(CommonProperties[i]) 
+                    if (!ReportHelper.CommonProperties.Contains(CommonProperties[i])
                         && !await unitOfWork.Properties.isExists(q => q.Name == CommonProperties[i]))
                         return $"{CommonProperties[i]} is not a valid property";
                 }

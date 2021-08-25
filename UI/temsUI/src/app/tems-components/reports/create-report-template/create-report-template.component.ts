@@ -1,6 +1,6 @@
 import { DownloadService } from './../../../download.service';
-import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Component, forwardRef, OnInit } from '@angular/core';
+import { FormControl, FormGroup, NG_VALUE_ACCESSOR, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { IOption } from 'src/app/models/option.model';
@@ -48,8 +48,7 @@ export class CreateReportTemplateComponent extends TEMSComponent implements OnIn
     includeParent: new FormControl(true),
     includeChildren: new FormControl(false),
     separateBy: new FormControl(),
-    commonProperties: new FormControl(),
-    specificProperties: new FormControl(),
+    reportProperties: new FormControl(),
     header: new FormControl(),
     footer: new FormControl(),
     signatories: new FormControl()
@@ -171,21 +170,6 @@ export class CreateReportTemplateComponent extends TEMSComponent implements OnIn
         .filter(q1 => this.typesEndPointParameter.findIndex(q2 => q2 == q1.additional) > -1);
        
     this.definitionsAlreadySelected = validDefinitions;
-
-    // let index = this.typeSpecificProperties.findIndex(q => q.type == eventData);
-    // if (index > -1) {
-    //   this.typeSpecificProperties.splice(index, 1);
-    // }
-
-    // index = this.specificProperties.findIndex(q => q.type == eventData);
-    // if(index > -1){
-    //   this.specificProperties.splice(index, 1);
-  
-    //   this.reportFormGroup.controls.specificProperties.setValue(this.specificProperties);
-    // }
-
-    // this.putBackCommonProps();
-    // this.findCommonProps();
   }
 
   onCommonPropChange(eventData) {
@@ -197,6 +181,8 @@ export class CreateReportTemplateComponent extends TEMSComponent implements OnIn
   }
 
   save() {
+    console.log(this.reportFormGroup);
+    
     let addReportTemplateModel = this.getReportTemplate();
     console.log(addReportTemplateModel);
     let endPoint = this.reportService.addReportTemplate(addReportTemplateModel);
@@ -228,15 +214,17 @@ export class CreateReportTemplateComponent extends TEMSComponent implements OnIn
       includeDefect: this.controls.includeDefect.value,
       includeParent: this.controls.includeParent.value,
       includeChildren: this.controls.includeChildren.value,
-      commonProperties: this.controls.commonProperties.value,
-      specificProperties: (this.controls.specificProperties.value != null)
-        ? this.controls.specificProperties.value.map(q => ({properties: q.properties.map(q => ({ value: q})), type: q.type}))
+      commonProperties: this.controls.reportProperties.value.commonProperties,
+      specificProperties: (this.controls.reportProperties.value.typeSpecificProperties != undefined)
+        ? this.controls.reportProperties.value.typeSpecificProperties
         : null,
       header: this.controls.header.value,
       footer: this.controls.footer.value,
       signatories: this.controls.signatories.value,
       properties: undefined
     };
+
+    console.log(addReportTemplate);
 
     return addReportTemplate;
   }

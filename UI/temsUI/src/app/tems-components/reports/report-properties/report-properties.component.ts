@@ -1,19 +1,28 @@
+import { IOption } from './../../../models/option.model';
 import { TranslateService } from '@ngx-translate/core';
 import { propertyChanged } from 'src/app/helpers/onchanges-helper';
 import { TEMSComponent } from './../../../tems/tems.component';
 import { TypeService } from './../../../services/type.service';
 import { ITypeSpecificPropCollection } from './../../../models/report/report.model';
-import { Component, Input, OnInit, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, OnInit, OnChanges, SimpleChanges, forwardRef } from '@angular/core';
 import { CheckboxItem } from 'src/app/models/checkboxItem.model';
-import { IOption } from 'src/app/models/option.model';
-import { forEach } from '@angular-devkit/schematics';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 @Component({
   selector: 'app-report-properties',
   templateUrl: './report-properties.component.html',
-  styleUrls: ['./report-properties.component.scss']
+  styleUrls: ['./report-properties.component.scss'],
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => ReportPropertiesComponent),
+      multi: true
+    }
+  ]
 })
-export class ReportPropertiesComponent extends TEMSComponent implements OnInit, OnChanges {
+export class ReportPropertiesComponent extends TEMSComponent implements OnInit, OnChanges, ControlValueAccessor {
+
+  value = 'salut';
 
   @Input() selectedCommonProps: string[];
   @Input() selectedTypeSpecificProps: ITypeSpecificPropCollection[];
@@ -36,16 +45,54 @@ export class ReportPropertiesComponent extends TEMSComponent implements OnInit, 
     // and only those from selectedCommonProperites will be checked.
     this.universalProperties = [
       new CheckboxItem('temsid', this.translate.instant('report.prop_TEMSID'), true),
-      new CheckboxItem('serialNumber', this.translate.instant('report.prop_serialNumber'), true),
+      new CheckboxItem('serialnumber', this.translate.instant('report.prop_serialNumber'), true),
       new CheckboxItem('definition', this.translate.instant('report.prop_definition'), true),
       new CheckboxItem('type', this.translate.instant('report.prop_type'), true),
       new CheckboxItem('description', this.translate.instant('report.prop_description'), false),
       new CheckboxItem('price', this.translate.instant('report.prop_price'), true),
       new CheckboxItem('currency', this.translate.instant('report.prop_currency'), true),
-      new CheckboxItem('purchaseDate', this.translate.instant('report.prop_purchaseDate'), false),
+      new CheckboxItem('purchasedate', this.translate.instant('report.prop_purchaseDate'), false),
       new CheckboxItem('allocatee', this.translate.instant('report.prop_allocatee')),
     ];
+
+    // this.value = {
+    //   commonProperties: this.commonProps,
+    //   typeSpecificProperties: this.typeSpecificProps
+    // }
   }
+  
+  onChange: any = () => {
+  }
+  onTouch: any = () => {}
+  registerOnChange(fn: any): void {
+    this.onChange = fn;
+  }
+  registerOnTouched(fn: any): void {
+    this.onTouch = fn;
+  }
+
+  writeValue(obj: any): void {
+  if(obj == null || obj == undefined)
+    return;
+
+  // this.commonProps = obj?.commonProperties;
+  // this.typeSpecificProps = obj?.typeSpecificProps;
+  this.value = obj;
+ }
+
+ setValue(){
+   let obj = {
+    commonProperties: this.commonProps.filter(q => q.checked)?.map(q => q.value),
+    typeSpecificProperties: this.typeSpecificProps.map(q => ({
+      type: q.type,
+      properties: q.properties.filter(p => p.checked)?.map(p => ({ value: p.value, label: p.label } as IOption))
+    }))
+  }
+
+  console.log('obj');
+  console.log(obj);
+   this.onChange(obj);
+ }
   
   ngOnChanges(changes: SimpleChanges): void {
     console.log('changes');
@@ -99,24 +146,33 @@ export class ReportPropertiesComponent extends TEMSComponent implements OnInit, 
   }
 
   private initCommonProps(){
+    this.commonProps = [].concat(this.universalProperties);
     if(this.selectedCommonProps == undefined){
-      this.commonProps = this.universalProperties;
       return;
     }
 
     // mark selected props 
-    this.commonProps = this.universalProperties;
     this.commonProps.forEach(prop => this.selectedCommonProps.indexOf(prop.value) > -1 
       ? prop.checked = true 
       : prop.checked = false);
   }
 
   private async initSpecificProps(){
-    // 1. fetch each selected type's collection of properties
-    // this.typeSpecificProps = await this.fetchTypePropertyCollections();
-
-
-    // Remove collections associated with removed types
+    // Find properties from commonProps that do not belong there by default aka
+    // properties that are common for each selected type, but do not belong to
+    // universal properties.
+    // And put them back to typeSpecificProps
+    let typeCommonProps = this.commonProps.filter(q => this.universalProperties.findIndex(unv => unv.value == q.value) == -1);
+    
+    if(typeCommonProps != undefined){
+      typeCommonProps.forEach(typeCommonProp => {
+        this.typeSpecificProps.forEach(type => type.properties.push(typeCommonProp));
+        
+        // remove it form common props
+        let propIndex = this.commonProps.indexOf(typeCommonProp);
+        this.commonProps.splice(propIndex, 1);
+      });
+    }
 
     // (On type removal)
     // If typeSpecificProps contains types thare are not contained by selectedTypes
@@ -127,7 +183,7 @@ export class ReportPropertiesComponent extends TEMSComponent implements OnInit, 
     for(let i = 0; i < this.selectedTypes.length; i++){
       let type = this.selectedTypes[i];
 
-      if(!this.typeSpecificProps != undefined && this.typeSpecificProps.findIndex(q => q.type == type) == -1)
+      if(this.typeSpecificProps != undefined && this.typeSpecificProps.findIndex(q => q.type == type) == -1)
       {
         let typeProps = await this.fetchTypeProperties(type);
         console.log('type props for ' + type.label);
@@ -177,18 +233,8 @@ export class ReportPropertiesComponent extends TEMSComponent implements OnInit, 
       }
     }
 
-    console.log('these are all type specific props');
-    console.log(this.typeSpecificProps);
+    this.setValue();
   }
-
-  // private async fetchTypePropertyCollections(): Promise<any> {
-  //   return new Promise<any>(async (resolve) => {
-  //     let typeSpecificPropertyCollection = [];
-
-      
-  //     resolve(typeSpecificPropertyCollection);
-  //   });
-  // }
 
   private async fetchTypeProperties(type: IOption): Promise<IOption[]>{
     return new Promise<IOption[]>((resolve) => {

@@ -131,7 +131,7 @@
           <ng-template matStepLabel>{{ 'report.selectColumns' | translate }}</ng-template>
           <ng-container *ngIf="updateReportId == undefined || updateReportId != undefined && templateToUpdate != undefined">
             <app-report-properties 
-            #reportProperties
+            formControlName="reportProperties"
             [selectedTypes]="reportFormGroup.controls.types.value"
             [selectedCommonProps]="templateToUpdate != undefined ? templateToUpdate.commonProperties : undefined"
             [selectedTypeSpecificProps]="templateToUpdate != undefined ? templateToUpdate.specificProperties : undefined">

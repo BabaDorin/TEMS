@@ -129,20 +129,13 @@
         <!-- STEP - Select report properties -->
         <mat-step>
           <ng-template matStepLabel>{{ 'report.selectColumns' | translate }}</ng-template>
-
-          <!-- Equipment subject -->
-          <!-- Common properties for all equipment records -->
-          <app-checkbox-group [options]="equipmentCommonProperties"[label]="translate.instant('report.commonProperties')"
-          (toggle)="onCommonPropChange($event)">
-          </app-checkbox-group>
-
-          <!-- Type specific properties -->
-          <ng-container *ngFor="let type of typeSpecificProperties">
-          <div class="mt-2">
-            <app-checkbox-group [options]="type.properties" [label]="translate.instant('report.specificProperties') + type.type.label"
-            (toggle)="onSpecificPropChange($event, type.type)">
-            </app-checkbox-group>
-          </div>
+          <ng-container *ngIf="updateReportId == undefined || updateReportId != undefined && templateToUpdate != undefined">
+            <app-report-properties 
+            #reportProperties
+            [selectedTypes]="reportFormGroup.controls.types.value"
+            [selectedCommonProps]="templateToUpdate != undefined ? templateToUpdate.commonProperties : undefined"
+            [selectedTypeSpecificProps]="templateToUpdate != undefined ? templateToUpdate.specificProperties : undefined">
+            </app-report-properties>
           </ng-container>
           <button mat-button matStepperNext>{{ 'general.next' | translate }}</button>
         </mat-step>

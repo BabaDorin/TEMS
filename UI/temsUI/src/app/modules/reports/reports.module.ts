@@ -1,3 +1,4 @@
+import { ReportPropertiesComponent } from './../../tems-components/reports/report-properties/report-properties.component';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSelectModule } from '@angular/material/select';
@@ -30,7 +31,8 @@ import { ReportsRoutingModule } from './reports-routing.module';
     ReportContainerComponent,
     CreateReportTemplateComponent,
     ViewTemplateComponent,
-    GeneratedReportContainerComponent
+    GeneratedReportContainerComponent,
+    ReportPropertiesComponent
   ],
   imports: [
     CommonModule,

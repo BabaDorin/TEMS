@@ -39,4 +39,11 @@ export class TypeService extends TEMSService {
   getFullType(typeId: string): Observable<any> {
     return this.http.post(API_EQTYPE_URL + '/fulltype', JSON.stringify(typeId), this.httpOptions);
   }
+
+  getPropertiesOfType(typeId: string): Observable<IOption[]>{
+    return this.http.get<IOption[]>(
+      API_EQTYPE_URL + '/getpropertiesoftype/' + typeId,
+      this.httpOptions
+    );
+  }
 }

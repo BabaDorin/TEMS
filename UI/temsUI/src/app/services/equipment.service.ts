@@ -234,13 +234,6 @@ export class EquipmentService extends TEMSService {
     );
   }
 
-  getPropertiesOfType(typeId: string): Observable<IOption[]>{
-    return this.http.get<IOption[]>(
-      API_EQTYPE_URL + '/getpropertiesoftype/' + typeId,
-      this.httpOptions
-    );
-  }
-
   getEquipmentToUpdate(equipmentId: string): Observable<AddEquipment>{
     return this.http.get<AddEquipment>(
       API_EQ_URL + '/getequipmenttoupdate/' + equipmentId,

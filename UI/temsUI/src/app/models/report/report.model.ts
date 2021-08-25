@@ -57,3 +57,8 @@ export class Report implements IReport
         this.exportTo = 'excel';
     }
 }
+
+export interface ITypeSpecificPropCollection{
+    type: IOption;
+    properties: IOption[]
+}

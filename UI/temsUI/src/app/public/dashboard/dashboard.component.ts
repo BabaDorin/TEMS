@@ -7,7 +7,7 @@ import { ClaimService } from './../../services/claim.service';
   styleUrls: ['./dashboard.component.scss'],
 })
 export class DashboardComponent implements OnInit {
-
+ 
   toggleProBanner(event) {
     event.preventDefault();
     document.querySelector('body').classList.toggle('removeProbanner');

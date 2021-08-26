@@ -1,15 +1,5 @@
 <footer class="footer">
-
-  <div class="text-center mb-2">
-    <button mat-button class="text-muted" (click)="changeLang('ro')">
-      ro
-    </button>
-    <button mat-button class="text-muted" (click)="changeLang('en')">
-      en
-    </button>
-  </div>
-
-  <p *ngIf="currentYear != undefined" class="text-muted text-center">
+  <p *ngIf="currentYear != undefined" class="text-muted text-center m-0">
     <span *ngIf="!bugReportOn; else elseBlock">
       @
     </span> 
@@ -22,6 +12,17 @@
       <span (click)="toggleBugReporting()">
         Dorin Baba
       </span>
-    </small> | All Rights Reserved 
+    </small> 
+    <span>
+      | All Rights Reserved
+    </span>
   </p>
+  <div class="d-block m-0 text-center">
+    <button mat-button class="text-muted" (click)="changeLang('ro')">
+      <img src="assets/svgs/ro.svg" style="height: 10px;">
+    </button>
+    <button mat-button class="text-muted" (click)="changeLang('en')">
+      <img src="assets/svgs/en.svg" style="height: 10px;">
+    </button>
+  </div>
 </footer>

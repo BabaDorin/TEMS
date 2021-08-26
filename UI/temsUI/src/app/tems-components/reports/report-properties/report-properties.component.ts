@@ -166,7 +166,8 @@ export class ReportPropertiesComponent extends TEMSComponent implements OnInit, 
     
     if(typeCommonProps != undefined){
       typeCommonProps.forEach(typeCommonProp => {
-        this.typeSpecificProps.forEach(type => type.properties.push(typeCommonProp));
+        this.typeSpecificProps.forEach(type => type.properties
+          .push(new CheckboxItem(typeCommonProp.value, typeCommonProp.label, typeCommonProp.checked)));
         
         // remove it form common props
         let propIndex = this.commonProps.indexOf(typeCommonProp);

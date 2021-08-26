@@ -30,10 +30,13 @@ namespace temsAPI.Services.EquipmentManagementHelpers
             Expression<Func<EquipmentAllocation, bool>> whereExp = GetWhereExp(filter);
 
             // INCLUDE
+            // BEFREE : Add default include statement here + merge with include provided by the user
             Func<IQueryable<EquipmentAllocation>, IIncludableQueryable<EquipmentAllocation, object>> finalIncludeExp =
                 q => q.Include(q => q.Equipment)
                     .ThenInclude(q => q.EquipmentDefinition)
                     .ThenInclude(q => q.EquipmentType)
+                    .ThenInclude(q => q.EquipmentDefinitions)
+                    .ThenInclude(q => q.EquipmentSpecifications)
                     .Include(q => q.Room)
                     .Include(q => q.Personnel);
 

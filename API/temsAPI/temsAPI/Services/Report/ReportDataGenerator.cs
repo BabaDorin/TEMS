@@ -71,9 +71,6 @@ namespace temsAPI.Services.Report
             //1 => build the main lambda exp and fetch all respective items 
             //2 => sepparate fetched items into multiple report item groups.
 
-            // Executing step 1:
-            // Build the main lambda expression, based on template.
-
             var equipment = await FetchEquipmentItems(template);
 
             var separator = ReportHelper.GetSeparator(template, _unitOfWork);
@@ -132,13 +129,15 @@ namespace temsAPI.Services.Report
             {
                 if (itemGroupDataTable.Columns.Contains(prop.DisplayName))
                     continue;
-                
+
+                // Create columns for properties & assigne them property's native data type (int, bool, double etc).
                 itemGroupDataTable.Columns.Add(prop.DisplayName, prop.DataType.GetNativeType());
             }
 
             foreach (Equipment eq in items)
             {
                 var row = itemGroupDataTable.NewRow();
+
                 // Add values for universal properties
                 foreach (string prop in reportCommonPropertiesList)
                 {
@@ -152,7 +151,7 @@ namespace temsAPI.Services.Report
                         continue; // There is already something there so we won't override. (It happens).#
 
                     var p = eq.EquipmentDefinition.EquipmentSpecifications
-                        .FirstOrDefault(qu => qu.Property.Id == prop.Id);
+                        .FirstOrDefault(qu => qu.PropertyID == prop.Id);
 
                     row[prop.DisplayName] = p == null ? DBNull.Value : p.Value;
                 }

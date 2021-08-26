@@ -33,6 +33,8 @@ namespace temsAPI.Services.EquipmentManagementHelpers
             Func<IQueryable<Equipment>, IIncludableQueryable<Equipment, object>> finalIncludeExp =
                 q => q.Include(q => q.EquipmentDefinition)
                     .ThenInclude(q => q.EquipmentType)
+                    .Include(q => q.EquipmentDefinition)
+                    .ThenInclude(q => q.EquipmentSpecifications)
                     .Include(q => q.EquipmentAllocations.Where(q => q.DateReturned == null))
                     .ThenInclude(q => q.Room)
                     .Include(q => q.EquipmentAllocations.Where(q => q.DateReturned == null))

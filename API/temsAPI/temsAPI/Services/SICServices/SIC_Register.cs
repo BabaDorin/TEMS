@@ -76,7 +76,9 @@ namespace temsAPI.Services.SICServices
                 SerialNumber = sicComputer.TEMSSerialNumber,
                 IsUsed = sicComputer.IsUsed,
                 IsDefect = sicComputer.IsDefect,
-                RegisterDate = DateTime.Now
+                RegisterDate = DateTime.Now,
+                Price = 1,
+                Currency = "MDL"
             };
 
             if(!String.IsNullOrEmpty(sicComputer.TeamViewerID) && !String.IsNullOrEmpty(sicComputer.TeamViewerPassword))

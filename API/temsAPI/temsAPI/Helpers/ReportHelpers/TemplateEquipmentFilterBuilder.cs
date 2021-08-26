@@ -1,10 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json.Schema;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using temsAPI.Data.Entities.Report;
 using temsAPI.Helpers.Filters;
+using temsAPI.Helpers.ReusableSnippets;
 
 namespace temsAPI.Helpers.ReportHelpers
 {
@@ -25,6 +27,11 @@ namespace temsAPI.Helpers.ReportHelpers
                 IncludeParents = template.IncludeParent,
                 IncludeChildren = template.IncludeChildren,
             };
+
+            if (!template.Properties.IsNullOrEmpty())
+            {
+                filter.IncludeFromEquipment = q => q.Include(q => q.EquipmentDefinition.EquipmentSpecifications);
+            }
 
             return filter;
         }

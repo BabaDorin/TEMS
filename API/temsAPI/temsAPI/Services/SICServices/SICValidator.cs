@@ -62,12 +62,14 @@ namespace temsAPI.Services.SICServices
 
         private async Task<bool> TEMSIDExists(string temsID)
         {
-            return await _unitOfWork.Equipments.isExists(q => q.TEMSID == temsID && !q.IsArchieved);
+            return await _unitOfWork.Equipments
+                .isExists(q => !String.IsNullOrEmpty(q.TEMSID) && q.TEMSID == temsID && !q.IsArchieved);
         }
 
         private async Task<bool> SerialNumberExists(string serialNumber)
         {
-            return await _unitOfWork.Equipments.isExists(q => q.SerialNumber == serialNumber && !q.IsArchieved);
+            return await _unitOfWork.Equipments
+                .isExists(q => !String.IsNullOrEmpty(q.SerialNumber) && q.SerialNumber == serialNumber && !q.IsArchieved);
         }
     }
 }

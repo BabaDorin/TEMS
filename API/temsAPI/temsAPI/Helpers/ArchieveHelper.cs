@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
@@ -53,7 +54,7 @@ namespace temsAPI.Helpers
 
         public async Task<string> SetEquipmentArchivationStatus(string equipmentId, bool status)
         {
-            var model = (await _unitOfWork.Equipments
+            var equipment = (await _unitOfWork.Equipments
                 .Find<Equipment>(
                     where: q => q.Id == equipmentId,
                     include: q => q
@@ -63,41 +64,59 @@ namespace temsAPI.Helpers
                     .Include(q => q.Logs)))
                 .FirstOrDefault();
 
-            if (model == null)
+            if (equipment == null)
                 return "Invalid id provided";
 
-            model.IsArchieved = status;
-                
-            if (status == false && model.TEMSID != null && model.TEMSID.IndexOf("[Dearchieved]") > -1)
-                model.TEMSID = model.TEMSID+ " [Dearchieved]";
+            await SetItemArchivationStatus(equipment, status);
+            await _unitOfWork.Save();
+            return null;
+        }
 
-            if (status == false && model.SerialNumber != null && model.SerialNumber.IndexOf("[Dearchieved]") > -1)
-                model.SerialNumber = model.SerialNumber + " [Dearchieved]";
+        /// <summary>
+        /// Call this when dearchieving an item. It will check if there is already an item with the same identifier
+        /// along currently un-archived items
+        /// </summary>
+        /// <param name="toBeDearchived"></param>
+        /// <returns>True if there is a colision</returns>
+        private async Task<bool> CheckForIndexColision(Equipment toBeDearchived)
+        {
+            return await _unitOfWork.Equipments
+                .isExists(q =>
+                !string.IsNullOrEmpty(q.TEMSID) && q.TEMSID == toBeDearchived.TEMSID
+                ||
+                !string.IsNullOrEmpty(q.SerialNumber) && q.SerialNumber == toBeDearchived.SerialNumber);
+        }
 
-            foreach (var child in model.Children)
+        private async Task SetItemArchivationStatus(Equipment equipment, bool status)
+        {
+            // Trying to dearchive an item that aready exists unarchived
+            if (!status && await CheckForIndexColision(equipment))
+                throw new Exception($"Equipment indexed by {equipment.TemsIdOrSerialNumber} could not be dearchived becase there" +
+                    $" is already an equipment having the value of it's TEMSID or SerialNumber. Two items with the same indexes can not co-exist.");
+
+            equipment.IsArchieved = status;
+
+            foreach (var child in equipment.Children)
             {
-                var result = await SetEquipmentArchivationStatus(child.Id, status);
+                await SetItemArchivationStatus(child, status);
             }
 
-            foreach (var allocation in model.EquipmentAllocations)
+            foreach (var allocation in equipment.EquipmentAllocations)
             {
                 allocation.IsArchieved = status;
             }
 
-            foreach (var log in model.Logs)
+            foreach (var log in equipment.Logs)
             {
                 log.IsArchieved = status;
             }
 
-            if(_logManager != null)
+            if (_logManager != null)
             {
-                var archivationChangedLog = new EquipmentArchivationStateChangedLogFactory(model, IdentityService.GetUserId(_user))
+                var archivationChangedLog = new EquipmentArchivationStateChangedLogFactory(equipment, IdentityService.GetUserId(_user))
                     .Create();
                 await _logManager.Create(archivationChangedLog);
             }
-            
-            await _unitOfWork.Save();
-            return null;
         }
 
         public async Task<string> SetEquipmenAllocationtArchivationStatus(string allocationId, bool status)

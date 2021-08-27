@@ -1,3 +1,6 @@
+import { LazyLoaderService } from './../../../services/lazy-loader.service';
+import { ReportFromFilterComponent } from './../../reports/report-from-filter/report-from-filter.component';
+import { TemplateFromFilter } from './../../../models/report/add-report.model';
 import { EquipmentFilter } from './../../../helpers/filters/equipment.filter';
 import { MultipleSelectionDropdownComponent } from './../../../shared/forms/multiple-selection-dropdown/multiple-selection-dropdown.component';
 import { TypeService } from './../../../services/type.service';
@@ -36,10 +39,10 @@ export class ViewEquipmentComponent implements OnInit {
     private snackService: SnackService,
     public claims: ClaimService,
     public translate: TranslateService,
-    private typeService: TypeService
+    private typeService: TypeService,
+    private lazyLoader: LazyLoaderService
   ) {
     this.typeEndpoint = new TypeEndpoint(this.typeService, this.includeDerived);
-    // this.typePreOptions = [{value: 'any', label: this.translate.instant('form.any')}];
 
     this.equipmentFilter = new EquipmentFilter();
     this.equipmentFilter.includeChildren = this.includeDerived;
@@ -120,6 +123,16 @@ export class ViewEquipmentComponent implements OnInit {
       return;
 
     this.router.navigate(["/equipment/add"]);
+  }
+
+  async generateReport(){
+    await this.lazyLoader.loadModuleAsync('reports/report-from-filter.module.ts');
+    this.dialogService.openDialog(
+      ReportFromFilterComponent,
+      [
+        { label: 'equipmentFilter', value: this.equipmentFilter }
+      ]
+    );
   }
 
   includeDerivedChanged(){

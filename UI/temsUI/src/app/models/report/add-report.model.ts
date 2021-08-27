@@ -1,5 +1,6 @@
-import { forEach } from '@angular-devkit/schematics';
+import { EquipmentFilter } from './../../helpers/filters/equipment.filter';
 import { IOption } from './../option.model';
+
 export interface IAddReportTemplate{
     id: string,
     name: string,
@@ -42,4 +43,15 @@ export class AddReportTemplate implements IAddReportTemplate{
     header: string;
     footer: string;
     signatories: IOption[] = [];
+}
+
+export class TemplateFromFilter {
+    name: string;
+    header: string;
+    separateBy: string;
+    commonProperties: string[] = [];
+    footer: string;
+    signatories: IOption[] = [];
+
+    filter: EquipmentFilter;
 }

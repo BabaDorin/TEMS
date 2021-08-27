@@ -22,6 +22,7 @@
     },
 
     "general": {
+        "generateReport": "GenerateReport",
         "preparing": "Preparing",
         "loading": "Loading",
         "empty": "Nothing to display...",
@@ -495,6 +496,7 @@
         "selectColumns": "Select report columns",
         "save": "Save template",
         "generate": "Generate report",
+        "reportFromFilterInfo": "The report will include equipment fetched using the current provied filter",
         "separateBy": "Separate by",
         "noSeparation": "No separation",
         "byRoom": "By room",
@@ -538,5 +540,12 @@
         "bug": "Bug",
         "featureRequest": "Feature request",
         "attachmentsDescription": "Upload something if necessary. Max 20mb allowed"
+    },
+
+    "reportContent": {
+        "headers": {
+            "allocatedToRoom": "Equipment allocated to room: {{ value }}",
+            "allocatedToPersonnel": "Equipment allocated to personnel: {{ value }}"
+        }
     }
 }

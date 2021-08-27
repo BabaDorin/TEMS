@@ -22,6 +22,7 @@
     },
 
     "general": {
+        "generateReport": "Generează raport",
         "preparing": "Pregărire...",
         "loading": "Încărcare...",
         "empty": "Nu există date spre afișare...",
@@ -492,6 +493,7 @@
         "selectColumns": "Selectează coloanele raportului",
         "save": "Salvează șablonul",
         "generate": "Generează raport",
+        "reportFromFilterInfo": "Raportul va include echipamentele selectate în urma aplicării filtrului curent",
         "separateBy": "Grupează după",
         "noSeparation": "Fără grupare",
         "byRoom": "După sală",
@@ -535,5 +537,9 @@
         "bug": "Bug",
         "featureRequest": "Solicitare funcționalități noi",
         "attachmentsDescription": "Încarcă careva fișiere dacă consideri că este necesar. Dimensiunea maxima cumulată este de 20mb"
+    },
+
+    "reportContent": {
+
     }
 }

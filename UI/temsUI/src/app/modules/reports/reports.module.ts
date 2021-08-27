@@ -1,3 +1,4 @@
+import { ReportPropertiesModule } from './report-properties.module';
 import { ReportPropertiesComponent } from './../../tems-components/reports/report-properties/report-properties.component';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -24,7 +25,6 @@ import { ViewTemplateComponent } from './../../tems-components/reports/view-temp
 import { TemsFormsModule } from './../tems-forms/tems-forms.module';
 import { ReportsRoutingModule } from './reports-routing.module';
 
-
 @NgModule({
   declarations: [
     ReportsComponent,
@@ -32,7 +32,6 @@ import { ReportsRoutingModule } from './reports-routing.module';
     CreateReportTemplateComponent,
     ViewTemplateComponent,
     GeneratedReportContainerComponent,
-    ReportPropertiesComponent
   ],
   imports: [
     CommonModule,
@@ -52,7 +51,8 @@ import { ReportsRoutingModule } from './reports-routing.module';
     NgxPaginationModule,
     MatOptionModule,
     MatTooltipModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    ReportPropertiesModule
   ],
   exports: [
     ReportsComponent,

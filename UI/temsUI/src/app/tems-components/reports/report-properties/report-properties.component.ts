@@ -121,21 +121,6 @@ export class ReportPropertiesComponent extends TEMSComponent implements OnInit, 
     this.renderProps();
   }
 
-  // returns selected common properties.
-  // Properties that are common among all of the types and therefore have been
-  // moved to common properties are not included.
-  // It only includes selected properties from universal ones
-  public getCommonProperties(): string[] {
-    return [];
-  }
-
-  // returns type-specific properties that have been selected.
-  // It also includes properties that were common and selected afterwards from
-  // within the common properites container
-  public getTypeSpecificProperties(): ITypeSpecificPropCollection[]{
-    return [];
-  }
-
   private typesChanged(){
     this.initSpecificProps();
   }
@@ -147,9 +132,9 @@ export class ReportPropertiesComponent extends TEMSComponent implements OnInit, 
 
   private initCommonProps(){
     this.commonProps = [].concat(this.universalProperties);
-    if(this.selectedCommonProps == undefined){
+    if(this.selectedCommonProps == undefined)
       return;
-    }
+    
 
     // mark selected props 
     this.commonProps.forEach(prop => this.selectedCommonProps.indexOf(prop.value) > -1 
@@ -162,6 +147,11 @@ export class ReportPropertiesComponent extends TEMSComponent implements OnInit, 
     // properties that are common for each selected type, but do not belong to
     // universal properties.
     // And put them back to typeSpecificProps
+    
+    // There are no types => no need to init anything
+    if(this.selectedTypes == undefined || this.selectedTypes.length == 0)
+      return;
+
     let typeCommonProps = this.commonProps.filter(q => this.universalProperties.findIndex(unv => unv.value == q.value) == -1);
     
     if(typeCommonProps != undefined){

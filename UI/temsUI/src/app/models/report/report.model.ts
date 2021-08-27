@@ -1,6 +1,6 @@
 import { IViewUserSimplified } from './../user/view-user.model';
 import { IOption } from 'src/app/models/option.model';
-import { ViewRoomSimplified } from 'src/app/models/room/view-room-simplified.model';
+
 export interface IReport{
     id?: string,
     name: string,

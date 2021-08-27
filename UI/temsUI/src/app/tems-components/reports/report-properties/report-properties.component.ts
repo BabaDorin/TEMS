@@ -22,7 +22,7 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 })
 export class ReportPropertiesComponent extends TEMSComponent implements OnInit, OnChanges, ControlValueAccessor {
 
-  value = 'salut';
+  value;
 
   @Input() selectedCommonProps: string[];
   @Input() selectedTypeSpecificProps: ITypeSpecificPropCollection[];
@@ -61,27 +61,31 @@ export class ReportPropertiesComponent extends TEMSComponent implements OnInit, 
     // }
   }
   
-  onChange: any = () => {
-  }
-  onTouch: any = () => {}
+  onChange;
+  onTouch;
+  
   registerOnChange(fn: any): void {
     this.onChange = fn;
   }
+
   registerOnTouched(fn: any): void {
     this.onTouch = fn;
   }
 
   writeValue(obj: any): void {
-  if(obj == null || obj == undefined)
-    return;
+    console.log('writeValue');
+    console.log(obj);
+
+    if(obj == null || obj == undefined)
+      return;
 
   // this.commonProps = obj?.commonProperties;
   // this.typeSpecificProps = obj?.typeSpecificProps;
   this.value = obj;
- }
+  }
 
  setValue(){
-   let obj = {
+   this.value = {
     commonProperties: this.commonProps.filter(q => q.checked)?.map(q => q.value),
     typeSpecificProperties: this.typeSpecificProps.map(q => ({
       type: q.type,
@@ -89,13 +93,20 @@ export class ReportPropertiesComponent extends TEMSComponent implements OnInit, 
     }))
   }
 
-  console.log('obj');
-  console.log(obj);
-   this.onChange(obj);
+  // Quick workaround for registerOnChange being called after the first initialization
+  // BEFREE: Find a more ingenious solution.
+  if(this.onChange == undefined)
+  {
+    setTimeout(() => {
+      this.onChange(this.value)
+    }, 50);
+  }
+  else{
+    this.onChange(this.value);
+  }
  }
   
   ngOnChanges(changes: SimpleChanges): void {
-    console.log('changes');
     if(propertyChanged(changes, 'selectedTypes')){
       this.typesChanged();
       return;
@@ -107,17 +118,6 @@ export class ReportPropertiesComponent extends TEMSComponent implements OnInit, 
   }
 
   ngOnInit(): void {
-    console.log('values I got:');
-    console.log()
-    console.log('selectedCommonProps');
-    console.log(this.selectedCommonProps);
-
-    console.log('selectedTypeSpecificProps');
-    console.log(this.selectedTypeSpecificProps);
-
-    console.log('selectedTypes');
-    console.log(this.selectedTypes);
-
     this.renderProps();
   }
 
@@ -132,14 +132,15 @@ export class ReportPropertiesComponent extends TEMSComponent implements OnInit, 
 
   private initCommonProps(){
     this.commonProps = [].concat(this.universalProperties);
-    if(this.selectedCommonProps == undefined)
-      return;
-    
+    if(this.selectedCommonProps != undefined){
+      // mark selected props 
+      for(let i = 0; i < this.commonProps.length; i++){
+        let prop = this.commonProps[i];
+        prop.checked = this.selectedCommonProps.indexOf(prop.value) > -1;
+      }
+    }
 
-    // mark selected props 
-    this.commonProps.forEach(prop => this.selectedCommonProps.indexOf(prop.value) > -1 
-      ? prop.checked = true 
-      : prop.checked = false);
+    this.setValue();
   }
 
   private async initSpecificProps(){
@@ -177,9 +178,6 @@ export class ReportPropertiesComponent extends TEMSComponent implements OnInit, 
       if(this.typeSpecificProps != undefined && this.typeSpecificProps.findIndex(q => q.type == type) == -1)
       {
         let typeProps = await this.fetchTypeProperties(type);
-        console.log('type props for ' + type.label);
-        console.log(typeProps); 
-  
         let typePropCollection = {
           type: type,
           properties: typeProps.map(q => new CheckboxItem(q.additional, q.label))
@@ -205,8 +203,6 @@ export class ReportPropertiesComponent extends TEMSComponent implements OnInit, 
     if(this.typeSpecificProps != undefined && this.typeSpecificProps.length > 1){
       for(let i = 0; i < this.typeSpecificProps[0].properties.length; i++){
         let propToCheck = this.typeSpecificProps[0].properties[i];
-        console.log('proptocheck: ' + propToCheck.label);
-
         let isCommon: boolean = true;
         for(let j = 1; j < this.typeSpecificProps.length; j++){
           if(this.typeSpecificProps[j].properties.findIndex(q => q.value == propToCheck.value) == -1){
@@ -214,8 +210,6 @@ export class ReportPropertiesComponent extends TEMSComponent implements OnInit, 
             break;
           }
         }
-
-        console.log('is common: ' + isCommon);
 
         if(isCommon){
           this.commonProps.push(propToCheck);

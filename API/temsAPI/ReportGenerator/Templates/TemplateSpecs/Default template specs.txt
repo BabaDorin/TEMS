@@ -34,8 +34,8 @@ Default paper format: A4
 Default orientation: vertical
 
 Logo images: (TEMS and CIHC)
-img width: 1.10 inch = 2.54 cm
-img height: 0.35 inch = 0.88 cm
+img width: 0.95" inch = 2.41 cm
+img height: 0.3" = 0.83 cm
 
 tems_logo row: 2, column: 1
 cihc_logo row: 2, column: 3

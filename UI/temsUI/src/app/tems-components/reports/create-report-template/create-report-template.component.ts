@@ -127,9 +127,7 @@ export class CreateReportTemplateComponent extends TEMSComponent implements OnIn
           this.personnelAlreadySelected = this.templateToUpdate.personnel;
         
         if(this.templateToUpdate.signatories != undefined)
-          this.signatoriesAlreadySelected = this.templateToUpdate.signatories;
-
-        // this.findCommonAndSpecificProperties();      
+          this.signatoriesAlreadySelected = this.templateToUpdate.signatories.map(q => ({ label: q, value: q }));
       })
     );
   }
@@ -220,7 +218,7 @@ export class CreateReportTemplateComponent extends TEMSComponent implements OnIn
         : null,
       header: this.controls.header.value,
       footer: this.controls.footer.value,
-      signatories: this.controls.signatories.value,
+      signatories: this.controls.signatories.value?.map(q => q.label),
       properties: undefined
     };
 

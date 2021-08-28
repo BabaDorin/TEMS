@@ -63,8 +63,6 @@ namespace temsAPI.Data.Entities.OtherEntities
         public virtual ICollection<Ticket> Tickets { get; set; } = new List<Ticket>();
         public virtual ICollection<PersonnelPosition> Positions { get; set; } = new List<PersonnelPosition>();
 
-        [InverseProperty("Signatories")]
-        public virtual ICollection<ReportTemplate> ReportTemplatesAssigned { get; set; } = new List<ReportTemplate>();
         [InverseProperty("Personnel")]
         public virtual ICollection<ReportTemplate> ReportTemplatesMember { get; set; } = new List<ReportTemplate>();
 

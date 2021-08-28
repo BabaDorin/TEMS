@@ -78,7 +78,6 @@ namespace temsAPI.Data.Managers
                 .Concat(specificProperties == null ? new List<string>() : specificProperties)
                 .ToList();
             List<string> universalProperties = viewModel.CommonProperties.Where(q => ReportHelper.CommonProperties.Contains(q)).ToList();
-            List<string> signatoriesIds = viewModel.Signatories?.Select(q => q.Value).ToList();
 
             var model = await GetFullTemplate(viewModel.Id);
 
@@ -118,11 +117,7 @@ namespace temsAPI.Data.Managers
                     : new List<Property>();
             model.Header = viewModel.Header;
             model.Footer = viewModel.Footer;
-            model.Signatories = (signatoriesIds != null)
-                    ? (await _unitOfWork.Personnel
-                    .FindAll<Personnel>(q => signatoriesIds.Contains(q.Id)))
-                    .ToList()
-                    : new List<Personnel>();
+            model.SetSignatories(viewModel.Signatories);
             model.CreatedBy = (await _unitOfWork.TEMSUsers
                     .Find<TEMSUser>(
                         where: q => q.UserName == _identityService.User.Identity.Name
@@ -237,7 +232,6 @@ namespace temsAPI.Data.Managers
                     .Include(q => q.Rooms)
                     .Include(q => q.Personnel)
                     .Include(q => q.Properties).ThenInclude(q => q.DataType)
-                    .Include(q => q.Signatories)
                 )).FirstOrDefault();
 
             return template;

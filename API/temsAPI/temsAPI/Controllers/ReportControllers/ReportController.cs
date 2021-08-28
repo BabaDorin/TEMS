@@ -162,6 +162,18 @@ namespace temsAPI.Controllers.ReportControllers
             return File(memory, fileHandler.GetContentType(filePath), "Report.xlsx");
         }
 
+        //[HttpPost("report/generateReportFromFilter")]
+        //[ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
+        //[DefaultExceptionHandler("An error occured while generating the report")]
+        //public async Task<IActionResult> GenerateReportFromFilter([FromBody] ReportFromFilter viewModel)
+        //{
+        //    string validationResult = viewModel.Validate();
+        //    if (validationResult != null)
+        //        return ReturnResponse(validationResult, ResponseStatus.Neutral);
+
+
+        //}
+
         [HttpGet("report/GetReport/{reportId}")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
         [DefaultExceptionHandler("An error occured while retrieving the report")]

@@ -14,6 +14,7 @@ using temsAPI.Data.Entities.UserEntities;
 using temsAPI.Helpers;
 using temsAPI.Helpers.Filters;
 using temsAPI.Helpers.ReportHelpers;
+using temsAPI.Helpers.ReusableSnippets;
 using temsAPI.Services.EquipmentManagementHelpers;
 using Property = temsAPI.Data.Entities.EquipmentEntities.Property;
 
@@ -47,8 +48,24 @@ namespace temsAPI.Services.Report
                 Header = template.Header,
                 Name = template.Name,
                 ReportItemGroups = new List<ReportItemGroup>(),
-                Signatories = FetchSignatories(template)
             };
+
+            var templateSignatories = template.GetSignatories();
+            if (!templateSignatories.IsNullOrEmpty())
+            {
+                // From Baba Dorin to B. Dorin 
+                reportData.Signatories = templateSignatories.Select(q =>
+                {
+                    q = q.Trim();
+                    if (q.IndexOf(' ') > -1)
+                    {
+                        string[] names = q.Split(' ');
+                        q = $"{names[0][0]}. {names[1]}";
+                    }
+
+                    return q;
+                }).ToList();
+            }
 
             reportCommonPropertiesList = template.CommonProperties
                 .Split(' ')
@@ -160,23 +177,6 @@ namespace temsAPI.Services.Report
             }
 
             return itemGroupDataTable;
-        }
-
-        public List<string> FetchSignatories(ReportTemplate template)
-        {
-            var signatories = template.Signatories?.Select(q =>
-            {
-                string name = q.Name.Trim();
-                if (name.IndexOf(' ') != -1)
-                {
-                    var firstNameLastName = name.Split(' ');
-                    name = firstNameLastName[0][0] + ". " + firstNameLastName[1]; // B. Dorin
-                }
-
-                return name;
-            }).ToList();
-
-            return signatories;
         }
 
         public async Task<IEnumerable<Equipment>> FetchEquipmentItems(ReportTemplate template)

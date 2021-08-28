@@ -19,7 +19,7 @@ export interface IAddReportTemplate{
     properties?: string[],
     header: string,
     footer: string,
-    signatories: IOption[],
+    signatories: string[],
 }
 
 export class AddReportTemplate implements IAddReportTemplate{
@@ -42,7 +42,7 @@ export class AddReportTemplate implements IAddReportTemplate{
     properties?: string[] = [];
     header: string;
     footer: string;
-    signatories: IOption[] = [];
+    signatories: string[] = [];
 }
 
 export class ReportFromFilter {

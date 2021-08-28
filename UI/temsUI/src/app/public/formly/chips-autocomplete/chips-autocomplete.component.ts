@@ -5,6 +5,7 @@ import { MatAutocomplete, MatAutocompleteSelectedEvent } from '@angular/material
 import { MatChipInputEvent } from '@angular/material/chips';
 import { Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
+import { isNullOrEmpty } from 'src/app/helpers/validators/validations';
 import { IOption } from './../../../models/option.model';
 
 @Component({
@@ -50,6 +51,12 @@ export class ChipsAutocompleteComponent implements OnInit, ControlValueAccessor,
   visible = true;
   value = [];
   cancelOnChange = true;
+
+  // When we type say 'bill' in input, then we select the 'Bill Gates' option from the dropdown, when we press
+  // enter on the dropdown, both add and selected eventhandlers will be actioned.
+  // In this case, we're interested only in the value from dropdown, this is a flag that helps us to achieve the desired
+  // behavior
+  enterFiredOnDropdownOption: boolean = false;
 
   set options(value) {
     this.selectedOptions = value;
@@ -125,10 +132,18 @@ export class ChipsAutocompleteComponent implements OnInit, ControlValueAccessor,
       );
   }
 
+  optionActivated(event){
+    console.log('---------------');
+    this.enterFiredOnDropdownOption = true;
+  }
+  
   // When the option has been typed
   add(event: MatChipInputEvent): void {
     const value = event.value;
-    let typedOption = { value: undefined, label: value };
+    if(isNullOrEmpty(value))
+      return;
+
+    let typedOption = { value: value, label: value };
 
     // If accepting only values from dropdown
     if (this.onlyValuesFromAutocomplete == true) {
@@ -136,11 +151,16 @@ export class ChipsAutocompleteComponent implements OnInit, ControlValueAccessor,
     }
 
     if (typedOption != undefined) {
+      console.log('here 1  with ' + value);
       if (this.isValueAlreadySelected(typedOption))
         return;
 
+      console.log('here 2  with ' + value);
+
       this.maxOptionsSelectedValidation();
       this.selectedOptions.push(typedOption);
+      console.log('here 3  with ' + value);
+
       this.dataCollected.emit(this.selectedOptions);
       this.formCtrl.setValue('');
       this.optionInput.nativeElement.value = '';
@@ -151,6 +171,12 @@ export class ChipsAutocompleteComponent implements OnInit, ControlValueAccessor,
 
   // When the option has been chosen
   selected(event: MatAutocompleteSelectedEvent): void {
+    console.log('selected event');
+    console.log(event);
+    
+    this.enterFiredOnDropdownOption = true;
+    console.log('selected: ' + this.enterFiredOnDropdownOption);
+
     if (this.isValueAlreadySelected(event.option.value))
       return;
 
@@ -161,6 +187,8 @@ export class ChipsAutocompleteComponent implements OnInit, ControlValueAccessor,
 
     this.formCtrl.setValue('');
     this.optionInput.nativeElement.value = '';
+
+    this.enterFiredOnDropdownOption = false;
   }
 
   isValueAlreadySelected(value: IOption): boolean {

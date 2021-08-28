@@ -13,6 +13,7 @@ import { ChipsAutocompleteComponent } from 'src/app/public/formly/chips-autocomp
     ChipsAutocompleteComponent
   ],
   imports: [
+    MatAutocompleteModule,
     CommonModule,
     MatInputModule,
     MatChipsModule,
@@ -20,7 +21,6 @@ import { ChipsAutocompleteComponent } from 'src/app/public/formly/chips-autocomp
     FormsModule,
     MatIconModule,
     MatButtonModule,
-    MatAutocompleteModule,
   ],
   exports:[
     ChipsAutocompleteComponent

@@ -2,10 +2,13 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.EquipmentEntities;
 using temsAPI.Data.Entities.OtherEntities;
 using temsAPI.Data.Entities.UserEntities;
+using temsAPI.Helpers.ReusableSnippets;
+using temsAPI.ViewModels.Report;
 
 namespace temsAPI.Data.Entities.Report
 {
@@ -73,7 +76,7 @@ namespace temsAPI.Data.Entities.Report
         public string? ArchievedById { get; set; }
 #nullable disable
 
-        public List<Personnel> Signatories { get; set; }
+        public string Signatories { get; private set; }
         public List<Property> Properties { get; set; }
         public List<EquipmentType> EquipmentTypes { get; set; }
         public List<EquipmentDefinition> EquipmentDefinitions { get; set; }
@@ -82,5 +85,31 @@ namespace temsAPI.Data.Entities.Report
 
         [NotMapped]
         public string Identifier => Name;
+
+        public static ReportTemplate FromFilter(ReportFromFilter viewModel)
+        {
+            //return new ReportTemplate
+            //{
+            //    Name = viewModel.Name,
+            //    Footer = viewModel.Footer,
+            //    Signatories = viewModel.Signatories,
+            //}
+            return new ReportTemplate();
+        }
+
+
+        private string signatoriesDelimitator = "-=4726befree=-";
+        public void SetSignatories(List<string> signatories)
+        {
+            Signatories = String.Join(signatoriesDelimitator, signatories);
+        }
+
+        public List<string> GetSignatories()
+        {
+            if (Signatories.IsNullOrEmpty())
+                return new List<string>();
+
+            return Signatories.Split(signatoriesDelimitator).ToList();
+        }
     }
 }

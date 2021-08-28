@@ -33,7 +33,7 @@ namespace temsAPI.ViewModels.Report
         //public List<string> Properties { get; set; } = new List<string>();
         public string Header { get; set; }
         public string Footer { get; set; }
-        public List<Option> Signatories { get; set; } = new List<Option>();
+        public List<string> Signatories { get; set; } = new List<string>();
 
 
         public async Task<ReportTemplate> ToModel(IUnitOfWork unitOfWork, TEMSUser author)
@@ -52,7 +52,6 @@ namespace temsAPI.ViewModels.Report
                 .Where(q => ReportHelper.CommonProperties.Contains(q.ToLower()))
                 .Select(q => q.ToLower())
                 .ToList();
-            List<string> signatoriesIds = Signatories?.Select(q => q.Value).ToList();
 
             ReportTemplate model = new ReportTemplate
             {
@@ -95,11 +94,6 @@ namespace temsAPI.ViewModels.Report
                     : new List<Data.Entities.EquipmentEntities.Property>(),
                 Header = Header,
                 Footer = Footer,
-                Signatories = (signatoriesIds != null)
-                    ? (await unitOfWork.Personnel
-                    .FindAll<Data.Entities.OtherEntities.Personnel>(q => signatoriesIds.Contains(q.Id)))
-                    .ToList()
-                    : new List<Data.Entities.OtherEntities.Personnel>(),
                 CreatedBy = (await unitOfWork.TEMSUsers
                     .Find<TEMSUser>(
                         where: q => q.Id == author.Id
@@ -109,6 +103,8 @@ namespace temsAPI.ViewModels.Report
                     ? String.Join(" ", commonProperties)
                     : null
             };
+
+            model.SetSignatories(Signatories);
             return model;
         }
 
@@ -156,12 +152,9 @@ namespace temsAPI.ViewModels.Report
                 IncludeParent = template.IncludeParent,
                 Header = template.Header,
                 Footer = template.Footer,
-                Signatories = template.Signatories.Select(q => new Option
-                {
-                    Value = q.Id,
-                    Label = q.Name
-                }).ToList(),
             };
+
+            viewModel.Signatories = template.GetSignatories();
 
             return viewModel;
         }
@@ -200,12 +193,6 @@ namespace temsAPI.ViewModels.Report
                 foreach (var item in Rooms)
                     if (!await unitOfWork.Rooms.isExists(q => q.Id == item.Value))
                         return $"{item.Label} is not a valid room";
-
-            // Invalid signatories provided
-            if (Signatories != null)
-                foreach (var item in Signatories)
-                    if (!await unitOfWork.Personnel.isExists(q => q.Id == item.Value))
-                        return $"{item.Label} is not a valid personnel";
 
             // Validate is there is any logig regardless some filter flags
             if (!IncludeInUse && !IncludeUnused)

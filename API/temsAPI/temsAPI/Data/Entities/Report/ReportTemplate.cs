@@ -114,6 +114,9 @@ namespace temsAPI.Data.Entities.Report
         private string signatoriesDelimitator = "-=4726befree=-";
         public void SetSignatories(List<string> signatories)
         {
+            if (signatories.IsNullOrEmpty())
+                return;
+
             Signatories = String.Join(signatoriesDelimitator, signatories);
         }
 

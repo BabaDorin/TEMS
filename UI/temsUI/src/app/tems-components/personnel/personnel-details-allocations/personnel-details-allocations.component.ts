@@ -1,7 +1,9 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { DialogService } from './../../../services/dialog.service';
+import { LazyLoaderService } from './../../../services/lazy-loader.service';
+import { Component, Input, OnInit } from '@angular/core';
 import { EquipmentFilter } from 'src/app/helpers/filters/equipment.filter';
 import { ViewPersonnelSimplified } from 'src/app/models/personnel/view-personnel-simplified.model';
-import { AgGridEquipmentComponent } from './../../equipment/ag-grid-equipment/ag-grid-equipment.component';
+import { ReportFromFilterComponent } from '../../reports/report-from-filter/report-from-filter.component';
 
 @Component({
   selector: 'app-personnel-details-allocations',
@@ -13,7 +15,9 @@ export class PersonnelDetailsAllocationsComponent implements OnInit {
   @Input() personnel: ViewPersonnelSimplified;
   equipmentFilter: EquipmentFilter;
 
-  constructor() { 
+  constructor(
+    private lazyLoader: LazyLoaderService,
+    private dialogService: DialogService) { 
     this.equipmentFilter = new EquipmentFilter();
   }
 
@@ -23,5 +27,15 @@ export class PersonnelDetailsAllocationsComponent implements OnInit {
     
     this.equipmentFilter.personnel = [this.personnel.id];
     this.equipmentFilter = Object.assign(new EquipmentFilter(), this.equipmentFilter);
+  }
+
+  async generateReport(){
+    await this.lazyLoader.loadModuleAsync('reports/report-from-filter.module.ts');
+    this.dialogService.openDialog(
+      ReportFromFilterComponent,
+      [
+        { label: 'equipmentFilter', value: this.equipmentFilter }
+      ]
+    );
   }
 }

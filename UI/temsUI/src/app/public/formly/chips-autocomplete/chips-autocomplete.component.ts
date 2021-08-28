@@ -133,7 +133,6 @@ export class ChipsAutocompleteComponent implements OnInit, ControlValueAccessor,
   }
 
   optionActivated(event){
-    console.log('---------------');
     this.enterFiredOnDropdownOption = true;
   }
   
@@ -151,16 +150,11 @@ export class ChipsAutocompleteComponent implements OnInit, ControlValueAccessor,
     }
 
     if (typedOption != undefined) {
-      console.log('here 1  with ' + value);
       if (this.isValueAlreadySelected(typedOption))
         return;
 
-      console.log('here 2  with ' + value);
-
       this.maxOptionsSelectedValidation();
       this.selectedOptions.push(typedOption);
-      console.log('here 3  with ' + value);
-
       this.dataCollected.emit(this.selectedOptions);
       this.formCtrl.setValue('');
       this.optionInput.nativeElement.value = '';
@@ -171,11 +165,7 @@ export class ChipsAutocompleteComponent implements OnInit, ControlValueAccessor,
 
   // When the option has been chosen
   selected(event: MatAutocompleteSelectedEvent): void {
-    console.log('selected event');
-    console.log(event);
-    
     this.enterFiredOnDropdownOption = true;
-    console.log('selected: ' + this.enterFiredOnDropdownOption);
 
     if (this.isValueAlreadySelected(event.option.value))
       return;

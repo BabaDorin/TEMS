@@ -54,11 +54,6 @@ export class ReportPropertiesComponent extends TEMSComponent implements OnInit, 
       new CheckboxItem('purchasedate', this.translate.instant('report.prop_purchaseDate'), false),
       new CheckboxItem('allocatee', this.translate.instant('report.prop_allocatee')),
     ];
-
-    // this.value = {
-    //   commonProperties: this.commonProps,
-    //   typeSpecificProperties: this.typeSpecificProps
-    // }
   }
   
   onChange;
@@ -73,9 +68,6 @@ export class ReportPropertiesComponent extends TEMSComponent implements OnInit, 
   }
 
   writeValue(obj: any): void {
-    console.log('writeValue');
-    console.log(obj);
-
     if(obj == null || obj == undefined)
       return;
 

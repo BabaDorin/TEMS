@@ -6,7 +6,7 @@ export class EquipmentFilter {
     includeFunctional: boolean = true;
     includeDefect: boolean = true;
     includeParents: boolean = true;
-    includeChildren: boolean = true;
+    includeChildren: boolean = false;
     includeAttached: boolean = true;
     includeDetached: boolean = true;
     rooms: string[];

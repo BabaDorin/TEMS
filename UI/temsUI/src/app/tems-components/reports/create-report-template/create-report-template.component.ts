@@ -93,8 +93,6 @@ export class CreateReportTemplateComponent extends TEMSComponent implements OnIn
         if(this.templateToUpdate == null)
           return;
 
-        console.log(this.templateToUpdate);
-
         let controls = this.reportFormGroup.controls;
         controls.name.setValue(this.templateToUpdate.name),
         controls.description.setValue(this.templateToUpdate.description),
@@ -179,10 +177,7 @@ export class CreateReportTemplateComponent extends TEMSComponent implements OnIn
   }
 
   save() {
-    console.log(this.reportFormGroup);
-    
     let addReportTemplateModel = this.getReportTemplate();
-    console.log(addReportTemplateModel);
     let endPoint = this.reportService.addReportTemplate(addReportTemplateModel);
     
     if(addReportTemplateModel.id != undefined)
@@ -221,8 +216,6 @@ export class CreateReportTemplateComponent extends TEMSComponent implements OnIn
       signatories: this.controls.signatories.value?.map(q => q.label),
       properties: undefined
     };
-
-    console.log(addReportTemplate);
 
     return addReportTemplate;
   }

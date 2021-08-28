@@ -46,13 +46,10 @@ export class ReportFromFilterComponent extends TEMSComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log('filter that I got here');
-    console.log(this.equipmentFilter);
   }
 
   generateReport(){
     let formVal = this.formGroup.value;
-    console.log(formVal);
 
     if(!hasElements(formVal.properties.commonProperties))
     {
@@ -73,9 +70,6 @@ export class ReportFromFilterComponent extends TEMSComponent implements OnInit {
     viewModel.header = formVal.header;
     viewModel.name = formVal.name;
     viewModel.signatories = formVal.signatories?.map(q => q.label);
-
-    console.log('model that goes to service:');
-    console.log(viewModel);
 
     this.subscriptions.push(
       this.reportService.generateReportFromFilter(viewModel)

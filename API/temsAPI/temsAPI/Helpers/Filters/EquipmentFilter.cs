@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using temsAPI.Data.Entities.EquipmentEntities;
+using temsAPI.Data.Entities.OtherEntities;
 using temsAPI.Helpers.Filters.Contracts;
 using temsAPI.Helpers.ReusableSnippets;
 
@@ -61,12 +62,12 @@ namespace temsAPI.Helpers.Filters
 
         // Allocatee IDs
         // Empty => Include all Rooms & all Personnel
-        public List<string> Rooms { get; set; }
-        public List<string> Personnel { get; set; }
+        public List<string> Rooms { get; set; } = new List<string>();
+        public List<string> Personnel { get; set; } = new List<string>();
 
         // Other flags
         public bool IncludeParents { get; set; } = true;
-        public bool IncludeChildren { get; set; } = true;
+        public bool IncludeChildren { get; set; } = false;
         public bool IncludeInUse { get; set; } = true;
         public bool IncludeUnused { get; set; } = true;
         public bool IncludeFunctional { get; set; } = true;

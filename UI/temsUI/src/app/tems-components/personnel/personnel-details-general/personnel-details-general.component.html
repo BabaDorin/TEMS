@@ -65,7 +65,7 @@
                     {{ 'personnel.roomsSupervised' | translate }}
                 </h2>
                 <a mat-button *ngFor="let supv of personnel.roomSupervisories" [routerLink]="'/rooms/details/' + supv.value">
-                    <mat-icon class="text-primary">edit</mat-icon>
+                    <mat-icon class="text-primary">pin_drop</mat-icon>
                     {{ supv.label }} {{ supv.additional }}
                 </a>
                 <hr>

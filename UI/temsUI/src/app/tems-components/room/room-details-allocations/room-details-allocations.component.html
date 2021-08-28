@@ -3,16 +3,29 @@
         {{ 'entities.currentlyAllocatedEquipment' | translate }}
     </h2>
     <hr>
+
+    <!-- Room analytics summary -->
     <div id="section1">
         <app-summary-equipment-analytics [roomId]="room.id">
         </app-summary-equipment-analytics>
     </div>
 
+    <!-- Actions -->
+    <div class="d-block mt-3">
+        <button mat-button class="d-md-inline d-block" (click)="generateReport()">
+            <mat-icon class="text-primary">article</mat-icon>
+            {{ 'general.generateReport' | translate }}
+        </button>
+    </div>
+    <hr class="separator">
+
+    <!-- Equipment grid -->
     <div id="section2">
         <app-ag-grid-equipment #agGridEquipment [equipmentFilter]="equipmentFilter">
         </app-ag-grid-equipment>
     </div>
 
+    <!-- Allocations list -->
     <div id="section3" class="mt-5">
         <app-entity-allocations-list [room]="room">
             {{ 'general.loading' | translate }}

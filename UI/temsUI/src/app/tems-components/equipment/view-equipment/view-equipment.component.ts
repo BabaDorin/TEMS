@@ -1,6 +1,5 @@
 import { LazyLoaderService } from './../../../services/lazy-loader.service';
 import { ReportFromFilterComponent } from './../../reports/report-from-filter/report-from-filter.component';
-import { TemplateFromFilter } from './../../../models/report/add-report.model';
 import { EquipmentFilter } from './../../../helpers/filters/equipment.filter';
 import { MultipleSelectionDropdownComponent } from './../../../shared/forms/multiple-selection-dropdown/multiple-selection-dropdown.component';
 import { TypeService } from './../../../services/type.service';

@@ -45,13 +45,14 @@ export class AddReportTemplate implements IAddReportTemplate{
     signatories: IOption[] = [];
 }
 
-export class TemplateFromFilter {
+export class ReportFromFilter {
     name: string;
     header: string;
-    separateBy: string;
     commonProperties: string[] = [];
     footer: string;
     signatories: IOption[] = [];
-
     filter: EquipmentFilter;
+    
+    // BEFREE: Add support for this thing (Might be useful in some use-cases)
+    separateBy: string;
 }

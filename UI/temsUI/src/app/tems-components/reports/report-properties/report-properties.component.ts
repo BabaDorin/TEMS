@@ -79,8 +79,6 @@ export class ReportPropertiesComponent extends TEMSComponent implements OnInit, 
     if(obj == null || obj == undefined)
       return;
 
-  // this.commonProps = obj?.commonProperties;
-  // this.typeSpecificProps = obj?.typeSpecificProps;
   this.value = obj;
   }
 

@@ -101,16 +101,3 @@
     </app-user-cards-list>
   </div>
 </div>
-
-
-string ExeName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Curl.exe");
-ProcessStartInfo Info = new ProcessStartInfo();
-Info.UseShellExecute = false;
-Info.FileName = ExeName;
-Info.CreateNoWindow = true;
-Info.Arguments = Arguments;
-Info.RedirectStandardOutput = true;
-Info.WindowStyle = ProcessWindowStyle.Hidden;
-Process P = Process.Start(Info);
-string OutPut = P.StandardOutput.ReadToEnd();
-return OutPut;

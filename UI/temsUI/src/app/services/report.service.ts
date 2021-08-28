@@ -1,3 +1,4 @@
+import { ReportFromFilter } from 'src/app/models/report/add-report.model';
 import { API_KEY_URL, API_REP_URL } from '../models/backend.config';
 import { TEMSService } from './tems.service';
 import { HttpClient } from '@angular/common/http';
@@ -114,6 +115,17 @@ export class ReportService extends TEMSService {
     return this.http.post(
       API_REP_URL + '/generatereportfromrawtemplate', 
       addReportTemplateModel,
+      {
+        reportProgress: true,
+        responseType: 'blob',
+      }
+    )
+  }
+
+  generateReportFromFilter(reportModel: ReportFromFilter): Observable<any>{
+    return this.http.post(
+      API_REP_URL + '/generatereportfromfilter',
+      reportModel,
       {
         reportProgress: true,
         responseType: 'blob',

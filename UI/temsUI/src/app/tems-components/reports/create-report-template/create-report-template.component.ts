@@ -111,7 +111,7 @@ export class CreateReportTemplateComponent extends TEMSComponent implements OnIn
         controls.includeChildren.setValue(this.templateToUpdate.includeChildren),
         controls.header.setValue(this.templateToUpdate.header),
         controls.footer.setValue(this.templateToUpdate.footer),
-        controls.signatories.setValue(this.templateToUpdate.signatories),
+        controls.signatories.setValue(this.templateToUpdate.signatories)  ,
         controls.name.setValue(this.templateToUpdate.name);
 
         if(this.templateToUpdate.types != undefined)

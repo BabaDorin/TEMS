@@ -50,7 +50,7 @@ export class ReportFromFilter {
     header: string;
     commonProperties: string[] = [];
     footer: string;
-    signatories: IOption[] = [];
+    signatories: string[] = [];
     filter: EquipmentFilter;
     
     // BEFREE: Add support for this thing (Might be useful in some use-cases)

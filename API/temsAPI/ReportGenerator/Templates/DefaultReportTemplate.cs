@@ -105,16 +105,19 @@ namespace ReportGenerator.Templates
             {
                 ReportItemGroup itemGroup = _reportData.ReportItemGroups[i];
 
-                // Write report item group name (delimitator)
-                stylingHelper.MergeRowWithWrap(ws, lastRowTracker, 1, pageWidthInCols);
-                var cell = ws.Cells[lastRowTracker, 1];
-                ws.Cells[lastRowTracker, 1, lastRowTracker, pageWidthInCols].StyleName = styles.GetStyleName(ExcelStyleNames.ItemGroupLabelStyle);
-                cell.Value = itemGroup.Name;
-                ws.Row(lastRowTracker).Height = stylingHelper.MeasureTextHeight(
-                    _reportData.Header,
-                    cell.Style.Font,
-                    14 * 6);
-                lastRowTracker += 2;
+                // Write report item group name (delimitator) if exists
+                if(itemGroup.Name != null)
+                {
+                    stylingHelper.MergeRowWithWrap(ws, lastRowTracker, 1, pageWidthInCols);
+                    var cell = ws.Cells[lastRowTracker, 1];
+                    ws.Cells[lastRowTracker, 1, lastRowTracker, pageWidthInCols].StyleName = styles.GetStyleName(ExcelStyleNames.ItemGroupLabelStyle);
+                    cell.Value = itemGroup.Name;
+                    ws.Row(lastRowTracker).Height = stylingHelper.MeasureTextHeight(
+                        _reportData.Header,
+                        cell.Style.Font,
+                        14 * 6);
+                    lastRowTracker += 2;
+                }
 
                 // Write item group data, represented by a data table
                 ws.Cells[lastRowTracker, 1].LoadFromDataTable(itemGroup.ItemsTable, true);

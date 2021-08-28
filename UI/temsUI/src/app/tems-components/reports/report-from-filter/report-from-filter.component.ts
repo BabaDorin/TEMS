@@ -69,10 +69,10 @@ export class ReportFromFilterComponent extends TEMSComponent implements OnInit {
     let viewModel = new ReportFromFilter();
     viewModel.commonProperties = formVal.properties.commonProperties;
     viewModel.filter = this.equipmentFilter;
-    viewModel.footer == formVal.footer;
+    viewModel.footer = formVal.footer;
     viewModel.header = formVal.header;
     viewModel.name = formVal.name;
-    viewModel.signatories = formVal.signatories;
+    viewModel.signatories = formVal.signatories?.map(q => q.label);
 
     console.log('model that goes to service:');
     console.log(viewModel);

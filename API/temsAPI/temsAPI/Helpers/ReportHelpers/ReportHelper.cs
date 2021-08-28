@@ -47,6 +47,9 @@ namespace temsAPI.Helpers
 
         public static IEquipmentSeparator GetSeparator(ReportTemplate reportTemplate, IUnitOfWork unitOfWork)
         {
+            if (String.IsNullOrEmpty(reportTemplate.SeparateBy))
+                return new NoneSeparator();
+
             switch (reportTemplate.SeparateBy.ToLower())
             {
                 case "type": return new TypeSeparator();

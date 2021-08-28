@@ -40,7 +40,7 @@
             
             <!-- Signatories -->
             <app-chips-autocomplete class="reportFormControl d-block" [label]="translate.instant('report.signatories')"
-            formControlName="signatories" [endPoint]="personnelService">
+            formControlName="signatories" [endPoint]="personnelService" onlyValuesFromAutocomplete="false">
             </app-chips-autocomplete>
 
             <!-- Report properties -->

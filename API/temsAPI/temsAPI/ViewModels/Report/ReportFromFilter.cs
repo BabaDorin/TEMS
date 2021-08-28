@@ -13,7 +13,7 @@ namespace temsAPI.ViewModels.Report
         public string Header { get; set; }
         public List<string> CommonProperties { get; set; }
         public string Footer { get; set; }
-        public List<IOption> Signatories { get; set; }
+        public List<string> Signatories { get; set; }
         public EquipmentFilter Filter { get; set; }
 
         public string Validate()

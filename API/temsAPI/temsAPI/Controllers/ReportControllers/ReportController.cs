@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System.IO;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
+using temsAPI.Data.Entities.Report;
 using temsAPI.Data.Entities.UserEntities;
 using temsAPI.Data.Managers;
 using temsAPI.Helpers;
@@ -162,17 +164,26 @@ namespace temsAPI.Controllers.ReportControllers
             return File(memory, fileHandler.GetContentType(filePath), "Report.xlsx");
         }
 
-        //[HttpPost("report/generateReportFromFilter")]
-        //[ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
-        //[DefaultExceptionHandler("An error occured while generating the report")]
-        //public async Task<IActionResult> GenerateReportFromFilter([FromBody] ReportFromFilter viewModel)
-        //{
-        //    string validationResult = viewModel.Validate();
-        //    if (validationResult != null)
-        //        return ReturnResponse(validationResult, ResponseStatus.Neutral);
+        [HttpPost("report/generateReportFromFilter")]
+        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
+        [DefaultExceptionHandler("An error occured while generating the report")]
+        public async Task<IActionResult> GenerateReportFromFilter([FromBody] ReportFromFilter viewModel)
+        {
+            string validationResult = viewModel.Validate();
+            if (validationResult != null)
+                return ReturnResponse(validationResult, ResponseStatus.Neutral);
 
+            var reportTemplate = ReportTemplate.FromFilter(viewModel);
 
-        //}
+            string filePath = fileHandler.GetTempDBPath();
+            await _reportingService.GenerateReport(reportTemplate, filePath);
+            var memory = await _reportManager.GetReportMemoryStream(filePath);
+
+            if (System.IO.File.Exists(filePath))
+                System.IO.File.Delete(filePath);
+
+            return File(memory, fileHandler.GetContentType(filePath), "Report.xlsx");
+        }
 
         [HttpGet("report/GetReport/{reportId}")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]

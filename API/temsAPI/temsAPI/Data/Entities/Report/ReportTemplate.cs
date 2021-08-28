@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RazorLight.Internal;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -7,6 +8,7 @@ using temsAPI.Contracts;
 using temsAPI.Data.Entities.EquipmentEntities;
 using temsAPI.Data.Entities.OtherEntities;
 using temsAPI.Data.Entities.UserEntities;
+using temsAPI.Helpers.Filters;
 using temsAPI.Helpers.ReusableSnippets;
 using temsAPI.ViewModels.Report;
 
@@ -85,16 +87,27 @@ namespace temsAPI.Data.Entities.Report
 
         [NotMapped]
         public string Identifier => Name;
+        
+        // Sometimes, this model is used to generate temporary reports
+        // And, in those cases, we don't have to keep references to rooms / properties and so on.
+        // The filter will be set using this property.
+        [NotMapped]
+        public EquipmentFilter EquipmentFilter { get; set; }
 
         public static ReportTemplate FromFilter(ReportFromFilter viewModel)
         {
-            //return new ReportTemplate
-            //{
-            //    Name = viewModel.Name,
-            //    Footer = viewModel.Footer,
-            //    Signatories = viewModel.Signatories,
-            //}
-            return new ReportTemplate();
+            var model = new ReportTemplate()
+            {
+                Name = viewModel.Name,
+                Footer = viewModel.Footer,
+                Header = viewModel.Header,
+                CommonProperties = String.Join(' ', viewModel.CommonProperties),
+                EquipmentFilter = viewModel.Filter
+            };
+
+            model.SetSignatories(viewModel.Signatories);
+
+            return model;
         }
 
 

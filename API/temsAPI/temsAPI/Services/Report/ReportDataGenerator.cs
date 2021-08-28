@@ -121,7 +121,7 @@ namespace temsAPI.Services.Report
             reportItemGroups.ForEach(q =>
             {
                 if (String.IsNullOrEmpty(q.Name))
-                    q.Name = separator.DefaultKeyName ?? "Other";
+                    q.Name = separator.DefaultKeyName;
             });
 
             return reportItemGroups;
@@ -138,40 +138,44 @@ namespace temsAPI.Services.Report
             var itemGroupDataTable = new DataTable();
 
             // Universal properties to columns
-            foreach (string prop in reportCommonPropertiesList)
-                itemGroupDataTable.Columns.Add(prop, ReportHelper.GetCommonPropertyType(prop));
+            if(!reportCommonPropertiesList.IsNullOrEmpty())
+                foreach (string prop in reportCommonPropertiesList)
+                    itemGroupDataTable.Columns.Add(prop, ReportHelper.GetCommonPropertyType(prop));
 
             // Specific properties to columns
-            foreach (var prop in reportTemplate.Properties)
-            {
-                if (itemGroupDataTable.Columns.Contains(prop.DisplayName))
-                    continue;
+            if(!reportTemplate.Properties.IsNullOrEmpty())
+                foreach (var prop in reportTemplate.Properties)
+                {
+                    if (itemGroupDataTable.Columns.Contains(prop.DisplayName))
+                        continue;
 
-                // Create columns for properties & assigne them property's native data type (int, bool, double etc).
-                itemGroupDataTable.Columns.Add(prop.DisplayName, prop.DataType.GetNativeType());
-            }
+                    // Create columns for properties & assigne them property's native data type (int, bool, double etc).
+                    itemGroupDataTable.Columns.Add(prop.DisplayName, prop.DataType.GetNativeType());
+                }
 
             foreach (Equipment eq in items)
             {
                 var row = itemGroupDataTable.NewRow();
 
                 // Add values for universal properties
-                foreach (string prop in reportCommonPropertiesList)
-                {
-                    row[prop] = ReportHelper.GetCommonPropertyValueProvider(prop, eq).GetValue(eq) ?? DBNull.Value;
-                }
+                if(!reportCommonPropertiesList.IsNullOrEmpty())
+                    foreach (string prop in reportCommonPropertiesList)
+                    {
+                        row[prop] = ReportHelper.GetCommonPropertyValueProvider(prop, eq).GetValue(eq) ?? DBNull.Value;
+                    }
 
                 // Add values for specific properties
-                foreach(Property prop in reportTemplate.Properties)
-                {
-                    if (row[prop.DisplayName] != DBNull.Value)
-                        continue; // There is already something there so we won't override. (It happens).#
+                if(!reportTemplate.Properties.IsNullOrEmpty())
+                    foreach(Property prop in reportTemplate.Properties)
+                    {
+                        if (row[prop.DisplayName] != DBNull.Value)
+                            continue; // There is already something there so we won't override. (It happens).#
 
-                    var p = eq.EquipmentDefinition.EquipmentSpecifications
-                        .FirstOrDefault(qu => qu.PropertyID == prop.Id);
+                        var p = eq.EquipmentDefinition.EquipmentSpecifications
+                            .FirstOrDefault(qu => qu.PropertyID == prop.Id);
 
-                    row[prop.DisplayName] = p == null ? DBNull.Value : p.Value;
-                }
+                        row[prop.DisplayName] = p == null ? DBNull.Value : p.Value;
+                    }
 
                 itemGroupDataTable.Rows.Add(row);
             }
@@ -181,7 +185,7 @@ namespace temsAPI.Services.Report
 
         public async Task<IEnumerable<Equipment>> FetchEquipmentItems(ReportTemplate template)
         {
-            var filter = new TemplateEquipmentFilterBuilder().GetFilter(template);
+            var filter =  template.EquipmentFilter ?? new TemplateEquipmentFilterBuilder().GetFilter(template);
             return await _equipmentFetcher.Fetch(filter);
         }
     }

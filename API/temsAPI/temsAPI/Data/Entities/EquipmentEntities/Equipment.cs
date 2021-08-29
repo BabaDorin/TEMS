@@ -20,6 +20,25 @@ namespace temsAPI.Data.Entities.EquipmentEntities
         [Key] [MaxLength(150)]
         public string Id { get; set; }
 
+        /// <summary>
+        /// TEMS treats equipment entities differently, based on entity's label.
+        /// There are 3 labels for now: 
+        ///     - equipment, 
+        ///     - part, 
+        ///     - component.
+        ///     
+        /// TEMS is mainly focused on 'equipment' entities, these being those who are parent by default
+        /// (Do not have a parent assigned & Their type is not a child of another type).
+        /// 'part' it an equipment item that is a child (according to their type), but currently does not have
+        /// a parent assigned.
+        /// 'component' is an equipment item which is a child (according to it's type) and currently has a parent assigned.
+        /// 
+        /// 'equipment' => parent type
+        /// 'part'      => child type + detached
+        /// 'component' => child type + attached
+        /// </summary>
+        public string Label { get; private set; }
+
 #nullable enable
         [ForeignKey("ParentID")]
         public Equipment? Parent { get; set; }

@@ -54,7 +54,7 @@ namespace temsAPI.Data.Managers
                 return validationResult;
 
             var equipment = Equipment.FromViewModel(_user, viewModel);
-            await _equipmentLabelManager.SetEquipmentLabel(equipment);
+            await _equipmentLabelManager.SetLabel(equipment);
             
             await _unitOfWork.Equipments.Create(equipment);
             await _unitOfWork.Save();
@@ -278,11 +278,12 @@ namespace temsAPI.Data.Managers
             await _logManager.Create(parentUsingChanged);
         }
 
-        public async Task<string> DetachEquipment(Equipment equipment)
+        public async Task<string> Detach(Equipment equipment)
         {
             var parent = await GetFullEquipmentById(equipment.ParentID);
 
             equipment.ParentID = null;
+            _equipmentLabelManager.SetLabel(equipment, EquipmentLabel.Part);
             await _unitOfWork.Save();
 
             string createdById = IdentityService.GetUserId(_user);
@@ -293,6 +294,23 @@ namespace temsAPI.Data.Managers
             await _logManager.Create(eqDetachedChildLog);
 
             return null;
+        }
+
+        public async Task Attach(Equipment parent, Equipment child)
+        {
+            if (child.ParentID != null)
+                await Detach(child);
+
+            _equipmentLabelManager.SetLabel(child, EquipmentLabel.Component);
+            parent.Children.Add(child);
+            await _unitOfWork.Save();
+
+            string createdById = IdentityService.GetUserId(_user);
+            var eqAttachedParentLog = new ChildEquipmentAttachedParentLogFactory(parent, child, createdById).Create();
+            var eqAttachedChildLog = new ChildEquipmentAttachedChildLogFactory(parent, child, createdById).Create();
+
+            await _logManager.Create(eqAttachedChildLog);
+            await _logManager.Create(eqAttachedParentLog);
         }
 
         public async Task<List<Option>> GetEquipmentOfDefinitions(List<string> definitionIds, bool onlyParents)
@@ -581,22 +599,6 @@ namespace temsAPI.Data.Managers
         }
 
         // Utilities
-
-        public async Task Attach(Equipment parent, Equipment child)
-        {
-            if(child.ParentID != null)
-                await DetachEquipment(child);
-
-            parent.Children.Add(child);
-            await _unitOfWork.Save();
-
-            string createdById = IdentityService.GetUserId(_user);
-            var eqAttachedParentLog = new ChildEquipmentAttachedParentLogFactory(parent, child, createdById).Create();
-            var eqAttachedChildLog = new ChildEquipmentAttachedChildLogFactory(parent, child, createdById).Create();
-
-            await _logManager.Create(eqAttachedChildLog);
-            await _logManager.Create(eqAttachedParentLog);
-        }
 
         public class EntityCollection
         {

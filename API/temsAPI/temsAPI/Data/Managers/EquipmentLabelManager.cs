@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.EquipmentEntities;
 using temsAPI.Helpers.ReusableSnippets;
+using temsAPI.System_Files;
 
 namespace temsAPI.Data.Managers
 {
@@ -26,7 +27,7 @@ namespace temsAPI.Data.Managers
         /// </summary>
         /// <param name="equipment"></param>
         /// <returns></returns>
-        public async Task SetEquipmentLabel(Equipment equipment)
+        public async Task SetLabel(Equipment equipment)
         {
             if (equipment.EquipmentDefinition == null
                 || equipment.EquipmentDefinition.EquipmentType == null
@@ -52,9 +53,20 @@ namespace temsAPI.Data.Managers
                     // In some cases, parentId is not set (Ex. When creating an equipment, the parentID is not set
                     // because at the moment of creation, parent does not exist (First children are inserted, then - parent)
                     child.ParentID = equipment.Id;
-                    await SetEquipmentLabel(child);
+                    await SetLabel(child);
                 }
             }
+        }
+
+        /// <summary>
+        /// Set a label directly (Must be used with caution)
+        /// </summary>
+        /// <param name="equipment"></param>
+        /// <param name="label"></param>
+        /// <returns></returns>
+        public void SetLabel(Equipment equipment, EquipmentLabel label)
+        {
+            equipment.SetLabel(label);
         }
 
         /// <summary>

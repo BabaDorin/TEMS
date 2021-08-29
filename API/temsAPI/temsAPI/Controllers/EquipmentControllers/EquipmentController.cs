@@ -175,7 +175,7 @@ namespace temsAPI.Controllers.EquipmentControllers
             if (equipment == null)
                 return ReturnResponse("Invalid child ID provided.", ResponseStatus.Neutral);
 
-            string result = await _equipmentManager.DetachEquipment(equipment);
+            string result = await _equipmentManager.Detach(equipment);
             if (result != null)
                 return ReturnResponse(result, ResponseStatus.Neutral);
 

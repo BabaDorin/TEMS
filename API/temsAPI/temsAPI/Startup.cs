@@ -28,6 +28,7 @@ using temsAPI.System_Files;
 using temsAPI.System_Files.Exceptions;
 using temsAPI.System_Files.TEMSFileLogger;
 using temsAPI.System_Files.TEMSInitializer;
+using temsAPI.Helpers.EquipmentHelpers;
 
 namespace temsAPI
 {
@@ -129,6 +130,8 @@ namespace temsAPI
             services.AddScoped<SICIntegrationService>();
             services.AddScoped<IEquipmentFetcher, EquipmentFetcher>();
             services.AddScoped<ReportDataGenerator>();
+            services.AddScoped<IEquipmentLabelHelper, EquipmentLabelHelper>();
+            services.AddScoped<IEquipmentLabelManager, EquipmentLabelManager>();
 
             services.ConfigureWritable<AppSettings>(Configuration.GetSection("AppSettings"));
 

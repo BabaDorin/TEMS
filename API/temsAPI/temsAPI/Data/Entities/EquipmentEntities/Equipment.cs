@@ -9,6 +9,7 @@ using temsAPI.Contracts;
 using temsAPI.Data.Entities.CommunicationEntities;
 using temsAPI.Data.Entities.UserEntities;
 using temsAPI.Services;
+using temsAPI.System_Files;
 using temsAPI.ViewModels.Equipment;
 
 namespace temsAPI.Data.Entities.EquipmentEntities
@@ -135,7 +136,8 @@ namespace temsAPI.Data.Entities.EquipmentEntities
 
             foreach(var child in viewModel.Children)
             {
-                model.Children.Add(FromViewModel(createdBy, child));
+                var childEquipment = FromViewModel(createdBy, child);
+                model.Children.Add(childEquipment);
             }
 
             return model;
@@ -151,6 +153,11 @@ namespace temsAPI.Data.Entities.EquipmentEntities
                 return TEMSID;
 
             return SerialNumber;
+        }
+
+        public void SetLabel(EquipmentLabel label)
+        {
+            Label = Enum.GetName(label);
         }
     }
 }

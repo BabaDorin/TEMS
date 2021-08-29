@@ -29,19 +29,22 @@ namespace temsAPI.Data.Managers
         LogManager _logManager;
         ILogger<EquipmentManager> _logger;
         IEquipmentFetcher _equipmentFetcher;
-        
+        IEquipmentLabelManager _equipmentLabelManager;
+
         public EquipmentManager(
             IUnitOfWork unitOfWork, 
             ClaimsPrincipal user,
             CurrencyConvertor currencyConvertor,
             ILogger<EquipmentManager> logger,
             LogManager logManager,
-            IEquipmentFetcher equipmentFetcher) : base(unitOfWork, user)
+            IEquipmentFetcher equipmentFetcher,
+            IEquipmentLabelManager equipmentLabelManager) : base(unitOfWork, user)
         {
             _currencyConvertor = currencyConvertor;
             _logger = logger;
             _logManager = logManager;
             _equipmentFetcher = equipmentFetcher;
+            _equipmentLabelManager = equipmentLabelManager;
         }
 
         public async Task<string> Create(AddEquipmentViewModel viewModel)
@@ -51,9 +54,10 @@ namespace temsAPI.Data.Managers
                 return validationResult;
 
             var equipment = Equipment.FromViewModel(_user, viewModel);
+            await _equipmentLabelManager.SetEquipmentLabel(equipment);
+            
             await _unitOfWork.Equipments.Create(equipment);
             await _unitOfWork.Save();
-
             return null;
         }
 

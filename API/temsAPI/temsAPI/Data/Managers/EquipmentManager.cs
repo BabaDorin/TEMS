@@ -398,32 +398,33 @@ namespace temsAPI.Data.Managers
                     await ClosePreviousAllocations(equipment.Value);
 
                     // Allocate parent along with it's children
-                    var equipmentIdsToBeAllocated = (await _unitOfWork.Equipments
+                    var equipmentToBeAllocated = (await _unitOfWork.Equipments
                         .Find<Equipment>(
                             where: q => q.Id == equipment.Value,
                             include: q => q.Include(q => q.Children)))
                         .Select(q =>
                         {
-                            // ids = parent id + children ids
-                            List<string> ids = new List<string>() { q.Id };
+                            // equipmentToBeAllocated = parent + children entities
+                            List<Equipment> equipmentToBeAllocated = new List<Equipment>() { q };
 
                             if (q.Children.IsNullOrEmpty())
-                                return ids;
+                                return equipmentToBeAllocated;
 
-                            q.Children.ForEach(ch => ids.Add(ch.Id));
-                            return ids;
+                            q.Children.ForEach(ch => equipmentToBeAllocated.Add(ch));
+                            return equipmentToBeAllocated;
                         })
                         .FirstOrDefault();
 
                     string currentUserId = IdentityService.GetUserId(_user);
 
-                    foreach(string eqToAllocate in equipmentIdsToBeAllocated)
+                    foreach(var eqToAllocate in equipmentToBeAllocated)
                     {
                         var model = new EquipmentAllocation
                         {
                             Id = Guid.NewGuid().ToString(),
                             DateAllocated = DateTime.Now,
-                            EquipmentID = eqToAllocate,
+                            EquipmentID = eqToAllocate.Id,
+                            Label = eqToAllocate.Label 
                         };
 
                         if (viewModel.AllocateToType == "personnel")

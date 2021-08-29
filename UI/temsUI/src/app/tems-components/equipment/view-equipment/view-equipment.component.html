@@ -19,7 +19,7 @@
                                         <mat-icon>more_vert</mat-icon>
                                     </button>
                                     <mat-menu #menu="matMenu">
-                                        <div class="p-2 text-center">
+                                        <!-- <div class="p-2 text-center">
                                             <mat-slide-toggle class="d-block" 
                                                 [(ngModel)]="includeDerived" 
                                                 (change)="includeDerivedChanged()">
@@ -28,7 +28,8 @@
                                             <small class="text-muted">
                                                 {{ 'equipment.includeChildTip' | translate }}
                                             </small>
-                                        </div>
+                                        </div> -->
+                                        <app-include-equipment-tags></app-include-equipment-tags>
                                     </mat-menu>
                                 </li>
                             </ul>

@@ -137,6 +137,14 @@
     },
     
     "equipment": {
+        "labels": {
+            "includeEquipment": "Include echipamentele",
+            "includeEquipmentTip": "Include doar entitățile asociate tipurilor părinte (ex. Calculator, imprimantă). Entități care nu pot fi tratate drept părți componente ale altor echipamente.",
+            "includeComponents": "Include componentele",
+            "includeComponentsTip": "Include entitățile asociate tipurilor derivate, care au la moment un părinte asociat (sunt atașate).",
+            "includeParts": "Include piesele",
+            "includePartsTip": "Include entitățile asociate tipurilor derivate, care la momentu NU au un părinte asociat (sunt detașate)."
+        },
         "parent": "Părinte",
         "allocation": "Alocare de echipament",
         "selectEquipmentToAllocateLabel": "Selectează echipamentele spre alocare",

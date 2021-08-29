@@ -138,6 +138,14 @@
     },
     
     "equipment": {
+        "labels": {
+            "includeEquipment": "Include Equipment",
+            "includeEquipmentTip": "Include only equipment entities of parent types (ex. Computers, Printers etc). Entities that can not be treated as children",
+            "includeComponents": "Include Components",
+            "includeComponentsTip": "Include equipment entities of child type that are ATTACHED to other entities.",
+            "includeParts": "Include Parts",
+            "includePartsTip": "Include equipment entities of child type that are DETACHED and do not have a parent associated. "
+        },
         "parent": "Parent",
         "allocation": "Equipment allocation",
         "selectEquipmentToAllocateLabel": "Select the equipment you want to allocate",

@@ -1,3 +1,4 @@
+import { IncludeEquipmentTagsComponent } from './../../../shared/include-equipment-tags/include-equipment-tags.component';
 import { LazyLoaderService } from './../../../services/lazy-loader.service';
 import { ReportFromFilterComponent } from './../../reports/report-from-filter/report-from-filter.component';
 import { EquipmentFilter } from './../../../helpers/filters/equipment.filter';
@@ -30,7 +31,7 @@ export class ViewEquipmentComponent implements OnInit {
 
   @ViewChild('typeSelection') typeSelection: MultipleSelectionDropdownComponent;
   @ViewChild('agGridEquipment') agGridEquipment: AgGridEquipmentComponent;
-  includeDerived:boolean = false;
+  @ViewChild('includeEquipmentTags') includeEquipmentTags: IncludeEquipmentTagsComponent;
 
   constructor(
     public dialogService: DialogService,
@@ -41,7 +42,13 @@ export class ViewEquipmentComponent implements OnInit {
     private typeService: TypeService,
     private lazyLoader: LazyLoaderService
   ) {
-    this.typeEndpoint = new TypeEndpoint(this.typeService, this.includeDerived);
+
+    let includeDerived = false;
+    if(this.includeEquipmentTags != undefined){
+      includeDerived = this.includeEquipmentTags.includeComponents || this.includeEquipmentTags.includeParts;
+    }
+
+    this.typeEndpoint = new TypeEndpoint(this.typeService, includeDerived);
 
     this.equipmentFilter = new EquipmentFilter();
     this.equipmentFilter.includeChildren = this.includeDerived;
@@ -134,7 +141,7 @@ export class ViewEquipmentComponent implements OnInit {
     );
   }
 
-  includeDerivedChanged(){
+  includeTagsChanged(){
     this.equipmentFilter.includeChildren = this.includeDerived;
     this.equipmentFilter = Object.assign(new EquipmentFilter(), this.equipmentFilter);
     this.typeEndpoint = new TypeEndpoint(this.typeService, this.includeDerived);

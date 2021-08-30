@@ -89,7 +89,7 @@ export class AgGridAttachEquipmentComponent extends TEMSComponent implements OnC
         cellRenderer: 'btnCellRendererComponent',
         cellRendererParams: {
           onClick: this.attach.bind(this),
-          label: this.translate.instant('equipment.attach')
+          matIcon: 'link_on'
         },
       },
     ];

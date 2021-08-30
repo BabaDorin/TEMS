@@ -99,7 +99,7 @@ export class AttachEquipmentComponent extends TEMSComponent implements OnInit {
     console.log('filter');
     console.log(this.attachEquipmentFormGroup);
 
-    this.equipmentFilter.includeLabels = this.attachEquipmentFormGroup.value.includeEquipmentLabels;
+    this.equipmentFilter.includeLabels = this.attachEquipmentFormGroup.value.includeEquipmentLabels ?? this.defaultLabels;
     console.log(this.equipmentFilter);
     console.log(this.attachEquipmentFormGroup.value.includeEquipmentLabels);
 

@@ -23,7 +23,7 @@
     <!-- Include Parts -->
     <ng-container *ngIf="tagOptions.includes('Part')">
         <div class="d-block mt-2">
-            <mat-slide-toggle [(ngModel)]="includeParts" (change)="setValue()">
+            <mat-slide-toggle [(ngModel)]="includeParts" [checked]="includeParts" (change)="setValue()">
                 {{ 'equipment.labels.includeParts' | translate }}
                 <mat-icon class="text-muted clickable" [matTooltip]="translate.instant('equipment.labels.includePartsTip')">info_outline</mat-icon>
             </mat-slide-toggle>

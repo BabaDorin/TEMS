@@ -74,9 +74,6 @@ export class IncludeEquipmentLabelsComponent implements OnInit, ControlValueAcce
   }
 
   setValue(){
-    console.log('inside setValue');
-    console.log(this.value);
-    console.log(this.defaultValue);
     this.value = this.getSelectedLabels();
     if(isNullOrEmpty(this.value)){
       this.value = this.defaultValue;

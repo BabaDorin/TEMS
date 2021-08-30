@@ -10,8 +10,8 @@
         <form [formGroup]="attachEquipmentFormGroup">
             <div class="row">
 
-                <!-- Select type -->
-                <div class="col-md-4 text-center">
+                <div class="col-md-6 text-center">
+                    <!-- Select type -->
                     <mat-form-field>
                         <mat-label>
                             {{ 'entities.types' | translate }}
@@ -22,10 +22,8 @@
                             </mat-option>
                         </mat-select>
                     </mat-form-field>
-                </div>
 
-                <!-- Select definition -->
-                <div class="col-md-4 text-center">
+                    <!-- Select definition -->
                     <mat-form-field>
                         <mat-label>
                             {{ 'equipment.availableDefinitions' | translate }}
@@ -37,15 +35,25 @@
                         </mat-select>
                     </mat-form-field>
                 </div>
+                <div class="col-md-6">
+                    <app-include-equipment-tags 
+                        formControlName="includeEquipmentTags"
+                        [tagOptions]="tagOptions"
+                        (valueChanged)="filterChanged()"
+                        includeParts="true">
+                    </app-include-equipment-tags>
+                </div>
+                
 
                 <!-- Include Attached mat-checkbox -->
-                <div class="col-md-4 text-center">
-                    <mat-checkbox formControlName="includeAttached" (change)="filterChanged()">
+                <div class="col-md-4">
+                    <!-- <mat-checkbox formControlName="includeAttached" (change)="filterChanged()">
                         {{ 'equipment.includeAttached' | translate }}
                     </mat-checkbox>
                     <small class="d-block">
                         {{ 'equipment.includeAttached_info' | translate }}
-                    </small>
+                    </small> -->
+                    
                 </div>
             </div>
         </form>

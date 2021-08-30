@@ -51,7 +51,7 @@ export class ViewEquipmentComponent implements OnInit {
     this.typeEndpoint = new TypeEndpoint(this.typeService, includeDerived);
 
     this.equipmentFilter = new EquipmentFilter();
-    this.equipmentFilter.includeChildren = this.includeDerived;
+    this.equipmentFilter.includeTags = this.includeEquipmentTags?.value ?? ['Equipment'];
   }
 
   ngOnInit(): void {
@@ -142,8 +142,11 @@ export class ViewEquipmentComponent implements OnInit {
   }
 
   includeTagsChanged(){
-    this.equipmentFilter.includeChildren = this.includeDerived;
+    // this.equipmentFilter.includeChildren = this.includeDerived;
+    this.equipmentFilter.includeTags = this.includeEquipmentTags?.value ?? ['Equipment'];
     this.equipmentFilter = Object.assign(new EquipmentFilter(), this.equipmentFilter);
-    this.typeEndpoint = new TypeEndpoint(this.typeService, this.includeDerived);
+
+    let includeDerivedTypes = this.equipmentFilter.includeTags.indexOf('Component') > -1 || this.equipmentFilter.includeTags.indexOf('Part') > -1
+    this.typeEndpoint = new TypeEndpoint(this.typeService, includeDerivedTypes);
   }
 }

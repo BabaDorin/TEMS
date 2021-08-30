@@ -1,4 +1,3 @@
-import { IIncludeEquipmentTypes } from './../../models/equipment/include-equipment-tags.model';
 import { TranslateService } from '@ngx-translate/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { Component, Input, OnInit, Output, EventEmitter, forwardRef } from '@angular/core';
@@ -17,29 +16,33 @@ import { Component, Input, OnInit, Output, EventEmitter, forwardRef } from '@ang
 })
 export class IncludeEquipmentTagsComponent implements OnInit, ControlValueAccessor{
 
-  public value: IIncludeEquipmentTypes;
+  public value: string[];
 
-  public getSelectedTags(): string[]{
+  getSelectedTags(): string[]{
     let result: string[] = [];
 
     if(this.value == undefined)
       return result;
 
-    if(this.value.includeEquipment)
+    if(this.includeEquipment && this.tagOptions.includes('Equipment'))
       result.push('Equipment');
 
-    if(this.value.includeComponents)
+    if(this.includeComponents && this.tagOptions.includes('Component'))
       result.push('Component');
     
-    if(this.value.includeParts)
+    if(this.includeParts && this.tagOptions.includes('Part'))
       result.push('Part');
 
     return result;
   }
   
+  // Default values for tag flags
   @Input() includeEquipment: boolean = true;
   @Input() includeParts: boolean = false;
   @Input() includeComponents: boolean = false;
+  
+  // Tag options (By default all of them are included)
+  @Input() tagOptions = ['Equipment', 'Component', 'Part'];
 
   @Output() valueChanged = new EventEmitter();
 
@@ -69,12 +72,11 @@ export class IncludeEquipmentTagsComponent implements OnInit, ControlValueAccess
   }
 
   setValue(){
-    this.value = {
-      includeEquipment: this.includeComponents,
-      includeParts: this.includeParts,
-      includeComponents: this.includeComponents
-    };
+    console.log('inside setValue');
+    this.value = this.getSelectedTags();
  
+    this.valueChanged.emit(this.value);
+
     // Quick workaround for registerOnChange being called after the first initialization
     // BEFREE: Find a more ingenious solution.
     if(this.onChange == undefined)
@@ -86,12 +88,10 @@ export class IncludeEquipmentTagsComponent implements OnInit, ControlValueAccess
           return;
 
         this.onChange(this.value);
-        this.valueChanged.emit(this.value);
       }, 50);
     }
     else{
       this.onChange(this.value);
-      this.valueChanged.emit(this.value);
     }
   }
 }

@@ -28,16 +28,13 @@ export class AttachEquipmentComponent extends TEMSComponent implements OnInit {
   definitions: IOption[] = [];
 
   equipmentFilter: EquipmentFilter;
+  tagOptions = ['Part', 'Component'];
 
   attachEquipmentFormGroup = new FormGroup({
     equipmentDefinition: new FormControl(),
     equipmentType: new FormControl(),
-    includeAttached: new FormControl(false)
+    includeEquipmentTags: new FormControl()
   });
-
-  private getIncludeAttached() {
-    return this.attachEquipmentFormGroup.controls.includeAttached.value;
-  }
 
   private getSelectedType() {
     return this.attachEquipmentFormGroup.controls.equipmentType.value;
@@ -70,12 +67,12 @@ export class AttachEquipmentComponent extends TEMSComponent implements OnInit {
     this.fetchRelevantTypes()
     .then(() => {
       let filter = new EquipmentFilter();
-      filter.includeParents = false;
-      filter.includeChildren = true;
-      filter.includeAttached = false;
-      filter.includeDetached = true;
+      filter.includeTags = this.attachEquipmentFormGroup.value.includeEquipmentTags;
       filter.types = this.types.map(q => q.value);
       this.equipmentFilter = filter;
+
+      console.log('filter = ');
+      console.log(filter);
     });
 
     this.definitions = this.equipment.definition.children.map(q => ({ value: q.id, label: q.identifier } as IOption));
@@ -98,7 +95,7 @@ export class AttachEquipmentComponent extends TEMSComponent implements OnInit {
   }
 
   filterChanged() {
-    this.equipmentFilter.includeAttached = this.getIncludeAttached();
+    this.equipmentFilter.includeTags = this.attachEquipmentFormGroup.value.includeEquipmentTags;
 
     // ether equipment of selected type, or equipment of any type which is child of equipment's type
     let selectedType = this.getSelectedType();

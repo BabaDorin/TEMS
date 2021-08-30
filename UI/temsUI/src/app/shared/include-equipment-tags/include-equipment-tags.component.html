@@ -1,25 +1,32 @@
 <div class="p-2">
+
     <!-- Include Equipment -->
-    <div class="d-block">
-        <mat-slide-toggle [(ngModel)]="includeEquipment" (change)="setValue()">
-            {{ 'equipment.labels.includeEquipment' | translate }}
-            <mat-icon class="text-muted clickable" [matTooltip]="translate.instant('equipment.labels.includeEquipmentTip')">info_outline</mat-icon>
-        </mat-slide-toggle>
-    </div>
+    <ng-container *ngIf="tagOptions.includes('Equipment')">
+        <div class="d-block">
+            <mat-slide-toggle [(ngModel)]="includeEquipment" (change)="setValue()">
+                {{ 'equipment.labels.includeEquipment' | translate }}
+                <mat-icon class="text-muted clickable" [matTooltip]="translate.instant('equipment.labels.includeEquipmentTip')">info_outline</mat-icon>
+            </mat-slide-toggle>
+        </div>
+    </ng-container>
 
     <!-- Include Components -->
-    <div class="d-block mt-2">
-        <mat-slide-toggle [(ngModel)]="includeComponents" (change)="setValue()">
-            {{ 'equipment.labels.includeComponents' | translate }}
-            <mat-icon class="text-muted clickable" [matTooltip]="translate.instant('equipment.labels.includeComponentsTip')">info_outline</mat-icon>
-        </mat-slide-toggle>
-    </div>
+    <ng-container *ngIf="tagOptions.includes('Component')">
+        <div class="d-block mt-2">
+            <mat-slide-toggle [(ngModel)]="includeComponents" (change)="setValue()">
+                {{ 'equipment.labels.includeComponents' | translate }}
+                <mat-icon class="text-muted clickable" [matTooltip]="translate.instant('equipment.labels.includeComponentsTip')">info_outline</mat-icon>
+            </mat-slide-toggle>
+        </div>
+    </ng-container>
 
     <!-- Include Parts -->
-    <div class="d-block mt-2">
-        <mat-slide-toggle [(ngModel)]="includeParts" (change)="setValue()">
-            {{ 'equipment.labels.includeParts' | translate }}
-            <mat-icon class="text-muted clickable" [matTooltip]="translate.instant('equipment.labels.includePartsTip')">info_outline</mat-icon>
-        </mat-slide-toggle>
-    </div>
+    <ng-container *ngIf="tagOptions.includes('Part')">
+        <div class="d-block mt-2">
+            <mat-slide-toggle [(ngModel)]="includeParts" (change)="setValue()">
+                {{ 'equipment.labels.includeParts' | translate }}
+                <mat-icon class="text-muted clickable" [matTooltip]="translate.instant('equipment.labels.includePartsTip')">info_outline</mat-icon>
+            </mat-slide-toggle>
+        </div>
+    </ng-container>
 </div>

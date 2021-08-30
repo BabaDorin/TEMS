@@ -29,11 +29,12 @@ export class AttachEquipmentComponent extends TEMSComponent implements OnInit {
 
   equipmentFilter: EquipmentFilter;
   tagOptions = ['Part', 'Component'];
+  defaultLabels = ['Part'];
 
   attachEquipmentFormGroup = new FormGroup({
     equipmentDefinition: new FormControl(),
     equipmentType: new FormControl(),
-    includeEquipmentTags: new FormControl()
+    includeEquipmentLabels: new FormControl()
   });
 
   private getSelectedType() {
@@ -67,12 +68,9 @@ export class AttachEquipmentComponent extends TEMSComponent implements OnInit {
     this.fetchRelevantTypes()
     .then(() => {
       let filter = new EquipmentFilter();
-      filter.includeTags = this.attachEquipmentFormGroup.value.includeEquipmentTags;
+      filter.includeLabels = this.attachEquipmentFormGroup.value?.includeEquipmentLabels ?? this.defaultLabels;
       filter.types = this.types.map(q => q.value);
       this.equipmentFilter = filter;
-
-      console.log('filter = ');
-      console.log(filter);
     });
 
     this.definitions = this.equipment.definition.children.map(q => ({ value: q.id, label: q.identifier } as IOption));
@@ -95,7 +93,15 @@ export class AttachEquipmentComponent extends TEMSComponent implements OnInit {
   }
 
   filterChanged() {
-    this.equipmentFilter.includeTags = this.attachEquipmentFormGroup.value.includeEquipmentTags;
+    // equipment filter not initialized yet
+    if(this.equipmentFilter == undefined)
+      return;
+    console.log('filter');
+    console.log(this.attachEquipmentFormGroup);
+
+    this.equipmentFilter.includeLabels = this.attachEquipmentFormGroup.value.includeEquipmentLabels;
+    console.log(this.equipmentFilter);
+    console.log(this.attachEquipmentFormGroup.value.includeEquipmentLabels);
 
     // ether equipment of selected type, or equipment of any type which is child of equipment's type
     let selectedType = this.getSelectedType();
@@ -109,6 +115,8 @@ export class AttachEquipmentComponent extends TEMSComponent implements OnInit {
       this.equipmentFilter.definitions = [selectedDefinition];
 
     this.equipmentFilter = Object.assign(new EquipmentFilter(), this.equipmentFilter);
+    console.log('final filter');
+    console.log(this.equipmentFilter);
   }
 
   fetchRelevantTypes() : Promise<any> {

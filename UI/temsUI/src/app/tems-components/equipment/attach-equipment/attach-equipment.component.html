@@ -36,24 +36,13 @@
                     </mat-form-field>
                 </div>
                 <div class="col-md-6">
-                    <app-include-equipment-tags 
-                        formControlName="includeEquipmentTags"
+                    <app-include-equipment-labels 
+                        formControlName="includeEquipmentLabels"
                         [tagOptions]="tagOptions"
                         (valueChanged)="filterChanged()"
+                        [defaultValue]="defaultLabels"
                         includeParts="true">
-                    </app-include-equipment-tags>
-                </div>
-                
-
-                <!-- Include Attached mat-checkbox -->
-                <div class="col-md-4">
-                    <!-- <mat-checkbox formControlName="includeAttached" (change)="filterChanged()">
-                        {{ 'equipment.includeAttached' | translate }}
-                    </mat-checkbox>
-                    <small class="d-block">
-                        {{ 'equipment.includeAttached_info' | translate }}
-                    </small> -->
-                    
+                    </app-include-equipment-labels>
                 </div>
             </div>
         </form>

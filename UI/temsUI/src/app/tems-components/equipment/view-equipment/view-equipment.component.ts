@@ -1,4 +1,4 @@
-import { IncludeEquipmentTagsComponent } from './../../../shared/include-equipment-tags/include-equipment-tags.component';
+import { IncludeEquipmentLabelsComponent } from './../../../shared/include-equipment-tags/include-equipment-tags.component';
 import { LazyLoaderService } from './../../../services/lazy-loader.service';
 import { ReportFromFilterComponent } from './../../reports/report-from-filter/report-from-filter.component';
 import { EquipmentFilter } from './../../../helpers/filters/equipment.filter';
@@ -28,10 +28,11 @@ export class ViewEquipmentComponent implements OnInit {
   // typePreOptions: IOption[] = [];
   typeEndpoint: TypeEndpoint;
   equipmentFilter: EquipmentFilter;
+  defaultLabels = ['Equipment']; // When no label is selected => equipment is selected
 
   @ViewChild('typeSelection') typeSelection: MultipleSelectionDropdownComponent;
   @ViewChild('agGridEquipment') agGridEquipment: AgGridEquipmentComponent;
-  @ViewChild('includeEquipmentTags') includeEquipmentTags: IncludeEquipmentTagsComponent;
+  @ViewChild('includeEquipmentLabels') includeEquipmentLabels: IncludeEquipmentLabelsComponent;
 
   constructor(
     public dialogService: DialogService,
@@ -44,14 +45,14 @@ export class ViewEquipmentComponent implements OnInit {
   ) {
 
     let includeDerived = false;
-    if(this.includeEquipmentTags != undefined){
-      includeDerived = this.includeEquipmentTags.includeComponents || this.includeEquipmentTags.includeParts;
+    if(this.includeEquipmentLabels != undefined){
+      includeDerived = this.includeEquipmentLabels.includeComponents || this.includeEquipmentLabels.includeParts;
     }
 
     this.typeEndpoint = new TypeEndpoint(this.typeService, includeDerived);
 
     this.equipmentFilter = new EquipmentFilter();
-    this.equipmentFilter.includeTags = this.includeEquipmentTags?.value ?? ['Equipment'];
+    this.equipmentFilter.includeLabels = this.includeEquipmentLabels?.value ?? ['Equipment'];
   }
 
   ngOnInit(): void {
@@ -143,10 +144,10 @@ export class ViewEquipmentComponent implements OnInit {
 
   includeTagsChanged(){
     // this.equipmentFilter.includeChildren = this.includeDerived;
-    this.equipmentFilter.includeTags = this.includeEquipmentTags?.value ?? ['Equipment'];
+    this.equipmentFilter.includeLabels = this.includeEquipmentLabels?.value ?? ['Equipment'];
     this.equipmentFilter = Object.assign(new EquipmentFilter(), this.equipmentFilter);
 
-    let includeDerivedTypes = this.equipmentFilter.includeTags.indexOf('Component') > -1 || this.equipmentFilter.includeTags.indexOf('Part') > -1
+    let includeDerivedTypes = this.equipmentFilter.includeLabels.indexOf('Component') > -1 || this.equipmentFilter.includeLabels.indexOf('Part') > -1
     this.typeEndpoint = new TypeEndpoint(this.typeService, includeDerivedTypes);
   }
 }

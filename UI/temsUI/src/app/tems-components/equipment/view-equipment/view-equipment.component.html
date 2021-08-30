@@ -19,8 +19,11 @@
                                         <mat-icon>more_vert</mat-icon>
                                     </button>
                                     <mat-menu #menu="matMenu">
-                                        <app-include-equipment-tags #includeEquipmentTags (valueChanged)="includeTagsChanged()">
-                                        </app-include-equipment-tags>
+                                        <app-include-equipment-labels 
+                                            #includeEquipmentLabels 
+                                            (valueChanged)="includeTagsChanged()"
+                                            [defaultValue]="defaultLabels">
+                                        </app-include-equipment-labels>
                                     </mat-menu>
                                 </li>
                             </ul>

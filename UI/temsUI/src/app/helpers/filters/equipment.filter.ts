@@ -9,7 +9,7 @@ export class EquipmentFilter {
     // includeChildren: boolean = false;
     // includeAttached: boolean = true;
     // includeDetached: boolean = true;
-    includeTags: string[];
+    includeLabels: string[];
     rooms: string[];
     personnel: string[];
     types: string[];

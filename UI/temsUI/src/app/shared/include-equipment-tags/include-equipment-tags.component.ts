@@ -1,24 +1,25 @@
+import { isNullOrEmpty } from 'src/app/helpers/validators/validations';
 import { TranslateService } from '@ngx-translate/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { Component, Input, OnInit, Output, EventEmitter, forwardRef } from '@angular/core';
 
 @Component({
-  selector: 'app-include-equipment-tags',
+  selector: 'app-include-equipment-labels',
   templateUrl: './include-equipment-tags.component.html',
   styleUrls: ['./include-equipment-tags.component.scss'],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => IncludeEquipmentTagsComponent),
+      useExisting: forwardRef(() => IncludeEquipmentLabelsComponent),
       multi: true
     }
   ]
 })
-export class IncludeEquipmentTagsComponent implements OnInit, ControlValueAccessor{
+export class IncludeEquipmentLabelsComponent implements OnInit, ControlValueAccessor{
 
   public value: string[];
 
-  getSelectedTags(): string[]{
+  getSelectedLabels(): string[]{
     let result: string[] = [];
 
     if(this.value == undefined)
@@ -40,6 +41,7 @@ export class IncludeEquipmentTagsComponent implements OnInit, ControlValueAccess
   @Input() includeEquipment: boolean = true;
   @Input() includeParts: boolean = false;
   @Input() includeComponents: boolean = false;
+  @Input() defaultValue: string[] = []; // When nothin is selected, default value will be applied
   
   // Tag options (By default all of them are included)
   @Input() tagOptions = ['Equipment', 'Component', 'Part'];
@@ -73,16 +75,29 @@ export class IncludeEquipmentTagsComponent implements OnInit, ControlValueAccess
 
   setValue(){
     console.log('inside setValue');
-    this.value = this.getSelectedTags();
- 
-    this.valueChanged.emit(this.value);
+    console.log(this.value);
+    console.log(this.defaultValue);
+    this.value = this.getSelectedLabels();
+    if(isNullOrEmpty(this.value)){
+      this.value = this.defaultValue;
+      
+      if(this.defaultValue.includes('Equipment'))
+        this.includeEquipment = true;
 
+      if(this.defaultValue.includes('Component'))
+        this.includeComponents = true;
+
+      if(this.defaultValue.includes('Part'))
+        this.includeParts = true;
+    }
+ 
     // Quick workaround for registerOnChange being called after the first initialization
     // BEFREE: Find a more ingenious solution.
     if(this.onChange == undefined)
     {
       // let's wait 50 miliseconds (registed on change might not been called yet)
       setTimeout(() => {
+        this.valueChanged.emit(this.value);
         // If even here onChange is not defined, it means that this component is not used with as a formControl.
         if(onchange == undefined)
           return;
@@ -92,6 +107,7 @@ export class IncludeEquipmentTagsComponent implements OnInit, ControlValueAccess
     }
     else{
       this.onChange(this.value);
+      this.valueChanged.emit(this.value);
     }
   }
 }

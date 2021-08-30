@@ -122,10 +122,10 @@ namespace temsAPI.Data.Managers
             Expression<Func<EquipmentType, bool>> expression = q => !q.IsArchieved;
 
             if (!includeChildTypes)
-                expression = expression.Concat(q => q.Parents.Count() == 0);
+                expression = expression.ConcatAnd(q => q.Parents.Count() == 0);
 
             if (filter != null)
-                expression = expression.Concat(q => q.Name.Contains(filter));
+                expression = expression.ConcatAnd(q => q.Name.Contains(filter));
 
             Func<IQueryable<EquipmentType>, IOrderedQueryable<EquipmentType>> orderBy =
                 q => q.OrderBy(q => q.Name);

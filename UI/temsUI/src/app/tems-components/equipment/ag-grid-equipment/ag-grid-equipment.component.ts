@@ -166,8 +166,11 @@ export class AgGridEquipmentComponent extends TEMSComponent implements OnChanges
     this.loading = true;
     this.subscriptions.push(this.equipmentService.getEquipmentSimplified(this.equipmentFilter)
     .subscribe(result => {
-      this.rowData = result;
       this.loading = false;
+      if(this.snackService.snackIfError(result))
+        return;
+
+      this.rowData = result;
       this.sizeToFit();
     }));
   }

@@ -49,7 +49,7 @@ namespace temsAPI.Data.Managers
 
             var filter = new EquipmentFilter()
             {
-                IncludeChildren = false
+                IncludeLabels = new List<string>() { "Equipment" }
             };
 
             if(entityType != null && entityId != null)

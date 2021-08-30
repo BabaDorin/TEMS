@@ -1,7 +1,26 @@
 <div class="col-md-12 flex-container">
-    <h2 class="mt-3">
-        {{ 'entities.currentlyAllocatedEquipment' | translate }}
-    </h2>
+    <div class="page-header">
+        <h2 class="page-title mb-0">
+            {{ 'entities.currentlyAllocatedEquipment' | translate }}
+        </h2>
+        <nav aria-label="breadcrumb">
+            <ul class="breadcrumb bg-transparent">
+                <li class="breadcrumb-item" aria-current="page">
+                    <button mat-icon-button [matMenuTriggerFor]="menu"
+                        class="float-right">
+                        <mat-icon>more_vert</mat-icon>
+                    </button>
+                    <mat-menu #menu="matMenu">
+                        <app-include-equipment-labels 
+                            #includeEquipmentLabels 
+                            (valueChanged)="includeLabelsChanged()"
+                            [defaultValue]="defaultLabels">
+                        </app-include-equipment-labels>
+                    </mat-menu>
+                </li>
+            </ul>
+        </nav>
+    </div>
     <hr>
 
     <!-- Equipment analytics summary -->
@@ -20,10 +39,12 @@
     <hr class="separator">
 
     <!-- Equipment grid -->
-    <div id="section2" class="mt-3">
-        <app-ag-grid-equipment [equipmentFilter]="equipmentFilter">
-        </app-ag-grid-equipment>
-    </div>
+    <ng-container *ngIf="equipmentFilter != undefined">
+        <div id="section2" class="mt-3">
+            <app-ag-grid-equipment [equipmentFilter]="equipmentFilter">
+            </app-ag-grid-equipment>
+        </div>
+    </ng-container>
 
     <!-- Allocations list -->
     <div id="section3" class="mt-5">

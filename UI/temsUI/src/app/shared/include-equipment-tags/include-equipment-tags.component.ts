@@ -54,7 +54,7 @@ export class IncludeEquipmentLabelsComponent implements OnInit, ControlValueAcce
   constructor(public translate: TranslateService) { }
   
   ngOnInit(): void {
-    this.setValue();
+    this.setValue(false);
   }
 
   registerOnChange(fn: any): void {
@@ -73,7 +73,7 @@ export class IncludeEquipmentLabelsComponent implements OnInit, ControlValueAcce
     this.value = obj;
   }
 
-  setValue(){
+  setValue(emitNotification: boolean = true){
     this.value = this.getSelectedLabels();
     if(isNullOrEmpty(this.value)){
       this.value = this.defaultValue;
@@ -94,7 +94,8 @@ export class IncludeEquipmentLabelsComponent implements OnInit, ControlValueAcce
     {
       // let's wait 50 miliseconds (registed on change might not been called yet)
       setTimeout(() => {
-        this.valueChanged.emit(this.value);
+        if(emitNotification)
+          this.valueChanged.emit(this.value);
         // If even here onChange is not defined, it means that this component is not used with as a formControl.
         if(onchange == undefined)
           return;
@@ -104,7 +105,9 @@ export class IncludeEquipmentLabelsComponent implements OnInit, ControlValueAcce
     }
     else{
       this.onChange(this.value);
-      this.valueChanged.emit(this.value);
+
+      if(emitNotification)
+          this.valueChanged.emit(this.value);
     }
   }
 }

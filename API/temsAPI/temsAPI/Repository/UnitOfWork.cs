@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data;
@@ -51,6 +49,7 @@ namespace temsAPI.Repository
         private IGenericRepository<CommonNotification> _commonNotifications;
         private IGenericRepository<UserNotification> _userNotifications;
         private IGenericRepository<BugReport> _bugReports;
+        private IGenericRepository<UserWithBlacklistedToken> _userWithBlacklistedTokens;
 
         public IGenericRepository<Announcement> Announcements 
             => _announcements ??= new GenericRepository<Announcement>(_context);
@@ -116,6 +115,9 @@ namespace temsAPI.Repository
             => _userNotifications ??= new GenericRepository<UserNotification>(_context);
         public IGenericRepository<BugReport> BugReports
             => _bugReports ??= new GenericRepository<BugReport>(_context);
+
+        public IGenericRepository<UserWithBlacklistedToken> UserWithBlacklistedTokens
+            => _userWithBlacklistedTokens ??= new GenericRepository<UserWithBlacklistedToken>(_context);
 
         public UnitOfWork(ApplicationDbContext context)
         {

@@ -123,6 +123,9 @@ namespace temsAPI.Data.Managers
                 result = await _identityService.ResetPassword(model, viewModel.Password);
                 if (result != null)
                     return result;
+
+                // Password updated = token blacklisted
+                //_tokenValidator.Black();
             }
 
             model.UserName = viewModel.Username;

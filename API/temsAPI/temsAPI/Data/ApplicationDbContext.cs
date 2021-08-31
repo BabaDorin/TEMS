@@ -58,5 +58,6 @@ namespace temsAPI.Data
         public DbSet<Key> Keys { get; set; }
         public DbSet<KeyAllocation> KeyAllocations { get; set; }
         public DbSet<BugReport> BugReports { get; set; }
+        public DbSet<UserWithBlacklistedToken> UserWithBlacklistedTokens { get; set; }
     }
 }

@@ -38,7 +38,7 @@ namespace temsAPI.System_Files
 
             // Case 2: Blacklisted token
             string token = context.HttpContext.Request.Headers[HeaderNames.Authorization].ToString().Split(' ')[1];
-            if (!_tokenValidatorService.IsValid(token))
+            if (!_tokenValidatorService.IsValid(token).Result)
             {
                 context.Result = new UnauthorizedResult();
                 return;

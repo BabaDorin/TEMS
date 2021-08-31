@@ -176,7 +176,7 @@ export class AddUserComponent extends TEMSComponent implements OnInit {
     });
 
     // Update the formly model
-    this.formlyData.model.claims = this.claims.map(q => q.label);
+    this.formlyData.model.claims = this.claims.filter(q => q.checked).map(q => q.label);
   }
 
   onClaimsChange($event) {

@@ -1,3 +1,4 @@
+import { ClaimService } from './../../../services/claim.service';
 import { UsedCellRenderedComponent } from './../../../public/ag-grid/used-cell-rendered/used-cell-rendered.component';
 import { DefectCellRenderedComponent } from './../../../public/ag-grid/defect-cell-rendered/defect-cell-rendered.component';
 import { propertyChanged } from 'src/app/helpers/onchanges-helper';
@@ -36,7 +37,8 @@ export class AgGridEquipmentComponent extends TEMSComponent implements OnChanges
     private equipmentService: EquipmentService,
     private dialogService: DialogService,
     private translate: TranslateService,
-    private snackService: SnackService) {
+    private snackService: SnackService,
+    private claims: ClaimService) {
     super();
 
     this.pagination = true;
@@ -109,7 +111,10 @@ export class AgGridEquipmentComponent extends TEMSComponent implements OnChanges
         width: 100,
         suppressSizeToFit: true,
       },
-      {
+    ];
+
+    if(this.claims.canManage){
+      this.columnDefs.push({
         cellRenderer: 'btnCellRendererComponent',
         filter: false,
         sorable: false,
@@ -120,8 +125,8 @@ export class AgGridEquipmentComponent extends TEMSComponent implements OnChanges
         },
         width: 100,
         suppressSizeToFit: true,
-      }
-    ];
+      });
+    }
   }
 
   ngOnChanges(changes: SimpleChanges): void {

@@ -1,3 +1,4 @@
+import { ClaimService } from './../../../services/claim.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Component, OnInit } from '@angular/core';
 import { BtnCellRendererComponent } from 'src/app/public/ag-grid/btn-cell-renderer/btn-cell-renderer.component';
@@ -31,7 +32,8 @@ export class AgGridPersonnelComponent extends TEMSComponent {
     private personnelService: PersonnelService,
     private dialogService: DialogService,
     private snackService: SnackService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private claims: ClaimService
   ) { 
     super();
 
@@ -81,7 +83,10 @@ export class AgGridPersonnelComponent extends TEMSComponent {
         width: 100,
         suppressSizeToFit: true,
       },
-      {
+    ];
+
+    if(this.claims.canManage){
+      this.columnDefs.push({
         cellRenderer: 'btnCellRendererComponent',
         cellRendererParams: {
           onClick: this.archieve.bind(this),
@@ -90,8 +95,8 @@ export class AgGridPersonnelComponent extends TEMSComponent {
         },
         width: 100,
         suppressSizeToFit: true,
-      }
-    ];
+      });
+    }
   }
 
   onGridReady(params) {

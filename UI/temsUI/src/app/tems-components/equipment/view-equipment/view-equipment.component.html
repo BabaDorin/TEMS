@@ -58,12 +58,12 @@
                             <mat-icon class="text-primary">feedback</mat-icon>
                             {{ 'equipment.includeSelectedInATicket' | translate }}
                         </button>
-                        <button mat-button class="d-md-inline d-block" (click)="generateReport()">
-                            <mat-icon class="text-primary">article</mat-icon>
-                            {{ 'general.generateReport' | translate }}
-                        </button>
-                        <hr class="separator">
                     </ng-container>
+                    <button mat-button class="d-md-inline d-block" (click)="generateReport()">
+                        <mat-icon class="text-primary">article</mat-icon>
+                        {{ 'general.generateReport' | translate }}
+                    </button>
+                    <hr class="separator">
                     <app-ag-grid-equipment #agGridEquipment [equipmentFilter]="equipmentFilter">
                     </app-ag-grid-equipment>
                 </div>

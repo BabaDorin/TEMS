@@ -38,8 +38,6 @@ export class BugReportComponent implements OnInit {
     model.description = this.reportFormGroup.value["description"];
     model.attachments = this.reportFormGroup.value["attachments"];
 
-    this.snackService.snack({message:"Sending the report... It may take a while, please be patient ;)", status: 1}, 'default-snackbar');
-
     this.sending = true;
     this.bugReportService.sendReport(model)
     .subscribe(result => {

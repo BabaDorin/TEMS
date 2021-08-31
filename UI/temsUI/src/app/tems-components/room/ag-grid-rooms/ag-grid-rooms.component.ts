@@ -1,3 +1,4 @@
+import { ClaimService } from './../../../services/claim.service';
 import { Component, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { ViewRoomSimplified } from 'src/app/models/room/view-room-simplified.model';
@@ -32,6 +33,7 @@ export class AgGridRoomsComponent extends TEMSComponent {
     private dialogService: DialogService,
     private snackService: SnackService,
     private translate: TranslateService,
+    private claims: ClaimService
   ) {
     super();
 
@@ -84,7 +86,10 @@ export class AgGridRoomsComponent extends TEMSComponent {
         width: 100,
         suppressSizeToFit: true,
       },
-      {
+    ];
+
+    if(this.claims.canManage){
+      this.columnDefs.push(      {
         cellRenderer: 'btnCellRendererComponent',
         cellRendererParams: {
           onClick: this.archieve.bind(this),
@@ -93,8 +98,8 @@ export class AgGridRoomsComponent extends TEMSComponent {
         },
         width: 100,
         suppressSizeToFit: true,
-      }
-    ];
+      });
+    }
   }
 
   details(e) {

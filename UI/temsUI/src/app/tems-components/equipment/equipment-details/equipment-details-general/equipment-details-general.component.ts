@@ -35,7 +35,7 @@ export class EquipmentDetailsGeneralComponent extends TEMSComponent implements O
   get canAttach(){
     // returns true if equipment can have children
     // BEFREE: True if type has children. We don't care that much about definition children here.
-    return this.equipment.definition.children.length > 0;
+    return this.equipment.definition.children.length > 0 && this.claims.canManage;
   }
 
   constructor(

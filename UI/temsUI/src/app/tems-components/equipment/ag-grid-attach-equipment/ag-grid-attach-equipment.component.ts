@@ -1,3 +1,4 @@
+import { ClaimService } from './../../../services/claim.service';
 import { DefectCellRenderedComponent } from './../../../public/ag-grid/defect-cell-rendered/defect-cell-rendered.component';
 import { ResponseFactory } from './../../../models/system/response.model';
 import { BooleanCellRendererComponent } from './../../../public/ag-grid/boolean-cell-renderer/boolean-cell-renderer.component';
@@ -36,7 +37,8 @@ export class AgGridAttachEquipmentComponent extends TEMSComponent implements OnC
   constructor(
     private translate: TranslateService,
     private snackService: SnackService,
-    private equipmentService: EquipmentService
+    private equipmentService: EquipmentService,
+    private claims: ClaimService
   ) {
     super();
 
@@ -83,16 +85,19 @@ export class AgGridAttachEquipmentComponent extends TEMSComponent implements OnC
         width: 120,
         suppressSizeToFit: true
       },
-      {
+    ];
+
+    if(this.claims.canManage){
+      this.columnDefs.push({
         filter: false,
         sorable: false,
         cellRenderer: 'btnCellRendererComponent',
         cellRendererParams: {
           onClick: this.attach.bind(this),
           label: this.translate.instant('equipment.attach')
-        },
-      },
-    ];
+        }
+      });
+    }
   }
 
   ngOnChanges(changes: SimpleChanges): void {

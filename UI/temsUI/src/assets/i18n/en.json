@@ -98,7 +98,22 @@
         "openTickets": "Open tickets",
         "closingRate": "Closing rate",
         "closingByRate": "Closing by rate",
-        "openTicketStatusRate": "Open ticket status rate"
+        "openTicketStatusRate": "Open ticket status rate",
+        "labels": {
+            "In use": "Currently in use",
+            "Unused": "Unused",
+            "Functional": "Functional",
+            "Defect": "Defect",
+            "Allocated": "Allocated",
+            "Unallocated": "Unallocated",
+            "Open": "Open",
+            "Closed": "Closed",
+            "Urgent": "Urgent",
+            "Future": "Future",
+            "Medium": "Medium",
+            "tickets created": "Tickets created",
+            "tickets closed": "Tickets closed"
+        }
     },
 
     "quickAccess": {
@@ -265,6 +280,7 @@
         "generalAccountInfomration": "General account information",
         "changePassowrd": "Change password",
         "changeMyPassword": "Change my password",
+        "afterPasswordChangeTip": "You'll have to log again in after password change",
         "emailPreferences": "E-mail preferences",
         "emailTip": "Tech support team is advised to activate email notifications in order to be notified when someone reports an issue.",
         "ticketsCreated": "Tickets created by the user",

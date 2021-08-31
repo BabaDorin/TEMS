@@ -88,6 +88,7 @@ namespace temsAPI.Data.Entities.UserEntities
         public virtual ICollection<ReportTemplate> ArchivedReportTemplates { get; set; } = new List<ReportTemplate>();
         public virtual ICollection<Status> ArchivedStatuses { get; set; } = new List<Status>();
         public virtual ICollection<BugReport> BugReports { get; set; } = new List<BugReport>();
+        public virtual UserWithBlacklistedToken TokenBlacklisting { get; set; }
 
 
         /// <summary>

@@ -9,7 +9,6 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatTabsModule } from '@angular/material/tabs';
 import { TranslateModule } from '@ngx-translate/core';
 import { AgGridModule } from 'ag-grid-angular';
-import { SummaryRoomsAnalyticsComponent } from '../../tems-components/analytics/summary-rooms-analytics/summary-rooms-analytics.component';
 import { AddRoomComponent } from '../../tems-components/room/add-room/add-room.component';
 import { RoomDetailsAllocationsComponent } from '../../tems-components/room/room-details-allocations/room-details-allocations.component';
 import { RoomDetailsIssuesComponent } from '../../tems-components/room/room-details-issues/room-details-issues.component';
@@ -27,7 +26,6 @@ import { RoomsRoutingModule } from './rooms-routing.module';
   declarations: [
     ViewRoomsComponent,
     AddRoomComponent,
-    SummaryRoomsAnalyticsComponent,
     RoomDetailsComponent,
     RoomDetailsLogsComponent,
     RoomDetailsIssuesComponent,

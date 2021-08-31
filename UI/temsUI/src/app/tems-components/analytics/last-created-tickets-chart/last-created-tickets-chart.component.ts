@@ -1,3 +1,4 @@
+import { TranslateService } from '@ngx-translate/core';
 import { DatePipe } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { AnalyticsService } from 'src/app/services/analytics.service';
@@ -38,7 +39,7 @@ export class LastCreatedTicketsChartComponent extends TEMSComponent implements O
   constructor(
     private analyticsService: AnalyticsService,
     private snackService: SnackService,
-    private datePipe: DatePipe
+    private translate: TranslateService
   ) {
     super();
   }
@@ -74,7 +75,7 @@ export class LastCreatedTicketsChartComponent extends TEMSComponent implements O
     if(this.showCreatedIssues && this.ratesCreated != undefined){
       this.areaChartData.push(
         {
-          label: '# of created tickets',
+          label: this.translate.instant('analytics.labels.tickets created'),
           data: this.ratesCreated.rates.map(q => q.item2),
           borderWidth: 1,
           fill: false,
@@ -85,7 +86,7 @@ export class LastCreatedTicketsChartComponent extends TEMSComponent implements O
     if(this.showClosedIssues && this.ratesClosed != undefined){
       this.areaChartData.push(
         {
-          label: '# of closed tickets',
+          label:  this.translate.instant('analytics.labels.tickets closed'),
           data: this.ratesClosed.rates.map(q => q.item2),
           borderWidth: 1,
           fill: false,

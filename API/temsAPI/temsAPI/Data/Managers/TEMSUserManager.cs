@@ -85,7 +85,7 @@ namespace temsAPI.Data.Managers
                 return result;
 
             // Assigning roles
-            result = await _identityService.AssignRoles(model, viewModel.Roles);
+            result = await _identityService.AssignRoles(model, viewModel.Roles.Select(q => q.Value).ToList());
             if (result != null)
                 return result;
 
@@ -120,12 +120,13 @@ namespace temsAPI.Data.Managers
             // Password reset (If needed)
             if (viewModel.Password != null)
             {
+
                 result = await _identityService.ResetPassword(model, viewModel.Password);
                 if (result != null)
                     return result;
 
                 // Password updated = token blacklisted
-                //_tokenValidator.Black();
+                await _tokenValidator.BlacklistUserToken(model.Id);
             }
 
             model.UserName = viewModel.Username;
@@ -139,7 +140,7 @@ namespace temsAPI.Data.Managers
                 return result;
 
             // Assigning roles
-            result = await _identityService.AssignRoles(model, viewModel.Roles);
+            result = await _identityService.AssignRoles(model, viewModel.Roles?.Select(q => q.Label).ToList());
             if (result != null)
                 return result;
 
@@ -370,6 +371,7 @@ namespace temsAPI.Data.Managers
             if (result.Result.Errors.Count() > 0)
                 return "The password has not been changed. Make sure the data you've provided is valid";
 
+            await _tokenValidator.BlacklistUserToken(viewModel.UserId);
             return null;
         }
 
@@ -424,19 +426,6 @@ namespace temsAPI.Data.Managers
             await _unitOfWork.Save();
 
             return null;
-        }
-
-        public async Task<List<Option>> GetRolesOptions()
-        {
-            var roles = await _roleManager
-                .Roles
-                .Select(q => new Option
-                {
-                    Value = q.Id,
-                    Label = q.Name
-                }).ToListAsync();
-
-            return roles;
         }
 
         public async Task SetProfilePhoto(TEMSUser user, IFormFile photo)

@@ -1,3 +1,4 @@
+import { AuthService } from './../../../services/auth.service';
 import { UploadProfilePhotoComponent } from './../upload-profile-photo/upload-profile-photo.component';
 import { DialogService } from './../../../services/dialog.service';
 import { Component, Inject, Input, OnInit } from '@angular/core';
@@ -51,6 +52,7 @@ export class ProfileSettingsComponent extends TEMSComponent implements OnInit {
     private router: Router,
     private formlyParserService: FormlyParserService,
     private lazyLoader: LazyLoaderService,
+    private authService: AuthService,
     private dialogService: DialogService) {
     super();
     this.profile = prof;
@@ -86,9 +88,16 @@ export class ProfileSettingsComponent extends TEMSComponent implements OnInit {
         this.snack.snack(result);
 
         if(result.status == 1)
-          this.changePasswordFormlyData.model = {};
+        {
+          this.subscriptions.push(
+            this.authService.signOut()
+            .subscribe(() => {
+              window.location.href = '/login';
+            })
+          )
+        }
       })
-    )
+    );
   }
 
   saveEmailPreferences(model){

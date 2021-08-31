@@ -14,6 +14,7 @@ namespace temsAPI.System_Files
     public class AppSettings
     {
         public string JWT_Secret { get; set; }
+        public int JWT_ExpireDays { get; set; }
         public string Client_Url { get; set; }
         public Email Email { get; set; }
         public int GeneratedReportsHistoryLength { get; set; }

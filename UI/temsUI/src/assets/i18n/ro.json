@@ -92,12 +92,27 @@
     "analytics": {
         "equipmentAmount": "Numărul total de echipamente", 
         "equipmentUsingRate": "Rata de utilizare", 
-        "equipmentTypeRate": "Rata tipurile",
+        "equipmentTypeRate": "Rata tipurilor",
         "equipmentAllocationRate": "Rata de alocare",
         "openTickets": "Ticket-urile active",
         "closingRate": "Rata de soluționare",
         "closingByRate": "Rata de soluționare per utilizator",
-        "openTicketStatusRate": "Rata statusurilor ticket-urilor active"
+        "openTicketStatusRate": "Rata statusurilor ticket-urilor active",
+        "labels": {
+            "In use": "În uz",
+            "Unused": "Neutilizat",
+            "Functional": "Funcțional",
+            "Defect": "Defect",
+            "Allocated": "Alocat",
+            "Unallocated": "Nealocat",
+            "Open": "Activ",
+            "Closed": "Închis",
+            "Urgent": "Urgent",
+            "Future": "Pe viitor",
+            "Medium": "Mediu",
+            "tickets created": "Ticket-uri create",
+            "tickets closed": "Ticket-uri soluționate"
+        }
     },
 
     "quickAccess": {
@@ -264,6 +279,7 @@
         "generalAccountInfomration": "Informații generale despre cont",
         "changePassowrd": "Schimbă parola",
         "changeMyPassword": "Schimbă parola",
+        "afterPasswordChangeTip": "Va fi nevoie să vă autentificați din nou după schimbarea parolei.",
         "emailPreferences": "Preferințe E-Mail",
         "emailTip": "Pentru membrii echipei tehnice este recomandată activarea notificărilor prin e-mail pentru a fi informat atunci când este raportată o problemă.",
         "ticketsCreated": "Ticket-urile create",

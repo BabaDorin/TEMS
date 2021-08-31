@@ -101,8 +101,8 @@ namespace temsAPI.Data.Managers
                 ChartName = "Equipment utilization rate",
                 Rates = new List<Tuple<string, int>>()
                 {
-                    new Tuple<string, int>("Currently in use", currentlyInUse),
-                    new Tuple<string, int>("Unengaged", currentlyUnengaged),
+                    new Tuple<string, int>("In use", currentlyInUse),
+                    new Tuple<string, int>("Unused", currentlyUnengaged),
                 }
             };
 
@@ -153,7 +153,7 @@ namespace temsAPI.Data.Managers
                 ChartName = "Equipment workability rate",
                 Rates = new List<Tuple<string, int>>()
                 {
-                    new Tuple<string, int>("Working", working),
+                    new Tuple<string, int>("Functional", working),
                     new Tuple<string, int>("Defect", defect),
                 }
             };
@@ -207,8 +207,8 @@ namespace temsAPI.Data.Managers
                 ChartName = "Ticket closing rate",
                 Rates = new List<Tuple<string, int>>()
                 {
-                    new Tuple<string, int>("Open: ", openTickets),
-                    new Tuple<string, int>("Closed: ", closedTickets),
+                    new Tuple<string, int>("Open", openTickets),
+                    new Tuple<string, int>("Closed", closedTickets),
                 }
             };
 
@@ -249,7 +249,8 @@ namespace temsAPI.Data.Managers
             string entityId = null)
         {
             Expression<Func<Ticket, bool>> filterByEntityExpression =
-                _ticketManager.Eq_FilterByEntity(entityType, entityId);
+                _ticketManager.Eq_FilterByEntity(entityType, entityId)
+                .Concat(q => q.DateClosed == null);
 
             var rates = (await _unitOfWork.Tickets
                 .FindAll<Ticket>(
@@ -332,7 +333,7 @@ namespace temsAPI.Data.Managers
                 {
                     var group = ticketGroups.FirstOrDefault(q => q.Key == day);
                     chartData.Rates.Add(new Tuple<string, int>(
-                        day.Date.ToString("MMM dd yyyy"),
+                        day.Date.ToString("MMM dd"),
                         (group == null) ? 0 : group.Count()));
                 }
             }

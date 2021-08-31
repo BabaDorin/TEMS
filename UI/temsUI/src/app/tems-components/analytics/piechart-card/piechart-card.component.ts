@@ -1,3 +1,4 @@
+import { TranslateService } from '@ngx-translate/core';
 import { Component, Input, OnInit } from '@angular/core';
 import { PieChartData } from './../../../models/analytics/pieChart-model';
 
@@ -26,9 +27,16 @@ export class PiechartCardComponent implements OnInit{
     legend: false,
   };
 
-  constructor() { }
+  constructor(private translate: TranslateService) {
+  }
 
   ngOnInit(): void {
+    this.rates.rates.forEach(q => {
+      let translateQuery = 'analytics.labels.' + q.item1;
+      let translatedValue = this.translate.instant(translateQuery);
+      if(translatedValue != translateQuery)
+        q.item1 = translatedValue;
+    })
     this.buildChartData();
   }
 
@@ -52,19 +60,15 @@ export class PiechartCardComponent implements OnInit{
     this.displayRates = this.rates.rates.sort(q => q.item2).slice(0, 3);
   }
 
-  // trafficChartColors = [
-  //   {
-  //     backgroundColor: [
-  //       'rgba(177, 148, 250, 1)',
-  //       'rgba(254, 112, 150, 1)',
-  //       'rgba(132, 217, 210, 1)'
-  //     ],
-  //     borderColor: [
-  //       'rgba(177, 148, 250, .2)',
-  //       'rgba(254, 112, 150, .2)',
-  //       'rgba(132, 217, 210, .2)'
-  //     ]
-  //   }
-  // ];
-
+  trafficChartColors = [
+    {
+      backgroundColor: [
+        '#41d3ed',
+        '#5649e0',
+        '#cd99f4',
+        '#4587F7',
+        '#F01EE8',
+      ],
+    }
+  ];
 }

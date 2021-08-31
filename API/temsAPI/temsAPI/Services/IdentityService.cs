@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.OtherEntities;
 using temsAPI.Data.Entities.UserEntities;
+using temsAPI.Services.JWT;
 using temsAPI.System_Files;
 using temsAPI.ViewModels;
 
@@ -23,6 +24,7 @@ namespace temsAPI.Services
         private RoleManager<IdentityRole> _roleManager;
         private AppSettings _appSettings;
         private ClaimsPrincipal _user;
+        private TokenValidatorService _tokenValidator;
         public ClaimsPrincipal User => _user;
 
         public IdentityService(
@@ -30,13 +32,15 @@ namespace temsAPI.Services
             UserManager<TEMSUser> userManager,
             RoleManager<IdentityRole> roleManager,
             IOptions<AppSettings> appSettings,
-            ClaimsPrincipal user)
+            ClaimsPrincipal user,
+            TokenValidatorService tokenValidator)
         {
             _unitOfWork = unitOfWork;
             _userManager = userManager;
             _roleManager = roleManager;
             _appSettings = appSettings.Value;
             _user = user;
+            _tokenValidator = tokenValidator;
         }
 
         public async Task<TEMSUser> GetCurrentUserAsync()
@@ -98,9 +102,13 @@ namespace temsAPI.Services
         /// <param name="model"></param>
         /// <param name="roles"></param>
         /// <returns></returns>
-        public async Task<string> AssignRoles(TEMSUser model, List<Option> roles)
+        public async Task<string> AssignRoles(TEMSUser model, List<string> rolesToSet)
         {
-            // Removing current roles (if those exists)
+            var currentRoles = await _userManager.GetRolesAsync(model);
+            if (currentRoles == rolesToSet)
+                return null;
+
+            // Remove current roles
             var result = await _userManager.RemoveFromRolesAsync(
                 model, await _userManager.GetRolesAsync(model));
 
@@ -109,14 +117,12 @@ namespace temsAPI.Services
 
             result = await _userManager.AddToRoleAsync(model, "User");
 
-            if (roles.Count > 0)
+            if (rolesToSet.Count > 0)
             {
-                List<string> roleNames = roles.Select(q => q.Label).ToList();
-
-                // This lines are here to protect agains invalid role names being sent
+                // Protect agains invalid role names being sent
                 List<string> actualRoles = _roleManager
                     .Roles
-                    .Where(q => roleNames.Contains(q.Name) && q.Name != "User")
+                    .Where(q => rolesToSet.Contains(q.Name) && q.Name != "User")
                     .Select(q => q.Name)
                     .ToList();
 
@@ -126,6 +132,7 @@ namespace temsAPI.Services
             if (result.Errors.Count() > 0)
                 return CheckResultForErrors(result);
 
+            await _tokenValidator.BlacklistUserToken(model.Id);
             return null;
         }
 
@@ -170,14 +177,20 @@ namespace temsAPI.Services
         /// Sets user's roles' claims to user and appends new claims (if specified)
         /// </summary>
         /// <param name="model"></param>
-        /// <param name="claims">mark as null if there aren't any additional claims</param>
+        /// <param name="newClaims">mark as null if there aren't any additional claims</param>
         /// <returns></returns>
-        public async Task<string> SetClaims(TEMSUser model, List<string> claims)
+        public async Task<string> SetClaims(TEMSUser model, List<string> newClaims)
         {
             // Getting all of the claims (Claims that come from model's role + 
             // claims indicated here)
 
-            List<string> allClaims = claims ?? new List<string>();
+            if (newClaims == null)
+                newClaims = new();
+
+            List<Claim> oldClaims = (List<Claim>)await _userManager.GetClaimsAsync(model);
+            
+            if (newClaims == oldClaims.Select(q => q.Type))
+                return null;
 
             List<string> userRoles = (await _userManager.GetRolesAsync(model)).ToList();
             foreach (string role in userRoles)
@@ -186,24 +199,28 @@ namespace temsAPI.Services
                     .GetClaimsAsync(await _roleManager.FindByNameAsync(role)))
                     .Select(q => q.Type)
                     .ToList();
-                allClaims.Union(roleClaims ?? new List<string>());
+                newClaims.Union(roleClaims ?? new List<string>());
             }
 
             // Validating claims
-            foreach (string claim in allClaims)
+            foreach (string claim in newClaims)
                 if (!await _unitOfWork.Privileges.isExists(q => q.Identifier == claim))
                     return "One or more invalid claims provided";
 
             // Removing old user claims
-            List<Claim> oldClaims = (List<Claim>)await _userManager.GetClaimsAsync(model);
             if (oldClaims != null)
                 await _userManager.RemoveClaimsAsync(model, oldClaims);
 
             // Setting new claims
-            List<Claim> userClaims = allClaims.Select(q => new Claim(q, "ye")).ToList();
-            var result = await _userManager.AddClaimsAsync(model, userClaims);
+            List<Claim> userClaims = newClaims.Select(q => new Claim(q, "ye")).ToList();
+            var result = CheckResultForErrors(await _userManager.AddClaimsAsync(model, userClaims));
 
-            return CheckResultForErrors(result);
+            if (result != null)
+                return result;
+
+            // Claims = changed, user token = blacklisted
+            await _tokenValidator.BlacklistUserToken(model.Id);
+            return null;
         }
 
         public async Task<TEMSUser> GetUserByUsername(string username)
@@ -238,14 +255,14 @@ namespace temsAPI.Services
         {
             List<Claim> claims = await GetUserClaims(user);
 
+            SecurityKey key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_appSettings.JWT_Secret));
+            string algorithm = SecurityAlgorithms.HmacSha256Signature;
+
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.UtcNow.AddDays(10),
-                SigningCredentials = new SigningCredentials(
-                    new SymmetricSecurityKey(
-                        Encoding.UTF8.GetBytes(
-                            _appSettings.JWT_Secret)), SecurityAlgorithms.HmacSha256Signature)
+                Expires = DateTime.Now.AddDays(_appSettings.JWT_ExpireDays),
+                SigningCredentials = new SigningCredentials(key, algorithm)
             };
 
             return tokenDescriptor;

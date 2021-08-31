@@ -26,6 +26,9 @@
             <formly-form [form]="changePasswordFormlyData.form" [fields]="changePasswordFormlyData.fields"
                 [model]="changePasswordFormlyData.model"></formly-form>
             <br>
+            <p class="text-muted">
+                {{ 'profile.afterPasswordChangeTip' | translate }}
+            </p>
             <button mat-button type="submit" class="btn-gradient-primary"
                 [disabled]="changePasswordFormlyData.form.status == 'INVALID'">
                 {{ 'profile.changeMyPassword' | translate }}

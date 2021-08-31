@@ -132,6 +132,12 @@ namespace temsAPI.Data
                 .HasMany(e => e.UserNotifications)
                 .WithOne(e => e.User)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            // OnDeleteCascade User => UserWithBlacklistedToken
+            modelBuilder.Entity<TEMSUser>()
+                .HasOne(e => e.TokenBlacklisting)
+                .WithOne(e => e.User)
+                .OnDelete(DeleteBehavior.Cascade);
         }
 
         private void SetCustomRelations(ModelBuilder modelBuilder)

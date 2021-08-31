@@ -28,7 +28,8 @@ namespace temsAPI.Data.Managers
         CurrencyConvertor _currencyConvertor;
         LogManager _logManager;
         ILogger<EquipmentManager> _logger;
-        IEquipmentFetcher _equipmentFetcher;
+        IFetcher<Equipment, EquipmentFilter> _equipmentFetcher;
+        IFetcher<EquipmentAllocation, AllocationFilter> _allocationFetcher;
         IEquipmentLabelManager _equipmentLabelManager;
 
         public EquipmentManager(
@@ -37,13 +38,15 @@ namespace temsAPI.Data.Managers
             CurrencyConvertor currencyConvertor,
             ILogger<EquipmentManager> logger,
             LogManager logManager,
-            IEquipmentFetcher equipmentFetcher,
+            IFetcher<Equipment, EquipmentFilter> equipmentFetcher,
+            IFetcher<EquipmentAllocation, AllocationFilter> allocationFetcher,
             IEquipmentLabelManager equipmentLabelManager) : base(unitOfWork, user)
         {
             _currencyConvertor = currencyConvertor;
             _logger = logger;
             _logManager = logManager;
             _equipmentFetcher = equipmentFetcher;
+            _allocationFetcher = allocationFetcher;
             _equipmentLabelManager = equipmentLabelManager;
         }
 
@@ -482,41 +485,6 @@ namespace temsAPI.Data.Managers
             return null;
         }
 
-        public async Task<List<ViewAllocationSimplifiedViewModel>> GetEquipmentAllocations(
-            string equipmentId,
-            int skip = 0,
-            int take = int.MaxValue)
-        {
-            var allocations = await GetEntityAllocations(q => q.EquipmentID == equipmentId);
-            return allocations;
-        }
-
-        public async Task<List<ViewAllocationSimplifiedViewModel>> GetRoomAllocations(
-            string roomId,
-            int skip = 0,
-            int take = int.MaxValue)
-        {
-            var allocations = await GetEntityAllocations(q => q.RoomID == roomId);
-            return allocations;
-        }
-
-        public async Task<List<ViewAllocationSimplifiedViewModel>> GetPersonnelAllocations(
-            string personnelId,
-            int skip = 0,
-            int take = int.MaxValue)
-        {
-            var allocations = await GetEntityAllocations(q => q.PersonnelID == personnelId);
-            return allocations;
-        }
-
-        public async Task<List<ViewAllocationSimplifiedViewModel>> GetAllAllocations(
-            int skip = 0,
-            int take = int.MaxValue)
-        {
-            var allocations = await GetEntityAllocations();
-            return allocations;
-        }
-        
         // BEFREE: Make it generic
         public double GetEquipmentPriceInLei(Equipment equipment)
         {
@@ -533,53 +501,19 @@ namespace temsAPI.Data.Managers
             }
         }
 
-        private async Task<List<ViewAllocationSimplifiedViewModel>> GetEntityAllocations(
-            Expression<Func<EquipmentAllocation, bool>> whereExpression = null,
-            int skip = 0,
-            int take = int.MaxValue)
+        public async Task<List<ViewAllocationSimplifiedViewModel>> GetAllocations(AllocationFilter filter)
         {
-            Expression<Func<EquipmentAllocation, bool>> defaultExpression = q => !q.IsArchieved;
-            return (await _unitOfWork.EquipmentAllocations
-                .FindAll<ViewAllocationSimplifiedViewModel>(
-                    where: ExpressionCombiner.And(defaultExpression, whereExpression),
-                    include: q => q.Include(q => q.Room)
-                                    .Include(q => q.Personnel)
-                                    .Include(q => q.Equipment).ThenInclude(q => q.EquipmentDefinition),
-                    skip: skip,
-                    take: take,
-                    select: q => ViewAllocationSimplifiedViewModel.FromModel(q)))
+            var allocations = (await _allocationFetcher.Fetch(filter))
+                .Select(q => ViewAllocationSimplifiedViewModel.FromModel(q))
                 .ToList();
+
+;           return allocations;
         }
 
-        public async Task<List<ViewAllocationSimplifiedViewModel>> GetAllocations(EntityCollection entityCollection)
+        public async Task<int> GetTotalItems(AllocationFilter filter)
         {
-            var filterExpression = GetFilterExpressionFromEntityCollection(entityCollection);
-            var orderByExpression = GetOrderByExpressionFromEntityCollection(entityCollection);
-
-            int skip = entityCollection.PageNumber != null
-                ? (int)((entityCollection.PageNumber - 1) * entityCollection.ItemsPerPage)
-                : 0;
-            int take = entityCollection.ItemsPerPage ?? int.MaxValue;
-
-            var allocations = (await _unitOfWork.EquipmentAllocations
-                .FindAll<ViewAllocationSimplifiedViewModel>(
-                    include: q => q.Include(q => q.Room)
-                                   .Include(q => q.Personnel)
-                                   .Include(q => q.Equipment).ThenInclude(q => q.EquipmentDefinition),
-                    where: filterExpression,
-                    orderBy: orderByExpression,
-                    skip: skip,
-                    take: take,
-                    select: q => ViewAllocationSimplifiedViewModel.FromModel(q)))
-                    .ToList();
-            
-            return allocations;
-        }
-
-        public async Task<int> GetTotalItems(EntityCollection entityCollection)
-        {
-            var filterExpression = GetFilterExpressionFromEntityCollection(entityCollection);
-            var number = await _unitOfWork.EquipmentAllocations.Count(filterExpression);
+            //var filterExpression = GetFilterExpressionFromEntityCollection(entityCollection);
+            var number = await _allocationFetcher.GetAmount(filter);
             return number;
         }
 
@@ -599,67 +533,6 @@ namespace temsAPI.Data.Managers
             return allocation;
         }
 
-        // Utilities
-
-        public class EntityCollection
-        {
-            public List<string> EquipmentIds { get; set; }
-            public List<string> DefinitionIds { get; set; }
-            public List<string> PersonnelIds { get; set; }
-            public List<string> RoomIds { get; set; }
-            //public int PageNumber { get; set; } = 1;
-            //public int ItemsPerPage { get; set; } = 30;
-            public string Include { get; set; } // active / returned
-            public int? PageNumber { get; set; }
-            public int? ItemsPerPage { get; set; }
-        }
-
-        private Expression<Func<EquipmentAllocation, bool>> GetFilterExpressionFromEntityCollection(EntityCollection entityCollection)
-        {
-            Expression<Func<EquipmentAllocation, bool>> equipmentExpression = null;
-            if (entityCollection.EquipmentIds != null && entityCollection.EquipmentIds.Count > 0)
-                equipmentExpression = q => entityCollection.EquipmentIds.Contains(q.EquipmentID);
-
-            Expression<Func<EquipmentAllocation, bool>> definitionsExpression = null;
-            if (entityCollection.DefinitionIds != null && entityCollection.DefinitionIds.Count > 0)
-                definitionsExpression = q => entityCollection.DefinitionIds.Contains(q.Equipment.EquipmentDefinitionID);
-
-            Expression<Func<EquipmentAllocation, bool>> roomExpression = null;
-            if (entityCollection.RoomIds != null && entityCollection.RoomIds.Count > 0)
-                roomExpression = q => entityCollection.RoomIds.Contains(q.RoomID);
-
-            Expression<Func<EquipmentAllocation, bool>> personnelExpression = null;
-            if (entityCollection.PersonnelIds != null && entityCollection.PersonnelIds.Count > 0)
-                personnelExpression = q => entityCollection.PersonnelIds.Contains(q.PersonnelID);
-
-            Expression<Func<EquipmentAllocation, bool>> stateExpression = null;
-            switch (entityCollection.Include)
-            {
-                case "active": stateExpression = q => q.DateReturned == null; break;
-                case "returned": stateExpression = q => q.DateReturned != null; break;
-            }
-
-            Expression<Func<EquipmentAllocation, bool>> finalExpression =
-                ExpressionCombiner.And(
-                    equipmentExpression,
-                    definitionsExpression,
-                    roomExpression,
-                    personnelExpression,
-                    stateExpression);
-
-            return finalExpression;
-        }
-
-        private Func<IQueryable<EquipmentAllocation>, IOrderedQueryable<EquipmentAllocation>> GetOrderByExpressionFromEntityCollection(EntityCollection entityCollection)
-        {
-            Func<IQueryable<EquipmentAllocation>, IOrderedQueryable<EquipmentAllocation>> orderByExp =
-               (entityCollection.Include == "returned")
-               ? q => q.OrderByDescending(q => q.DateReturned)
-               : q => q.OrderByDescending(q => q.DateAllocated);
-
-            return orderByExp;
-        }
-
         private async Task ClosePreviousAllocations(string equipmentId)
         {
             if (await _unitOfWork.EquipmentAllocations
@@ -673,7 +546,6 @@ namespace temsAPI.Data.Managers
         }
 
         // Extract to sepparate classes
-        
         [Obsolete("Build an instance of EquipmentFilter and use EquipmentFetcher service for this scope")]
         public Expression<Func<Equipment, bool>> Eq_FilterByAllocateeEntity(
             string entityType = null, 

@@ -11,7 +11,7 @@ using temsAPI.System_Files;
 
 namespace temsAPI.Helpers.Filters
 {
-    public class EquipmentFilter : IPaginationFilter
+    public class EquipmentFilter : IPaginationFilter, IEquipmentLabel
     {
         private int skip = 0;
         public int Skip

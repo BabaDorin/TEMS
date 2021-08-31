@@ -1,7 +1,27 @@
 <div class="col-md-12">
-    <h2 class="mt-3">
-        {{ 'allocation.allocationsHeader' | translate }}
-    </h2>
+    <div class="page-header">
+        <h2 class="page-title mb-0">
+            {{ 'allocation.allocationsHeader' | translate }}
+        </h2>
+        <nav aria-label="breadcrumb">
+            <ul class="breadcrumb bg-transparent">
+                <li class="breadcrumb-item" aria-current="page">
+                    <button mat-icon-button [matMenuTriggerFor]="menu"
+                        class="float-right">
+                        <mat-icon>more_vert</mat-icon>
+                    </button>
+                    <mat-menu #menu="matMenu">
+                        <app-include-equipment-labels 
+                            #includeEquipmentLabels 
+                            (valueChanged)="includeLabelsChanged()"
+                            [defaultValue]="defaultLabels">
+                        </app-include-equipment-labels>
+                    </mat-menu>
+                </li>
+            </ul>
+        </nav>
+    </div>
+    <hr>
 
     <p class="text-muted" *ngIf="equipmentNotAllocated">
         {{ 'allocation.notAllocated' | translate }}

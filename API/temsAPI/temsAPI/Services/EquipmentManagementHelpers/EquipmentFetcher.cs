@@ -10,7 +10,7 @@ namespace temsAPI.Services.EquipmentManagementHelpers
     /// <summary>
     /// Fetches equipment using the unit of work, based on information provided by the filter
     /// </summary>
-    public class EquipmentFetcher : IEquipmentFetcher
+    public class EquipmentFetcher : IFetcher<Equipment, EquipmentFilter>
     {
         // EquipmentFetcher delegates it's tasks to one of the following specialized equipment fetchers:
         // AllocationsBasedEqFetcher => Fetches equipment based on Allocations table, useful when working with allocatees
@@ -56,7 +56,7 @@ namespace temsAPI.Services.EquipmentManagementHelpers
             // Fetch equipment from EquipmentAllocations if there is any allocatee specified
             // Otherwise - from Equipment table
 
-            IEquipmentFetcher equipmentFetcher = SelectEqFetcher(filter);
+            IFetcher<Equipment, EquipmentFilter> equipmentFetcher = SelectEqFetcher(filter);
             return await equipmentFetcher.Fetch(filter);
         }
 
@@ -67,11 +67,11 @@ namespace temsAPI.Services.EquipmentManagementHelpers
         /// <returns></returns>
         public async Task<int> GetAmount(EquipmentFilter filter)
         {
-            IEquipmentFetcher equipmentFetcher = SelectEqFetcher(filter);
+            IFetcher<Equipment, EquipmentFilter> equipmentFetcher = SelectEqFetcher(filter);
             return await equipmentFetcher.GetAmount(filter);
         }
 
-        private IEquipmentFetcher SelectEqFetcher(EquipmentFilter filter)
+        private IFetcher<Equipment, EquipmentFilter> SelectEqFetcher(EquipmentFilter filter)
         {
             return filter.IsAnyAllocateeSpecified()
                 ? AllocationsBasedEquipmentFetcher

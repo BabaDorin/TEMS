@@ -25,7 +25,7 @@ namespace temsAPI.Data.Managers
         readonly EquipmentManager _equipmentManager;
         readonly TicketManager _ticketManager;
         readonly CurrencyConvertor _currencyConvertor;
-        readonly IEquipmentFetcher _equipmentFetcher;
+        readonly IFetcher<Equipment, EquipmentFilter> _equipmentFetcher;
 
         public AnalyticsManager(
             IUnitOfWork unitOfWork, 
@@ -33,7 +33,7 @@ namespace temsAPI.Data.Managers
             EquipmentManager equipmentManager,
             CurrencyConvertor currencyConvertor,
             TicketManager ticketManager,
-            IEquipmentFetcher equipmentFetcher) : base(unitOfWork, user)
+            IFetcher<Equipment, EquipmentFilter> equipmentFetcher) : base(unitOfWork, user)
         {
             _equipmentManager = equipmentManager;
             _currencyConvertor = currencyConvertor;

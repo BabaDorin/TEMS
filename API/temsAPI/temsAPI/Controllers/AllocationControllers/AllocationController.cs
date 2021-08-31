@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.UserEntities;
 using temsAPI.Data.Managers;
+using temsAPI.Helpers.Filters;
 using temsAPI.System_Files;
 using temsAPI.System_Files.Exceptions;
 using temsAPI.ViewModels.Allocation;
@@ -77,52 +78,21 @@ namespace temsAPI.Controllers.Allocation
             return ReturnResponse("Success", ResponseStatus.Success);
         }
 
-        [HttpGet("allocation/GetOfEntity/{entityType}/{entityId}/{archieve?}")]
-        [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
-        [DefaultExceptionHandler("An error occured while fetching entity's allocations")]
-        public async Task<IActionResult> GetOfEntity(string entityType, string entityId)
-        {
-            // Invalid identityType
-            if ((new List<string>() { "any", "equipment", "room", "personnel" }).IndexOf(entityType) == -1)
-                return ReturnResponse("Invalid entity type or id provided", ResponseStatus.Neutral);
-
-            // No entity id provided
-            if (String.IsNullOrEmpty(entityId.Trim()))
-                return ReturnResponse($"You have to provide a valid {entityType} Id", ResponseStatus.Neutral);
-
-            List<ViewAllocationSimplifiedViewModel> allocations = new();
-            switch (entityType)
-            {
-                case "equipment":
-                    allocations = await _equipmentManager.GetEquipmentAllocations(entityId);
-                    break;
-                case "room":
-                    allocations = await _equipmentManager.GetRoomAllocations(entityId);
-                    break;
-
-                case "personnel":
-                    allocations = await _equipmentManager.GetPersonnelAllocations(entityId);
-                    break;
-            }
-
-            return Ok(allocations);
-        }
-        
         [HttpPost("allocation/GetAllocations")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
         [DefaultExceptionHandler("An error occured while retrieving allocations")]
-        public async Task<IActionResult> GetAllocations([FromBody] EntityCollection entityCollection)
+        public async Task<IActionResult> GetAllocations([FromBody] AllocationFilter filter)
         {
-            var allocations = await _equipmentManager.GetAllocations(entityCollection);
+            var allocations = await _equipmentManager.GetAllocations(filter);
             return Ok(allocations);
         }
 
         [HttpPost("allocation/GetTotalItems")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
         [DefaultExceptionHandler("An error occured while retrieving total allocations number")]
-        public async Task<IActionResult> GetTotalItems([FromBody] EntityCollection entityCollection)
+        public async Task<IActionResult> GetTotalItems([FromBody] AllocationFilter filter)
         {
-            var totalItems = await _equipmentManager.GetTotalItems(entityCollection);
+            var totalItems = await _equipmentManager.GetTotalItems(filter);
             return Ok(totalItems);
         }
     }

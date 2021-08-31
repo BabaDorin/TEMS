@@ -29,6 +29,8 @@ using temsAPI.System_Files.Exceptions;
 using temsAPI.System_Files.TEMSFileLogger;
 using temsAPI.System_Files.TEMSInitializer;
 using temsAPI.Helpers.EquipmentHelpers;
+using temsAPI.Data.Entities.EquipmentEntities;
+using temsAPI.Helpers.Filters;
 
 namespace temsAPI
 {
@@ -128,7 +130,7 @@ namespace temsAPI
             services.AddScoped<EmailService>();
             services.AddScoped<SICService>();
             services.AddScoped<SICIntegrationService>();
-            services.AddScoped<IEquipmentFetcher, EquipmentFetcher>();
+            services.AddScoped<IFetcher<Equipment, EquipmentFilter>, EquipmentFetcher>();
             services.AddScoped<ReportDataGenerator>();
             services.AddScoped<IEquipmentLabelHelper, EquipmentLabelHelper>();
             services.AddScoped<IEquipmentLabelManager, EquipmentLabelManager>();

@@ -23,11 +23,11 @@ namespace temsAPI.Services.Report
     public class ReportDataGenerator
     {
         List<string> reportCommonPropertiesList = new List<string>();
-        readonly IEquipmentFetcher _equipmentFetcher;
+        readonly IFetcher<Equipment, EquipmentFilter> _equipmentFetcher;
         readonly IUnitOfWork _unitOfWork;
 
         public ReportDataGenerator(
-            IEquipmentFetcher equipmentFetcher,
+            IFetcher<Equipment, EquipmentFilter> equipmentFetcher,
             IUnitOfWork unitOfWork)
         {
             _equipmentFetcher = equipmentFetcher;

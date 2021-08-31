@@ -17,7 +17,7 @@ namespace temsAPI.Services.EquipmentManagementHelpers
     /// <summary>
     /// Fetches equipment from Equipments table (When no allocatee is specified).
     /// </summary>
-    public class EquipmentBasedEqFetcher : IEquipmentFetcher
+    public class EquipmentBasedEqFetcher : IFetcher<Equipment, EquipmentFilter>
     {
         private IUnitOfWork _unitOfWork;
 

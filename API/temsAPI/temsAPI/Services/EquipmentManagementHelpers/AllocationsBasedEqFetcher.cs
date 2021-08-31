@@ -17,7 +17,7 @@ namespace temsAPI.Services.EquipmentManagementHelpers
     /// <summary>
     /// Fetches equipment, but from Allocations table (Useful when retrieving equipment allocated to a specific room or personnel.
     /// </summary>
-    public class AllocationsBasedEqFetcher : IEquipmentFetcher
+    public class AllocationsBasedEqFetcher : IFetcher<Equipment, EquipmentFilter>
     {
         private IUnitOfWork _unitOfWork;
         

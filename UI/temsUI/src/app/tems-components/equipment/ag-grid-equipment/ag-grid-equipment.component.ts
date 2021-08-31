@@ -1,3 +1,4 @@
+import { ConfirmService } from './../../../confirm.service';
 import { ClaimService } from './../../../services/claim.service';
 import { UsedCellRenderedComponent } from './../../../public/ag-grid/used-cell-rendered/used-cell-rendered.component';
 import { DefectCellRenderedComponent } from './../../../public/ag-grid/defect-cell-rendered/defect-cell-rendered.component';
@@ -38,6 +39,7 @@ export class AgGridEquipmentComponent extends TEMSComponent implements OnChanges
     private dialogService: DialogService,
     private translate: TranslateService,
     private snackService: SnackService,
+    private confirmService: ConfirmService,
     private claims: ClaimService) {
     super();
 
@@ -146,19 +148,25 @@ export class AgGridEquipmentComponent extends TEMSComponent implements OnChanges
   }
 
   archieve(e){
-    if(!confirm("Are you sure you want to archive this item? It will result in archieving all of it's logs and allocations"))
-      return;
+    // if(!confirm("Are you sure you want to archive this item? It will result in archieving all of it's logs and allocations"))
+    //   return;
 
-    this.subscriptions.push(
-      this.equipmentService.archieveEquipment(e.rowData.id)
-      .subscribe(result => {
-        if(this.snackService.snackIfError(result))
-          return;
+    this.confirmService.confirm("Are you sure you want to archive this item? It will result in archieving all of it's logs and allocations")
+    .then(value => {
+      if(!value)
+        return;
 
-        if(result.status == 1)
-          this.gridApi.applyTransaction({ remove: [e.rowData] });
-      })
-    );
+      this.subscriptions.push(
+        this.equipmentService.archieveEquipment(e.rowData.id)
+        .subscribe(result => {
+          if(this.snackService.snackIfError(result))
+            return;
+  
+          if(result.status == 1)
+            this.gridApi.applyTransaction({ remove: [e.rowData] });
+        })
+      );
+    });
   }
 
   onGridReady(params) {

@@ -1,3 +1,4 @@
+import { ConfirmModule } from './../../modules/confirm/confirm.module';
 import { AttachEquipmentAgGridModule } from './../../modules/tems-ag-grid/attach-equipment-ag-grid.module';
 import { MultipleSelectionDropdownModule } from './../../modules/forms/multiple-selection-dropdown/multiple-selection-dropdown.module';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -96,6 +97,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
     EquipmentSummaryAnalyticsModule,
     MatCheckboxModule,
     AttachEquipmentAgGridModule,
+    ConfirmModule,
   ],
   exports: [
   ],

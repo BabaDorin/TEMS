@@ -147,15 +147,11 @@ export class AgGridEquipmentComponent extends TEMSComponent implements OnChanges
     )
   }
 
-  archieve(e){
+  async archieve(e){
     // if(!confirm("Are you sure you want to archive this item? It will result in archieving all of it's logs and allocations"))
     //   return;
 
-    this.confirmService.confirm("Are you sure you want to archive this item? It will result in archieving all of it's logs and allocations")
-    .then(value => {
-      if(!value)
-        return;
-
+    if(await this.confirmService.confirm("Are you sure you want to archive this item? It will result in archieving all of it's logs and allocations")){
       this.subscriptions.push(
         this.equipmentService.archieveEquipment(e.rowData.id)
         .subscribe(result => {
@@ -166,7 +162,7 @@ export class AgGridEquipmentComponent extends TEMSComponent implements OnChanges
             this.gridApi.applyTransaction({ remove: [e.rowData] });
         })
       );
-    });
+    }
   }
 
   onGridReady(params) {

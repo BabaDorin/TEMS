@@ -40,7 +40,11 @@
         "success": "Success",
         "failed": "Failed",
         "search": "Search",
-        "remove": "Remove"
+        "remove": "Remove",
+        "dialog_ok": "Ok",
+        "dialog_cancel": "Cancel",
+        "dialog_yes": "Yes",
+        "dialog_no": "No"
     },
 
     "notifications":{

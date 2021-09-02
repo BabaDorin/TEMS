@@ -11,10 +11,8 @@ export class ConfirmService {
 
   // Provide a message and an action to be completed if the user confirms.
   // Also, the method returns the confirmation flag (true / false);
-  confirm(message: string, action?): Promise<Boolean> {
+  confirm(message: string): Promise<Boolean> {
     return new Promise((resolve) => {
-      let confirmed = false;
-
       let dialogRef = this.dialogService.openDialog(
         ConfirmComponent,
         [ { label: 'message', value: message } ]);
@@ -25,12 +23,20 @@ export class ConfirmService {
             resolve(false);
           else
           {
-            if(action != undefined) 
-              action(); 
             subscription.unsubscribe(); 
             resolve(true);  
           }
       });
     });
+  }
+
+  // if message is confirmed, run the specified action
+  async confirmThenAct(message: string, action) {
+    if(action == undefined)
+      return;
+
+    if(await confirm(message)){
+      action();
+    }
   }
 }

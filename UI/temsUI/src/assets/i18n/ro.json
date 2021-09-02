@@ -40,7 +40,11 @@
         "success": "Succes",
         "failed": "Eșuat",
         "search": "Caută",
-        "remove": "Elimină"
+        "remove": "Elimină",
+        "dialog_ok": "Ok",
+        "dialog_cancel": "Renunță",
+        "dialog_yes": "Da",
+        "dialog_no": "Nu"
     },
 
     "notifications":{

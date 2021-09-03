@@ -49,7 +49,6 @@ import { UserCardsModule } from './user-cards/user-cards.module';
 import { TemsFormsModule } from './modules/tems-forms/tems-forms.module';
 import { UsedCellRenderedComponent } from './public/ag-grid/used-cell-rendered/used-cell-rendered.component';
 import { DefectCellRenderedComponent } from './public/ag-grid/defect-cell-rendered/defect-cell-rendered.component';
-import { ConfirmComponent } from './tems-components/confirm/confirm.component';
 
 export function HttpLoaderFactory(http: HttpClient){
   return new TranslateHttpLoader(http);

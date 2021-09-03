@@ -25,6 +25,7 @@
         "generateReport": "Generează raport",
         "preparing": "Pregărire...",
         "loading": "Încărcare...",
+        "download": "Descarcă",
         "empty": "Nu există date spre afișare...",
         "edit": "Modifică",
         "archive": "Arhivează",
@@ -75,8 +76,17 @@
         "users": "Utilizatori",
         "configuration": "Configurare",
         "systemLogs": "Loguri sistem",
-        "archive": "Arhivă"
+        "archive": "Arhivă",
+        "generateTEMSID": "TEMSID"
     },
+
+    "TEMSID": {
+        "generateTEMSID": "Generare TEMSID",
+        "writeTEMSID": "Înserează un TEMSID",
+        "TEMSIDNotAvailable_DownloadAnyway": "TEMSID-ul indicat este deja asociat cu un echipament înregistrat, drept urmare nu poate fi utilizat pentru înregistrarea unui alt echipament. Descărcați oricum?",
+        "info": "<b>TEMSID</b> (Technical Equipment Management System Identifier) este un set de caractere alfanumerice care, alături de numărul de serie (dacă este cazul), identifică în mod unic un echipament în cadrul sistemului. Acest index servește pentru accesarea mai rapidă a înregistrărilor. <br><br>Este recomandată atribuirea de TEMSID-uri către echipamentele frecvent accesate. Unica restricție în raport cu generarea TEMSID-urilor este lungimea maximă a acestora - 8 caractere. <br><br>O practică recomandată este incapsularea informației în TEMSID (spre exemplu, un calculator din sala 214 poate fi indexat cu TEMSID-ul PC21401, iar o imprimantă - cu PR21401 sau IMP21401 etc)."
+    },
+
     "library": {
         "view": "Vezi biblioteca",
         "upload": "Încarcă fișier",

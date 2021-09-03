@@ -20,6 +20,7 @@ using temsAPI.ViewModels.Allocation;
 using temsAPI.ViewModels.Equipment;
 using temsAPI.Helpers.ReusableSnippets;
 using FluentEmail.Core;
+using Microsoft.AspNetCore.Mvc;
 
 namespace temsAPI.Data.Managers
 {
@@ -289,6 +290,11 @@ namespace temsAPI.Data.Managers
             await _logManager.Create(eqDetachedChildLog);
 
             return null;
+        }
+
+        public async Task<bool> IsTEMSIDAvailable(string temsid)
+        {
+            return !(await _unitOfWork.Equipments.isExists(q => q.TEMSID == temsid));
         }
 
         public async Task<List<Option>> GetEquipmentOfDefinitions(List<string> definitionIds, bool onlyParents)

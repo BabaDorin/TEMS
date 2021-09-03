@@ -25,6 +25,7 @@
         "generateReport": "GenerateReport",
         "preparing": "Preparing",
         "loading": "Loading",
+        "download": "Download",
         "empty": "Nothing to display...",
         "edit": "Edit",
         "archive": "Archive",
@@ -75,7 +76,15 @@
         "users": "Users",
         "configuration": "Configuration",
         "systemLogs": "System logs",
-        "archive": "Archive"
+        "archive": "Archive",
+        "generateTEMSID": "TEMSID"
+    },
+
+    "TEMSID": {
+        "generateTEMSID": "Generate TEMSID",
+        "writeTEMSID": "Insert a TEMSID",
+        "TEMSIDNotAvailable_DownloadAnyway": "The TEMSID that you have indicated already exists and it can not be assigned to another equipment. Do you still want to download it?",
+        "info": "<b>TEMSID</b> (Technical Equipment Management System Identifier) is an unique set of characters which, along with serial number, uniquely identifies an equipment within the sistem. It is an index which helps users to access and manage equipment easier. <br><br> It is highly recommended to assing TEMSIDs to those pieces of equipment which are frequently accessed from TEMS. Also, the only restriction that exists regardless TEMSID generation is it's length - it should not be more than 8 characters long. <br><br>A recommended practice is to assign informative indexes (for example, a PC from 214 room can be indexed with PC21401 TEMSID, a printer with PR21401 etc)."
     },
 
     "library": {

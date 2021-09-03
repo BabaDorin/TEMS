@@ -72,6 +72,15 @@ export class MenuService {
                 showSubmenu: false,
                 submenu: []
               },
+              {
+                path: '/equipment/generate-temsid',
+                title: menu.generateTEMSID,
+                icon: 'mdi mdi-label menu-icon',
+                isActive: false,
+                isShown: this.tokenService.canViewEntities(),
+                showSubmenu: false,
+                submenu: []
+              },
             ]
           },
           {

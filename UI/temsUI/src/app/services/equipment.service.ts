@@ -319,12 +319,20 @@ export class EquipmentService extends TEMSService {
   }
 
   bulkUpload(formData): Observable<any>{
-    
-
     return this.http.post(
       API_EQ_URL + '/bulkupload',
       formData,
       { headers: this.getUploadOptions() }
+    );
+  }
+  
+  isTEMSIDAvailable(temsIdValue: string) : Observable<any> {
+    let params = new HttpParams()
+      .append('temsid', temsIdValue);
+    
+    return this.http.get(
+      API_EQ_URL + '/isTEMSIDAvailable',
+      { params: params },
     );
   }
 }

@@ -54,11 +54,13 @@
         </svg>
     </div>
 
-    <div class="download-button">
-        <button mat-icon-button class="text-light" (click)="downloadLabel()">
-            <mat-icon>download</mat-icon>
-        </button>
-    </div>
+    <ng-container *ngIf="downloadable">
+        <div class="download-button">
+            <button mat-icon-button class="text-light" (click)="downloadLabel()">
+                <mat-icon>download</mat-icon>
+            </button>
+        </div>
+    </ng-container>
 </div>
 <!-- 
 <div class="border-1">

@@ -1,3 +1,4 @@
+import { TemsidGeneratorComponent } from './../../tems-components/temsid-generator/temsid-generator.component';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AddEquipmentComponent } from 'src/app/tems-components/equipment/add-equipment/add-equipment.component';
@@ -17,6 +18,7 @@ const routes: Routes = [
   { path: 'quick-access', component: QuickAccessComponent, canActivate: [ CanViewEntitiesGuard ] },
   { path: 'allocate', component: EquipmentAllocationComponent, canActivate: [ CanManageEntitiesGuard ] },
   { path: 'allocations', component: ViewEquipmentAllocationsComponent, canActivate: [ CanViewEntitiesGuard ] },
+  { path: 'generate-temsid', component: TemsidGeneratorComponent, canActivate: [ CanViewEntitiesGuard ] },
 ];
 
 @NgModule({

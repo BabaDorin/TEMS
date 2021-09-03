@@ -1,0 +1,38 @@
+<div [ngClass]="dialogRef == undefined ? 'card' : 'card cancel-margins'">
+    <div class="card-body">
+        <h2>
+            {{ 'TEMSID.generateTEMSID' | translate }}
+        </h2>
+        <hr>
+        <div class="row mt-3">
+            <div class="col-md-6">
+                <div class="text-center">
+                    <!-- Insert TEMSID -->
+                    <mat-form-field>
+                        <input matInput [(ngModel)]="temsIdValue" maxlength="8" style="font-size: 25px;"
+                            class="text-weight-light" autocomplete="off">
+                    </mat-form-field>
+
+                    <!-- TEMSID Visualization -->
+                    <div style="width: 200px; margin: auto">
+                        <app-equipment-label #equipmentLabel [mainText]="temsIdValue" [downloadable]="false">
+                        </app-equipment-label>
+                    </div>
+
+                    <!-- Download button -->
+                    <div class="mt-3">
+                        <button mat-button class="text-primary" (click)="download()">
+                            <mat-icon>download</mat-icon> {{ 'general.download' | translate }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="d-flex align-items-center auth px-0 h-100">
+                    <p [innerHTML]="'TEMSID.info' | translate" class="text-muted">
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

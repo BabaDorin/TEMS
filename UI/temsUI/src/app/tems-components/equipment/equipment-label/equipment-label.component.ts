@@ -11,6 +11,7 @@ import Canvg from 'canvg';
 export class EquipmentLabelComponent implements OnInit {
 
   @Input() mainText;
+  @Input() downloadable = true;
 
   constructor(private downloadService: DownloadService) { }
 

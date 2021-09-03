@@ -1,3 +1,4 @@
+import { TemsidGeneratorComponent } from './../../tems-components/temsid-generator/temsid-generator.component';
 import { ConfirmModule } from '../confirm/confirm.module';
 import { AttachEquipmentAgGridModule } from '../tems-ag-grid/attach-equipment-ag-grid.module';
 import { MultipleSelectionDropdownModule } from '../forms/multiple-selection-dropdown/multiple-selection-dropdown.module';
@@ -68,6 +69,7 @@ import { EquipmentLabelModule } from './equipment-label.module';
     BulkUploadResultsComponent,
     EquipmentSerialNumberComponent,
     ChildEquipmentContainerComponent,
+    TemsidGeneratorComponent
   ],
   imports: [
     CommonModule,

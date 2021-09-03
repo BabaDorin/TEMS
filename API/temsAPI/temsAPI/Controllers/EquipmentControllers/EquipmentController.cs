@@ -232,5 +232,12 @@ namespace temsAPI.Controllers.EquipmentControllers
             await _equipmentManager.ChangeUsingState(equipment, isUsed ?? !equipment.IsUsed);
             return ReturnResponse("Success", ResponseStatus.Success);
         }
+
+        [HttpGet("equipment/IsTEMSIDAvailable")]
+        [DefaultExceptionHandler("An error occured while checking for TEMSID availability")]
+        public async Task<IActionResult> ChangeUsingState([FromQuery] string temsid)
+        {
+            return Ok(await _equipmentManager.IsTEMSIDAvailable(temsid));
+        }
     }
 }

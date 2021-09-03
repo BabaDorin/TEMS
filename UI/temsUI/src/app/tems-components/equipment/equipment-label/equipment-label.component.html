@@ -1,55 +1,68 @@
 <div class="label-wrapper">
-    <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-        x="0px" y="0px" viewBox="0 0 343 197" style="enable-background:new 0 0 343 197;" xml:space="preserve">
-        <style type="text/css">
-            .labelst0 {
-                fill: #050E26;
-                stroke: #000000;
-                stroke-miterlimit: 10;
-            }
+    <div id="label">
+        <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+            x="0px" y="0px" viewBox="0 0 343 197" style="enable-background:new 0 0 343 197;" xml:space="preserve">
+            <style type="text/css">
+                .labelst0 {
+                    fill: #050E26;
+                    stroke: #000000;
+                    stroke-miterlimit: 10;
+                }
 
-            .labelst1 {
-                fill: #293688;
-                stroke: #000000;
-                stroke-miterlimit: 10;
-            }
+                .labelst1 {
+                    fill: #293688;
+                    stroke: #000000;
+                    stroke-miterlimit: 10;
+                }
 
-            .labelst2 {
-                fill: #928CBE;
-                stroke: #000000;
-                stroke-miterlimit: 10;
-            }
+                .labelst2 {
+                    fill: #928CBE;
+                    stroke: #000000;
+                    stroke-miterlimit: 10;
+                }
 
-            .labelst3 {
-                fill: #99989A;
-            }
+                .labelst3 {
+                    fill: #99989A;
+                }
 
-            .labelst4 {
-                font-family: 'Verdana';
-            }
+                .labelst4 {
+                    font-family: 'Verdana';
+                }
 
-            .labelst5 {
-                font-size: 15.4433px;
-            }
+                .labelst5 {
+                    font-size: 15.4433px;
+                }
 
-            .labelst6 {
-                fill: #FFFFFF;
-            }
+                .labelst6 {
+                    fill: #FFFFFF;
+                }
 
-            .labelst7 {
-                font-size: 65px;
-            }
-        </style>
-        <rect class="labelst0" width="343" height="197" />
-        <polygon class="labelst1" points="29.5,259.5 183.2,178.6 356.6,168.9 376.3,240.1 222.6,321 49.2,330.6 " />
-        <polyline class="labelst1"
-            points="-31.6,25.7 -51.3,-45.5 102.5,-126.3 275.9,-136 295.6,-64.8 141.9,16.1 0,24 -31.6,25.7 " />
-        <path class="labelst2" d="M0,0" />
-        <text transform="matrix(0.8194 0 0 1 9.7876 164.6914)" class="labelst3 labelst4 labelst5">Technical Equipment Management
-            System</text>
-        <text transform="matrix(0.9995 0 0 1 9.7877 106.1596)" class="labelst6 labelst4 labelst7">{{ mainText }}</text>
-    </svg>
+                .labelst7 {
+                    font-size: 65px;
+                }
+            </style>
+            <rect class="labelst0" width="343" height="197" />
+            <polygon class="labelst1" points="29.5,259.5 183.2,178.6 356.6,168.9 376.3,240.1 222.6,321 49.2,330.6 " />
+            <polyline class="labelst1"
+                points="-31.6,25.7 -51.3,-45.5 102.5,-126.3 275.9,-136 295.6,-64.8 141.9,16.1 0,24 -31.6,25.7 " />
+            <path class="labelst2" d="M0,0" />
+            <text transform="matrix(0.8194 0 0 1 9.7876 164.6914)" class="labelst3 labelst4 labelst5">Technical
+                Equipment Management
+                System</text>
+            <text transform="matrix(0.9995 0 0 1 9.7877 106.1596)" class="labelst6 labelst4 labelst7">{{ mainText
+                }}</text>
+        </svg>
+    </div>
 
-
-
+    <div class="download-button">
+        <button mat-icon-button class="text-light" (click)="downloadLabel()">
+            <mat-icon>download</mat-icon>
+        </button>
+    </div>
 </div>
+<!-- 
+<div class="border-1">
+    <canvas>
+
+    </canvas>
+</div> -->

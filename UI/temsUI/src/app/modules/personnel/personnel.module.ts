@@ -16,7 +16,7 @@ import { ViewPersonnelComponent } from 'src/app/tems-components/personnel/view-p
 import { AnalyticsModule } from '../analytics/analytics.module';
 import { EntitySharedModule } from '../entity-shared/entity-shared.module';
 import { TemsAgGridModule } from '../tems-ag-grid/tems-ag-grid.module';
-import { EquipmentModule } from './../../tems-components/equipment/equipment.module';
+import { EquipmentModule } from '../equipment/equipment.module';
 import { AddPersonnelComponent } from './../../tems-components/personnel/add-personnel/add-personnel.component';
 import { EmailModule } from './../email/email/email.module';
 import { EquipmentSummaryAnalyticsModule } from './../summary-analytics/equipment-summary-analytics/equipment-summary-analytics.module';

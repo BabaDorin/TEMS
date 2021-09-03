@@ -25,16 +25,13 @@ import { AddUserComponent } from '../../tems-components/admin/user-management/ad
 import { UserManagementComponent } from '../../tems-components/admin/user-management/user-management.component';
 import { ViewUsersComponent } from '../../tems-components/admin/user-management/view-users/view-users.component';
 import { ViewSystemLogsComponent } from '../../tems-components/admin/view-system-logs/view-system-logs.component';
-import { EquipmentModule } from '../../tems-components/equipment/equipment.module';
+import { EquipmentModule } from '../equipment/equipment.module';
 import { UserContainerComponent } from '../../tems-components/identity/user-container/user-container.component';
 import { ChipsAutocompleteModule } from '../chips-autocomplete/chips-autocomplete.module';
 import { DialogModule } from '../dialog/dialog.module';
 import { PersonnelModule } from '../personnel/personnel.module';
 import { TemsFormsModule } from '../tems-forms/tems-forms.module';
 import { AdministrationRoutingModule } from './administration-routing.module';
-import { BugReportModule } from '../bug-report/bug-report.module';
-
-
 
 @NgModule({
 declarations: [

@@ -15,7 +15,7 @@ namespace temsAPI.Helpers.Filters
         public List<string> Rooms { get; set; }
         public List<string> Definitions { get; set; }
         public List<string> Equipment { get; set; } 
-        public List<string> IncludeLabels { get; set; } // Equipment, Component, Part
-        public List<string> IncludeStatuses { get; set; } // Active, Closed
+        public List<string> IncludeLabels { get; set; } // Equipment, Component, Part (Case sensitive)
+        public List<string> IncludeStatuses { get; set; } // Active, Closed (Case sensitive)
     }
 }

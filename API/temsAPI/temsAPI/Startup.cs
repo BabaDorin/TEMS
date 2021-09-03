@@ -31,6 +31,7 @@ using temsAPI.System_Files.TEMSInitializer;
 using temsAPI.Helpers.EquipmentHelpers;
 using temsAPI.Data.Entities.EquipmentEntities;
 using temsAPI.Helpers.Filters;
+using temsAPI.Services.AllocationManagementHelpers;
 
 namespace temsAPI
 {
@@ -131,6 +132,7 @@ namespace temsAPI
             services.AddScoped<SICService>();
             services.AddScoped<SICIntegrationService>();
             services.AddScoped<IFetcher<Equipment, EquipmentFilter>, EquipmentFetcher>();
+            services.AddScoped<IFetcher<EquipmentAllocation, AllocationFilter>, AllocationFetcher>();
             services.AddScoped<ReportDataGenerator>();
             services.AddScoped<IEquipmentLabelHelper, EquipmentLabelHelper>();
             services.AddScoped<IEquipmentLabelManager, EquipmentLabelManager>();

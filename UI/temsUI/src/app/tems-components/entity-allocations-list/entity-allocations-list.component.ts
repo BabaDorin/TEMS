@@ -134,6 +134,7 @@ export class EntityAllocationsListComponent extends TEMSComponent implements OnI
 
   fetchAllocations(){
     this.buildFilter();
+
     this.subscriptions.push(
       this.allocationService.getAllocations(this.filter)
       .subscribe(result => {

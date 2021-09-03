@@ -1,4 +1,5 @@
-﻿using OfficeOpenXml.FormulaParsing.ExpressionGraph;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,7 +7,7 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.EquipmentEntities;
-using temsAPI.Helpers.EquipmentHelpers;
+using temsAPI.Helpers;
 using temsAPI.Helpers.Filters;
 using temsAPI.Helpers.ReusableSnippets;
 
@@ -14,10 +15,50 @@ namespace temsAPI.Services.AllocationManagementHelpers
 {
     public class AllocationFetcher : IFetcher<EquipmentAllocation, AllocationFilter>
     {
-        public Task<IEnumerable<EquipmentAllocation>> Fetch(AllocationFilter filter)
+        readonly IUnitOfWork _unitOfWork;
+
+        public AllocationFetcher(IUnitOfWork unitOfWork)
         {
-            // Build WHERE expression
-            
+            _unitOfWork = unitOfWork;
+        }
+
+        public async Task<IEnumerable<EquipmentAllocation>> Fetch(AllocationFilter filter)
+        {
+            // Where
+            var finalWhere = GetWhereExp(filter);
+
+            // Include
+            Func<IQueryable<EquipmentAllocation>, IIncludableQueryable<EquipmentAllocation, object>> includeExp
+                = q => q.Include(q => q.Room)
+                        .Include(q => q.Personnel)
+                        .Include(q => q.Equipment);
+
+            // Order by
+            Func<IQueryable<EquipmentAllocation>, IOrderedQueryable<EquipmentAllocation>> orderByExp;
+
+            // If only closed allocations are included, order by return date. Otherwise - by allocation date.
+            if (filter.IncludeStatuses.IsNullOrEmpty() || filter.IncludeStatuses.Count() == 1 || filter.IncludeStatuses.IndexOf("Closed") > -1)
+                orderByExp = q => q.OrderByDescending(q => q.DateReturned);
+            else
+                orderByExp = q => q.OrderByDescending(q => q.DateAllocated);
+
+            return await _unitOfWork.EquipmentAllocations
+                .FindAll<EquipmentAllocation>(
+                    include: includeExp,
+                    where: finalWhere);
+        }
+
+        public async Task<int> GetAmount(AllocationFilter filter)
+        {
+            var whereExp = GetWhereExp(filter);
+            return await _unitOfWork.EquipmentAllocations
+                .Count(whereExp);
+        }
+
+        private Expression<Func<EquipmentAllocation, bool>> GetWhereExp(AllocationFilter filter)
+        {
+            // WHERE expression
+
             // Of Equipment
             Expression<Func<EquipmentAllocation, bool>> alOfEquipmentExp = null;
             if (!filter.Equipment.IsNullOrEmpty())
@@ -40,16 +81,30 @@ namespace temsAPI.Services.AllocationManagementHelpers
 
             // Include labels
             Expression<Func<EquipmentAllocation, bool>> alOfLabels = null;
-            alOfLabels = q => filter.IncludeLabels.Contains(q.Label);
+            if(!filter.IncludeLabels.IsNullOrEmpty())
+                alOfLabels = q => filter.IncludeLabels.Contains(q.Label);
 
             // Include statuses 
-            Expression<Func<EquipmentAllocation, bool>> alOfStatuses = nuvpll;
-            alOfStatuses = q => q.DateAllocated
-        }
+            Expression<Func<EquipmentAllocation, bool>> alOfStatuses = null;
+            if (!filter.IncludeStatuses.IsNullOrEmpty())
+            {
+                var activeStatusIndex = filter.IncludeStatuses.IndexOf("Active");
+                var closedStatusIndex = filter.IncludeStatuses.IndexOf("Closed");
 
-        public Task<int> GetAmount(AllocationFilter filter)
-        {
-            throw new NotImplementedException();
+                // If both true or both false => return all of the allocations
+                if (!(activeStatusIndex == -1 && closedStatusIndex == -1 || activeStatusIndex > -1 && closedStatusIndex > -1))
+                    alOfStatuses = q => (q.DateReturned == null) == activeStatusIndex > -1;
+            }
+
+            Expression<Func<EquipmentAllocation, bool>> finalWhere = ExpressionCombiner.And(
+                alOfEquipmentExp,
+                alOfRoom,
+                alOfPersonnel,
+                alOfDefinition,
+                alOfLabels,
+                alOfStatuses);
+
+            return finalWhere;
         }
     }
 }

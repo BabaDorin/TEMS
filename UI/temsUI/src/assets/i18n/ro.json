@@ -545,9 +545,5 @@
         "bug": "Bug",
         "featureRequest": "Solicitare funcționalități noi",
         "attachmentsDescription": "Încarcă careva fișiere dacă consideri că este necesar. Dimensiunea maxima cumulată este de 20mb"
-    },
-
-    "reportContent": {
-
     }
 }

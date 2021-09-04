@@ -12,7 +12,7 @@
 
                 </app-bug-report-container>
             </ng-container>
-            <pagination-controls class="text-center mb-2" (pageChange)="pageNumber = $event; fetchBugReports()"
+            <pagination-controls class="mb-2" (pageChange)="pageNumber = $event; fetchBugReports()"
                 *ngIf="reports != undefined && reports.length > 0">
             </pagination-controls>
         </ng-container>

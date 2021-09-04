@@ -53,7 +53,7 @@
             </div>
         </ng-container>
       </ul>
-      <pagination-controls class="text-center mb-2"  (pageChange)="pageNumber = $event; fetchLogs()" id="logs" *ngIf="logs != undefined && logs.length > 0">
+      <pagination-controls class="mb-2"  (pageChange)="pageNumber = $event; fetchLogs()" id="logs" *ngIf="logs != undefined && logs.length > 0">
       </pagination-controls>
     </ng-container>
   

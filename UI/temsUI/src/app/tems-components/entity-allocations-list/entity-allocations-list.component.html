@@ -47,7 +47,7 @@
         </app-equipment-allocation-container>
     </ng-container>
 
-    <pagination-controls class="text-center mb-2"  (pageChange)="pageNumber = $event" id="allocations"
+    <pagination-controls class="mb-2"  (pageChange)="pageNumber = $event" id="allocations"
         *ngIf="allocations != undefined && allocations.length > 0"></pagination-controls>
 
     <div *ngIf="loading == false && (allocations == undefined || allocations.length == 0)">

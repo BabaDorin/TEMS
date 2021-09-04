@@ -250,7 +250,7 @@ namespace temsAPI.Data.Managers
         {
             Expression<Func<Ticket, bool>> filterByEntityExpression =
                 _ticketManager.Eq_FilterByEntity(entityType, entityId)
-                .Concat(q => q.DateClosed == null);
+                .ConcatAnd(q => q.DateClosed == null);
 
             var rates = (await _unitOfWork.Tickets
                 .FindAll<Ticket>(

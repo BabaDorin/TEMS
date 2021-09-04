@@ -1,3 +1,4 @@
+import { IncludeEquipmentLabelsModule } from './include-equipment-tags.module';
 import { TemsidGeneratorComponent } from './../../tems-components/temsid-generator/temsid-generator.component';
 import { ConfirmModule } from '../confirm/confirm.module';
 import { AttachEquipmentAgGridModule } from '../tems-ag-grid/attach-equipment-ag-grid.module';
@@ -99,7 +100,8 @@ import { EquipmentLabelModule } from './equipment-label.module';
     MatCheckboxModule,
     AttachEquipmentAgGridModule,
     ConfirmModule,
-    EquipmentLabelModule
+    EquipmentLabelModule,
+    IncludeEquipmentLabelsModule
   ],
   exports: [
   ],

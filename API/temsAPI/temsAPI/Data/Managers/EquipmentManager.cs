@@ -290,8 +290,12 @@ namespace temsAPI.Data.Managers
             await _unitOfWork.Save();
 
             string createdById = IdentityService.GetUserId(_user);
+            // the equipment has labeled as 'Part', even though in this context it is still a component.
+            // It is a quick workaround - set the label to Component, and restore it to part after generating the logs.
+            _equipmentLabelManager.SetLabel(equipment, EquipmentLabel.Component);
             var eqDetachedChildLog = new ChildEquipmentDetachedChildLogFactory(parent, equipment, createdById).Create();
             var eqDetachedParentLog = new ChildEquipmentDetachedParentLogFactory(parent, equipment, createdById).Create();
+            _equipmentLabelManager.SetLabel(equipment, EquipmentLabel.Part);
 
             await _logManager.Create(eqDetachedParentLog);
             await _logManager.Create(eqDetachedChildLog);

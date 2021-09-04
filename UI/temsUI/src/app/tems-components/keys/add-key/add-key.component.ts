@@ -1,3 +1,4 @@
+import { TranslateService } from '@ngx-translate/core';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ChipsAutocompleteComponent } from 'src/app/public/formly/chips-autocomplete/chips-autocomplete.component';
 import { FormlyParserService } from 'src/app/services/formly-parser.service';
@@ -24,7 +25,8 @@ export class AddKeyComponent extends TEMSComponent implements OnInit {
     public keysService: KeysService,
     private formlyParserService: FormlyParserService,
     public roomsService: RoomsService,
-    private snackService: SnackService
+    private snackService: SnackService,
+    public translate: TranslateService
   ) { 
     super();
   }

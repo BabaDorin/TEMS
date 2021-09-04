@@ -1,3 +1,4 @@
+import { TranslateService } from '@ngx-translate/core';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ViewKeySimplified } from 'src/app/models/key/view-key.model';
 import { IOption } from 'src/app/models/option.model';
@@ -27,7 +28,8 @@ export class ViewKeysComponent extends TEMSComponent implements OnInit {
     private keysService: KeysService,
     private dialogService: DialogService,
     private snackService: SnackService,
-    public claims: ClaimService
+    public claims: ClaimService,
+    public translate: TranslateService
   ) { 
     super();
   }
@@ -66,7 +68,7 @@ export class ViewKeysComponent extends TEMSComponent implements OnInit {
   }
 
   keyAllocated(key: ViewKeySimplified){
-    key.timePassed = 'recently allocated';
+    key.timePassed = this.translate.instant('key.recentlyAllocated');
     // this.allocatedKeys = [key, ...this.agGridAllocatedKeys.keys];
     this.agGridAllocatedKeys.pushKey(key);
   }

@@ -27,7 +27,7 @@ export class ChipsAutocompleteComponent implements OnInit, ControlValueAccessor,
   @Input() label: string;
   @Input() disabled: boolean = false;
   @Input() maxOptionsSelected: number;
-  @Input() placeholder: string = 'New Option...';
+  @Input() placeholder: string = '';
   @Input() onlyValuesFromAutocomplete: boolean = true;
   @Input() availableOptions: IOption[] = [];
   @Input() endPoint;

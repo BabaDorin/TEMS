@@ -10,7 +10,7 @@
                     <app-chips-autocomplete #equipmentIdentifierChips
                         [label]="translate.instant('equipment.selectEquipmentToAllocateLabel')"
                         [alreadySelected]="equipmentAlreadySelectedOptions" [endPoint]="equipmentService"
-                        placeholder="TEMSID or Serial Number" formControlName="equipment">
+                        [placeholder]="translate.instant('form.hints.TEMSID or Serial Number')" formControlName="equipment">
                     </app-chips-autocomplete>
                 </div>
                 <div class="col-lg-12">
@@ -18,7 +18,7 @@
                         <mat-label>{{ 'equipment.allocateTo' | translate }}</mat-label>
                         <mat-select (ngModelChange)="onSelection()" formControlName="allocateToType">
                             <mat-option *ngFor="let type of allocateToTypes" [value]="type.value">
-                                {{ type.viewValue }}
+                                {{ 'entities.' + type.viewValue.toLowerCase() | translate }}
                             </mat-option>
                         </mat-select>
                     </mat-form-field>

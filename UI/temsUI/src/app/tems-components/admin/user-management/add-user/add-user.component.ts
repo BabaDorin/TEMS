@@ -68,7 +68,7 @@ export class AddUserComponent extends TEMSComponent implements OnInit {
     this.subscriptions.push(
       this.userService.fetchClaims()
         .subscribe(result => {
-          this.claims = result.map(q => ({ value: q.label, label: q.label, description: q.additional } as CheckboxItem));
+          this.claims = result.map(q => ({ value: q.label, label: this.translate.instant('user.claimOptions.' + q.label), description: this.translate.instant('user.claimTips.' + q.additional), } as CheckboxItem));
           return of(0);
         })
     );
@@ -87,7 +87,7 @@ export class AddUserComponent extends TEMSComponent implements OnInit {
       this.userService.fetchClaims()
         .subscribe(result => {
           // 1 - Done, claims fetched
-          this.claims = result.map(q => ({ value: q.label, label: q.label, description: q.additional } as CheckboxItem));
+          this.claims = result.map(q => ({ value: q.label, label: this.translate.instant('user.claimOptions.' + q.label), description: this.translate.instant('user.claimTips.' + q.additional), } as CheckboxItem));
 
           this.subscriptions.push(
             this.roleService.getRoles()

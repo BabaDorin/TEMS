@@ -1,3 +1,4 @@
+import { TranslateService } from '@ngx-translate/core';
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChange } from '@angular/core';
 import { ConfirmService } from 'src/app/confirm.service';
 import { BtnCellRendererComponent } from 'src/app/public/ag-grid/btn-cell-renderer/btn-cell-renderer.component';
@@ -40,7 +41,8 @@ export class AgGridKeysComponent extends TEMSComponent implements OnInit, OnChan
     private snackService: SnackService,
     private dialogService: DialogService,
     private claims: ClaimService,
-    private confirmService: ConfirmService
+    private confirmService: ConfirmService,
+    private translate: TranslateService
   ) { 
     super();
     // enables pagination in the grid
@@ -83,7 +85,6 @@ export class AgGridKeysComponent extends TEMSComponent implements OnInit, OnChan
       minWidth: 100,
       resizable: true,
       headerCheckboxSelection: this.isFirstColumn,
-      checkboxSelection: this.isFirstColumn,
     };
 
     this.rowSelection = 'multiple';
@@ -104,10 +105,10 @@ export class AgGridKeysComponent extends TEMSComponent implements OnInit, OnChan
 
   buildColumnDefsAsAllocated(){
     this.columnDefs = [
-      { headerName: 'Identifier',  field: 'identifier', sortable: true, filter: true, checkboxSelection: true, headerCheckboxSelection: true, resizeable: true},
-      { headerName: 'Room', field: 'room.label', sortable: true, filter: true, resizeable: true },
-      { headerName: 'Allocated to', field: 'allocatedTo.label', sortable: true, filter: true, resizeable: true },
-      { headerName: 'Time', field: 'timePassed', sortable: true, filter: true, resizeable: true }
+      { headerName: this.translate.instant('form.identifier'),  field: 'identifier', sortable: true, filter: true, checkboxSelection: true, headerCheckboxSelection: true, resizeable: true, lockPosition: true,},
+      { headerName: this.translate.instant('entities.room'), field: 'room.label', sortable: true, filter: true, resizeable: true },
+      { headerName: this.translate.instant('key.allocatedTo'), field: 'allocatedTo.label', sortable: true, filter: true, resizeable: true },
+      { headerName: this.translate.instant('key.allocationTime'), field: 'timePassed', sortable: true, filter: true, resizeable: true }
     ];
 
     if(this.claims.canAllocateKeys){
@@ -115,7 +116,7 @@ export class AgGridKeysComponent extends TEMSComponent implements OnInit, OnChan
         cellRenderer: 'btnCellRendererComponent',
         cellRendererParams: {
           onClick: this.return.bind(this),
-          label: 'Return'
+          label: this.translate.instant('key.return')
         }
       });
     }
@@ -123,8 +124,8 @@ export class AgGridKeysComponent extends TEMSComponent implements OnInit, OnChan
 
   buildColumnDefsAsUnallocated(){
     this.columnDefs = [
-      { headerName: 'Indentifier',  field: 'identifier', sortable: true, filter: true, checkboxSelection: true, headerCheckboxSelection: true},
-      { headerName: 'Room', field: 'room.label', sortable: true, filter: true }
+      { headerName: this.translate.instant('form.identifier'),  field: 'identifier', sortable: true, filter: true, checkboxSelection: true, headerCheckboxSelection: true, lockPosition: true,},
+      { headerName: this.translate.instant('entities.room'), field: 'room.label', sortable: true, filter: true }
     ];
     
     if(this.claims.canAllocateKeys){
@@ -132,7 +133,7 @@ export class AgGridKeysComponent extends TEMSComponent implements OnInit, OnChan
         cellRenderer: 'btnCellRendererComponent',
         cellRendererParams: {
           onClick: this.allocate.bind(this),
-          label: 'Allocate'
+          label: this.translate.instant('key.allocate')
         }
       });
     }

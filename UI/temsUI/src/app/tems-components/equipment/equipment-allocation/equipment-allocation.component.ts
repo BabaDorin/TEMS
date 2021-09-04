@@ -1,3 +1,4 @@
+import { ResponseFactory } from './../../../models/system/response.model';
 import { Component, Inject, Input, OnInit, Optional, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
@@ -36,7 +37,7 @@ export class EquipmentAllocationComponent extends TEMSComponent implements OnIni
   equipmentAlreadySelectedOptions = [] as IOption[];
 
   allocatedToAlreadySelectedOptions = [] as IOption[]
-  allocatedToChipsInputLabel = "Choose one...";
+  allocatedToChipsInputLabel = this.translate.instant("form.hints.Choose one");
 
   // Alocate to [select]
   selectedAllocateToType: string;
@@ -70,7 +71,7 @@ export class EquipmentAllocationComponent extends TEMSComponent implements OnIni
 
   ngOnInit(): void {
     this.selectedAllocateToType = "room";
-    this.allocatedToChipsInputLabel = 'Room identifier...';
+    this.allocatedToChipsInputLabel = this.translate.instant('form.hints.Room identifier');
     this.alocateeEndPoint = this.roomService;
 
     if (this.equipment != undefined)
@@ -98,11 +99,11 @@ export class EquipmentAllocationComponent extends TEMSComponent implements OnIni
   onSelection() {
     switch (this.equipmentAllocationFormGroup.controls.allocateToType.value) {
       case 'room':
-        this.allocatedToChipsInputLabel = 'Room identifier...';
+        this.allocatedToChipsInputLabel = this.translate.instant('form.hints.Room identifier');
         this.alocateeEndPoint = this.roomService;
         break;
       case 'personnel':
-        this.allocatedToChipsInputLabel = 'Name...';
+        this.allocatedToChipsInputLabel = this.translate.instant('form.hints.Name');;
         this.alocateeEndPoint = this.personnelService;
         break;
     }
@@ -113,11 +114,7 @@ export class EquipmentAllocationComponent extends TEMSComponent implements OnIni
 
   submit(model) {
     if (model.equipment.value.length == 0 || model.allocateTo.value.length != 1) {
-      this.snackService.snack({
-        message: "Please, provide at least one equipment and one allocatee",
-        status: 0
-      });
-
+      this.snackService.snack(ResponseFactory.Neutral("Please, provide at least one equipment and one allocatee"));
       return;
     }
 

@@ -2,7 +2,7 @@
 <hr>
 <form [formGroup]="formlyData.form" (ngSubmit)="onSubmit()">
     <formly-form [form]="formlyData.form" [fields]="formlyData.fields" [model]="formlyData.model"></formly-form>
-    <app-chips-autocomplete #room label="Select a room" [endPoint]="roomsService" placeholder="Room Identifier"
+    <app-chips-autocomplete #room [label]="translate.instant('form.selectRoom')" [endPoint]="roomsService" placeholder="Room Identifier"
         maxOptionsSelected="1">
     </app-chips-autocomplete>
     <br>

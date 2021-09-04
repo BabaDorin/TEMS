@@ -1,6 +1,5 @@
 import { IncludeEquipmentLabelsModule } from './include-equipment-tags.module';
 import { TemsidGeneratorComponent } from './../../tems-components/temsid-generator/temsid-generator.component';
-import { ConfirmModule } from '../confirm/confirm.module';
 import { AttachEquipmentAgGridModule } from '../tems-ag-grid/attach-equipment-ag-grid.module';
 import { MultipleSelectionDropdownModule } from '../forms/multiple-selection-dropdown/multiple-selection-dropdown.module';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -99,7 +98,6 @@ import { EquipmentLabelModule } from './equipment-label.module';
     EquipmentSummaryAnalyticsModule,
     MatCheckboxModule,
     AttachEquipmentAgGridModule,
-    ConfirmModule,
     EquipmentLabelModule,
     IncludeEquipmentLabelsModule
   ],

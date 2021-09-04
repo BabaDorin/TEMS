@@ -1,3 +1,4 @@
+import { ConfirmModule } from './modules/confirm/confirm.module';
 import { DownloadService } from './download.service';
 import { LazyLoaderService } from './services/lazy-loader.service';
 import { DialogService } from 'src/app/services/dialog.service';
@@ -86,7 +87,7 @@ export function HttpLoaderFactory(http: HttpClient){
     QuickAccessModule,
     ViewLibraryModule,
     NgxPaginationModule,
-
+    ConfirmModule,
     MatDialogModule,
     ReactiveFormsModule,
     MatButtonModule,

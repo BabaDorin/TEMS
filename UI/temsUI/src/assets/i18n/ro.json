@@ -162,7 +162,15 @@
         "find": "Caută",
         "attachments": "Atașamente",
         "chooseFile": "Selectează fișierul",
-        "chooseFiles": "Selectează fișierele"
+        "chooseFiles": "Selectează fișierele",
+        "selectRoom": "Selectează o sală",
+        "removeCurrent": "Anulează fotografia curentă",
+        "hints": {
+            "TEMSID or Serial Number": "TEMSID-ul sau numărul de serie",
+            "Room identifier": "Indentificatorul sălii",
+            "Name": "Nume",
+            "Choose one": "Selectează o opțiune"
+        }
     },
     
     "equipment": {
@@ -246,7 +254,23 @@
         "roleLabel": "Atribuie roluri", 
         "assignPersonnelLabel": "Atribuie o înregistrare a personalului către acest utilizator",
         "userManagement": "Managementul utilizatorilor",
-        "createdBy": "Creat de către: "
+        "createdBy": "Creat de către: ",
+        "claimOptions": {
+            "Can allocate keys": "Alocarea cheilor",
+            "Can manage announcements": "Gestionarea anunțurilor globale",
+            "Can send emails": "Expedierea mesajelor electronice",
+            "Can manage Entities": "Gestionarea entităților",
+            "Can manage system configuration": "Configurarea sistemului",
+            "Can view Entities": "Vizualizarea entităților"
+        },
+        "claimTips": {
+            "Can allocate keys to personnel": "Poate aloca chei către personalul instituției",
+            "Can create, update or delete global announcements": "Poate crea, modifica și elimina anunțuri globale",
+            "Can send email to all of registered personnel": "Poate expedia mesaje electronice către personalul instituției",
+            "Can create, update or remove equipments, rooms, personnel and much more.": "Poate crea, modifica și elimina echipamente, săli, personal și altele",
+            "Can create, update or delete types, definitions, properties etc.": "Poate crea, modifca și elimina tipuri de echipamente, definiții, proprietăți, are acces către panoul de adminsitrare etc.",
+            "Can view equipments, rooms, personnel and much more.": "Poate vizualiza echipamentele, sălile, personalul și altele"
+        }
     },
 
     "password": {
@@ -355,18 +379,24 @@
         "identifierDescription": "Un nume scurt asociat acestei chei, exemplu: 214",
         "copies": "Numărul de exemplare",
         "copiesDescription": "Numărul de exemplare ale acestei chei disponibile spre alocare",
-        "allocations": "Alocărilor cheilor",
+        "allocationTime": "Timpul alocării",
+        "allocations": "Alocarea cheilor",
         "allocateTo": "Alocă către",
         "allocate": "Alocă",
         "allocateSelected": "Alocă cheile selectate",
         "allocated": "Alocate",
+        "allocatedTo": "Alocată către",
+        "unallocated": "Nealocate",
         "returned": "Returnate",
+        "return": "Returnează",
+        "recentlyAllocated": "Alocată recent",
         "unallocatedKeys": "Cheile nealocate",
         "filterAllocations": "Filtru",
         "markSelectedAsReturned": "Marchează cheile selectate ca returnate",
         "allocatedKeys": "Cheile alocate",
         "createAllocation": "Crează o nouă alocare",
-        "selectForAllocation": "Alege una sau mai multe chei spre alocare"
+        "selectForAllocation": "Alege una sau mai multe chei spre alocare",
+        "handleTo": "Oferă către"
     },
 
     "allocation": {

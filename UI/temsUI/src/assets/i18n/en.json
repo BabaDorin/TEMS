@@ -162,7 +162,15 @@
         "find": "Find",
         "attachments": "Attachments",
         "chooseFile": "Choose file",
-        "chooseFiles": "Choose files"
+        "chooseFiles": "Choose files",
+        "selectRoom": "Select a room",
+        "removeCurrent": "Remove current",
+        "hints": {
+            "TEMSID or Serial Number": "TEMSID or Serial Number",
+            "Room identfier": "Room identifier",
+            "Name": "Name",
+            "Choose one": "Choose one"
+        }
     },
     
     "equipment": {
@@ -246,7 +254,23 @@
         "roleLabel": "Assign roles", 
         "assignPersonnelLabel": "Assign personnel record to this user if any",
         "userManagement": "User management",
-        "createdBy": "Created by: "
+        "createdBy": "Created by: ",
+        "claimOptions": {
+            "Can allocate keys": "Can allocate keys",
+            "Can manage announcements": "Can manage announcements",
+            "Can send emails": "Can send emails",
+            "Can manage Entities": "Can manage Entities",
+            "Can manage system configuration": "Can manage system configuration",
+            "Can view Entities": "Can view Entities"
+        },
+        "claimTips": {
+            "Can allocate keys to personnel": "Can allocate keys to personnel",
+            "Can create, update or delete global announcements": "Can create, update or delete global announcements",
+            "Can send email to all of registered personnel": "Can send email to all of registered personnel",
+            "Can create, update or remove equipments, rooms, personnel and much more.": "Can create, update or remove equipments, rooms, personnel and much more",
+            "Can create, update or delete types, definitions, properties etc.": "Can create, update or delete types, definitions, properties etc",
+            "Can view equipments, rooms, personnel and much more.": "Can view equipments, rooms, personnel and much more"
+        }
     },
 
     "password": {
@@ -355,18 +379,24 @@
         "identifierDescription": "A short name for this key, like 214",
         "copies": "Number of copies",
         "copiesDescription": "Number of available copies",
+        "allocationTime": "Allocation time",
         "allocations": "Key allocations",
         "allocateTo": "Allocate to",
         "allocate": "Allocate",
         "allocateSelected": "Allocate selected",
         "allocated": "Allocated",
+        "allocatedTo": "Allocated to",
+        "unallocated": "Unallocated",
         "returned": "Returned",
+        "return": "Return",
+        "recentlyAllocated": "Recently allocated",
         "unallocatedKeys": "Unallocated keys",
         "filterAllocations": "Filter",
         "markSelectedAsReturned": "Mark selected as returned",
         "allocatedKeys": "allocated keys",
         "createAllocation": "Create new allocation",
-        "selectForAllocation": "Choose one or more keys to allocate"
+        "selectForAllocation": "Choose one or more keys to allocate",
+        "handleTo": "Handle to"
     },
 
     "allocation": {

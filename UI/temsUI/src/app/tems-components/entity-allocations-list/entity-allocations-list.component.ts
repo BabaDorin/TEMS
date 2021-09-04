@@ -1,4 +1,6 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import { IsNullOrUndefined } from 'src/app/helpers/validators/validations';
+import { AllocationFilter } from './../../helpers/filters/allocation.filter';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { ViewAllocationSimplified } from 'src/app/models/equipment/view-equipment-allocation.model';
 import { ViewEquipmentSimplified } from 'src/app/models/equipment/view-equipment-simplified.model';
@@ -11,6 +13,7 @@ import { ViewPersonnelSimplified } from './../../models/personnel/view-personnel
 import { ViewRoomSimplified } from './../../models/room/view-room-simplified.model';
 import { ClaimService } from './../../services/claim.service';
 import { TEMSComponent } from './../../tems/tems.component';
+import { IncludeEquipmentLabelsComponent } from 'src/app/shared/include-equipment-tags/include-equipment-tags.component';
 
 @Component({
   selector: 'app-entity-allocations-list',
@@ -21,7 +24,7 @@ export class EntityAllocationsListComponent extends TEMSComponent implements OnI
 
   @Input() equipment: ViewEquipmentSimplified; 
   @Input() room: ViewRoomSimplified; 
-  @Input() personnel: ViewPersonnelSimplified; 
+  @Input() personnel: ViewPersonnelSimplified;
 
   @Input() equipmentIds: string[] = [];
   @Input() personnelIds: string[] = [];
@@ -32,6 +35,10 @@ export class EntityAllocationsListComponent extends TEMSComponent implements OnI
   @Input() include: string;
   
   @Output() allocationCreated = new EventEmitter();
+ 
+  @ViewChild('includeEquipmentLabels') includeEquipmentLabels: IncludeEquipmentLabelsComponent;
+  defaultLabels = ['Equipment'];
+ 
   equipmentNotAllocated = false;
   
   // Pagination
@@ -41,6 +48,8 @@ export class EntityAllocationsListComponent extends TEMSComponent implements OnI
 
   allocations: ViewAllocationSimplified[];
   loading = true;
+
+  filter: AllocationFilter;
 
   constructor(
     private allocationService: AllocationService,
@@ -59,6 +68,7 @@ export class EntityAllocationsListComponent extends TEMSComponent implements OnI
     this.fetchAllocations();
   }
 
+
   ngOnChanges(changes: SimpleChanges): void {
     if(this.cancelFirstOnChange){
       this.cancelFirstOnChange = false;
@@ -70,18 +80,16 @@ export class EntityAllocationsListComponent extends TEMSComponent implements OnI
     this.getTotalItems();
     this.fetchAllocations();
   }
+
+  includeLabelsChanged(){
+    this.getTotalItems();
+    this.fetchAllocations();
+  }
   
   getTotalItems(){
-    let endPoint = this.allocationService.getTotalItems(
-      this.equipmentIds,
-      this.definitionIds,
-      this.personnelIds,
-      this.roomIds,
-      this.include,
-    );
-
+    this.buildFilter();
     this.subscriptions.push(
-      endPoint
+      this.allocationService.getTotalItems(this.filter)
       .subscribe(result => {
         if(this.snackService.snackIfError(result))
           return;
@@ -89,6 +97,28 @@ export class EntityAllocationsListComponent extends TEMSComponent implements OnI
         this.totalItems = result;
       })
     )
+  }
+
+  buildFilter(){
+    let aux = new AllocationFilter();
+
+    // Pagination
+    aux.skip = (this.pageNumber - 1) * this.itemsPerPage;
+    aux.take = this.itemsPerPage;
+
+    // Data selection
+    aux.equipment = this.equipmentIds;
+    aux.definitions = this.definitionIds;
+    aux.personnel = this.personnelIds;
+    aux.rooms = this.roomIds;
+    aux.includeLabels = this.includeEquipmentLabels?.value ?? this.defaultLabels;
+    aux.includeStatuses = (this.include == 'any' || IsNullOrUndefined(this.include))
+      ? ['Active', 'Closed']
+      : [this.include];
+
+    console.log('aux');
+    console.log(aux);
+    this.filter = Object.assign(new AllocationFilter(), aux);
   }
 
   readInputVariables(){
@@ -100,23 +130,15 @@ export class EntityAllocationsListComponent extends TEMSComponent implements OnI
     if(this.onlyClosed == undefined) this.onlyClosed = false;
     
     this.include = 'any';
-    if(this.onlyActive) this.include = 'active';
-    if(this.onlyClosed) this.include = 'returned';
+    if(this.onlyActive) this.include = 'Active';
+    if(this.onlyClosed) this.include = 'Closed';
   }
 
   fetchAllocations(){
-    let endPoint = this.allocationService.getAllocations(
-      this.equipmentIds,
-      this.definitionIds,
-      this.personnelIds,
-      this.roomIds,
-      this.include,
-      this.pageNumber,
-      this.itemsPerPage
-    );
+    this.buildFilter();
 
     this.subscriptions.push(
-      endPoint
+      this.allocationService.getAllocations(this.filter)
       .subscribe(result => {
         this.loading = false;
         if(this.snackService.snackIfError(result))

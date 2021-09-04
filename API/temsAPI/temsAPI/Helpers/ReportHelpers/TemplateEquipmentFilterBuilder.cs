@@ -24,9 +24,20 @@ namespace temsAPI.Helpers.ReportHelpers
                 IncludeUnused = template.IncludeUnused,
                 IncludeFunctional = template.IncludeFunctional,
                 IncludeDefect = template.IncludeDefect,
-                IncludeParents = template.IncludeParent,
-                IncludeChildren = template.IncludeChildren,
             };
+
+            // BEFREE
+            // Switch from IncludeParent / IncludeChildren flags to equipment labels
+            if (template.IncludeChildren)
+            {
+                filter.IncludeLabels.Add("Part");
+                filter.IncludeLabels.Add("Component");
+            }
+
+            if (template.IncludeParent)
+            {
+                filter.IncludeLabels.Add("Equipment");
+            }
 
             if (!template.Properties.IsNullOrEmpty())
             {

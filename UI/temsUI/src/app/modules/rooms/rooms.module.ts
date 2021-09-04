@@ -1,3 +1,4 @@
+import { IncludeEquipmentLabelsModule } from './../equipment/include-equipment-tags.module';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -45,8 +46,7 @@ import { RoomsRoutingModule } from './rooms-routing.module';
     TranslateModule,
     MatTabsModule,
     MatButtonModule,
-
-    // Shared modules
+    IncludeEquipmentLabelsModule,
     EntitySharedModule,
     EquipmentSummaryAnalyticsModule,
   ],

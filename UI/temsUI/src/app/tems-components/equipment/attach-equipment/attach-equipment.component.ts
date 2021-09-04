@@ -28,16 +28,14 @@ export class AttachEquipmentComponent extends TEMSComponent implements OnInit {
   definitions: IOption[] = [];
 
   equipmentFilter: EquipmentFilter;
+  tagOptions = ['Part', 'Component'];
+  defaultLabels = ['Part'];
 
   attachEquipmentFormGroup = new FormGroup({
     equipmentDefinition: new FormControl(),
     equipmentType: new FormControl(),
-    includeAttached: new FormControl(false)
+    includeEquipmentLabels: new FormControl()
   });
-
-  private getIncludeAttached() {
-    return this.attachEquipmentFormGroup.controls.includeAttached.value;
-  }
 
   private getSelectedType() {
     return this.attachEquipmentFormGroup.controls.equipmentType.value;
@@ -70,10 +68,7 @@ export class AttachEquipmentComponent extends TEMSComponent implements OnInit {
     this.fetchRelevantTypes()
     .then(() => {
       let filter = new EquipmentFilter();
-      filter.includeParents = false;
-      filter.includeChildren = true;
-      filter.includeAttached = false;
-      filter.includeDetached = true;
+      filter.includeLabels = this.attachEquipmentFormGroup.value?.includeEquipmentLabels ?? this.defaultLabels;
       filter.types = this.types.map(q => q.value);
       this.equipmentFilter = filter;
     });
@@ -98,7 +93,15 @@ export class AttachEquipmentComponent extends TEMSComponent implements OnInit {
   }
 
   filterChanged() {
-    this.equipmentFilter.includeAttached = this.getIncludeAttached();
+    // equipment filter not initialized yet
+    if(this.equipmentFilter == undefined)
+      return;
+    console.log('filter');
+    console.log(this.attachEquipmentFormGroup);
+
+    this.equipmentFilter.includeLabels = this.attachEquipmentFormGroup.value.includeEquipmentLabels ?? this.defaultLabels;
+    console.log(this.equipmentFilter);
+    console.log(this.attachEquipmentFormGroup.value.includeEquipmentLabels);
 
     // ether equipment of selected type, or equipment of any type which is child of equipment's type
     let selectedType = this.getSelectedType();
@@ -112,6 +115,8 @@ export class AttachEquipmentComponent extends TEMSComponent implements OnInit {
       this.equipmentFilter.definitions = [selectedDefinition];
 
     this.equipmentFilter = Object.assign(new EquipmentFilter(), this.equipmentFilter);
+    console.log('final filter');
+    console.log(this.equipmentFilter);
   }
 
   fetchRelevantTypes() : Promise<any> {

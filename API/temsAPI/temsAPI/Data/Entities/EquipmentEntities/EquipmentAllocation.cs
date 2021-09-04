@@ -82,5 +82,12 @@ namespace temsAPI.Data.Entities.EquipmentEntities
         public TEMSUser? ArchievedBy { get; set; }
         public string? ArchievedById { get; set; }
 #nullable disable
+
+        /// <summary>
+        /// Equipment's label at the moment of allocation
+        /// [Immutable by design, does not point to actual equipment label intentionally]
+        /// </summary>
+        [MaxLength(100)]
+        public string EquipmentLabel { get; set; }
     }
 }

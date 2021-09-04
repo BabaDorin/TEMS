@@ -94,9 +94,9 @@ export class AgGridAttachEquipmentComponent extends TEMSComponent implements OnC
         cellRenderer: 'btnCellRendererComponent',
         cellRendererParams: {
           onClick: this.attach.bind(this),
-          label: this.translate.instant('equipment.attach')
-        }
-      });
+          matIcon: 'link_on'
+        },
+      })
     }
   }
 
@@ -143,8 +143,11 @@ export class AgGridAttachEquipmentComponent extends TEMSComponent implements OnC
     this.loading = true;
     this.subscriptions.push(this.equipmentService.getEquipmentSimplified(this.equipmentFilter)
       .subscribe(result => {
-        this.rowData = result;
         this.loading = false;
+        if(this.snackService.snackIfError(result))
+          return;
+
+        this.rowData = result;
         this.sizeToFit();
       }));
   }

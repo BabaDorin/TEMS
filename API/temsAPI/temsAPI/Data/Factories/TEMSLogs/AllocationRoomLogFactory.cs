@@ -25,6 +25,7 @@ namespace temsAPI.Data.Factories.LogFactories
                 Id = Guid.NewGuid().ToString(),
                 CreatedByID = _createdById,
                 RoomID = _allocation.RoomID,
+                EquipmentLabel = _allocation.Equipment?.Label,
                 DateCreated = DateTime.Now,
                 Description = String.Format(
                     "The equipment ({0}, {1}) with the TEMSID of: {2} and Serial Number: {3} has been moved here.",

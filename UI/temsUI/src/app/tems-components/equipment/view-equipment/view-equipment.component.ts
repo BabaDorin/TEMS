@@ -1,3 +1,4 @@
+import { IncludeEquipmentLabelsComponent } from './../../../shared/include-equipment-tags/include-equipment-tags.component';
 import { LazyLoaderService } from './../../../services/lazy-loader.service';
 import { ReportFromFilterComponent } from './../../reports/report-from-filter/report-from-filter.component';
 import { EquipmentFilter } from './../../../helpers/filters/equipment.filter';
@@ -27,10 +28,11 @@ export class ViewEquipmentComponent implements OnInit {
   // typePreOptions: IOption[] = [];
   typeEndpoint: TypeEndpoint;
   equipmentFilter: EquipmentFilter;
+  defaultLabels = ['Equipment']; // When no label is selected => equipment is selected
 
   @ViewChild('typeSelection') typeSelection: MultipleSelectionDropdownComponent;
   @ViewChild('agGridEquipment') agGridEquipment: AgGridEquipmentComponent;
-  includeDerived:boolean = false;
+  @ViewChild('includeEquipmentLabels') includeEquipmentLabels: IncludeEquipmentLabelsComponent;
 
   constructor(
     public dialogService: DialogService,
@@ -41,10 +43,16 @@ export class ViewEquipmentComponent implements OnInit {
     private typeService: TypeService,
     private lazyLoader: LazyLoaderService
   ) {
-    this.typeEndpoint = new TypeEndpoint(this.typeService, this.includeDerived);
+
+    let includeDerived = false;
+    if(this.includeEquipmentLabels != undefined){
+      includeDerived = this.includeEquipmentLabels.includeComponents || this.includeEquipmentLabels.includeParts;
+    }
+
+    this.typeEndpoint = new TypeEndpoint(this.typeService, includeDerived);
 
     this.equipmentFilter = new EquipmentFilter();
-    this.equipmentFilter.includeChildren = this.includeDerived;
+    this.equipmentFilter.includeLabels = this.includeEquipmentLabels?.value ?? ['Equipment'];
   }
 
   ngOnInit(): void {
@@ -134,9 +142,12 @@ export class ViewEquipmentComponent implements OnInit {
     );
   }
 
-  includeDerivedChanged(){
-    this.equipmentFilter.includeChildren = this.includeDerived;
+  includeTagsChanged(){
+    // this.equipmentFilter.includeChildren = this.includeDerived;
+    this.equipmentFilter.includeLabels = this.includeEquipmentLabels?.value ?? ['Equipment'];
     this.equipmentFilter = Object.assign(new EquipmentFilter(), this.equipmentFilter);
-    this.typeEndpoint = new TypeEndpoint(this.typeService, this.includeDerived);
+
+    let includeDerivedTypes = this.equipmentFilter.includeLabels.indexOf('Component') > -1 || this.equipmentFilter.includeLabels.indexOf('Part') > -1
+    this.typeEndpoint = new TypeEndpoint(this.typeService, includeDerivedTypes);
   }
 }

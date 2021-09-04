@@ -28,6 +28,12 @@ using temsAPI.System_Files;
 using temsAPI.System_Files.Exceptions;
 using temsAPI.System_Files.TEMSFileLogger;
 using temsAPI.System_Files.TEMSInitializer;
+using temsAPI.Helpers.EquipmentHelpers;
+using temsAPI.Data.Entities.EquipmentEntities;
+using temsAPI.Helpers.Filters;
+using temsAPI.Services.AllocationManagementHelpers;
+using temsAPI.Data.Entities.CommunicationEntities;
+using temsAPI.Services.LogManagementHelpers;
 
 namespace temsAPI
 {
@@ -127,8 +133,12 @@ namespace temsAPI
             services.AddScoped<EmailService>();
             services.AddScoped<SICService>();
             services.AddScoped<SICIntegrationService>();
-            services.AddScoped<IEquipmentFetcher, EquipmentFetcher>();
+            services.AddScoped<IFetcher<Equipment, EquipmentFilter>, EquipmentFetcher>();
+            services.AddScoped<IFetcher<EquipmentAllocation, AllocationFilter>, AllocationFetcher>();
+            services.AddScoped<IFetcher<Log, LogFilter>, LogFetcher>();
             services.AddScoped<ReportDataGenerator>();
+            services.AddScoped<IEquipmentLabelHelper, EquipmentLabelHelper>();
+            services.AddScoped<IEquipmentLabelManager, EquipmentLabelManager>();
 
             services.ConfigureWritable<AppSettings>(Configuration.GetSection("AppSettings"));
 

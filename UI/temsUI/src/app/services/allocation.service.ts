@@ -1,3 +1,4 @@
+import { AllocationFilter } from './../helpers/filters/allocation.filter';
 import { ViewAllocationSimplified } from '../models/equipment/view-equipment-allocation.model';
 import { ViewEquipmentSimplified } from '../models/equipment/view-equipment-simplified.model';
 import { IOption } from '../models/option.model';
@@ -19,75 +20,22 @@ export class AllocationService extends TEMSService{
     super();
   }
 
-  getEntityAllocations(entityType: string, entityId: string): Observable<any>{
-    return this.http.get(
-      API_ALL_URL + '/getofentity/' + entityType + '/' + entityId,
-      this.httpOptions
-    );
-  }
-
-  getTotalItems(eqIds: string[], 
-    defIds:string[],
-    persIds: string[],
-    rIds: string[],
-    include?: string): Observable<number>{
-
-    if(include == undefined)
-      include = 'any';
-
-    let entityCollection = {
-      equipmentIds: eqIds,
-      definitionIds: defIds,
-      personnelIds: persIds,
-      roomIds: rIds,
-      include: include
-    }
-
+  getTotalItems(filter: AllocationFilter): Observable<number>{
+    console.log('called getTotalItems');
     return this.http.post<number>(
       API_ALL_URL + '/gettotalitems',
-      JSON.stringify(entityCollection),
+      JSON.stringify(filter),
       this.httpOptions
     );
   }
 
-  getAllocations(
-    eqIds: string[], 
-    defIds:string[],
-    persIds: string[],
-    rIds: string[],
-    include?: string,
-    pageNumber?: number,
-    itemsPerPage?: number): Observable<ViewAllocationSimplified[]> {
-      if(include == undefined)
-        include = 'any';
-
-      let entityCollection = {
-        equipmentIds: eqIds,
-        definitionIds: defIds,
-        personnelIds: persIds,
-        roomIds: rIds,
-        include: include,
-        pageNumber: pageNumber,
-        itemsPerPage: itemsPerPage
-      }
-
+  getAllocations(filter: AllocationFilter): Observable<ViewAllocationSimplified[]> {
+    console.log('called getAllocations');
       return this.http.post<ViewAllocationSimplified[]>(
         API_ALL_URL + '/getallocations',
-        JSON.stringify(entityCollection),
+        JSON.stringify(filter),
         this.httpOptions
       );
-  }
-
-  getEquipmentAllocations(equipmentId: string): Observable<any>{
-    return this.getEntityAllocations('equipment', equipmentId);
-  }
-
-  getEquipmentAllocationsToRoom(roomId: string){
-    return this.getEntityAllocations('room', roomId);
-  }
-
-  getEquipmentAllocationsToPersonnel(personnelId: string){
-    return this.getEntityAllocations('personnel', personnelId);
   }
 
   createAllocation(addAllocation: AddAllocation): Observable<any>{

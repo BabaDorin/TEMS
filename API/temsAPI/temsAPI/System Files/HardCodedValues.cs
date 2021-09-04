@@ -5,6 +5,13 @@ using System.Threading.Tasks;
 
 namespace temsAPI.System_Files
 {
+    public enum EquipmentLabel
+    {
+        Equipment,
+        Part,
+        Component
+    }
+
     enum Currencies
     {
         Lei,

@@ -10,13 +10,14 @@ using temsAPI.Data.Entities.EquipmentEntities;
 using temsAPI.Helpers;
 using temsAPI.Helpers.Filters;
 using temsAPI.Helpers.ReusableSnippets;
+using temsAPI.System_Files;
 
 namespace temsAPI.Services.EquipmentManagementHelpers
 {
     /// <summary>
     /// Fetches equipment, but from Allocations table (Useful when retrieving equipment allocated to a specific room or personnel.
     /// </summary>
-    public class AllocationsBasedEqFetcher : IEquipmentFetcher
+    public class AllocationsBasedEqFetcher : IFetcher<Equipment, EquipmentFilter>
     {
         private IUnitOfWork _unitOfWork;
         
@@ -102,18 +103,31 @@ namespace temsAPI.Services.EquipmentManagementHelpers
                 eqFunctionalityStateExp = q => q.Equipment.IsDefect == !filter.IncludeFunctional;
             }
 
-            // Include Parent / children
-            Expression<Func<EquipmentAllocation, bool>> eqParentalBasedInclusionExp = null;
-            if (!(filter.IncludeParents && filter.IncludeChildren))
-            {
-                eqParentalBasedInclusionExp = q => q.Equipment.EquipmentDefinition.ParentID == null;
-            }
+            // BEFREE: Single Reponsibility VIOLATED
+            // Include Equipment Labels
+            Expression<Func<EquipmentAllocation, bool>> eqIncludeLabelsExp = null;
+            string equipmentLbl = Enum.GetName(EquipmentLabel.Equipment);
+            string componentLbl = Enum.GetName(EquipmentLabel.Component);
+            string partLbl = Enum.GetName(EquipmentLabel.Part);
 
-            // Include Attached / Detached
-            Expression<Func<EquipmentAllocation, bool>> eqAttachmentExp = null;
-            if (!(filter.IncludeAttached && filter.IncludeDetached))
+            bool includeEquipment = filter.IncludeLabels.Contains(equipmentLbl);
+            bool includeComponent = filter.IncludeLabels.Contains(componentLbl);
+            bool includePart = filter.IncludeLabels.Contains(partLbl);
+
+            // If labels = Equipment, Component and Part => Skip this step
+            if (!(includeEquipment && includeComponent && includePart))
             {
-                eqAttachmentExp = q => (q.Equipment.ParentID != null) == filter.IncludeAttached;
+                // Only entities with parent types
+                if (includeEquipment)
+                    eqIncludeLabelsExp = eqIncludeLabelsExp.ConcatOr(q => q.Equipment.EquipmentDefinition.ParentID == null);
+
+                // Entities of child definitions + are attached
+                if (includeComponent)
+                    eqIncludeLabelsExp = eqIncludeLabelsExp.ConcatOr(q => q.Equipment.EquipmentDefinition.ParentID != null && q.Equipment.ParentID != null);
+
+                // Entities of child definitions + are detached
+                if (includePart)
+                    eqIncludeLabelsExp = eqIncludeLabelsExp.ConcatOr(q => q.Equipment.EquipmentDefinition.ParentID != null && q.Equipment.ParentID == null);
             }
 
             var finalWhereExp = ExpressionCombiner.And(
@@ -124,8 +138,7 @@ namespace temsAPI.Services.EquipmentManagementHelpers
             eqOfDefinitionsExp,
             eqUsingStateExp,
             eqFunctionalityStateExp,
-            eqParentalBasedInclusionExp,
-            eqAttachmentExp);
+            eqIncludeLabelsExp);
 
             return finalWhereExp;
         }

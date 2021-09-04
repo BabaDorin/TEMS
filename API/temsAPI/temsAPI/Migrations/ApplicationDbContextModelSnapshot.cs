@@ -552,6 +552,10 @@ namespace temsAPI.Migrations
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
 
+                    b.Property<string>("EquipmentLabel")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
                     b.Property<bool>("IsArchieved")
                         .HasColumnType("bit");
 
@@ -759,6 +763,10 @@ namespace temsAPI.Migrations
                     b.Property<bool>("IsUsed")
                         .HasColumnType("bit");
 
+                    b.Property<string>("Label")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
                     b.Property<string>("ParentID")
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
@@ -821,6 +829,10 @@ namespace temsAPI.Migrations
                     b.Property<string>("EquipmentID")
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
+
+                    b.Property<string>("EquipmentLabel")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<bool>("IsArchieved")
                         .HasColumnType("bit");

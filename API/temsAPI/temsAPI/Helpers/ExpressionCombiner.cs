@@ -1,39 +1,57 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Query;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Threading.Tasks;
-using temsAPI.Data.Entities.EquipmentEntities;
 
 namespace temsAPI.Helpers
 {
     public static class ExpressionCombiner
     {
-        public static Expression<Func<T, bool>> Concat<T>(
+        private enum CombineOperation
+        {
+            And, Or
+        };
+
+        public static Expression<Func<T, bool>> ConcatAnd<T>(
             this Expression<Func<T, bool>> baseExpression,
             Expression<Func<T, bool>> otherExpression)
         {
             return And(baseExpression, otherExpression);
         }
 
+        public static Expression<Func<T, bool>> ConcatOr<T>(
+            this Expression<Func<T, bool>> baseExpression,
+            Expression<Func<T, bool>> otherExpression)
+        {
+            return Or(baseExpression, otherExpression);
+        }
+
         public static Expression<Func<T, TType>> And<T, TType>(params Expression<Func<T, TType>>[] expressions)
+        {
+            Expression<Func<T, TType>> finalExpression = expressions[0];
+            
+            if (expressions.Count() == 1)
+                return expressions[0];
+
+            for (int i = 1; i < expressions.Count(); i++)
+                finalExpression = CombineTwo(finalExpression, expressions[i], CombineOperation.And);
+
+            return finalExpression;
+        }
+
+        public static Expression<Func<T, TType>> Or<T, TType>(params Expression<Func<T, TType>>[] expressions)
         {
             Expression<Func<T, TType>> finalExpression = expressions[0];
 
             if (expressions.Count() == 1)
                 return expressions[0];
-            else
-                for(int i = 1; i < expressions.Count(); i++)
-                {
-                    finalExpression = CombineTwo(finalExpression, expressions[i]);
-                }
+
+            for (int i = 1; i < expressions.Count(); i++)
+                finalExpression = CombineTwo(finalExpression, expressions[i], CombineOperation.Or);
 
             return finalExpression;
         }
 
-        private static Expression<Func<T, TType>> CombineTwo<T, TType>(this Expression<Func<T, TType>> exp, Expression<Func<T, TType>> newExp)
+        private static Expression<Func<T, TType>> CombineTwo<T, TType>(this Expression<Func<T, TType>> exp, Expression<Func<T, TType>> newExp, CombineOperation operation)
         {
             if (exp == null && newExp == null)
                 return null;
@@ -44,14 +62,10 @@ namespace temsAPI.Helpers
             if (newExp == null)
                 return exp;
             
-            // get the visitor
             var visitor = new ParameterUpdateVisitor(newExp.Parameters.First(), exp.Parameters.First());
-            // replace the parameter in the expression just created
             newExp = visitor.Visit(newExp) as Expression<Func<T, TType>>;
 
-            // now you can and together the two expressions
-            var binExp = Expression.And(exp.Body, newExp.Body);
-            // and return a new lambda, that will do what you want. NOTE that the binExp has reference only to te newExp.Parameters[0] (there is only 1) parameter, and no other
+            var binExp = operation == CombineOperation.And ? Expression.And(exp.Body, newExp.Body) : Expression.Or(exp.Body, newExp.Body);
             return Expression.Lambda<Func<T, TType>>(binExp, newExp.Parameters);
         }
 

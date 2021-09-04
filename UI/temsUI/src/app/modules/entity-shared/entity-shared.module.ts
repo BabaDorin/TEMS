@@ -1,3 +1,4 @@
+import { IncludeEquipmentLabelsModule } from './../equipment/include-equipment-tags.module';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -74,6 +75,7 @@ import { TemsFormsModule } from './../tems-forms/tems-forms.module';
     MatCardModule,
     TranslateModule,
     MatFormFieldModule,
+    IncludeEquipmentLabelsModule,
 
     MatDialogModule,
   ],

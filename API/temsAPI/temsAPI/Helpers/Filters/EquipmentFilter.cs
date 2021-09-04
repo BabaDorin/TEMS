@@ -7,10 +7,11 @@ using temsAPI.Data.Entities.EquipmentEntities;
 using temsAPI.Data.Entities.OtherEntities;
 using temsAPI.Helpers.Filters.Contracts;
 using temsAPI.Helpers.ReusableSnippets;
+using temsAPI.System_Files;
 
 namespace temsAPI.Helpers.Filters
 {
-    public class EquipmentFilter : IPaginationFilter
+    public class EquipmentFilter : IPaginationFilter, IEquipmentLabel
     {
         private int skip = 0;
         public int Skip
@@ -66,14 +67,15 @@ namespace temsAPI.Helpers.Filters
         public List<string> Personnel { get; set; } = new List<string>();
 
         // Other flags
-        public bool IncludeParents { get; set; } = true;
-        public bool IncludeChildren { get; set; } = false;
+        //public bool IncludeParents { get; set; } = true;
+        //public bool IncludeChildren { get; set; } = false;
         public bool IncludeInUse { get; set; } = true;
         public bool IncludeUnused { get; set; } = true;
         public bool IncludeFunctional { get; set; } = true;
         public bool IncludeDefect { get; set; } = true;
-        public bool IncludeAttached { get; set; } = true;
-        public bool IncludeDetached { get; set; } = true;
+        //public bool IncludeAttached { get; set; } = true;
+        //public bool IncludeDetached { get; set; } = true;
+        public List<string> IncludeLabels { get; set; } = new List<string>();
 
         // Additional include queries that will be merged with default ones
         public Expression<Func<IQueryable<Equipment>, IIncludableQueryable<Equipment, object>>> IncludeFromEquipment { get; set; }
@@ -94,8 +96,7 @@ namespace temsAPI.Helpers.Filters
 
             if (!IncludeInUse && !IncludeUnused
                 || !IncludeFunctional && !IncludeDefect
-                || !IncludeParents && !IncludeChildren
-                || !IncludeAttached && !IncludeDetached)
+                || IncludeLabels.IsNullOrEmpty())
                 return false;
 
             return true;

@@ -130,6 +130,9 @@ namespace temsAPI.Helpers
                 return "Invalid allocation id provided";
 
             allocation.IsArchieved = status;
+
+            if(allocation.DateReturned == null)
+                allocation.DateReturned = DateTime.Now;
                 
             await _unitOfWork.Save();
             return null;
@@ -206,6 +209,9 @@ namespace temsAPI.Helpers
                 return "Invalid id provided";
 
             model.IsArchieved = status;
+            if(model.DateReturned == null)
+                model.DateReturned = DateTime.Now;
+
             await _unitOfWork.Save();
             return null;
         }

@@ -16,6 +16,7 @@ namespace temsAPI.Services
     {
         readonly IUnitOfWork _unitOfWork;
         readonly AppSettings _appSettings;
+
         public EmailService(
             IUnitOfWork unitOfWork, 
             IOptions<AppSettings> appSettings)

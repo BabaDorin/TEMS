@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.CommunicationEntities;
 using temsAPI.Helpers;
+using temsAPI.Helpers.Filters;
 using temsAPI.Services;
 using temsAPI.ViewModels;
 using temsAPI.ViewModels.Log;
@@ -16,14 +17,17 @@ namespace temsAPI.Data.Managers
 {
     public class LogManager : EntityManager
     {
-        private IdentityService _identityService;
+        readonly IdentityService _identityService;
+        readonly IFetcher<Log, LogFilter> _logFetcher;
 
         public LogManager(
             IUnitOfWork unitOfWork, 
             ClaimsPrincipal user,
-            IdentityService identityService) : base(unitOfWork, user)
+            IdentityService identityService,
+            IFetcher<Log, LogFilter> logFetcher) : base(unitOfWork, user)
         {
             _identityService = identityService;
+            _logFetcher = logFetcher;
         }
 
         public async Task<string> Create(AddLogViewModel viewModel)
@@ -79,35 +83,16 @@ namespace temsAPI.Data.Managers
                 .FirstOrDefault();
         }
 
-        public async Task<List<ViewLogViewModel>> GetEntityLogs(
-            string entityType, 
-            string entityId, 
-            int skip = 0, 
-            int take = int.MaxValue)
+        public async Task<List<ViewLogViewModel>> GetEntityLogs(LogFilter filter)
         {
-            var expression = GetExpressionOfEntityTypeAndEntityId(entityType, entityId);
-
-            var logs = (await _unitOfWork.Logs
-                .FindAll<ViewLogViewModel>(
-                    where: expression,
-                    include: q => q
-                    .Include(q => q.Equipment)
-                    .Include(q => q.Personnel)
-                    .Include(q => q.Room)
-                    .Include(q => q.CreatedBy),
-                    orderBy: q => q.OrderByDescending(q => q.DateCreated),
-                    skip: skip,
-                    take: take,
-                    select: q => ViewLogViewModel.FromModel(q)
-                )).ToList();
-
-            return logs;
+            return (await _logFetcher.Fetch(filter))
+                .Select(q => ViewLogViewModel.FromModel(q))
+                .ToList();
         }
 
-        public async Task<int> GetItemsNumber(string entityType, string entityId)
+        public async Task<int> GetAmountOfLogs(LogFilter filter)
         {
-            var expression = GetExpressionOfEntityTypeAndEntityId(entityType, entityId);
-            return await _unitOfWork.Logs.Count(expression);
+            return await _logFetcher.GetAmount(filter);
         }
 
         private Expression<Func<Log, bool>> GetExpressionOfEntityTypeAndEntityId(string entityType, string entityId)

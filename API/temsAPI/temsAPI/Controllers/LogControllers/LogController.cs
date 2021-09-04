@@ -7,6 +7,7 @@ using temsAPI.Contracts;
 using temsAPI.Data.Entities.UserEntities;
 using temsAPI.Data.Managers;
 using temsAPI.Helpers;
+using temsAPI.Helpers.Filters;
 using temsAPI.System_Files;
 using temsAPI.System_Files.Exceptions;
 using temsAPI.ViewModels.Log;
@@ -63,28 +64,21 @@ namespace temsAPI.Controllers.LogControllers
             return ReturnResponse("Success", ResponseStatus.Success);
         }
 
-        [HttpGet("/log/GetEntityLogs/{entityType}/{entityId}/{pageNumber?}/{itemsPerPage?}")]
+        [HttpPost("/log/GetLogs")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
         [DefaultExceptionHandler("An error occured while fetching entity logs")]
-        public async Task<IActionResult> GetEntityLogs(string entityType, string entityId, int? pageNumber, int? itemsPerPage)
+        public async Task<IActionResult> GetLogs([FromBody] LogFilter filter)
         {
-            int skip = (pageNumber != null && itemsPerPage != null)
-                    ? (int)(itemsPerPage * (pageNumber - 1))
-                    : 0;
-            int take = (pageNumber != null && itemsPerPage != null)
-                ? (int)itemsPerPage
-                : int.MaxValue;
-
-            var logs = await _logManager.GetEntityLogs(entityType, entityId, skip, take);
+            var logs = await _logManager.GetEntityLogs(filter);
             return Ok(logs);
         }
 
-        [HttpGet("log/GetItemsNumber/{entityType}/{entityId}")]
+        [HttpPost("log/GetAmountOfLogs")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES)]
         [DefaultExceptionHandler("An error occured while fetching log items number")]
-        public async Task<IActionResult> GetItemsNumber(string entityType, string entityId)
+        public async Task<IActionResult> GetAmountOfLogs([FromBody] LogFilter filter)
         {
-            var number = await _logManager.GetItemsNumber(entityType, entityId);
+            var number = await _logManager.GetAmountOfLogs(filter);
             return Ok(number);
         }
     }

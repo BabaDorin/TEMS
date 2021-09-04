@@ -1,3 +1,5 @@
+import { ResponseFactory } from './../../models/system/response.model';
+import { LogFilter } from './../../helpers/filters/log.filter';
 import { Component, Input, OnInit } from '@angular/core';
 import { ViewLog } from 'src/app/models/communication/logs/view-logs.model';
 import { IOption } from 'src/app/models/option.model';
@@ -22,12 +24,12 @@ export class EntityLogsListComponent extends TEMSComponent implements OnInit {
 
   itemsPerPage = 10;
   totalItems = 0;
+  pageNumber=1;
 
   logs: ViewLog[];
   loading: boolean = true;  
   logsEndpoint;
-
-pageNumber=1;
+  filter: LogFilter;
 
   constructor(
     private logsService: LogsService,
@@ -38,16 +40,27 @@ pageNumber=1;
     super();
   }
 
+  buildFilter(){
+    this.filter = new LogFilter();
+    this.filter.skip = (this.pageNumber - 1) * this.itemsPerPage;
+    this.filter.take = this.itemsPerPage;
+    this.filter.equipmentId = this.equipment?.value;
+    this.filter.roomId = this.room?.value;
+    this.filter.personnelId = this.personnel?.value;
+  }
+
+  validateFilter(): boolean{
+    if(!this.filter.isValid){
+      this.snackService.snack(ResponseFactory.Neutral("Please, provide an entity whose logs to be fetched"));
+      return false;
+    }
+
+    return true;
+  }
+
   getTotalItems(){
     let endPoint;
-    if(this.equipment != undefined)
-      endPoint = this.logsService.getTotalItems('equipment', this.equipment.value);
-
-    if(this.personnel != undefined)
-      endPoint = this.logsService.getTotalItems('personnel', this.personnel.value);
-
-    if(this.room != undefined)
-      endPoint = this.logsService.getTotalItems('room', this.room.value);
+    endPoint = this.logsService.getTotalItems(this.filter);
 
     this.subscriptions.push(
       endPoint
@@ -61,38 +74,26 @@ pageNumber=1;
   }
 
   ngOnInit(): void {
-    this.getTotalItems();
+    this.buildFilter();
+    if(!this.validateFilter())
+      return;
     
-    if(this.equipment)
-      this.logsEndpoint = (pageNumber: number, itemsPerPage: number) => this.logsService.getLogsByEquipmentId(this.equipment.value, pageNumber, itemsPerPage);
-    if(this.room)
-      this.logsEndpoint = (pageNumber: number, itemsPerPage: number) => this.logsService.getLogsByRoomId(this.room.value, pageNumber, itemsPerPage);
-    if(this.personnel)
-      this.logsEndpoint = (pageNumber: number, itemsPerPage: number) => this.logsService.getLogsByPersonnelId(this.personnel.value, pageNumber, itemsPerPage);
-
+    this.getTotalItems();
     this.fetchLogs();
   }
 
   fetchLogs(){
-    if(this.logsEndpoint != undefined){
-      this.subscriptions.push(
-        this.logsEndpoint(this.pageNumber, this.itemsPerPage)
-        .subscribe(result => {
-          this.loading = false;
-          if(this.snackService.snackIfError(result))
-            return;
-          this.logs = result;
+    this.loading = true;
+    this.subscriptions.push(
+      this.logsService.getEntityLogs(this.filter)
+      .subscribe(result => {
+        this.loading = false;
+        if(this.snackService.snackIfError(result))
           return;
-        })
-      )
-    }
-
-    if(this.equipment == undefined && this.room == undefined && this.personnel == undefined)
-      this.subscriptions.push(this.logsService.getLogs()
-        .subscribe(result => {
-          this.logs = result;
-          this.loading = false;
-        }));
+        
+        this.logs = result;
+      })
+    );
   }
 
   addLog(){   

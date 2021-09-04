@@ -427,7 +427,7 @@ namespace temsAPI.Data.Managers
                             Id = Guid.NewGuid().ToString(),
                             DateAllocated = DateTime.Now,
                             EquipmentID = eqToAllocate.Id,
-                            Label = eqToAllocate.Label 
+                            EquipmentLabel = eqToAllocate.Label 
                         };
 
                         if (viewModel.AllocateToType == "personnel")

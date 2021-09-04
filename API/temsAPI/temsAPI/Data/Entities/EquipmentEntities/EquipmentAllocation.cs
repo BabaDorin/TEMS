@@ -87,6 +87,7 @@ namespace temsAPI.Data.Entities.EquipmentEntities
         /// Equipment's label at the moment of allocation
         /// [Immutable by design, does not point to actual equipment label intentionally]
         /// </summary>
-        public string Label { get; set; }
+        [MaxLength(100)]
+        public string EquipmentLabel { get; set; }
     }
 }

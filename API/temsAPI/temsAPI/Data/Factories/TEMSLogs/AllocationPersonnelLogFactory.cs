@@ -23,6 +23,7 @@ namespace temsAPI.Data.Factories.LogFactories
                 CreatedByID = _createdById,
                 PersonnelID = _allocation.PersonnelID,
                 DateCreated = DateTime.Now,
+                EquipmentLabel = _allocation.Equipment?.Label,
                 Description = String.Format(
                     "Was assigned the equipment ({0}, {1}) with the TEMSID of: {2} and Serial Number: {3}.",
                     _allocation.Equipment.EquipmentDefinition.EquipmentType.Name,

@@ -1,9 +1,9 @@
+import { LogFilter } from './../helpers/filters/log.filter';
 import { AddLog } from '../models/communication/logs/add-log.model';
 import { API_LOG_URL } from '../models/backend.config';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ViewLog } from 'src/app/models/communication/logs/view-logs.model';
 import { TEMSService } from './tems.service';
 
 @Injectable({
@@ -17,9 +17,13 @@ export class LogsService extends TEMSService {
     super();
   }
 
-  getEntityLogs(entityType: string, entityId: string, pageNumber?: number, itemsPerPage?: number): Observable<any>{
-    return this.http.get(
-      API_LOG_URL + '/getentitylogs/' + entityType + '/' + entityId + '/' + pageNumber + '/' + itemsPerPage,
+  // API Route changed
+  // api post => accepts filter
+  // Also, there is a case when an empty filter is provided, which should return all of the allocations (Well, unless there aren't any default filters)
+  getEntityLogs(filter: LogFilter): Observable<any>{
+    return this.http.post(
+      API_LOG_URL + '/getLogs',
+      JSON.stringify(filter),
       this.httpOptions
     );
   }
@@ -31,26 +35,17 @@ export class LogsService extends TEMSService {
     );
   }
 
-  getTotalItems(entityType: string, entityId: string): Observable<number>{
-    return this.http.get<number>(
-      API_LOG_URL + '/getitemsnumber/' + entityType + '/' + entityId,
+  // api => post, accepts filter
+  getTotalItems(filter: LogFilter): Observable<number>{
+    return this.http.post<number>(
+      API_LOG_URL + '/getAmountOfLogs',
+      JSON.stringify(filter),
       this.httpOptions
     );
   }  
-  getLogsByEquipmentId(equipmentId: string, pageNumber: number, itemsPerPage: number): Observable<any>{
-    return this.getEntityLogs('equipment', equipmentId, pageNumber, itemsPerPage);
-  }
-
-  getLogsByRoomId(roomId: string, pageNumber: number, itemsPerPage: number): Observable<any>{
-    return this.getEntityLogs('room', roomId, pageNumber, itemsPerPage);
-  }
-
-  getLogsByPersonnelId(personnelId: string, pageNumber: number, itemsPerPage: number): Observable<any>{
-    return this.getEntityLogs('personnel', personnelId, pageNumber, itemsPerPage);
-  }
 
   getLogs(): Observable<any>{
-    return this.getEntityLogs('any', 'any');
+    return this.getEntityLogs(new LogFilter());
   }
 
   archieve(logId: string, archivationStatus?: boolean): Observable<any>{

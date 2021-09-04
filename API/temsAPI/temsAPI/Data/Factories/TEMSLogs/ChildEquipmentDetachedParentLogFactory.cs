@@ -28,6 +28,7 @@ namespace temsAPI.Data.Factories.LogFactories
                 CreatedByID = _createdById,
                 DateCreated = DateTime.Now,
                 EquipmentID = _parent.Id,
+                EquipmentLabel = _child.Label,
                 Description = String.Format(
                     "Child ({0}, {1}) with the TEMSID of [{2}] and Serial Number: [{3}] has been DETACHED",
                     _child.EquipmentDefinition.EquipmentType.Name,

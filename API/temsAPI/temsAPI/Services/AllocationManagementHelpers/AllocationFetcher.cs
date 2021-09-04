@@ -84,7 +84,7 @@ namespace temsAPI.Services.AllocationManagementHelpers
             // Include labels
             Expression<Func<EquipmentAllocation, bool>> alOfLabels = null;
             if(filter.Equipment.IsNullOrEmpty() && !filter.IncludeLabels.IsNullOrEmpty())
-                alOfLabels = q => filter.IncludeLabels.Contains(q.Label);
+                alOfLabels = q => filter.IncludeLabels.Contains(q.EquipmentLabel);
 
             // Include statuses 
             Expression<Func<EquipmentAllocation, bool>> alOfStatuses = null;

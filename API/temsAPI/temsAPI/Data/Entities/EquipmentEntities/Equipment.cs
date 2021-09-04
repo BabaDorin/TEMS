@@ -38,6 +38,7 @@ namespace temsAPI.Data.Entities.EquipmentEntities
         /// 'part'      => child type + detached
         /// 'component' => child type + attached
         /// </summary>
+        [MaxLength(100)]
         public string Label { get; private set; }
 
 #nullable enable

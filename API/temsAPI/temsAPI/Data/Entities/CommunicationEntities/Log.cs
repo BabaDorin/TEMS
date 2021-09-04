@@ -70,6 +70,14 @@ namespace temsAPI.Data.Entities.CommunicationEntities
         }
         public DateTime? DateArchieved { get; set; }
 
+        /// <summary>
+        /// If the subject of the log is an equipment, the this property will store equipment's label at the moment
+        /// of generating the log. (Helps for filtering & joinig table is too expesinve for this scope. Moreover, 
+        /// we're interested in the label of the equipment at the momemnt of log generation, not when fetching.
+        /// </summary>
+        [MaxLength(100)]
+        public string EquipmentLabel { get; set; }
+
         [NotMapped]
         public string Identifier => $"Description: {Description}, Equipment: {Equipment?.TemsIdOrSerialNumber ?? "none"}, Personnel: {Personnel?.Name ?? "none"}, Room: {Room?.Identifier ?? "none"}";
     }

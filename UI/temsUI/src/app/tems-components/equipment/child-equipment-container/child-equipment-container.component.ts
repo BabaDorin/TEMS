@@ -1,3 +1,4 @@
+import { ConfirmService } from './../../../confirm.service';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { AttachEquipment } from 'src/app/models/equipment/attach-equipment.model';
 import { IOption } from '../../../models/option.model';
@@ -23,7 +24,8 @@ export class ChildEquipmentContainerComponent extends TEMSComponent implements O
 
   constructor(
     private equipmentService: EquipmentService,
-    private snackService: SnackService
+    private snackService: SnackService,
+    private confirmService: ConfirmService,
   ) {
     super();
   }
@@ -31,8 +33,8 @@ export class ChildEquipmentContainerComponent extends TEMSComponent implements O
   ngOnInit(): void {
   }
 
-  detach() {
-    if (!confirm("Are you sure you want to detach this equipment from it's parent?"))
+  async detach() {
+    if (!await this.confirmService.confirm("Are you sure you want to detach this equipment from it's parent?"))
       return;
 
     this.subscriptions.push(

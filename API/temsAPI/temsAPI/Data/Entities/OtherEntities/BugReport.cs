@@ -14,7 +14,7 @@ namespace temsAPI.Data.Entities.OtherEntities
         public string Id { get; set; }
 
         [NotMapped]
-        public string Identifier => String.Format($"{ReportType},     created by {CreatedBy.Identifier}");
+        public string Identifier => String.Format($"{ReportType},     created by {CreatedBy?.Identifier}");
 
         [MaxLength(150)]
         public string ReportType { get; set; }

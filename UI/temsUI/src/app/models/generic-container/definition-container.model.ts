@@ -1,3 +1,4 @@
+import { ConfirmService } from './../../confirm.service';
 import { ViewDefinitionSimplified } from './../equipment/view-definition-simplified.model';
 import { SnackService } from '../../services/snack.service';
 import { TEMSComponent } from './../../tems/tems.component';
@@ -18,7 +19,8 @@ export class DefinitionContainerModel extends TEMSComponent implements IGenericC
         private equipmentService: EquipmentService,
         private dialogService: DialogService,
         private snackService: SnackService,
-        private definition: ViewDefinitionSimplified) {
+        private definition: ViewDefinitionSimplified,
+        private confirmService: ConfirmService) {
         super();
 
         this.buildContainerModel();
@@ -82,8 +84,8 @@ export class DefinitionContainerModel extends TEMSComponent implements IGenericC
         )
     }
 
-    remove() {
-        if (!confirm("Are you sure you want to remove that defintion?"))
+    async remove() {
+        if (!await this.confirmService.confirm("Are you sure you want to remove that defintion?"))
             return;
 
         this.unsubscribeFromAll();

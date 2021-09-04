@@ -1,3 +1,4 @@
+import { ConfirmService } from './../../../confirm.service';
 import { ClaimService } from './../../../services/claim.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Component, OnInit } from '@angular/core';
@@ -33,7 +34,8 @@ export class AgGridPersonnelComponent extends TEMSComponent {
     private dialogService: DialogService,
     private snackService: SnackService,
     private translate: TranslateService,
-    private claims: ClaimService
+    private claims: ClaimService,
+    private confirmService: ConfirmService
   ) { 
     super();
 
@@ -131,8 +133,8 @@ export class AgGridPersonnelComponent extends TEMSComponent {
     );
   }
 
-  archieve(e){
-    if(!confirm("Are you sure you want to archive this item? It will result in archieving all of it's logs and allocations"))
+  async archieve(e){
+    if(!await this.confirmService.confirm("Are you sure you want to archive this item? It will result in archieving all of it's logs and allocations"))
     return;
 
     this.subscriptions.push(

@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
+import { ConfirmService } from 'src/app/confirm.service';
 import { ViewIssueSimplified } from 'src/app/models/communication/issues/view-issue-simplified.model';
 import { IOption } from 'src/app/models/option.model';
 import { SnackService } from 'src/app/services/snack.service';
@@ -28,7 +29,8 @@ export class IssueContainerComponent extends TEMSComponent implements OnInit {
   constructor(
     private router: Router,
     private issuesService: IssuesService,
-    private snackService: SnackService
+    private snackService: SnackService,
+    private confirmService: ConfirmService
   ) {
     super();
   }
@@ -64,8 +66,8 @@ export class IssueContainerComponent extends TEMSComponent implements OnInit {
     )
   }
 
-  removeIssue(){
-    if(!confirm("Are you sure you want to remove that issue?"))
+  async removeIssue(){
+    if(!await this.confirmService.confirm("Are you sure you want to remove that issue?"))
       return;
 
     this.subscriptions.push(

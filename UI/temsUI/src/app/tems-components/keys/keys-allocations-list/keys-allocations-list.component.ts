@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { ConfirmService } from 'src/app/confirm.service';
 import { ViewKeyAllocation } from 'src/app/models/key/view-key-allocation.model';
 import { DialogService } from 'src/app/services/dialog.service';
 import { KeysService } from 'src/app/services/keys.service';
@@ -27,6 +28,7 @@ export class KeysAllocationsListComponent extends TEMSComponent implements OnIni
     private keyService: KeysService,
     private snackService: SnackService,
     private dialogService: DialogService,
+    private confirmService: ConfirmService
   ) { 
     super();
   }
@@ -56,8 +58,8 @@ export class KeysAllocationsListComponent extends TEMSComponent implements OnIni
       }));
   }
 
-  delete(allocationId: string, index: number){
-    if(!confirm('Are you sure you want to remove that allocation?'))
+  async delete(allocationId: string, index: number){
+    if(!await this.confirmService.confirm('Are you sure you want to remove that allocation?'))
       return;
     
     this.subscriptions.push(

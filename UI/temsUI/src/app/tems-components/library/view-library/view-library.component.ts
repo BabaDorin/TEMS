@@ -1,6 +1,7 @@
 import { DecimalPipe } from '@angular/common';
 import { Component, Inject, OnInit, Optional } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { ConfirmService } from 'src/app/confirm.service';
 import { DialogService } from 'src/app/services/dialog.service';
 import { UploadLibraryItemComponent } from 'src/app/tems-components/library/upload-library-item/upload-library-item.component';
 import { LibraryService } from '../../../services/library.service';
@@ -32,6 +33,7 @@ export class ViewLibraryComponent extends TEMSComponent implements OnInit {
     private snackService: SnackService,
     public claims: ClaimService,
     private _decimalPipe: DecimalPipe,
+    private confirmService: ConfirmService,
     @Optional() @Inject(MAT_DIALOG_DATA) public dialogData: any
   ) {
     super();
@@ -48,7 +50,7 @@ export class ViewLibraryComponent extends TEMSComponent implements OnInit {
           return;
         
         this.libraryContainerModels = (result as ViewLibraryItem[])
-          .map(q => new UploadedFileContainerModel(this.libraryService, this.snackService, this.claims, this._decimalPipe, q));
+          .map(q => new UploadedFileContainerModel(this.libraryService, this.snackService, this.claims, this._decimalPipe, q, this.confirmService));
       }));
 
     this.fetchSpaceUsageData();

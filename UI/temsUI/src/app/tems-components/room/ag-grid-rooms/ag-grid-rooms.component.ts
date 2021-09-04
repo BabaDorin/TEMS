@@ -8,6 +8,7 @@ import { RoomsService } from '../../../services/rooms.service';
 import { SnackService } from '../../../services/snack.service';
 import { TEMSComponent } from './../../../tems/tems.component';
 import { RoomDetailsGeneralComponent } from './../room-details-general/room-details-general.component';
+import { ConfirmService } from 'src/app/confirm.service';
 
 @Component({
   selector: 'app-ag-grid-rooms',
@@ -33,7 +34,8 @@ export class AgGridRoomsComponent extends TEMSComponent {
     private dialogService: DialogService,
     private snackService: SnackService,
     private translate: TranslateService,
-    private claims: ClaimService
+    private claims: ClaimService,
+    private confirmService: ConfirmService
   ) {
     super();
 
@@ -112,8 +114,8 @@ export class AgGridRoomsComponent extends TEMSComponent {
     )
   }
 
-  archieve(e) {
-    if (!confirm("Are you sure you want to archive this item? It will result in archieving all of it's logs and allocations"))
+  async archieve(e) {
+    if (!await this.confirmService.confirm("Are you sure you want to archive this item? It will result in archieving all of it's logs and allocations"))
       return;
 
     this.subscriptions.push(

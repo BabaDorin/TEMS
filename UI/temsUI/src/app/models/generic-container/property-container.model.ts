@@ -1,3 +1,4 @@
+import { ConfirmService } from './../../confirm.service';
 import { Component, OnInit } from '@angular/core';
 import { EquipmentService } from 'src/app/services/equipment.service';
 import { AddPropertyComponent } from 'src/app/tems-components/equipment/add-property/add-property.component';
@@ -22,7 +23,8 @@ export class PropertyContainerModel extends TEMSComponent implements IGenericCon
         private equipmentService: EquipmentService,
         private dialogService: DialogService,
         private snackService: SnackService,
-        private property: ViewPropertySimplified) {
+        private property: ViewPropertySimplified,
+        private confirmService: ConfirmService) {
         super();
         this.buildContainerModel();
     }
@@ -90,8 +92,8 @@ export class PropertyContainerModel extends TEMSComponent implements IGenericCon
         );
     }
 
-    remove() {
-        if (!confirm("Do you realy want to remove that property?"))
+    async remove() {
+        if (!await this.confirmService.confirm("Do you realy want to remove that property?"))
             return;
 
         this.equipmentService.archieveProperty(this.property.id)

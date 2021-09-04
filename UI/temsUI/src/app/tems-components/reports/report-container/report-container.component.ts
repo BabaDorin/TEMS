@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
+import { ConfirmService } from 'src/app/confirm.service';
 import { SnackService } from 'src/app/services/snack.service';
 import { DialogService } from '../../../services/dialog.service';
 import { ReportService } from '../../../services/report.service';
@@ -23,7 +24,8 @@ export class ReportContainerComponent extends TEMSComponent implements OnInit {
     private router: Router,
     private reportService: ReportService,
     private snackService: SnackService,
-    private dialogService: DialogService
+    private dialogService: DialogService,
+    private confirmService: ConfirmService
   ) {
     super();
   }
@@ -35,8 +37,8 @@ export class ReportContainerComponent extends TEMSComponent implements OnInit {
     this.router.navigate(["/reports/updatetemplate/" + this.template.id]);
   }
 
-  remove(){
-    if(!confirm("Are you sure that you want to remove that report template?"))
+  async remove(){
+    if(!await this.confirmService.confirm("Are you sure that you want to remove that report template?"))
       return;
     
     this.subscriptions.push(

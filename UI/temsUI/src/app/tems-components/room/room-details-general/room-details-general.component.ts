@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Inject, Input, OnInit, Optional, Output } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Router } from '@angular/router';
+import { ConfirmService } from 'src/app/confirm.service';
 import { Property } from 'src/app/models/equipment/view-property.model';
 import { RoomsService } from 'src/app/services/rooms.service';
 import { TEMSComponent } from 'src/app/tems/tems.component';
@@ -34,6 +35,7 @@ export class RoomDetailsGeneralComponent extends TEMSComponent implements OnInit
     private dialogService: DialogService,
     private snackService: SnackService,
     private tokenService: TokenService,
+    private confirmService: ConfirmService,
     @Optional() @Inject(MAT_DIALOG_DATA) public dialogData: any
   ) { 
     super();
@@ -73,8 +75,8 @@ export class RoomDetailsGeneralComponent extends TEMSComponent implements OnInit
       this.dialogRef.close();
   }
 
-  archieve(){
-    if(!this.room.isArchieved && !confirm("Are you sure you want to archieve this room? Allocations and logs associated with this room will get archieved as well."))
+  async archieve(){
+    if(!this.room.isArchieved && !await this.confirmService.confirm("Are you sure you want to archieve this room? Allocations and logs associated with this room will get archieved as well."))
       return;
       
       let newArchivationStatus = !this.room.isArchieved;

@@ -7,6 +7,7 @@ import { DialogService } from '../../../../services/dialog.service';
 import { SnackService } from '../../../../services/snack.service';
 import { EquipmentService } from './../../../../services/equipment.service';
 import { TEMSComponent } from './../../../../tems/tems.component';
+import { ConfirmService } from 'src/app/confirm.service';
 
 @Component({
   selector: 'app-equipment-types-list',
@@ -25,7 +26,8 @@ export class EquipmentTypesListComponent extends TEMSComponent implements OnInit
     private equipmentService: EquipmentService,
     private dialogService: DialogService,
     private snackService: SnackService,
-    public translate: TranslateService
+    public translate: TranslateService,
+    private confirmService: ConfirmService
   ) {
     super();
   }
@@ -60,7 +62,8 @@ export class EquipmentTypesListComponent extends TEMSComponent implements OnInit
       this.equipmentService,
       this.dialogService,
       this.snackService,
-      q))
+      q,
+      this.confirmService))
   }
 
   ngOnInit(): void {

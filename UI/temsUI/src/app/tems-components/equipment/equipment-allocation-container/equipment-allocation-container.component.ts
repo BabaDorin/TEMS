@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { ConfirmService } from 'src/app/confirm.service';
 import { AllocationService } from '../../../services/allocation.service';
 import { DialogService } from '../../../services/dialog.service';
 import { SnackService } from '../../../services/snack.service';
@@ -23,7 +24,8 @@ export class EquipmentAllocationContainerComponent extends TEMSComponent impleme
   constructor(
     private allocationService: AllocationService,
     private snackService: SnackService,
-    private dialogService: DialogService
+    private dialogService: DialogService,
+    private confirmService: ConfirmService
   ) {
     super();
   }
@@ -47,8 +49,8 @@ export class EquipmentAllocationContainerComponent extends TEMSComponent impleme
     )
   }
 
-  remove(){
-    if(!confirm('Are you sure you want to remove that allocation?'))
+  async remove(){
+    if(!await this.confirmService.confirm('Are you sure you want to remove that allocation?'))
       return;
     
     this.subscriptions.push(

@@ -8,6 +8,7 @@ import { TEMSComponent } from './../../tems/tems.component';
 import { Downloader } from 'src/app/shared/downloader/fileDownloader';
 import { CAN_MANAGE_ENTITIES } from '../claims';
 import { DecimalPipe } from '@angular/common';
+import { ConfirmService } from 'src/app/confirm.service';
 
 export class UploadedFileContainerModel extends TEMSComponent implements IGenericContainerModel {
     title: string;
@@ -24,6 +25,7 @@ export class UploadedFileContainerModel extends TEMSComponent implements IGeneri
         private claims: ClaimService,
         private _decimalPipe: DecimalPipe,
         private libraryItem: ViewLibraryItem,
+        private confirmService: ConfirmService
     ) {
         super();
 
@@ -65,8 +67,8 @@ export class UploadedFileContainerModel extends TEMSComponent implements IGeneri
     }
 
 
-    remove() {
-        if (!confirm("Do you realy want to remove that library item?"))
+    async remove() {
+        if (!await this.confirmService.confirm("Do you realy want to remove that library item?"))
             return;
 
         this.libraryService.removeItem(this.libraryItem.id)

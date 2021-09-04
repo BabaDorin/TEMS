@@ -148,21 +148,19 @@ export class AgGridEquipmentComponent extends TEMSComponent implements OnChanges
   }
 
   async archieve(e){
-    // if(!confirm("Are you sure you want to archive this item? It will result in archieving all of it's logs and allocations"))
-    //   return;
+    if(!await this.confirmService.confirm("Are you sure you want to archive this item? It will result in archieving all of it's logs and allocations"))
+      return;
+      
+    this.subscriptions.push(
+      this.equipmentService.archieveEquipment(e.rowData.id)
+      .subscribe(result => {
+        if(this.snackService.snackIfError(result))
+          return;
 
-    if(await this.confirmService.confirm("Are you sure you want to archive this item? It will result in archieving all of it's logs and allocations")){
-      this.subscriptions.push(
-        this.equipmentService.archieveEquipment(e.rowData.id)
-        .subscribe(result => {
-          if(this.snackService.snackIfError(result))
-            return;
-  
-          if(result.status == 1)
-            this.gridApi.applyTransaction({ remove: [e.rowData] });
-        })
-      );
-    }
+        if(result.status == 1)
+          this.gridApi.applyTransaction({ remove: [e.rowData] });
+      })
+    );
   }
 
   onGridReady(params) {

@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChange } from '@angular/core';
+import { ConfirmService } from 'src/app/confirm.service';
 import { BtnCellRendererComponent } from 'src/app/public/ag-grid/btn-cell-renderer/btn-cell-renderer.component';
 import { SnackService } from 'src/app/services/snack.service';
 import { DialogService } from '../../../services/dialog.service';
@@ -38,7 +39,8 @@ export class AgGridKeysComponent extends TEMSComponent implements OnInit, OnChan
     private keysService: KeysService,
     private snackService: SnackService,
     private dialogService: DialogService,
-    private claims: ClaimService
+    private claims: ClaimService,
+    private confirmService: ConfirmService
   ) { 
     super();
     // enables pagination in the grid
@@ -207,8 +209,8 @@ export class AgGridKeysComponent extends TEMSComponent implements OnInit, OnChan
   }
 
   // Binded to the archieve button
-  archieve(e){
-    if(!confirm("Are you sure you want to archive this key? It will result in archieving all of it's allocations"))
+  async archieve(e){
+    if(!await this.confirmService.confirm("Are you sure you want to archive this key? It will result in archieving all of it's allocations"))
     return;
 
     this.subscriptions.push(

@@ -7,6 +7,7 @@ import { DefinitionContainerModel } from './../../../../models/generic-container
 import { EquipmentService } from './../../../../services/equipment.service';
 import { TEMSComponent } from './../../../../tems/tems.component';
 import { AddDefinitionComponent } from './../../../equipment/add-definition/add-definition.component';
+import { ConfirmService } from 'src/app/confirm.service';
 
 @Component({
   selector: 'app-equipment-definitions-list',
@@ -26,7 +27,8 @@ export class EquipmentDefinitionsListComponent extends TEMSComponent implements 
     private equipmentService: EquipmentService,
     private dialogService: DialogService,
     private snackService: SnackService,
-    public translate: TranslateService
+    public translate: TranslateService,
+    private confirmService: ConfirmService
   ) {
     super();
   }
@@ -53,7 +55,8 @@ export class EquipmentDefinitionsListComponent extends TEMSComponent implements 
       this.equipmentService,
       this.dialogService,
       this.snackService,
-      q
+      q,
+      this.confirmService
     ));
   }
 

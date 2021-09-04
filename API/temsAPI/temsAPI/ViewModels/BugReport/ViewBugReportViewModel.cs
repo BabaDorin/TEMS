@@ -18,7 +18,7 @@ namespace temsAPI.ViewModels.BugReport
             {
                 Id = model.Id,
                 ReportType = model.ReportType,
-                CreatedBy = new Option(model.CreatedBy.Id, model.CreatedBy.Identifier),
+                CreatedBy = new Option(model.CreatedBy?.Id, model.CreatedBy?.Identifier),
                 DateCreated = model.DateCreated.ToString("dd.MM.yyyy  HH:mm"),
                 Description = model.Description
             };

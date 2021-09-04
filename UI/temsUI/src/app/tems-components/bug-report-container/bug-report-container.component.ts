@@ -7,6 +7,7 @@ import { IOption } from './../../models/option.model';
 import { ClaimService } from './../../services/claim.service';
 import { ViewBugReport } from './../../models/bug-report/bug-report.model';
 import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
+import { ConfirmService } from 'src/app/confirm.service';
 
 @Component({
   selector: 'app-bug-report-container',
@@ -26,7 +27,8 @@ export class BugReportContainerComponent extends TEMSComponent implements OnInit
     public claims: ClaimService,
     private bugReportService: BugReportService,
     private snack: SnackService,
-    public translate: TranslateService
+    public translate: TranslateService,
+    private confirmService: ConfirmService
   ) {
     super();
   }
@@ -66,8 +68,8 @@ export class BugReportContainerComponent extends TEMSComponent implements OnInit
     );
   }
 
-  deleteReport(){
-    if(!confirm('Are you sure you want to remove the specified bug report?'))
+  async deleteReport(){
+    if(!await this.confirmService.confirm('Are you sure you want to remove the specified bug report?'))
       return;
     
     this.subscriptions.push(

@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Inject, Input, OnInit, Optional, Output } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Router } from '@angular/router';
+import { ConfirmService } from 'src/app/confirm.service';
 import { Property } from 'src/app/models/equipment/view-property.model';
 import { SnackService } from 'src/app/services/snack.service';
 import { DialogService } from '../../../services/dialog.service';
@@ -36,6 +37,7 @@ export class PersonnelDetailsGeneralComponent extends TEMSComponent implements O
     private dialogService: DialogService,
     private tockenService: TokenService,
     public claims: ClaimService,
+    private confirmService: ConfirmService,
     @Optional() @Inject(MAT_DIALOG_DATA) public dialogData: any
   ) {
     super();
@@ -91,8 +93,8 @@ export class PersonnelDetailsGeneralComponent extends TEMSComponent implements O
     );
   }
 
-  archieve(){
-    if(!this.personnel.isArchieved && !confirm("Are you sure you want to archive this item? It will result in archieving all of it's logs and allocations"))
+  async archieve(){
+    if(!this.personnel.isArchieved && !await this.confirmService.confirm("Are you sure you want to archive this item? It will result in archieving all of it's logs and allocations"))
       return;
 
     let newArchivationStatus = !this.personnel.isArchieved;

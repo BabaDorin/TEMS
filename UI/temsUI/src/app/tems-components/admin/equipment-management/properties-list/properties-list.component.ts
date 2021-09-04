@@ -8,6 +8,7 @@ import { IGenericContainerModel } from './../../../../models/generic-container/I
 import { EquipmentService } from './../../../../services/equipment.service';
 import { TEMSComponent } from './../../../../tems/tems.component';
 import { AddPropertyComponent } from './../../../equipment/add-property/add-property.component';
+import { ConfirmService } from 'src/app/confirm.service';
 
 @Component({
   selector: 'app-properties-list',
@@ -26,7 +27,8 @@ export class PropertiesListComponent extends TEMSComponent implements OnInit {
     private equipmentService: EquipmentService,
     private dialogService: DialogService,
     private snackService: SnackService,
-    public translate: TranslateService
+    public translate: TranslateService,
+    private confirmService: ConfirmService
   ) {
     super();
   }
@@ -67,6 +69,7 @@ export class PropertiesListComponent extends TEMSComponent implements OnInit {
         this.equipmentService,
         this.dialogService,
         this.snackService,
-        q));
+        q,
+        this.confirmService));
   }
 }

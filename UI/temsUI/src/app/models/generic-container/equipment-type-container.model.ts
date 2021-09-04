@@ -1,3 +1,4 @@
+import { ConfirmService } from './../../confirm.service';
 import { Component, OnInit } from '@angular/core';
 import { EquipmentService } from 'src/app/services/equipment.service';
 import { AddTypeComponent } from 'src/app/tems-components/equipment/add-type/add-type.component';
@@ -22,7 +23,8 @@ export class EquipmentTypeContainerModel extends TEMSComponent implements IGener
         private equipmentService: EquipmentService,
         private dialogService: DialogService,
         private snackService: SnackService,
-        private equipmentType: ViewTypeSimplified) {
+        private equipmentType: ViewTypeSimplified,
+        private confirmService: ConfirmService) {
         super();
         this.buildContainerModel();
     }
@@ -102,8 +104,8 @@ export class EquipmentTypeContainerModel extends TEMSComponent implements IGener
         );
     }
 
-    remove() {
-        if (!confirm("Do you realy want to remove that type?"))
+    async remove() {
+        if (!await this.confirmService.confirm("Do you realy want to remove that type?"))
             return;
 
         this.equipmentService.archieveType(this.equipmentType.id)

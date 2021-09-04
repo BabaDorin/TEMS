@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { ConfirmService } from 'src/app/confirm.service';
 import { AddUserComponent } from 'src/app/tems-components/admin/user-management/add-user/add-user.component';
 import { TEMSComponent } from 'src/app/tems/tems.component';
 import { DialogService } from '../../../services/dialog.service';
@@ -19,7 +20,8 @@ export class UserContainerComponent extends TEMSComponent implements OnInit {
   constructor(
     private userService: UserService,
     private snackService: SnackService,
-    private dialogService: DialogService
+    private dialogService: DialogService,
+    private confirmService: ConfirmService
   ) {
     super();
   }
@@ -44,8 +46,8 @@ export class UserContainerComponent extends TEMSComponent implements OnInit {
     )
   }
 
-  remove(){
-    if(!confirm("Are you sure you want to remove that user?"))
+  async remove(){
+    if(!await this.confirmService.confirm("Are you sure you want to remove that user?"))
       return;
 
     this.subscriptions.push(

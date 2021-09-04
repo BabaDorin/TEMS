@@ -13,6 +13,7 @@ import { ClaimService } from './../../../../services/claim.service';
 import { TEMSComponent } from './../../../../tems/tems.component';
 import { RoomDetailsGeneralComponent } from './../../../room/room-details-general/room-details-general.component';
 import { AttachEquipmentComponent } from './../../attach-equipment/attach-equipment.component';
+import { ConfirmService } from 'src/app/confirm.service';
 
 @Component({
   selector: 'app-equipment-details-general',
@@ -45,6 +46,7 @@ export class EquipmentDetailsGeneralComponent extends TEMSComponent implements O
     private snackService: SnackService,
     private translate: TranslateService,
     private lazyLoader: LazyLoaderService,
+    private confirmService: ConfirmService,
     @Optional() @Inject(MAT_DIALOG_DATA) public dialogData: any) {
     super();
 
@@ -172,8 +174,8 @@ export class EquipmentDetailsGeneralComponent extends TEMSComponent implements O
   }
 
   // Menu actions
-  archieve(){
-    if(!this.equipment.isArchieved && !confirm("Are you sure you want to archive this item? It will result in archieving all of it's logs and allocations"))
+  async archieve(){
+    if(!this.equipment.isArchieved && !await this.confirmService.confirm("Are you sure you want to archive this item? It will result in archieving all of it's logs and allocations"))
       return;
 
     let newArchivationStatus = !this.equipment.isArchieved;

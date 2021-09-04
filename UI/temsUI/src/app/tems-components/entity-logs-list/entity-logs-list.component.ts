@@ -1,6 +1,7 @@
+import { IncludeEquipmentLabelsComponent } from './../../shared/include-equipment-tags/include-equipment-tags.component';
 import { ResponseFactory } from './../../models/system/response.model';
 import { LogFilter } from './../../helpers/filters/log.filter';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { ViewLog } from 'src/app/models/communication/logs/view-logs.model';
 import { IOption } from 'src/app/models/option.model';
 import { LogsService } from 'src/app/services/logs.service';
@@ -22,6 +23,8 @@ export class EntityLogsListComponent extends TEMSComponent implements OnInit {
   @Input() personnel: IOption;
   @Input() addLogEnabled: boolean = true;
 
+  @ViewChild('includeEquipmentLabels') includeEquipmentLabels: IncludeEquipmentLabelsComponent;
+
   itemsPerPage = 10;
   totalItems = 0;
   pageNumber=1;
@@ -30,6 +33,7 @@ export class EntityLogsListComponent extends TEMSComponent implements OnInit {
   loading: boolean = true;  
   logsEndpoint;
   filter: LogFilter;
+  defaultLabels = ['Equipment'];
 
   constructor(
     private logsService: LogsService,
@@ -47,6 +51,10 @@ export class EntityLogsListComponent extends TEMSComponent implements OnInit {
     this.filter.equipmentId = this.equipment?.value;
     this.filter.roomId = this.room?.value;
     this.filter.personnelId = this.personnel?.value;
+    this.filter.includeLabels = this.includeEquipmentLabels?.value ?? this.defaultLabels;
+
+    console.log('filter');
+    console.log(this.filter);
   }
 
   validateFilter(): boolean{
@@ -74,15 +82,16 @@ export class EntityLogsListComponent extends TEMSComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.buildFilter();
-    if(!this.validateFilter())
-      return;
-    
-    this.getTotalItems();
     this.fetchLogs();
   }
 
   fetchLogs(){
+    this.buildFilter();
+    if(!this.validateFilter())
+      return;
+      
+    this.getTotalItems();
+
     this.loading = true;
     this.subscriptions.push(
       this.logsService.getEntityLogs(this.filter)

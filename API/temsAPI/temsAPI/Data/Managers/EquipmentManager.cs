@@ -393,35 +393,21 @@ namespace temsAPI.Data.Managers
                     return "Allocatee id seems invalid.";
 
             List<string> equipmentsWhereFailed = new List<string>();
+            
+            string currentUserId = IdentityService.GetUserId(_user);
 
             foreach (Option equipment in viewModel.Equipments)
             {
                 try
                 {
-                    await ClosePreviousAllocations(equipment.Value);
-
                     // Allocate parent along with it's children
-                    var equipmentToBeAllocated = (await _unitOfWork.Equipments
-                        .Find<Equipment>(
-                            where: q => q.Id == equipment.Value,
-                            include: q => q.Include(q => q.Children)))
-                        .Select(q =>
-                        {
-                            // equipmentToBeAllocated = parent + children entities
-                            List<Equipment> equipmentToBeAllocated = new List<Equipment>() { q };
-
-                            if (q.Children.IsNullOrEmpty())
-                                return equipmentToBeAllocated;
-
-                            q.Children.ForEach(ch => equipmentToBeAllocated.Add(ch));
-                            return equipmentToBeAllocated;
-                        })
-                        .FirstOrDefault();
-
-                    string currentUserId = IdentityService.GetUserId(_user);
+                    var equipmentToBeAllocated = await GetEquipmentAlongWithItsChildren(equipment.Value);
 
                     foreach(var eqToAllocate in equipmentToBeAllocated)
                     {
+                        // Close current allocation (if any)
+                        await ClosePreviousAllocations(eqToAllocate.Id);
+
                         var model = new EquipmentAllocation
                         {
                             Id = Guid.NewGuid().ToString(),
@@ -545,6 +531,26 @@ namespace temsAPI.Data.Managers
             await _unitOfWork.Save();
         }
 
+        private async Task<IEnumerable<Equipment>> GetEquipmentAlongWithItsChildren(string parentId)
+        {
+            return (await _unitOfWork.Equipments
+                .Find<Equipment>(
+                    where: q => q.Id == parentId,
+                    include: q => q.Include(q => q.Children)))
+                .Select(q =>
+                {
+                    // equipmentToBeAllocated = parent + children entities
+                    List<Equipment> equipmentToBeAllocated = new List<Equipment>() { q };
+
+                    if (q.Children.IsNullOrEmpty())
+                        return equipmentToBeAllocated;
+
+                    q.Children.ForEach(ch => equipmentToBeAllocated.Add(ch));
+                    return equipmentToBeAllocated;
+                })
+                .FirstOrDefault();
+        }
+
         // Extract to sepparate classes
         [Obsolete("Build an instance of EquipmentFilter and use EquipmentFetcher service for this scope")]
         public Expression<Func<Equipment, bool>> Eq_FilterByAllocateeEntity(
@@ -579,5 +585,7 @@ namespace temsAPI.Data.Managers
             expression = ExpressionCombiner.And(expression, secondaryExpression);
             return expression;
         }
+
+        // BEFREE: Create AllocationService. Move allocation related stuff there.
     }
 }

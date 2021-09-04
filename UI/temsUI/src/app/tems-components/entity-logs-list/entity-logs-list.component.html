@@ -1,8 +1,28 @@
 <ng-container *ngIf="claims.canManage || claims.canView; else elseBlock">
   <div class="col-md-12">
-    <h2 class="mt-3 mb-3">
-      {{ 'entities.logs' | translate }}
-    </h2>
+    <div class="page-header">
+      <h2 class="mt-3 mb-3">
+        {{ 'entities.logs' | translate }}
+      </h2>
+      <nav aria-label="breadcrumb">
+          <ul class="breadcrumb bg-transparent">
+              <li class="breadcrumb-item" aria-current="page">
+                  <button mat-icon-button [matMenuTriggerFor]="menu"
+                      class="float-right">
+                      <mat-icon>more_vert</mat-icon>
+                  </button>
+                  <mat-menu #menu="matMenu">
+                      <app-include-equipment-labels 
+                          #includeEquipmentLabels 
+                          (valueChanged)="fetchLogs()"
+                          [defaultValue]="defaultLabels">
+                      </app-include-equipment-labels>
+                  </mat-menu>
+              </li>
+          </ul>
+      </nav>
+  </div>
+  <hr>
     <ng-container *ngIf="claims.canManage">
       <button mat-button (click)="addLog()">
         <mat-icon class="text-primary">add</mat-icon>
@@ -14,7 +34,7 @@
     <!-- Loading bar + placeholder -->
     <ng-container *ngIf="loading == true">
       <mat-progress-bar mode="indeterminate"></mat-progress-bar>
-      <app-loading-placeholder></app-loading-placeholder>
+      <app-loading-placeholder *ngIf="logs == undefined"></app-loading-placeholder>
     </ng-container>
   
     <!-- Issues list -->

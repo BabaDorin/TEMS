@@ -58,7 +58,8 @@ namespace temsAPI.Services.AllocationManagementHelpers
 
         private Expression<Func<EquipmentAllocation, bool>> GetWhereExp(AllocationFilter filter)
         {
-            // WHERE expression
+            // Default
+            Expression<Func<EquipmentAllocation, bool>> defaultWhereExp = q => !q.IsArchieved;
 
             // Of Equipment
             Expression<Func<EquipmentAllocation, bool>> alOfEquipmentExp = null;
@@ -99,6 +100,7 @@ namespace temsAPI.Services.AllocationManagementHelpers
             }
 
             Expression<Func<EquipmentAllocation, bool>> finalWhere = ExpressionCombiner.And(
+                defaultWhereExp,
                 alOfEquipmentExp,
                 alOfRoom,
                 alOfPersonnel,

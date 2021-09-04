@@ -21,6 +21,7 @@ export class AllocationService extends TEMSService{
   }
 
   getTotalItems(filter: AllocationFilter): Observable<number>{
+    console.log('called getTotalItems');
     return this.http.post<number>(
       API_ALL_URL + '/gettotalitems',
       JSON.stringify(filter),
@@ -29,6 +30,7 @@ export class AllocationService extends TEMSService{
   }
 
   getAllocations(filter: AllocationFilter): Observable<ViewAllocationSimplified[]> {
+    console.log('called getAllocations');
       return this.http.post<ViewAllocationSimplified[]>(
         API_ALL_URL + '/getallocations',
         JSON.stringify(filter),

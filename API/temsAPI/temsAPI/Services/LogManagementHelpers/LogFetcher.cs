@@ -44,6 +44,10 @@ namespace temsAPI.Services.LogManagementHelpers
 
         private Expression<Func<Log, bool>> GetWhereExp(LogFilter filter)
         {
+            // Default
+            Expression<Func<Log, bool>> defaultWhereExp = q => !q.IsArchieved;
+
+
             // Filter by entity
             Expression<Func<Log, bool>> logsOfEntityExp = null;
 
@@ -60,7 +64,7 @@ namespace temsAPI.Services.LogManagementHelpers
             Expression<Func<Log, bool>> logsOfEquipmentLabelsExp = null;
 
             if (!filter.IncludeLabels.IsNullOrEmpty())
-                logsOfEquipmentLabelsExp = q => filter.IncludeLabels.Contains(q.Equipment.Label);
+                logsOfEquipmentLabelsExp = q => q.EquipmentLabel == null || filter.IncludeLabels.Contains(q.EquipmentLabel);
 
             // Filter by Equipment label (associate log with equipment label?????) or get label via join
             Expression<Func<Log, bool>> logsBySearchExp = null;
@@ -70,6 +74,7 @@ namespace temsAPI.Services.LogManagementHelpers
 
 
             var finalExp = ExpressionCombiner.And(
+                    defaultWhereExp,
                     logsOfEntityExp,
                     logsOfEquipmentLabelsExp,
                     logsBySearchExp);

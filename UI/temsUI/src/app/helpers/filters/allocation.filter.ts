@@ -7,5 +7,5 @@ export class AllocationFilter{
     equipment: string[];
     definitions: string[];
     includeLabels: string[]; // equipment / component / part
-    includeStatus: string[]; // open / closed
+    includeStatuses: string[]; // open / closed
 }

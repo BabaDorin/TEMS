@@ -340,8 +340,8 @@
     },
 
     "allocation": {
-        "open": "Deschis",
-        "close": "Închis",
+        "open": "Active",
+        "close": "Închise",
         "closed": "Închise",
         "allocated": "Alocat",
         "returned":"Returnat",

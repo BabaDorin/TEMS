@@ -3,7 +3,7 @@
         <h2 class="page-title mb-0">
             {{ 'allocation.allocationsHeader' | translate }}
         </h2>
-        <nav aria-label="breadcrumb">
+        <nav aria-label="breadcrumb" *ngIf="filter.equipment == undefined || filter.equipment.length == 0">
             <ul class="breadcrumb bg-transparent">
                 <li class="breadcrumb-item" aria-current="page">
                     <button mat-icon-button [matMenuTriggerFor]="menu"

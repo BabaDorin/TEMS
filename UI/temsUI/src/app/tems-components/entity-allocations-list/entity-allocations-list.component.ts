@@ -112,10 +112,12 @@ export class EntityAllocationsListComponent extends TEMSComponent implements OnI
     aux.personnel = this.personnelIds;
     aux.rooms = this.roomIds;
     aux.includeLabels = this.includeEquipmentLabels?.value ?? this.defaultLabels;
-    aux.includeStatus = (this.include == 'any' || IsNullOrUndefined(this.include))
-      ? ['active', 'closed']
+    aux.includeStatuses = (this.include == 'any' || IsNullOrUndefined(this.include))
+      ? ['Active', 'Closed']
       : [this.include];
 
+    console.log('aux');
+    console.log(aux);
     this.filter = Object.assign(new AllocationFilter(), aux);
   }
 
@@ -128,8 +130,8 @@ export class EntityAllocationsListComponent extends TEMSComponent implements OnI
     if(this.onlyClosed == undefined) this.onlyClosed = false;
     
     this.include = 'any';
-    if(this.onlyActive) this.include = 'active';
-    if(this.onlyClosed) this.include = 'returned';
+    if(this.onlyActive) this.include = 'Active';
+    if(this.onlyClosed) this.include = 'Closed';
   }
 
   fetchAllocations(){

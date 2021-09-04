@@ -31,7 +31,8 @@ namespace temsAPI.Services.AllocationManagementHelpers
             Func<IQueryable<EquipmentAllocation>, IIncludableQueryable<EquipmentAllocation, object>> includeExp
                 = q => q.Include(q => q.Room)
                         .Include(q => q.Personnel)
-                        .Include(q => q.Equipment);
+                        .Include(q => q.Equipment)
+                        .ThenInclude(q => q.EquipmentDefinition);
 
             // Order by
             Func<IQueryable<EquipmentAllocation>, IOrderedQueryable<EquipmentAllocation>> orderByExp;
@@ -62,7 +63,7 @@ namespace temsAPI.Services.AllocationManagementHelpers
             // Of Equipment
             Expression<Func<EquipmentAllocation, bool>> alOfEquipmentExp = null;
             if (!filter.Equipment.IsNullOrEmpty())
-                alOfEquipmentExp = q => filter.Equipment.Contains(q.Id);
+                alOfEquipmentExp = q => filter.Equipment.Contains(q.EquipmentID);
 
             // Of Room
             Expression<Func<EquipmentAllocation, bool>> alOfRoom = null;
@@ -78,10 +79,11 @@ namespace temsAPI.Services.AllocationManagementHelpers
             Expression<Func<EquipmentAllocation, bool>> alOfDefinition = null;
             if (!filter.Definitions.IsNullOrEmpty())
                 alOfDefinition = q => filter.Definitions.Contains(q.Equipment.EquipmentDefinitionID);
+            
 
             // Include labels
             Expression<Func<EquipmentAllocation, bool>> alOfLabels = null;
-            if(!filter.IncludeLabels.IsNullOrEmpty())
+            if(filter.Equipment.IsNullOrEmpty() && !filter.IncludeLabels.IsNullOrEmpty())
                 alOfLabels = q => filter.IncludeLabels.Contains(q.Label);
 
             // Include statuses 

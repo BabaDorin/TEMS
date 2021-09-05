@@ -48,8 +48,8 @@
                         </div>
                     </div>
                 </form>
-                <mat-tab-group [@.disabled]="true">
-                    <mat-tab label="Open">
+                <mat-tab-group [@.disabled]="true" (selectedIndexChange)="matTabLazyLoader.tabChange($event)">
+                    <mat-tab [label]="translate.instant('ticket.openTickets')">
                         <app-entity-issues-list #entityOpenIssuesList
                             showIncludeClosed="false"
                             [equipmentId]="equipmentId"
@@ -60,20 +60,20 @@
                             {{ 'general.loading' | translate }}
                         </app-entity-issues-list>
                     </mat-tab>
-                    <mat-tab label="Closed">
-                        <ng-template matTabContent>
+                    <mat-tab [label]="translate.instant('ticket.closedTickets')">
+                        <ng-container *ngIf="matTabLazyLoader.tabsVisibility[1]">
                             <app-entity-issues-list #entityClosedIssuesList
-                            showIncludeClosed="false"
-                            [equipmentId]="equipmentId"
-                            [includePinned]="false"
-                            [roomId]="roomId"
-                            [personnelId]="personnelId"
-                            onlyClosed="true"
-                            addIssueEnabled="false"
-                            (pinned)="ticketPinned($event)">
-                            {{ 'general.loading' | translate }}
-                        </app-entity-issues-list>
-                        </ng-template>
+                                showIncludeClosed="false"
+                                [equipmentId]="equipmentId"
+                                [includePinned]="false"
+                                [roomId]="roomId"
+                                [personnelId]="personnelId"
+                                onlyClosed="true"
+                                addIssueEnabled="false"
+                                (pinned)="ticketPinned($event)">
+                                {{ 'general.loading' | translate }}
+                            </app-entity-issues-list>
+                        </ng-container>
                     </mat-tab>
                 </mat-tab-group>
             </div>

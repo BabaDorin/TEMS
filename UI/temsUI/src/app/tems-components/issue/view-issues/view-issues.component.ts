@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
+import { MatTabLazyLoader } from 'src/app/helpers/mat-tab-lazy-loader.helper';
 import { ViewIssueSimplified } from 'src/app/models/communication/issues/view-issue-simplified.model';
 import { IOption } from 'src/app/models/option.model';
 import { EquipmentService } from 'src/app/services/equipment.service';
@@ -38,6 +39,7 @@ export class ViewIssuesComponent extends TEMSComponent implements OnInit {
     rooms: new FormControl(),
     personnel: new FormControl(),
   })
+  matTabLazyLoader = new MatTabLazyLoader(2);
 
   @ViewChild('pinnedIssues') pinnedIssues: PinnedIssuesComponent;
   @ViewChild('entityOpenIssuesList') entityOpenIssuesList: EntityIssuesListComponent;

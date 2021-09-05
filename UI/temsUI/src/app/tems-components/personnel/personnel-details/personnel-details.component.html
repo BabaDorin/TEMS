@@ -1,22 +1,20 @@
 <div class="card">
     <div class="card-body">
-        <mat-tab-group [@.disabled]="true">
+        <mat-tab-group [@.disabled]="true" (selectedIndexChange)="matTabLazyLoader.tabChange($event)">
             <mat-tab [label]="mainHeaderLabel">
-                <ng-template matTabContent>
-                    <app-personnel-details-general 
+                <app-personnel-details-general 
                     [personnelId]="personnelId"
                     (archivationStatusChanged)="archivationStatusChanged()">
                         {{ 'general.loading' | translate }}
-                    </app-personnel-details-general>
-                </ng-template>
+                </app-personnel-details-general>
             </mat-tab>
             <ng-container *ngIf="personnelSimplified.isArchieved == false">
                 <mat-tab [label]="translate.instant('entities.logs')">
-                    <ng-template matTabContent>
+                    <ng-container *ngIf="matTabLazyLoader.tabsVisibility[1]">
                         <app-personnel-details-logs [personnel]="personnelSimplified">
                             {{ 'general.loading' | translate }}
                         </app-personnel-details-logs>
-                    </ng-template>
+                    </ng-container>
                 </mat-tab>
                 <mat-tab>
                     <ng-template mat-tab-label>
@@ -25,18 +23,18 @@
                         </div>
                     </ng-template>
                     
-                    <ng-template matTabContent>
+                    <ng-container *ngIf="matTabLazyLoader.tabsVisibility[2]">
                         <app-personnel-details-issues [personnel]="personnelSimplified">
                             {{ 'general.loading' | translate }}
                         </app-personnel-details-issues>
-                    </ng-template>
+                    </ng-container>
                 </mat-tab>
                 <mat-tab [label]="translate.instant('entities.allocations')">
-                    <ng-template matTabContent>
+                    <ng-container *ngIf="matTabLazyLoader.tabsVisibility[3]">
                         <app-personnel-details-allocations [personnel]="personnelSimplified">
                             {{ 'general.loading' | translate }}
                         </app-personnel-details-allocations>
-                    </ng-template>
+                    </ng-container>
                 </mat-tab>
             </ng-container>
         </mat-tab-group>

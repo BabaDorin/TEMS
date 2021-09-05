@@ -476,6 +476,8 @@
         "urgent": "Urgent",
         "medium": "Mediu",
         "future": "Pe viitor",
+        "openTickets": "Active",
+        "closedTickets": "Soluționate",
         "closed": "Soluționat",
         "openTabLabel": "Active",
         "closedTabLabel": "Soluționate",

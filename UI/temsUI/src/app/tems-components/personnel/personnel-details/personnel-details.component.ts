@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
+import { MatTabLazyLoader } from 'src/app/helpers/mat-tab-lazy-loader.helper';
 import { ViewPersonnel } from 'src/app/models/personnel/view-personnel.model';
 import { PersonnelService } from '../../../services/personnel.service';
 import { ViewPersonnelSimplified } from './../../../models/personnel/view-personnel-simplified.model';
@@ -18,6 +19,7 @@ export class PersonnelDetailsComponent extends TEMSComponent implements OnInit {
   personnelSimplified = new ViewPersonnelSimplified();
   personnel: ViewPersonnel;
   mainHeaderLabel="General";
+  matTabLazyLoader = new MatTabLazyLoader(4);
 
   constructor(
     private activatedroute: ActivatedRoute,

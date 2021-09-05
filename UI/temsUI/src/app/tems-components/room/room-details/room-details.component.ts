@@ -1,3 +1,4 @@
+import { MatTabLazyLoader } from 'src/app/helpers/mat-tab-lazy-loader.helper';
 import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
@@ -18,6 +19,7 @@ export class RoomDetailsComponent extends TEMSComponent implements OnInit {
   roomSimplified = new ViewRoomSimplified();
   room: ViewRoom;
   mainHeaderLabel="General";
+  matTabLazyLoader = new MatTabLazyLoader(4);
   
   constructor(
     private activatedroute: ActivatedRoute,

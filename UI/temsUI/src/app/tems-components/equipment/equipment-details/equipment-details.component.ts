@@ -5,6 +5,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { EquipmentService } from 'src/app/services/equipment.service';
 import { ViewEquipmentSimplified } from './../../../models/equipment/view-equipment-simplified.model';
 import { TEMSComponent } from './../../../tems/tems.component';
+import { MatTabLazyLoader } from 'src/app/helpers/mat-tab-lazy-loader.helper';
 
 @Component({
   selector: 'app-equipment-details',
@@ -17,6 +18,7 @@ export class EquipmentDetailsComponent extends TEMSComponent implements OnInit {
   edit: boolean;
   equipmentSimplified = new ViewEquipmentSimplified();
   mainHeaderLabel="General";
+  matTabLazyLoader = new MatTabLazyLoader(4);
 
   constructor(
     private activatedroute: ActivatedRoute, 

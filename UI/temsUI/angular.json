@@ -85,6 +85,9 @@
           "configurations": {
             "production": {
               "browserTarget": "demo1:build:production"
+            },
+            "development": {
+              "browserTarget": "demo1:build:development"
             }
           }
         },

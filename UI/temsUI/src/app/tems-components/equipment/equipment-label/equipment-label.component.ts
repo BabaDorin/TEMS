@@ -1,7 +1,5 @@
 import { DownloadService } from './../../../download.service';
 import { Component, Input, OnInit } from '@angular/core';
-import { IsNullOrUndefined } from 'src/app/helpers/validators/validations';
-import Canvg from 'canvg';
 
 @Component({
   selector: 'app-equipment-label',

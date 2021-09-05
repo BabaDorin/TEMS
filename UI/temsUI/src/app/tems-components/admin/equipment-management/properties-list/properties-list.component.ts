@@ -19,7 +19,8 @@ export class PropertiesListComponent extends TEMSComponent implements OnInit {
 
   @Input() canManage: boolean = false;
 
-  pageNumber: 1;
+  pageNumber = 1;
+  itemsPerPage = 10;
   properties: ViewPropertySimplified[];
   propContainerModels: IGenericContainerModel[] = [];
 
@@ -48,6 +49,8 @@ export class PropertiesListComponent extends TEMSComponent implements OnInit {
   }
 
   eventEmitted(eventData, index){
+    console.log(index);
+    console.log(this.properties[index]);
     if(eventData == 'removed')
       this.propContainerModels.splice(index, 1);
   }

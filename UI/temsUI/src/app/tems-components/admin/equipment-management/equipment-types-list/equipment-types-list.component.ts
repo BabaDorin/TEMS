@@ -19,6 +19,7 @@ export class EquipmentTypesListComponent extends TEMSComponent implements OnInit
   @Input() canManage: boolean = false;
 
   pageNumber = 1;
+  itemsPerPage = 10;
   types: ViewTypeSimplified[] = [];
   typeContainerModels: EquipmentTypeContainerModel[] = [];
 

@@ -16,12 +16,13 @@ import { ConfirmService } from 'src/app/confirm.service';
 })
 export class EquipmentDefinitionsListComponent extends TEMSComponent implements OnInit {
 
+  pageNumber = 1;
+  itemsPerPage = 10;
+
   @Input() canManage: boolean = false;
 
   definitions: ViewDefinitionSimplified[];
   definitionContainerModels: DefinitionContainerModel[] = [];
-
-  pageNumber: 1;
 
   constructor(
     private equipmentService: EquipmentService,

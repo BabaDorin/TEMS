@@ -1,9 +1,9 @@
 <div class="col-md-12">
-    <button mat-button *ngIf="canManage" (click)="createAllocation()" class="mb-3">
+    <button mat-button *ngIf="canManage" (click)="createAllocation()">
         <mat-icon class="text-primary">add</mat-icon>
         {{ 'key.createAllocation' | translate }}
     </button>
-
+    <hr class="mb-3">
     <ng-container *ngIf="loading == true">
         <mat-progress-bar mode="indeterminate"></mat-progress-bar>
         <app-loading-placeholder *ngIf="allocations == undefined || allocations.length == 0">
@@ -23,9 +23,6 @@
                     account_circle
                 </mat-icon> {{ allocation.personnel.label }}
             </a>
-            <!-- <button *ngIf="canManage" mat-button (click)="delete(allocation.id, (p1 - 1) * 10 + i)">
-                <mat-icon class="text-secondary">delete</mat-icon>
-            </button> -->
             <button type="button" class="close" data-dismiss="modal" aria-label="Close"
                 *ngIf="canManage" (click)="delete(allocation.id, (pageNumber - 1) * 10 + i)">
                 <span aria-hidden="true">&times;</span>
@@ -33,12 +30,12 @@
             <div class="mt-2 text-center">
                 <p class="m-0">
                     <small class="text-muted">
-                        {{ 'key.allocated' | translate }}: {{ allocation.dateAllocated | date:'medium' }}
+                        {{ 'key.allocatedAt' | translate }}: {{ allocation.dateAllocated | date:'medium' }}
                     </small>
                 </p>
                 <p *ngIf="allocation.dateReturned != undefined" class="m-0">
                     <small class="text-muted">
-                        {{ 'key.returned' | translate }}: {{ allocation.dateReturned | date:'medium' }}
+                        {{ 'key.returnedAt' | translate }}: {{ allocation.dateReturned | date:'medium' }}
                     </small>
                 </p>
             </div>

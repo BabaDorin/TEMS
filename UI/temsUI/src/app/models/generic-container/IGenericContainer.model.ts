@@ -23,4 +23,5 @@ export interface IContainerAction{
     action?: Function,
     disabled?: boolean,
     actionParameters?: any;
+    value?: string
 }

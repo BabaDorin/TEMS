@@ -1,3 +1,4 @@
+import { TranslateService } from '@ngx-translate/core';
 import { ClaimService } from './../../services/claim.service';
 import { TokenService } from '../../services/token.service';
 import { ViewLibraryItem } from './../library/view-library-item.model';
@@ -25,7 +26,8 @@ export class UploadedFileContainerModel extends TEMSComponent implements IGeneri
         private claims: ClaimService,
         private _decimalPipe: DecimalPipe,
         private libraryItem: ViewLibraryItem,
-        private confirmService: ConfirmService
+        private confirmService: ConfirmService,
+        private translate: TranslateService
     ) {
         super();
 
@@ -37,20 +39,21 @@ export class UploadedFileContainerModel extends TEMSComponent implements IGeneri
 
         this.tagGroups = [];
         this.tagGroups.push({
-            name: 'Downloads',
+            name: this.translate.instant('library.downloads'),
             tags: [this.libraryItem.downloads.toString()]
         },
-            {
-                name: 'File size',
-                tags: [this._decimalPipe.transform(this.libraryItem.fileSize / 1024 / 1024 / 1024, '1.1-1') + ' GB']
-            }
+        {
+            name: this.translate.instant('library.fileSize'),
+            tags: [this._decimalPipe.transform(this.libraryItem.fileSize / 1024 / 1024 / 1024, '1.1-1') + ' GB']
+        }
         )
 
         this.description = this.libraryItem.description;
 
         this.actions = [];
         this.actions.push({
-            name: 'Download',
+            value: 'download',
+            name: this.translate.instant('library.download'),
             icon: 'download',
             action: () => this.download()
         });
@@ -58,7 +61,8 @@ export class UploadedFileContainerModel extends TEMSComponent implements IGeneri
         if (this.claims.canManage) {
             this.actions.push(
                 {
-                    name: 'Remove',
+                    value: 'delete',
+                    name: this.translate.instant('library.remove'),
                     icon: 'delete',
                     action: () => this.remove()
                 }
@@ -82,8 +86,8 @@ export class UploadedFileContainerModel extends TEMSComponent implements IGeneri
     }
 
     download() {
-        let downloadButton = this.actions.find(q => q.name == 'Download');
-        downloadButton.disabled = true;
+        let downloadButton = this.actions.find(q => q.value == 'download');
+            downloadButton.disabled = true;
 
         this.subscriptions.push(this.libraryService.downloadItem(this.libraryItem.id)
             .subscribe((event) => {

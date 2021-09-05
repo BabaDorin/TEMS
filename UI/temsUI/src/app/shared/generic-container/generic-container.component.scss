@@ -3,7 +3,7 @@
 .generic-container {
 //   height: 330px;s
   transition: 0.3s;
-  background-color: $content-bg;
+  background-color: #d6d3ff12;
 }
 
 // uncomment this if going to implement the hoverable effect over card content
@@ -26,18 +26,6 @@
   -webkit-line-clamp: 2;
   /* number of lines to show */
   -webkit-box-orient: vertical;
-}
-
-.container-description {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: -webkit-box;
-  -webkit-line-clamp: 4;
-  /* number of lines to show */
-  -webkit-box-orient: vertical;
-
-  height: 40%;
-  margin-top: 20px;
 }
 
 .container-header-wrapper{

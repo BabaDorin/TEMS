@@ -14,7 +14,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { TranslateLoader, TranslateModule, TranslatePipe } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { ChartsModule, ThemeService } from 'ng2-charts';
@@ -50,6 +49,7 @@ import { UserCardsModule } from './user-cards/user-cards.module';
 import { TemsFormsModule } from './modules/tems-forms/tems-forms.module';
 import { UsedCellRenderedComponent } from './public/ag-grid/used-cell-rendered/used-cell-rendered.component';
 import { DefectCellRenderedComponent } from './public/ag-grid/defect-cell-rendered/defect-cell-rendered.component';
+import { NgbCollapseModule, NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
 
 export function HttpLoaderFactory(http: HttpClient){
   return new TranslateHttpLoader(http);
@@ -74,7 +74,6 @@ export function HttpLoaderFactory(http: HttpClient){
   imports: [
     LastIssuesSimplifiedModule,
     AppRoutingModule,
-    NgbModule,
     MatMenuModule,
     BrowserAnimationsModule,
     ChartsModule,
@@ -94,6 +93,8 @@ export function HttpLoaderFactory(http: HttpClient){
     ChartsModule,
     MatIconModule,
     ViewLibraryModule,
+    NgbDropdownModule,
+    NgbCollapseModule,
     TemsFormsModule,
     TranslateModule.forRoot({
       loader: {

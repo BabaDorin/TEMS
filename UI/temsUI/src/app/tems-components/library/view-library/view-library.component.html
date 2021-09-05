@@ -22,6 +22,11 @@
         <hr>
 
         <div class="container m-0 row mt-3">
+            <ng-container *ngIf="libraryContainerModels == undefined || libraryContainerModels.length == 0">
+                <p class="text-center w-100">
+                    {{ 'general.empty' | translate }}
+                </p>
+            </ng-container>
             <div *ngFor="let model of libraryContainerModels | paginate: { itemsPerPage: 12, currentPage: pageNumber, id: 'lbItems' }; let i = index"
                 class="col-12 col-lg-3 col-md-4 col-sm-6 mb-2">
                 <app-generic-container [model]="model" (eventEmitted)="eventEmitted($event, (pageNumber - 1) * 12 + i)">

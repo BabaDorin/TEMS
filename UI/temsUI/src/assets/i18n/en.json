@@ -94,7 +94,11 @@
         "successfulyUploaded": "has been successfuly uploaded!",
         "startUpload": "Start uploading",
         "usedOutOf": "used out of",
-        "gbAllocated": "GB allocated"
+        "gbAllocated": "GB allocated",
+        "downloads": "Downloads",
+        "fileSize": "File size",
+        "remove": "Remove",
+        "download": "Download"
     },
 
     "logs": {
@@ -385,9 +389,11 @@
         "allocate": "Allocate",
         "allocateSelected": "Allocate selected",
         "allocated": "Allocated",
+        "allocatedAt": "Allocated",
         "allocatedTo": "Allocated to",
         "unallocated": "Unallocated",
         "returned": "Returned",
+        "returnedAt": "Returned",
         "return": "Return",
         "recentlyAllocated": "Recently allocated",
         "unallocatedKeys": "Unallocated keys",

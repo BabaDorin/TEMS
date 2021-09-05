@@ -1,3 +1,4 @@
+import { ResponseFactory } from './../../../models/system/response.model';
 import { HttpEventType } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { TEMSComponent } from 'src/app/tems/tems.component';
@@ -13,7 +14,6 @@ export class UploadLibraryItemComponent extends TEMSComponent implements OnInit 
 
   files: any[] = [];
   formDatas: FormData[] = [];
-
   uploadEnabled = true;
 
   constructor(
@@ -29,6 +29,11 @@ export class UploadLibraryItemComponent extends TEMSComponent implements OnInit 
   upload() {
     if (this.files.length === 0)
       return;
+
+    if(this.files.findIndex(q => q != null && q != undefined && q.size > 2147482548) > -1){
+      this.snackService.snack(ResponseFactory.Neutral("One of selected files exceeds the maximum file size allowed of 2 GB."));
+      return;
+    }
 
     this.uploadEnabled = false;
     this.uploadFile(0);
@@ -79,6 +84,7 @@ export class UploadLibraryItemComponent extends TEMSComponent implements OnInit 
             if(timer) clearTimeout(timer);
             timer = setTimeout(() => {
               fileToUpload.message = "Compressing... Please wait, It might take a while."
+              fileToUpload.status = "compressing"
             }, 1000);
           }
           else if (event.type === HttpEventType.Response) {

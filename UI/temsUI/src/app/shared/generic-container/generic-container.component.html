@@ -50,16 +50,16 @@
                 <h5 class="text-weight-light">
                     {{tg.name}}
                 </h5>
-                <label *ngFor="let tag of tg.tags" class="badge badge-gradient-info mr-2">
+                <label *ngFor="let tag of tg.tags" class="badge badge-gradient-primary mr-2">
                     {{ tag }}
                 </label>
             </ng-container>
         </ng-container>
 
         <!-- Display description -->
-        <ng-container *ngIf="model.description != undefined">
-            <p class="container-description text-justify">
-                {{model.description}}
+        <ng-container *ngIf="model.description != undefined  && model.description.length > 0">
+            <p [matTooltip]="model.description" class="clickable text-center">
+                <mat-icon class="text-primary">info_outline</mat-icon> Description
             </p>
         </ng-container>
     </mat-card-content>

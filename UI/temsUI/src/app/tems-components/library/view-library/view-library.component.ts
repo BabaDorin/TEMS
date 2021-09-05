@@ -1,3 +1,4 @@
+import { TranslateService } from '@ngx-translate/core';
 import { DecimalPipe } from '@angular/common';
 import { Component, Inject, OnInit, Optional } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
@@ -34,6 +35,7 @@ export class ViewLibraryComponent extends TEMSComponent implements OnInit {
     public claims: ClaimService,
     private _decimalPipe: DecimalPipe,
     private confirmService: ConfirmService,
+    private translate: TranslateService,
     @Optional() @Inject(MAT_DIALOG_DATA) public dialogData: any
   ) {
     super();
@@ -50,7 +52,7 @@ export class ViewLibraryComponent extends TEMSComponent implements OnInit {
           return;
         
         this.libraryContainerModels = (result as ViewLibraryItem[])
-          .map(q => new UploadedFileContainerModel(this.libraryService, this.snackService, this.claims, this._decimalPipe, q, this.confirmService));
+          .map(q => new UploadedFileContainerModel(this.libraryService, this.snackService, this.claims, this._decimalPipe, q, this.confirmService, this.translate));
       }));
 
     this.fetchSpaceUsageData();

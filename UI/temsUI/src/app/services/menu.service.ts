@@ -269,32 +269,13 @@ export class MenuService {
             ]
           },
           {
-            path: '',
+            path: '/library/all',
             title: menu.library,
-            icon: 'mdi mdi-microsoft menu-icon',
+            icon: 'mdi mdi-view-list menu-icon',
             isActive: false,
             isShown: this.tokenService.canViewEntities(),
             showSubmenu: false,
-            submenu: [
-              {
-                path: '/library/all',
-                title: menu.view,
-                icon: 'mdi mdi-view-list menu-icon',
-                isActive: false,
-                isShown: this.tokenService.canViewEntities(),
-                showSubmenu: false,
-                submenu: []
-              },
-              {
-                path: '/library/add',
-                title: menu.upload,
-                icon: 'mdi mdi-plus menu-icon',
-                isActive: false,
-                isShown: this.tokenService.canManageEntities(),
-                showSubmenu: false,
-                submenu: []
-              },
-            ]
+            submenu: []
           },
           {
             path: 'reports',

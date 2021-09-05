@@ -88,13 +88,17 @@
     },
 
     "library": {
-        "view": "Vezi biblioteca",
-        "upload": "Încarcă fișier",
+        "view": "Biblioteca",
+        "upload": "Încarcă fișiere",
         "fileName": "Numele fișierului",
         "successfulyUploaded": "a fost încărcat cu succes!",
         "startUpload": "Începe încărcarea",
         "usedOutOf": "utilizați din",
-        "gbAllocated": "GB alocați"
+        "gbAllocated": "GB alocați",
+        "downloads": "Descărcări",
+        "fileSize": "Dimensiune",
+        "remove": "Elimină",
+        "download": "Descarcă"
     },
 
     "logs": {
@@ -380,14 +384,16 @@
         "copies": "Numărul de exemplare",
         "copiesDescription": "Numărul de exemplare ale acestei chei disponibile spre alocare",
         "allocationTime": "Timpul alocării",
-        "allocations": "Alocarea cheilor",
+        "allocations": "Alocările cheilor",
         "allocateTo": "Alocă către",
         "allocate": "Alocă",
         "allocateSelected": "Alocă cheile selectate",
         "allocated": "Alocate",
+        "allocatedAt": "Alocat",
         "allocatedTo": "Alocată către",
         "unallocated": "Nealocate",
         "returned": "Returnate",
+        "returnedAt": "Returnat",
         "return": "Returnează",
         "recentlyAllocated": "Alocată recent",
         "unallocatedKeys": "Cheile nealocate",

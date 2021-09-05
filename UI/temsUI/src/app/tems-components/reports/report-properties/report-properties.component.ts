@@ -37,7 +37,7 @@ export class ReportPropertiesComponent extends TEMSComponent implements OnInit, 
 
   constructor(
     private typeService: TypeService,
-    private translate: TranslateService) {
+    public translate: TranslateService) {
     super();
 
     // Some of the properties are checked by default but if there is a valid

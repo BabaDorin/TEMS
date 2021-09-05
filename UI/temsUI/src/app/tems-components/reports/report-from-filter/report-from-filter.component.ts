@@ -33,7 +33,7 @@ export class ReportFromFilterComponent extends TEMSComponent implements OnInit {
 
   constructor(
     private reportService: ReportService,
-    private personnelService: PersonnelService,
+    public personnelService: PersonnelService,
     public translate: TranslateService,
     private snackService: SnackService,
     private downloadService: DownloadService,

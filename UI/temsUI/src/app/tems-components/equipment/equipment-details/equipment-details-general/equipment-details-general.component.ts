@@ -44,7 +44,7 @@ export class EquipmentDetailsGeneralComponent extends TEMSComponent implements O
     public claims: ClaimService,
     private dialogService: DialogService,
     private snackService: SnackService,
-    private translate: TranslateService,
+    public translate: TranslateService,
     private lazyLoader: LazyLoaderService,
     private confirmService: ConfirmService,
     @Optional() @Inject(MAT_DIALOG_DATA) public dialogData: any) {

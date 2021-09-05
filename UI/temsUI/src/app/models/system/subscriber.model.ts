@@ -1,7 +1,10 @@
-import { OnDestroy } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 
-export class Subscriber implements OnDestroy{
+@Component({
+    template: ''
+})
+export abstract class Subscriber implements OnDestroy{
     
     subscriptions: Subscription[] = [];
     
@@ -11,5 +14,5 @@ export class Subscriber implements OnDestroy{
 
     unsubscribeFromAll(){
         this.subscriptions.forEach(s => s.unsubscribe());
-    }
+    }â
 }

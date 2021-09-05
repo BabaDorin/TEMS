@@ -48,4 +48,8 @@ export class PersonnelDetailsAllocationsComponent implements OnInit {
     this.equipmentFilter = Object.assign(new EquipmentFilter(), this.equipmentFilter);
     console.log('includeChanged');
   }
+
+  refreshAgGrid(){
+    this.equipmentFilter = Object.assign(new EquipmentFilter(), this.equipmentFilter);
+  }
 }

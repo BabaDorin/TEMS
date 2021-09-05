@@ -40,7 +40,7 @@
                 [placeholder]="translate.instant('report.noSelection')" 
                 [alreadySelected]="typesAlreadySelected"s
                 [endPoint]="typeService"
-                (dataCollected)="typeAdded($event)"
+                (dataCollected)="typeAdded()"
                 (dataRemoved)="typeRemoved($event)">
               </app-chips-autocomplete>
             </div>

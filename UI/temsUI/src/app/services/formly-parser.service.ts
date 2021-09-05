@@ -40,7 +40,6 @@ export class FormlyParserService extends TEMSComponent {
           type: 'input',
           templateOptions: {
             required: true,
-            placeholder: '214',
             maxLength: 100,
           },
           expressionProperties: {
@@ -52,7 +51,6 @@ export class FormlyParserService extends TEMSComponent {
           type: 'input',
           templateOptions: {
             type: 'number',
-            placeholder: '1',
             min: 1,
           },
           expressionProperties: {
@@ -63,8 +61,7 @@ export class FormlyParserService extends TEMSComponent {
           key: 'description',
           type: 'textarea',
           templateOptions: {
-            placeholder: '...',
-            rows: 5,
+            rows: 3,
             maxLength: 1500
           },
           expressionProperties: {
@@ -105,7 +102,7 @@ export class FormlyParserService extends TEMSComponent {
           type: 'textarea',
           templateOptions: {
             required: true,
-            rows: 5,
+            rows: 3,
           },
           expressionProperties: {
             'templateOptions.label': this.translate.stream('email.text'),
@@ -133,7 +130,6 @@ export class FormlyParserService extends TEMSComponent {
               templateOptions: {
                 required: true,
                 maxLength: 100,
-                placeholder: 'Incarcare cartus...',
                 filter: (term) => of(term ? this.filterAutocomplete(term, frequentProblems) : frequentProblems.slice()),
               },
               expressionProperties: {
@@ -144,6 +140,7 @@ export class FormlyParserService extends TEMSComponent {
               key: 'problemDescription',
               type: 'textarea',
               templateOptions: {
+                rows: 3,
                 maxLength: 1000,
               },
               expressionProperties: {
@@ -265,6 +262,7 @@ export class FormlyParserService extends TEMSComponent {
         key: 'description',
         type: 'textarea',
         templateOptions: {
+          rows: 3,
           maxLength: 1500
         },
         expressionProperties: {
@@ -323,7 +321,7 @@ export class FormlyParserService extends TEMSComponent {
           key: 'name',
           type: 'input-tooltip',
           templateOptions: {
-            placeholder: 'model',
+            placeholder: 'ex: model',
             maxLength: 100,
             required: true
           },
@@ -339,7 +337,7 @@ export class FormlyParserService extends TEMSComponent {
           key: 'displayName',
           type: 'input-tooltip',
           templateOptions: {
-            placeholder: 'Model',
+            placeholder: 'ex: Model',
             maxLength: 100,
             required: true,
           },
@@ -497,6 +495,7 @@ export class FormlyParserService extends TEMSComponent {
         key: 'description',
         type: 'textarea',
         templateOptions: {
+          rows: 3,
           maxLength: 500
         },
         expressionProperties: {
@@ -569,6 +568,9 @@ export class FormlyParserService extends TEMSComponent {
         {
           key: 'description',
           type: 'textarea',
+          templateOptions: {
+            rows: 3,
+          },
           expressionProperties: {
             'templateOptions.label': this.translate.stream('form.description'),
           },
@@ -684,8 +686,7 @@ export class FormlyParserService extends TEMSComponent {
               type: 'textarea',
               templateOptions: {
                 maxLength: 250,
-                placeholder: '...',
-                rows: 5,
+                rows: 3,
               },
               expressionProperties: {
                 'templateOptions.label': this.translate.stream('form.description'),

@@ -142,13 +142,13 @@
                 <!-- Case 2: Equipment has both common and specific properties to be displayed -->
                 <ng-template #propertyElseBlock>
                     <div class="row mt-5">
-                        <div class="col-lg-6 col-sm-12">
+                        <div class="col-lg-6 col-sm-12 overflow-auto">
                             <!-- Common properties for each equipment go here -->
                             <h2 class="text-muted text-bold">{{ 'property.common' | translate }}</h2>
                             <app-property-render [properties]="generalProperties">
                             </app-property-render>
                         </div>
-                        <div class="col-lg-6 col-sm-12">
+                        <div class="col-lg-6 col-sm-12 overflow-auto">
                             <!-- Speciic properties for current equipment go here -->
                             <h2 class="text-muted text-bold">{{ 'property.specific' | translate }}</h2>
                             <app-property-render [properties]="equipment.definition.properties">

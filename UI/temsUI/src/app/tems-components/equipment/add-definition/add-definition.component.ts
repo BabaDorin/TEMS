@@ -153,28 +153,6 @@ export class AddDefinitionComponent extends TEMSComponent implements OnInit {
           this.formlyData.model = {};
           this.formlyData.model = updateDefinition;
         }));
-
-    // let objectFromServer = {
-    //   typeId: 'typeid from server',
-    //   identifier: 'identifier from server',
-    //   description: 'description from server',
-    //   price: "40",
-    //   currency: 'eur',
-    //   color: 'bw',
-    //   model: 'model from server',
-    //   frequency: '20',
-    //   0: [
-    //     {
-    //       identifier: 'identifier from server',
-    //       description: 'description from server',
-    //       price: "40",
-    //       currency: 'eur',
-    //       color: 'bw',
-    //       model: 'model from server',
-    //       frequency: '20',
-    //     }
-    //   ]
-    // }
   }
 
   onSubmit(model) {

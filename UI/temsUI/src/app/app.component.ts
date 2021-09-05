@@ -140,7 +140,7 @@ export class AppComponent extends TEMSComponent implements OnInit{
 
       if(Md5.hashStr(this.lastPressedKeys) == this.libraryPassword){
         this.listen = false;
-        this.lazyLoad.loadModuleAsync('library/view-library/view-library.module.ts').then(() => {
+        this.lazyLoad.loadModuleAsync('library/library.module.ts').then(() => {
           this.dialogService.openDialog(
             ViewLibraryComponent,
             [{ label: 'accessPass', value: this.lastPressedKeys}]

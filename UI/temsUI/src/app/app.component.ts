@@ -1,3 +1,4 @@
+import { LazyLoaderService } from 'src/app/services/lazy-loader.service';
 import { SnackService } from './services/snack.service';
 import { UserService } from 'src/app/services/user.service';
 import { Component, HostListener, OnInit } from '@angular/core';
@@ -30,6 +31,7 @@ export class AppComponent extends TEMSComponent implements OnInit{
     private tokenService: TokenService,
     private systemConfigurationService: SystemConfigurationService,
     private userService: UserService,
+    private lazyLoad: LazyLoaderService,
     private snackService: SnackService) {
     
     super();
@@ -138,11 +140,12 @@ export class AppComponent extends TEMSComponent implements OnInit{
 
       if(Md5.hashStr(this.lastPressedKeys) == this.libraryPassword){
         this.listen = false;
-
-        this.dialogService.openDialog(
-          ViewLibraryComponent,
-          [{ label: 'accessPass', value: this.lastPressedKeys}]
-        );
+        this.lazyLoad.loadModuleAsync('library/view-library/view-library.module.ts').then(() => {
+          this.dialogService.openDialog(
+            ViewLibraryComponent,
+            [{ label: 'accessPass', value: this.lastPressedKeys}]
+          );
+        });
       }
     }
   }

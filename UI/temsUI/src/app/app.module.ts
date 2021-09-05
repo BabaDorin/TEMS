@@ -24,7 +24,6 @@ import { AuthInterceptor } from './auth.interceptor';
 import { AnnouncementsListModule } from './modules/announcement/announcements-list/announcements-list.module';
 import { ChipsAutocompleteModule } from './modules/chips-autocomplete/chips-autocomplete.module';
 import { LastIssuesSimplifiedModule } from './modules/issues/last-issues-simplified/last-issues-simplified.module';
-import { ViewLibraryModule } from './modules/library/view-library/view-library.module';
 import { QuickAccessModule } from './modules/quick-access/quick-access.module';
 import { DashboardComponent } from './public/dashboard/dashboard.component';
 import { ClaimService } from './services/claim.service';
@@ -84,7 +83,6 @@ export function HttpLoaderFactory(http: HttpClient){
     AnnouncementsListModule,
     ChipsAutocompleteModule,
     QuickAccessModule,
-    ViewLibraryModule,
     NgxPaginationModule,
     ConfirmModule,
     MatDialogModule,
@@ -92,7 +90,6 @@ export function HttpLoaderFactory(http: HttpClient){
     MatButtonModule,
     ChartsModule,
     MatIconModule,
-    ViewLibraryModule,
     NgbDropdownModule,
     NgbCollapseModule,
     TemsFormsModule,

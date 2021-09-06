@@ -36,13 +36,11 @@ export class RoomDetailsAllocationsComponent implements OnInit {
     filter.rooms = [this.room.id];
     filter.includeLabels = this.includeEquipmentLabels?.value ?? this.defaultLabels;
     this.equipmentFilter = Object.assign(new EquipmentFilter(), filter);
-    console.log('ngOnInit');
   }
 
   includeLabelsChanged(){
     this.equipmentFilter.includeLabels = this.includeEquipmentLabels?.value ?? this.defaultLabels;
     this.equipmentFilter = Object.assign(new EquipmentFilter(), this.equipmentFilter);
-    console.log('includeChanged');
   }
 
   async generateReport(){

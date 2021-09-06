@@ -46,7 +46,6 @@ export class PersonnelDetailsAllocationsComponent implements OnInit {
   includeLabelsChanged(){
     this.equipmentFilter.includeLabels = this.includeEquipmentLabels?.value ?? this.defaultLabels;
     this.equipmentFilter = Object.assign(new EquipmentFilter(), this.equipmentFilter);
-    console.log('includeChanged');
   }
 
   refreshAgGrid(){

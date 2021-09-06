@@ -116,8 +116,6 @@ export class EntityAllocationsListComponent extends TEMSComponent implements OnI
       ? ['Active', 'Closed']
       : [this.include];
 
-    console.log('aux');
-    console.log(aux);
     this.filter = Object.assign(new AllocationFilter(), aux);
   }
 

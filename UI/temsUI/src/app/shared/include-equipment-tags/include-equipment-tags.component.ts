@@ -58,7 +58,6 @@ export class IncludeEquipmentLabelsComponent implements OnInit, ControlValueAcce
   }
 
   registerOnChange(fn: any): void {
-    console.log('resister on change called');
     this.onChange = fn;
   }
 

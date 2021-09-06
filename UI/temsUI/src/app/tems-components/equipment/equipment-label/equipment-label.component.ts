@@ -23,18 +23,12 @@ export class EquipmentLabelComponent implements OnInit {
     
     // vbp = view box parameters
     let vbp = actualSvg.getAttribute('viewBox').split(' ');
-    console.log(vbp);
 
     const canvas = document.createElement('canvas');
     canvas.width = +vbp[2];
     canvas.height = +vbp[3];
-    // console.log('canvas');
-    // console.log(canvas);
 
     const ctx = canvas.getContext('2d');
-    // let img = new Image();
-    // img.src = "data:image/svg+xml;base64,"+btoa(svg.innerHTML);
-    // ctx.drawImage(img, 0, 0, 200, 200)
 
     var img = new Image();
     img.src = "data:image/svg+xml;base64,"+btoa(svgContainer.innerHTML);
@@ -45,7 +39,5 @@ export class EquipmentLabelComponent implements OnInit {
           this.downloadService.downloadFile(blob, this.mainText + '.jpeg');
         }, 'image/jpeg', 1);
     }
-
-    // var data = (new XMLSerializer()).serializeToString(svg);
   }
 }

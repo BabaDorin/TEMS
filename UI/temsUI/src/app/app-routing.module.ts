@@ -8,7 +8,6 @@ const routes: Routes = [
   // Kind of home page
   { path: '', component: DashboardComponent },
 
-  // type = ['equipment', 'room', 'personnel'] 
   { path: 'quick-access/:type', component: QuickAccessComponent },
   
   { path: 'error-pages', loadChildren: () => import('./public/error-pages/error-pages.module').then(m => m.ErrorPagesModule) },

@@ -49,8 +49,6 @@ export class PropertiesListComponent extends TEMSComponent implements OnInit {
   }
 
   eventEmitted(eventData, index){
-    console.log(index);
-    console.log(this.properties[index]);
     if(eventData == 'removed')
       this.propContainerModels.splice(index, 1);
   }

@@ -52,9 +52,6 @@ export class EntityLogsListComponent extends TEMSComponent implements OnInit {
     this.filter.roomId = this.room?.value;
     this.filter.personnelId = this.personnel?.value;
     this.filter.includeLabels = this.includeEquipmentLabels?.value ?? this.defaultLabels;
-
-    console.log('filter');
-    console.log(this.filter);
   }
 
   validateFilter(): boolean{

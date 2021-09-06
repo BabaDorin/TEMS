@@ -1,3 +1,4 @@
+import { QRCodeModule } from 'angularx-qrcode';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { EquipmentLabelComponent } from './../../tems-components/equipment/equipment-label/equipment-label.component';
@@ -13,7 +14,8 @@ import { CommonModule } from '@angular/common';
   imports: [
     CommonModule,
     MatButtonModule,
-    MatIconModule
+    MatIconModule,
+    QRCodeModule
   ],
   exports: [
     EquipmentLabelComponent

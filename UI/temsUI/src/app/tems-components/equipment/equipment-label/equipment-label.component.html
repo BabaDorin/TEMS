@@ -1,70 +1,41 @@
 <div class="label-wrapper">
     <div id="label">
-        <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-            x="0px" y="0px" viewBox="0 0 343 197" style="enable-background:new 0 0 343 197;" xml:space="preserve">
-            <style type="text/css">
-                .labelst0 {
-                    fill: #050E26;
-                    stroke: #000000;
-                    stroke-miterlimit: 10;
-                }
-
-                .labelst1 {
-                    fill: #293688;
-                    stroke: #000000;
-                    stroke-miterlimit: 10;
-                }
-
-                .labelst2 {
-                    fill: #928CBE;
-                    stroke: #000000;
-                    stroke-miterlimit: 10;
-                }
-
-                .labelst3 {
-                    fill: #99989A;
-                }
-
-                .labelst4 {
-                    font-family: 'Verdana';
-                }
-
-                .labelst5 {
-                    font-size: 15.4433px;
-                }
-
-                .labelst6 {
-                    fill: #FFFFFF;
-                }
-
-                .labelst7 {
-                    font-size: 65px;
-                }
-            </style>
-            <rect class="labelst0" width="343" height="197" />
-            <polygon class="labelst1" points="29.5,259.5 183.2,178.6 356.6,168.9 376.3,240.1 222.6,321 49.2,330.6 " />
-            <polyline class="labelst1"
-                points="-31.6,25.7 -51.3,-45.5 102.5,-126.3 275.9,-136 295.6,-64.8 141.9,16.1 0,24 -31.6,25.7 " />
-            <path class="labelst2" d="M0,0" />
-            <text transform="matrix(0.8194 0 0 1 9.7876 164.6914)" class="labelst3 labelst4 labelst5">Technical
-                Equipment Management
-                System</text>
-            <text transform="matrix(0.9995 0 0 1 9.7877 106.1596)" class="labelst6 labelst4 labelst7">{{ mainText
-                }}</text>
+        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1301 401">
+            <g id="Layer_3" data-name="Layer 3">
+                <rect x="0.5" y="0.5" width="1300" height="400" style="fill:#110045;stroke:#000;stroke-miterlimit:10" />
+            </g>
+            <g id="Layer_4" data-name="Layer 4">
+                <polygon points="1300.5 0.5 1300.5 400.5 923.02 400.5 731.39 68.58 770.69 0.5 1300.5 0.5"
+                    style="fill:#fff" />
+                <polygon points="221.03 289.63 157.02 400.5 0.5 400.5 0.5 0.5 54.1 0.5 221.03 289.63"
+                    style="fill:#270071" />
+            </g>
+            <g id="Layer_1" data-name="Layer 1">
+                <image width="1600" height="1600" transform="translate(913 17) scale(0.23)"
+                    [attr.xlink:href]="link"/>
+            </g>
+            <g id="Layer_6" data-name="Layer 6"><text transform="translate(23.79 381.94)"
+                    style="font-size:41px;fill:#b3b3b3;font-family:Arial-BoldMT, Arial;font-weight:700;opacity:0.69">
+                    <tspan style="letter-spacing:-0.07421875em">T</tspan>
+                    <tspan x="22" y="0">echnical Equipment Management System</tspan>
+                </text></g>
+            <g id="Layer_7" data-name="Layer 7"><text transform="translate(23.43 246.04)"
+                    style="font-size:169px;fill:#41d3ed;font-family:ArialMT, Arial">{{ mainText }}</text></g>
         </svg>
     </div>
 
     <ng-container *ngIf="downloadable">
         <div class="download-button">
-            <button mat-icon-button class="text-light" (click)="downloadLabel()">
+            <button mat-icon-button class="text-light bg-primary" (click)="downloadLabel()">
                 <mat-icon>download</mat-icon>
             </button>
         </div>
     </ng-container>
-</div>
-<!-- 
-<div class="border-1">
-    <canvas>
 
-    </canvas>
-</div> -->
+    <ng-container *ngIf="qrData != undefined && qrData.length > 0">
+        <div class="d-none">
+            <qrcode #qr [qrdata]="qrData" size="256" level="H" margin="2">
+            </qrcode>
+        </div>
+    </ng-container>
+</div>

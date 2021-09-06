@@ -596,6 +596,15 @@ namespace temsAPI.Data.Managers
             return expression;
         }
 
+        public async Task<string> FindIdByTEMSID(string temsid)
+        {
+            return (await _unitOfWork.Equipments
+                .Find<string>(
+                    where: q => q.TEMSID.ToLower() == temsid.ToLower() && !q.IsArchieved,
+                    select: q => q.Id))
+                .FirstOrDefault();
+        }
+
         // BEFREE: Create AllocationService. Move allocation related stuff there.
     }
 }

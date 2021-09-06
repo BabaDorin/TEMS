@@ -1,3 +1,4 @@
+import { FindByTemsidComponent } from './tems-components/equipment/find-by-temsid/find-by-temsid.component';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { DashboardComponent } from './public/dashboard/dashboard.component';
@@ -9,6 +10,7 @@ const routes: Routes = [
   { path: '', component: DashboardComponent },
 
   { path: 'quick-access/:type', component: QuickAccessComponent },
+  { path: 'find/:temsId', component: FindByTemsidComponent },
   
   { path: 'error-pages', loadChildren: () => import('./public/error-pages/error-pages.module').then(m => m.ErrorPagesModule) },
   

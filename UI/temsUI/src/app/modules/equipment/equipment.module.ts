@@ -1,3 +1,4 @@
+import { FindByTemsidComponent } from './../../tems-components/equipment/find-by-temsid/find-by-temsid.component';
 import { IncludeEquipmentLabelsModule } from './include-equipment-tags.module';
 import { TemsidGeneratorComponent } from './../../tems-components/temsid-generator/temsid-generator.component';
 import { AttachEquipmentAgGridModule } from '../tems-ag-grid/attach-equipment-ag-grid.module';
@@ -69,7 +70,7 @@ import { EquipmentLabelModule } from './equipment-label.module';
     BulkUploadResultsComponent,
     EquipmentSerialNumberComponent,
     ChildEquipmentContainerComponent,
-    TemsidGeneratorComponent
+    TemsidGeneratorComponent,
   ],
   imports: [
     CommonModule,

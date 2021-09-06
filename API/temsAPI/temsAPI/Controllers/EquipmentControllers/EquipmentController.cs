@@ -4,6 +4,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Net.Http.Formatting;
+using System.Text;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.UserEntities;
@@ -238,6 +242,17 @@ namespace temsAPI.Controllers.EquipmentControllers
         public async Task<IActionResult> ChangeUsingState([FromQuery] string temsid)
         {
             return Ok(await _equipmentManager.IsTEMSIDAvailable(temsid));
+        }
+
+        [HttpGet("equipment/findIdByTEMSID")]
+        [DefaultExceptionHandler("An error occured while searching for equipment's Id")]
+        public async Task<IActionResult> FindIdByTEMSID([FromQuery] string temsId)
+        {
+            var id = await _equipmentManager.FindIdByTEMSID(temsId);
+            if (id == null)
+                return ReturnResponse("Invalid TEMSID provided", ResponseStatus.Neutral);
+
+            return Ok(Json(id));
         }
     }
 }

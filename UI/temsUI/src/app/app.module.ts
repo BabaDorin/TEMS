@@ -46,9 +46,10 @@ import { ViewNotificationsComponent } from './tems-components/notifications/view
 import { TEMSComponent } from './tems/tems.component';
 import { UserCardsModule } from './user-cards/user-cards.module';
 import { TemsFormsModule } from './modules/tems-forms/tems-forms.module';
-import { UsedCellRenderedComponent } from './public/ag-grid/used-cell-rendered/used-cell-rendered.component';
-import { DefectCellRenderedComponent } from './public/ag-grid/defect-cell-rendered/defect-cell-rendered.component';
 import { NgbCollapseModule, NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
+import { DefectCellRenderedComponent } from './public/ag-grid/defect-cell-rendered/defect-cell-rendered.component';
+import { UsedCellRenderedComponent } from './public/ag-grid/used-cell-rendered/used-cell-rendered.component';
+import { FindByTemsidComponent } from './tems-components/equipment/find-by-temsid/find-by-temsid.component';
 
 export function HttpLoaderFactory(http: HttpClient){
   return new TranslateHttpLoader(http);
@@ -69,6 +70,7 @@ export function HttpLoaderFactory(http: HttpClient){
     ViewNotificationsComponent,
     UsedCellRenderedComponent,
     DefectCellRenderedComponent,
+    FindByTemsidComponent
     ],
   imports: [
     LastIssuesSimplifiedModule,

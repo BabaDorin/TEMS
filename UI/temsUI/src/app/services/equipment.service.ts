@@ -1,3 +1,4 @@
+import { isNullOrEmpty } from 'src/app/helpers/validators/validations';
 import { EquipmentFilter } from './../helpers/filters/equipment.filter';
 import { ViewPropertySimplified } from './../models/equipment/view-property-simplified.model';
 import { AddEquipment } from 'src/app/models/equipment/add-equipment.model';
@@ -19,7 +20,7 @@ import { IOption } from '../models/option.model';
   providedIn: 'root'
 })
 export class EquipmentService extends TEMSService {
-
+ 
   constructor(
     private http: HttpClient
   ) { 
@@ -335,4 +336,18 @@ export class EquipmentService extends TEMSService {
       { params: params },
     );
   }
+
+  getIdByTEMSID(temsid: string): Observable<any> {
+    if(isNullOrEmpty(temsid))
+      return undefined;
+
+    let params = new HttpParams()
+      .append('temsId', temsid);
+
+    return this.http.get(
+      API_EQ_URL + '/findIdByTEMSID',
+      { params: params }
+    );
+  }
+
 }

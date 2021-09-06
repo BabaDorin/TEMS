@@ -1,3 +1,4 @@
+import { FindByTemsidComponent } from './../../tems-components/equipment/find-by-temsid/find-by-temsid.component';
 import { TemsidGeneratorComponent } from './../../tems-components/temsid-generator/temsid-generator.component';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';

@@ -10,7 +10,7 @@ import { FormlyFieldConfig } from '@ngx-formly/core';
 import { Injectable } from '@angular/core';
 import { of } from 'rxjs';
 import { AddPersonnel } from 'src/app/models/personnel/add-personnel.model';
-import { tap } from 'rxjs/operators';
+import { tap, map } from 'rxjs/operators';
 import { LogsService } from './logs.service';
 import { TranslateService } from '@ngx-translate/core';
 

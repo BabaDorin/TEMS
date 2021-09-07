@@ -138,6 +138,7 @@ export class EntityAllocationsListComponent extends TEMSComponent implements OnI
     this.subscriptions.push(
       this.allocationService.getAllocations(this.filter)
       .subscribe(result => {
+        console.log(result);
         this.loading = false;
         if(this.snackService.snackIfError(result))
           return;

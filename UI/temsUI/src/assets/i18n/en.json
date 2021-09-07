@@ -474,8 +474,11 @@
 
     "ticket": {
         "urgent": "Urgent",
+        "Urgent": "Urgent",
         "medium": "Medium",
+        "Medium": "Medium",
         "future": "Future",
+        "Future": "Future",
         "openTabLabel": "Open",
         "closedTabLabel": "Closed",
         "open": "Open",

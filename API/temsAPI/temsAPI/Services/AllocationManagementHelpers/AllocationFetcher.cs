@@ -95,7 +95,7 @@ namespace temsAPI.Services.AllocationManagementHelpers
                 var closedStatusIndex = filter.IncludeStatuses.IndexOf("Closed");
 
                 // If both true or both false => return all of the allocations
-                if (!(activeStatusIndex == -1 && closedStatusIndex == -1 || activeStatusIndex > -1 && closedStatusIndex > -1))
+                if (!((activeStatusIndex == -1 && closedStatusIndex == -1) || (activeStatusIndex > -1 && closedStatusIndex > -1)))
                     alOfStatuses = q => (q.DateReturned == null) == activeStatusIndex > -1;
             }
 

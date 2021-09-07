@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using temsAPI.Contracts;
 using temsAPI.Data.Entities.EquipmentEntities;
+using temsAPI.System_Files;
 
 namespace temsAPI.Services.SICServices
 {
@@ -78,8 +79,10 @@ namespace temsAPI.Services.SICServices
                 IsDefect = sicComputer.IsDefect,
                 RegisterDate = DateTime.Now,
                 Price = 1,
-                Currency = "MDL"
+                Currency = "MDL",
             };
+
+            computer.SetLabel(EquipmentLabel.Equipment);
 
             if(!String.IsNullOrEmpty(sicComputer.TeamViewerID) && !String.IsNullOrEmpty(sicComputer.TeamViewerPassword))
             {
@@ -252,6 +255,8 @@ namespace temsAPI.Services.SICServices
                 SerialNumber = entity.TEMSSerialNumber,
                 EquipmentDefinition = definition
             };
+
+            childEquipment.SetLabel(EquipmentLabel.Component);
 
             var temsIdProp = entityProperties.FirstOrDefault(q => q.Name.ToLower() == "temsid");
             if (temsIdProp != null)

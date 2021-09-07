@@ -90,7 +90,7 @@ export class AgGridAttachEquipmentComponent extends TEMSComponent implements OnC
     if(this.claims.canManage){
       this.columnDefs.push({
         filter: false,
-        sorable: false,
+        sortable: false,
         cellRenderer: 'btnCellRendererComponent',
         cellRendererParams: {
           onClick: this.attach.bind(this),

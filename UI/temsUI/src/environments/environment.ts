@@ -5,7 +5,9 @@
 export const environment = {
   production: false,
   apiUrl: "http://localhost:14721",
-  clientUrl: "http//localhost:4200"
+  clientUrl: "http://localhost:4200",
+  // apiUrl: "http://192.168.10.11:14721/temsAPI",
+  // clientUrl: "http://192.168.10.11:14726",
 };
 
 /*

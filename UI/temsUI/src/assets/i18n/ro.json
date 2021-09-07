@@ -474,8 +474,11 @@
 
     "ticket": {
         "urgent": "Urgent",
+        "Urgent": "Urgent",
         "medium": "Mediu",
+        "Medium": "Mediu",
         "future": "Pe viitor",
+        "Future": "Pe viitor",
         "openTickets": "Active",
         "closedTickets": "Soluționate",
         "closed": "Soluționat",

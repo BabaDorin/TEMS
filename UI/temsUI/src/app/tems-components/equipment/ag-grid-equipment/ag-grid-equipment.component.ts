@@ -104,7 +104,7 @@ export class AgGridEquipmentComponent extends TEMSComponent implements OnChanges
       },
       {
         filter: false,
-        sorable: false,
+        sortable: false,
         cellRenderer: 'btnCellRendererComponent',
         cellRendererParams: {
           onClick: this.details.bind(this),
@@ -119,7 +119,7 @@ export class AgGridEquipmentComponent extends TEMSComponent implements OnChanges
       this.columnDefs.push({
         cellRenderer: 'btnCellRendererComponent',
         filter: false,
-        sorable: false,
+        sortable: false,
         cellRendererParams: {
           onClick: this.archieve.bind(this),
           matIcon: 'delete',

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using temsAPI.Data.Entities.UserEntities;
-
-namespace temsAPI.Contracts
+﻿namespace Domain.Abstractions
 {
     public interface INotification
     {

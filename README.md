@@ -1,6 +1,18 @@
 # TEMS
 ### Technical Equipment Management System
 
+## IMPORTANT
+
+>This project is going to be completely refactored. This process might take several months, as I am the only one working on it, and there is no interest apart from >offering this project as a free solution for invetory management, therefore do not expect any stable releases in the next period of time.
+
+>If you are interested in contributing to this project, please reach out to me - bvd.dorin@gmail.com.
+
+>As part of the refactoring process, the project is going to be split into two separate repositories: 
+>- TEMS Backend -> ASP.NET WebAPI project (.NET 7). 
+>- TEMS Frontend -> Angular
+
+>Therefore, this repository can be considered obsolete.
+
 TEMS is an IT Service Management solution which serves for managing IT assets of an institution and provides a set of instruments oriented to the team of technicians. It is built according to the needs of an educational institution and adapted for such an ecosystem, but it can be implemented is any other organization that needs an effective and easy-to-use inventory management instrument.
 
 > Note: The application is still being tested and there is no stable version released yet. When it is 100% ready for production, a detailed documentation will be delivered.

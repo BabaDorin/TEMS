@@ -48,7 +48,6 @@
     "ngx-chips": "^2.2.2",
     "ngx-image-cropper": "^4.0.1",
     "ngx-pagination": "^5.1.1",
-    "node-sass": "^5.0.0",
     "rxjs": "^6.6.7",
     "ts-md5": "^1.2.9",
     "tslib": "^2.3.1",

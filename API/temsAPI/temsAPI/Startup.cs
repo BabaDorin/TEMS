@@ -178,7 +178,6 @@ namespace temsAPI
         {
             Initializer.PrepareSolution();
             SeedData.Seed(userManager, roleManager, dbContext, systemConfigurationService);
-            DefaultExceptionHandler.logger = logger;
 
             if (env.IsDevelopment())
             {

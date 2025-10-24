@@ -1,9 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
-using PostSharp.Patterns.Contracts;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using temsAPI.Data.Entities.OtherEntities;
 

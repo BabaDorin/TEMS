@@ -34,7 +34,6 @@ namespace temsAPI.Controllers.EmailControllers
 
         [HttpPost("email/SendEmail")]
         [ClaimRequirement(TEMSClaims.CAN_SEND_EMAILS)]
-        [DefaultExceptionHandler("An error occured while sending the email")]
         public async Task<IActionResult> SendEmail([FromBody] SendEmailViewModel viewModel)
         {
             string validationResult = viewModel.Validate();

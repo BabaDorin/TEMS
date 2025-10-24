@@ -27,7 +27,6 @@ namespace temsAPI.Controllers.KeyControllers
 
         [HttpPost("key/Create")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES, TEMSClaims.CAN_ALLOCATE_KEYS)]
-        [DefaultExceptionHandler("An error occured while creating the key.")]
         public async Task<IActionResult> Create([FromBody] AddKeyViewModel viewModel)
         {
             var result = await _keyManager.Create(viewModel);
@@ -39,7 +38,6 @@ namespace temsAPI.Controllers.KeyControllers
 
         [HttpGet("key/Archieve/{keyId}")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_ENTITIES, TEMSClaims.CAN_ALLOCATE_KEYS)]
-        [DefaultExceptionHandler("An error occured while archieving the key and it's related data")]
         public async Task<IActionResult> Archieve(string keyId)
         {
             string archivationResult = await new ArchieveHelper(_unitOfWork, User)
@@ -52,7 +50,6 @@ namespace temsAPI.Controllers.KeyControllers
 
         [HttpDelete("key/Remove/{keyId}")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_SYSTEM_CONFIGURATION)]
-        [DefaultExceptionHandler("An error occured while removing the key")]
         public async Task<IActionResult> Remove(string keyId)
         {
             string result = await _keyManager.Remove(keyId);
@@ -64,7 +61,6 @@ namespace temsAPI.Controllers.KeyControllers
 
         [HttpDelete("key/RemoveAllocation/{allocationId}")]
         [ClaimRequirement(TEMSClaims.CAN_MANAGE_SYSTEM_CONFIGURATION)]
-        [DefaultExceptionHandler("An error occured while removing the allocation")]
         public async Task<IActionResult> RemoveAllocation(string allocationId)
         {
             string result = await _keyManager.RemoveAllocation(allocationId);
@@ -76,7 +72,6 @@ namespace temsAPI.Controllers.KeyControllers
 
         [HttpPost("key/CreateAllocation")]
         [ClaimRequirement(TEMSClaims.CAN_ALLOCATE_KEYS)]
-        [DefaultExceptionHandler("An error occured while creating the allocation")]
         public async Task<IActionResult> CreateAllocation([FromBody] AddKeyAllocation viewModel)
         {
             var result = await _keyManager.CreateAllocation(viewModel);
@@ -88,7 +83,6 @@ namespace temsAPI.Controllers.KeyControllers
 
         [HttpGet("key/Get")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES, TEMSClaims.CAN_ALLOCATE_KEYS)]
-        [DefaultExceptionHandler("An error occured while fetching keys")]
         public async Task<IActionResult> Get()
         {
             var keys = await _keyManager.GetKeysSimplified();
@@ -97,7 +91,6 @@ namespace temsAPI.Controllers.KeyControllers
 
         [HttpGet("key/GetAllAutocompleteOptions")]
         [ClaimRequirement(TEMSClaims.CAN_VIEW_ENTITIES, TEMSClaims.CAN_MANAGE_ENTITIES, TEMSClaims.CAN_ALLOCATE_KEYS)]
-        [DefaultExceptionHandler("An error occured while fetching keys autocomplete options")]
         public async Task<IActionResult> GetAllAutocompleteOptions()
         {
             var options = await _keyManager.GetAutocompleteOptions();

@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <RootNamespace>Tems.Example.API</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="FastEndpoints" Version="6.2.0" />
+        <PackageReference Include="MediatR" Version="12.2.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Example.Application\Example.Application.csproj" />
+      <ProjectReference Include="..\Example.Contract\Example.Contract.csproj" />
+      <ProjectReference Include="..\Example.Infrastructure\Example.Infrastructure.csproj" />
+    </ItemGroup>
+
+</Project>

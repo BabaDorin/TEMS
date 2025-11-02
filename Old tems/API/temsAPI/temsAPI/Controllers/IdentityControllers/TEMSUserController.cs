@@ -200,7 +200,6 @@ namespace temsAPI.Controllers.IdentityControllers
             if (validationResult != null)
                 return ReturnResponse(validationResult, ResponseStatus.Neutral);
 
-
             var user = await _userManager.FindByIdAsync(viewModel.UserId);
             if(user == null)
                 return ReturnResponse("Invalid userId provided", ResponseStatus.Neutral);

@@ -1,0 +1,6 @@
+@Tems.Host_HostAddress = http://localhost:5158
+
+GET {{Tems.Host_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

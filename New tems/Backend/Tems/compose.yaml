@@ -1,0 +1,39 @@
+﻿services:
+  mongodb:
+    image: mongo:7.0
+    container_name: tems-mongodb
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: TemsDb
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - tems-network
+
+  tems.host:
+    image: tems.host
+    container_name: tems-backend
+    build:
+      context: .
+      dockerfile: Tems.Host/Dockerfile
+    ports:
+      - "5000:8080"
+      - "5001:8081"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=8080
+      - ASPNETCORE_HTTPS_PORTS=8081
+    depends_on:
+      - mongodb
+    networks:
+      - tems-network
+
+networks:
+  tems-network:
+    driver: bridge
+
+volumes:
+  mongodb_data:
+    driver: local
+

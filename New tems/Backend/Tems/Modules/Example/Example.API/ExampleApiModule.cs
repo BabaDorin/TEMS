@@ -11,7 +11,7 @@ namespace Tems.Example.API;
 
 public static class ExampleApiModule
 {
-    public static IServiceCollection AddExampleApiModule(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddExampleServices(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(GetWeatherForecastHandler).Assembly));
 

@@ -7,11 +7,15 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Example\Example.Contract\Example.Contract.csproj" />
+      <Folder Include="Interfaces\" />
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="MediatR" Version="12.2.0" />
+      <PackageReference Include="MediatR" Version="13.1.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\EquipmentManagement.Contract\EquipmentManagement.Contract.csproj" />
     </ItemGroup>
 
 </Project>

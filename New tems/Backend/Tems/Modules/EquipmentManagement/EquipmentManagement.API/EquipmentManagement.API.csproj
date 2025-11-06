@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="FastEndpoints" Version="7.1.0" />
+      <PackageReference Include="MediatR" Version="13.1.0" />
+      <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.0" />
+      <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\..\Tems.Common\Tems.Common.csproj" />
+      <ProjectReference Include="..\..\Example\Example.Application\Example.Application.csproj" />
+      <ProjectReference Include="..\..\Example\Example.Infrastructure\Example.Infrastructure.csproj" />
+      <ProjectReference Include="..\EquipmentManagement.Infrastructure\EquipmentManagement.Infrastructure.csproj" />
+    </ItemGroup>
+
+</Project>

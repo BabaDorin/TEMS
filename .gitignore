@@ -1,22 +1,28 @@
-### Angular ###
-## Angular ##
-# compiled output
+### Angular & Node.js ###
+
+# Compiled output (Angular CLI default)
 dist/
+.angular/
+out-tsc/
+# Older Angular/TypeScript compiled files
 tmp/
 app/**/*.js
 app/**/*.js.map
+e2e/*.js
+e2e/*.map
 
-# dependencies
+# Dependencies
 node_modules/
 bower_components/
 
-#library uploads
-LibraryUploads/
+# Lock files and Configuration
+package-lock.json
+# Uncomment the next line if you are using yarn
+# yarn.lock
+# Uncomment the next line if you are using pnpm
+# pnpm-lock.yaml
 
-# IDEs and editors
-.idea/
-
-# misc
+# Caches
 .sass-cache/
 connect.lock/
 coverage/
@@ -25,12 +31,19 @@ npm-debug.log
 testem.log
 typings/
 
-# e2e
-e2e/*.js
-e2e/*.map
+# IDEs and editors
+.idea/
+.vscode/
 
-# System Files
+# Library uploads
+LibraryUploads/
+
+# Misc
+npm-debug.log
 .DS_Store/
+Thumbs.db
+
+---
 
 # DOT NET Core
 
@@ -185,7 +198,7 @@ nCrunchTemp_*
 AutoTest.Net/
 
 # Web workbench (sass)
-.sass-cache/
+# NOTE: Removed .sass-cache/ from here as it's now in the Angular section.
 
 # Installshield output folder
 [Ee]xpress/
@@ -266,7 +279,7 @@ orleans.codegen.cs
 
 # Since there are multiple workflows, uncomment next line to ignore bower_components
 # (https://github.com/github/gitignore/pull/1529#issuecomment-104372622)
-#bower_components/
+# NOTE: bower_components/ is now ignored in the Angular/Node.js section.
 
 # RIA/Silverlight projects
 Generated_Code/
@@ -300,8 +313,7 @@ FakesAssemblies/
 *.GhostDoc.xml
 
 # Node.js Tools for Visual Studio
-.ntvs_analysis.dat
-node_modules/
+# NOTE: node_modules/ is now ignored in the Angular/Node.js section.
 
 # Visual Studio 6 build log
 *.plg
@@ -328,7 +340,7 @@ paket-files/
 .fake/
 
 # JetBrains Rider
-.idea/
+# NOTE: .idea/ is now ignored in the Angular/Node.js section.
 *.sln.iml
 
 # CodeRush personal settings
@@ -375,5 +387,6 @@ ASALocalRun/
 # BeatPulse healthcheck temp database
 healthchecksdb
 
-# Mac System Files
 .DS_Store
+# Mac System Files
+# NOTE: .DS_Store is now ignored in the Angular/Node.js section.

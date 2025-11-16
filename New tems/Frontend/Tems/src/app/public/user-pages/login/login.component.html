@@ -1,0 +1,23 @@
+<div class="d-flex align-items-center auth px-0 h-100"> 
+  <div class="mx-auto ">
+    <div class="auth-form-light text-left py-5 px-4 px-sm-5 unoffensive-shadow">
+      <div class="brand-logo">
+        <img src="assets/images/logo.svg" alt="logo">
+      </div>
+      <form [formGroup]="formlyData.form" (ngSubmit)="onSubmit()"  class="pt-3" autocomplete="off">
+        <formly-form [form]="formlyData.form" [fields]="formlyData.fields" [model]="formlyData.model"></formly-form>
+        <br>
+        <button type="submit" class="btn btn-block btn-gradient-primary btn-lg font-weight-medium auth-form-btn"
+        [disabled]="formlyData.form.status == 'INVALID'">{{ 'authentication.signIn' | translate }}</button>
+        <div class="text-center mt-4">
+          <button type="button" mat-button (click)="forgotPassword()">
+            {{ 'authentication.forgotPassword' | translate }}
+          </button>
+        </div>
+      </form>
+      <h4 class="text-muted text-center mt-4">
+        {{ 'authentication.askAdministrator' | translate }}
+      </h4>
+    </div>
+  </div>
+</div>  

@@ -1,0 +1,33 @@
+@import '../../../styles.scss';
+
+.generic-container {
+//   height: 330px;s
+  transition: 0.3s;
+  background-color: #d6d3ff12;
+}
+
+// uncomment this if going to implement the hoverable effect over card content
+
+// .generic-container:hover {
+//     // background-image: $bg-gradient-primary;
+//     background-color: white;
+//     cursor: pointer;
+// }
+
+.mat-card {
+  box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.19);
+  border-radius: 2px;
+}
+
+.container-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  /* number of lines to show */
+  -webkit-box-orient: vertical;
+}
+
+.container-header-wrapper{
+    height: 60px;
+}

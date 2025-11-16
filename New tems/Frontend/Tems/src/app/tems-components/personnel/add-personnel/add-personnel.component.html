@@ -1,0 +1,25 @@
+<div [ngClass]="dialogRef == undefined ? 'card' : 'card cancel-margins'">
+    <div class="card-body" style="max-width: 500px;">
+        <h2>
+            {{ 'personnel.add' | translate }}
+        </h2>
+        <form [formGroup]="formlyData.form" (ngSubmit)="onSubmit(formlyData.model)">
+            <formly-form [form]="formlyData.form" [fields]="formlyData.fields" [model]="formlyData.model"></formly-form>
+            <ng-container *ngIf="personnelPositions != undefined">
+                <app-chips-autocomplete #personnelPositionsChips [label]="translate.instant('personnel.positions')"
+                    [autocompleteOptions]="personnelPositions">
+                </app-chips-autocomplete>
+            </ng-container>
+
+            <app-chips-autocomplete #userChips [label]="translate.instant('personnel.userAssociations')" [endPoint]="userService"
+                [alreadySelected]="user" [maxOptionsSelected]="1">
+            </app-chips-autocomplete>
+            <small class="text-muted text-justify">
+                {{ 'personnel.userAssociationsInfo' | translate }}
+            </small>
+            <br><br>
+            <button type="submit" class="btn btn-gradient-primary mr-2"
+                [disabled]="formlyData.form.status=='INVALID'">{{ 'form.submit' | translate }}</button>
+        </form>
+    </div>
+</div>

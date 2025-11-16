@@ -1,0 +1,52 @@
+<div [ngClass]="dialogRef == undefined ? 'card limit' : 'card cancel-margins limit'">
+    <div class="card-body">
+        <h2>
+            {{ 'bugReport.header' | translate }}
+        </h2>
+        <p class="text-muted">
+            {{ 'bugReport.info' | translate }}
+        </p>
+        <hr class="separator">
+    
+        <form [formGroup]="reportFormGroup">
+    
+            <div class="d-block">
+                <mat-button-toggle-group formControlName="reportType">
+                    <mat-button-toggle value="bug">
+                        {{ 'bugReport.bug' | translate }}
+                    </mat-button-toggle>
+                    <mat-button-toggle value="featureRequest">
+                        {{ 'bugReport.featureRequest' | translate }}
+                    </mat-button-toggle>
+                </mat-button-toggle-group>
+            </div>
+    
+            <mat-form-field class="d-block mt-3">
+                <mat-label>
+                    {{ 'form.description' | translate }}
+                </mat-label>
+                <textarea matInput formControlName="description"  rows="5"></textarea>
+            </mat-form-field>
+    
+            <div class="d-block mt-3">
+                <mat-label class="d-block">
+                    <p class="text-muted">
+                        {{ 'bugReport.attachmentsDescription' | translate }}
+                    </p>
+                    <p class="d-block text-muted">
+                        {{ selectedFilesLabel }}
+                    </p>
+                </mat-label>
+                <button type="button mt-1" mat-raised-button (click)="fileInput.click()">
+                    {{ 'form.chooseFiles' | translate }}
+                </button>
+                <input hidden #fileInput (change)="onFilesSelected($event.target.files)" type="file" multiple="true">
+            </div>
+    
+            <button type="submit" class="btn btn-gradient-primary mt-2" (click)="onSubmit()"
+                [disabled]="reportFormGroup.status=='INVALID' || sending">
+                {{ 'form.submit' | translate }}
+            </button>
+        </form>
+    </div>
+</div>

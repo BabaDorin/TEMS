@@ -1,0 +1,21 @@
+<div class="card">
+    <div class="card-body">
+        <h2>
+            {{ 'equipment.bulkUpload' | translate }}
+        </h2>
+        <p class="text-muted">
+            {{ 'equipment.bulkUploadTip' | translate }}
+        </p>
+        <hr>
+        <app-file-upload (filesSelected)="onFilesSelected($event)"></app-file-upload>
+        <button 
+            mat-button
+            class="btn-gradient-primary mt-3"
+            (click)="uploadFiles()">
+            {{ 'form.upload' | translate }}
+        </button>
+        <ng-container *ngIf="feedback != undefined">
+            <small class="mt-2 d-block">{{ feedback }}</small>
+        </ng-container>
+    </div>
+</div>

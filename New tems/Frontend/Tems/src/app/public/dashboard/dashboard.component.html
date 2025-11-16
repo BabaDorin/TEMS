@@ -1,0 +1,103 @@
+<div class="col-md-12">
+  <div class="text-center mt-5">
+    <img src="assets/images/logo_detailed.svg" alt="logo" class="dashboard-logo fade-in" />
+  </div>
+
+  <div class="card dashboard-card card-body mt-5">
+    <h3 class="text-muted mt-3">
+      <mat-icon class="text-primary">campaign</mat-icon> {{ 'dashboard.announcementLabel' | translate }}
+    </h3>
+    <div class="mt-5">
+      <app-announcements-list [skip]="0" [take]="5">
+      </app-announcements-list>
+    </div>
+  </div>
+
+  <ng-container *ngIf="claims.canView || claims.canManage">
+    <div class="dashboard-card card-body mt-5">
+      <h3 class="text-muted">
+        <mat-icon class="text-primary">read_more</mat-icon>
+        {{ 'dashboard.quickAccess' | translate }}
+      </h3>
+      <!-- Quick searches -->
+      <div class="row mt-5">
+        <div class="col-md-4">
+          <app-quick-access type="equipment">
+          </app-quick-access>
+          <div class="d-block d-md-none mt-2"></div>
+        </div>
+        <div class="col-md-4">
+          <app-quick-access type="rooms">
+          </app-quick-access>
+          <div class="d-block d-md-none mt-2"></div>
+        </div>
+        <div class="col-md-4">
+          <app-quick-access type="personnel">
+          </app-quick-access>
+          <div class="d-block d-md-none mt-2"></div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+  <div class="card dashboard-card card-body mt-5">
+    <h3 class="text-muted">
+      <mat-icon class="text-primary">error</mat-icon>
+      {{ 'dashboard.tickets' | translate }}
+    </h3>
+    <div class="mt-5">
+      <div class="row">
+        <div class="col-lg-7">
+          <div class="text-center mb-3">
+            <div class="d-block m-3 mb-3">
+              <mat-icon class="text-primary icon-large">
+                support_agent
+              </mat-icon>
+            </div>
+            <h4>
+              {{ 'dashboard.ticketText' | translate }}
+            </h4>
+            <a mat-button class="btn-gradient-primary" routerLink="/issues/create/">
+              {{ 'dashboard.createTicketButtonText' | translate }}
+            </a>
+          </div>
+        </div>
+        <div class="col-lg-5">
+          <div class="d-block d-md-none">
+            <div class="mt-5"></div>
+          </div>
+          <div class="text-center">
+            <img src="assets/svgs/dashboard-ticket.svg" class="dashboard-ticket fade-in" />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <ng-container *ngIf="claims.canManage">
+      <div class="row mt-5">
+        <div class="col-lg-7 col-md-12 grid-margin">
+          <app-last-created-tickets-chart></app-last-created-tickets-chart>
+        </div>
+  
+        <div class="col-lg-5 col-md-12">
+          <h4 class="d-block">
+            {{ 'dashboard.recentTickets' | translate }}
+          </h4>
+          <a routerLink="/issues/all">{{ 'general.viewMore' | translate }}</a>
+          <app-last-issues-simplified>
+          </app-last-issues-simplified>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+
+  <div class="card dashboard-card card-body mt-5">
+    <h3 class="text-muted">
+      <mat-icon class="text-primary">engineering</mat-icon>
+      {{ 'dashboard.techniciansLabel' | translate }}
+    </h3>
+    <div class="mt-5"></div>
+    <app-user-cards-list ofRole="technician" [canManage]="claims.canManage" [canView]="claims.canView">
+    </app-user-cards-list>
+  </div>
+</div>

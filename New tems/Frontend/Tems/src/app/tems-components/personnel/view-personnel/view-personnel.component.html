@@ -1,0 +1,38 @@
+
+<!-- BEFREE: [FUTURE] Implement summary room analytics -->
+
+<!-- <div class="card">
+    <div class="card-body">
+        <app-summary-personnel-analytics></app-summary-personnel-analytics>
+    </div>
+</div> -->
+
+<div class="card pt-3">
+    <div class="card-body">
+        <h2>
+            {{ 'entities.personnel' | translate }}
+        </h2>
+        <ng-container *ngIf="claims.canManage">
+            <button mat-button (click)="addNew()" class="d-block d-md-inline">
+                <mat-icon class="text-primary">add</mat-icon>
+                {{ 'personnel.add' | translate }}
+            </button>
+        </ng-container>
+
+        <ng-container *ngIf="claims.canView">
+            <button mat-button (click)="addIssue()" class="d-block d-md-inline">
+                <mat-icon class="text-primary">feedback</mat-icon>
+                {{ 'personnel.includeSelectedInATicket' | translate }}
+            </button>
+        </ng-container>
+
+        <ng-container *ngIf="claims.canSendEmails">
+            <button mat-button (click)="sendEmail()" class="d-block d-md-inline">
+                <mat-icon class="text-primary">mail</mat-icon>
+                {{ 'personnel.sendEmailToSelected' | translate }}
+            </button>
+        </ng-container>
+        <hr class="separator">
+        <app-ag-grid-personnel #agGridPersonnel></app-ag-grid-personnel>
+    </div>
+</div>

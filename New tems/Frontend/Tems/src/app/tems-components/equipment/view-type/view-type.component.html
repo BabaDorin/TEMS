@@ -1,0 +1,40 @@
+<div [ngClass]="dialogRef == undefined ? 'card limit' : 'card cancel-margins limit'">
+    <div class="card-body">
+        <h2>
+            {{ type.name }}
+        </h2>
+        <hr class="separator">
+        <ng-container *ngIf="type.parents != undefined && type.parents.length > 0">
+            <p class="font-weight-bold mt-2 mb-0">
+                {{ 'entities.parentTypes' | translate }}
+            </p>
+            <p>
+                <button mat-button *ngFor="let parent of type.parents" (click)="viewType(parent.value)">
+                    {{ parent.label }} 
+                </button>
+            </p>
+        </ng-container>
+
+        <ng-container *ngIf="type.children != undefined && type.children.length > 0">
+            <p class="font-weight-bold mt-2 mb-0">
+                {{ 'entities.childTypes' | translate }}
+            </p>
+            <p>
+                <button mat-button *ngFor="let child of type.children" (click)="viewType(child.id)">
+                    {{ child.name }} 
+                </button>
+            </p>
+        </ng-container>
+
+        <ng-container *ngIf="type.properties != undefined && type.properties.length > 0">
+            <p class="font-weight-bold mt-2 mb-0">
+                {{ 'entities.properties' | translate }}
+            </p>
+            <p>
+                <button mat-button *ngFor="let property of type.properties"  (click)="viewProperty(property.id)">
+                    {{ property.displayName }} 
+                </button>
+            </p>
+        </ng-container>
+    </div>
+</div>

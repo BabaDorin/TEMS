@@ -1,0 +1,46 @@
+<mat-expansion-panel class="m-2 mat-elevation-z0 border" hideToggle="false" (opened)="fetchFullBugReport()">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+          <div class="d-block">
+            <h3 class="d-block m-0 mt-2">
+                {{ bugReportSimplified.label }}
+            </h3>
+            <small>
+                {{ bugReportSimplified.additional }}
+            </small>
+          </div>
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+    
+    <ng-container *ngIf="loading == true">
+        <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+    </ng-container>
+
+    <ng-container *ngIf="bugReport != undefined">
+        <h4 class="mt-3">
+            <b>{{ 'form.description' | translate }}:</b>
+        </h4>
+        <p>
+          {{ bugReport.description }}  
+        </p>
+
+        <h4 class="mt-3">
+            <b>{{ 'form.attachments' | translate }}:</b> 
+        </h4>
+        <ng-container *ngIf="bugReport.attachments != undefined && bugReport.attachments.length > 0; else noAttachments">
+            <ng-container *ngFor="let att of bugReport.attachments; let i = index">
+                <button mat-button (click)="fetchFile(i)">
+                    <mat-icon class="text-muted">attach_file</mat-icon>
+                    {{ (att.length > 10) ? (att | slice:0:10) + '..' : (att) }}
+                </button>
+            </ng-container>
+        </ng-container>
+        <ng-template #noAttachments>
+            {{ 'general.empty' | translate }}
+        </ng-template>
+        <hr class="mt-2">
+        <button mat-icon-button (click)="deleteReport()">
+            <mat-icon class="text-muted">delete</mat-icon>
+        </button>
+    </ng-container>
+  </mat-expansion-panel>

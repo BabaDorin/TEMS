@@ -1,0 +1,30 @@
+<div class="col-md-12">
+    <h2>
+        <mat-icon class="text-primary">devices</mat-icon>
+        {{ 'entities.types' | translate }}
+    </h2>
+    <hr>
+    
+    <ng-container *ngIf="canManage">  
+        <button mat-button (click)="addType()">
+            <mat-icon class="text-primary">add</mat-icon>
+            {{ 'type.add' | translate }}
+        </button>
+    </ng-container>
+    
+    <div class="container m-0 p-0">
+        <div class="row mt-3">
+            <div class="col-xl-3 col-lg-4 col-sm-6 col-xs-12 p-3" *ngFor="let type of typeContainerModels | paginate: { 
+                itemsPerPage: itemsPerPage, 
+                currentPage: pageNumber, 
+                id: 'types' }; 
+                let i = index">
+                <app-generic-container [model]="type" (eventEmitted)="eventEmitted($event, ((pageNumber - 1) * itemsPerPage) + i)">
+                </app-generic-container>
+            </div>
+        </div>
+        <pagination-controls class="mb-2"  (pageChange)="pageNumber = $any($event)" id="types"
+        *ngIf="typeContainerModels != undefined && typeContainerModels.length > 1">
+        </pagination-controls>
+    </div>
+</div>

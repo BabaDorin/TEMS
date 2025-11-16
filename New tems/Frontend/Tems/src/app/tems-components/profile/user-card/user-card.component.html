@@ -1,0 +1,19 @@
+<div class="card card mb-3 m-a" style="width: 18rem;">
+    <div class="card-image text-center">
+        <img class="card-img-top text-center" class="profile-photo"
+            [src]="user.profilePhotoB64 != undefined ? user.profilePhotoB64 : 'assets/svgs/default_avatar.svg'"
+            style="width: 80%; margin-top: 10px;">
+    </div>
+    <div class="card-body">
+        <h3>{{ user.fullName }}</h3>
+        <p *ngIf="user.email != undefined" class="card-text"><b>{{ 'profile.email' | translate }}: </b>{{ user.email }}
+        </p>
+        <p *ngIf="user.phoneNumber != undefined" class="card-text"><b>{{ 'profile.phone' | translate }}: </b>{{
+            user.phoneNumber }}</p>
+    </div>
+    <ng-container *ngIf="canManage || canView">
+        <div class="card-body">
+            <a [routerLink]="'/profile/view/' + user.id" class="card-link">{{ 'profile.visit' | translate }}</a>
+        </div>
+    </ng-container>
+</div>

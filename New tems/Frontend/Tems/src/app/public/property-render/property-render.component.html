@@ -1,0 +1,16 @@
+<ng-container *ngIf="properties != undefined">
+    <table class="table wrap-text w-100">
+        <tr *ngFor="let prop of properties">
+            <td>
+                <p class="prop-lbl font-weight-bold py-1 m-0">{{ prop.displayName }}
+                    <i class="mdi mdi-information-outline" *ngIf="prop.description != undefined"
+                        [matTooltip]="prop.description">
+                    </i>
+                </p>
+            </td>
+            <td>
+                <p class="py-1 m-0 prop-val">{{ prop.value }}</p>
+            </td>
+        </tr>
+    </table>
+</ng-container>

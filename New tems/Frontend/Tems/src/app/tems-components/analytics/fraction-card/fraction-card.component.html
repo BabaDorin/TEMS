@@ -1,0 +1,22 @@
+<div class="card card-sm h-100">
+    <div class="card-body pt-2 px-3 pb-1">
+        <h4>{{ title }}</h4>
+        <div class="d-flex align-items-center d-flex justify-content-center h-75">
+            <div class="text-center mt-2">
+                <p>
+                    <span [ngClass]="'display-4 text-' + theme">{{ numerator }}</span>
+                    <span class="medium-font-size text-muted">/{{ denominator }}</span>
+                </p>
+    
+                <div 
+                *ngIf="displayProgressBar && numerator != undefined && denominator != undefined" class="card-text"> 
+                <mat-progress-bar 
+                    mode="determinate"
+                    color="primary"
+                    [value]="numerator * 100 / denominator"></mat-progress-bar>
+                </div>
+                <p *ngIf="footNote!=undefined" class="d-block mt-2">{{ footNote }}</p>
+            </div>
+        </div>
+    </div>
+</div>

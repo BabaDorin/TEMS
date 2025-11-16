@@ -1,0 +1,50 @@
+.load-wrapp {
+  text-align: center;
+
+  .load-wrapp:last-child {
+    margin-right: 0;
+  }
+  
+  .letter-holder {
+    padding: 16px;
+    margin: 0;
+    text-align: center;
+  }
+  
+  .letter {
+    display: inline-block;
+    font-size: 14px;
+    color: #777;
+  }
+  
+  .load-6 .letter {
+    animation-name: loadingF;
+    animation-duration: 1.6s;
+    animation-iteration-count: infinite;
+    animation-direction: linear;
+  }
+  
+  .l-1 {
+    animation-delay: 0.48s;
+  }
+  .l-2 {
+    animation-delay: 0.6s;
+  }
+  .l-3 {
+    animation-delay: 0.72s;
+  }
+  .l-4 {
+    animation-delay: 0.84s;
+  }
+  
+  @keyframes loadingF {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+}
+
+

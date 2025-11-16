@@ -124,8 +124,8 @@
         }
       }
       .rtl & {
-        @extend .ml-0;
-        @extend .mr-4;
+        @extend .ms-0;
+        @extend .me-4;
       }
     }
 

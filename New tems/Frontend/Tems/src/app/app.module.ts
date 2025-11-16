@@ -130,6 +130,6 @@ export function HttpLoaderFactory(http: HttpClient){
     LazyLoaderService,
     DownloadService
   ],
-  bootstrap: [AppComponent],
+  bootstrap: [],
 })
 export class AppModule { }

@@ -1,0 +1,15 @@
+<div class="confirm-container">
+    <div class="d-flex align-items-center auth px-0 h-100"> 
+        <div class="mx-auto text-center ">
+            {{ message }}
+        </div>
+    </div>
+    <div class="text-center mt-3">
+        <button mat-button (click)="ok()">
+            {{ confirmButtonText }}
+        </button>
+        <button mat-button (click)="cancel()">
+            {{ cancelButtonText }}
+        </button>
+    </div>
+</div>

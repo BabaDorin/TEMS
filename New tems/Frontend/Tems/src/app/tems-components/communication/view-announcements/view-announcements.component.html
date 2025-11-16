@@ -1,0 +1,15 @@
+<div class="card">
+    <div class="card-body">
+        <h2>
+            <mat-icon class="text-primary">
+                campaign
+            </mat-icon>
+            {{ 'announcement.announcementsHeader' | translate }}
+        </h2>
+        <hr>
+        <app-announcements-list 
+            [displayCreateNew]="true">
+        </app-announcements-list>
+    </div>
+</div>
+

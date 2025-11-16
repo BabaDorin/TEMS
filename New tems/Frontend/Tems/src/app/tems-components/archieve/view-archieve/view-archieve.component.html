@@ -1,0 +1,30 @@
+<div class="card">
+  <div class="card-body">
+    <h2>
+      {{ 'archive.archiveHeader' | translate }}
+    </h2>
+    <p class="text-muted">
+      {{ 'archive.archiveNote' | translate }}  
+    </p>
+    <hr>
+    <mat-form-field>
+      <mat-label>
+        {{ 'archive.typeSelectionHeader' | translate }}  
+      </mat-label>
+      <mat-select [(ngModel)]="selectedType" (selectionChange)="onTypeChanged()">
+        <mat-option *ngFor="let type of archieveService.types" [value]="type.value">{{ type.label }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <div class="mt-3"></div>
+    <button mat-button (click)="dearchive()">
+      <mat-icon class="text-primary">history</mat-icon>
+      {{ 'archive.dearchive' | translate }}  
+    </button>
+    <button *ngIf="canRemove" mat-button (click)="remove()">
+      <mat-icon class="text-muted">delete_forever</mat-icon>
+      {{ 'archive.remove' | translate }}  
+    </button>
+    <app-ag-grid-archieved-items #agArchievedItems [itemsType]="selectedType">
+    </app-ag-grid-archieved-items>
+  </div>
+</div>

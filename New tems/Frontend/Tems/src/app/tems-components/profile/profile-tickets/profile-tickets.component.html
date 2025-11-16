@@ -1,0 +1,65 @@
+<div class="card stretch-card">
+    <div class="card-body">
+        <h2>
+            {{ 'profile.ticketsClosed' | translate }}
+        </h2>
+        <p *ngIf="lastClosedIssues.length == 0" class="text-muted">{{ 'general.empty' | translate }}</p>
+        <ng-container *ngIf="showMoreClosed == false">
+            <app-issue-container 
+            *ngFor="let issue of lastClosedIssues"
+            [issue]="issue"
+            [readonly]="true">
+            </app-issue-container>
+            <a mat-button *ngIf="lastClosedIssues.length > 0" (click)="showMoreClosed = true">{{ 'general.viewMore' | translate }}</a>
+        </ng-container>
+        <ng-container *ngIf="showMoreClosed == true">
+            <app-entity-issues-list
+            [endPoint]="closedIssuesEndPoint"
+            [addIssueEnabled]="false"
+            [showIncludeClosed]="false">
+            </app-entity-issues-list>
+        </ng-container>
+    </div>
+</div>
+<div class="card stretch-card mt-3">
+    <div class="card-body">
+        <h2>{{ 'profile.ticketsCreated' | translate }}</h2>
+        <p *ngIf="lastCreatedIssues.length == 0" class="text-muted">{{ 'general.empty' | translate }}</p>
+        <ng-container *ngIf="showMoreCreated == false">
+            <app-issue-container
+            *ngFor="let issue of lastCreatedIssues"
+            [issue]="issue"
+            [readonly]="true">
+            </app-issue-container>
+            <a mat-button *ngIf="lastCreatedIssues.length > 0" (click)="showMoreCreated = true">{{ 'general.viewMore' | translate }}</a>
+        </ng-container>
+        <ng-container *ngIf="showMoreCreated == true">
+            <app-entity-issues-list
+            [endPoint]="createdIssuesEndPoint"
+            [addIssueEnabled]="false"
+            [showIncludeClosed]="false">
+            </app-entity-issues-list>
+        </ng-container>
+    </div>
+</div>
+<div class="card stretch-card mt-3">
+    <div class="card-body">
+        <h2>{{ 'profile.ticketsAssigned' | translate }}</h2>
+        <p *ngIf="lastAssignedIssues.length == 0" class="text-muted">{{ 'general.empty' | translate }}</p>
+        <ng-container *ngIf="showMoreAssigned == false">
+            <app-issue-container
+            *ngFor="let issue of lastAssignedIssues"
+            [issue]="issue"
+            [readonly]="true">
+            </app-issue-container>
+            <a mat-button *ngIf="lastAssignedIssues.length > 0" (click)="showMoreAssigned = true">{{ 'general.viewMore' | translate }}</a>
+        </ng-container>
+        <ng-container *ngIf="showMoreAssigned == true">
+            <app-entity-issues-list
+            [endPoint]="assignedIssuesEndPoint"
+            [addIssueEnabled]="false"
+            [showIncludeClosed]="false">
+            </app-entity-issues-list>
+        </ng-container>
+    </div>
+</div>

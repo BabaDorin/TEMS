@@ -1,0 +1,30 @@
+<div class="col-md-12">
+    <h2>
+        <mat-icon class="text-primary">horizontal_split</mat-icon>
+        {{ 'entities.definitions' | translate }}
+    </h2>
+    <hr>
+    
+    <ng-container *ngIf="canManage">  
+        <button mat-button (click)="addDefinition()">
+            <mat-icon class="text-primary">add</mat-icon>
+            {{ 'definition.add' | translate }}
+        </button>
+    </ng-container>
+    
+    <div class="container m-0 p-0">
+        <div class="row mt-3">
+            <div class="col-xl-3 col-lg-4 col-sm-6 col-xs-12 p-3" *ngFor="let def of definitionContainerModels | paginate: { 
+                itemsPerPage: itemsPerPage,
+                currentPage: pageNumber, 
+                id: 'definitions' }; 
+                let i = index">
+                <app-generic-container [model]="def" (eventEmitted)="eventEmitted($event, ((pageNumber - 1) * itemsPerPage) + i)">
+                </app-generic-container>
+            </div>
+        </div>
+        <pagination-controls class="mb-2"  (pageChange)="pageNumber = $any($event)" id="definitions"
+            *ngIf="definitionContainerModels != undefined && definitionContainerModels.length > 1">
+        </pagination-controls>
+    </div>
+</div>

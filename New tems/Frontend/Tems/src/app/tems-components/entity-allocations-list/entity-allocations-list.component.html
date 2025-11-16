@@ -1,0 +1,56 @@
+<div class="col-md-12">
+    <div class="page-header">
+        <h2 class="page-title mb-0">
+            {{ 'allocation.allocationsHeader' | translate }}
+        </h2>
+        <nav aria-label="breadcrumb" *ngIf="filter.equipment == undefined || filter.equipment.length == 0">
+            <ul class="breadcrumb bg-transparent">
+                <li class="breadcrumb-item" aria-current="page">
+                    <button mat-icon-button [matMenuTriggerFor]="menu"
+                        class="float-right">
+                        <mat-icon>more_vert</mat-icon>
+                    </button>
+                    <mat-menu #menu="matMenu">
+                        <app-include-equipment-tags 
+                            #includeEquipmentLabels 
+                            (valueChanged)="includeLabelsChanged()"
+                            [defaultValue]="defaultLabels">
+                        </app-include-equipment-tags>
+                    </mat-menu>
+                </li>
+            </ul>
+        </nav>
+    </div>
+    <hr>
+
+    <p class="text-muted" *ngIf="equipmentNotAllocated">
+        {{ 'allocation.notAllocated' | translate }}
+    </p>
+
+    <ng-container *ngIf="claims.canManage">
+        <button mat-button (click)="addAllocation()">
+            <mat-icon class="text-primary">add</mat-icon>
+            {{ 'allocation.create' | translate }}
+        </button>
+    </ng-container>
+    <hr>
+    <ng-container *ngIf="loading == true" class="mt-3">
+        <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+        <app-loading-placeholder></app-loading-placeholder>
+    </ng-container>
+    <ng-container
+        class="mt-3"
+        *ngFor="let allocation of allocations | paginate: { itemsPerPage: 10, currentPage: pageNumber, id: 'allocations' }; let i = index">
+        <app-equipment-allocation-container [allocation]="allocation" [canManage]="claims.canManage"
+            (allocationRemoved)="allocationRemoved((pageNumber -1) * 10 + i)"
+            (allocationReturned)="allocationReturned((pageNumber -1) * 10 + i)">
+        </app-equipment-allocation-container>
+    </ng-container>
+
+    <pagination-controls class="mb-2"  (pageChange)="pageNumber = $any($event)" id="allocations"
+        *ngIf="allocations != undefined && allocations.length > 0"></pagination-controls>
+
+    <div *ngIf="loading == false && (allocations == undefined || allocations.length == 0)">
+        <img class="center-svg fade-in" src="assets/svgs/no-data.svg">
+    </div>
+</div>

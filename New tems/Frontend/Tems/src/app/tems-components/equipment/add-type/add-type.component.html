@@ -1,0 +1,31 @@
+<div [ngClass]="dialogRef == undefined ? 'card limit' : 'card cancel-margins limit'">
+  <div class="card-body">
+    <h2>
+      {{ 'type.add' | translate }}
+    </h2>
+    <hr class="separator">
+
+    <form [formGroup]="this.formGroup">
+      <app-chips-autocomplete [label]="translate.instant('type.selectParentTypes')" formControlName="parents"
+        [autocompleteOptions]="parentTypeOptions" [alreadySelected]="parentTypeAlreadySelected">
+      </app-chips-autocomplete>
+
+      <mat-form-field class="example-full-width">
+        <mat-label>{{ 'type.name' | translate }}</mat-label>
+        <input matInput placeholder="Printer" formControlName="name" maxlength="100">
+      </mat-form-field>
+
+      <app-chips-autocomplete [label]="translate.instant('type.selectTypeProperties')" formControlName="properties"
+        [autocompleteOptions]="propertyOptions" [alreadySelected]="propertyAlreadySelected"></app-chips-autocomplete>
+      <button class="btn btn-link btn-fw text-secondary" (click)="addProperty()">
+        + {{ 'property.add' | translate }}
+      </button>
+      <br>
+      <br>
+      <button type="submit" class="btn btn-gradient-primary mr-2" (click)="onSubmit()"
+        [disabled]="formGroup.status=='INVALID'">
+        {{ 'form.submit' | translate }}
+      </button>
+    </form>
+  </div>
+</div>

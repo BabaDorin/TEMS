@@ -1,0 +1,44 @@
+<div [ngClass]="dialogRef == undefined ? 'card limit' : 'card cancel-margins limit'">
+    <div class="card-body">
+
+        <div class="row">
+            <div class="col-6">
+                <button mat-raised-button class="btn-block" type="button mt-1"  (click)="fileInput.click()">
+                    {{ 'form.chooseFile' | translate }}
+                </button>
+                <input hidden #fileInput (change)="fileChangeEvent($event)" type="file" multiple="false" 
+                accept=".jpg, .jpeg, .gif, .png">
+            </div>
+            <div class="col-6">
+                <button mat-raised-button class="btn-block text-danger" (click)="cancelCurrent()">
+                    {{ 'form.removeCurrent' | translate }}
+                </button> 
+            </div>
+        </div>
+        
+        <div class="cropper-container">
+            <ng-container *ngIf="fileSelected != undefined; else noFileSelected">
+                <div class="mt-4">
+                    <ng-container *ngIf="!restrictCropping; else croppingRestricted">
+                        <image-cropper [imageChangedEvent]="imageChangedEvent" [maintainAspectRatio]="true" [aspectRatio]="4 / 4"
+                        [resizeToWidth]="640" [format]="selectedFileFormat" (imageCropped)="imageCropped($event)" (imageLoaded)="imageLoaded()"
+                        (cropperReady)="cropperReady()" (loadImageFailed)="loadImageFailed()">
+                        </image-cropper>
+                    </ng-container>
+                    <ng-template #croppingRestricted>
+                        <div *ngIf="fileUrl != undefined" class="text-center">
+                            <img [src]="fileUrl" width="400" height="400">
+                        </div>
+                    </ng-template>
+                </div>
+            </ng-container>
+            <ng-template #noFileSelected>
+                <img class="mt-5 center-svg fade-in no-photo-placeholder" src="assets/svgs/photo.svg">
+            </ng-template>
+        </div>
+
+        <button mat-button class="mt-4 btn-gradient-primary btn-block" (click)="submit()" [disabled]="fileSelected == undefined">
+            {{ 'form.submit' | translate }}
+        </button>
+    </div>
+</div>

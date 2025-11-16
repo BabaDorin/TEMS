@@ -1,0 +1,28 @@
+/* Bootstrap Alerts */
+
+.alert {
+  font-size: $default-font-size;
+  padding: 0.4rem 1rem;
+  i {
+    font-size: 1.25rem;
+    margin-right: 1.25rem;
+    vertical-align: middle;
+    line-height: .5;
+  }
+}
+
+@each $color, $value in $theme-colors {
+  .alert-#{$color} {
+    background-color: rgba($value, .2);
+    border-color: $value;
+    color: $value;
+  }
+}
+
+@each $color, $value in $theme-colors {
+  .alert-fill-#{$color} {
+    background-color: $value;
+    border-color: $value;
+    color: $white;
+  }
+}

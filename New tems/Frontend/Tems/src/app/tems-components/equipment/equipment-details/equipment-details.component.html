@@ -1,0 +1,36 @@
+<div class="card">
+    <div class="card-body">
+        <mat-tab-group [@.disabled]="true" (selectedIndexChange)="matTabLazyLoader.tabChange($event)">
+            <mat-tab [label]="mainHeaderLabel">
+                    <app-equipment-details-general 
+                    [equipmentId]="equipmentId"
+                    (archivationStatusChanged)="archivationStatusChanged()">
+                    {{ 'general.loading' | translate }}
+                    </app-equipment-details-general>
+            </mat-tab>
+            <ng-container *ngIf="equipmentSimplified.isArchieved == false">
+                <mat-tab [label]="translate.instant('entities.logs')">
+                    <ng-container *ngIf="matTabLazyLoader.tabsVisibility[1]">
+                        <app-equipment-details-logs [equipment]="equipmentSimplified">
+                            {{ 'general.loading' | translate }}
+                        </app-equipment-details-logs>
+                    </ng-container>    
+                </mat-tab>
+                <mat-tab  [label]="translate.instant('entities.tickets')">
+                    <ng-container *ngIf="matTabLazyLoader.tabsVisibility[2]">
+                        <app-equipment-details-issues [equipment]="equipmentSimplified">
+                            {{ 'general.loading' | translate }}
+                        </app-equipment-details-issues>
+                    </ng-container>
+                </mat-tab>
+                <mat-tab [label]="translate.instant('entities.allocations')">
+                    <ng-container *ngIf="matTabLazyLoader.tabsVisibility[3]">
+                        <app-equipment-details-allocations [equipment]="equipmentSimplified">
+                            {{ 'general.loading' | translate }}
+                        </app-equipment-details-allocations>
+                    </ng-container>
+                </mat-tab>
+            </ng-container>
+        </mat-tab-group>
+    </div>
+</div>

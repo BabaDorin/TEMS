@@ -1,0 +1,68 @@
+<ng-container *ngIf="room==undefined">
+    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+</ng-container>
+
+<ng-container *ngIf="room != undefined">
+    <div [class]="headerClass">
+        <div class="col-md-12">
+            <div class="page-header">
+                <div class="page-title mt-4 mb-0">
+                    <h1 class="font-weight-light">
+                        <h3 class="font-weight-light d-inline">{{ 'entities.room' | translate }}</h3>
+                        {{ room.identifier }}
+                    </h1>
+                    <ng-container *ngIf="room.labels != undefined">
+                        <div *ngFor="let lb of room.labels" class="badge-pill badge-gradient-primary ml-3 d-inline">
+                            {{ lb.label }}
+                        </div>
+                    </ng-container>
+                </div>
+                <nav aria-label="breadcrumb">
+                    <ul class="breadcrumb bg-transparent">
+                        <ng-container *ngIf="canManage">
+                            <li class="breadcrumb-item" aria-current="page">
+                                <button mat-button [matMenuTriggerFor]="menu"
+                                    class="float-right">
+                                    <mat-icon class="text-primary">more_vert</mat-icon>
+                                </button>
+                                <mat-menu #menu="matMenu">
+                                    <button mat-menu-item (click)="edit()">
+                                        <mat-icon class="text-muted">edit</mat-icon>
+                                        {{ 'general.edit' | translate }}
+                                    </button>
+                                    <button mat-menu-item *ngIf="room.isArchieved" (click)="archieve()">
+                                        <mat-icon class="text-muted">restore</mat-icon>
+                                        {{ 'general.dearchive' | translate }}
+                                    </button>
+                                    <button mat-menu-item *ngIf="!room.isArchieved" (click)="archieve()">
+                                        <mat-icon class="text-muted">auto_delete</mat-icon>
+                                        {{ 'general.archive' | translate }}
+                                    </button>
+                                </mat-menu>
+                            </li>
+                        </ng-container>
+                    </ul>
+                </nav>
+            </div>
+            <ng-container *ngIf="room.supervisories != undefined && room.supervisories.length > 0">
+                <h2 class="text-muted text-bold">
+                    {{ 'room.supervisories' | translate }}
+                </h2>
+                <a mat-button *ngFor="let supv of room.supervisories" [routerLink]="'/personnel/details/' + supv.value">
+                    <mat-icon class="text-primary">account_circle</mat-icon>
+                    {{ supv.label }} {{ supv.additional }}
+                </a>
+                <hr>
+            </ng-container>
+            <div class="property-container">
+                <h2 class="text-muted text-bold">
+                    {{ 'entities.properties' | translate }}
+                </h2>
+                <app-property-render [properties]="roomProperties">
+                </app-property-render>
+            </div>
+            <a *ngIf="displayViewMore == true" mat-button [routerLink]="'/rooms/details/' + room.id"
+                (click)="viewMore()">{{ 'general.viewMore' | translate }}</a>
+        </div>
+    </div>
+</ng-container>

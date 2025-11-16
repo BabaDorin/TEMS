@@ -1,0 +1,16 @@
+<div class="datetime-display-wrapper">
+    <div class="top">
+        <!-- <h1 class="title">Time</h1> -->
+    </div>
+    <div id="clock">
+        <h1 *ngIf="finalDateValue != undefined" class="font-weight-light">
+            {{finalDateValue}}
+        </h1>
+        <h2 *ngIf="finalYearValue != undefined" class="font-weight-light">
+            {{finalYearValue}}
+        </h2>
+        <h3 *ngIf="finalTimeValue != undefined" class="font-weight-light">
+            {{finalTimeValue}}
+        </h3>
+    </div>
+</div>

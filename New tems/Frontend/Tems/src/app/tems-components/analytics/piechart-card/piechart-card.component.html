@@ -1,0 +1,26 @@
+<div class="card card-sm h-100">
+    <div class="card-body pt-2 px-3 pb-1">
+        <h4>{{ title }}</h4>
+        <ng-container *ngIf="chartData != undefined && total > 0; else elseBlock">
+            <canvas baseChart
+            [chartType]="'doughnut'" 
+            [datasets]="chartData" 
+            [labels]="chartLabels" 
+            [options]="chartOptions"
+            [colors]="trafficChartColors"></canvas>
+
+            <div id="traffic-chart-legend" class="rounded-legend legend-vertical legend-bottom-left pt-4">
+                <ul>
+                  <li *ngFor="let rate of displayRates">
+                    <span class="legend-dots"></span>{{ rate.item1 }}
+                    <span class="float-right">{{ rate.item2 * 100 / total | number: '1.0-0' }}%</span>
+                  </li> 
+                </ul>
+              </div>    
+        </ng-container>
+
+        <ng-template #elseBlock>
+          <p class="text-muted text-center mt-3">{{ 'general.empty' | translate }}</p>
+        </ng-template>
+    </div>
+</div>

@@ -1,0 +1,13 @@
+<div class="card">
+    <div class="card-body">
+        <h2>
+            {{ 'announcement.add' | translate }}
+        </h2>
+        <form [formGroup]="formlyDataModel.form" (ngSubmit)="onSubmit()">
+            <formly-form [form]="formlyDataModel.form" [fields]="formlyDataModel.fields" [model]="formlyDataModel.model">
+            </formly-form>
+            <div class="mt-3"></div>
+            <button type="submit" class="btn btn-gradient-primary mr-2" [disabled]="!formlyDataModel.form.valid">Submit</button>
+        </form>
+    </div>
+</div>

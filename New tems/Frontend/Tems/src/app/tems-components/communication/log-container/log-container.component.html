@@ -1,0 +1,41 @@
+<ng-container *ngIf="log != undefined; else elseBlock">
+    <div class="page-header mb-1">
+        <div class="page-title mb-0 template-title">
+            <h3 class="m-0">
+                {{ log.dateCreated | date:'short' }}
+            </h3>
+            <ng-container *ngIf="log.createdBy != undefined">
+                <p class="m-0" class="d-block">
+                    <small>
+                        {{ 'user.createdBy' | translate }} {{ log.createdBy.label }}
+                    </small>
+                </p>
+            </ng-container>
+        </div>
+        <ng-container *ngIf="canManage">
+            <nav aria-label="breadcrumb">
+                <ul class="breadcrumb bg-transparent m-1 p-0">
+                    <li class="breadcrumb-item" aria-current="page">
+                        <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Add Equipment Menu"
+                            class="float-right">
+                            <mat-icon>more_vert</mat-icon>
+                        </button>
+                        <mat-menu #menu="matMenu">
+                            <button mat-menu-item (click)="remove()">
+                                <mat-icon class="text-muted">delete</mat-icon>
+                                {{ 'form.remove' | translate }}
+                            </button>
+                        </mat-menu>
+                    </li>
+                </ul>
+            </nav>
+        </ng-container>
+    </div>
+    <p class="m-0">
+        {{ log.description }}
+    </p>
+</ng-container>
+
+<ng-template #elseBlock>
+    {{ 'general.empty' | translate }}
+</ng-template>

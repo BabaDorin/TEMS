@@ -1,0 +1,82 @@
+<div class="flex-container">
+    <div class="col-md-12" id="section1">
+        <app-summary-issues-analytics>
+            {{ 'general.Loading' | translate }}
+        </app-summary-issues-analytics>
+    </div>
+    
+    <div class="col-md-12" id="section2">
+        <div class="mt-3">
+            <app-pinned-issues #pinnedIssues
+            (unPinned)="ticketUnpinned($any($event))">
+            </app-pinned-issues>
+        </div>
+        
+        <div class="card mt-3">
+            <div class="card-body">
+                <h2>
+                    {{ 'ticket.view' | translate }}
+                </h2>
+                <form [formGroup]="filterIssueFormGroup">
+                    <div class="row">
+                        <div class="col-md-4 col-sm-12">
+                            <app-chips-autocomplete [label]="translate.instant('ticket.selectEquipmentLabel')"
+                            formControlName="equipment"
+                            [endPoint]="equipmentService"
+                            (dataCollected)="equipmentSelected($event)"
+                            (dataRemoved)="equipmentSelected($event)"
+                            [maxOptionsSelected]="1">
+                            </app-chips-autocomplete>
+                        </div>
+                        <div class="col-md-4 col-sm-12">
+                            <app-chips-autocomplete [label]="translate.instant('entities.rooms')"
+                            formControlName="rooms"
+                            [endPoint]="roomService"
+                            (dataCollected)="roomSelected($event)"
+                            (dataRemoved)="roomSelected($event)"
+                            [maxOptionsSelected]="1">
+                            </app-chips-autocomplete>
+                        </div>
+                        <div class="col-md-4 col-sm-12">
+                            <app-chips-autocomplete [label]="translate.instant('entities.personnel')"
+                            formControlName="personnel"
+                            [endPoint]="personnelService"
+                            (dataCollected)="personnelSelected($event)"
+                            (dataRemoved)="personnelSelected($event)"
+                            [maxOptionsSelected]="1">
+                            </app-chips-autocomplete>
+                        </div>
+                    </div>
+                </form>
+                <mat-tab-group [@.disabled]="true" (selectedIndexChange)="matTabLazyLoader.tabChange($event)">
+                    <mat-tab [label]="translate.instant('ticket.openTickets')">
+                        <app-entity-issues-list #entityOpenIssuesList
+                            [showIncludeClosed]="false"
+                            [equipmentId]="equipmentId"
+                            [includePinned]="false"
+                            [roomId]="roomId"
+                            [personnelId]="personnelId"
+                            (pinned)="ticketPinned($any($event))">
+                            {{ 'general.loading' | translate }}
+                        </app-entity-issues-list>
+                    </mat-tab>
+                    <mat-tab [label]="translate.instant('ticket.closedTickets')">
+                        <ng-container *ngIf="matTabLazyLoader.tabsVisibility[1]">
+                            <app-entity-issues-list #entityClosedIssuesList
+                                [showIncludeClosed]="false"
+                                [equipmentId]="equipmentId"
+                                [includePinned]="false"
+                                [roomId]="roomId"
+                                [personnelId]="personnelId"
+                                [onlyClosed]="true"
+                                [addIssueEnabled]="false"
+                                (pinned)="ticketPinned($any($event))">
+                                {{ 'general.loading' | translate }}
+                            </app-entity-issues-list>
+                        </ng-container>
+                    </mat-tab>
+                </mat-tab-group>
+            </div>
+        </div>
+    </div>
+</div>

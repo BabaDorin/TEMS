@@ -1,0 +1,55 @@
+<div class="col-md-12 flex-container">
+    <div class="page-header">
+        <h2 class="page-title mb-0">
+            {{ 'entities.currentlyAllocatedEquipment' | translate }}
+        </h2>
+        <nav aria-label="breadcrumb">
+            <ul class="breadcrumb bg-transparent">
+                <li class="breadcrumb-item" aria-current="page">
+                    <button mat-icon-button [matMenuTriggerFor]="menu"
+                        class="float-right">
+                        <mat-icon>more_vert</mat-icon>
+                    </button>
+                    <mat-menu #menu="matMenu">
+                        <app-include-equipment-tags 
+                            #includeEquipmentLabels 
+                            (valueChanged)="includeLabelsChanged()"
+                            [defaultValue]="defaultLabels">
+                        </app-include-equipment-tags>
+                    </mat-menu>
+                </li>
+            </ul>
+        </nav>
+    </div>
+    <hr>
+
+    <!-- Equipment analytics summary -->
+    <div id="section1">
+        <app-summary-equipment-analytics [personnelId]="personnel.id">
+        </app-summary-equipment-analytics>
+    </div>
+
+    <!-- Actions -->
+    <div class="d-block mt-3">
+        <button mat-button class="d-md-inline d-block" (click)="generateReport()">
+            <mat-icon class="text-primary">article</mat-icon>
+            {{ 'general.generateReport' | translate }}
+        </button>
+    </div>
+    <hr class="separator">
+
+    <!-- Equipment grid -->
+    <ng-container *ngIf="equipmentFilter != undefined">
+        <div id="section2" class="mt-3">
+            <app-ag-grid-equipment [equipmentFilter]="equipmentFilter">
+            </app-ag-grid-equipment>
+        </div>
+    </ng-container>
+
+    <!-- Allocations list -->
+    <div id="section3" class="mt-5">
+        <app-entity-allocations-list [personnel]="personnel" (allocationCreated)="refreshAgGrid()">
+            {{ 'general.loading' | translate }}
+        </app-entity-allocations-list>
+    </div>
+</div>

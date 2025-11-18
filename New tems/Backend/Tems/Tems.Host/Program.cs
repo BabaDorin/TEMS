@@ -1,3 +1,4 @@
+using EquipmentManagement.API;
 using FastEndpoints;
 using FastEndpoints.Swagger;
 using Tems.Example.API;
@@ -5,7 +6,8 @@ using Tems.Example.API;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add modules first
-builder.Services.AddExampleApiModule(builder.Configuration);
+// builder.Services.AddExampleServices(builder.Configuration);
+builder.Services.AddEquipmentManagementServices(builder.Configuration);
 
 // Add FastEndpoints
 builder.Services.AddFastEndpoints();

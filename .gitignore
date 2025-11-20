@@ -390,3 +390,6 @@ healthchecksdb
 .DS_Store
 # Mac System Files
 # NOTE: .DS_Store is now ignored in the Angular/Node.js section.
+
+*.Development.json
+appsettings.Development.json

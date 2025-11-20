@@ -56,23 +56,16 @@ export class LoginComponent extends TEMSComponent implements OnInit {
 
   ngOnInit() {
     this.formlyData.fields = this.formlyParserService.parseLogin();
+    
+    // Check if user is already logged in
+    if (this.authService.isLoggedIn()) {
+      this.router.navigate(['/tems']);
+    }
   }
 
   onSubmit(){
-    let loginModel: LoginModel = this.formlyData.model.login;
-
-    this.subscriptions.push(
-      this.authService.logIn(loginModel)
-      .subscribe(result => {
-        if(this.snackService.snackIfError(result))
-          return;
-
-        if(result.token != undefined){
-          localStorage.setItem('token', result.token);
-          window.location.href = '';
-        }
-      })
-    )
+    // Redirect to IdentityServer for OIDC authentication
+    this.authService.logIn();
   }
 
   forgotPassword(){

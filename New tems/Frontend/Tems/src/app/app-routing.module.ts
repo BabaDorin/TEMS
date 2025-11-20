@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { LoginComponent } from './public/user-pages/login/login.component';
+import { CallbackComponent } from './public/callback/callback.component';
 // import { TemsFront_rolesGuard } from './helpers/guards/role.guard'; // TODO: Implement or restore this guard
 import { FindByTemsidComponent } from './tems-components/equipment/find-by-temsid/find-by-temsid.component';
 import { DashboardComponent } from './public/dashboard/dashboard.component';
@@ -10,6 +11,7 @@ import { TEMSComponent } from './tems/tems.component';
 export const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
+  { path: 'callback', component: CallbackComponent },
   {
     path: 'tems',
     component: TEMSComponent,

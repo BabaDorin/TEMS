@@ -1,42 +1,52 @@
-import { HttpClient } from '@angular/common/http';
-import { TEMSService } from './tems.service';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { API_AUTH_URL } from '../models/backend.config';
+import { Router } from '@angular/router';
+import { OAuthService } from 'angular-oauth2-oidc';
+import { authCodeFlowConfig } from '../app.config';
 
 @Injectable({
   providedIn: 'root'
 })
-export class AuthService extends TEMSService {
+export class AuthService {
 
   constructor(
-    private http: HttpClient
+    private oauthService: OAuthService,
+    private router: Router
   ) {
-    super();
+    this.configure();
   }
 
-  isLoggedIn(): Observable<any>{
-    return this.http.get(
-      API_AUTH_URL + '/isauthenticated',
-      this.httpOptions
-    );
+  private configure() {
+    this.oauthService.configure(authCodeFlowConfig);
+    this.oauthService.loadDiscoveryDocumentAndTryLogin().then(() => {
+      if (this.oauthService.hasValidAccessToken()) {
+        // User is already logged in, can navigate to app
+        const currentPath = this.router.url;
+        if (currentPath === '/login' || currentPath === '/') {
+          this.router.navigate(['/tems']);
+        }
+      }
+    });
   }
 
-  logIn(loginModel): Observable<any>{
-    return this.http.post(
-      API_AUTH_URL + '/login',
-      JSON.stringify(loginModel),
-      this.httpOptions
-    );
+  logIn() {
+    this.oauthService.initCodeFlow();
   }
 
-  signOut(): Observable<any>{
-    let token = localStorage.getItem('token');
-    localStorage.removeItem('token');
-    return this.http.post(
-      API_AUTH_URL + "/signout/",
-      JSON.stringify(token),
-      this.httpOptions
-    );
+  signOut() {
+    this.oauthService.revokeTokenAndLogout();
+    localStorage.removeItem('token'); // Clean up old token if exists
+    this.router.navigate(['/login']);
+  }
+
+  isLoggedIn(): boolean {
+    return this.oauthService.hasValidAccessToken();
+  }
+
+  getAccessToken(): string {
+    return this.oauthService.getAccessToken();
+  }
+
+  getIdentityClaims(): any {
+    return this.oauthService.getIdentityClaims();
   }
 }

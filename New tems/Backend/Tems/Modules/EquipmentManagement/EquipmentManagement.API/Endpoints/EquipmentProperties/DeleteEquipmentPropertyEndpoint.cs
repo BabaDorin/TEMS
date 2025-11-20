@@ -10,7 +10,7 @@ public class DeleteEquipmentPropertyEndpoint(IMediator mediator) : Endpoint<Dele
     public override void Configure()
     {
         Delete("/equipment-properties/{propertyId}");
-        AllowAnonymous();
+        Policies("CanManageEntities");
     }
 
     public override async Task HandleAsync(DeleteEquipmentPropertyCommand command, CancellationToken ct)

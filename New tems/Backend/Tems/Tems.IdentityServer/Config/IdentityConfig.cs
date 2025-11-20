@@ -1,0 +1,76 @@
+using Duende.IdentityServer;
+using Duende.IdentityServer.Models;
+
+namespace Tems.IdentityServer.Config;
+
+public static class IdentityConfig
+{
+    public static IEnumerable<IdentityResource> IdentityResources =>
+        new IdentityResource[]
+        {
+            new IdentityResources.OpenId(),
+            new IdentityResources.Profile(),
+            new IdentityResources.Email(),
+            new IdentityResource
+            {
+                Name = "roles",
+                UserClaims = { "role" }
+            }
+        };
+
+    public static IEnumerable<ApiScope> ApiScopes =>
+        new ApiScope[]
+        {
+            new ApiScope("tems-api", "TEMS API", new[] 
+            {
+                "role",
+                "can_view_entities",
+                "can_manage_entities",
+                "can_allocate_keys",
+                "can_send_emails",
+                "can_manage_announcements",
+                "can_manage_system_configuration"
+            })
+        };
+
+    public static IEnumerable<Client> Clients =>
+        new Client[]
+        {
+            // Angular SPA Client
+            new Client
+            {
+                ClientId = "tems-angular-spa",
+                ClientName = "TEMS Angular SPA",
+                AllowedGrantTypes = GrantTypes.Code,
+                RequirePkce = true,
+                RequireClientSecret = false,
+                
+                RedirectUris = 
+                {
+                    "http://localhost:4200/callback",
+                    "http://localhost:4200/silent-refresh.html"
+                },
+                PostLogoutRedirectUris = { "http://localhost:4200" },
+                AllowedCorsOrigins = { "http://localhost:4200" },
+                
+                AllowedScopes = 
+                {
+                    IdentityServerConstants.StandardScopes.OpenId,
+                    IdentityServerConstants.StandardScopes.Profile,
+                    IdentityServerConstants.StandardScopes.Email,
+                    "roles",
+                    "tems-api"
+                },
+                
+                AccessTokenLifetime = 900, // 15 minutes
+                RefreshTokenUsage = TokenUsage.ReUse,
+                RefreshTokenExpiration = TokenExpiration.Sliding,
+                SlidingRefreshTokenLifetime = 2592000, // 30 days
+                
+                AllowOfflineAccess = true,
+                
+                // Allow access token via browser (for development)
+                AllowAccessTokensViaBrowser = true
+            }
+        };
+}

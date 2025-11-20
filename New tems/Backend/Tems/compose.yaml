@@ -11,6 +11,25 @@
     networks:
       - tems-network
 
+  identityserver:
+    image: tems.identityserver
+    container_name: tems-identityserver
+    build:
+      context: .
+      dockerfile: Tems.IdentityServer/Dockerfile
+    ports:
+      - "5001:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=8080
+      - MongoDb__ConnectionString=mongodb://mongodb:27017
+      - MongoDb__DatabaseName=TemsDb
+      - Cors__AllowedOrigins=http://localhost:4200
+    depends_on:
+      - mongodb
+    networks:
+      - tems-network
+
   tems.host:
     image: tems.host
     container_name: tems-backend
@@ -18,13 +37,16 @@
       context: .
       dockerfile: Tems.Host/Dockerfile
     ports:
-      - "5000:8080"
-      - "5001:8081"
+      - "14721:8080"
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_HTTP_PORTS=8080
-      - ASPNETCORE_HTTPS_PORTS=8081
+      - IdentityServer__Authority=http://identityserver:8080
+      - MongoDb__ConnectionString=mongodb://mongodb:27017
+      - MongoDb__DatabaseName=TemsDb
+      - Cors__AllowedOrigins=http://localhost:4200
     depends_on:
+      - identityserver
       - mongodb
     networks:
       - tems-network

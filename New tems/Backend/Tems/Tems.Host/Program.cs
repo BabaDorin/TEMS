@@ -7,6 +7,13 @@ using Tems.Example.API;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Ensure appsettings.Development.json is loaded for non-production environments
+if (!builder.Environment.IsProduction())
+{
+    builder.Environment.EnvironmentName = "Development";
+    builder.Configuration.AddJsonFile("appsettings.Development.json", optional: false, reloadOnChange: true);
+}
+
 // Add modules first
 // builder.Services.AddExampleServices(builder.Configuration);
 builder.Services.AddEquipmentManagementServices(builder.Configuration);

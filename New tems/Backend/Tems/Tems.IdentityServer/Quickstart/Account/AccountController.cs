@@ -1,16 +1,21 @@
+using Duende.IdentityServer;
 using Duende.IdentityServer.Events;
 using Duende.IdentityServer.Extensions;
 using Duende.IdentityServer.Models;
 using Duende.IdentityServer.Services;
 using Duende.IdentityServer.Stores;
+using IdentityModel;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Driver;
 using System.Security.Claims;
 using Tems.Common.Identity;
 using Tems.IdentityServer.Quickstart.Account;
+
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Tems.IdentityServer.Tests")]
 
 namespace Tems.IdentityServer.Quickstart.Account;
 
@@ -201,10 +206,15 @@ public class AccountController : Controller
         if (User?.Identity?.IsAuthenticated == true)
         {
             var idp = User.FindFirst(JwtClaimTypes.IdentityProvider)?.Value;
-            if (idp != null && idp != Duende.IdentityServer.IdentityServerConstants.LocalIdentityProvider)
+            if (idp != null && idp != IdentityServerConstants.LocalIdentityProvider)
             {
-                var providerSupportsSignout = await HttpContext.GetSchemeSupportsSignOutAsync(idp);
-                if (providerSupportsSignout)
+                var schemes = HttpContext.RequestServices.GetRequiredService<IAuthenticationSchemeProvider>();
+                var scheme = await schemes.GetSchemeAsync(idp);
+                var handler = scheme?.HandlerType != null ? 
+                    HttpContext.RequestServices.GetService(scheme.HandlerType) as IAuthenticationSignOutHandler : 
+                    null;
+                
+                if (handler != null)
                 {
                     if (vm.LogoutId == null)
                     {

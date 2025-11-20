@@ -1,5 +1,6 @@
 using Duende.IdentityServer.Services;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using Tems.Common.Database;
 using Tems.Common.Identity;
@@ -8,6 +9,13 @@ using Tems.IdentityServer.Data;
 using Tems.IdentityServer.UserStore;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Ensure appsettings.Development.json is loaded for non-production environments
+if (!builder.Environment.IsProduction())
+{
+    builder.Environment.EnvironmentName = "Development";
+    builder.Configuration.AddJsonFile("appsettings.Development.json", optional: false, reloadOnChange: true);
+}
 
 // MongoDB configuration
 builder.Services.Configure<MongoDbSettings>(

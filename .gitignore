@@ -394,3 +394,4 @@ healthchecksdb
 *.Development.json              # Ignores files like 'db.Development.json' in the root
 appsettings.Development.json   # Ignores this specific file in the root
 **/appsettings.Development.json # Ignores this specific file everywhere (Recommended)
+New tems/Backend/Tems/Tems.Host/appsettings.Development.json

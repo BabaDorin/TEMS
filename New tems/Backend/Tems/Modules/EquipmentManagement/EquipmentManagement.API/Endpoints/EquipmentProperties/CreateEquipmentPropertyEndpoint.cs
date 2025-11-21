@@ -17,7 +17,5 @@ public class CreateEquipmentPropertyEndpoint(IMediator mediator) : Endpoint<Crea
     public override async Task HandleAsync(CreateEquipmentPropertyCommand command, CancellationToken ct)
     {
         var response = await mediator.Send(command, ct);
-
-        Console.WriteLine(response.PropertyId);
     }
 }

@@ -1,0 +1,29 @@
+<h2>User analytics</h2>
+
+<!-- <h3>Issues</h3> -->
+<div class="row" *ngIf="
+amOfCreatedIssues != undefined &&
+uamOfCreatedIssues != undefined &&
+uamOfClosedIssues != undefined &&
+uamOfTicketsEverClosedByUser != undefined &&
+uamOfTicketsClosedByUserThatWereReopenedAfterwards != undefined
+">
+    <div class="col-lg-4 col-md-6">
+        <app-fraction-card [title]="translate.instant('profile.ticketsCreated')" [numerator]="uamOfCreatedIssues"
+            [denominator]="amOfCreatedIssues" theme="info" displayProgressBar="true">
+        </app-fraction-card>
+    </div>
+
+    <div class="col-lg-4 col-md-6">
+        <app-fraction-card [title]="translate.instant('profile.ticketsClosed')" [numerator]="uamOfClosedIssues"
+            [denominator]="amOfCreatedIssues" theme="success" displayProgressBar="true">
+        </app-fraction-card>
+    </div>
+
+    <div class="col-lg-4 col-md-6">
+        <app-simple-info-card [title]="translate.instant('profile.probabilityOfReopenClosedTicket')" theme="info"
+            [mainText]="uamOfTicketsEverClosedByUser == 0 ? '0%' : (uamOfTicketsClosedByUserThatWereReopenedAfterwards * 100 / uamOfTicketsEverClosedByUser | number: '1.0-0') + '%'"
+            [footNote]="uamOfTicketsEverClosedByUser + ' ' + translate.instant('profile.probabilityOfReopenClosedTicketLabel1') + ' ' + uamOfTicketsClosedByUserThatWereReopenedAfterwards + ' ' + translate.instant('profile.probabilityOfReopenClosedTicketLabel2')">
+        </app-simple-info-card>
+    </div>
+</div>

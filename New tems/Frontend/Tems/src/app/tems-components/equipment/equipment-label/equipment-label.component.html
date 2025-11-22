@@ -1,0 +1,41 @@
+<div class="label-wrapper">
+    <div id="label">
+        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1301 401">
+            <g id="Layer_3" data-name="Layer 3">
+                <rect x="0.5" y="0.5" width="1300" height="400" style="fill:#110045;stroke:#000;stroke-miterlimit:10" />
+            </g>
+            <g id="Layer_4" data-name="Layer 4">
+                <polygon points="1300.5 0.5 1300.5 400.5 923.02 400.5 731.39 68.58 770.69 0.5 1300.5 0.5"
+                    style="fill:#fff" />
+                <polygon points="221.03 289.63 157.02 400.5 0.5 400.5 0.5 0.5 54.1 0.5 221.03 289.63"
+                    style="fill:#270071" />
+            </g>
+            <g id="Layer_1" data-name="Layer 1">
+                <image width="1600" height="1600" transform="translate(913 17) scale(0.23)"
+                    [attr.xlink:href]="link"/>
+            </g>
+            <g id="Layer_6" data-name="Layer 6"><text transform="translate(23.79 381.94)"
+                    style="font-size:41px;fill:#b3b3b3;font-family:Arial-BoldMT, Arial;font-weight:700;opacity:0.69">
+                    <tspan style="letter-spacing:-0.07421875em">T</tspan>
+                    <tspan x="22" y="0">echnical Equipment Management System</tspan>
+                </text></g>
+            <g id="Layer_7" data-name="Layer 7"><text transform="translate(23.43 246.04)"
+                    style="font-size:169px;fill:#41d3ed;font-family:ArialMT, Arial">{{ mainText }}</text></g>
+        </svg>
+    </div>
+
+    <ng-container *ngIf="downloadable">
+        <div class="download-button">
+            <button mat-icon-button class="text-light bg-primary" (click)="downloadLabel()">
+                <mat-icon>download</mat-icon>
+            </button>
+        </div>
+    </ng-container>
+
+    <ng-container *ngIf="qrData != undefined && qrData.length > 0">
+        <div class="d-none">
+            <qrcode #qr [qrdata]="qrData" [width]="256" [errorCorrectionLevel]="'H'" [margin]="2">
+            </qrcode>
+        </div>
+    </ng-container>
+</div>

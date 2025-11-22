@@ -1,0 +1,12 @@
+<div class="cell-wrapper text-center">
+    <ng-container *ngIf="cellValue; else elseBlock">
+        <mat-icon class="text-success">
+            toggle_on
+        </mat-icon>
+    </ng-container>
+    <ng-template #elseBlock>
+        <mat-icon class="text-muted">
+            toggle_off
+        </mat-icon>
+    </ng-template>
+</div>

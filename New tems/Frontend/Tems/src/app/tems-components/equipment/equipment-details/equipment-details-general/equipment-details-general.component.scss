@@ -1,0 +1,20 @@
+.equipment-index {
+    margin-right: 10px;
+}
+
+@media (max-width: 768px) {
+  ::ng-deep .mat-expansion-panel-body {
+    padding-left: 5px !important;
+    padding-right: 5px !important;
+  }
+
+  .equipment-index{
+    margin-right: auto;
+    margin-left: auto;
+    align-content: center;
+  }
+}
+
+.overflow-auto {
+  overflow: auto;
+}

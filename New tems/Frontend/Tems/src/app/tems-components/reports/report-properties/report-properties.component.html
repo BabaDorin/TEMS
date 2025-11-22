@@ -1,0 +1,21 @@
+<!-- Common properties for all equipment records -->
+<ng-container *ngIf="commonProps != undefined">
+    <app-checkbox-group 
+    [options]="commonProps" 
+    [label]="translate.instant('report.commonProperties')"
+    (toggle)="setValue()">
+    </app-checkbox-group>
+</ng-container>
+
+<!-- Type specific properties -->
+<ng-container *ngIf="typeSpecificProps != undefined">
+    <ng-container *ngFor="let type of typeSpecificProps">
+        <div class="mt-2">
+            <app-checkbox-group 
+            [options]="type.properties"
+            [label]="translate.instant('report.specificProperties') + type.type.label"
+            (toggle)="setValue()">
+            </app-checkbox-group>
+        </div>
+    </ng-container>
+</ng-container>

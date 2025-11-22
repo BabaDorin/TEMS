@@ -1,0 +1,56 @@
+<div [ngClass]="dialogRef == undefined ? 'card' : 'card cancel-margins'">
+    <div class="card-body">
+        <h2>
+            {{ 'report.generate' | translate }}
+        </h2>
+        <p class="text-muted">
+            {{ 'report.reportFromFilterInfo' | translate }}
+        </p>
+        <hr>
+        <form [formGroup]="formGroup">
+            <!-- Report name -->
+            <mat-form-field class="reportFormControl d-block">
+                <mat-label>{{ 'report.name' | translate }}</mat-label>
+                <input matInput formControlName="name" maxlength="100">
+            </mat-form-field>
+
+            <!-- Report header -->
+            <mat-form-field class="reportFormControl mt-2 d-block">
+                <mat-label>{{ 'report.header' | translate }}</mat-label>
+                <textarea 
+                    class="reportFormControl mt-2 d-block"
+                    matInput 
+                    maxlength="1000"
+                    rows="3"
+                    formControlName="header">
+                </textarea>
+            </mat-form-field>
+
+            <!-- Report footer -->
+            <mat-form-field class="reportFormControl mt-2 d-block">
+                <mat-label>{{ 'report.footer' | translate }}</mat-label>
+                <textarea 
+                    class="reportFormControl mt-2 d-block"
+                    matInput 
+                    maxlength="1000"
+                    rows="3"
+                    formControlName="footer">
+                </textarea>
+            </mat-form-field>
+            
+            <!-- Signatories -->
+            <app-chips-autocomplete class="reportFormControl d-block" [label]="translate.instant('report.signatories')"
+            formControlName="signatories" [endPoint]="personnelService" [onlyValuesFromAutocomplete]="false">
+            </app-chips-autocomplete>
+
+            <!-- Report properties -->
+            <div class="mt-2">
+                <app-report-properties formControlName="properties">
+                </app-report-properties>
+            </div>
+        </form>
+        <button type="submit" class="btn btn-gradient-primary mr-2 mt-3" (click)="generateReport()">
+                {{ 'report.generate' | translate }}
+        </button>
+    </div>
+</div>

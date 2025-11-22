@@ -1,0 +1,146 @@
+<div [ngClass]="updateEquipmentId == undefined ? 'card' : 'card cancel-margins'">
+  <div class="card-body">
+    <div>
+      <div class="page-header m-0">
+        <div class="page-title mt-4 mb-0">
+  
+          <!-- Header for Add equipment case -->
+          <ng-container *ngIf="updateEquipmentId == undefined; else headerElseBlock">
+            <h2>
+              {{ 'equipment.add' | translate }}
+            </h2>
+          </ng-container>
+  
+          <!-- Header for update equipment case -->
+          <ng-template #headerElseBlock>
+            <h2>
+              {{ 'equipment.update' | translate }}
+            </h2>
+          </ng-template>
+        </div>
+        <ng-container *ngIf="updateEquipmentId == undefined">
+          <nav aria-label="breadcrumb">
+            <ul class="breadcrumb bg-transparent">
+                <li class="breadcrumb-item" aria-current="page">
+                  <button mat-button [matMenuTriggerFor]="menu" class="float-right">
+                    <mat-icon class="text-primary">more_vert</mat-icon>
+                  </button>
+                  <mat-menu #menu="matMenu">
+                    <button mat-menu-item (click)="bulkUpload()">
+                      <mat-icon class="text-muted">playlist_add</mat-icon>
+                      {{ 'equipment.bulkUpload' | translate }}
+                    </button>
+                  </mat-menu>
+                </li>
+            </ul>
+          </nav>
+        </ng-container>
+      </div>
+      <p class="text-muted" *ngIf="updateEquipmentId == undefined">
+        {{ 'equipment.addTip' | translate }}
+      </p>
+      <hr>
+    </div>
+    
+    <!-- serves the 'add-equipment' form -->
+    <ng-container *ngIf="bulkUploadResults == undefined; else bulkResultElseBlock">
+      
+      <!-- For the Add equipment case -->
+      <ng-container *ngIf="updateEquipmentId == undefined">
+        <form class="forms-sample" [formGroup]="formGroup">
+          
+          <!-- Choose Equipment Type -->
+          <ng-container class="form-group">
+            <h3 class="mt-3">
+              <span class="text-primary">{{ 'equipment.step' | translate }} 1: </span>
+              {{ 'equipment.selectType' | translate }}
+            </h3>
+            <hr>
+            <mat-form-field>
+              <mat-label>
+                {{ 'entities.type' | translate }}
+              </mat-label>
+              <mat-select formControlName="equipmentType" [(ngModel)]="selectedType"
+                (selectionChange)="onTypeChanged($event)">
+                <mat-option (click)="openAddType()">
+                  + {{ 'general.add' | translate }}
+                </mat-option>
+                <mat-option *ngFor="let type of types" [value]="type.value">
+                  {{ type.label }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </ng-container>
+          
+          <!-- Choose Equipment Definition -->
+          <ng-container *ngIf="selectedType != undefined" class="form-group">
+            <h3 class="mt-3">
+              <span class="text-primary">{{ 'equipment.step' | translate }} 2: </span>
+              {{ 'equipment.selectDefinition' | translate }}
+            </h3>
+            <hr>  
+            <mat-form-field>
+                <mat-label>
+                  {{ 'entities.definition' | translate }}
+                </mat-label>
+                <mat-select formControlName="equipmentDefinition" [(ngModel)]="selectedDefinition"
+                  (selectionChange)="onDefinitionChanged($event)">
+                  <mat-option (click)="openAddDefinition()">
+                    + {{ 'general.add' | translate }}
+                  </mat-option>
+                  <mat-option *ngFor="let definition of definitionsOfType" [value]="definition.value">
+                    {{ definition.label }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+          </ng-container>
+
+        </form>
+      </ng-container>
+
+      <!-- Form loading bar displayed one of the following is true:
+        1) It's the update case and the form has not been created yet
+        2) It's the add case (a definition is selected) but the form has not been created yet -->
+      <ng-container 
+      *ngIf="(selectedFullDefinition != undefined || updateEquipmentId != undefined) && formlyData.isVisible == false">
+        <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+      </ng-container>
+
+      <!-- Display the formly form -->
+      <ng-container *ngIf="formlyData.isVisible">
+        <ng-container *ngIf="updateEquipmentId == undefined">
+          <h3 class="mt-3">
+            <span class="text-primary">{{ 'equipment.step' | translate }} 3: </span>
+            {{ 'equipment.provideEquipmentInformation' | translate }}
+          </h3>
+          <hr>
+        </ng-container>
+        <form [formGroup]="formlyData.form" (ngSubmit)="onSubmit(formlyData.model)">
+          <formly-form [form]="formlyData.form" [fields]="formlyData.fields" [model]="formlyData.model"></formly-form>
+
+          <hr class="mt-3">
+          <ng-container *ngIf="updateEquipmentId != undefined">
+            <p class="text-muted">
+              {{ 'equipment.updateTip' | translate }}
+            </p>
+            <br>
+            <button mat-button (click)="back()">Go back</button>
+          </ng-container>
+          
+          <button mat-button type="submit" class="btn-gradient-primary" [disabled]="formlyData.form.status == 'INVALID'">
+            {{ 'form.submit' | translate }}
+          </button>
+        </form>
+      </ng-container>
+    </ng-container>
+
+    <!-- Display bulk upload results -->
+    <ng-template #bulkResultElseBlock>
+      <app-bulk-upload-results [bulkUploadResults]="bulkUploadResults"></app-bulk-upload-results>
+      <button mat-button (click)="clearResults()">
+        <mat-icon class="text-primary">arrow_back</mat-icon>
+        {{ 'form.back' | translate }}
+      </button>
+    </ng-template>
+  </div>
+</div>

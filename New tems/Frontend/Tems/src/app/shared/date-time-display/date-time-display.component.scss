@@ -1,0 +1,53 @@
+@import '../../../styles.scss';
+
+h1 {
+  font-size: 25px;
+  color: theme-color(light);
+  margin: 0;
+}
+
+h2 {
+  font-size: 25px;
+  color: $white;
+  margin: 0;
+}
+
+h3 {
+  font-size: 15px;
+  margin: 0;
+}
+
+.datetime-display-wrapper {
+  background: theme-color(primary);
+  background: theme-gradient-color(primary);
+  border: 1px solid #e5e7eb;
+  box-shadow: none;
+  width: 150px;
+  min-width: 120px;
+  height: auto;
+  margin: auto;
+  border-radius: 2px;
+}
+
+.top {
+  background: theme-color(light);
+  background: theme-gradient-color(light);
+  border-bottom: 5px solid theme-color(light);
+  border-radius: 2px 2px 0 0;
+  display: flex;
+  justify-content: right;
+  align-items: flex-end;
+  padding: 5px;
+}
+
+#clock {
+  font-size: 30px;
+  padding: 4px;
+  color: $white;
+  text-align: center;
+}
+
+.title {
+  font-size: 18px;
+  color: theme-color(dark);
+}

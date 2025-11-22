@@ -1,0 +1,26 @@
+// Functions
+
+@function social-color($key: "twitter") {
+  @return map-get($social-colors, $key);
+}
+
+@function theme-gradient-color($key: "primary") {
+  @return map-get($theme-gradient-colors, $key);
+}
+
+// Bootstrap 5 compatibility - replace removed theme-color() function
+@function theme-color($key) {
+  @return map-get($theme-colors, $key);
+}
+
+// Bootstrap 5 compatibility - replace removed theme-color-level() function  
+// Simplified version that just returns the base color
+@function theme-color-level($color, $level) {
+  @return map-get($theme-colors, $color);
+}
+
+// Compass compatibility - replace removed color() function
+// Maps color names from the $colors map
+@function color($key) {
+  @return map-get($colors, $key);
+}

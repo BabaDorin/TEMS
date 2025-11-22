@@ -1,0 +1,47 @@
+<ng-container *ngIf="formlyData.isVisible == true; else elseBlock">
+    <h3 *ngIf="userIdToUpdate == undefined">
+        {{ 'user.add' | translate }}
+    </h3>
+    <h3 *ngIf="userIdToUpdate != undefined">
+        {{ 'user.update' | translate }}
+    </h3>
+    <form [formGroup]="formlyData.form" (ngSubmit)="onSubmit()">
+        <formly-form [form]="formlyData.form" [fields]="formlyData.fields" [model]="formlyData.model"></formly-form>
+
+        <app-chips-autocomplete 
+            #rolesChips [label]="translate.instant('user.roleLabel')" [autocompleteOptions]="roleOptions"
+            (dataCollected)="markRoleClaims()" (dataRemoved)="markRoleClaims(true)">
+        </app-chips-autocomplete>
+        <br>
+
+        <app-chips-autocomplete #personnelChips [label]="translate.instant('user.assignPersonnelLabel')"
+            [endPoint]="personnelService" [maxOptionsSelected]="1">
+        </app-chips-autocomplete>
+
+        <div class="mt-2">
+            <mat-expansion-panel>
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        <h3 class="m-2">
+                            {{ 'user.claims' | translate }}
+                        </h3>
+                    </mat-panel-title>
+                </mat-expansion-panel-header>
+                <ng-template matExpansionPanelContent>
+                    <app-checkbox-group [options]="claims"
+                        [label]="translate.instant('user.claimsLabel')"
+                        (toggle)="onClaimsChange($event)">
+                    </app-checkbox-group>
+                </ng-template>
+            </mat-expansion-panel>
+        </div>
+
+        <button type="submit" class="btn btn-gradient-primary mt-2" [disabled]="formlyData.form.status=='INVALID'">
+            {{ 'form.submit' | translate }}
+        </button>
+    </form>
+</ng-container>
+
+<ng-template #elseBlock>
+    {{ 'general.preparing' | translate }}
+</ng-template>

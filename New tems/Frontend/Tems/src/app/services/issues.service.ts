@@ -1,4 +1,3 @@
-import { IssuesRoutingModule } from '../modules/issues/issues-routing.module';
 import { AddIssue } from 'src/app/models/communication/issues/add-issue.model';
 import { Observable } from 'rxjs';
 import { API_ISU_URL } from '../models/backend.config';

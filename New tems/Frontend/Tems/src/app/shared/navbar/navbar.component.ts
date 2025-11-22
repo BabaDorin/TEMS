@@ -57,11 +57,9 @@ export class NavbarComponent extends TEMSComponent implements OnInit {
   }
 
   signOut(){
-    this.subscriptions.push(
-      this.authService.signOut()
-      .subscribe());
-      
-    window.location.href = '';
+    this.authService.signOut().then(() => {
+      window.location.href = '';
+    });
   }
 
   markNotificationsAsSeen(){

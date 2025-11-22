@@ -32,10 +32,11 @@ export class AuthService {
     this.oauthService.initCodeFlow();
   }
 
-  signOut() {
-    this.oauthService.revokeTokenAndLogout();
-    localStorage.removeItem('token'); // Clean up old token if exists
-    this.router.navigate(['/login']);
+  signOut(): Promise<void> {
+    return this.oauthService.revokeTokenAndLogout().then(() => {
+      localStorage.removeItem('token'); // Clean up old token if exists
+      this.router.navigate(['/login']);
+    });
   }
 
   isLoggedIn(): boolean {

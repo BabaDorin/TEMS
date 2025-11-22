@@ -43,7 +43,6 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatTreeModule } from '@angular/material/tree';
 
-// Export all Material modules as a convenience
 export const MATERIAL_MODULES = [
   A11yModule,
   ClipboardModule,

@@ -1,5 +1,5 @@
 import { HttpInterceptorFn, HttpErrorResponse } from '@angular/common/http';
-import { inject } from '@angular/core';
+import { inject, Injector } from '@angular/core';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { Router } from '@angular/router';
 import { catchError, throwError } from 'rxjs';
@@ -7,7 +7,7 @@ import { SnackService } from './services/snack.service';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const oauthService = inject(OAuthService);
-  const router = inject(Router);
+  const injector = inject(Injector);
   const snackService = inject(SnackService);
   
   const token = oauthService.getAccessToken();
@@ -23,6 +23,8 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   return next(req).pipe(
     catchError((error: HttpErrorResponse) => {
       if (error.status === 401) {
+        // Lazy inject Router to avoid circular dependency
+        const router = injector.get(Router);
         // Try silent refresh
         oauthService.silentRefresh().then(() => {
           // Token refreshed successfully, but we don't retry here for simplicity

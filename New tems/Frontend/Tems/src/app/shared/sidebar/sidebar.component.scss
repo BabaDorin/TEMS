@@ -289,8 +289,8 @@
                 width: $icon-only-collapse-width;
                 z-index: 1;
                 line-height: 1.8;
-                -webkit-box-shadow: 4px 0px 7px 0px rgba(182, 185, 189, 0.25);
-                        box-shadow: 4px 0px 7px 0px rgba(182, 185, 189, 0.25);              
+                border-right: 1px solid #e5e7eb;
+                box-shadow: none;
                 &:after {
                   display: none;
                 }

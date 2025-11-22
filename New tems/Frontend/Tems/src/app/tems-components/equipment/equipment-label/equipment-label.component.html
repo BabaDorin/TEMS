@@ -34,7 +34,7 @@
 
     <ng-container *ngIf="qrData != undefined && qrData.length > 0">
         <div class="d-none">
-            <qrcode #qr [qrdata]="qrData" [size]="256" level="H" [margin]="2">
+            <qrcode #qr [qrdata]="qrData" [width]="256" [errorCorrectionLevel]="'H'" [margin]="2">
             </qrcode>
         </div>
     </ng-container>

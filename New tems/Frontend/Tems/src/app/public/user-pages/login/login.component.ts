@@ -7,7 +7,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { TranslateModule } from '@ngx-translate/core';
-import { MATERIAL_MODULES } from 'src/app/modules/material/material.module';
+import { MATERIAL_MODULES } from 'src/app/shared/constants/material-modules.const';
 import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { FormlyFieldConfig, FormlyModule } from '@ngx-formly/core';
@@ -33,8 +33,7 @@ import { TEMSComponent } from './../../../tems/tems.component';
     FormlyModule,
     ...MATERIAL_MODULES
   ],
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss']
+  templateUrl: './login.component.html'
 })
 export class LoginComponent extends TEMSComponent implements OnInit {
 

@@ -24,7 +24,7 @@ import { FormlyData } from '../../../../models/formly/formly-data.model';
 import { AddUser } from '../../../../models/identity/add-user.model';
 import { IOption } from '../../../../models/option.model';
 import { SnackService } from '../../../../services/snack.service';
-import { TEMS_FORMS_IMPORTS } from 'src/app/modules/tems-forms/tems-forms.module';
+import { TEMS_FORMS_IMPORTS } from 'src/app/shared/constants/tems-forms-imports.const';
 
 @Component({
   selector: 'app-add-user',

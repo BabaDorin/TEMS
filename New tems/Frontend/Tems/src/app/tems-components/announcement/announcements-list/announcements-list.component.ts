@@ -15,7 +15,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { RouterModule } from '@angular/router';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { MatMenuModule } from '@angular/material/menu';
-import { DateTimeDisplayModule } from '../../../shared/date-time-display/date-time-display.module';
+import { DateTimeDisplayComponent } from '../../../shared/date-time-display/date-time-display.component';
 
 @Component({
   selector: 'app-announcements-list',
@@ -29,7 +29,7 @@ import { DateTimeDisplayModule } from '../../../shared/date-time-display/date-ti
     RouterModule,
     NgxPaginationModule,
     MatMenuModule,
-    DateTimeDisplayModule
+    DateTimeDisplayComponent
   ],
   templateUrl: './announcements-list.component.html',
   styleUrls: ['./announcements-list.component.scss']

@@ -1,19 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { TranslateModule } from '@ngx-translate/core';
-import { MATERIAL_MODULES } from 'src/app/modules/material/material.module';
-import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
-import { FormlyFieldConfig, FormlyModule } from '@ngx-formly/core';
-import { FormlyParserService } from 'src/app/services/formly-parser.service';
-import { SnackService } from '../../../services/snack.service';
-import { LoginModel } from './../../../models/identity/login.model';
 import { AuthService } from './../../../services/auth.service';
 import { TEMSComponent } from './../../../tems/tems.component';
 
@@ -21,61 +8,30 @@ import { TEMSComponent } from './../../../tems/tems.component';
   selector: 'app-login',
   standalone: true,
   imports: [
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    RouterModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatButtonModule,
-    MatIconModule,
-    TranslateModule,
-    FormlyModule,
-    ...MATERIAL_MODULES
+    CommonModule
   ],
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss']
+  templateUrl: './login.component.html'
 })
 export class LoginComponent extends TEMSComponent implements OnInit {
-
-  public formlyData = {
-    isVisible: false,
-    form: new FormGroup({}),
-    model: {} as any,
-    fields: [] as FormlyFieldConfig[],
-  }
   
   constructor(
-    private formlyParserService: FormlyParserService,
     private authService: AuthService,
-    private snackService: SnackService,
     private router: Router
   ) { 
     super();
   }
 
   ngOnInit() {
-    this.formlyData.fields = this.formlyParserService.parseLogin();
+    if (this.authService.isLoggedIn()) {
+      this.router.navigate(['/tems']);
+    }
   }
 
-  onSubmit(){
-    let loginModel: LoginModel = this.formlyData.model.login;
-
-    this.subscriptions.push(
-      this.authService.logIn(loginModel)
-      .subscribe(result => {
-        if(this.snackService.snackIfError(result))
-          return;
-
-        if(result.token != undefined){
-          localStorage.setItem('token', result.token);
-          window.location.href = '';
-        }
-      })
-    )
+  loginWithDuende() {
+    this.authService.logIn();
   }
 
-  forgotPassword(){
-    this.snackService.snack({message: 'Ask system administrator to provide you a new password', status: 1}, 'default-snackbar');
+  goToRegister() {
+    this.router.navigate(['/register']);
   }
 }

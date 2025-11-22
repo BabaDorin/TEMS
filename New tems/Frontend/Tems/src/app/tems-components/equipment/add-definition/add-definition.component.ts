@@ -16,7 +16,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core';
 import { MatButtonModule } from '@angular/material/button';
 import { TranslateModule } from '@ngx-translate/core';
-import { TEMS_FORMS_IMPORTS } from 'src/app/modules/tems-forms/tems-forms.module';
+import { TEMS_FORMS_IMPORTS } from 'src/app/shared/constants/tems-forms-imports.const';
 
 @Component({
   selector: 'app-add-definition',

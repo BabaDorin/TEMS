@@ -189,9 +189,8 @@
             @extend .dropdownAnimation;
             border: none;
             @include border-radius(5px);
-            -webkit-box-shadow: 0px 3px 21px 0px rgba(0, 0, 0, 0.2);
-            -moz-box-shadow: 0px 3px 21px 0px rgba(0, 0, 0, 0.2);
-            box-shadow: 0px 3px 21px 0px rgba(0, 0, 0, 0.2);
+            border-bottom: 1px solid #e5e7eb;
+            box-shadow: none;
             &.navbar-dropdown {
               position: absolute;            
               font-size: 0.9rem;

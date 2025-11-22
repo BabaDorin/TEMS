@@ -8,21 +8,17 @@
         bug_report
       </mat-icon>
     </ng-template>
-    {{currentYear}} BeFree | <small>
-      <span (click)="toggleBugReporting()">
-        Dorin Baba
-      </span>
+     <small (click)="toggleBugReporting()">
+       {{currentYear}}BeFree | Sunrise Works | All rights reserved.
     </small> 
-    <span>
-      | All Rights Reserved
-    </span>
   </p>
-  <div class="d-block m-0 text-center">
+  <!-- Disabled: Change language -->
+  <!-- <div class="d-block m-0 text-center">
     <button mat-button class="text-muted" (click)="changeLang('ro')">
-      <img src="assets/svgs/ro.svg" style="height: 10px;">
+      <img src="assets/svgs/ro.svg" style="height: 5px;">
     </button>
     <button mat-button class="text-muted" (click)="changeLang('en')">
-      <img src="assets/svgs/en.svg" style="height: 10px;">
+      <img src="assets/svgs/en.svg" style="height: 5px;">
     </button>
-  </div>
+  </div> -->
 </footer>

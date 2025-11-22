@@ -18,21 +18,33 @@ if (!builder.Environment.IsProduction())
 // builder.Services.AddExampleServices(builder.Configuration);
 builder.Services.AddEquipmentManagementServices(builder.Configuration);
 
-// Add JWT Bearer Authentication
+// Add JWT Bearer Authentication - Validate tokens from Keycloak
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
-        options.Authority = builder.Configuration["IdentityServer:Authority"];
-        options.Audience = "tems-api";
+        // Keycloak issues tokens, not IdentityServer directly
+        options.Authority = builder.Configuration["Keycloak:Authority"] 
+            ?? "http://localhost:8080/realms/tems";
+        options.Audience = "account"; // Keycloak default audience
         options.TokenValidationParameters = new TokenValidationParameters
         {
-            ValidateAudience = true,
+            ValidateAudience = false, // Keycloak tokens might not have audience
             ValidateIssuer = true,
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
-            ClockSkew = TimeSpan.Zero
+            ClockSkew = TimeSpan.Zero,
+            RoleClaimType = "role" // Map Keycloak roles to role claims
         };
         options.RequireHttpsMetadata = false; // Only for dev
+        options.Events = new JwtBearerEvents
+        {
+            OnAuthenticationFailed = context =>
+            {
+                var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<Program>>();
+                logger.LogError(context.Exception, "Authentication failed");
+                return Task.CompletedTask;
+            }
+        };
     });
 
 // Add Authorization Policies

@@ -29,7 +29,8 @@ export class AuthService {
   }
 
   logIn() {
-    this.oauthService.initCodeFlow();
+    // Add kc_idp_hint to automatically redirect to Duende IdentityServer
+    this.oauthService.initCodeFlow('', { kc_idp_hint: 'duende-idp' });
   }
 
   signOut(): Promise<void> {

@@ -29,6 +29,7 @@ public class AccountController : Controller
     private readonly IEventService _events;
     private readonly IMongoCollection<User> _users;
     private readonly IPasswordHasher<User> _passwordHasher;
+    private readonly ILogger<AccountController> _logger;
 
     public AccountController(
         IIdentityServerInteractionService interaction,
@@ -36,7 +37,8 @@ public class AccountController : Controller
         IAuthenticationSchemeProvider schemeProvider,
         IEventService events,
         IMongoDatabase database,
-        IPasswordHasher<User> passwordHasher)
+        IPasswordHasher<User> passwordHasher,
+        ILogger<AccountController> logger)
     {
         _interaction = interaction;
         _clientStore = clientStore;
@@ -44,6 +46,7 @@ public class AccountController : Controller
         _events = events;
         _users = database.GetCollection<User>("users");
         _passwordHasher = passwordHasher;
+        _logger = logger;
     }
 
     [HttpGet]
@@ -89,9 +92,17 @@ public class AccountController : Controller
 
                     await HttpContext.SignInAsync(isuser);
 
+                    _logger.LogInformation("User {Username} logged in successfully. ReturnUrl: {ReturnUrl}, HasContext: {HasContext}", 
+                        user.Username, model.ReturnUrl, context != null);
+
                     if (context != null)
                     {
-                        return Redirect(model.ReturnUrl ?? "~/");
+                        if (string.IsNullOrEmpty(model.ReturnUrl))
+                        {
+                            throw new Exception("Return URL is required for external authentication");
+                        }
+                        _logger.LogInformation("Redirecting to: {ReturnUrl}", model.ReturnUrl);
+                        return Redirect(model.ReturnUrl);
                     }
 
                     if (Url.IsLocalUrl(model.ReturnUrl))
@@ -110,6 +121,7 @@ public class AccountController : Controller
             }
 
             await _events.RaiseAsync(new UserLoginFailureEvent(model.Username, "invalid credentials", clientId: context?.Client.ClientId));
+            _logger.LogWarning("Login failed for user: {Username}. ReturnUrl: {ReturnUrl}", model.Username, model.ReturnUrl);
             ModelState.AddModelError(string.Empty, "Invalid username or password");
         }
 

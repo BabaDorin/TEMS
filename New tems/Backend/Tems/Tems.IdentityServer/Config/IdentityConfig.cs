@@ -36,7 +36,7 @@ public static class IdentityConfig
     public static IEnumerable<Client> Clients =>
         new Client[]
         {
-            // Angular SPA Client
+            // Angular SPA Client (Direct - not used when Keycloak is active)
             new Client
             {
                 ClientId = "tems-angular-spa",
@@ -70,6 +70,38 @@ public static class IdentityConfig
                 AllowOfflineAccess = true,
                 
                 // Allow access token via browser (for development)
+                AllowAccessTokensViaBrowser = true
+            },
+            
+            // Keycloak Broker Client
+            new Client
+            {
+                ClientId = "keycloak-broker",
+                ClientName = "Keycloak Identity Broker",
+                ClientSecrets = { new Secret("keycloak-secret".Sha256()) },
+                
+                AllowedGrantTypes = GrantTypes.Code,
+                RequirePkce = false, // Keycloak doesn't send PKCE by default
+                RequireClientSecret = true,
+                
+                RedirectUris = 
+                {
+                    "http://localhost:8080/realms/tems/broker/duende-idp/endpoint"
+                },
+                PostLogoutRedirectUris = { "http://localhost:8080/realms/tems" },
+                AllowedCorsOrigins = { "http://localhost:8080" },
+                
+                AllowedScopes = 
+                {
+                    IdentityServerConstants.StandardScopes.OpenId,
+                    IdentityServerConstants.StandardScopes.Profile,
+                    IdentityServerConstants.StandardScopes.Email,
+                    "roles",
+                    "tems-api"
+                },
+                
+                AccessTokenLifetime = 900,
+                AllowOfflineAccess = true,
                 AllowAccessTokensViaBrowser = true
             }
         };

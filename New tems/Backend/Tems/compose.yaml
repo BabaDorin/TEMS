@@ -11,43 +11,26 @@
     networks:
       - tems-network
 
-  identityserver:
-    image: tems.identityserver
-    container_name: tems-identityserver
-    build:
-      context: .
-      dockerfile: Tems.IdentityServer/Dockerfile
+  keycloak:
+    image: quay.io/keycloak/keycloak:23.0
+    container_name: tems-keycloak
+    command: start-dev
     ports:
-      - "5001:8080"
+      - "8080:8080"
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_HTTP_PORTS=8080
-      - MongoDb__ConnectionString=mongodb://mongodb:27017
-      - MongoDb__DatabaseName=TemsDb
-      - Cors__AllowedOrigins=http://localhost:4200
-    depends_on:
-      - mongodb
-    networks:
-      - tems-network
-
-  tems.host:
-    image: tems.host
-    container_name: tems-backend
-    build:
-      context: .
-      dockerfile: Tems.Host/Dockerfile
-    ports:
-      - "14721:8080"
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_HTTP_PORTS=8080
-      - IdentityServer__Authority=http://identityserver:8080
-      - MongoDb__ConnectionString=mongodb://mongodb:27017
-      - MongoDb__DatabaseName=TemsDb
-      - Cors__AllowedOrigins=http://localhost:4200
-    depends_on:
-      - identityserver
-      - mongodb
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=admin
+      - KC_HTTP_PORT=8080
+      - KC_HOSTNAME_STRICT=false
+      - KC_HOSTNAME_STRICT_HTTPS=false
+      - KC_HTTP_ENABLED=true
+      - KC_HEALTH_ENABLED=true
+    healthcheck:
+      test: ["CMD-SHELL", "exec 3<>/dev/tcp/localhost/8080"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
     networks:
       - tems-network
 

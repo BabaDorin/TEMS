@@ -98,32 +98,37 @@ export class NavbarComponent extends TEMSComponent implements OnInit {
   }
 
   fetchMinifiedProfilePhoto(){
-    this.subscriptions.push(
-      this.userService.fetchMinifiedProfilePhoto()
-      .subscribe(result => {
-        this.profilePhotoB64 = result;
-      })
-    );
+    // Temporarily disabled - backend endpoint not yet implemented
+    // TODO: Implement profile photo endpoint in backend API
+    // this.subscriptions.push(
+    //   this.userService.fetchMinifiedProfilePhoto()
+    //   .subscribe(result => {
+    //     this.profilePhotoB64 = result;
+    //   })
+    // );
   }
 
   fetchLastNotifications(refreshTriggered: boolean = false){
-    // If refreshTriggered == true => user fetched notifications manually, using the fresh button.
+    // Temporarily disabled - backend endpoint not yet implemented
+    // TODO: Implement notifications endpoint in backend API
     this.refreshing = true;
 
-    this.subscriptions.push(
-      this.userService.getLastNotifications()
-      .subscribe(result => {
-        if(this.snackService.snackIfError(result))
-          return;
-        
-        this.notifications = result.slice(0, 5);
-        this.newNotifications = this.notifications.filter(q => q.seen == false);
-        this.refreshing = false;
-
-        if(refreshTriggered)
-          this.markNotificationsAsSeen();
-      })
-    )
+    // this.subscriptions.push(
+    //   this.userService.getLastNotifications()
+    //   .subscribe(result => {
+    //     if(this.snackService.snackIfError(result))
+    //       return;
+    //     
+    //     this.notifications = result.slice(0, 5);
+    //     this.newNotifications = this.notifications.filter(q => q.seen == false);
+    //     this.refreshing = false;
+    //
+    //     if(refreshTriggered)
+    //       this.markNotificationsAsSeen();
+    //   })
+    // );
+    
+    this.refreshing = false;
   }
 
   // toggle sidebar in small devices

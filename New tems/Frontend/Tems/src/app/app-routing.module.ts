@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { LoginComponent } from './public/user-pages/login/login.component';
+import { RegisterComponent } from './public/user-pages/register/register.component';
 import { CallbackComponent } from './public/callback/callback.component';
 import { FindByTemsidComponent } from './tems-components/equipment/find-by-temsid/find-by-temsid.component';
 import { DashboardComponent } from './public/dashboard/dashboard.component';
@@ -14,6 +15,7 @@ import { CanViewKeysGuard } from './guards/can-view-keys.guard';
 export const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
+  { path: 'register', component: RegisterComponent },
   { path: 'callback', component: CallbackComponent },
   {
     path: 'tems',

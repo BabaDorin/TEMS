@@ -33,16 +33,19 @@ export function HttpLoaderFactory(http: HttpClient) {
 }
 
 export const authCodeFlowConfig: AuthConfig = {
-  issuer: environment.identityServerUrl,
+  // Use Keycloak as the OIDC provider
+  issuer: `${environment.keycloakUrl}/realms/${environment.keycloakRealm}`,
   redirectUri: window.location.origin + '/callback',
+  postLogoutRedirectUri: window.location.origin + '/login',
   clientId: 'tems-angular-spa',
   responseType: 'code',
-  scope: 'openid profile email tems-api offline_access',
+  scope: 'openid profile email roles offline_access',
   showDebugInformation: !environment.production,
   useSilentRefresh: true,
   silentRefreshRedirectUri: window.location.origin + '/silent-refresh.html',
   silentRefreshTimeout: 5000,
   sessionChecksEnabled: true,
+  requireHttps: false, // Allow HTTP for local development
 };
 
 export const appConfig: ApplicationConfig = {

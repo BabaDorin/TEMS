@@ -37,6 +37,14 @@ builder.Services.AddSingleton<IMongoDatabase>(sp =>
 // Password hasher
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 
+// Configure authentication cookies for development (HTTP)
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.Cookie.SameSite = SameSiteMode.Lax;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
+    options.Cookie.HttpOnly = true;
+});
+
 // Duende IdentityServer configuration
 builder.Services.AddIdentityServer(options =>
     {
@@ -46,6 +54,11 @@ builder.Services.AddIdentityServer(options =>
         options.Events.RaiseFailureEvents = true;
         options.Events.RaiseSuccessEvents = true;
         options.EmitStaticAudienceClaim = true;
+        
+        // Configure authentication cookie
+        options.Authentication.CookieLifetime = TimeSpan.FromHours(10);
+        options.Authentication.CookieSlidingExpiration = true;
+        options.Authentication.CookieSameSiteMode = SameSiteMode.Lax;
     })
     .AddInMemoryIdentityResources(IdentityConfig.IdentityResources)
     .AddInMemoryApiScopes(IdentityConfig.ApiScopes)
@@ -56,7 +69,7 @@ builder.Services.AddIdentityServer(options =>
 // Add authentication for login UI
 builder.Services.AddAuthentication();
 
-// MVC for login pages
+// MVC for login pages and API controllers
 builder.Services.AddControllersWithViews();
 
 // CORS for Angular
@@ -73,6 +86,10 @@ builder.Services.AddCors(options =>
     });
 });
 
+// Add Swagger for API documentation
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
 var app = builder.Build();
 
 // Seed data in development
@@ -82,12 +99,19 @@ if (app.Environment.IsDevelopment())
     await SeedData.EnsureSeedDataAsync(scope.ServiceProvider);
 }
 
-app.UseCors();
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
 app.UseStaticFiles();
+app.UseCors();
 app.UseRouting();
 app.UseIdentityServer();
 app.UseAuthorization();
 
 app.MapDefaultControllerRoute();
+app.MapControllers();
 
 app.Run();

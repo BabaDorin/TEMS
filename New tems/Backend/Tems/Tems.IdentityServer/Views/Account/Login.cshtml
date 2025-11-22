@@ -24,6 +24,13 @@
                             </div>
                         }
 
+                        @if (!string.IsNullOrEmpty(Model.ReturnUrl))
+                        {
+                            <div class="alert alert-info small" role="alert">
+                                <i class="bi bi-info-circle"></i> You will be redirected after login
+                            </div>
+                        }
+
                         <form asp-route="Login" method="post">
                             <input type="hidden" asp-for="ReturnUrl" />
                             

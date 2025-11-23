@@ -1,24 +1,12 @@
 <footer class="footer">
   <p *ngIf="currentYear != undefined" class="text-muted text-center m-0">
-    <span *ngIf="!bugReportOn; else elseBlock">
-      @
-    </span> 
     <ng-template #elseBlock>
       <mat-icon class="btn-bug-report" (click)="reportBug()">
         bug_report
       </mat-icon>
     </ng-template>
      <small (click)="toggleBugReporting()">
-       {{currentYear}}BeFree | Sunrise Works | All rights reserved.
+      © {{currentYear}} BeFree | Sunrise Works | All rights reserved.
     </small> 
   </p>
-  <!-- Disabled: Change language -->
-  <!-- <div class="d-block m-0 text-center">
-    <button mat-button class="text-muted" (click)="changeLang('ro')">
-      <img src="assets/svgs/ro.svg" style="height: 5px;">
-    </button>
-    <button mat-button class="text-muted" (click)="changeLang('en')">
-      <img src="assets/svgs/en.svg" style="height: 5px;">
-    </button>
-  </div> -->
 </footer>

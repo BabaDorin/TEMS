@@ -15,7 +15,7 @@ export class TokenService {
     const claims = this.oauthService.getIdentityClaims() as any;
     if (!claims) return false;
     
-    // Map old claim format to new OIDC claim format
+    // Map old claim format to role names
     const claimMap: Record<string, string> = {
       [CAN_VIEW_ENTITIES]: 'can_view_entities',
       [CAN_MANAGE_ENTITIES]: 'can_manage_entities',
@@ -25,8 +25,25 @@ export class TokenService {
       [CAN_MANAGE_SYSTEM_CONFIGURATION]: 'can_manage_system_configuration'
     };
     
-    const mappedClaim = claimMap[claimType] || claimType;
-    return claims[mappedClaim] === 'true';
+    const roleName = claimMap[claimType] || claimType;
+    
+    // Keycloak puts roles in multiple places, check all of them
+    // 1. Check top-level 'roles' claim (added by our custom mapper)
+    if (claims.roles && Array.isArray(claims.roles)) {
+      if (claims.roles.includes(roleName)) return true;
+    }
+    
+    // 2. Check realm_access.roles (standard Keycloak location)
+    if (claims.realm_access?.roles && Array.isArray(claims.realm_access.roles)) {
+      if (claims.realm_access.roles.includes(roleName)) return true;
+    }
+    
+    // 3. Fallback: check as direct claim (for backwards compatibility)
+    if (claims[roleName] === 'true' || claims[roleName] === true) {
+      return true;
+    }
+    
+    return false;
   }
 
   getTokenObject(){

@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { MatIconModule } from '@angular/material/icon';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgbCollapseModule } from '@ng-bootstrap/ng-bootstrap';
 import { ClaimService } from 'src/app/services/claim.service';
@@ -15,18 +14,17 @@ import { MenuService } from 'src/app/services/menu.service';
   imports: [
     CommonModule,
     RouterModule,
-    MatIconModule,
     TranslateModule,
     NgbCollapseModule
   ],
-  templateUrl: './sidebar.component.html',
-  styleUrls: ['./sidebar.component.scss']
+  templateUrl: './sidebar.component.html'
 })
 export class SidebarComponent implements OnInit {
   public uiBasicCollapsed = false;
   public samplePagesCollapsed = false;
   public sidebarNavItems: RouteInfo[] = [];
   private sidebarManager: SidebarManager;
+  public isVisible = true;
 
   constructor(
     public claims: ClaimService,
@@ -36,34 +34,26 @@ export class SidebarComponent implements OnInit {
   }
 
   ngOnInit() {
-    const body = document.querySelector('body');
-
-    // // this.sidebarNavItems = this.menuService.ROUTES.filter(sidebarnavItem => sidebarnavItem);
-    // this.sidebarNavItems = this.menuService.ROUTES;
-
-    document.querySelectorAll('.sidebar .nav-item').forEach(function (el) {
-      el.addEventListener('mouseover', function () {
-        if (body.classList.contains('sidebar-icon-only')) {
-          el.classList.add('hover-open');
-        }
-      });
-      el.addEventListener('mouseout', function () {
-        if (body.classList.contains('sidebar-icon-only')) {
-          el.classList.remove('hover-open');
-        }
-      });
+    // Check initial sidebar state from body class
+    this.isVisible = !document.body.classList.contains('sidebar-hidden');
+    
+    // Listen to body class changes for sidebar toggle
+    const observer = new MutationObserver(() => {
+      this.isVisible = !document.body.classList.contains('sidebar-hidden');
+    });
+    
+    observer.observe(document.body, {
+      attributes: true,
+      attributeFilter: ['class']
     });
   }
 
   optionSelected(){
-    let currentWidth = document.body.clientWidth 
+    let currentWidth = document.body.clientWidth;
 
     // Toggle sidebar automatically if the document width is under 1150px
     if(currentWidth <= 1150){
-      if(this.sidebarManager == undefined)
-        this.sidebarManager = new SidebarManager();
-      
-      this.sidebarManager.toggleSidebar();
+      document.body.classList.add('sidebar-hidden');
     }
   }
 

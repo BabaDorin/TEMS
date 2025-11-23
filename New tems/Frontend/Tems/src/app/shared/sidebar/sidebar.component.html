@@ -1,38 +1,63 @@
-<nav class="sidebar sidebar-offcanvas" id="sidebar">
-  <ul class="nav">
-    <ng-container *ngIf="menuService.ROUTES != undefined">
-      <li class="nav-item" *ngFor="let sidebarNavItem of menuService.ROUTES"
-      [class]="{ 'active' : sidebarNavItem.isActive }">
-
-      <!-- if it contains submenu -->
-      <div *ngIf="sidebarNavItem.isShown && sidebarNavItem.submenu.length != 0">
-        <a class="nav-link"
-          (click)="closePreviousSubmenu(sidebarNavItem);"
-          [attr.aria-expanded]="sidebarNavItem.showSubmenu" aria-controls="ui-basic">
-          <span class="menu-title">{{ sidebarNavItem.title }}</span>
-          <i class="menu-arrow"></i>
-          <i [class]="sidebarNavItem.icon"></i>
-        </a>
-        <div class="collapse" id="ui-basic" [ngbCollapse]="!sidebarNavItem.showSubmenu">
-          <ul class="nav flex-column sub-menu">
-            <li *ngFor="let submenu of sidebarNavItem.submenu" class="nav-item">
-              <a *ngIf="submenu.isShown" class="nav-link" [routerLink]="submenu.path" (click)="optionSelected()">
-                {{ submenu.title }}
-                <i [class]="submenu.icon"></i>
-              </a>
-            </li>
-          </ul>
+<!-- Modern iOS-style Sidebar -->
+<nav class="bg-white/80 backdrop-blur-md border-r border-gray-200/50 transition-all duration-100 ease-out overflow-hidden" 
+  [class.w-64]="isVisible"
+  [class.w-0]="!isVisible"
+  [class.opacity-100]="isVisible"
+  [class.opacity-0]="!isVisible"
+  style="will-change: width, opacity;"
+  id="sidebar">
+  <div class="py-4 px-3">
+    <ul class="space-y-1" *ngIf="menuService.ROUTES != undefined">
+      <li *ngFor="let sidebarNavItem of menuService.ROUTES">
+        <!-- Menu item with submenu -->
+        <div *ngIf="sidebarNavItem.isShown && sidebarNavItem.submenu.length != 0">
+          <button
+            (click)="closePreviousSubmenu(sidebarNavItem)"
+            [attr.aria-expanded]="sidebarNavItem.showSubmenu"
+            class="w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200"
+            [class.bg-blue-50]="sidebarNavItem.isActive"
+            [class.text-blue-600]="sidebarNavItem.isActive"
+            [class.text-gray-700]="!sidebarNavItem.isActive"
+            [class.hover:bg-gray-50]="!sidebarNavItem.isActive">
+            <span class="flex items-center space-x-3">
+              <i [class]="sidebarNavItem.icon" class="text-lg"></i>
+              <span>{{ sidebarNavItem.title }}</span>
+            </span>
+            <svg class="w-4 h-4 transition-transform duration-200" 
+              [class.rotate-90]="sidebarNavItem.showSubmenu"
+              fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+          
+          <!-- Submenu -->
+          <div [ngbCollapse]="!sidebarNavItem.showSubmenu" class="overflow-hidden">
+            <ul class="mt-1 ml-4 space-y-0.5">
+              <li *ngFor="let submenu of sidebarNavItem.submenu">
+                <a *ngIf="submenu.isShown" 
+                  [routerLink]="submenu.path"
+                  routerLinkActive="bg-blue-50 text-blue-600"
+                  (click)="optionSelected()"
+                  class="flex items-center space-x-3 px-3 py-2 rounded-lg text-sm transition-all duration-200 hover:bg-gray-50 text-gray-600 hover:text-gray-900 no-underline">
+                  <i [class]="submenu.icon" class="text-base"></i>
+                  <span>{{ submenu.title }}</span>
+                </a>
+              </li>
+            </ul>
+          </div>
         </div>
-      </div>
 
-      <div *ngIf="sidebarNavItem.isShown && sidebarNavItem.submenu.length == 0">
-        <a class="nav-link" [routerLink]="sidebarNavItem.path" 
-        (click)="optionSelected(); closePreviousSubmenu(sidebarNavItem);">
-          <span class="menu-title">{{ sidebarNavItem.title }}</span>
-          <i [class]="sidebarNavItem.icon"></i>
-        </a>
-      </div>
-    </li>
-    </ng-container>
-  </ul>
+        <!-- Menu item without submenu -->
+        <div *ngIf="sidebarNavItem.isShown && sidebarNavItem.submenu.length == 0">
+          <a [routerLink]="sidebarNavItem.path"
+            routerLinkActive="bg-blue-50 text-blue-600"
+            (click)="optionSelected(); closePreviousSubmenu(sidebarNavItem)"
+            class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 hover:bg-gray-50 text-gray-700 no-underline">
+            <i [class]="sidebarNavItem.icon" class="text-lg"></i>
+            <span>{{ sidebarNavItem.title }}</span>
+          </a>
+        </div>
+      </li>
+    </ul>
+  </div>
 </nav>

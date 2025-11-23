@@ -109,9 +109,8 @@ export class ProfileSettingsComponent extends TEMSComponent implements OnInit {
 
         if(result.status == 1)
         {
-          this.authService.signOut().then(() => {
-            window.location.href = '/login';
-          });
+          // Password changed successfully - log out and redirect to home
+          this.authService.signOut();
         }
       })
     );

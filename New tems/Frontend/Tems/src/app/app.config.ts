@@ -35,8 +35,8 @@ export function HttpLoaderFactory(http: HttpClient) {
 export const authCodeFlowConfig: AuthConfig = {
   // Use Keycloak as the OIDC provider
   issuer: `${environment.keycloakUrl}/realms/${environment.keycloakRealm}`,
-  redirectUri: window.location.origin + '/callback',
-  postLogoutRedirectUri: window.location.origin + '/login',
+  redirectUri: window.location.origin + '/home',
+  postLogoutRedirectUri: window.location.origin + '/home',
   clientId: 'tems-angular-spa',
   responseType: 'code',
   scope: 'openid profile email roles offline_access',
@@ -44,7 +44,7 @@ export const authCodeFlowConfig: AuthConfig = {
   useSilentRefresh: true,
   silentRefreshRedirectUri: window.location.origin + '/silent-refresh.html',
   silentRefreshTimeout: 5000,
-  sessionChecksEnabled: true,
+  sessionChecksEnabled: false, // Disable polling - use reactive events instead
   requireHttps: false, // Allow HTTP for local development
 };
 

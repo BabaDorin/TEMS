@@ -1,36 +1,38 @@
-<div class="container-scroller">
-  <app-navbar *ngIf="showNavbar">
-  </app-navbar>
-  <div class="container-fluid page-body-wrapper">
-    <app-sidebar *ngIf="showSidebar"></app-sidebar>
-    <div class="main-panel" [ngClass]="{ 'main-panel-only' : !showSidebar }">
-      <div class="content-wrapper">
+<div class="flex flex-col h-screen">
+  <!-- Navbar -->
+  <app-navbar *ngIf="showNavbar" class="fixed top-0 left-0 right-0 z-50"></app-navbar>
 
-        <ng-container *ngIf="isLoading">
-          <!-- Loading animation -->
-          <div class="main-spinner-wrapper">
-            <div class="spinner-wrapper">
-              <div class="load-wrapp">
-                <div class="load-6">
-                  <div class="letter-holder">
-                    <div class="l-1 letter">T</div>
-                    <div class="l-2 letter">E</div>
-                    <div class="l-3 letter">M</div>
-                    <div class="l-4 letter">S</div>
-                  </div>
+  <!-- Main Content Area -->
+  <div class="flex flex-1 overflow-hidden" [ngClass]="{'pt-16': showNavbar}">
+    <!-- Sidebar as flex child -->
+    <app-sidebar *ngIf="showSidebar" class="flex-shrink-0 h-full overflow-y-auto"></app-sidebar>
+
+    <!-- Main Panel -->
+    <div class="flex-1 flex flex-col overflow-hidden">
+      <!-- Content Wrapper -->
+      <div class="flex-1 overflow-auto">
+        <div class="p-4 md:p-6 lg:p-8">
+          <!-- Loading Spinner -->
+          <ng-container *ngIf="isLoading">
+            <div class="fixed inset-0 flex items-center justify-center bg-white bg-opacity-90 z-50">
+              <div class="flex flex-col items-center">
+                <div class="flex text-xs font-bold text-blue-500">
+                  <div class="bounce-letter-1">T</div>
+                  <div class="bounce-letter-2">e</div>
+                  <div class="bounce-letter-3">m</div>
+                  <div class="bounce-letter-4">s</div>
                 </div>
               </div>
             </div>
+          </ng-container>
+
+          <!-- Router Outlet -->
+          <div *ngIf="!isLoading">
+            <router-outlet></router-outlet>
           </div>
-        </ng-container>
-        <div contentAnimate *ngIf="!isLoading" class="h-100">
-          <router-outlet></router-outlet>
         </div>
       </div>
-      <app-footer *ngIf="showFooter"></app-footer>
-      <!-- partial -->
     </div>
-    <!-- main-panel ends -->
   </div>
-  <!-- page-body-wrapper ends -->
+  <app-footer *ngIf="showFooter" class="flex-shrink-0"></app-footer>
 </div>

@@ -351,3 +351,33 @@ button {
 .intermitent-light{
   animation: taadaa 5s infinite;
 }
+
+// TEMS loading animation with staggered bounce
+@keyframes bounce-letter {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+.bounce-letter-1 {
+  animation: bounce-letter 1s ease-in-out infinite;
+  animation-delay: 0s;
+}
+
+.bounce-letter-2 {
+  animation: bounce-letter 1s ease-in-out infinite;
+  animation-delay: 0.1s;
+}
+
+.bounce-letter-3 {
+  animation: bounce-letter 1s ease-in-out infinite;
+  animation-delay: 0.2s;
+}
+
+.bounce-letter-4 {
+  animation: bounce-letter 1s ease-in-out infinite;
+  animation-delay: 0.3s;
+}

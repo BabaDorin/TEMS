@@ -78,7 +78,7 @@ curl -s -X POST "${KEYCLOAK_URL}/admin/realms/${REALM}/clients" \
         "serviceAccountsEnabled": false,
         "redirectUris": [
             "http://localhost:4200/*",
-            "http://localhost:4200/callback"
+            "http://localhost:4200/home"
         ],
         "webOrigins": [
             "http://localhost:4200"
@@ -217,23 +217,39 @@ curl -s -X PUT "${KEYCLOAK_URL}/admin/realms/${REALM}" \
 echo "Browser flow configured - Keycloak will now redirect to Duende IdentityServer"
 
 # Add protocol mappers for roles and claims
-echo "Adding protocol mappers..."
+# Create realm roles for permissions
+echo "Creating realm roles for permissions..."
+
+for role in "can_view_entities" "can_manage_entities" "can_allocate_keys" "can_send_emails" "can_manage_announcements" "can_manage_system_configuration"; do
+    echo "Creating role: ${role}"
+    curl -s -X POST "${KEYCLOAK_URL}/admin/realms/${REALM}/roles" \
+        -H "Authorization: Bearer ${ADMIN_TOKEN}" \
+        -H "Content-Type: application/json" \
+        -d "{
+            \"name\": \"${role}\",
+            \"description\": \"Permission to ${role}\",
+            \"composite\": false,
+            \"clientRole\": false
+        }"
+done
+
+echo "Realm roles created"
 
 # Get client ID
+echo "Configuring client protocol mappers..."
 CLIENT_ID=$(curl -s -X GET "${KEYCLOAK_URL}/admin/realms/${REALM}/clients?clientId=tems-angular-spa" \
     -H "Authorization: Bearer ${ADMIN_TOKEN}" | jq -r '.[0].id')
 
-# Add role mapper
+# Add realm roles mapper to include roles in token
 curl -s -X POST "${KEYCLOAK_URL}/admin/realms/${REALM}/clients/${CLIENT_ID}/protocol-mappers/models" \
     -H "Authorization: Bearer ${ADMIN_TOKEN}" \
     -H "Content-Type: application/json" \
     -d '{
-        "name": "role-mapper",
+        "name": "realm-roles-mapper",
         "protocol": "openid-connect",
-        "protocolMapper": "oidc-usermodel-attribute-mapper",
+        "protocolMapper": "oidc-usermodel-realm-role-mapper",
         "config": {
-            "user.attribute": "role",
-            "claim.name": "role",
+            "claim.name": "roles",
             "jsonType.label": "String",
             "id.token.claim": "true",
             "access.token.claim": "true",
@@ -242,27 +258,79 @@ curl -s -X POST "${KEYCLOAK_URL}/admin/realms/${REALM}/clients/${CLIENT_ID}/prot
         }
     }'
 
-# Add claims mappers
-for claim in "can_view_entities" "can_manage_entities" "can_allocate_keys" "can_send_emails" "can_manage_announcements" "can_manage_system_configuration"; do
-    curl -s -X POST "${KEYCLOAK_URL}/admin/realms/${REALM}/clients/${CLIENT_ID}/protocol-mappers/models" \
+echo "Protocol mappers configured"
+
+# Create a test admin user with all roles
+echo "Creating test admin user with all roles..."
+curl -s -X POST "${KEYCLOAK_URL}/admin/realms/${REALM}/users" \
+    -H "Authorization: Bearer ${ADMIN_TOKEN}" \
+    -H "Content-Type: application/json" \
+    -d '{
+        "username": "admin",
+        "email": "admin@tems.local",
+        "firstName": "Admin",
+        "lastName": "User",
+        "enabled": true,
+        "emailVerified": true,
+        "credentials": [{
+            "type": "password",
+            "value": "Admin123!",
+            "temporary": false
+        }]
+    }'
+
+# Get admin user ID
+ADMIN_USER_ID=$(curl -s -X GET "${KEYCLOAK_URL}/admin/realms/${REALM}/users?username=admin" \
+    -H "Authorization: Bearer ${ADMIN_TOKEN}" | jq -r '.[0].id')
+
+# Assign all roles to admin user
+echo "Assigning all roles to admin user..."
+for role in "can_view_entities" "can_manage_entities" "can_allocate_keys" "can_send_emails" "can_manage_announcements" "can_manage_system_configuration"; do
+    ROLE_DATA=$(curl -s -X GET "${KEYCLOAK_URL}/admin/realms/${REALM}/roles/${role}" \
+        -H "Authorization: Bearer ${ADMIN_TOKEN}")
+    
+    curl -s -X POST "${KEYCLOAK_URL}/admin/realms/${REALM}/users/${ADMIN_USER_ID}/role-mappings/realm" \
         -H "Authorization: Bearer ${ADMIN_TOKEN}" \
         -H "Content-Type: application/json" \
-        -d "{
-            \"name\": \"${claim}-mapper\",
-            \"protocol\": \"openid-connect\",
-            \"protocolMapper\": \"oidc-usermodel-attribute-mapper\",
-            \"config\": {
-                \"user.attribute\": \"${claim}\",
-                \"claim.name\": \"${claim}\",
-                \"jsonType.label\": \"String\",
-                \"id.token.claim\": \"true\",
-                \"access.token.claim\": \"true\",
-                \"userinfo.token.claim\": \"true\"
-            }
-        }"
+        -d "[${ROLE_DATA}]"
 done
 
-echo "Protocol mappers added"
+echo "Admin user created with username: admin, password: Admin123!"
+
+# Create a test regular user with limited roles
+echo "Creating test regular user with limited roles..."
+curl -s -X POST "${KEYCLOAK_URL}/admin/realms/${REALM}/users" \
+    -H "Authorization: Bearer ${ADMIN_TOKEN}" \
+    -H "Content-Type: application/json" \
+    -d '{
+        "username": "user",
+        "email": "user@tems.local",
+        "firstName": "Regular",
+        "lastName": "User",
+        "enabled": true,
+        "emailVerified": true,
+        "credentials": [{
+            "type": "password",
+            "value": "User123!",
+            "temporary": false
+        }]
+    }'
+
+# Get regular user ID
+REGULAR_USER_ID=$(curl -s -X GET "${KEYCLOAK_URL}/admin/realms/${REALM}/users?username=user" \
+    -H "Authorization: Bearer ${ADMIN_TOKEN}" | jq -r '.[0].id')
+
+# Assign only view role to regular user
+echo "Assigning view role to regular user..."
+VIEW_ROLE_DATA=$(curl -s -X GET "${KEYCLOAK_URL}/admin/realms/${REALM}/roles/can_view_entities" \
+    -H "Authorization: Bearer ${ADMIN_TOKEN}")
+
+curl -s -X POST "${KEYCLOAK_URL}/admin/realms/${REALM}/users/${REGULAR_USER_ID}/role-mappings/realm" \
+    -H "Authorization: Bearer ${ADMIN_TOKEN}" \
+    -H "Content-Type: application/json" \
+    -d "[${VIEW_ROLE_DATA}]"
+
+echo "Regular user created with username: user, password: User123!"
 
 echo "=========================================="
 echo "Keycloak configuration completed!"
@@ -272,4 +340,15 @@ echo "Admin Console: ${KEYCLOAK_URL}/admin"
 echo "TEMS Realm: ${REALM}"
 echo "Admin Username: ${ADMIN_USER}"
 echo "Admin Password: ${ADMIN_PASSWORD}"
+echo ""
+echo "Test Users Created:"
+echo "  Admin User:"
+echo "    Username: admin"
+echo "    Password: Admin123!"
+echo "    Permissions: ALL"
+echo ""
+echo "  Regular User:"
+echo "    Username: user"
+echo "    Password: User123!"
+echo "    Permissions: can_view_entities only"
 echo "=========================================="

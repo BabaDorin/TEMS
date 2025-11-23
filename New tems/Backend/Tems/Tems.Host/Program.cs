@@ -47,26 +47,26 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-// Add Authorization Policies
+// Add Authorization Policies - Using roles from Keycloak
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("CanViewEntities", policy =>
-        policy.RequireClaim("can_view_entities", "true"));
+        policy.RequireRole("can_view_entities"));
     
     options.AddPolicy("CanManageEntities", policy =>
-        policy.RequireClaim("can_manage_entities", "true"));
+        policy.RequireRole("can_manage_entities"));
         
     options.AddPolicy("CanAllocateKeys", policy =>
-        policy.RequireClaim("can_allocate_keys", "true"));
+        policy.RequireRole("can_allocate_keys"));
         
     options.AddPolicy("CanSendEmails", policy =>
-        policy.RequireClaim("can_send_emails", "true"));
+        policy.RequireRole("can_send_emails"));
         
     options.AddPolicy("CanManageAnnouncements", policy =>
-        policy.RequireClaim("can_manage_announcements", "true"));
+        policy.RequireRole("can_manage_announcements"));
         
     options.AddPolicy("CanManageSystemConfiguration", policy =>
-        policy.RequireClaim("can_manage_system_configuration", "true"));
+        policy.RequireRole("can_manage_system_configuration"));
 });
 
 // Add CORS for Angular frontend

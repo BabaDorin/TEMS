@@ -6,13 +6,12 @@ import { AnalyticsService } from '../../../services/analytics.service';
 import { SnackService } from '../../../services/snack.service';
 import { PieChartData } from './../../../models/analytics/pieChart-model';
 import { FractionCardComponent } from '../fraction-card/fraction-card.component';
-import { PiechartCardComponent } from '../piechart-card/piechart-card.component';
-
+import { AnalyticsModule } from 'src/app/modules/analytics/analytics.module';
 
 @Component({
   selector: 'app-summary-issues-analytics',
   standalone: true,
-  imports: [CommonModule, MatCardModule, TranslateModule, FractionCardComponent, PiechartCardComponent],
+  imports: [CommonModule, MatCardModule, TranslateModule, FractionCardComponent, AnalyticsModule],
   templateUrl: './summary-issues-analytics.component.html',
   styleUrls: ['./summary-issues-analytics.component.scss']
 })

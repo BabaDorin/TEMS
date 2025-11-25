@@ -7,7 +7,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { MatSelectModule } from '@angular/material/select';
-import { TEMS_FORMS_IMPORTS } from 'src/app/shared/constants/tems-forms-imports.const';
+import { TEMS_FORMS_IMPORTS } from 'src/app/modules/tems-forms/tems-forms.module';
 import { FormlyParserService } from '../../services/formly-parser.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { EmailService } from '../../services/email.service';

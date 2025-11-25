@@ -1,36 +1,23 @@
-
-<div class="fixed inset-0 flex items-center justify-center bg-gray-50">
-  <div class="bg-white border border-gray-200 rounded-2xl shadow-none p-8 w-full max-w-xs sm:max-w-sm flex flex-col items-center">
-    <h5 class="text-gray-400 text-sm mb-1 w-full text-center">Sign in to continue</h5>
-    <h2 class="text-2xl font-semibold mb-8 w-full text-center">Welcome to TEMS</h2>
-    
-    <div class="w-full flex flex-col gap-4">
-      <button type="button" 
-              (click)="loginWithDuende()" 
-              class="w-full bg-blue-500 text-white rounded-xl py-3 text-base font-semibold cursor-pointer hover:bg-blue-600 transition-colors flex items-center justify-center gap-2">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-          <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
-        </svg>
-        Login with Duende IdentityServer
-      </button>
-      
-      <div class="text-center text-xs text-gray-400 mt-2">
-        <p>You will be redirected to the company authentication portal</p>
+<div class="d-flex align-items-center auth px-0 h-100"> 
+  <div class="mx-auto ">
+    <div class="auth-form-light text-left py-5 px-4 px-sm-5 unoffensive-shadow">
+      <div class="brand-logo">
+        <img src="assets/images/logo.svg" alt="logo">
       </div>
-      
-      <div class="border-t border-gray-200 pt-4 mt-2">
-        <p class="text-center text-sm text-gray-600 mb-3">
-          Don't have an account?
-        </p>
-        <button type="button" 
-                (click)="goToRegister()" 
-                class="w-full bg-white text-gray-700 border border-gray-300 rounded-xl py-3 text-base font-medium cursor-pointer hover:border-blue-500 hover:text-blue-500 transition-colors flex items-center justify-center gap-2">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-            <path d="M8 9a3 3 0 100-6 3 3 0 000 6zM8 11a6 6 0 016 6H2a6 6 0 016-6zM16 7a1 1 0 10-2 0v1h-1a1 1 0 100 2h1v1a1 1 0 102 0v-1h1a1 1 0 100-2h-1V7z" />
-          </svg>
-          Create New Account
-        </button>
-      </div>
+      <form [formGroup]="formlyData.form" (ngSubmit)="onSubmit()"  class="pt-3" autocomplete="off">
+        <formly-form [form]="formlyData.form" [fields]="formlyData.fields" [model]="formlyData.model"></formly-form>
+        <br>
+        <button type="submit" class="btn btn-block btn-gradient-primary btn-lg font-weight-medium auth-form-btn"
+        [disabled]="formlyData.form.status == 'INVALID'">{{ 'authentication.signIn' | translate }}</button>
+        <div class="text-center mt-4">
+          <button type="button" mat-button (click)="forgotPassword()">
+            {{ 'authentication.forgotPassword' | translate }}
+          </button>
+        </div>
+      </form>
+      <h4 class="text-muted text-center mt-4">
+        {{ 'authentication.askAdministrator' | translate }}
+      </h4>
     </div>
   </div>
-</div>
+</div>  

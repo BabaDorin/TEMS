@@ -15,7 +15,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { TranslateModule } from '@ngx-translate/core';
-import { TEMS_FORMS_IMPORTS } from 'src/app/shared/constants/tems-forms-imports.const';
+import { TEMS_FORMS_IMPORTS } from 'src/app/modules/tems-forms/tems-forms.module';
 
 @Component({
   selector: 'app-add-property',

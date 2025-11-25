@@ -57,9 +57,11 @@ export class NavbarComponent extends TEMSComponent implements OnInit {
   }
 
   signOut(){
-    this.authService.signOut().then(() => {
-      window.location.href = '';
-    });
+    this.subscriptions.push(
+      this.authService.signOut()
+      .subscribe());
+      
+    window.location.href = '';
   }
 
   markNotificationsAsSeen(){
@@ -98,37 +100,32 @@ export class NavbarComponent extends TEMSComponent implements OnInit {
   }
 
   fetchMinifiedProfilePhoto(){
-    // Temporarily disabled - backend endpoint not yet implemented
-    // TODO: Implement profile photo endpoint in backend API
-    // this.subscriptions.push(
-    //   this.userService.fetchMinifiedProfilePhoto()
-    //   .subscribe(result => {
-    //     this.profilePhotoB64 = result;
-    //   })
-    // );
+    this.subscriptions.push(
+      this.userService.fetchMinifiedProfilePhoto()
+      .subscribe(result => {
+        this.profilePhotoB64 = result;
+      })
+    );
   }
 
   fetchLastNotifications(refreshTriggered: boolean = false){
-    // Temporarily disabled - backend endpoint not yet implemented
-    // TODO: Implement notifications endpoint in backend API
+    // If refreshTriggered == true => user fetched notifications manually, using the fresh button.
     this.refreshing = true;
 
-    // this.subscriptions.push(
-    //   this.userService.getLastNotifications()
-    //   .subscribe(result => {
-    //     if(this.snackService.snackIfError(result))
-    //       return;
-    //     
-    //     this.notifications = result.slice(0, 5);
-    //     this.newNotifications = this.notifications.filter(q => q.seen == false);
-    //     this.refreshing = false;
-    //
-    //     if(refreshTriggered)
-    //       this.markNotificationsAsSeen();
-    //   })
-    // );
-    
-    this.refreshing = false;
+    this.subscriptions.push(
+      this.userService.getLastNotifications()
+      .subscribe(result => {
+        if(this.snackService.snackIfError(result))
+          return;
+        
+        this.notifications = result.slice(0, 5);
+        this.newNotifications = this.notifications.filter(q => q.seen == false);
+        this.refreshing = false;
+
+        if(refreshTriggered)
+          this.markNotificationsAsSeen();
+      })
+    )
   }
 
   // toggle sidebar in small devices

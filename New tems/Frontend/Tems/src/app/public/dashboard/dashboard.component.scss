@@ -122,6 +122,6 @@ hr{
 
 .dashboard-card{
   background-color: $content-bg;
-  border: 1px solid #e5e7eb;
-  box-shadow: none;
+  -webkit-box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.05); 
+  box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.05);
 }

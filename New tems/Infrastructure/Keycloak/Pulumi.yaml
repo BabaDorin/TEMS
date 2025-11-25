@@ -1,3 +1,0 @@
-name: tems-keycloak
-runtime: nodejs
-description: Keycloak infrastructure for TEMS authentication

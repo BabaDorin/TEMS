@@ -1,8 +1,7 @@
 .container {
   padding: 2rem;
   text-align: center;
-  border: 1px solid #e5e7eb;
-  box-shadow: none;
+  box-shadow: 5px 5px 15px 5px rgba(0, 0, 0, 0.19);
   position: relative;
   margin: 0 auto;
   transition: 0.3s;
@@ -20,8 +19,7 @@
 }
 
 .container:hover{
-  border: 1px solid #e5e7eb;
-  box-shadow: none;
+  box-shadow: 5px 5px 15px 5px #bdb9eb;
 }
 
 .fileover {

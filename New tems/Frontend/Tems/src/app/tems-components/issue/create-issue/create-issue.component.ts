@@ -18,7 +18,7 @@ import { SnackService } from '../../../services/snack.service';
 import { TokenService } from '../../../services/token.service';
 import { IOption } from './../../../models/option.model';
 import { TEMSComponent } from './../../../tems/tems.component';
-import { TEMS_FORMS_IMPORTS } from 'src/app/shared/constants/tems-forms-imports.const';
+import { TEMS_FORMS_IMPORTS } from 'src/app/modules/tems-forms/tems-forms.module';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ChipsAutocompleteComponent } from '../../../public/formly/chips-autocomplete/chips-autocomplete.component';

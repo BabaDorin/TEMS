@@ -10,7 +10,6 @@ import { ViewPropertySimplified } from './../equipment/view-property-simplified.
 import { IContainerAction, IGenericContainerModel, ITagGroup } from './IGenericContainer.model';
 
 @Component({
-    standalone: true,
     template: ''
   })
 export class PropertyContainerModel extends TEMSComponent implements IGenericContainerModel, OnInit {

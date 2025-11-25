@@ -24,12 +24,11 @@
             "tsConfig": "tsconfig.app.json",
             "assets": [
               "src/favicon.ico",
-              "src/assets",
-              "src/silent-refresh.html"
+              "src/assets"
             ],
             "styles": [
               "src/theme.scss",
-              "src/tailwind.css",
+              "src/styles.scss",
               "node_modules/animate.css/animate.min.css",
               "node_modules/bootstrap/dist/css/bootstrap.min.css"
             ],
@@ -100,7 +99,7 @@
             ],
             "styles": [
               "src/theme.scss",
-              "src/tailwind.css"
+              "src/styles.scss"
             ],
             "scripts": []
           }

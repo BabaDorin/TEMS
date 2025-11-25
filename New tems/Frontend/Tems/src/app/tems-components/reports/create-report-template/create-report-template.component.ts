@@ -24,7 +24,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatStepperModule } from '@angular/material/stepper';
 import { MatRadioModule } from '@angular/material/radio';
 import { TranslateModule } from '@ngx-translate/core';
-import { TEMS_FORMS_IMPORTS } from 'src/app/shared/constants/tems-forms-imports.const';
+import { TEMS_FORMS_IMPORTS } from '../../../modules/tems-forms/tems-forms.module';
 import { ChipsAutocompleteComponent } from '../../../public/formly/chips-autocomplete/chips-autocomplete.component';
 import { ReportPropertiesComponent } from '../report-properties/report-properties.component';
 

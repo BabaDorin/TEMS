@@ -10,7 +10,6 @@ import { ViewTypeSimplified } from '../equipment/view-type-simplified.model';
 import { IContainerAction, IGenericContainerModel, ITagGroup } from './IGenericContainer.model';
 
 @Component({
-    standalone: true,
     template: ''
 })
 export class EquipmentTypeContainerModel extends TEMSComponent implements IGenericContainerModel, OnInit {

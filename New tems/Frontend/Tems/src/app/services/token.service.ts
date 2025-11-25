@@ -1,50 +1,46 @@
 import { CAN_MANAGE_ANNOUNCEMENTS } from './../models/claims';
 import { CAN_VIEW_ENTITIES, CAN_MANAGE_ENTITIES, CAN_MANAGE_SYSTEM_CONFIGURATION, CAN_ALLOCATE_KEYS, CAN_SEND_EMAILS } from '../models/claims';
-import { Injectable, inject } from '@angular/core';
-import { OAuthService } from 'angular-oauth2-oidc';
+import { Injectable } from '@angular/core';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TokenService {
-  private oauthService = inject(OAuthService);
 
   constructor() { }
 
-  hasClaim(claimType: string): boolean {
-    const claims = this.oauthService.getIdentityClaims() as any;
-    if (!claims) return false;
-    
-    // Map old claim format to new OIDC claim format
-    const claimMap: Record<string, string> = {
-      [CAN_VIEW_ENTITIES]: 'can_view_entities',
-      [CAN_MANAGE_ENTITIES]: 'can_manage_entities',
-      [CAN_ALLOCATE_KEYS]: 'can_allocate_keys',
-      [CAN_SEND_EMAILS]: 'can_send_emails',
-      [CAN_MANAGE_ANNOUNCEMENTS]: 'can_manage_announcements',
-      [CAN_MANAGE_SYSTEM_CONFIGURATION]: 'can_manage_system_configuration'
-    };
-    
-    const mappedClaim = claimMap[claimType] || claimType;
-    return claims[mappedClaim] === 'true';
+  hasClaim(claim: string): boolean {
+    let token = this.getTokenObject();
+    if(token == undefined)
+      return false;
+      
+    return this.getTokenObject()[claim] != undefined;
   }
 
   getTokenObject(){
-    return this.oauthService.getIdentityClaims();
+    let token = localStorage.getItem('token');
+    if(token == undefined)
+      return undefined;
+
+    return JSON.parse(window.atob(token.split('.')[1]))
   }
 
   getUserId(){
-    const claims = this.oauthService.getIdentityClaims() as any;
-    return claims?.sub || undefined;
+    let token = this.getTokenObject();
+
+    if(token == undefined)
+      return undefined;
+    
+    return token.UserID;
   }
 
   tokenExists(){
-    return this.oauthService.hasValidAccessToken();
+    let token = localStorage.getItem('token');
+    return token != undefined && token.trim() != 'bearer'; 
   }
 
   getClaimValue(claim: string) {
-    const claims = this.oauthService.getIdentityClaims() as any;
-    return claims?.[claim];
+    return this.getTokenObject()[claim];
   }
 
   canViewEntities() {

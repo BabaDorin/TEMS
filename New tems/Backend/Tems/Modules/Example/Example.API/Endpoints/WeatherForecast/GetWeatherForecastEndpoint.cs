@@ -9,7 +9,7 @@ public class GetWeatherForecastEndpoint(IMediator mediator) : EndpointWithoutReq
     public override void Configure()
     {
         Get("/weatherforecast");
-        Policies("CanViewEntities");
+        AllowAnonymous();
     }
 
     public override async Task HandleAsync(CancellationToken ct)

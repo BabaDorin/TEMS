@@ -1,8 +1,8 @@
-import { QRCodeComponent } from 'angularx-qrcode';
+import { QRCodeComponent, QRCodeModule } from 'angularx-qrcode';
 import { LazyLoaderService } from 'src/app/services/lazy-loader.service';
 import { environment } from 'src/environments/environment';
 import { propertyChanged } from 'src/app/helpers/onchanges-helper';
-import { Component, Input, OnInit, OnChanges, SimpleChanges, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, OnChanges, SimpleChanges, ViewChild, NO_ERRORS_SCHEMA } from '@angular/core';
 import { DownloadService } from 'src/app/download.service';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
@@ -11,7 +11,8 @@ import { MatButtonModule } from '@angular/material/button';
 @Component({
   selector: 'app-equipment-label',
   standalone: true,
-  imports: [CommonModule, MatIconModule, MatButtonModule, QRCodeComponent],
+  imports: [CommonModule, MatIconModule, MatButtonModule, QRCodeModule],
+  schemas: [NO_ERRORS_SCHEMA],
   templateUrl: './equipment-label.component.html',
   styleUrls: ['./equipment-label.component.scss']
 })

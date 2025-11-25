@@ -22,7 +22,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { TranslateModule } from '@ngx-translate/core';
-import { TEMS_FORMS_IMPORTS } from 'src/app/modules/tems-forms/tems-forms.module';
+import { TEMS_FORMS_IMPORTS } from 'src/app/shared/constants/tems-forms-imports.const';
 
 @Component({
   selector: 'app-profile-settings',
@@ -109,12 +109,8 @@ export class ProfileSettingsComponent extends TEMSComponent implements OnInit {
 
         if(result.status == 1)
         {
-          this.subscriptions.push(
-            this.authService.signOut()
-            .subscribe(() => {
-              window.location.href = '/login';
-            })
-          )
+          // Password changed successfully - log out and redirect to home
+          this.authService.signOut();
         }
       })
     );

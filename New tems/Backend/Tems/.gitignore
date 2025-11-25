@@ -1,0 +1,48 @@
+# Development environment configuration
+appsettings.Development.json
+**/appsettings.Development.json
+
+# Build results
+bin/
+obj/
+dist/
+build/
+*.dll
+*.exe
+*.pdb
+
+# User-specific files
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# IDE
+.vscode/
+.idea/
+.vs/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Rider
+.idea/
+*.sln.iml
+
+# Logs
+logs/
+*.log
+
+# NuGet
+.nuget/
+packages/
+*.nupkg
+
+# Local overrides
+launchSettings.local.json

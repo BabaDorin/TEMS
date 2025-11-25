@@ -11,7 +11,7 @@ public class CreateEquipmentPropertyEndpoint(IMediator mediator) : Endpoint<Crea
     public override void Configure()
     {
         Post("/equipment-properties");
-        AllowAnonymous();
+        Policies("CanManageEntities");
     }
 
     public override async Task HandleAsync(CreateEquipmentPropertyCommand command, CancellationToken ct)

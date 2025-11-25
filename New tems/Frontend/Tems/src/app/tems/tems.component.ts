@@ -1,8 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { SidebarComponent } from 'src/app/shared/sidebar/sidebar.component';
-import { SpinnerComponent } from 'src/app/shared/spinner/spinner.component';
 import { Subject } from 'rxjs';
 
 @Component({
@@ -10,9 +8,7 @@ import { Subject } from 'rxjs';
   standalone: true,
   imports: [
     CommonModule,
-    RouterModule,
-    SidebarComponent,
-    SpinnerComponent
+    RouterModule
   ],
   templateUrl: './tems.component.html',
   styleUrls: ['./tems.component.scss']

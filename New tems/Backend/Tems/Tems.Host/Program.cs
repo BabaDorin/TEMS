@@ -4,6 +4,7 @@ using FastEndpoints.Swagger;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Tems.Example.API;
+using TicketManagement.API;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +18,7 @@ if (!builder.Environment.IsProduction())
 // Add modules first
 // builder.Services.AddExampleServices(builder.Configuration);
 builder.Services.AddEquipmentManagementServices(builder.Configuration);
+builder.Services.AddTicketManagementServices(builder.Configuration);
 
 // Add JWT Bearer Authentication - Validate tokens from Keycloak
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

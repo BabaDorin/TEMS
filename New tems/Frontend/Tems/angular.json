@@ -31,7 +31,9 @@
               "src/theme.scss",
               "src/tailwind.css",
               "node_modules/animate.css/animate.min.css",
-              "node_modules/bootstrap/dist/css/bootstrap.min.css"
+              "node_modules/bootstrap/dist/css/bootstrap.min.css",
+              "node_modules/ag-grid-community/styles/ag-grid.css",
+              "node_modules/ag-grid-community/styles/ag-theme-quartz.css"
             ],
             "scripts": [
               "node_modules/jquery/dist/jquery.min.js",

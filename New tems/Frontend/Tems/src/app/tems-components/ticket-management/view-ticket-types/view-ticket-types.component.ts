@@ -1,0 +1,229 @@
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AgGridAngular } from 'ag-grid-angular';
+import { ColDef, GridApi, GridReadyEvent } from 'ag-grid-community';
+import { TicketTypeService } from 'src/app/services/ticket-type.service';
+import { TicketType, CreateTicketTypeRequest } from 'src/app/models/ticket/ticket-type.model';
+
+@Component({
+  selector: 'app-view-ticket-types',
+  standalone: true,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    AgGridAngular
+  ],
+  templateUrl: './view-ticket-types.component.html',
+  styleUrls: ['./view-ticket-types.component.scss']
+})
+export class ViewTicketTypesComponent implements OnInit {
+  rowData: TicketType[] = [];
+  gridApi!: GridApi;
+  showCreateModal = false;
+  showDetailsModal = false;
+  selectedTicketType: TicketType | null = null;
+  createForm!: FormGroup;
+  isSubmitting = false;
+  gridReady = false;
+
+  columnDefs: ColDef[] = [
+    {
+      headerName: 'Name',
+      field: 'name',
+      flex: 2,
+      minWidth: 200,
+      cellClass: 'font-medium'
+    },
+    {
+      headerName: 'Category',
+      field: 'itilCategory',
+      flex: 1,
+      minWidth: 150
+    },
+    {
+      headerName: 'Version',
+      field: 'version',
+      flex: 0.5,
+      minWidth: 80,
+      type: 'numericColumn'
+    },
+    {
+      headerName: 'Status',
+      field: 'isActive',
+      flex: 0.7,
+      minWidth: 100,
+      cellRenderer: (params: any) => {
+        const isActive = params.value;
+        const className = isActive ? 'text-green-600' : 'text-gray-600';
+        return `<span class="${className}">${isActive ? 'Active' : 'Inactive'}</span>`;
+      }
+    },
+    {
+      headerName: 'Created',
+      field: 'createdAt',
+      flex: 1,
+      minWidth: 150,
+      valueFormatter: (params) => {
+        if (!params.value) return '';
+        return new Date(params.value).toLocaleDateString();
+      }
+    },
+    {
+      headerName: 'Actions',
+      flex: 0.7,
+      minWidth: 100,
+      cellRenderer: (params: any) => {
+        return `
+          <button class="action-delete-btn px-2 py-1 text-red-600 hover:text-red-800 text-sm">
+            Delete
+          </button>
+        `;
+      },
+      onCellClicked: (params) => {
+        const target = params.event?.target as HTMLElement;
+        if (target.classList.contains('action-delete-btn')) {
+          this.deleteTicketType(params.data.ticketTypeId);
+        }
+      }
+    }
+  ];
+
+  defaultColDef: ColDef = {
+    sortable: true,
+    filter: true,
+    resizable: true,
+    flex: 1
+  };
+
+  constructor(
+    private ticketTypeService: TicketTypeService,
+    private fb: FormBuilder
+  ) {
+    this.initializeForm();
+  }
+
+  ngOnInit(): void {
+    // Initialize with empty array to ensure grid displays
+    this.rowData = [];
+    // Try to load data, but grid will show even if this fails
+    setTimeout(() => this.loadTicketTypes(), 100);
+  }
+
+  initializeForm(): void {
+    this.createForm = this.fb.group({
+      name: ['', Validators.required],
+      description: ['', Validators.required],
+      itilCategory: ['', Validators.required],
+      initialStateId: ['', Validators.required]
+    });
+  }
+
+  loadTicketTypes(): void {
+    this.ticketTypeService.getAll().subscribe({
+      next: (data) => {
+        this.rowData = data || [];
+        if (this.gridApi) {
+          this.gridApi.sizeColumnsToFit();
+        }
+      },
+      error: (error) => {
+        console.error('Error loading ticket types:', error);
+        this.rowData = [];
+        if (this.gridApi) {
+          this.gridApi.sizeColumnsToFit();
+        }
+      }
+    });
+  }
+
+  onGridReady(params: GridReadyEvent): void {
+    this.gridApi = params.api;
+    this.gridReady = true;
+    this.gridApi.sizeColumnsToFit();
+    
+    // Ensure we show empty state if no data
+    if (!this.rowData || this.rowData.length === 0) {
+      this.gridApi.showNoRowsOverlay();
+    }
+  }
+
+  onRowClicked(event: any): void {
+    const target = event.event?.target as HTMLElement;
+    if (!target.classList.contains('action-delete-btn')) {
+      this.selectedTicketType = event.data;
+      this.showDetailsModal = true;
+    }
+  }
+
+  openCreateModal(): void {
+    this.showCreateModal = true;
+    this.createForm.reset();
+  }
+
+  closeCreateModal(): void {
+    this.showCreateModal = false;
+    this.createForm.reset();
+  }
+
+  closeDetailsModal(): void {
+    this.showDetailsModal = false;
+    this.selectedTicketType = null;
+  }
+
+  onSubmit(): void {
+    if (this.createForm.invalid || this.isSubmitting) {
+      return;
+    }
+
+    this.isSubmitting = true;
+    const formValue = this.createForm.value;
+
+    const request: CreateTicketTypeRequest = {
+      name: formValue.name,
+      description: formValue.description,
+      itilCategory: formValue.itilCategory,
+      workflowConfig: {
+        states: [
+          {
+            id: formValue.initialStateId,
+            label: formValue.initialStateId.charAt(0).toUpperCase() + formValue.initialStateId.slice(1),
+            type: 'OPEN',
+            allowedTransitions: []
+          }
+        ],
+        initialStateId: formValue.initialStateId
+      },
+      attributeDefinitions: []
+    };
+
+    this.ticketTypeService.create(request).subscribe({
+      next: (response) => {
+        console.log('Ticket type created:', response);
+        this.loadTicketTypes();
+        this.closeCreateModal();
+        this.isSubmitting = false;
+      },
+      error: (error) => {
+        console.error('Error creating ticket type:', error);
+        this.isSubmitting = false;
+      }
+    });
+  }
+
+  deleteTicketType(id: string): void {
+    if (!confirm('Are you sure you want to delete this ticket type?')) {
+      return;
+    }
+
+    this.ticketTypeService.delete(id).subscribe({
+      next: () => {
+        console.log('Ticket type deleted');
+        this.loadTicketTypes();
+      },
+      error: (error) => {
+        console.error('Error deleting ticket type:', error);
+      }
+    });
+  }
+}

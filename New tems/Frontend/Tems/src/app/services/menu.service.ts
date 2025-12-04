@@ -269,6 +269,34 @@ export class MenuService {
             ]
           },
           {
+            path: '',
+            title: 'Technical Support',
+            icon: 'mdi mdi-lifebuoy menu-icon',
+            isShown: true,
+            isActive: false,
+            showSubmenu: false,
+            submenu: [
+              {
+                path: '/technical-support/ticket-types',
+                title: 'Ticket Types',
+                icon: 'mdi mdi-file-document-outline menu-icon',
+                isActive: false,
+                isShown: true,
+                showSubmenu: false,
+                submenu: []
+              },
+              {
+                path: '/technical-support/tickets',
+                title: 'Tickets',
+                icon: 'mdi mdi-ticket menu-icon',
+                isActive: false,
+                isShown: true,
+                showSubmenu: false,
+                submenu: []
+              },
+            ]
+          },
+          {
             path: '/library/all',
             title: menu.library,
             icon: 'mdi mdi-view-list menu-icon',

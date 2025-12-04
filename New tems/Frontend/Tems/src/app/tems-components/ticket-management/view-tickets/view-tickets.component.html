@@ -1,0 +1,249 @@
+<div class="min-h-screen bg-gray-50 p-4 md:p-6 lg:p-8">
+  <div class="max-w-7xl mx-auto">
+    <!-- Header -->
+    <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div>
+          <h1 class="text-2xl font-semibold text-gray-900">Tickets</h1>
+          <p class="text-sm text-gray-600 mt-1">Manage and track support tickets</p>
+        </div>
+        <button
+          (click)="openCreateModal()"
+          class="inline-flex items-center justify-center px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors">
+          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+          </svg>
+          Create Ticket
+        </button>
+      </div>
+    </div>
+
+    <!-- AG Grid -->
+    <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+      <div class="ag-theme-quartz w-full" style="height: calc(100vh - 280px);">
+        <ag-grid-angular
+          class="w-full h-full"
+          [rowData]="rowData"
+          [columnDefs]="columnDefs"
+          [defaultColDef]="defaultColDef"
+          [pagination]="true"
+          [paginationPageSize]="50"
+          [rowSelection]="'single'"
+          [overlayNoRowsTemplate]="'<span class=\'ag-overlay-no-rows-center\'>No tickets found</span>'"
+          (gridReady)="onGridReady($event)"
+          (rowClicked)="onRowClicked($event)">
+        </ag-grid-angular>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Create Modal -->
+<div *ngIf="showCreateModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 overflow-y-auto">
+  <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full my-8">
+    <div class="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 rounded-t-lg">
+      <div class="flex items-center justify-between">
+        <h2 class="text-xl font-semibold text-gray-900">Create Ticket</h2>
+        <button (click)="closeCreateModal()" class="text-gray-400 hover:text-gray-600">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <form [formGroup]="createForm" (ngSubmit)="onSubmit()" class="p-6 space-y-6">
+      <!-- Ticket Type -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-2">Ticket Type *</label>
+        <select
+          formControlName="ticketTypeId"
+          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent"
+          [class.border-red-500]="createForm.get('ticketTypeId')?.invalid && createForm.get('ticketTypeId')?.touched">
+          <option value="">Select a ticket type</option>
+          <option *ngFor="let type of ticketTypes" [value]="type.ticketTypeId">
+            {{ type.name }} ({{ type.itilCategory }})
+          </option>
+        </select>
+        <p *ngIf="createForm.get('ticketTypeId')?.invalid && createForm.get('ticketTypeId')?.touched" class="text-red-500 text-sm mt-1">
+          Ticket type is required
+        </p>
+      </div>
+
+      <!-- Summary -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-2">Summary *</label>
+        <textarea
+          formControlName="summary"
+          rows="3"
+          placeholder="Briefly describe the issue or request"
+          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent resize-none"
+          [class.border-red-500]="createForm.get('summary')?.invalid && createForm.get('summary')?.touched">
+        </textarea>
+        <p *ngIf="createForm.get('summary')?.invalid && createForm.get('summary')?.touched" class="text-red-500 text-sm mt-1">
+          Summary is required
+        </p>
+      </div>
+
+      <!-- Priority -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-2">Priority *</label>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <label *ngFor="let priority of priorities" class="relative flex items-center justify-center">
+            <input
+              type="radio"
+              formControlName="priority"
+              [value]="priority.value"
+              class="sr-only peer">
+            <div class="w-full px-4 py-2 border border-gray-300 rounded-lg cursor-pointer peer-checked:border-gray-900 peer-checked:bg-gray-50 hover:bg-gray-50 transition-colors text-center">
+              <span class="text-sm font-medium text-gray-700">{{ priority.label }}</span>
+            </div>
+          </label>
+        </div>
+        <p *ngIf="createForm.get('priority')?.invalid && createForm.get('priority')?.touched" class="text-red-500 text-sm mt-1">
+          Priority is required
+        </p>
+      </div>
+
+      <!-- Channel Source -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-2">Channel Source *</label>
+        <select
+          formControlName="channelSource"
+          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent"
+          [class.border-red-500]="createForm.get('channelSource')?.invalid && createForm.get('channelSource')?.touched">
+          <option value="">Select a channel</option>
+          <option value="WEB">Web</option>
+          <option value="TEAMS">Microsoft Teams</option>
+          <option value="SLACK">Slack</option>
+        </select>
+        <p *ngIf="createForm.get('channelSource')?.invalid && createForm.get('channelSource')?.touched" class="text-red-500 text-sm mt-1">
+          Channel source is required
+        </p>
+      </div>
+
+      <!-- Actions -->
+      <div class="flex flex-col sm:flex-row gap-3 pt-4 border-t border-gray-200">
+        <button
+          type="button"
+          (click)="closeCreateModal()"
+          class="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
+          Cancel
+        </button>
+        <button
+          type="submit"
+          [disabled]="createForm.invalid || isSubmitting"
+          class="flex-1 px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+          {{ isSubmitting ? 'Creating...' : 'Create Ticket' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Details Modal -->
+<div *ngIf="showDetailsModal && selectedTicket" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 overflow-y-auto">
+  <div class="bg-white rounded-lg shadow-xl max-w-4xl w-full my-8">
+    <div class="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 rounded-t-lg">
+      <div class="flex items-center justify-between">
+        <div>
+          <h2 class="text-xl font-semibold text-gray-900">{{ selectedTicket.humanReadableId }}</h2>
+          <p class="text-sm text-gray-600 mt-1">{{ selectedTicket.summary }}</p>
+        </div>
+        <button (click)="closeDetailsModal()" class="text-gray-400 hover:text-gray-600">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="p-6 space-y-6">
+      <!-- Status and Priority -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div>
+          <label class="text-sm font-medium text-gray-500">Priority</label>
+          <p class="text-base font-semibold mt-1" [ngClass]="{
+            'text-red-600': selectedTicket.priority === 'CRITICAL',
+            'text-orange-600': selectedTicket.priority === 'HIGH',
+            'text-yellow-600': selectedTicket.priority === 'MEDIUM',
+            'text-gray-600': selectedTicket.priority === 'LOW'
+          }">{{ selectedTicket.priority }}</p>
+        </div>
+        <div>
+          <label class="text-sm font-medium text-gray-500">Current State</label>
+          <p class="text-base text-gray-900 mt-1">{{ selectedTicket.currentStateId }}</p>
+        </div>
+        <div>
+          <label class="text-sm font-medium text-gray-500">Channel</label>
+          <p class="text-base text-gray-900 mt-1">{{ selectedTicket.reporter.channelSource }}</p>
+        </div>
+      </div>
+
+      <!-- Timestamps -->
+      <div class="pt-4 border-t border-gray-200">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+          <div>
+            <span class="text-gray-500">Created:</span>
+            <span class="text-gray-900 ml-2">{{ selectedTicket.auditMetadata.createdAt | date: 'short' }}</span>
+          </div>
+          <div>
+            <span class="text-gray-500">Updated:</span>
+            <span class="text-gray-900 ml-2">{{ selectedTicket.auditMetadata.updatedAt | date: 'short' }}</span>
+          </div>
+          <div *ngIf="selectedTicket.auditMetadata.resolvedAt">
+            <span class="text-gray-500">Resolved:</span>
+            <span class="text-gray-900 ml-2">{{ selectedTicket.auditMetadata.resolvedAt | date: 'short' }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Conversation -->
+      <div class="pt-4 border-t border-gray-200">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">Conversation</h3>
+        <div class="space-y-4 max-h-96 overflow-y-auto">
+          <div *ngFor="let message of messages" class="p-4 bg-gray-50 rounded-lg">
+            <div class="flex items-start justify-between mb-2">
+              <span class="font-medium text-gray-900">{{ message.senderType }}</span>
+              <span class="text-xs text-gray-500">{{ message.timestamp | date: 'short' }}</span>
+            </div>
+            <p class="text-gray-700">{{ message.content }}</p>
+            <span *ngIf="message.isInternalNote" class="inline-block mt-2 px-2 py-1 text-xs bg-yellow-100 text-yellow-800 rounded">
+              Internal Note
+            </span>
+          </div>
+          <div *ngIf="messages.length === 0" class="text-center text-gray-500 py-8">
+            No messages yet
+          </div>
+        </div>
+
+        <!-- Add Message Form -->
+        <form [formGroup]="messageForm" (ngSubmit)="onSubmitMessage()" class="mt-4">
+          <div class="space-y-3">
+            <textarea
+              formControlName="content"
+              rows="3"
+              placeholder="Add a message..."
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent resize-none">
+            </textarea>
+            <div class="flex items-center justify-between">
+              <label class="flex items-center">
+                <input
+                  type="checkbox"
+                  formControlName="isInternalNote"
+                  class="w-4 h-4 text-gray-900 border-gray-300 rounded focus:ring-gray-900">
+                <span class="ml-2 text-sm text-gray-700">Internal note</span>
+              </label>
+              <button
+                type="submit"
+                [disabled]="messageForm.invalid || isSubmittingMessage"
+                class="px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                {{ isSubmittingMessage ? 'Sending...' : 'Send Message' }}
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

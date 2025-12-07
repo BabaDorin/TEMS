@@ -1,8 +1,0 @@
-<mat-form-field appearance="fill">
-    <mat-label>{{ label }}</mat-label>
-    <mat-select [formControl]="dropdownFormControl" multiple (selectionChange)="selectionChange($event)">
-        <mat-option *ngFor="let option of dropdownOptions" [value]="option.value">
-            {{ option.label }}
-        </mat-option>
-    </mat-select>
-</mat-form-field>

@@ -1,4 +1,6 @@
 using MediatR;
+using System.Text.Json;
+using Tems.Common.Tenant;
 using TicketManagement.Application.Domain;
 using TicketManagement.Application.Interfaces;
 using TicketManagement.Contract.Commands.Tickets;
@@ -11,31 +13,34 @@ public class CreateTicketCommandHandler : IRequestHandler<CreateTicketCommand, C
     private readonly ITicketRepository _ticketRepository;
     private readonly ITicketTypeRepository _ticketTypeRepository;
     private readonly ITicketConversationRepository _conversationRepository;
+    private readonly ITenantContext _tenantContext;
 
     public CreateTicketCommandHandler(
         ITicketRepository ticketRepository,
         ITicketTypeRepository ticketTypeRepository,
-        ITicketConversationRepository conversationRepository)
+        ITicketConversationRepository conversationRepository,
+        ITenantContext tenantContext)
     {
         _ticketRepository = ticketRepository;
         _ticketTypeRepository = ticketTypeRepository;
         _conversationRepository = conversationRepository;
+        _tenantContext = tenantContext;
     }
 
     public async Task<CreateTicketResponse> Handle(CreateTicketCommand request, CancellationToken cancellationToken)
     {
-        var ticketType = await _ticketTypeRepository.GetByIdAsync(request.TicketTypeId, request.TenantId, cancellationToken);
+        var ticketType = await _ticketTypeRepository.GetByIdAsync(request.TicketTypeId, _tenantContext.TenantId, cancellationToken);
         if (ticketType == null)
             throw new KeyNotFoundException($"TicketType with ID {request.TicketTypeId} not found");
 
         var prefix = GetPrefixFromItilCategory(ticketType.ItilCategory);
-        var nextNumber = await _ticketRepository.GetNextTicketNumberAsync(request.TenantId, prefix, cancellationToken);
+        var nextNumber = await _ticketRepository.GetNextTicketNumberAsync(_tenantContext.TenantId, prefix, cancellationToken);
         var humanReadableId = $"{prefix}-{nextNumber}";
 
         var ticket = new Ticket
         {
             TicketId = Guid.NewGuid().ToString(),
-            TenantId = request.TenantId,
+            TenantId = _tenantContext.TenantId,
             TicketTypeId = request.TicketTypeId,
             HumanReadableId = humanReadableId,
             Summary = request.Summary,
@@ -48,7 +53,7 @@ public class CreateTicketCommandHandler : IRequestHandler<CreateTicketCommand, C
                 ChannelThreadId = request.Reporter.ChannelThreadId
             },
             AssigneeId = request.AssigneeId,
-            Attributes = request.Attributes,
+            Attributes = ConvertAttributes(request.Attributes),
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow
         };
@@ -80,5 +85,32 @@ public class CreateTicketCommandHandler : IRequestHandler<CreateTicketCommand, C
             "ALERT" => "ALT",
             _ => "TKT"
         };
+    }
+
+    private Dictionary<string, object> ConvertAttributes(Dictionary<string, object> attributes)
+    {
+        var converted = new Dictionary<string, object>();
+        
+        foreach (var kvp in attributes)
+        {
+            if (kvp.Value is JsonElement jsonElement)
+            {
+                converted[kvp.Key] = jsonElement.ValueKind switch
+                {
+                    JsonValueKind.String => jsonElement.GetString() ?? string.Empty,
+                    JsonValueKind.Number => jsonElement.TryGetInt64(out var longValue) ? longValue : jsonElement.GetDouble(),
+                    JsonValueKind.True => true,
+                    JsonValueKind.False => false,
+                    JsonValueKind.Null => null!,
+                    _ => kvp.Value
+                };
+            }
+            else
+            {
+                converted[kvp.Key] = kvp.Value;
+            }
+        }
+        
+        return converted;
     }
 }

@@ -91,6 +91,7 @@ public static class TicketTypeMapper
             DataType = dbEntity.DataType,
             IsRequired = dbEntity.IsRequired,
             IsPredefined = dbEntity.IsPredefined,
+            Options = dbEntity.Options,
             AiExtractionHint = dbEntity.AiExtractionHint,
             ValidationRule = dbEntity.ValidationRule
         };
@@ -105,6 +106,7 @@ public static class TicketTypeMapper
             DataType = domainEntity.DataType,
             IsRequired = domainEntity.IsRequired,
             IsPredefined = domainEntity.IsPredefined,
+            Options = domainEntity.Options,
             AiExtractionHint = domainEntity.AiExtractionHint,
             ValidationRule = domainEntity.ValidationRule
         };

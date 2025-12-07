@@ -7,9 +7,6 @@ public class CreateTicketCommandValidator : AbstractValidator<CreateTicketComman
 {
     public CreateTicketCommandValidator()
     {
-        RuleFor(x => x.TenantId)
-            .NotEmpty().WithMessage("TenantId is required");
-
         RuleFor(x => x.TicketTypeId)
             .NotEmpty().WithMessage("TicketTypeId is required");
 

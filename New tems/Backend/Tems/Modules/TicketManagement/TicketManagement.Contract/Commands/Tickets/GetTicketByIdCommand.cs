@@ -4,6 +4,5 @@ using TicketManagement.Contract.Responses;
 namespace TicketManagement.Contract.Commands.Tickets;
 
 public record GetTicketByIdCommand(
-    string TicketId,
-    string TenantId
+    string TicketId
 ) : IRequest<GetTicketResponse>;

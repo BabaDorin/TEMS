@@ -1,10 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AgGridAngular } from 'ag-grid-angular';
 import { ColDef, GridApi, GridReadyEvent } from 'ag-grid-community';
 import { TicketTypeService } from 'src/app/services/ticket-type.service';
-import { TicketType, CreateTicketTypeRequest } from 'src/app/models/ticket/ticket-type.model';
+import { TicketType, CreateTicketTypeRequest, AttributeDefinition } from 'src/app/models/ticket/ticket-type.model';
+import { TicketManagementStateService } from 'src/app/state/ticket-management.state';
+import { AttributeBuilder } from 'src/app/components/ticket-type/attribute-builder/attribute-builder';
 
 @Component({
   selector: 'app-view-ticket-types',
@@ -12,7 +14,8 @@ import { TicketType, CreateTicketTypeRequest } from 'src/app/models/ticket/ticke
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    AgGridAngular
+    AgGridAngular,
+    AttributeBuilder
   ],
   templateUrl: './view-ticket-types.component.html',
   styleUrls: ['./view-ticket-types.component.scss']
@@ -26,6 +29,7 @@ export class ViewTicketTypesComponent implements OnInit {
   createForm!: FormGroup;
   isSubmitting = false;
   gridReady = false;
+  attributeDefinitions: AttributeDefinition[] = [];
 
   columnDefs: ColDef[] = [
     {
@@ -98,16 +102,27 @@ export class ViewTicketTypesComponent implements OnInit {
 
   constructor(
     private ticketTypeService: TicketTypeService,
+    private stateService: TicketManagementStateService,
     private fb: FormBuilder
   ) {
     this.initializeForm();
+    
+    // React to state changes using Angular signals effect
+    effect(() => {
+      const ticketTypes = this.stateService.ticketTypes();
+      this.rowData = ticketTypes || [];
+      if (this.gridApi) {
+        this.gridApi.sizeColumnsToFit();
+        if (this.rowData.length === 0) {
+          this.gridApi.showNoRowsOverlay();
+        }
+      }
+    });
   }
 
   ngOnInit(): void {
-    // Initialize with empty array to ensure grid displays
-    this.rowData = [];
-    // Try to load data, but grid will show even if this fails
-    setTimeout(() => this.loadTicketTypes(), 100);
+    // Load data only if not already cached
+    this.loadTicketTypes();
   }
 
   initializeForm(): void {
@@ -120,21 +135,8 @@ export class ViewTicketTypesComponent implements OnInit {
   }
 
   loadTicketTypes(): void {
-    this.ticketTypeService.getAll().subscribe({
-      next: (data) => {
-        this.rowData = data || [];
-        if (this.gridApi) {
-          this.gridApi.sizeColumnsToFit();
-        }
-      },
-      error: (error) => {
-        console.error('Error loading ticket types:', error);
-        this.rowData = [];
-        if (this.gridApi) {
-          this.gridApi.sizeColumnsToFit();
-        }
-      }
-    });
+    // The service will return cached data if available
+    this.ticketTypeService.getAll().subscribe();
   }
 
   onGridReady(params: GridReadyEvent): void {
@@ -164,6 +166,7 @@ export class ViewTicketTypesComponent implements OnInit {
   closeCreateModal(): void {
     this.showCreateModal = false;
     this.createForm.reset();
+    this.attributeDefinitions = [];
   }
 
   closeDetailsModal(): void {
@@ -173,6 +176,26 @@ export class ViewTicketTypesComponent implements OnInit {
 
   onSubmit(): void {
     if (this.createForm.invalid || this.isSubmitting) {
+      return;
+    }
+
+    // Validate dropdown attributes have options
+    const invalidDropdown = this.attributeDefinitions.find(
+      attr => attr.dataType === 'DROPDOWN' && (!attr.options || attr.options.length === 0)
+    );
+    
+    if (invalidDropdown) {
+      alert(`Dropdown attribute "${invalidDropdown.label}" must have at least one option.`);
+      return;
+    }
+
+    // Validate all attributes have required fields
+    const invalidAttribute = this.attributeDefinitions.find(
+      attr => !attr.key || !attr.label || !attr.dataType
+    );
+    
+    if (invalidAttribute) {
+      alert('All attributes must have a key, label, and data type.');
       return;
     }
 
@@ -194,18 +217,20 @@ export class ViewTicketTypesComponent implements OnInit {
         ],
         initialStateId: formValue.initialStateId
       },
-      attributeDefinitions: []
+      attributeDefinitions: this.attributeDefinitions
     };
 
     this.ticketTypeService.create(request).subscribe({
       next: (response) => {
         console.log('Ticket type created:', response);
-        this.loadTicketTypes();
+        // Reload data from API (will update state)
+        this.ticketTypeService.getAll(true).subscribe();
         this.closeCreateModal();
         this.isSubmitting = false;
       },
       error: (error) => {
         console.error('Error creating ticket type:', error);
+        alert('Failed to create ticket type. Please check the form and try again.');
         this.isSubmitting = false;
       }
     });
@@ -219,7 +244,7 @@ export class ViewTicketTypesComponent implements OnInit {
     this.ticketTypeService.delete(id).subscribe({
       next: () => {
         console.log('Ticket type deleted');
-        this.loadTicketTypes();
+        // State is automatically updated by the service
       },
       error: (error) => {
         console.error('Error deleting ticket type:', error);

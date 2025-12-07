@@ -39,9 +39,9 @@
 </div>
 
 <!-- Create Modal -->
-<div *ngIf="showCreateModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 overflow-y-auto">
-  <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full my-8">
-    <div class="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 rounded-t-lg">
+<div *ngIf="showCreateModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+  <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto my-8">
+    <div class="bg-white border-b border-gray-200 px-6 py-4 rounded-t-lg">
       <div class="flex items-center justify-between">
         <h2 class="text-xl font-semibold text-gray-900">Create Ticket</h2>
         <button (click)="closeCreateModal()" class="text-gray-400 hover:text-gray-600">
@@ -58,6 +58,7 @@
         <label class="block text-sm font-medium text-gray-700 mb-2">Ticket Type *</label>
         <select
           formControlName="ticketTypeId"
+          (change)="onTicketTypeChange($any($event.target).value)"
           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent"
           [class.border-red-500]="createForm.get('ticketTypeId')?.invalid && createForm.get('ticketTypeId')?.touched">
           <option value="">Select a ticket type</option>
@@ -71,7 +72,7 @@
       </div>
 
       <!-- Summary -->
-      <div>
+      <div *ngIf="selectedTicketType">
         <label class="block text-sm font-medium text-gray-700 mb-2">Summary *</label>
         <textarea
           formControlName="summary"
@@ -86,7 +87,7 @@
       </div>
 
       <!-- Priority -->
-      <div>
+      <div *ngIf="selectedTicketType">
         <label class="block text-sm font-medium text-gray-700 mb-2">Priority *</label>
         <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
           <label *ngFor="let priority of priorities" class="relative flex items-center justify-center">
@@ -106,7 +107,7 @@
       </div>
 
       <!-- Channel Source -->
-      <div>
+      <div *ngIf="selectedTicketType">
         <label class="block text-sm font-medium text-gray-700 mb-2">Channel Source *</label>
         <select
           formControlName="channelSource"
@@ -122,6 +123,72 @@
         </p>
       </div>
 
+      <!-- Dynamic Attributes -->
+      <div *ngIf="selectedTicketType && selectedTicketType.attributeDefinitions && selectedTicketType.attributeDefinitions.length > 0" 
+           class="border-t border-gray-200 pt-6">
+        <h3 class="text-lg font-medium text-gray-900 mb-4">Additional Fields</h3>
+        <div class="space-y-4">
+          <div *ngFor="let attr of selectedTicketType.attributeDefinitions">
+            <!-- Text/String Input -->
+            <div *ngIf="attr.dataType === 'STRING'" class="form-group">
+              <label class="block text-sm font-medium text-gray-700 mb-2">
+                {{ attr.label }}
+                <span *ngIf="attr.isRequired" class="text-red-500">*</span>
+              </label>
+              <input
+                type="text"
+                [(ngModel)]="dynamicAttributeValues[attr.key]"
+                [ngModelOptions]="{standalone: true}"
+                [placeholder]="attr.label"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent"
+                [class.border-red-500]="attr.isRequired && !isAttributeValid(attr.key)" />
+              <p *ngIf="attr.isRequired && !isAttributeValid(attr.key)" class="text-red-500 text-sm mt-1">
+                {{ attr.label }} is required
+              </p>
+            </div>
+
+            <!-- Boolean Checkbox -->
+            <div *ngIf="attr.dataType === 'BOOL'" class="form-group">
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  [(ngModel)]="dynamicAttributeValues[attr.key]"
+                  [ngModelOptions]="{standalone: true}"
+                  class="w-4 h-4 text-gray-900 border-gray-300 rounded focus:ring-gray-900" />
+                <span class="text-sm font-medium text-gray-700">
+                  {{ attr.label }}
+                  <span *ngIf="attr.isRequired" class="text-red-500">*</span>
+                </span>
+              </label>
+            </div>
+
+            <!-- Dropdown Select -->
+            <div *ngIf="attr.dataType === 'DROPDOWN'" class="form-group">
+              <label class="block text-sm font-medium text-gray-700 mb-2">
+                {{ attr.label }}
+                <span *ngIf="attr.isRequired" class="text-red-500">*</span>
+              </label>
+              <select
+                [(ngModel)]="dynamicAttributeValues[attr.key]"
+                [ngModelOptions]="{standalone: true}"
+                [disabled]="!attr.options || attr.options.length === 0"
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent"
+                [class.border-red-500]="attr.isRequired && !isAttributeValid(attr.key)"
+                [class.bg-gray-100]="!attr.options || attr.options.length === 0">
+                <option value="">{{ (!attr.options || attr.options.length === 0) ? 'No options available' : 'Select ' + attr.label }}</option>
+                <option *ngFor="let option of attr.options" [value]="option">{{ option }}</option>
+              </select>
+              <p *ngIf="!attr.options || attr.options.length === 0" class="text-amber-600 text-sm mt-1">
+                ⚠️ No options configured for this dropdown. Please edit the ticket type to add options.
+              </p>
+              <p *ngIf="attr.isRequired && !isAttributeValid(attr.key) && attr.options && attr.options.length > 0" class="text-red-500 text-sm mt-1">
+                {{ attr.label }} is required
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- Actions -->
       <div class="flex flex-col sm:flex-row gap-3 pt-4 border-t border-gray-200">
         <button
@@ -132,7 +199,7 @@
         </button>
         <button
           type="submit"
-          [disabled]="createForm.invalid || isSubmitting"
+          [disabled]="createForm.invalid || isSubmitting || !areAllAttributesValid()"
           class="flex-1 px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
           {{ isSubmitting ? 'Creating...' : 'Create Ticket' }}
         </button>
@@ -141,16 +208,16 @@
   </div>
 </div>
 
-<!-- Details Modal -->
-<div *ngIf="showDetailsModal && selectedTicket" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 overflow-y-auto">
-  <div class="bg-white rounded-lg shadow-xl max-w-4xl w-full my-8">
-    <div class="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 rounded-t-lg">
+<!-- Preview Modal (Concise) -->
+<div *ngIf="showPreviewModal && selectedTicket" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+  <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full">
+    <div class="border-b border-gray-200 px-6 py-4">
       <div class="flex items-center justify-between">
         <div>
           <h2 class="text-xl font-semibold text-gray-900">{{ selectedTicket.humanReadableId }}</h2>
           <p class="text-sm text-gray-600 mt-1">{{ selectedTicket.summary }}</p>
         </div>
-        <button (click)="closeDetailsModal()" class="text-gray-400 hover:text-gray-600">
+        <button (click)="closePreviewModal()" class="text-gray-400 hover:text-gray-600">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
           </svg>
@@ -158,12 +225,12 @@
       </div>
     </div>
 
-    <div class="p-6 space-y-6">
-      <!-- Status and Priority -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div class="p-6 space-y-4">
+      <!-- Metadata Grid -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div>
-          <label class="text-sm font-medium text-gray-500">Priority</label>
-          <p class="text-base font-semibold mt-1" [ngClass]="{
+          <label class="text-xs font-medium text-gray-500">Priority</label>
+          <p class="text-sm font-semibold mt-1" [ngClass]="{
             'text-red-600': selectedTicket.priority === 'CRITICAL',
             'text-orange-600': selectedTicket.priority === 'HIGH',
             'text-yellow-600': selectedTicket.priority === 'MEDIUM',
@@ -171,79 +238,45 @@
           }">{{ selectedTicket.priority }}</p>
         </div>
         <div>
-          <label class="text-sm font-medium text-gray-500">Current State</label>
-          <p class="text-base text-gray-900 mt-1">{{ selectedTicket.currentStateId }}</p>
+          <label class="text-xs font-medium text-gray-500">Status</label>
+          <p class="text-sm text-gray-900 mt-1">{{ selectedTicket.currentStateId }}</p>
         </div>
         <div>
-          <label class="text-sm font-medium text-gray-500">Channel</label>
-          <p class="text-base text-gray-900 mt-1">{{ selectedTicket.reporter.channelSource }}</p>
+          <label class="text-xs font-medium text-gray-500">Created</label>
+          <p class="text-sm text-gray-900 mt-1">{{ selectedTicket.auditMetadata?.createdAt | date:'short' }}</p>
+        </div>
+        <div>
+          <label class="text-xs font-medium text-gray-500">Reporter</label>
+          <p class="text-sm text-gray-900 mt-1">{{ selectedTicket.reporter.userId }}</p>
         </div>
       </div>
 
-      <!-- Timestamps -->
-      <div class="pt-4 border-t border-gray-200">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-          <div>
-            <span class="text-gray-500">Created:</span>
-            <span class="text-gray-900 ml-2">{{ selectedTicket.auditMetadata.createdAt | date: 'short' }}</span>
-          </div>
-          <div>
-            <span class="text-gray-500">Updated:</span>
-            <span class="text-gray-900 ml-2">{{ selectedTicket.auditMetadata.updatedAt | date: 'short' }}</span>
-          </div>
-          <div *ngIf="selectedTicket.auditMetadata.resolvedAt">
-            <span class="text-gray-500">Resolved:</span>
-            <span class="text-gray-900 ml-2">{{ selectedTicket.auditMetadata.resolvedAt | date: 'short' }}</span>
+      <!-- Ticket Type -->
+      <div>
+        <label class="text-xs font-medium text-gray-500">Type</label>
+        <p class="text-sm text-gray-900 mt-1">{{ previewTicketType?.name || 'Loading...' }}</p>
+      </div>
+
+      <!-- Custom Attributes -->
+      <div *ngIf="getAttributeKeys(selectedTicket.attributes).length > 0" class="border-t border-gray-200 pt-4">
+        <label class="text-xs font-medium text-gray-500 block mb-2">Additional Information</label>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div *ngFor="let key of getAttributeKeys(selectedTicket.attributes)">
+            <span class="text-xs text-gray-500">{{ getAttributeLabel(key) }}:</span>
+            <span class="text-sm text-gray-900 ml-2">{{ formatAttributeValue(selectedTicket.attributes[key]) }}</span>
           </div>
         </div>
       </div>
 
-      <!-- Conversation -->
+      <!-- Action Button -->
       <div class="pt-4 border-t border-gray-200">
-        <h3 class="text-lg font-semibold text-gray-900 mb-4">Conversation</h3>
-        <div class="space-y-4 max-h-96 overflow-y-auto">
-          <div *ngFor="let message of messages" class="p-4 bg-gray-50 rounded-lg">
-            <div class="flex items-start justify-between mb-2">
-              <span class="font-medium text-gray-900">{{ message.senderType }}</span>
-              <span class="text-xs text-gray-500">{{ message.timestamp | date: 'short' }}</span>
-            </div>
-            <p class="text-gray-700">{{ message.content }}</p>
-            <span *ngIf="message.isInternalNote" class="inline-block mt-2 px-2 py-1 text-xs bg-yellow-100 text-yellow-800 rounded">
-              Internal Note
-            </span>
-          </div>
-          <div *ngIf="messages.length === 0" class="text-center text-gray-500 py-8">
-            No messages yet
-          </div>
-        </div>
-
-        <!-- Add Message Form -->
-        <form [formGroup]="messageForm" (ngSubmit)="onSubmitMessage()" class="mt-4">
-          <div class="space-y-3">
-            <textarea
-              formControlName="content"
-              rows="3"
-              placeholder="Add a message..."
-              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent resize-none">
-            </textarea>
-            <div class="flex items-center justify-between">
-              <label class="flex items-center">
-                <input
-                  type="checkbox"
-                  formControlName="isInternalNote"
-                  class="w-4 h-4 text-gray-900 border-gray-300 rounded focus:ring-gray-900">
-                <span class="ml-2 text-sm text-gray-700">Internal note</span>
-              </label>
-              <button
-                type="submit"
-                [disabled]="messageForm.invalid || isSubmittingMessage"
-                class="px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
-                {{ isSubmittingMessage ? 'Sending...' : 'Send Message' }}
-              </button>
-            </div>
-          </div>
-        </form>
+        <button
+          (click)="openFullTicket()"
+          class="w-full px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors">
+          Open Full Ticket
+        </button>
       </div>
     </div>
   </div>
 </div>
+

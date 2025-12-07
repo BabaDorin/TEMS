@@ -1,4 +1,5 @@
 using MediatR;
+using Tems.Common.Tenant;
 using TicketManagement.Application.Interfaces;
 using TicketManagement.Contract.Commands.TicketTypes;
 using TicketManagement.Contract.Responses;
@@ -8,15 +9,17 @@ namespace TicketManagement.Application.Commands.TicketTypes;
 public class GetAllTicketTypesCommandHandler : IRequestHandler<GetAllTicketTypesCommand, GetAllTicketTypesResponse>
 {
     private readonly ITicketTypeRepository _repository;
+    private readonly ITenantContext _tenantContext;
 
-    public GetAllTicketTypesCommandHandler(ITicketTypeRepository repository)
+    public GetAllTicketTypesCommandHandler(ITicketTypeRepository repository, ITenantContext tenantContext)
     {
         _repository = repository;
+        _tenantContext = tenantContext;
     }
 
     public async Task<GetAllTicketTypesResponse> Handle(GetAllTicketTypesCommand request, CancellationToken cancellationToken)
     {
-        var ticketTypes = await _repository.GetAllAsync(request.TenantId, cancellationToken);
+        var ticketTypes = await _repository.GetAllAsync(_tenantContext.TenantId, cancellationToken);
 
         var response = ticketTypes.Select(tt => new GetTicketTypeResponse(
             tt.TicketTypeId,
@@ -41,6 +44,7 @@ public class GetAllTicketTypesCommandHandler : IRequestHandler<GetAllTicketTypes
                 a.DataType,
                 a.IsRequired,
                 a.IsPredefined,
+                a.Options,
                 a.AiExtractionHint,
                 a.ValidationRule
             )).ToList(),

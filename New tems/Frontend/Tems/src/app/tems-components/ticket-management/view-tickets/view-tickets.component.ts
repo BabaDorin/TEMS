@@ -1,12 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+import { FormBuilder, FormGroup, ReactiveFormsModule, FormsModule, Validators } from '@angular/forms';
 import { AgGridAngular } from 'ag-grid-angular';
 import { ColDef, GridApi, GridReadyEvent } from 'ag-grid-community';
 import { TicketService } from 'src/app/services/ticket.service';
 import { TicketTypeService } from 'src/app/services/ticket-type.service';
 import { Ticket, CreateTicketRequest, TicketMessage, AddMessageRequest } from 'src/app/models/ticket/ticket.model';
 import { TicketType } from 'src/app/models/ticket/ticket-type.model';
+import { TicketManagementStateService } from 'src/app/state/ticket-management.state';
 
 @Component({
   selector: 'app-view-tickets',
@@ -14,6 +16,7 @@ import { TicketType } from 'src/app/models/ticket/ticket-type.model';
   imports: [
     CommonModule,
     ReactiveFormsModule,
+    FormsModule,
     AgGridAngular
   ],
   templateUrl: './view-tickets.component.html',
@@ -22,15 +25,15 @@ import { TicketType } from 'src/app/models/ticket/ticket-type.model';
 export class ViewTicketsComponent implements OnInit {
   rowData: Ticket[] = [];
   ticketTypes: TicketType[] = [];
+  selectedTicketType: TicketType | null = null;
+  dynamicAttributeValues: { [key: string]: any } = {};
   gridApi!: GridApi;
   showCreateModal = false;
-  showDetailsModal = false;
+  showPreviewModal = false;
   selectedTicket: Ticket | null = null;
-  messages: TicketMessage[] = [];
+  previewTicketType: TicketType | null = null;
   createForm!: FormGroup;
-  messageForm!: FormGroup;
   isSubmitting = false;
-  isSubmittingMessage = false;
   gridReady = false;
 
   priorities = [
@@ -92,19 +95,26 @@ export class ViewTicketsComponent implements OnInit {
     },
     {
       headerName: 'Actions',
-      flex: 0.7,
-      minWidth: 100,
+      flex: 1,
+      minWidth: 150,
       cellRenderer: (params: any) => {
         return `
-          <button class="action-delete-btn px-2 py-1 text-red-600 hover:text-red-800 text-sm">
-            Delete
-          </button>
+          <div class="flex gap-2">
+            <button class="action-preview-btn px-2 py-1 text-blue-600 hover:text-blue-800 text-sm">
+              Preview
+            </button>
+            <button class="action-delete-btn px-2 py-1 text-red-600 hover:text-red-800 text-sm">
+              Delete
+            </button>
+          </div>
         `;
       },
       onCellClicked: (params) => {
         const target = params.event?.target as HTMLElement;
         if (target.classList.contains('action-delete-btn')) {
           this.deleteTicket(params.data.ticketId);
+        } else if (target.classList.contains('action-preview-btn')) {
+          this.openPreviewModal(params.data);
         }
       }
     }
@@ -120,20 +130,36 @@ export class ViewTicketsComponent implements OnInit {
   constructor(
     private ticketService: TicketService,
     private ticketTypeService: TicketTypeService,
-    private fb: FormBuilder
+    private stateService: TicketManagementStateService,
+    private fb: FormBuilder,
+    private router: Router
   ) {
     this.initializeForms();
+    
+    // React to tickets state changes
+    effect(() => {
+      const tickets = this.stateService.tickets();
+      this.rowData = tickets || [];
+      if (this.gridApi) {
+        this.gridApi.sizeColumnsToFit();
+        if (this.rowData.length === 0) {
+          this.gridApi.showNoRowsOverlay();
+        }
+      }
+    });
+    
+    // React to ticket types state changes
+    effect(() => {
+      const ticketTypes = this.stateService.ticketTypes();
+      // Filter by isActive only if the property exists (backend may not return it)
+      this.ticketTypes = ticketTypes?.filter(t => t.isActive !== false) || [];
+    });
   }
 
   ngOnInit(): void {
-    // Initialize with empty arrays to ensure grid displays
-    this.rowData = [];
-    this.ticketTypes = [];
-    // Try to load data, but grid will show even if this fails
-    setTimeout(() => {
-      this.loadTickets();
-      this.loadTicketTypes();
-    }, 100);
+    // Load data only if not already cached
+    this.loadTickets();
+    this.loadTicketTypes();
   }
 
   initializeForms(): void {
@@ -143,41 +169,16 @@ export class ViewTicketsComponent implements OnInit {
       priority: ['MEDIUM', Validators.required],
       channelSource: ['WEB', Validators.required]
     });
-
-    this.messageForm = this.fb.group({
-      content: ['', Validators.required],
-      isInternalNote: [false]
-    });
   }
 
   loadTickets(): void {
-    this.ticketService.getAll().subscribe({
-      next: (data) => {
-        this.rowData = data || [];
-        if (this.gridApi) {
-          this.gridApi.sizeColumnsToFit();
-        }
-      },
-      error: (error) => {
-        console.error('Error loading tickets:', error);
-        this.rowData = [];
-        if (this.gridApi) {
-          this.gridApi.sizeColumnsToFit();
-        }
-      }
-    });
+    // The service will return cached data if available
+    this.ticketService.getAll().subscribe();
   }
 
   loadTicketTypes(): void {
-    this.ticketTypeService.getAll().subscribe({
-      next: (data) => {
-        this.ticketTypes = data?.filter(t => t.isActive) || [];
-      },
-      error: (error) => {
-        console.error('Error loading ticket types:', error);
-        this.ticketTypes = [];
-      }
-    });
+    // The service will return cached data if available
+    this.ticketTypeService.getAll().subscribe();
   }
 
   onGridReady(params: GridReadyEvent): void {
@@ -193,24 +194,72 @@ export class ViewTicketsComponent implements OnInit {
 
   onRowClicked(event: any): void {
     const target = event.event?.target as HTMLElement;
-    if (!target.classList.contains('action-delete-btn')) {
-      this.selectedTicket = event.data;
-      this.loadMessages(event.data.ticketId);
-      this.showDetailsModal = true;
+    if (!target.classList.contains('action-delete-btn') && !target.classList.contains('action-preview-btn')) {
+      // Navigate to ticket detail page when clicking on the row
+      this.router.navigate(['/technical-support/tickets', event.data.ticketId]);
     }
   }
 
-  loadMessages(ticketId: string): void {
-    this.ticketService.getMessages(ticketId).subscribe({
-      next: (conversation) => {
-        this.messages = conversation.messages || [];
-      },
-      error: (error) => {
-        console.error('Error loading messages:', error);
-        this.messages = [];
-      }
-    });
+  openPreviewModal(ticket: Ticket): void {
+    this.selectedTicket = ticket;
+    this.loadPreviewTicketType(ticket.ticketTypeId);
+    this.showPreviewModal = true;
   }
+
+  closePreviewModal(): void {
+    this.showPreviewModal = false;
+    this.selectedTicket = null;
+    this.previewTicketType = null;
+  }
+
+  loadPreviewTicketType(ticketTypeId: string): void {
+    const ticketType = this.ticketTypes.find(tt => tt.ticketTypeId === ticketTypeId);
+    if (ticketType) {
+      this.previewTicketType = ticketType;
+    } else {
+      // Load from API if not in cache
+      this.ticketTypeService.getById(ticketTypeId).subscribe({
+        next: (type) => {
+          this.previewTicketType = type;
+        },
+        error: (error) => {
+          console.error('Error loading ticket type:', error);
+        }
+      });
+    }
+  }
+
+  openFullTicket(): void {
+    if (this.selectedTicket) {
+      const ticketId = this.selectedTicket.ticketId;
+      console.log('Navigating to ticket:', ticketId);
+      this.closePreviewModal();
+      this.router.navigate(['/technical-support/tickets', ticketId])
+        .then(() => console.log('Navigation successful'))
+        .catch(err => console.error('Navigation error:', err));
+    }
+  }
+
+  getAttributeKeys(attributes: { [key: string]: any }): string[] {
+    return Object.keys(attributes || {});
+  }
+
+  getAttributeLabel(key: string): string {
+    const attr = this.previewTicketType?.attributeDefinitions?.find(a => a.key === key);
+    return attr?.label || key;
+  }
+
+  formatAttributeValue(value: any): string {
+    if (typeof value === 'boolean') {
+      return value ? 'Yes' : 'No';
+    }
+    if (value === null || value === undefined) {
+      return 'N/A';
+    }
+    return String(value);
+  }
+
+
 
   openCreateModal(): void {
     this.showCreateModal = true;
@@ -218,22 +267,62 @@ export class ViewTicketsComponent implements OnInit {
       priority: 'MEDIUM',
       channelSource: 'WEB'
     });
+    this.selectedTicketType = null;
+    this.dynamicAttributeValues = {};
+    
+    // Ensure ticket types are loaded
+    if (this.ticketTypes.length === 0) {
+      this.loadTicketTypes();
+    }
   }
 
   closeCreateModal(): void {
     this.showCreateModal = false;
     this.createForm.reset();
+    this.selectedTicketType = null;
+    this.dynamicAttributeValues = {};
   }
 
-  closeDetailsModal(): void {
-    this.showDetailsModal = false;
-    this.selectedTicket = null;
-    this.messages = [];
-    this.messageForm.reset({ isInternalNote: false });
+  onTicketTypeChange(ticketTypeId: string): void {
+    this.selectedTicketType = this.ticketTypes.find(tt => tt.ticketTypeId === ticketTypeId) || null;
+    this.dynamicAttributeValues = {};
+    
+    if (this.selectedTicketType?.attributeDefinitions) {
+      this.selectedTicketType.attributeDefinitions.forEach(attr => {
+        if (attr.dataType === 'BOOL') {
+          this.dynamicAttributeValues[attr.key] = false;
+        } else {
+          this.dynamicAttributeValues[attr.key] = '';
+        }
+      });
+    }
   }
+
+  isAttributeValid(key: string): boolean {
+    const attr = this.selectedTicketType?.attributeDefinitions.find(a => a.key === key);
+    if (!attr || !attr.isRequired) {
+      return true;
+    }
+    const value = this.dynamicAttributeValues[key];
+    if (attr.dataType === 'BOOL') {
+      return value !== undefined && value !== null;
+    }
+    return value !== '' && value !== null && value !== undefined;
+  }
+
+  areAllAttributesValid(): boolean {
+    if (!this.selectedTicketType?.attributeDefinitions) {
+      return true;
+    }
+    return this.selectedTicketType.attributeDefinitions
+      .filter(attr => attr.isRequired)
+      .every(attr => this.isAttributeValid(attr.key));
+  }
+
+
 
   onSubmit(): void {
-    if (this.createForm.invalid || this.isSubmitting) {
+    if (this.createForm.invalid || this.isSubmitting || !this.areAllAttributesValid()) {
       return;
     }
 
@@ -248,13 +337,14 @@ export class ViewTicketsComponent implements OnInit {
         userId: 'current-user-id', // TODO: Get from auth service
         channelSource: formValue.channelSource
       },
-      attributes: {}
+      attributes: this.dynamicAttributeValues
     };
 
     this.ticketService.create(request).subscribe({
       next: (response) => {
         console.log('Ticket created:', response);
-        this.loadTickets();
+        // Reload data from API (will update state)
+        this.ticketService.getAll(true).subscribe();
         this.closeCreateModal();
         this.isSubmitting = false;
       },
@@ -265,34 +355,7 @@ export class ViewTicketsComponent implements OnInit {
     });
   }
 
-  onSubmitMessage(): void {
-    if (this.messageForm.invalid || this.isSubmittingMessage || !this.selectedTicket) {
-      return;
-    }
 
-    this.isSubmittingMessage = true;
-    const formValue = this.messageForm.value;
-
-    const request: AddMessageRequest = {
-      senderType: 'USER',
-      senderId: 'current-user-id', // TODO: Get from auth service
-      content: formValue.content,
-      isInternalNote: formValue.isInternalNote
-    };
-
-    this.ticketService.addMessage(this.selectedTicket.ticketId, request).subscribe({
-      next: () => {
-        console.log('Message added');
-        this.loadMessages(this.selectedTicket!.ticketId);
-        this.messageForm.reset({ isInternalNote: false });
-        this.isSubmittingMessage = false;
-      },
-      error: (error) => {
-        console.error('Error adding message:', error);
-        this.isSubmittingMessage = false;
-      }
-    });
-  }
 
   deleteTicket(id: string): void {
     if (!confirm('Are you sure you want to delete this ticket?')) {
@@ -302,7 +365,7 @@ export class ViewTicketsComponent implements OnInit {
     this.ticketService.delete(id).subscribe({
       next: () => {
         console.log('Ticket deleted');
-        this.loadTickets();
+        // State is automatically updated by the service
       },
       error: (error) => {
         console.error('Error deleting ticket:', error);

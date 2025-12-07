@@ -4,7 +4,6 @@ using TicketManagement.Contract.Responses;
 namespace TicketManagement.Contract.Commands.Tickets;
 
 public record CreateTicketCommand(
-    string TenantId,
     string TicketTypeId,
     string Summary,
     string Priority,

@@ -6,11 +6,10 @@ namespace TicketManagement.Contract.Commands.TicketTypes;
 
 public record UpdateTicketTypeCommand(
     string TicketTypeId,
-    string TenantId,
     string Name,
     string Description,
     string ItilCategory,
     int Version,
-    WorkflowConfigDto WorkflowConfig,
-    List<AttributeDefinitionDto> AttributeDefinitions
+    WorkflowConfigDto? WorkflowConfig,
+    List<AttributeDefinitionDto>? AttributeDefinitions
 ) : IRequest<UpdateTicketTypeResponse>;

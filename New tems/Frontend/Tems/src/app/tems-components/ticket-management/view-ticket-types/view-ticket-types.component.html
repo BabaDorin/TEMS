@@ -116,6 +116,13 @@
         </p>
       </div>
 
+      <!-- Attributes Section -->
+      <div class="border-t border-gray-200 pt-6">
+        <app-attribute-builder 
+          [(attributes)]="attributeDefinitions">
+        </app-attribute-builder>
+      </div>
+
       <!-- Actions -->
       <div class="flex flex-col sm:flex-row gap-3 pt-4 border-t border-gray-200">
         <button
@@ -215,6 +222,15 @@
               <div class="flex-1">
                 <p class="font-medium text-gray-900">{{ attr.label }}</p>
                 <p class="text-sm text-gray-600">Key: {{ attr.key }} | Type: {{ attr.dataType }}</p>
+                <div *ngIf="attr.dataType === 'DROPDOWN' && attr.options && attr.options.length > 0" class="mt-2">
+                  <p class="text-xs text-gray-500 mb-1">Options:</p>
+                  <div class="flex flex-wrap gap-1">
+                    <span *ngFor="let option of attr.options" 
+                      class="px-2 py-1 text-xs bg-white border border-gray-300 rounded">
+                      {{ option }}
+                    </span>
+                  </div>
+                </div>
               </div>
               <span *ngIf="attr.isRequired" class="px-2 py-1 text-xs font-medium bg-gray-900 text-white rounded">
                 Required

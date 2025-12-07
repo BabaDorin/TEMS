@@ -7,7 +7,7 @@
   style="will-change: width, opacity;"
   id="sidebar">
   <div class="py-4 px-3">
-    <ul class="space-y-1" *ngIf="menuService.ROUTES != undefined">
+    <ul class="space-y-1 !pl-0" *ngIf="menuService.ROUTES != undefined">
       <li *ngFor="let sidebarNavItem of menuService.ROUTES">
         <!-- Menu item with submenu -->
         <div *ngIf="sidebarNavItem.isShown && sidebarNavItem.submenu.length != 0">

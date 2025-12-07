@@ -42,6 +42,7 @@ public record AttributeDefinitionResponse(
     string DataType,
     bool IsRequired,
     bool IsPredefined,
+    List<string>? Options,
     string? AiExtractionHint,
     string? ValidationRule
 );

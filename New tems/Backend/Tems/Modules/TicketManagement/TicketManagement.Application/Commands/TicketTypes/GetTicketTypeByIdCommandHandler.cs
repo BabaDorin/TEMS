@@ -1,4 +1,5 @@
 using MediatR;
+using Tems.Common.Tenant;
 using TicketManagement.Application.Interfaces;
 using TicketManagement.Contract.Commands.TicketTypes;
 using TicketManagement.Contract.Responses;
@@ -8,15 +9,17 @@ namespace TicketManagement.Application.Commands.TicketTypes;
 public class GetTicketTypeByIdCommandHandler : IRequestHandler<GetTicketTypeByIdCommand, GetTicketTypeResponse>
 {
     private readonly ITicketTypeRepository _repository;
+    private readonly ITenantContext _tenantContext;
 
-    public GetTicketTypeByIdCommandHandler(ITicketTypeRepository repository)
+    public GetTicketTypeByIdCommandHandler(ITicketTypeRepository repository, ITenantContext tenantContext)
     {
         _repository = repository;
+        _tenantContext = tenantContext;
     }
 
     public async Task<GetTicketTypeResponse> Handle(GetTicketTypeByIdCommand request, CancellationToken cancellationToken)
     {
-        var ticketType = await _repository.GetByIdAsync(request.TicketTypeId, request.TenantId, cancellationToken);
+        var ticketType = await _repository.GetByIdAsync(request.TicketTypeId, _tenantContext.TenantId, cancellationToken);
 
         if (ticketType == null)
             throw new KeyNotFoundException($"TicketType with ID {request.TicketTypeId} not found");
@@ -44,6 +47,7 @@ public class GetTicketTypeByIdCommandHandler : IRequestHandler<GetTicketTypeById
                 a.DataType,
                 a.IsRequired,
                 a.IsPredefined,
+                a.Options,
                 a.AiExtractionHint,
                 a.ValidationRule
             )).ToList(),

@@ -3,6 +3,4 @@ using TicketManagement.Contract.Responses;
 
 namespace TicketManagement.Contract.Commands.Tickets;
 
-public record GetAllTicketsCommand(
-    string TenantId
-) : IRequest<GetAllTicketsResponse>;
+public record GetAllTicketsCommand() : IRequest<GetAllTicketsResponse>;

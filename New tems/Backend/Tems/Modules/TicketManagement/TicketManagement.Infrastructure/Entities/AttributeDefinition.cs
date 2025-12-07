@@ -19,6 +19,10 @@ public class AttributeDefinition
     [BsonElement("is_predefined")]
     public bool IsPredefined { get; set; }
 
+    [BsonElement("options")]
+    [BsonIgnoreIfNull]
+    public List<string>? Options { get; set; }
+
     [BsonElement("ai_extraction_hint")]
     [BsonIgnoreIfNull]
     public string? AiExtractionHint { get; set; }

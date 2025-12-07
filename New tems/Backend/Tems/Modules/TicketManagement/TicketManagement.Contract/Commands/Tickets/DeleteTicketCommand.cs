@@ -4,6 +4,5 @@ using TicketManagement.Contract.Responses;
 namespace TicketManagement.Contract.Commands.Tickets;
 
 public record DeleteTicketCommand(
-    string TicketId,
-    string TenantId
+    string TicketId
 ) : IRequest<DeleteTicketResponse>;

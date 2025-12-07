@@ -4,13 +4,12 @@ using TicketManagement.Contract.Responses;
 namespace TicketManagement.Contract.Commands.TicketTypes;
 
 public record CreateTicketTypeCommand(
-    string TenantId,
     string Name,
     string Description,
     string ItilCategory,
     int Version,
-    WorkflowConfigDto WorkflowConfig,
-    List<AttributeDefinitionDto> AttributeDefinitions
+    WorkflowConfigDto? WorkflowConfig,
+    List<AttributeDefinitionDto>? AttributeDefinitions
 ) : IRequest<CreateTicketTypeResponse>;
 
 public record WorkflowConfigDto(
@@ -32,6 +31,7 @@ public record AttributeDefinitionDto(
     string DataType,
     bool IsRequired,
     bool IsPredefined,
+    List<string>? Options,
     string? AiExtractionHint,
     string? ValidationRule
 );

@@ -7,7 +7,7 @@ export interface TicketType {
   version: number;
   workflowConfig: WorkflowConfig;
   attributeDefinitions: AttributeDefinition[];
-  isActive: boolean;
+  isActive?: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -28,8 +28,10 @@ export interface WorkflowState {
 export interface AttributeDefinition {
   key: string;
   label: string;
-  dataType: 'STRING' | 'NUMBER' | 'BOOL' | 'DATE' | 'USER' | 'ASSET_REF';
+  dataType: 'STRING' | 'NUMBER' | 'BOOL' | 'DATE' | 'USER' | 'ASSET_REF' | 'DROPDOWN';
   isRequired: boolean;
+  isPredefined?: boolean;
+  options?: string[];
   aiExtractionHint?: string;
   validationRule?: string;
 }

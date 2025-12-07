@@ -1,4 +1,5 @@
 using MediatR;
+using Tems.Common.Tenant;
 using TicketManagement.Application.Domain;
 using TicketManagement.Application.Interfaces;
 using TicketManagement.Contract.Commands.TicketTypes;
@@ -9,15 +10,17 @@ namespace TicketManagement.Application.Commands.TicketTypes;
 public class UpdateTicketTypeCommandHandler : IRequestHandler<UpdateTicketTypeCommand, UpdateTicketTypeResponse>
 {
     private readonly ITicketTypeRepository _repository;
+    private readonly ITenantContext _tenantContext;
 
-    public UpdateTicketTypeCommandHandler(ITicketTypeRepository repository)
+    public UpdateTicketTypeCommandHandler(ITicketTypeRepository repository, ITenantContext tenantContext)
     {
         _repository = repository;
+        _tenantContext = tenantContext;
     }
 
     public async Task<UpdateTicketTypeResponse> Handle(UpdateTicketTypeCommand request, CancellationToken cancellationToken)
     {
-        var existing = await _repository.GetByIdAsync(request.TicketTypeId, request.TenantId, cancellationToken);
+        var existing = await _repository.GetByIdAsync(request.TicketTypeId, _tenantContext.TenantId, cancellationToken);
         if (existing == null)
             throw new KeyNotFoundException($"TicketType with ID {request.TicketTypeId} not found");
 
@@ -44,6 +47,7 @@ public class UpdateTicketTypeCommandHandler : IRequestHandler<UpdateTicketTypeCo
             DataType = a.DataType.ToUpper(),
             IsRequired = a.IsRequired,
             IsPredefined = a.IsPredefined,
+            Options = a.Options,
             AiExtractionHint = a.AiExtractionHint,
             ValidationRule = a.ValidationRule
         }).ToList();

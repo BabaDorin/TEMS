@@ -1,0 +1,39 @@
+<div class="min-h-screen bg-gray-50 p-4 md:p-6 lg:p-8">
+  <div class="max-w-7xl mx-auto">
+    <!-- Header -->
+    <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div>
+          <h1 class="text-2xl font-semibold text-gray-900">Tickets</h1>
+          <p class="text-sm text-gray-600 mt-1">Manage and track support tickets</p>
+        </div>
+        <button
+          (click)="openCreateModal()"
+          class="inline-flex items-center justify-center px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors">
+          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+          </svg>
+          Create Ticket
+        </button>
+      </div>
+    </div>
+
+    <!-- AG Grid -->
+    <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+      <div class="ag-theme-quartz w-full" style="height: calc(100vh - 280px);">
+        <ag-grid-angular
+          class="w-full h-full"
+          [rowData]="rowData"
+          [columnDefs]="columnDefs"
+          [defaultColDef]="defaultColDef"
+          [pagination]="true"
+          [paginationPageSize]="50"
+          [rowSelection]="'single'"
+          [overlayNoRowsTemplate]="'<span class=\'ag-overlay-no-rows-center\'>No tickets found</span>'"
+          (gridReady)="onGridReady($event)"
+          (rowClicked)="onRowClicked($event)">
+        </ag-grid-angular>
+      </div>
+    </div>
+  </div>
+</div>

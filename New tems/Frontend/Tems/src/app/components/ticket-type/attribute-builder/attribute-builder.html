@@ -1,0 +1,96 @@
+<div class="attribute-builder">
+  <div class="attributes-header">
+    <h3>Attributes</h3>
+    <button type="button" class="add-button" (click)="addAttribute()" [disabled]="attributes.length >= 50">
+      <span class="plus-icon">+</span>
+      Add Attribute
+    </button>
+  </div>
+
+  <div class="attributes-count" *ngIf="attributes.length > 0">
+    {{ attributes.length }} / 50 attributes
+  </div>
+
+  <div class="attributes-list">
+    <div *ngFor="let attribute of attributes; let i = index; trackBy: trackByIndex" class="attribute-item">
+      <div class="attribute-header">
+        <span class="attribute-number">{{ i + 1 }}</span>
+        <button type="button" class="delete-button" (click)="removeAttribute(i)">×</button>
+      </div>
+
+      <div class="attribute-fields">
+        <div class="form-group">
+          <label>Key</label>
+          <input 
+            type="text" 
+            [(ngModel)]="attribute.key" 
+            (ngModelChange)="onAttributeChange()"
+            placeholder="e.g., priority, category"
+            class="form-control" 
+            required />
+        </div>
+
+        <div class="form-group">
+          <label>Label</label>
+          <input 
+            type="text" 
+            [(ngModel)]="attribute.label" 
+            (ngModelChange)="onAttributeChange()"
+            placeholder="e.g., Priority, Category"
+            class="form-control" 
+            required />
+        </div>
+
+        <div class="form-group">
+          <label>Data Type</label>
+          <select 
+            [(ngModel)]="attribute.dataType" 
+            (ngModelChange)="onDataTypeChange(attribute)"
+            class="form-control" 
+            required>
+            <option *ngFor="let type of dataTypes" [value]="type.value">{{ type.label }}</option>
+          </select>
+        </div>
+
+        <div class="form-group checkbox-group">
+          <label>
+            <input 
+              type="checkbox" 
+              [(ngModel)]="attribute.isRequired"
+              (ngModelChange)="onAttributeChange()" />
+            <span>Mandatory</span>
+          </label>
+        </div>
+      </div>
+
+      <div *ngIf="attribute.dataType === 'DROPDOWN'" class="options-section">
+        <div class="options-header">
+          <label>Options <span style="color: red;">*</span></label>
+          <button type="button" class="add-option-button" (click)="addOption(attribute)">
+            + Add Option
+          </button>
+        </div>
+        
+        <div class="options-list">
+          <div *ngFor="let option of attribute.options; let optIdx = index; trackBy: trackByIndex" class="option-item">
+            <input 
+              type="text" 
+              [(ngModel)]="attribute.options![optIdx]"
+              (ngModelChange)="onAttributeChange()"
+              placeholder="Option value"
+              class="form-control option-input" />
+            <button type="button" class="remove-option-button" (click)="removeOption(attribute, optIdx)">×</button>
+          </div>
+        </div>
+        
+        <div *ngIf="!attribute.options || attribute.options.length === 0" style="color: red; font-size: 12px; margin-top: 8px;">
+          ⚠️ At least one option is required for dropdown attributes
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="attributes.length === 0" class="empty-state">
+    No attributes defined. Click "Add Attribute" to create one.
+  </div>
+</div>

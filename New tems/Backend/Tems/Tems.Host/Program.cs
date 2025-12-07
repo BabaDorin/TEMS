@@ -3,6 +3,8 @@ using FastEndpoints;
 using FastEndpoints.Swagger;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Tems.Common.Tenant;
+using Tems.Host.Middleware;
 using TicketManagement.API;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,6 +15,9 @@ if (!builder.Environment.IsProduction())
     builder.Environment.EnvironmentName = "Development";
     builder.Configuration.AddJsonFile("appsettings.Development.json", optional: false, reloadOnChange: true);
 }
+
+// Register Tenant Context as scoped
+builder.Services.AddScoped<ITenantContext, TenantContext>();
 
 // Add modules first
 // builder.Services.AddExampleServices(builder.Configuration);
@@ -94,6 +99,7 @@ var app = builder.Build();
 
 app.UseHttpsRedirection();
 app.UseCors();
+app.UseTenantMiddleware();
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseFastEndpoints();

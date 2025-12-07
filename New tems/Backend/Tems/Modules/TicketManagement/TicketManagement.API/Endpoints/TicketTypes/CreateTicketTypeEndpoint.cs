@@ -23,6 +23,6 @@ public class CreateTicketTypeEndpoint : Endpoint<CreateTicketTypeCommand, Create
     public override async Task HandleAsync(CreateTicketTypeCommand request, CancellationToken ct)
     {
         var response = await _mediator.Send(request, ct);
-        await SendAsync(response, 201, ct);
+        await Send.OkAsync(response, cancellation: ct);
     }
 }

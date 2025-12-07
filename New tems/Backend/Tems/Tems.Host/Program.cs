@@ -3,7 +3,6 @@ using FastEndpoints;
 using FastEndpoints.Swagger;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using Tems.Example.API;
 using TicketManagement.API;
 
 var builder = WebApplication.CreateBuilder(args);

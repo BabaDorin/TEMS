@@ -23,6 +23,6 @@ public class DeleteTicketTypeEndpoint : Endpoint<DeleteTicketTypeCommand, Delete
     public override async Task HandleAsync(DeleteTicketTypeCommand request, CancellationToken ct)
     {
         var response = await _mediator.Send(request, ct);
-        await SendAsync(response, 200, ct);
+        await Send.OkAsync(response, cancellation: ct);
     }
 }

@@ -17,6 +17,6 @@ public class GetWeatherForecastEndpoint(IMediator mediator) : EndpointWithoutReq
         var query = new GetWeatherForecastQuery();
         var result = await mediator.Send(query, ct);
         
-        await SendAsync(result, cancellation: ct);
+        await Send.OkAsync(result, cancellation: ct);
     }
 }

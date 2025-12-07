@@ -5,15 +5,8 @@ using TicketManagement.Contract.Responses;
 
 namespace TicketManagement.API.Endpoints.Tickets;
 
-public class AddTicketMessageEndpoint : Endpoint<AddTicketMessageCommand, AddTicketMessageResponse>
+public class AddTicketMessageEndpoint(IMediator mediator) : Endpoint<AddTicketMessageCommand, AddTicketMessageResponse>
 {
-    private readonly IMediator _mediator;
-
-    public AddTicketMessageEndpoint(IMediator mediator)
-    {
-        _mediator = mediator;
-    }
-
     public override void Configure()
     {
         Post("/tickets/{TicketId}/messages");
@@ -22,7 +15,7 @@ public class AddTicketMessageEndpoint : Endpoint<AddTicketMessageCommand, AddTic
 
     public override async Task HandleAsync(AddTicketMessageCommand request, CancellationToken ct)
     {
-        var response = await _mediator.Send(request, ct);
-        await SendAsync(response, 201, ct);
+        var response = await mediator.Send(request, ct);
+        await Send.OkAsync(response, cancellation: ct);
     }
 }

@@ -76,6 +76,17 @@ export const routes: Routes = [
     ]
   },
   
+  // Technical Support
+  {
+    path: 'technical-support',
+    children: [
+      { path: '', redirectTo: 'tickets', pathMatch: 'full' },
+      { path: 'ticket-types', loadComponent: () => import('./tems-components/ticket-management/view-ticket-types/view-ticket-types.component').then(m => m.ViewTicketTypesComponent) },
+      { path: 'tickets', loadComponent: () => import('./tems-components/ticket-management/view-tickets/view-tickets.component').then(m => m.ViewTicketsComponent) },
+      { path: 'tickets/:id', loadComponent: () => import('./tems-components/ticket-management/ticket-detail/ticket-detail.component').then(m => m.TicketDetailComponent) },
+    ]
+  },
+  
   // Analytics
   {
     path: 'analytics',

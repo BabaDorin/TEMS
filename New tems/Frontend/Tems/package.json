@@ -6,7 +6,14 @@
     "start": "ng serve",
     "build": "ng build",
     "test": "ng test",
-    "lint": "ng lint"
+    "lint": "ng lint",
+    "e2e": "playwright test",
+    "e2e:headed": "playwright test --headed",
+    "e2e:debug": "playwright test --debug",
+    "e2e:ui": "playwright test --ui",
+    "e2e:report": "playwright show-report",
+    "e2e:ticket-types": "playwright test e2e/ticket-management/ticket-types.spec.ts",
+    "e2e:tickets": "playwright test e2e/ticket-management/tickets.spec.ts"
   },
   "private": true,
   "dependencies": {
@@ -51,6 +58,7 @@
     "@angular/compiler-cli": "^20.0.0",
     "@angular/language-service": "^20.0.0",
     "@angular/localize": "^20.0.0",
+    "@playwright/test": "^1.57.0",
     "@types/jasmine": "^5.1.0",
     "@types/jquery": "^3.5.29",
     "@types/node": "^20.10.0",

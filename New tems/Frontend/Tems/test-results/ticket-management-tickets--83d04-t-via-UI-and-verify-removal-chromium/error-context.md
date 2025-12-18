@@ -1,0 +1,165 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e3]:
+  - navigation [ref=e4]:
+    - generic [ref=e5]:
+      - generic [ref=e6]:
+        - link "TEMS" [ref=e7] [cursor=pointer]:
+          - /url: /
+          - generic [ref=e8]: TEMS
+        - button "Toggle sidebar" [ref=e9] [cursor=pointer]:
+          - img [ref=e10]
+      - button "Log in" [ref=e13] [cursor=pointer]:
+        - img [ref=e14]
+        - generic [ref=e16]: Log In
+  - generic [ref=e17]:
+    - navigation [ref=e19]:
+      - list [ref=e21]:
+        - listitem
+        - listitem
+        - listitem
+        - listitem
+        - listitem [ref=e22]:
+          - button "Issues" [ref=e24] [cursor=pointer]:
+            - generic [ref=e26]: Issues
+            - img [ref=e27]
+        - listitem [ref=e29]:
+          - button "Communication" [ref=e31] [cursor=pointer]:
+            - generic [ref=e33]: Communication
+            - img [ref=e34]
+        - listitem [ref=e36]:
+          - button "Technical Support" [ref=e38] [cursor=pointer]:
+            - generic [ref=e40]: Technical Support
+            - img [ref=e41]
+        - listitem
+        - listitem
+        - listitem
+        - listitem
+    - generic [ref=e47]:
+      - generic [ref=e49]:
+        - generic [ref=e51]:
+          - generic [ref=e52]:
+            - heading "Tickets" [level=1] [ref=e53]
+            - paragraph [ref=e54]: Manage and track support tickets
+          - button "Create Ticket" [ref=e55] [cursor=pointer]:
+            - img [ref=e56]
+            - text: Create Ticket
+        - generic [ref=e60]:
+          - generic [ref=e61]: Press SPACE to deselect this row.
+          - treegrid [ref=e62]:
+            - rowgroup [ref=e63]:
+              - row "ID Summary Priority State Channel Created Actions" [ref=e64]:
+                - columnheader "ID" [ref=e65]:
+                  - text: 
+                  - generic [ref=e67] [cursor=pointer]: 
+                  - generic [ref=e68] [cursor=pointer]: ID
+                  - text: 
+                  - generic:    
+                - columnheader "Summary" [ref=e69]:
+                  - text: 
+                  - generic [ref=e71] [cursor=pointer]: 
+                  - generic [ref=e72] [cursor=pointer]: Summary
+                  - text: 
+                  - generic:    
+                - columnheader "Priority" [ref=e73]:
+                  - text: 
+                  - generic [ref=e75] [cursor=pointer]: 
+                  - generic [ref=e76] [cursor=pointer]: Priority
+                  - text: 
+                  - generic:    
+                - columnheader "State" [ref=e77]:
+                  - text: 
+                  - generic [ref=e79] [cursor=pointer]: 
+                  - generic [ref=e80] [cursor=pointer]: State
+                  - text: 
+                  - generic:    
+                - columnheader "Channel" [ref=e81]:
+                  - text: 
+                  - generic [ref=e83] [cursor=pointer]: 
+                  - generic [ref=e84] [cursor=pointer]: Channel
+                  - text: 
+                  - generic:    
+                - columnheader "Created" [ref=e85]:
+                  - text: 
+                  - generic [ref=e87] [cursor=pointer]: 
+                  - generic [ref=e88] [cursor=pointer]: Created
+                  - text: 
+                  - generic:    
+                - columnheader "Actions" [ref=e89]:
+                  - text: 
+                  - generic [ref=e91] [cursor=pointer]: 
+                  - generic [ref=e92] [cursor=pointer]: Actions
+                  - text: 
+                  - generic:    
+            - rowgroup [ref=e93]:
+              - row "ALT-1 E2E Delete Test 1765108534749 HIGH open WEB Delete" [selected] [ref=e94]:
+                - gridcell "ALT-1" [ref=e95]
+                - gridcell "E2E Delete Test 1765108534749" [ref=e96]
+                - gridcell "HIGH" [ref=e97]:
+                  - generic [ref=e98]: HIGH
+                - gridcell "open" [active] [ref=e99]
+                - gridcell "WEB" [ref=e100]
+                - gridcell [ref=e101]
+                - gridcell "Delete" [ref=e102]:
+                  - button "Delete" [ref=e104] [cursor=pointer]
+              - row "INC-1 E2E Test Ticket from curl HIGH open WEB Delete" [ref=e105]:
+                - gridcell "INC-1" [ref=e106]
+                - gridcell "E2E Test Ticket from curl" [ref=e107]
+                - gridcell "HIGH" [ref=e108]:
+                  - generic [ref=e109]: HIGH
+                - gridcell "open" [ref=e110]
+                - gridcell "WEB" [ref=e111]
+                - gridcell [ref=e112]
+                - gridcell "Delete" [ref=e113]:
+                  - button "Delete" [ref=e115] [cursor=pointer]
+            - rowgroup
+            - rowgroup
+            - rowgroup
+            - rowgroup
+            - rowgroup
+          - generic [ref=e119]:
+            - generic [ref=e120]:
+              - generic [ref=e121]: "Page Size:"
+              - combobox "Page Size" [ref=e122]:
+                - generic [ref=e123]: "50"
+                - generic [ref=e124] [cursor=pointer]: 
+            - status [ref=e125]: 1 to 2 of 2
+            - button "First Page" [disabled] [ref=e126]: 
+            - button "Previous Page" [disabled] [ref=e127]: 
+            - status [ref=e128]: Page 1 of 1
+            - button "Next Page" [disabled] [ref=e129]: 
+            - button "Last Page" [disabled] [ref=e130]: 
+      - generic [ref=e132]:
+        - generic [ref=e134]:
+          - generic [ref=e135]:
+            - heading "ALT-1" [level=2] [ref=e136]
+            - paragraph [ref=e137]: E2E Delete Test 1765108534749
+          - button [ref=e138] [cursor=pointer]:
+            - img [ref=e139]
+        - generic [ref=e141]:
+          - generic [ref=e142]:
+            - generic [ref=e143]:
+              - generic [ref=e144]: Priority
+              - paragraph [ref=e145]: HIGH
+            - generic [ref=e146]:
+              - generic [ref=e147]: Current State
+              - paragraph [ref=e148]: open
+            - generic [ref=e149]:
+              - generic [ref=e150]: Channel
+              - paragraph [ref=e151]: WEB
+          - generic [ref=e153]:
+            - generic [ref=e154]: "Created:"
+            - generic [ref=e155]: "Updated:"
+          - generic [ref=e156]:
+            - heading "Conversation" [level=3] [ref=e157]
+            - generic [ref=e159]:
+              - textbox "Add a message..." [ref=e160]
+              - generic [ref=e161]:
+                - generic [ref=e162]:
+                  - checkbox "Internal note" [ref=e163]
+                  - generic [ref=e164]: Internal note
+                - button [ref=e165] [cursor=pointer]
+  - contentinfo [ref=e167]:
+    - paragraph [ref=e168]: © 2025 Sunrise Works | All rights reserved.
+```

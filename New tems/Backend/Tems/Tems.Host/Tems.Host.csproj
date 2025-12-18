@@ -16,6 +16,7 @@
     <ItemGroup>
         <ProjectReference Include="..\Modules\EquipmentManagement\EquipmentManagement.API\EquipmentManagement.API.csproj" />
         <ProjectReference Include="..\Modules\Example\Example.API\Example.API.csproj" />
+        <ProjectReference Include="..\Modules\TicketManagement\TicketManagement.API\TicketManagement.API.csproj" />
         <ProjectReference Include="..\Tems.Common\Tems.Common.csproj" />
     </ItemGroup>
 

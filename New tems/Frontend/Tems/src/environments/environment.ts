@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  apiUrl: "http://localhost:14721",
+  apiUrl: "http://localhost:5158",
   clientUrl: "http://localhost:4200",
   identityServerUrl: "http://localhost:5001",
   keycloakUrl: "http://localhost:8080",

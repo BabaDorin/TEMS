@@ -1,9 +1,113 @@
-.home-wrapper {
-  padding: 2rem;
-  text-align: center;
+// Smooth scrolling
+html {
+  scroll-behavior: smooth;
 }
 
-.home-wrapper h1 {
-  font-size: 2.5rem;
-  margin-bottom: 1rem;
+// Custom color classes for dynamic stat cards
+// Since Tailwind's JIT doesn't support dynamic classes, we define them explicitly
+$colors: (
+  'blue': (
+    50: #eff6ff,
+    100: #dbeafe,
+    200: #bfdbfe,
+    300: #93c5fd,
+    500: #3b82f6,
+    600: #2563eb,
+  ),
+  'purple': (
+    50: #faf5ff,
+    100: #f3e8ff,
+    200: #e9d5ff,
+    300: #d8b4fe,
+    500: #a855f7,
+    600: #9333ea,
+  ),
+  'green': (
+    50: #f0fdf4,
+    100: #dcfce7,
+    200: #bbf7d0,
+    500: #22c55e,
+    600: #16a34a,
+  ),
+  'orange': (
+    50: #fff7ed,
+    100: #ffedd5,
+    200: #fed7aa,
+    500: #f97316,
+    600: #ea580c,
+  ),
+  'red': (
+    50: #fef2f2,
+    100: #fee2e2,
+    600: #dc2626,
+  ),
+  'pink': (
+    500: #ec4899,
+  )
+);
+
+@each $color-name, $shades in $colors {
+  @each $shade, $value in $shades {
+    .bg-#{$color-name}-#{$shade} {
+      background-color: $value !important;
+    }
+    .text-#{$color-name}-#{$shade} {
+      color: $value !important;
+    }
+    .border-#{$color-name}-#{$shade} {
+      border-color: $value !important;
+    }
+    .from-#{$color-name}-#{$shade} {
+      --tw-gradient-from: #{$value};
+    }
+    .to-#{$color-name}-#{$shade} {
+      --tw-gradient-to: #{$value};
+    }
+  }
+}
+
+// Ensure Material icons scale properly
+mat-icon {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+}
+
+// Custom line clamp for text overflow
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+// Backdrop blur support
+.backdrop-blur-sm {
+  backdrop-filter: blur(4px);
+}
+
+.backdrop-blur-md {
+  backdrop-filter: blur(12px);
+}
+
+.backdrop-blur-xl {
+  backdrop-filter: blur(24px);
+}
+
+// Smooth transitions for all interactive elements
+button,
+a,
+.cursor-pointer {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+// Responsive adjustments
+@media (max-width: 640px) {
+  .text-5xl {
+    font-size: 2.5rem;
+  }
+  
+  .text-6xl {
+    font-size: 3rem;
+  }
 }

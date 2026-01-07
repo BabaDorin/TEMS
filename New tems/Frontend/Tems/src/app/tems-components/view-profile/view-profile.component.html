@@ -1,34 +1,73 @@
 <ng-container *ngIf="profile != undefined">
-    <div>
-        <div class="row">
-            <div class="col-md-3">
-                <div class="card w-100">
-                    <div class="card-body">
-                        <div style="max-width: 90%; margin: auto;">
+    <div class="max-w-7xl mx-auto p-6">
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+            <!-- Left Sidebar - Profile Card -->
+            <div class="lg:col-span-1">
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-200/50 overflow-hidden">
+                    <div class="p-6">
+                        <!-- Profile Photo -->
+                        <div class="mb-6">
                             <ng-container *ngIf="profile.photoBase64 != undefined; else noPf">
-                                <img class="profile-photo" [src]="profile.photoBase64" style="width: 100%;">
+                                <img class="w-full aspect-square rounded-xl object-cover shadow-sm" [src]="profile.photoBase64" alt="Profile photo">
                             </ng-container>
                             <ng-template #noPf>
-                                <img src="assets/svgs/default_avatar.svg" style="width: 100%;">
+                                <img class="w-full aspect-square rounded-xl object-cover bg-gray-100 p-8" src="assets/svgs/default_avatar.svg" alt="Default avatar">
                             </ng-template>
                         </div>
-                        <a mat-button class="btn-block mt-3" (click)="viewPage('general')">
-                            {{ 'profile.generalInformation' | translate }}
-                        </a>
-                        <!-- <a mat-button class="btn-block" (click)="viewPage('allocations')">Allocations</a> -->
-                        <a mat-button class="btn-block" (click)="viewPage('issues')">
-                            {{ 'profile.tickets' | translate }}
-                        </a>
-                        <a mat-button class="btn-block" (click)="viewPage('analytics')">
-                            {{ 'profile.analytics' | translate }}
-                        </a>
-                        <a mat-button *ngIf="isCurrentUser" class="btn-block" (click)="viewPage('settings')">
-                            {{ 'profile.settings' | translate }}
-                        </a>
+
+                        <!-- Profile Name -->
+                        <div class="text-center mb-6">
+                            <h2 class="text-xl font-semibold text-gray-800">
+                                {{ (profile.firstName && profile.lastName) ? (profile.firstName + ' ' + profile.lastName) : profile.fullName }}
+                            </h2>
+                            <p class="text-sm text-gray-500 mt-1">{{ profile.email }}</p>
+                        </div>
+
+                        <!-- Navigation Menu -->
+                        <nav class="space-y-1">
+                            <button mat-button 
+                                class="w-full !justify-start !text-left !rounded-lg hover:!bg-gray-50 transition-colors" 
+                                [class.!bg-blue-50]="activePage === profileGeneralComponent"
+                                [class.!text-blue-600]="activePage === profileGeneralComponent"
+                                (click)="viewPage('general')">
+                                <mat-icon class="mr-2">person</mat-icon>
+                                {{ 'profile.generalInformation' | translate }}
+                            </button>
+                            
+                            <button mat-button 
+                                class="w-full !justify-start !text-left !rounded-lg hover:!bg-gray-50 transition-colors" 
+                                [class.!bg-blue-50]="activePage === profileTicketsComponent"
+                                [class.!text-blue-600]="activePage === profileTicketsComponent"
+                                (click)="viewPage('issues')">
+                                <mat-icon class="mr-2">confirmation_number</mat-icon>
+                                {{ 'profile.tickets' | translate }}
+                            </button>
+                            
+                            <button mat-button 
+                                class="w-full !justify-start !text-left !rounded-lg hover:!bg-gray-50 transition-colors" 
+                                [class.!bg-blue-50]="activePage === profileAnalyticsComponent"
+                                [class.!text-blue-600]="activePage === profileAnalyticsComponent"
+                                (click)="viewPage('analytics')">
+                                <mat-icon class="mr-2">analytics</mat-icon>
+                                {{ 'profile.analytics' | translate }}
+                            </button>
+                            
+                            <button mat-button 
+                                *ngIf="isCurrentUser" 
+                                class="w-full !justify-start !text-left !rounded-lg hover:!bg-gray-50 transition-colors" 
+                                [class.!bg-blue-50]="activePage === profileSettingsComponent"
+                                [class.!text-blue-600]="activePage === profileSettingsComponent"
+                                (click)="viewPage('settings')">
+                                <mat-icon class="mr-2">settings</mat-icon>
+                                {{ 'profile.settings' | translate }}
+                            </button>
+                        </nav>
                     </div>
                 </div>
             </div>
-            <div class="col-md-8">
+
+            <!-- Main Content Area -->
+            <div class="lg:col-span-3">
                 <div *ngIf="profile != undefined">
                     <ng-container *ngComponentOutlet="activePage; injector: injector"></ng-container>
                 </div>
@@ -37,3 +76,12 @@
     </div>
 </ng-container>
 
+<!-- Loading State -->
+<ng-container *ngIf="profile === undefined">
+    <div class="flex items-center justify-center min-h-[60vh]">
+        <div class="text-center">
+            <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+            <p class="mt-4 text-gray-600">Loading profile...</p>
+        </div>
+    </div>
+</ng-container>

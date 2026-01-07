@@ -1,3 +1,211 @@
-<div class="home-wrapper">
-  <h1>Welcome to TEMS Home</h1>
+<!-- Welcome Header -->
+<div class="bg-gradient-to-r from-blue-600 to-purple-600 text-white" @fadeInUp>
+  <div class="max-w-7xl mx-auto px-6 py-8">
+    <div class="flex items-center justify-between">
+      <div>
+        <h1 class="text-3xl font-bold mb-2">
+          {{ isAuthenticated ? ('Welcome back, ' + userName) : 'Welcome to TEMS' }}
+        </h1>
+        <p class="text-blue-100">
+          {{ isAuthenticated ? getCurrentGreeting() : 'Technical Equipment Management System' }}
+        </p>
+      </div>
+      <div class="hidden md:flex items-center space-x-2">
+        <span class="relative flex h-3 w-3">
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-300 opacity-75"></span>
+          <span class="relative inline-flex rounded-full h-3 w-3 bg-green-400"></span>
+        </span>
+        <span class="text-sm text-blue-100">All Systems Operational</span>
+      </div>
+    </div>
+  </div>
 </div>
+
+<!-- Stats Section -->
+<div class="bg-gray-50 py-6 border-b border-gray-200" *ngIf="isAuthenticated">
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4" [@staggerFadeIn]="stats.length">
+      <div *ngFor="let stat of stats" 
+        class="bg-white rounded-xl p-4 hover:shadow-md transition-all duration-200 cursor-pointer border border-gray-100">
+        <div class="flex items-center space-x-3">
+          <div class="p-2 rounded-lg bg-{{stat.color}}-100 text-{{stat.color}}-600">
+            <mat-icon class="!w-6 !h-6 !text-2xl">{{ stat.icon }}</mat-icon>
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="text-2xl font-bold text-gray-800">{{ stat.value }}</div>
+            <div class="text-xs text-gray-500 truncate">{{ stat.label }}</div>
+          </div>
+          <span *ngIf="stat.trend" class="text-xs font-semibold px-1.5 py-0.5 rounded" 
+            [class.text-green-600]="stat.trend.startsWith('+')"
+            [class.bg-green-50]="stat.trend.startsWith('+')"
+            [class.text-red-600]="stat.trend.startsWith('-')"
+            [class.bg-red-50]="stat.trend.startsWith('-')">
+            {{ stat.trend }}
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Main Content -->
+<div class="bg-white py-8">
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      
+      <!-- Quick Actions -->
+      <div class="lg:col-span-2 space-y-6">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-2xl font-bold text-gray-900">Quick Actions</h2>
+        </div>
+        
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4" [@staggerFadeIn]="quickActions.length">
+          <div *ngFor="let action of quickActions" 
+            class="group bg-white rounded-xl p-6 border border-gray-200 hover:border-{{action.color}}-300 hover:shadow-lg transition-all duration-200 cursor-pointer"
+            (click)="navigateTo(action.route)">
+            <div class="flex items-start space-x-4">
+              <div class="p-3 rounded-lg bg-gradient-to-br {{action.gradient}} text-white group-hover:scale-110 transition-transform duration-200">
+                <mat-icon class="!w-6 !h-6 !text-2xl">{{ action.icon }}</mat-icon>
+              </div>
+              <div class="flex-1 min-w-0">
+                <h3 class="text-lg font-semibold text-gray-900 mb-1 group-hover:text-{{action.color}}-600 transition-colors">
+                  {{ action.title }}
+                </h3>
+                <p class="text-sm text-gray-600">
+                  {{ action.description }}
+                </p>
+              </div>
+              <mat-icon class="text-gray-400 group-hover:text-{{action.color}}-600 group-hover:translate-x-1 transition-all">arrow_forward</mat-icon>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="mt-8" *ngIf="isAuthenticated">
+          <h2 class="text-2xl font-bold text-gray-900 mb-4">Recent Activity</h2>
+          <div class="bg-gray-50 rounded-xl p-6 border border-gray-200">
+            <div class="space-y-4">
+              <div class="flex items-center space-x-4 pb-4 border-b border-gray-200">
+                <div class="p-2 rounded-lg bg-blue-100 text-blue-600">
+                  <mat-icon>devices</mat-icon>
+                </div>
+                <div class="flex-1">
+                  <p class="text-sm font-medium text-gray-900">New asset added</p>
+                  <p class="text-xs text-gray-500">Dell Latitude 5430 - 2 hours ago</p>
+                </div>
+              </div>
+              <div class="flex items-center space-x-4 pb-4 border-b border-gray-200">
+                <div class="p-2 rounded-lg bg-purple-100 text-purple-600">
+                  <mat-icon>confirmation_number</mat-icon>
+                </div>
+                <div class="flex-1">
+                  <p class="text-sm font-medium text-gray-900">Ticket resolved</p>
+                  <p class="text-xs text-gray-500">Printer issue #1234 - 5 hours ago</p>
+                </div>
+              </div>
+              <div class="flex items-center space-x-4">
+                <div class="p-2 rounded-lg bg-green-100 text-green-600">
+                  <mat-icon>inventory_2</mat-icon>
+                </div>
+                <div class="flex-1">
+                  <p class="text-sm font-medium text-gray-900">Inventory updated</p>
+                  <p class="text-xs text-gray-500">Stock replenished - Yesterday</p>
+                </div>
+              </div>
+            </div>
+            <button mat-button class="w-full mt-4 !text-blue-600 hover:!bg-blue-50">
+              View all activity
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Side Panel -->
+      <div class="space-y-6">
+        <!-- System Status -->
+        <div class="bg-gradient-to-br from-blue-50 to-purple-50 rounded-xl p-6 border border-blue-100">
+          <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+            <mat-icon class="mr-2 text-blue-600">health_and_safety</mat-icon>
+            System Status
+          </h3>
+          <div class="space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-sm text-gray-600">API Services</span>
+              <span class="flex items-center text-green-600 text-sm font-medium">
+                <span class="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
+                Online
+              </span>
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="text-sm text-gray-600">Database</span>
+              <span class="flex items-center text-green-600 text-sm font-medium">
+                <span class="w-2 h-2 bg-green-500 rounded-full mr-2"></span>
+                Connected
+              </span>
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="text-sm text-gray-600">Response Time</span>
+              <span class="text-sm font-medium text-gray-900">45ms</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Links -->
+        <div class="bg-white rounded-xl p-6 border border-gray-200">
+          <h3 class="text-lg font-semibold text-gray-900 mb-4">Quick Links</h3>
+          <div class="space-y-2">
+            <button mat-button class="w-full !justify-start !text-left" (click)="navigateTo('/dashboard')">
+              <mat-icon class="mr-3 text-gray-600">dashboard</mat-icon>
+              <span>Dashboard</span>
+            </button>
+            <button mat-button class="w-full !justify-start !text-left" (click)="navigateTo('/reports')">
+              <mat-icon class="mr-3 text-gray-600">assessment</mat-icon>
+              <span>Reports</span>
+            </button>
+            <button mat-button class="w-full !justify-start !text-left" (click)="navigateTo('/profile/view')">
+              <mat-icon class="mr-3 text-gray-600">person</mat-icon>
+              <span>My Profile</span>
+            </button>
+            <button mat-button class="w-full !justify-start !text-left" (click)="navigateTo('/settings')">
+              <mat-icon class="mr-3 text-gray-600">settings</mat-icon>
+              <span>Settings</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Help Card -->
+        <div class="bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl p-6 text-white">
+          <mat-icon class="mb-3 !w-10 !h-10 !text-4xl">help_outline</mat-icon>
+          <h3 class="text-lg font-semibold mb-2">Need Help?</h3>
+          <p class="text-sm text-white/90 mb-4">Check out our documentation or contact support.</p>
+          <button mat-stroked-button class="!border-white !text-white hover:!bg-white/10 w-full">
+            Get Support
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Features Section -->
+<div class="bg-gray-50 py-12 border-t border-gray-200">
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="text-center mb-8">
+      <h2 class="text-2xl font-bold text-gray-900 mb-2">Platform Features</h2>
+      <p class="text-gray-600">Everything you need in one place</p>
+    </div>
+
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4" [@staggerFadeIn]="features.length">
+      <div *ngFor="let feature of features" 
+        class="bg-white rounded-lg p-4 text-center hover:shadow-md transition-all duration-200 border border-gray-100">
+        <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 text-white flex items-center justify-center mb-3 mx-auto">
+          <mat-icon class="!w-6 !h-6 !text-xl">{{ feature.icon }}</mat-icon>
+        </div>
+        <h3 class="text-sm font-semibold text-gray-900 mb-1">{{ feature.title }}</h3>
+        <p class="text-xs text-gray-500 line-clamp-2">{{ feature.description }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+

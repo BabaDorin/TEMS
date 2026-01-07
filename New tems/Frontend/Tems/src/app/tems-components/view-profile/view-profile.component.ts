@@ -16,6 +16,7 @@ import { RouterModule } from '@angular/router';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 import { TranslateModule } from '@ngx-translate/core';
 import { Subject } from 'rxjs';
 
@@ -29,7 +30,12 @@ import { Subject } from 'rxjs';
     MatTabsModule,
     MatCardModule,
     MatButtonModule,
-    TranslateModule
+    MatIconModule,
+    TranslateModule,
+    ProfileGeneralComponent,
+    ProfileTicketsComponent,
+    ProfileAnalyticsComponent,
+    ProfileSettingsComponent
   ],
   templateUrl: './view-profile.component.html',
   styleUrls: ['./view-profile.component.scss']
@@ -44,7 +50,12 @@ export class ViewProfileComponent extends TEMSComponent implements OnInit, OnDes
   
   profilePhotoUrl = "assets/svgs/default_avatar.svg";
 
-  // add these two fields to support existing .subscriptions.push(...) calls
+  // Component references for template
+  profileGeneralComponent = ProfileGeneralComponent;
+  profileTicketsComponent = ProfileTicketsComponent;
+  profileAnalyticsComponent = ProfileAnalyticsComponent;
+  profileSettingsComponent = ProfileSettingsComponent;
+
   subscriptions: any[] = [];
   protected destroy$ = new Subject<void>();
 

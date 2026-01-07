@@ -3,6 +3,8 @@ export interface IViewProfile{
     id: string,
     personnelId: string,
     fullName: string,
+    firstName?: string,
+    lastName?: string,
     username: string,
     phoneNumber: string,
     email: string,
@@ -19,6 +21,8 @@ export class ViewProfile implements IViewProfile{
     id: string;
     personnelId: string;
     fullName: string;
+    firstName?: string;
+    lastName?: string;
     username: string;
     phoneNumber: string;
     email: string;

@@ -1,0 +1,322 @@
+<div class="min-h-screen bg-gray-50">
+  <!-- Loading State -->
+  <div *ngIf="loading" class="flex items-center justify-center h-screen">
+    <div class="text-center">
+      <i class="mdi mdi-loading mdi-spin text-4xl text-blue-600"></i>
+      <p class="mt-4 text-gray-600">Loading asset details...</p>
+    </div>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="!loading && error" class="flex items-center justify-center h-screen">
+    <div class="text-center">
+      <i class="mdi mdi-alert-circle text-4xl text-red-600"></i>
+      <p class="mt-4 text-gray-900 font-medium">{{ error }}</p>
+      <button
+        (click)="goBack()"
+        class="mt-6 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+        Back to Assets
+      </button>
+    </div>
+  </div>
+
+  <!-- Asset Detail -->
+  <div *ngIf="!loading && !error && asset" class="p-6 max-w-7xl mx-auto">
+    <!-- Header -->
+    <div class="mb-6">
+      <button
+        (click)="goBack()"
+        class="mb-4 text-blue-600 hover:text-blue-800 flex items-center gap-2">
+        <i class="mdi mdi-arrow-left"></i>
+        Back to Assets
+      </button>
+      
+      <div class="flex justify-between items-start">
+        <div class="flex-1">
+          <h1 class="text-3xl font-bold text-gray-900">{{ asset.assetTag }}</h1>
+          <p class="text-gray-600 mt-1">{{ asset.definition?.name || 'Asset Details' }}</p>
+        </div>
+        
+        <!-- TEMS ID Label with QR Code -->
+        <div class="mx-6">
+          <app-asset-label 
+            [mainText]="asset.assetTag" 
+            [downloadable]="true">
+          </app-asset-label>
+        </div>
+        
+        <div class="flex gap-3">
+          <button
+            (click)="editAsset()"
+            class="px-4 py-2 border border-blue-600 text-blue-600 rounded-lg hover:bg-blue-50 flex items-center gap-2">
+            <i class="mdi mdi-pencil"></i>
+            Edit
+          </button>
+          <button
+            (click)="deleteAsset()"
+            class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 flex items-center gap-2">
+            <i class="mdi mdi-delete"></i>
+            Delete
+          </button>
+        </div>
+      </div>
+
+      <!-- Status Badge -->
+      <div class="mt-4">
+        <span [class]="'inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ' + getStatusClass(asset.status)">
+          {{ getStatusLabel(asset.status) }}
+        </span>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="bg-white rounded-lg shadow">
+      <div class="border-b border-gray-200">
+        <nav class="flex -mb-px">
+          <button
+            (click)="activeTab = 'overview'"
+            [class.border-blue-500]="activeTab === 'overview'"
+            [class.text-blue-600]="activeTab === 'overview'"
+            [class.border-transparent]="activeTab !== 'overview'"
+            [class.text-gray-500]="activeTab !== 'overview'"
+            class="px-6 py-3 border-b-2 font-medium text-sm hover:text-blue-600 hover:border-blue-300 transition">
+            Overview
+          </button>
+          <button
+            (click)="activeTab = 'specifications'"
+            [class.border-blue-500]="activeTab === 'specifications'"
+            [class.text-blue-600]="activeTab === 'specifications'"
+            [class.border-transparent]="activeTab !== 'specifications'"
+            [class.text-gray-500]="activeTab !== 'specifications'"
+            class="px-6 py-3 border-b-2 font-medium text-sm hover:text-blue-600 hover:border-blue-300 transition">
+            Specifications
+          </button>
+          <button
+            (click)="activeTab = 'purchase'"
+            [class.border-blue-500]="activeTab === 'purchase'"
+            [class.text-blue-600]="activeTab === 'purchase'"
+            [class.border-transparent]="activeTab !== 'purchase'"
+            [class.text-gray-500]="activeTab !== 'purchase'"
+            class="px-6 py-3 border-b-2 font-medium text-sm hover:text-blue-600 hover:border-blue-300 transition">
+            Purchase Info
+          </button>
+          <button
+            (click)="activeTab = 'maintenance'"
+            [class.border-blue-500]="activeTab === 'maintenance'"
+            [class.text-blue-600]="activeTab === 'maintenance'"
+            [class.border-transparent]="activeTab !== 'maintenance'"
+            [class.text-gray-500]="activeTab !== 'maintenance'"
+            class="px-6 py-3 border-b-2 font-medium text-sm hover:text-blue-600 hover:border-blue-300 transition">
+            Maintenance
+          </button>
+          <button
+            (click)="activeTab = 'history'"
+            [class.border-blue-500]="activeTab === 'history'"
+            [class.text-blue-600]="activeTab === 'history'"
+            [class.border-transparent]="activeTab !== 'history'"
+            [class.text-gray-500]="activeTab !== 'history'"
+            class="px-6 py-3 border-b-2 font-medium text-sm hover:text-blue-600 hover:border-blue-300 transition">
+            History
+          </button>
+        </nav>
+      </div>
+
+      <!-- Tab Content -->
+      <div class="p-6">
+        <!-- Overview Tab -->
+        <div *ngIf="activeTab === 'overview'">
+          <div class="grid grid-cols-2 gap-6">
+            <!-- Basic Information -->
+            <div class="bg-gray-50 rounded-lg p-4">
+              <h3 class="text-lg font-semibold text-gray-900 mb-4">Basic Information</h3>
+              <div class="space-y-3">
+                <div>
+                  <span class="text-sm text-gray-600">Asset Tag:</span>
+                  <p class="font-medium">{{ asset.assetTag }}</p>
+                </div>
+                <div>
+                  <span class="text-sm text-gray-600">Serial Number:</span>
+                  <p class="font-medium">{{ asset.serialNumber || '—' }}</p>
+                </div>
+                <div>
+                  <span class="text-sm text-gray-600">Status:</span>
+                  <p class="font-medium">{{ getStatusLabel(asset.status) }}</p>
+                </div>
+                <div>
+                  <span class="text-sm text-gray-600">Created:</span>
+                  <p class="font-medium">{{ asset.createdAt | date:'medium' }}</p>
+                </div>
+                <div>
+                  <span class="text-sm text-gray-600">Last Updated:</span>
+                  <p class="font-medium">{{ asset.updatedAt | date:'medium' }}</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Definition Information -->
+            <div *ngIf="asset.definition" class="bg-gray-50 rounded-lg p-4">
+              <h3 class="text-lg font-semibold text-gray-900 mb-4">Asset Definition</h3>
+              <div class="space-y-3">
+                <div>
+                  <span class="text-sm text-gray-600">Name:</span>
+                  <p class="font-medium">{{ asset.definition.name }}</p>
+                </div>
+                <div>
+                  <span class="text-sm text-gray-600">Manufacturer:</span>
+                  <p class="font-medium">{{ asset.definition.manufacturer }}</p>
+                </div>
+                <div>
+                  <span class="text-sm text-gray-600">Model:</span>
+                  <p class="font-medium">{{ asset.definition.model }}</p>
+                </div>
+                <div *ngIf="asset.definition.description">
+                  <span class="text-sm text-gray-600">Description:</span>
+                  <p class="font-medium">{{ asset.definition.description }}</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Location -->
+            <div *ngIf="asset.location" class="bg-gray-50 rounded-lg p-4">
+              <h3 class="text-lg font-semibold text-gray-900 mb-4">Location</h3>
+              <div class="space-y-3">
+                <div *ngIf="asset.location.building">
+                  <span class="text-sm text-gray-600">Building:</span>
+                  <p class="font-medium">{{ asset.location.building }}</p>
+                </div>
+                <div *ngIf="asset.location.floor">
+                  <span class="text-sm text-gray-600">Floor:</span>
+                  <p class="font-medium">{{ asset.location.floor }}</p>
+                </div>
+                <div *ngIf="asset.location.room">
+                  <span class="text-sm text-gray-600">Room:</span>
+                  <p class="font-medium">{{ asset.location.room }}</p>
+                </div>
+                <div *ngIf="asset.location.updatedAt">
+                  <span class="text-sm text-gray-600">Location Updated:</span>
+                  <p class="font-medium">{{ asset.location.updatedAt | date:'short' }}</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Assignment -->
+            <div *ngIf="asset.assignment" class="bg-gray-50 rounded-lg p-4">
+              <h3 class="text-lg font-semibold text-gray-900 mb-4">Assignment</h3>
+              <div class="space-y-3">
+                <div>
+                  <span class="text-sm text-gray-600">Assigned To:</span>
+                  <p class="font-medium">{{ asset.assignment.assignedToUserName || asset.assignment.assignedToUserId }}</p>
+                </div>
+                <div>
+                  <span class="text-sm text-gray-600">Assigned Date:</span>
+                  <p class="font-medium">{{ asset.assignment.assignedDate | date:'short' }}</p>
+                </div>
+                <div *ngIf="asset.assignment.assignedBy">
+                  <span class="text-sm text-gray-600">Assigned By:</span>
+                  <p class="font-medium">{{ asset.assignment.assignedBy }}</p>
+                </div>
+                <div *ngIf="asset.assignment.notes">
+                  <span class="text-sm text-gray-600">Notes:</span>
+                  <p class="font-medium">{{ asset.assignment.notes }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Notes -->
+          <div *ngIf="asset.notes" class="mt-6 bg-gray-50 rounded-lg p-4">
+            <h3 class="text-lg font-semibold text-gray-900 mb-2">Notes</h3>
+            <p class="text-gray-700 whitespace-pre-wrap">{{ asset.notes }}</p>
+          </div>
+        </div>
+
+        <!-- Specifications Tab -->
+        <div *ngIf="activeTab === 'specifications'">
+          <div *ngIf="getSpecificationsArray().length > 0" class="grid grid-cols-2 gap-4">
+            <div *ngFor="let spec of getSpecificationsArray()" class="bg-gray-50 rounded-lg p-4">
+              <span class="text-sm font-medium text-gray-600">{{ spec.key }}</span>
+              <p class="text-lg font-semibold text-gray-900 mt-1">{{ spec.value }}</p>
+            </div>
+          </div>
+          <div *ngIf="getSpecificationsArray().length === 0" class="text-center py-12">
+            <i class="mdi mdi-file-document-outline text-4xl text-gray-400"></i>
+            <p class="mt-4 text-gray-600">No specifications available</p>
+          </div>
+        </div>
+
+        <!-- Purchase Info Tab -->
+        <div *ngIf="activeTab === 'purchase'">
+          <div *ngIf="asset.purchaseInfo" class="grid grid-cols-2 gap-6">
+            <div class="bg-gray-50 rounded-lg p-4">
+              <span class="text-sm text-gray-600">Vendor:</span>
+              <p class="text-lg font-semibold text-gray-900 mt-1">{{ asset.purchaseInfo.vendor || '—' }}</p>
+            </div>
+            <div class="bg-gray-50 rounded-lg p-4">
+              <span class="text-sm text-gray-600">Purchase Date:</span>
+              <p class="text-lg font-semibold text-gray-900 mt-1">
+                {{ asset.purchaseInfo.purchaseDate ? (asset.purchaseInfo.purchaseDate | date:'longDate') : '—' }}
+              </p>
+            </div>
+            <div class="bg-gray-50 rounded-lg p-4">
+              <span class="text-sm text-gray-600">Purchase Price:</span>
+              <p class="text-lg font-semibold text-gray-900 mt-1">
+                {{ asset.purchaseInfo.purchasePrice ? (asset.purchaseInfo.purchasePrice | currency) : '—' }}
+              </p>
+            </div>
+            <div class="bg-gray-50 rounded-lg p-4">
+              <span class="text-sm text-gray-600">Warranty Expiration:</span>
+              <p class="text-lg font-semibold text-gray-900 mt-1">
+                {{ asset.purchaseInfo.warrantyExpiration ? (asset.purchaseInfo.warrantyExpiration | date:'longDate') : '—' }}
+              </p>
+            </div>
+            <div class="bg-gray-50 rounded-lg p-4 col-span-2">
+              <span class="text-sm text-gray-600">Invoice Number:</span>
+              <p class="text-lg font-semibold text-gray-900 mt-1">{{ asset.purchaseInfo.invoiceNumber || '—' }}</p>
+            </div>
+          </div>
+          <div *ngIf="!asset.purchaseInfo" class="text-center py-12">
+            <i class="mdi mdi-receipt-text-outline text-4xl text-gray-400"></i>
+            <p class="mt-4 text-gray-600">No purchase information available</p>
+          </div>
+        </div>
+
+        <!-- Maintenance Tab -->
+        <div *ngIf="activeTab === 'maintenance'">
+          <div *ngIf="asset.maintenanceHistory && asset.maintenanceHistory.length > 0" class="space-y-4">
+            <div *ngFor="let record of asset.maintenanceHistory" class="bg-gray-50 rounded-lg p-4 border-l-4 border-blue-500">
+              <div class="flex justify-between items-start mb-2">
+                <h4 class="font-semibold text-gray-900">{{ record.description }}</h4>
+                <span class="text-sm text-gray-600">{{ record.date | date:'short' }}</span>
+              </div>
+              <div class="grid grid-cols-2 gap-4 text-sm">
+                <div>
+                  <span class="text-gray-600">Performed By:</span>
+                  <span class="font-medium ml-2">{{ record.performedBy || '—' }}</span>
+                </div>
+                <div>
+                  <span class="text-gray-600">Cost:</span>
+                  <span class="font-medium ml-2">{{ record.cost ? (record.cost | currency) : '—' }}</span>
+                </div>
+              </div>
+              <div *ngIf="record.notes" class="mt-2 text-sm text-gray-700">
+                <span class="font-medium">Notes:</span> {{ record.notes }}
+              </div>
+            </div>
+          </div>
+          <div *ngIf="!asset.maintenanceHistory || asset.maintenanceHistory.length === 0" class="text-center py-12">
+            <i class="mdi mdi-tools text-4xl text-gray-400"></i>
+            <p class="mt-4 text-gray-600">No maintenance records</p>
+          </div>
+        </div>
+
+        <!-- History Tab -->
+        <div *ngIf="activeTab === 'history'">
+          <div class="text-center py-12">
+            <i class="mdi mdi-history text-4xl text-gray-400"></i>
+            <p class="mt-4 text-gray-600">Asset history tracking coming soon</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

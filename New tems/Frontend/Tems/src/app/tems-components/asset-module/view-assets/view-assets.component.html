@@ -1,0 +1,385 @@
+<div class="p-6">
+  <!-- Header -->
+  <div class="mb-6 flex justify-between items-center">
+    <div>
+      <h1 class="text-2xl font-bold text-gray-900">Assets</h1>
+      <p class="text-gray-500 mt-1">View and manage asset instances</p>
+    </div>
+    <button
+      (click)="openCreateModal()"
+      class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition flex items-center gap-2">
+      <i class="mdi mdi-plus"></i>
+      Create Asset
+    </button>
+  </div>
+
+  <!-- Grid -->
+  <div class="bg-white rounded-lg shadow">
+    <ag-grid-angular
+      class="ag-theme-quartz"
+      style="height: calc(100vh - 240px); width: 100%;"
+      [rowData]="rowData"
+      [columnDefs]="columnDefs"
+      [defaultColDef]="defaultColDef"
+      [pagination]="true"
+      [paginationPageSize]="20"
+      (gridReady)="onGridReady($event)">
+    </ag-grid-angular>
+  </div>
+</div>
+
+<!-- Create Asset Modal -->
+<div
+  *ngIf="showCreateModal"
+  class="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+  (click)="closeCreateModal()">
+  <div
+    class="bg-white rounded-lg shadow-xl max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto"
+    (click)="$event.stopPropagation()">
+    <!-- Modal Header -->
+    <div class="px-6 py-4 border-b sticky top-0 bg-white z-10">
+      <h2 class="text-xl font-semibold text-gray-900">Create New Asset</h2>
+      <p class="text-sm text-gray-500 mt-1">Select type and definition, then fill asset details</p>
+    </div>
+
+    <!-- Modal Body -->
+    <form [formGroup]="createForm" (ngSubmit)="createAsset()" class="p-6">
+      <!-- Step 1: Asset Type Selection -->
+      <div class="mb-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
+        <label class="block text-sm font-medium text-gray-700 mb-2">
+          Step 1: Select Asset Type <span class="text-red-500">*</span>
+        </label>
+        <select
+          formControlName="assetTypeId"
+          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+          <option value="">-- Select Type --</option>
+          <option *ngFor="let type of assetTypes" [value]="type.id">{{ type.name }}</option>
+        </select>
+        <p class="text-xs text-gray-500 mt-1">Choose the category of asset (e.g., Laptop, Monitor)</p>
+      </div>
+
+      <!-- Step 2: Definition Selection -->
+      <div class="mb-6 p-4 bg-green-50 rounded-lg border border-green-200">
+        <label class="block text-sm font-medium text-gray-700 mb-2">
+          Step 2: Select Asset Definition <span class="text-red-500">*</span>
+        </label>
+        <select
+          formControlName="definitionId"
+          [disabled]="!createForm.get('assetTypeId')?.value"
+          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed">
+          <option value="">-- Select Definition --</option>
+          <option *ngFor="let def of filteredDefinitions" [value]="def.id">
+            {{ def.name }} ({{ def.manufacturer }} {{ def.model }})
+          </option>
+        </select>
+        <p class="text-xs text-gray-500 mt-1">
+          <span *ngIf="!createForm.get('assetTypeId')?.value">Select a type first to see available definitions</span>
+          <span *ngIf="createForm.get('assetTypeId')?.value && filteredDefinitions.length === 0">No definitions available for this type</span>
+          <span *ngIf="filteredDefinitions.length > 0">Choose a template with predefined specifications</span>
+        </p>
+      </div>
+
+      <!-- Definition Preview -->
+      <div *ngIf="selectedDefinition" class="mb-6 p-4 bg-gray-50 rounded-lg border border-gray-300">
+        <h3 class="text-sm font-semibold text-gray-700 mb-2">Selected Definition Preview</h3>
+        <div class="grid grid-cols-2 gap-3 text-sm">
+          <div>
+            <span class="text-gray-600">Name:</span>
+            <span class="font-medium ml-2">{{ selectedDefinition.name }}</span>
+          </div>
+          <div>
+            <span class="text-gray-600">Manufacturer:</span>
+            <span class="font-medium ml-2">{{ selectedDefinition.manufacturer }}</span>
+          </div>
+          <div>
+            <span class="text-gray-600">Model:</span>
+            <span class="font-medium ml-2">{{ selectedDefinition.model }}</span>
+          </div>
+          <div>
+            <span class="text-gray-600">Usage Count:</span>
+            <span class="font-medium ml-2">{{ selectedDefinition.usageCount }}</span>
+          </div>
+        </div>
+        <div *ngIf="selectedAsset.definition.specifications && selectedAsset.definition.specifications.length > 0" class="mt-3">
+          <span class="text-xs font-medium text-gray-600 uppercase">Specifications:</span>
+          <div class="grid grid-cols-2 gap-2 mt-2">
+            <div *ngFor="let spec of selectedAsset.definition.specifications" class="text-xs">
+              <span class="text-gray-600">{{ spec.name || spec.propertyId }}:</span>
+              <span class="font-medium ml-1">{{ formatSpecValue(spec.value, spec.unit) }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 3: Asset-Specific Details -->
+      <div *ngIf="createForm.get('definitionId')?.value" class="mb-6 p-4 bg-purple-50 rounded-lg border border-purple-200">
+        <h3 class="text-sm font-semibold text-gray-700 mb-4">Step 3: Asset-Specific Information</h3>
+        
+        <!-- Basic Info -->
+        <div class="grid grid-cols-2 gap-4 mb-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">
+              Asset Tag (TEMS ID) <span class="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              formControlName="assetTag"
+              placeholder="e.g., TEMS-LAP-001"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Serial Number</label>
+            <input
+              type="text"
+              formControlName="serialNumber"
+              placeholder="Manufacturer serial number"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+          </div>
+        </div>
+
+        <div class="mb-4">
+          <label class="block text-sm font-medium text-gray-700 mb-1">
+            Status <span class="text-red-500">*</span>
+          </label>
+          <select
+            formControlName="status"
+            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+            <option *ngFor="let status of statusOptions" [value]="status.value">{{ status.label }}</option>
+          </select>
+        </div>
+
+        <!-- Purchase Information -->
+        <div class="mt-4 pt-4 border-t">
+          <h4 class="text-sm font-medium text-gray-700 mb-3">Purchase Information</h4>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Vendor</label>
+              <input
+                type="text"
+                formControlName="purchaseVendor"
+                placeholder="Company/Supplier name"
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Purchase Date</label>
+              <input
+                type="date"
+                formControlName="purchaseDate"
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Purchase Price</label>
+              <input
+                type="number"
+                formControlName="purchasePrice"
+                placeholder="0.00"
+                step="0.01"
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Warranty Expiration</label>
+              <input
+                type="date"
+                formControlName="warrantyExpiration"
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+            </div>
+            <div class="col-span-2">
+              <label class="block text-sm font-medium text-gray-700 mb-1">Invoice Number</label>
+              <input
+                type="text"
+                formControlName="invoiceNumber"
+                placeholder="Invoice reference"
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+            </div>
+          </div>
+        </div>
+
+        <!-- Location Information -->
+        <div class="mt-4 pt-4 border-t">
+          <h4 class="text-sm font-medium text-gray-700 mb-3">Location</h4>
+          <div class="grid grid-cols-3 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Building</label>
+              <input
+                type="text"
+                formControlName="locationBuilding"
+                placeholder="Building name/number"
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Floor</label>
+              <input
+                type="text"
+                formControlName="locationFloor"
+                placeholder="Floor number"
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Room</label>
+              <input
+                type="text"
+                formControlName="locationRoom"
+                placeholder="Room number"
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+            </div>
+          </div>
+        </div>
+
+        <!-- Notes -->
+        <div class="mt-4 pt-4 border-t">
+          <label class="block text-sm font-medium text-gray-700 mb-1">Notes</label>
+          <textarea
+            formControlName="notes"
+            rows="3"
+            placeholder="Additional notes or comments"
+            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"></textarea>
+        </div>
+      </div>
+
+      <!-- Form Actions -->
+      <div class="flex justify-end gap-3 sticky bottom-0 bg-white pt-4 border-t">
+        <button
+          type="button"
+          (click)="closeCreateModal()"
+          class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">
+          Cancel
+        </button>
+        <button
+          type="submit"
+          [disabled]="createForm.invalid || isSubmitting"
+          class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed">
+          {{ isSubmitting ? 'Creating...' : 'Create Asset' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Preview Modal -->
+<div
+  *ngIf="showPreviewModal && selectedAsset"
+  class="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+  (click)="closePreviewModal()">
+  <div
+    class="bg-white rounded-lg shadow-xl max-w-3xl w-full mx-4 max-h-[90vh] overflow-y-auto"
+    (click)="$event.stopPropagation()">
+    <!-- Preview Header -->
+    <div class="px-6 py-4 border-b sticky top-0 bg-white z-10">
+      <div class="flex justify-between items-start">
+        <div class="flex-1">
+          <h2 class="text-xl font-semibold text-gray-900">Asset Details</h2>
+          <p class="text-sm text-gray-500 mt-1">{{ selectedAsset.assetTag }}</p>
+        </div>
+        
+        <!-- TEMS ID Label with QR Code -->
+        <div>
+          <app-asset-label 
+            [mainText]="selectedAsset.assetTag" 
+            [downloadable]="true">
+          </app-asset-label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Preview Body -->
+    <div class="p-6">
+      <!-- Basic Info -->
+      <div class="grid grid-cols-2 gap-4 mb-6">
+        <div>
+          <span class="text-sm text-gray-600">Asset Tag:</span>
+          <p class="font-medium">{{ selectedAsset.assetTag }}</p>
+        </div>
+        <div>
+          <span class="text-sm text-gray-600">Serial Number:</span>
+          <p class="font-medium">{{ selectedAsset.serialNumber || '—' }}</p>
+        </div>
+        <div>
+          <span class="text-sm text-gray-600">Status:</span>
+          <p class="font-medium">{{ selectedAsset.status }}</p>
+        </div>
+        <div>
+          <span class="text-sm text-gray-600">Created:</span>
+          <p class="font-medium">{{ selectedAsset.createdAt | date:'short' }}</p>
+        </div>
+      </div>
+
+      <!-- Definition Info -->
+      <div *ngIf="selectedAsset.definition" class="mb-6 p-4 bg-gray-50 rounded-lg">
+        <h3 class="text-sm font-semibold text-gray-700 mb-2">Definition</h3>
+        <div class="grid grid-cols-2 gap-3 text-sm">
+          <div>
+            <span class="text-gray-600">Name:</span>
+            <span class="font-medium ml-2">{{ selectedAsset.definition.name }}</span>
+          </div>
+          <div>
+            <span class="text-gray-600">Manufacturer:</span>
+            <span class="font-medium ml-2">{{ selectedAsset.definition.manufacturer }}</span>
+          </div>
+          <div>
+            <span class="text-gray-600">Model:</span>
+            <span class="font-medium ml-2">{{ selectedAsset.definition.model }}</span>
+          </div>
+        </div>
+        <div *ngIf="selectedAsset.definition.specifications && selectedAsset.definition.specifications.length > 0" class="mt-3">
+          <span class="text-xs font-medium text-gray-600 uppercase">Specifications:</span>
+          <div class="grid grid-cols-2 gap-2 mt-2">
+            <div *ngFor="let spec of selectedAsset.definition.specifications" class="text-xs">
+              <span class="text-gray-600">{{ spec.name || spec.propertyId }}:</span>
+              <span class="font-medium ml-1">{{ formatSpecValue(spec.value, spec.unit) }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Purchase Info -->
+      <div *ngIf="selectedAsset.purchaseInfo" class="mb-6 p-4 bg-gray-50 rounded-lg">
+        <h3 class="text-sm font-semibold text-gray-700 mb-2">Purchase Information</h3>
+        <div class="grid grid-cols-2 gap-3 text-sm">
+          <div *ngIf="selectedAsset.purchaseInfo.vendor">
+            <span class="text-gray-600">Vendor:</span>
+            <span class="font-medium ml-2">{{ selectedAsset.purchaseInfo.vendor }}</span>
+          </div>
+          <div *ngIf="selectedAsset.purchaseInfo.purchaseDate">
+            <span class="text-gray-600">Purchase Date:</span>
+            <span class="font-medium ml-2">{{ selectedAsset.purchaseInfo.purchaseDate | date:'shortDate' }}</span>
+          </div>
+          <div *ngIf="selectedAsset.purchaseInfo.purchasePrice">
+            <span class="text-gray-600">Price:</span>
+            <span class="font-medium ml-2">{{ selectedAsset.purchaseInfo.purchasePrice | currency }}</span>
+          </div>
+          <div *ngIf="selectedAsset.purchaseInfo.warrantyExpiration">
+            <span class="text-gray-600">Warranty Expires:</span>
+            <span class="font-medium ml-2">{{ selectedAsset.purchaseInfo.warrantyExpiration | date:'shortDate' }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Location -->
+      <div *ngIf="selectedAsset.location" class="mb-6 p-4 bg-gray-50 rounded-lg">
+        <h3 class="text-sm font-semibold text-gray-700 mb-2">Location</h3>
+        <p class="text-sm">
+          {{ getLocationString(selectedAsset.location) }}
+        </p>
+      </div>
+
+      <!-- See More Button -->
+      <div class="mt-6 pt-4 border-t">
+        <button
+          (click)="navigateToDetail(selectedAsset.id); closePreviewModal()"
+          class="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition flex items-center justify-center gap-2">
+          <i class="mdi mdi-open-in-new"></i>
+          See More Details
+        </button>
+      </div>
+    </div>
+
+    <!-- Preview Footer -->
+    <div class="px-6 py-4 border-t sticky bottom-0 bg-white flex justify-end">
+      <button
+        (click)="closePreviewModal()"
+        class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">
+        Close
+      </button>
+    </div>
+  </div>
+</div>

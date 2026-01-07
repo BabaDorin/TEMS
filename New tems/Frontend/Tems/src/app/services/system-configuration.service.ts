@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 import { TEMSService } from './tems.service';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { API_EQ_URL } from '../models/backend.config';
+import { API_ASSET_URL } from '../models/backend.config';
 import { AppSettings } from '../models/system-configuration/app-settings.model';
 
 @Injectable({

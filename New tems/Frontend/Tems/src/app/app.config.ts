@@ -17,7 +17,7 @@ import { RoleService } from './services/role.service';
 import { DialogService } from './services/dialog.service';
 import { RoomsService } from './services/rooms.service';
 import { PersonnelService } from './services/personnel.service';
-import { EquipmentService } from './services/equipment.service';
+import { AssetService } from './services/asset.service';
 import { TokenService } from './services/token.service';
 import { ClaimService } from './services/claim.service';
 import { MenuService } from './services/menu.service';
@@ -33,19 +33,29 @@ export function HttpLoaderFactory(http: HttpClient) {
 }
 
 export const authCodeFlowConfig: AuthConfig = {
-  // Use Keycloak as the OIDC provider
   issuer: `${environment.keycloakUrl}/realms/${environment.keycloakRealm}`,
-  redirectUri: window.location.origin + '/home',
+  redirectUri: window.location.origin + '/callback',
   postLogoutRedirectUri: window.location.origin + '/home',
   clientId: 'tems-angular-spa',
   responseType: 'code',
   scope: 'openid profile email roles offline_access',
   showDebugInformation: !environment.production,
-  useSilentRefresh: true,
+  
+  // Token Refresh Configuration
+  useSilentRefresh: false, // We use refresh tokens instead of silent refresh iframe
   silentRefreshRedirectUri: window.location.origin + '/silent-refresh.html',
-  silentRefreshTimeout: 5000,
-  sessionChecksEnabled: false, // Disable polling - use reactive events instead
+  
+  // Session Configuration
+  sessionChecksEnabled: false,
+  
+  // Token Lifecycle - Refresh 60 seconds before expiry
+  timeoutFactor: 0.75, // Refresh when 75% of token lifetime has passed
+  
+  // Security
   requireHttps: false, // Allow HTTP for local development
+  
+  // Disable PKCE for Keycloak compatibility (Keycloak handles security via client config)
+  disablePKCE: false,
 };
 
 export const appConfig: ApplicationConfig = {
@@ -70,7 +80,7 @@ export const appConfig: ApplicationConfig = {
     DialogService,
     RoomsService,
     PersonnelService,
-    EquipmentService,
+    AssetService,
     TokenService,
     ClaimService,
     MenuService,

@@ -3,7 +3,7 @@
         <h2>
             {{ 'library.view' | translate }}
         </h2>
-        <button mat-button *ngIf="claims.canManage" (click)="openUploadItems()">
+        <button mat-button *ngIf="claims.canManageAssets" (click)="openUploadItems()">
             <mat-icon class="text-primary">add</mat-icon>
             {{ 'library.upload' | translate }}
         </button>

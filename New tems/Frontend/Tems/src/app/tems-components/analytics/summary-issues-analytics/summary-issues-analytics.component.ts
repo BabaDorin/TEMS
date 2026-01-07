@@ -18,7 +18,7 @@ import { PiechartCardComponent } from '../piechart-card/piechart-card.component'
 })
 export class SummaryIssuesAnalyticsComponent implements OnInit {
 
-  @Input() equipmentId;
+  @Input() assetId;
   @Input() roomId;
   @Input() personnelId;
 
@@ -37,12 +37,12 @@ export class SummaryIssuesAnalyticsComponent implements OnInit {
   private getEntityType(){
     if(this.roomId != undefined) return "room";
     if(this.personnelId != undefined) return "personnel";
-    if(this.equipmentId != undefined) return "equipment";
+    if(this.assetId != undefined) return "asset";
     return undefined;
   }
 
   private getEntityId(){
-    return this.roomId ?? this.personnelId ?? this.equipmentId;
+    return this.roomId ?? this.personnelId ?? this.assetId;
   }
 
   ngOnInit(): void {

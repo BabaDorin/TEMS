@@ -17,7 +17,7 @@ public class UpdateTicketTypeEndpoint : Endpoint<UpdateTicketTypeCommand, Update
     public override void Configure()
     {
         Put("/ticket-types/{TicketTypeId}");
-        AllowAnonymous();
+        Policies("CanManageTickets");
     }
 
     public override async Task HandleAsync(UpdateTicketTypeCommand request, CancellationToken ct)

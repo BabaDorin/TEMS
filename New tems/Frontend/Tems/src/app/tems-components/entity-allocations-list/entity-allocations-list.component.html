@@ -11,11 +11,11 @@
                         <mat-icon>more_vert</mat-icon>
                     </button>
                     <mat-menu #menu="matMenu">
-                        <app-include-equipment-tags 
+                        <app-include-asset-tags 
                             #includeEquipmentLabels 
                             (valueChanged)="includeLabelsChanged()"
                             [defaultValue]="defaultLabels">
-                        </app-include-equipment-tags>
+                        </app-include-asset-tags>
                     </mat-menu>
                 </li>
             </ul>
@@ -23,11 +23,11 @@
     </div>
     <hr>
 
-    <p class="text-muted" *ngIf="equipmentNotAllocated">
+    <p class="text-muted" *ngIf="assetNotAllocated">
         {{ 'allocation.notAllocated' | translate }}
     </p>
 
-    <ng-container *ngIf="claims.canManage">
+    <ng-container *ngIf="claims.canManageAssets">
         <button mat-button (click)="addAllocation()">
             <mat-icon class="text-primary">add</mat-icon>
             {{ 'allocation.create' | translate }}
@@ -41,10 +41,10 @@
     <ng-container
         class="mt-3"
         *ngFor="let allocation of allocations | paginate: { itemsPerPage: 10, currentPage: pageNumber, id: 'allocations' }; let i = index">
-        <app-equipment-allocation-container [allocation]="allocation" [canManage]="claims.canManage"
+        <app-asset-allocation-container [allocation]="allocation" [canManage]="claims.canManageAssets"
             (allocationRemoved)="allocationRemoved((pageNumber -1) * 10 + i)"
             (allocationReturned)="allocationReturned((pageNumber -1) * 10 + i)">
-        </app-equipment-allocation-container>
+        </app-asset-allocation-container>
     </ng-container>
 
     <pagination-controls class="mb-2"  (pageChange)="pageNumber = $any($event)" id="allocations"

@@ -1,10 +1,10 @@
 import { environment } from "src/environments/environment";
 
 export const API_URL = environment.apiUrl;
-export const API_PROP_URL = API_URL + '/property';
-export const API_EQTYPE_URL = API_URL + '/equipmenttype';
-export const API_EQDEF_URL = API_URL + '/equipmentdefinition';
-export const API_EQ_URL = API_URL + '/equipment';
+export const API_ASSET_PROPERTY_URL = API_URL + '/asset-property';
+export const API_ASSET_TYPE_URL = API_URL + '/asset-type';
+export const API_ASSET_DEFINITION_URL = API_URL + '/asset-definition';
+export const API_ASSET_URL = API_URL + '/asset';
 export const API_LOG_URL = API_URL + '/log';
 export const API_ISU_URL = API_URL + '/ticket';
 export const API_ALL_URL = API_URL + '/allocation';
@@ -31,5 +31,5 @@ export const API_BUG_URL = API_URL + '/bugreport';
 export interface IEntityCollection{
     roomIds?: string[];
     personnelIds?: string[];
-    equipmentIds?: string[];
+    assetIds?: string[];
 }

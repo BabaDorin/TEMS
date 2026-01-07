@@ -17,7 +17,7 @@ public class GetTicketTypeByIdEndpoint : Endpoint<GetTicketTypeByIdCommand, GetT
     public override void Configure()
     {
         Get("/ticket-types/{TicketTypeId}");
-        AllowAnonymous();
+        Policies("CanManageTickets");
     }
 
     public override async Task HandleAsync(GetTicketTypeByIdCommand request, CancellationToken ct)

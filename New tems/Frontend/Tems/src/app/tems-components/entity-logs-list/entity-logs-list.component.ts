@@ -1,4 +1,4 @@
-import { IncludeEquipmentLabelsComponent } from './../../shared/include-equipment-tags/include-equipment-tags.component';
+import { IncludeAssetLabelsComponent } from './../../shared/include-asset-tags/include-asset-tags.component';
 import { ResponseFactory } from './../../models/system/response.model';
 import { LogFilter } from './../../helpers/filters/log.filter';
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
@@ -31,7 +31,7 @@ import { LoadingPlaceholderComponent } from '../loading-placeholder/loading-plac
     MatProgressBarModule,
     TranslateModule,
     NgxPaginationModule,
-    IncludeEquipmentLabelsComponent,
+    IncludeAssetLabelsComponent,
     LogContainerComponent,
     LoadingPlaceholderComponent
   ],
@@ -45,7 +45,7 @@ export class EntityLogsListComponent extends TEMSComponent implements OnInit {
   @Input() personnel: IOption;
   @Input() addLogEnabled: boolean = true;
 
-  @ViewChild('includeEquipmentLabels') includeEquipmentLabels: IncludeEquipmentLabelsComponent;
+  @ViewChild('includeEquipmentLabels') includeEquipmentLabels: IncludeAssetLabelsComponent;
 
   itemsPerPage = 10;
   totalItems = 0;
@@ -70,7 +70,7 @@ export class EntityLogsListComponent extends TEMSComponent implements OnInit {
     this.filter = new LogFilter();
     this.filter.skip = (this.pageNumber - 1) * this.itemsPerPage;
     this.filter.take = this.itemsPerPage;
-    this.filter.equipmentId = this.equipment?.value;
+    this.filter.assetId = this.equipment?.value;
     this.filter.roomId = this.room?.value;
     this.filter.personnelId = this.personnel?.value;
     this.filter.includeLabels = this.includeEquipmentLabels?.value ?? this.defaultLabels;
@@ -129,7 +129,7 @@ export class EntityLogsListComponent extends TEMSComponent implements OnInit {
     let selectedEntities: IOption[];
 
     if(this.equipment){
-      selectedEntityType = "equipment";
+      selectedEntityType = "asset";
       selectedEntities = [
         {
           value: this.equipment.value, 

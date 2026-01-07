@@ -8,12 +8,11 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { TranslateModule } from '@ngx-translate/core';
 import { ConfirmService } from 'src/app/confirm.service';
-import { Property } from 'src/app/models/equipment/view-property.model';
+import { Property } from 'src/app/models/asset/view-property.model';
 import { SnackService } from 'src/app/services/snack.service';
 import { DialogService } from '../../../services/dialog.service';
 import { PersonnelService } from '../../../services/personnel.service';
 import { TokenService } from '../../../services/token.service';
-import { CAN_MANAGE_ENTITIES } from './../../../models/claims';
 import { ViewPersonnel } from './../../../models/personnel/view-personnel.model';
 import { ClaimService } from './../../../services/claim.service';
 import { TEMSComponent } from './../../../tems/tems.component';
@@ -83,7 +82,7 @@ export class PersonnelDetailsGeneralComponent extends TEMSComponent implements O
       })
     );
 
-    this.canManage = this.tockenService.hasClaim(CAN_MANAGE_ENTITIES);
+    this.canManage = this.tockenService.canManageAssets();
   }
 
   viewMore(){
@@ -102,7 +101,7 @@ export class PersonnelDetailsGeneralComponent extends TEMSComponent implements O
   }
 
   sendMail(){
-    if(!this.claims.canSendEmails)
+    if(!this.claims.canManageAssets)
       return;
 
     this.dialogService.openDialog(

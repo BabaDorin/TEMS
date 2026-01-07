@@ -1,7 +1,6 @@
 import { TranslateService, TranslateModule } from '@ngx-translate/core';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { CAN_MANAGE_ENTITIES } from '../../models/claims';
 import { TEMSComponent } from '../../tems/tems.component';
 import { ReportService } from '../../services/report.service';
 import { SnackService } from '../../services/snack.service';
@@ -66,7 +65,7 @@ export class ReportsComponent extends TEMSComponent implements OnInit, OnDestroy
   }
 
   ngOnInit(): void {
-    this.canManage = this.tokenService.hasClaim(CAN_MANAGE_ENTITIES);
+    this.canManage = this.tokenService.canManageAssets();
     this.fetchReportTemplates();
     this.fetchLastGeneratedReports();
   }

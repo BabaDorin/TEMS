@@ -1,4 +1,4 @@
-<button mat-button *ngIf="displayCreateNew && claims.canManageAnnouncements" (click)="addAnnouncement()">
+<button mat-button *ngIf="displayCreateNew && claims.canManageAssets" (click)="addAnnouncement()">
     <mat-icon class="text-primary">
         add
     </mat-icon>
@@ -34,7 +34,7 @@
                                         {{announcement.title}}
                                     </p>
                                 </div>
-                                <ng-container *ngIf="claims.canManageAnnouncements">
+                                <ng-container *ngIf="claims.canManageAssets">
                                     <nav aria-label="breadcrumb">
                                         <ul class="breadcrumb bg-transparent">
 

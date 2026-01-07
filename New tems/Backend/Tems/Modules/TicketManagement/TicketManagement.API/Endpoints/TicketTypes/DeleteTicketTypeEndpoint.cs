@@ -17,7 +17,7 @@ public class DeleteTicketTypeEndpoint : Endpoint<DeleteTicketTypeCommand, Delete
     public override void Configure()
     {
         Delete("/ticket-types/{TicketTypeId}");
-        AllowAnonymous();
+        Policies("CanManageTickets");
     }
 
     public override async Task HandleAsync(DeleteTicketTypeCommand request, CancellationToken ct)

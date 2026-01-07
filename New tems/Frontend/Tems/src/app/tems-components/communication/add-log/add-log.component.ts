@@ -12,7 +12,7 @@ import { RoomsService } from '../../../services/rooms.service';
 import { SnackService } from '../../../services/snack.service';
 import { AddLog } from './../../../models/communication/logs/add-log.model';
 import { IOption } from './../../../models/option.model';
-import { EquipmentService } from './../../../services/equipment.service';
+import { AssetService } from './../../../services/asset.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -54,7 +54,7 @@ export class AddLogComponent extends TEMSComponent implements OnInit {
   selectedAddresseeType: string;
   selectAddressee: any;
   addresseeTypes = [
-    { value: 'equipment', viewValue: 'Equipment' },
+    { value: 'asset', viewValue: 'Equipment' },
     { value: 'room', viewValue: 'Room' },
     { value: 'personnel', viewValue: 'Personnel' }
   ];
@@ -72,7 +72,7 @@ export class AddLogComponent extends TEMSComponent implements OnInit {
 
   constructor(
     private formlyParserService: FormlyParserService,
-    private equipmentservice: EquipmentService,
+    private equipmentservice: AssetService,
     private roomService: RoomsService,
     private logsService: LogsService,
     private snackService: SnackService,
@@ -97,7 +97,7 @@ export class AddLogComponent extends TEMSComponent implements OnInit {
 
     if (this.adresseeChosen) {
       if (this.equipment != undefined){
-        implicitAddressees = { type: 'equipment', entities: this.equipment }
+        implicitAddressees = { type: 'asset', entities: this.equipment }
         this.adresseeEndPoint = this.equipmentservice
       }
 
@@ -122,7 +122,7 @@ export class AddLogComponent extends TEMSComponent implements OnInit {
   onAddresseeSelection(alreadySelected?: IOption[]) {
     switch (this.selectedAddresseeType) {
 
-      case 'equipment':
+      case 'asset':
         this.chipsInputLabel = 'TEMSID or Serial Number...';
         this.adresseeEndPoint = this.equipmentservice
         break;

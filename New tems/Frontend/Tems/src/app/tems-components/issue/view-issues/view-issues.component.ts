@@ -4,7 +4,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { MatTabLazyLoader } from 'src/app/helpers/mat-tab-lazy-loader.helper';
 import { ViewIssueSimplified } from 'src/app/models/communication/issues/view-issue-simplified.model';
 import { IOption } from 'src/app/models/option.model';
-import { EquipmentService } from 'src/app/services/equipment.service';
+import { AssetService } from 'src/app/services/asset.service';
 import { PersonnelService } from 'src/app/services/personnel.service';
 import { RoomsService } from 'src/app/services/rooms.service';
 import { TEMSComponent } from 'src/app/tems/tems.component';
@@ -48,7 +48,7 @@ export class ViewIssuesComponent extends TEMSComponent implements OnInit {
 
 
   // equipment: Observable<IOption[]>;
-  equipmentId: string = "any";
+  assetId: string = "any";
 
   // rooms: Observable<IOption[]>;
   roomId: string = "any";
@@ -69,7 +69,7 @@ export class ViewIssuesComponent extends TEMSComponent implements OnInit {
   @ViewChild('entityClosedIssuesList') entityClosedIssuesList: EntityIssuesListComponent;
 
   constructor(
-    public equipmentService: EquipmentService,
+    public assetService: AssetService,
     public roomService: RoomsService,
     public translate: TranslateService,
     public personnelService: PersonnelService
@@ -81,13 +81,13 @@ export class ViewIssuesComponent extends TEMSComponent implements OnInit {
 
   }
 
-  equipmentSelected(idk){
+  assetSelected(idk){
     let value = this.filterIssueFormGroup.controls.equipment.value;
 
     if(value[0] != undefined)
-      this.equipmentId = value[0].value;
+      this.assetId = value[0].value;
     else
-      this.equipmentId = 'any';
+      this.assetId = 'any';
   }
 
   roomSelected(idk){

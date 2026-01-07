@@ -3,7 +3,7 @@ import { IOption } from '../models/option.model';
 import { HttpClient } from '@angular/common/http';
 import { TEMSService } from './tems.service';
 import { Injectable } from '@angular/core';
-import { API_EQDEF_URL } from 'src/app/models/backend.config';
+import { API_ASSET_DEFINITION_URL } from 'src/app/models/backend.config';
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +18,7 @@ export class DefinitionService extends TEMSService {
 
   remove(definitionId: string): Observable<any>{
     return this.http.delete(
-      API_EQDEF_URL + '/remove/' + definitionId,
+      API_ASSET_DEFINITION_URL + '/remove/' + definitionId,
       this.httpOptions    
     )
   }
@@ -26,7 +26,7 @@ export class DefinitionService extends TEMSService {
   getAllAutocompleteOptions(filter?: string, types?: string[]): Observable<IOption[]>{
 
     return this.http.post<IOption[]>(
-      API_EQDEF_URL + '/getdefinitionsoftypes',
+      API_ASSET_DEFINITION_URL + '/getdefinitionsoftypes',
       JSON.stringify({filter: filter, typeIds: types}),
       this.httpOptions
     );
@@ -34,14 +34,14 @@ export class DefinitionService extends TEMSService {
 
   getDefinitionsOfType(typeId: string): Observable<any> {
     return this.http.get(
-      API_EQDEF_URL + '/getdefinitionsoftype/' + typeId, 
+      API_ASSET_DEFINITION_URL + '/getdefinitionsoftype/' + typeId, 
       this.httpOptions
     );
   }
 
   getDefinitionsOfTypes(typeIds: string[]): Observable<IOption[]>{
     return this.http.post<IOption[]>(
-      API_EQDEF_URL + '/getdefinitionsoftypes',
+      API_ASSET_DEFINITION_URL + '/getdefinitionsoftypes',
       JSON.stringify(typeIds),
       this.httpOptions
     );

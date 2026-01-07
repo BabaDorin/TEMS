@@ -28,16 +28,8 @@ public static class SeedData
                     FullName = "System Administrator",
                     PhoneNumber = "",
                     IsActive = true,
-                    Roles = new List<string> { "Admin" },
-                    Claims = new Dictionary<string, string>
-                    {
-                        { "can_view_entities", "true" },
-                        { "can_manage_entities", "true" },
-                        { "can_allocate_keys", "true" },
-                        { "can_send_emails", "true" },
-                        { "can_manage_announcements", "true" },
-                        { "can_manage_system_configuration", "true" }
-                    },
+                    Roles = new List<string>(), // Roles managed by Keycloak
+                    Claims = new Dictionary<string, string>(), // Claims managed by Keycloak
                     CreatedAt = DateTime.UtcNow
                 };
 

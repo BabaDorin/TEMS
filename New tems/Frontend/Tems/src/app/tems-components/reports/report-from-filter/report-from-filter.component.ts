@@ -6,7 +6,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { PersonnelService } from './../../../services/personnel.service';
 import { FormGroup, FormControl } from '@angular/forms';
 import { ReportService } from './../../../services/report.service';
-import { EquipmentFilter } from './../../../helpers/filters/equipment.filter';
+import { AssetFilter } from './../../../helpers/filters/asset.filter';
 import { Component, Inject, Input, OnInit, Optional } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
@@ -42,7 +42,7 @@ export class ReportFromFilterComponent extends TEMSComponent implements OnInit {
 
   dialogRef;
 
-  @Input() equipmentFilter: EquipmentFilter;
+  @Input() assetFilter: AssetFilter;
   
   formGroup = new FormGroup({
     name: new FormControl(),
@@ -63,7 +63,7 @@ export class ReportFromFilterComponent extends TEMSComponent implements OnInit {
   ) { 
     super();
     if(dialogData != undefined){
-      this.equipmentFilter = dialogData.equipmentFilter;
+      this.assetFilter = dialogData.assetFilter;
     }
   }
 
@@ -79,7 +79,7 @@ export class ReportFromFilterComponent extends TEMSComponent implements OnInit {
       return;  
     }
 
-    if(IsNullOrUndefined(this.equipmentFilter))
+    if(IsNullOrUndefined(this.assetFilter))
     {
       this.snackService.snack(ResponseFactory.Neutral("No equipment filter has been specified."));
       return;  
@@ -87,7 +87,7 @@ export class ReportFromFilterComponent extends TEMSComponent implements OnInit {
 
     let viewModel = new ReportFromFilter();
     viewModel.commonProperties = formVal.properties.commonProperties;
-    viewModel.filter = this.equipmentFilter;
+    viewModel.filter = this.assetFilter;
     viewModel.footer = formVal.footer;
     viewModel.header = formVal.header;
     viewModel.name = formVal.name;

@@ -1,0 +1,205 @@
+<ng-container *ngIf="asset==undefined">
+    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+</ng-container>
+
+<ng-container *ngIf="asset!=undefined">
+    <div [ngClass]="headerClass">
+        <div class="col-md-12">
+            <div class="page-header">
+                <div class="page-title mt-4 mb-0">
+                    <h1 class="font-weight-light">
+                        <h3 class="font-weight-light d-inline">{{ asset.type.name }}</h3>
+                        {{ asset.definition.identifier }}
+                        <ng-container *ngIf="asset.isDefect == true; else working">
+                            <mat-icon class="text-muted" [matTooltip]="translate.instant('equipment.isDefect')">
+                                cancel
+                            </mat-icon>
+                        </ng-container>
+                        <ng-template #working>
+                            <mat-icon [ngClass]="asset.isUsed == true ? 'text-success intermitent-light' : 'text-muted'"
+                                [matTooltip]="translate.instant('equipment.isUsed')">
+                                radio_button_unchecked
+                            </mat-icon>
+                            <mat-icon class="text-success" [matTooltip]="translate.instant('equipment.functional')">
+                                check_circle_outline
+                            </mat-icon>
+                        </ng-template>
+                    </h1>
+                </div>
+                <ng-container *ngIf="claims.canManageAssets">
+                    <nav aria-label="breadcrumb">
+                        <ul class="breadcrumb bg-transparent">
+                            <li class="breadcrumb-item" aria-current="page">
+                                <button mat-button [matMenuTriggerFor]="menu" aria-label="Add Asset Menu"
+                                    class="float-right">
+                                    <mat-icon class="text-primary">more_vert</mat-icon>
+                                </button>
+                                <mat-menu #menu="matMenu">
+                                    <button mat-menu-item (click)="edit()">
+                                        <mat-icon class="text-muted">edit</mat-icon>
+                                        {{ 'general.edit' | translate }}
+                                    </button>
+                                    <button mat-menu-item *ngIf="asset.isArchieved" (click)="archieve()"
+                                        [disabled]="editing">
+                                        <mat-icon class="text-muted">restore</mat-icon>
+                                        {{ 'general.dearchive' | translate }}
+                                    </button>
+                                    <button mat-menu-item *ngIf="!asset.isArchieved" (click)="archieve()"
+                                        [disabled]="editing">
+                                        <mat-icon class="text-muted">auto_delete</mat-icon>
+                                        {{ 'general.archive' | translate }}
+                                    </button>
+                                    <button mat-menu-item (click)="changeWorkingState()" [disabled]="editing">
+                                        <ng-container *ngIf="asset.isDefect">
+                                            <mat-icon class="text-success">done</mat-icon>
+                                            {{ 'equipment.markAsWorking' | translate }}
+                                        </ng-container>
+                                        <ng-container *ngIf="!asset.isDefect">
+                                            <mat-icon class="text-muted">error</mat-icon>
+                                            {{ 'equipment.markAsDefect' | translate }}
+                                        </ng-container>
+                                    </button>
+                                    <button mat-menu-item (click)="changeUsingState()" [disabled]="editing"
+                                        class="btn-block">
+                                        <ng-container *ngIf="asset.isUsed; else eqUnused">
+                                            <mat-icon class="text-muted">pause</mat-icon>
+                                            {{ 'equipment.markAsUnused' | translate }}
+                                        </ng-container>
+                                        <ng-template #eqUnused>
+                                            <mat-icon class="text-success">play_arrow</mat-icon>
+                                            {{ 'equipment.markAsUsed' | translate }}
+                                        </ng-template>
+                                    </button>
+                                </mat-menu>
+                            </li>
+                        </ul>
+                    </nav>
+                </ng-container>
+            </div>
+
+            <!-- If not editing, display equipment information -->
+            <ng-container *ngIf="!editing; else elseBlock">
+                <!-- Actual equipment information -->
+                
+                <!-- Parent (if any) -->
+                <ng-container *ngIf="asset.parent != undefined">
+                    <h2 class="text-muted text-bold">
+                        <mat-icon class="text-primary">link</mat-icon> {{ 'equipment.parent' | translate }}
+                    </h2>
+                    <hr>
+                    <button mat-button (click)="viewParent()">
+                        <mat-icon class="text-primary">computer</mat-icon> {{ asset.parent.label }}
+                    </button>    
+                </ng-container>
+
+                <!-- Allocated to: -->
+                <h2 class="text-muted text-bold mt-5">
+                    <mat-icon class="text-primary">double_arrow</mat-icon> {{ 'equipment.allocatedTo' | translate }}
+                </h2>
+                <hr>
+                <button mat-button *ngIf="asset.room != undefined" (click)="viewAllocatee()">
+                    <mat-icon class="text-primary">pin_drop</mat-icon> {{ asset.room.label }}
+                </button>
+                <button mat-button *ngIf="asset.personnel != undefined" (click)="viewAllocatee()">
+                    <mat-icon class="text-primary">account_circle</mat-icon> {{ asset.personnel.label }}
+                </button>
+                <ng-container *ngIf="asset.room == undefined && asset.personnel == undefined">
+                    <mat-icon class="text-muted">storage</mat-icon> {{ 'entities.deposit' | translate }}
+                </ng-container>
+                
+                <!-- Indexed by: -->
+                <h2 class="text-muted text-bold mt-5">
+                    <mat-icon class="text-primary">sell</mat-icon> {{ 'equipment.indexedBy' | translate }}
+                </h2>
+                <hr>
+                <div class="d-flex align-items-center d-flex flex-wrap">
+                    <div class="asset-index">
+                        <app-asset-label *ngIf="asset.temsId != undefined" [mainText]="asset.temsId"
+                        class="mr-4" matTooltip="TEMS ID">
+                        </app-asset-label>
+                    </div>
+                    <div class="asset-index">
+                        <app-asset-serial-number *ngIf="asset.serialNumber != undefined"
+                        [mainText]="asset.serialNumber" matTooltip="Serial Number">
+                        </app-asset-serial-number>
+                    </div>
+                </div>
+
+                <!-- Asset properties: -->
+                <!-- Case 1: Asset has only common properties -->
+                <ng-container *ngIf="asset.definition.properties == undefined 
+                    || asset.definition.properties.length == 0;
+                    else propertyElseBlock">
+                    <div class="property-container mt-5">
+                        <h2 class="text-muted text-bold">
+                            {{ 'equipment.properties' | translate }}
+                        </h2>
+                        <app-property-render [properties]="generalProperties">
+                        </app-property-render>
+                    </div>
+                </ng-container>
+
+                <!-- Case 2: Asset has both common and specific properties to be displayed -->
+                <ng-template #propertyElseBlock>
+                    <div class="row mt-5">
+                        <div class="col-lg-6 col-sm-12 overflow-auto">
+                            <!-- Common properties for each equipment go here -->
+                            <h2 class="text-muted text-bold">{{ 'property.common' | translate }}</h2>
+                            <app-property-render [properties]="generalProperties">
+                            </app-property-render>
+                        </div>
+                        <div class="col-lg-6 col-sm-12 overflow-auto">
+                            <!-- Speciic properties for current equipment go here -->
+                            <h2 class="text-muted text-bold">{{ 'property.specific' | translate }}</h2>
+                            <app-property-render [properties]="asset.definition.properties">
+                            </app-property-render>
+                        </div>
+                    </div>
+                </ng-template>
+
+                <!-- Child equipment -->
+                <!-- Attached -->
+                <ng-container *ngIf="canAttach" class="mt-3">
+                    <h2 class="text-muted text-bold">
+                        {{ 'equipment.children' | translate }}
+                    </h2>
+                    <hr>
+                    <button *ngIf="claims.canManageAssets" mat-button (click)="attach()">
+                        <mat-icon class="text-primary">add</mat-icon>
+                        {{ 'equipment.attachEquipment' | translate }}
+                    </button>
+                    <ng-container *ngIf="asset.children != undefined && asset.children.length > 0">
+                        <div *ngFor="let child of asset.children; let i = index">
+                            <app-child-asset-container [childEquipment]="child" [canManage]="claims.canManageAssets"
+                                (detached)="detached(i)">
+                            </app-child-asset-container>
+                        </div>
+                    </ng-container>
+                </ng-container>
+
+                <!-- Detached -->
+                <ng-container *ngIf="detachedEquipment.length > 0">
+                    <h2 class="text-muted text-bold mt-5">
+                        {{ 'equipment.detachedEquipment' | translate }}
+                    </h2>
+                    <div *ngFor="let detachedEq of detachedEquipment; let i = index">
+                        <app-child-asset-container [childEquipment]="detachedEq" [canManage]="claims.canManageAssets" [detachable]="true"
+                            (attached)="attached(i)" [isAttached]="false" [parentId]="asset.id">
+                        </app-child-asset-container>
+                    </div>
+                </ng-container>
+            </ng-container>
+
+            <!-- If editing, display add-asset-component -->
+            <ng-template #elseBlock>
+                <app-add-asset *ngIf="editing==true" [updateEquipmentId]="asset.id"
+                    (goBack)="ngOnInit(); editing = false;" [updateAssetDefinitionId]="asset.definition.id">
+                    {{ 'general.loading' | translate }}
+                </app-add-asset>
+            </ng-template>
+        </div>
+
+        <a *ngIf="displayViewMore == true" mat-button [routerLink]="'/asset/details/' + asset.id"
+            (click)="viewMore()">{{ 'general.viewMore' | translate }}</a>
+    </div>
+</ng-container>

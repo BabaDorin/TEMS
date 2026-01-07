@@ -24,24 +24,24 @@ export class MenuService {
             title: menu.equipment,
             icon: 'mdi mdi-desktop-mac menu-icon',
             isActive: false,
-            isShown: this.tokenService.canViewEntities(),
+            isShown: this.tokenService.canManageAssets(),
             showSubmenu: false,
             submenu: [
               {
-                path: '/equipment/all',
+                path: '/asset/all',
                 title: menu.view,
                 icon: 'mdi mdi-view-list menu-icon',
                 isActive: false,
-                isShown: this.tokenService.canViewEntities(),
+                isShown: this.tokenService.canManageAssets(),
                 showSubmenu: false,
                 submenu: []
               },
               {
-                path: '/equipment/add',
+                path: '/asset/add',
                 title: menu.add,
                 icon: 'mdi mdi-plus menu-icon',
                 isActive: false,
-                isShown: this.tokenService.canManageEntities(),
+                isShown: this.tokenService.canManageAssets(),
                 showSubmenu: false,
                 submenu: []
               },
@@ -49,35 +49,35 @@ export class MenuService {
                 path: '/quick-access/equipment',
                 title: menu.quickAccess,
                 icon: 'mdi mdi-crosshairs-gps menu-icon',
-                isShown: this.tokenService.canViewEntities(),
+                isShown: this.tokenService.canManageAssets(),
                 isActive: false,
                 showSubmenu: false,
                 submenu: []
               },
               {
-                path: '/equipment/allocate',
+                path: '/asset/allocate',
                 title: menu.allocate,
                 icon: 'mdi mdi-transfer menu-icon',
                 isActive: false,
-                isShown: this.tokenService.canManageEntities(),
+                isShown: this.tokenService.canManageAssets(),
                 showSubmenu: false,
                 submenu: []
               },
               {
-                path: '/equipment/allocations',
+                path: '/asset/allocations',
                 title: menu.allocations,
                 icon: 'mdi mdi-history menu-icon',
                 isActive: false,
-                isShown: this.tokenService.canViewEntities(),
+                isShown: this.tokenService.canManageAssets(),
                 showSubmenu: false,
                 submenu: []
               },
               {
-                path: '/equipment/generate-temsid',
+                path: '/asset/generate-temsid',
                 title: menu.generateTEMSID,
                 icon: 'mdi mdi-label menu-icon',
                 isActive: false,
-                isShown: this.tokenService.canViewEntities(),
+                isShown: this.tokenService.canManageAssets(),
                 showSubmenu: false,
                 submenu: []
               },
@@ -88,7 +88,7 @@ export class MenuService {
             title: menu.rooms,
             icon: 'mdi mdi-panorama-wide-angle menu-icon',
             isActive: false,
-            isShown: this.tokenService.canViewEntities(),
+            isShown: this.tokenService.canManageAssets(),
             showSubmenu: false,
             submenu: [
               {
@@ -96,7 +96,7 @@ export class MenuService {
                 title: menu.view,
                 icon: 'mdi mdi-view-list menu-icon',
                 isActive: false,
-                isShown: this.tokenService.canViewEntities(),
+                isShown: this.tokenService.canManageAssets(),
                 showSubmenu: false,
                 submenu: []
               },
@@ -105,7 +105,7 @@ export class MenuService {
                 title: menu.add,
                 icon: 'mdi mdi-plus menu-icon',
                 isActive: false,
-                isShown: this.tokenService.canManageEntities(),
+                isShown: this.tokenService.canManageAssets(),
                 showSubmenu: false,
                 submenu: []
               },
@@ -113,7 +113,7 @@ export class MenuService {
                 path: '/quick-access/rooms',
                 title: menu.quickAccess,
                 icon: 'mdi mdi-crosshairs-gps menu-icon',
-                isShown: this.tokenService.canViewEntities(),
+                isShown: this.tokenService.canManageAssets(),
                 isActive: false,
                 showSubmenu: false,
                 submenu: []
@@ -133,7 +133,7 @@ export class MenuService {
             path: '',
             title: menu.personnel,
             icon: 'mdi mdi-account-multiple menu-icon',
-            isShown: this.tokenService.canViewEntities(),
+            isShown: this.tokenService.canManageAssets(),
             isActive: false,
             showSubmenu: false,
             submenu: [
@@ -142,7 +142,7 @@ export class MenuService {
                 title: menu.view,
                 icon: 'mdi mdi-view-list menu-icon',
                 isActive: false,
-                isShown: this.tokenService.canViewEntities(),
+                isShown: this.tokenService.canManageAssets(),
                 showSubmenu: false,
                 submenu: []
               },
@@ -151,7 +151,7 @@ export class MenuService {
                 title: menu.add,
                 icon: 'mdi mdi-plus menu-icon',
                 isActive: false,
-                isShown: this.tokenService.canManageEntities(),
+                isShown: this.tokenService.canManageAssets(),
                 showSubmenu: false,
                 submenu: []
               },
@@ -159,7 +159,7 @@ export class MenuService {
                 path: '/quick-access/personnel',
                 title: menu.quickAccess,
                 icon: 'mdi mdi-crosshairs-gps menu-icon',
-                isShown: this.tokenService.canViewEntities(),
+                isShown: this.tokenService.canManageAssets(),
                 isActive: false,
                 showSubmenu: false,
                 submenu: []
@@ -171,7 +171,7 @@ export class MenuService {
             title: menu.keys,
             icon: 'mdi mdi-key-variant menu-icon',
             isActive: false,
-            isShown: this.tokenService.canAllocateKeys() || this.tokenService.canViewEntities(),
+            isShown: this.tokenService.canManageAssets() || this.tokenService.canManageAssets(),
             showSubmenu: false,
             submenu: [
               {
@@ -179,7 +179,7 @@ export class MenuService {
                 title: menu.view,
                 icon: 'mdi mdi-key-change menu-icon',
                 isActive: false,
-                isShown: this.tokenService.canAllocateKeys() || this.tokenService.canViewEntities(),
+                isShown: this.tokenService.canManageAssets() || this.tokenService.canManageAssets(),
                 showSubmenu: false,
                 submenu: []
               },
@@ -188,7 +188,7 @@ export class MenuService {
                 title: menu.allocations,
                 icon: 'mdi mdi-account-search menu-icon',
                 isActive: false,
-                isShown: this.tokenService.canAllocateKeys() || this.tokenService.canViewEntities(),
+                isShown: this.tokenService.canManageAssets() || this.tokenService.canManageAssets(),
                 showSubmenu: false,
                 submenu: []
               },
@@ -197,7 +197,7 @@ export class MenuService {
                 title: menu.allocate,
                 icon: 'mdi mdi-account-key menu-icon',
                 isActive: false,
-                isShown: this.tokenService.canAllocateKeys(),
+                isShown: this.tokenService.canManageAssets(),
                 showSubmenu: false,
                 submenu: []
               },
@@ -205,67 +205,30 @@ export class MenuService {
           },
           {
             path: '',
-            title: menu.issues,
-            icon: 'mdi mdi-information menu-icon',
+            title: 'Assets',
+            icon: 'mdi mdi-package-variant menu-icon',
             isActive: false,
             isShown: true,
             showSubmenu: false,
             submenu: [
               {
-                path: '/issues/all',
-                title: menu.view,
-                icon: 'mdi mdi-alert menu-icon',
-                isActive: false,
-                isShown: this.tokenService.canViewEntities(),
-                showSubmenu: false,
-                submenu: []
-              },
-              {
-                path: '/issues/create',
-                title: menu.create,
-                icon: 'mdi mdi-plus menu-icon',
+                path: '/assets/view',
+                title: 'Assets',
+                icon: 'mdi mdi-view-list menu-icon',
                 isActive: false,
                 isShown: true,
                 showSubmenu: false,
                 submenu: []
               },
-            ]
-          },
-          {
-            path: '',
-            title: menu.communication,
-            icon: 'mdi mdi-information-variant menu-icon',
-            isShown: true,
-            isActive: false,
-            showSubmenu: false,
-            submenu: [
               {
-                path: '/communication/announcements',
-                title: menu.announcements,
-                icon: 'mdi mdi-bullhorn menu-icon',
+                path: '/assets/management',
+                title: 'Asset Management',
+                icon: 'mdi mdi-cog menu-icon',
                 isActive: false,
                 isShown: true,
                 showSubmenu: false,
                 submenu: []
-              },
-              // {
-              //   path: '/communication/logs',
-              //   title: menu.logs,
-              //   icon: 'mdi mdi-format-align-center menu-icon',
-              //   isActive: false,
-              //   isShown: this.tokenService.canViewEntities(),
-              //   showSubmenu: false,
-              //   submenu: []
-              // },
-              {
-                path: '/communication/sendemail',
-                title: menu.emails,
-                icon: 'mdi mdi-email menu-icon',
-                isActive: false,
-                isShown: this.tokenService.canSendEmails(),
-                showSubmenu: false,
-                submenu: []
-              },
+              }
             ]
           },
           {
@@ -301,7 +264,7 @@ export class MenuService {
             title: menu.library,
             icon: 'mdi mdi-view-list menu-icon',
             isActive: false,
-            isShown: this.tokenService.canViewEntities(),
+            isShown: this.tokenService.canManageAssets(),
             showSubmenu: false,
             submenu: []
           },
@@ -310,7 +273,7 @@ export class MenuService {
             title: menu.report,
             icon: 'mdi mdi-printer menu-icon',
             isActive: false,
-            isShown: this.tokenService.canViewEntities(),
+            isShown: this.tokenService.canManageAssets(),
             showSubmenu: false,
             submenu: []
           },
@@ -319,7 +282,7 @@ export class MenuService {
             title: menu.administration,
             icon: 'mdi mdi-account-star menu-icon',
             isActive: false,
-            isShown: this.tokenService.canManageSystemConfiguration(),
+            isShown: this.tokenService.canManageAssets(),
             showSubmenu: false,
             submenu: [
               {
@@ -327,7 +290,7 @@ export class MenuService {
                 title: menu.equipment,
                 icon: 'mdi mdi-database-plus menu-icon',
                 isActive: false,
-                isShown: this.tokenService.canManageSystemConfiguration(),
+                isShown: this.tokenService.canManageAssets(),
                 showSubmenu: false,
                 submenu: []
               },
@@ -335,7 +298,7 @@ export class MenuService {
                 path: '/administration/users',
                 title: menu.users,
                 icon: 'mdi mdi-account-multiple-outline menu-icon',
-                isShown: this.tokenService.canManageSystemConfiguration(),
+                isShown: this.tokenService.canManageAssets(),
                 isActive: false,
                 showSubmenu: false,
                 submenu: []
@@ -345,7 +308,7 @@ export class MenuService {
                 title: menu.configuration,
                 icon: 'mdi mdi-sitemap menu-icon',
                 isActive: false,
-                isShown: this.tokenService.canManageSystemConfiguration(),
+                isShown: this.tokenService.canManageAssets(),
                 showSubmenu: false,
                 submenu: []
               },
@@ -354,7 +317,7 @@ export class MenuService {
                 title: menu.systemLogs,
                 icon: 'mdi mdi-menu menu-icon',
                 isActive: false,
-                isShown: this.tokenService.canManageSystemConfiguration(),
+                isShown: this.tokenService.canManageAssets(),
                 showSubmenu: false,
                 submenu: []
               },
@@ -363,7 +326,7 @@ export class MenuService {
                 title: menu.bugReports,
                 icon: 'mdi mdi-bug menu-icon',
                 isActive: false,
-                isShown: this.tokenService.canManageSystemConfiguration(),
+                isShown: this.tokenService.canManageAssets(),
                 showSubmenu: false,
                 submenu: []
               },
@@ -382,7 +345,7 @@ export class MenuService {
             title: menu.archive,
             icon: 'mdi mdi-file-sync menu-icon',
             isActive: false,
-            isShown: this.tokenService.canManageEntities(),
+            isShown: this.tokenService.canManageAssets(),
             showSubmenu: false,
             submenu: []
           }

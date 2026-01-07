@@ -7,23 +7,17 @@ import { Injectable, OnInit } from '@angular/core';
 })
 export class ClaimService extends TEMSService {
 
-  public canManage: boolean = false;
-  public canView: boolean = false;
-  public canAllocateKeys: boolean = false;
-  public canManageSystemConfiguration: boolean = false;
-  public canSendEmails: boolean = false;
-  public canManageAnnouncements: boolean = false;
+  public canManageAssets: boolean = false;
+  public canManageTickets: boolean = false;
+  public canOpenTickets: boolean = false;
 
   constructor(
     private tokenService: TokenService
   ) {
     super();
 
-    this.canManageAnnouncements = this.tokenService.canManageAnnouncements();
-    this.canManage = this.tokenService.canManageEntities(); 
-    this.canView = this.tokenService.canViewEntities();
-    this.canAllocateKeys = this.tokenService.canAllocateKeys();
-    this.canManageSystemConfiguration = this.tokenService.canManageSystemConfiguration();
-    this.canSendEmails = this.tokenService.canSendEmails();
+    this.canManageAssets = this.tokenService.canManageAssets();
+    this.canManageTickets = this.tokenService.canManageTickets();
+    this.canOpenTickets = this.tokenService.canOpenTickets();
   }
 }

@@ -24,7 +24,7 @@ import { SidebarComponent } from './shared/sidebar/sidebar.component';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent extends TEMSComponent implements OnInit{
-  title = 'Technical Equipment Management System';
+  title = 'Technical Asset Management System';
 
   showSidebar: boolean = true;
   showNavbar: boolean = true;

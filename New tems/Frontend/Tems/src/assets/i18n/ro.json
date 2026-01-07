@@ -3,19 +3,19 @@
         "personnel": "Personal",
         "room": "Sala",
         "rooms": "Săli",
-        "equipment": "Echipament",
-        "registeredEquipment": "Echipamentele înregistrate",
-        "allocatedEquipment": "Echipamente alocate",
+        "asset": "Activ",
+        "registeredEquipment": "Activele înregistrate",
+        "allocatedEquipment": "Active alocate",
         "tickets": "Ticket-uri",
         "activeTickets": "Ticket-uri active",
         "logs": "Log-uri",
         "allocations": "Alocări",
         "properties": "Proprietăți",
-        "definition": "Definiție a echipamentului",
-        "definitions": "Definiții ale echipamentului",
-        "currentlyAllocatedEquipment": "Echipamentul alocat la moment",
-        "type": "Tipul echipamentului",
-        "types": "Tipurile de echipament",
+        "definition": "Definiție a activului",
+        "definitions": "Definiții ale activului",
+        "currentlyAllocatedEquipment": "Activul alocat la moment",
+        "type": "Tipul activului",
+        "types": "Tipurile de activ",
         "parentTypes": "Tipurile părinte",
         "childTypes": "Tipurile copil",
         "deposit": "Depozit"
@@ -54,7 +54,7 @@
 
     "menu": {
         "bugReports": "Raportări bug-uri",
-        "equipment": "Echipament",
+        "asset": "Activ",
         "view": "Vizualizare",
         "add": "Adaugă",
         "quickAccess": "Acces rapid",
@@ -83,8 +83,8 @@
     "TEMSID": {
         "generateTEMSID": "Generare TEMSID",
         "writeTEMSID": "Înserează un TEMSID",
-        "TEMSIDNotAvailable_DownloadAnyway": "TEMSID-ul indicat este deja asociat cu un echipament înregistrat, drept urmare nu poate fi utilizat pentru înregistrarea unui alt echipament. Descărcați oricum?",
-        "info": "<b>TEMSID</b> (Technical Equipment Management System Identifier) este un set de caractere alfanumerice care, alături de numărul de serie (dacă este cazul), identifică în mod unic un echipament în cadrul sistemului. Acest index servește pentru accesarea mai rapidă a înregistrărilor. <br><br>Este recomandată atribuirea de TEMSID-uri către echipamentele frecvent accesate. Unica restricție în raport cu generarea TEMSID-urilor este lungimea maximă a acestora - 8 caractere. <br><br>O practică recomandată este incapsularea informației în TEMSID (spre exemplu, un calculator din sala 214 poate fi indexat cu TEMSID-ul PC21401, iar o imprimantă - cu PR21401 sau IMP21401 etc)."
+        "TEMSIDNotAvailable_DownloadAnyway": "TEMSID-ul indicat este deja asociat cu un activ înregistrat, drept urmare nu poate fi utilizat pentru înregistrarea unui alt activ. Descărcați oricum?",
+        "info": "<b>TEMSID</b> (Technical Asset Management System Identifier) este un set de caractere alfanumerice care, alături de numărul de serie (dacă este cazul), identifică în mod unic un activ în cadrul sistemului. Acest index servește pentru accesarea mai rapidă a înregistrărilor. <br><br>Este recomandată atribuirea de TEMSID-uri către activele frecvent accesate. Unica restricție în raport cu generarea TEMSID-urilor este lungimea maximă a acestora - 8 caractere. <br><br>O practică recomandată este incapsularea informației în TEMSID (spre exemplu, un calculator din sala 214 poate fi indexat cu TEMSID-ul PC21401, iar o imprimantă - cu PR21401 sau IMP21401 etc)."
     },
 
     "library": {
@@ -108,10 +108,10 @@
     },
 
     "analytics": {
-        "equipmentAmount": "Numărul total de echipamente", 
-        "equipmentUsingRate": "Rata de utilizare", 
-        "equipmentTypeRate": "Rata tipurilor",
-        "equipmentAllocationRate": "Rata de alocare",
+        "assetAmount": "Numărul total de active", 
+        "assetUsingRate": "Rata de utilizare", 
+        "assetTypeRate": "Rata tipurilor",
+        "assetAllocationRate": "Rata de alocare",
         "openTickets": "Ticket-urile active",
         "closingRate": "Rata de soluționare",
         "closingByRate": "Rata de soluționare per utilizator",
@@ -134,8 +134,8 @@
     },
 
     "quickAccess": {
-        "equipmentHeader": "Caută un echipament",
-        "equipmentLabel": "Caută un echipament după numărul de serie sau TEMSID",
+        "assetHeader": "Caută un activ",
+        "assetLabel": "Caută un activ după numărul de serie sau TEMSID",
         "personnelHeader": "Caută personal",
         "personnelLabel": "Caută o înregistrare după nume",
         "roomHeader": "Caută o sală",
@@ -177,40 +177,40 @@
         }
     },
     
-    "equipment": {
+    "asset": {
         "labels": {
-            "includeEquipment": "Include echipamentele",
-            "includeEquipmentTip": "Include doar entitățile asociate tipurilor părinte (ex. Calculator, imprimantă). Entități care nu pot fi tratate drept părți componente ale altor echipamente.",
+            "includeEquipment": "Include activele",
+            "includeEquipmentTip": "Include doar entitățile asociate tipurilor părinte (ex. Calculator, imprimantă). Entități care nu pot fi tratate drept părți componente ale altor active.",
             "includeComponents": "Include componentele",
             "includeComponentsTip": "Include entitățile asociate tipurilor derivate, care au la moment un părinte asociat (sunt atașate).",
             "includeParts": "Include piesele",
             "includePartsTip": "Include entitățile asociate tipurilor derivate, care la momentu NU au un părinte asociat (sunt detașate)."
         },
         "parent": "Părinte",
-        "allocation": "Alocare de echipament",
-        "selectEquipmentToAllocateLabel": "Selectează echipamentele spre alocare",
+        "allocation": "Alocare de activ",
+        "selectEquipmentToAllocateLabel": "Selectează activele spre alocare",
         "createAllocation": "Alocă",
         "allocateTo":"Alocă către",
         "allocatedTo":"Alocat către",
-        "add": "Adaugă un echipament",
-        "attachEquipment": "Atașează un echipament",
+        "add": "Adaugă un activ",
+        "attachEquipment": "Atașează un activ",
         "attach": "Atașează",
-        "includeAttached": "Include echipamentele atașate",
-        "includeAttached_info": "În cazul atașării unui echipament deja atașat, acesta va fi detașat automat de la echipamentul respectiv",
+        "includeAttached": "Include activele atașate",
+        "includeAttached_info": "În cazul atașării unui activ deja atașat, acesta va fi detașat automat de la activul respectiv",
         "attachBack": "Atașează înapoi", 
         "attachTip": "Atașează o componentă compatibilă.",
         "detach": "Detașează",
-        "detachTip": "Doar echipamentele detașate sunt incluse",
-        "addTip": "Introduceți datele necesare pentru înregistrarea echipamentului",
-        "update": "Modifică datele despre echipament",
+        "detachTip": "Doar activele detașate sunt incluse",
+        "addTip": "Introduceți datele necesare pentru înregistrarea activului",
+        "update": "Modifică datele despre activ",
         "bulkUpload": "Încărcare fișiere SIC",
         "step": "Pasul",
         "selectType": "Selectează tipul",
-        "selectTypes": "Selectează tipurile de echipament",
+        "selectTypes": "Selectează tipurile de activ",
         "selectDefinition": "Selectează definiția",
-        "priceDescription": "Prețul va fi moștenit, dar putea fi supradefinit de către fiecare echipament în parte",
-        "provideEquipmentInformation": "Furnizează informații despre echipament",
-        "updateTip": "Aceast formular poate fi utilizat doar pentru a modifica datele echipamentului curent (a părintelui). Dacă se dorește editarea informațiilor echipamentelor copil, acestea trebuie să fie accesate individual. Deasemenea, puteți utiliza opțiunile de Atașare sau Detașare pentru a atașa și respectiv - detașa echipamentel copil.",
+        "priceDescription": "Prețul va fi moștenit, dar putea fi supradefinit de către fiecare activ în parte",
+        "provideEquipmentInformation": "Furnizează informații despre activ",
+        "updateTip": "Aceast formular poate fi utilizat doar pentru a modifica datele activului curent (a părintelui). Dacă se dorește editarea informațiilor activelor copil, acestea trebuie să fie accesate individual. Deasemenea, puteți utiliza opțiunile de Atașare sau Detașare pentru a atașa și respectiv - detașa activel copil.",
         "TEMSID": "TEMSID",
         "serialNumber":"Numărul de serie",
         "identifier": "Indentificator",
@@ -225,18 +225,18 @@
         "indexedBy": "Indexat prin",
         "isDefect": "Defect",
         "functional": "Funcțional",
-        "properties": "Proprietățile echipamentului",
+        "properties": "Proprietățile activului",
         "ellapsedMiliseconds": "Milisecunde",
         "availableDefinitions": "Definiții disponibile",
-        "bulkUploadTip": "Utilizându-vă de această funcționalitate, puteți înregistra ușor echipamentele de tip calculator prin încărcarea fișierelor .json generate de către aplicați System Info Collector.",
+        "bulkUploadTip": "Utilizându-vă de această funcționalitate, puteți înregistra ușor activele de tip calculator prin încărcarea fișierelor .json generate de către aplicați System Info Collector.",
         "markAsWorking": "Marchează ca funcțional",
         "markAsDefect": "Marchează ca defect",
         "markAsUnused": "Marchează ca neutilizat",
         "markAsUsed": "Marchează ca utilizat",
-        "children": "Echipamentele copil",
-        "detachedEquipment": "Echipamentele detașate (Acestea vor dispărea dupa un refresh).",
-        "includeChild": "Include echipamentele copil",
-        "includeChildTip": "Include echipamentele secundare (Componente ale echipamentelor părinte), Exemple: Componentele calculatoarelor (PSU, RAM Chips etc)."
+        "children": "Activele copil",
+        "detachedEquipment": "Activele detașate (Acestea vor dispărea dupa un refresh).",
+        "includeChild": "Include activele copil",
+        "includeChildTip": "Include activele secundare (Componente ale activelor părinte), Exemple: Componentele calculatoarelor (PSU, RAM Chips etc)."
     },
     
     "user": {
@@ -271,9 +271,9 @@
             "Can allocate keys to personnel": "Poate aloca chei către personalul instituției",
             "Can create, update or delete global announcements": "Poate crea, modifica și elimina anunțuri globale",
             "Can send email to all of registered personnel": "Poate expedia mesaje electronice către personalul instituției",
-            "Can create, update or remove equipments, rooms, personnel and much more.": "Poate crea, modifica și elimina echipamente, săli, personal și altele",
-            "Can create, update or delete types, definitions, properties etc.": "Poate crea, modifca și elimina tipuri de echipamente, definiții, proprietăți, are acces către panoul de adminsitrare etc.",
-            "Can view equipments, rooms, personnel and much more.": "Poate vizualiza echipamentele, sălile, personalul și altele"
+            "Can create, update or remove equipments, rooms, personnel and much more.": "Poate crea, modifica și elimina active, săli, personal și altele",
+            "Can create, update or delete types, definitions, properties etc.": "Poate crea, modifca și elimina tipuri de active, definiții, proprietăți, are acces către panoul de adminsitrare etc.",
+            "Can view equipments, rooms, personnel and much more.": "Poate vizualiza activele, sălile, personalul și altele"
         }
     },
 
@@ -413,10 +413,10 @@
         "returned":"Returnat",
         "markAsReturned": "Marchează ca returnat",
         "allocationsHeader": "Alocări",
-        "notAllocated": "Acest echipament este depozitat.",
+        "notAllocated": "Acest activ este depozitat.",
         "create": "Crează o nouă alocare",
         "filterAllocations": "Filtru",
-        "selectEquipmentLabel": "TEMSID-ul sau numărul de serie al echipamentului"
+        "selectEquipmentLabel": "TEMSID-ul sau numărul de serie al activului"
     },
 
     "announcement": {
@@ -488,14 +488,14 @@
         "description": "Descrierea problemei (Ne ajută extrem de mult!)",
         "priority": "Nivelul de prioritate (după aprecierea dumneavoastră)",
         "create": "Raportează o problemă",
-        "selectEquipmentLabel": "TEMSID-urile sau numerele de serie ale echipamentelor",
+        "selectEquipmentLabel": "TEMSID-urile sau numerele de serie ale activelor",
         "selectRoomLabel": "Selectează una sau mai multe săli",
         "selectPeopleLabel": "Persoanele care au nevoie de ajutor",
         "assignToLabel": "Atribuie spre soluționare către",
         "pinned": "Ticket-urile fixate",
         "closedOn": "Închis",
         "changeStatus": "Modifică nivelul de prioritate",
-        "equipmentInvolved": "Echipamentul inclus",
+        "assetInvolved": "Activul inclus",
         "roomsInvolved": "Sălile incluse",
         "personnelInvolved": "Personalul inclus",
         "assignedTo": "Atribuit spre soluționare către",
@@ -567,12 +567,12 @@
         "footer": "Subsol",
         "generatedOn": "Generat ",
         "additional": "Date suplimentare despre raport",
-        "commonProperties": "Proprietățile comune pentru orice tip de echipamente",
+        "commonProperties": "Proprietățile comune pentru orice tip de active",
         "specificProperties": "Proprietăți specifice pentru: ",
         "selectColumns": "Selectează coloanele raportului",
         "save": "Salvează șablonul",
         "generate": "Generează raport",
-        "reportFromFilterInfo": "Raportul va include echipamentele selectate în urma aplicării filtrului curent",
+        "reportFromFilterInfo": "Raportul va include activele selectate în urma aplicării filtrului curent",
         "separateBy": "Grupează după",
         "noSeparation": "Fără grupare",
         "byRoom": "După sală",
@@ -580,10 +580,10 @@
         "byType": "După tip",
         "byDefinition": "După definiție",
         "noSelection": "Fără grupare = oricare",
-        "types": "Tipurile echipamentelor",
+        "types": "Tipurile activelor",
         "definitions": "Definițiile tipurilor selectate",
-        "roomsFilter": "Include doar echipamentele alocate către aceste săli",
-        "personnelFilter": "Include doar echipamentele alocate către aceste persoane",
+        "roomsFilter": "Include doar activele alocate către aceste săli",
+        "personnelFilter": "Include doar activele alocate către aceste persoane",
         "noSubjectSelected": "Mai întâi selectați un subiect suportat",
         "dataSelection": "Selectarea datelor",
         "dataSelectionTip": "Specifică modurile de filtrare și grupare a datelor",
@@ -605,8 +605,8 @@
         "includeFunctional": "Funcționale",
         "includeDefect": "Defecte",
         "other": "Altele",
-        "includeParent": "Include echipamente părinte",
-        "includeChildren": "Include echipamentele copil (componente)"
+        "includeParent": "Include active părinte",
+        "includeChildren": "Include activele copil (componente)"
     },
 
     "bugReport": {

@@ -43,7 +43,7 @@ export class ViewPersonnelComponent implements OnInit {
   }
 
   sendEmail(){
-    if(!this.claims.canSendEmails)
+    if(!this.claims.canManageAssets)
       return;
       
     let selectedNodes = this.getSelectedNodes()
@@ -74,7 +74,7 @@ export class ViewPersonnelComponent implements OnInit {
   }
 
   addNew(){
-    if(!this.claims.canManage)
+    if(!this.claims.canManageAssets)
       return;
 
     this.dialogService.openDialog(

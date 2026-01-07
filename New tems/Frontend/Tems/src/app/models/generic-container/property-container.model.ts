@@ -1,12 +1,12 @@
 import { ConfirmService } from './../../confirm.service';
 import { Component, OnInit } from '@angular/core';
-import { EquipmentService } from 'src/app/services/equipment.service';
-import { AddPropertyComponent } from 'src/app/tems-components/equipment/add-property/add-property.component';
-import { ViewPropertyComponent } from 'src/app/tems-components/equipment/view-property/view-property.component';
+import { AssetService } from 'src/app/services/asset.service';
+import { AddPropertyComponent } from 'src/app/tems-components/asset/add-property/add-property.component';
+import { ViewPropertyComponent } from 'src/app/tems-components/asset/view-property/view-property.component';
 import { DialogService } from '../../services/dialog.service';
 import { SnackService } from '../../services/snack.service';
 import { TEMSComponent } from './../../tems/tems.component';
-import { ViewPropertySimplified } from './../equipment/view-property-simplified.model';
+import { ViewPropertySimplified } from './../asset/view-property-simplified.model';
 import { IContainerAction, IGenericContainerModel, ITagGroup } from './IGenericContainer.model';
 
 @Component({
@@ -21,7 +21,7 @@ export class PropertyContainerModel extends TEMSComponent implements IGenericCon
     eventEmitted: Function;
 
     constructor(
-        private equipmentService: EquipmentService,
+        private assetService: AssetService,
         private dialogService: DialogService,
         private snackService: SnackService,
         private property: ViewPropertySimplified,
@@ -84,7 +84,7 @@ export class PropertyContainerModel extends TEMSComponent implements IGenericCon
                 this.subscriptions.forEach(s => { try { s?.unsubscribe?.(); } catch {} });
                 this.subscriptions = [];
                 this.subscriptions.push(
-                    this.equipmentService.getPropertySimplifiedById(this.property.id)
+                    this.assetService.getPropertySimplifiedById(this.property.id)
                         .subscribe(result => {
                             this.property = result;
                             this.buildContainerModel();
@@ -98,7 +98,7 @@ export class PropertyContainerModel extends TEMSComponent implements IGenericCon
         if (!await this.confirmService.confirm("Do you realy want to remove that property?"))
             return;
 
-        this.equipmentService.archieveProperty(this.property.id)
+        this.assetService.archieveProperty(this.property.id)
             .subscribe(result => {
                 if (result.status == 1)
                     this.eventEmitted('removed');

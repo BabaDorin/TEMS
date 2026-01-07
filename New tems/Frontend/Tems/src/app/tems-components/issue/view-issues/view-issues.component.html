@@ -21,10 +21,10 @@
                     <div class="row">
                         <div class="col-md-4 col-sm-12">
                             <app-chips-autocomplete [label]="translate.instant('ticket.selectEquipmentLabel')"
-                            formControlName="equipment"
-                            [endPoint]="equipmentService"
-                            (dataCollected)="equipmentSelected($event)"
-                            (dataRemoved)="equipmentSelected($event)"
+                            formControlName="asset"
+                            [endPoint]="assetService"
+                            (dataCollected)="assetSelected($event)"
+                            (dataRemoved)="assetSelected($event)"
                             [maxOptionsSelected]="1">
                             </app-chips-autocomplete>
                         </div>
@@ -52,7 +52,7 @@
                     <mat-tab [label]="translate.instant('ticket.openTickets')">
                         <app-entity-issues-list #entityOpenIssuesList
                             [showIncludeClosed]="false"
-                            [equipmentId]="equipmentId"
+                            [assetId]="assetId"
                             [includePinned]="false"
                             [roomId]="roomId"
                             [personnelId]="personnelId"
@@ -64,7 +64,7 @@
                         <ng-container *ngIf="matTabLazyLoader.tabsVisibility[1]">
                             <app-entity-issues-list #entityClosedIssuesList
                                 [showIncludeClosed]="false"
-                                [equipmentId]="equipmentId"
+                                [assetId]="assetId"
                                 [includePinned]="false"
                                 [roomId]="roomId"
                                 [personnelId]="personnelId"

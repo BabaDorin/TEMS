@@ -17,7 +17,7 @@ public class CreateTicketEndpoint : Endpoint<CreateTicketCommand, CreateTicketRe
     public override void Configure()
     {
         Post("/tickets");
-        AllowAnonymous();
+        Policies("CanOpenTickets");
     }
 
     public override async Task HandleAsync(CreateTicketCommand request, CancellationToken ct)

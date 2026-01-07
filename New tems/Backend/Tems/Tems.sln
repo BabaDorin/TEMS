@@ -19,15 +19,15 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example.Contract", "Modules
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example.Infrastructure", "Modules\Example\Example.Infrastructure\Example.Infrastructure.csproj", "{70676260-79F7-C7AA-1190-E1321B1CF959}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "EquipmentManagement", "EquipmentManagement", "{5D27AFBD-1390-4F26-9DF1-2FD2A608875D}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AssetManagement", "AssetManagement", "{5D27AFBD-1390-4F26-9DF1-2FD2A608875D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EquipmentManagement.API", "Modules\EquipmentManagement\EquipmentManagement.API\EquipmentManagement.API.csproj", "{A52AA99B-C83A-4BA6-802F-7C5B407BEC1F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AssetManagement.API", "Modules\AssetManagement\AssetManagement.API\AssetManagement.API.csproj", "{A52AA99B-C83A-4BA6-802F-7C5B407BEC1F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EquipmentManagement.Application", "Modules\EquipmentManagement\EquipmentManagement.Application\EquipmentManagement.Application.csproj", "{7BCEFC78-3A48-410A-87E2-D0E7A10631D7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AssetManagement.Application", "Modules\AssetManagement\AssetManagement.Application\AssetManagement.Application.csproj", "{7BCEFC78-3A48-410A-87E2-D0E7A10631D7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EquipmentManagement.Contract", "Modules\EquipmentManagement\EquipmentManagement.Contract\EquipmentManagement.Contract.csproj", "{F95ECBE1-E707-4205-A26E-07D7A3DBD0A1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AssetManagement.Contract", "Modules\AssetManagement\AssetManagement.Contract\AssetManagement.Contract.csproj", "{F95ECBE1-E707-4205-A26E-07D7A3DBD0A1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EquipmentManagement.Infrastructure", "Modules\EquipmentManagement\EquipmentManagement.Infrastructure\EquipmentManagement.Infrastructure.csproj", "{1981D93D-69EE-43B8-988F-46695BC4D96D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AssetManagement.Infrastructure", "Modules\AssetManagement\AssetManagement.Infrastructure\AssetManagement.Infrastructure.csproj", "{1981D93D-69EE-43B8-988F-46695BC4D96D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TicketManagement", "TicketManagement", "{C8F5B7E2-4A9E-4D1F-8E6C-5D7F9A2B3C4D}"
 EndProject

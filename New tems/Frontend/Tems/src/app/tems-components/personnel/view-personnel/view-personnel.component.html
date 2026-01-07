@@ -12,21 +12,21 @@
         <h2>
             {{ 'entities.personnel' | translate }}
         </h2>
-        <ng-container *ngIf="claims.canManage">
+        <ng-container *ngIf="claims.canManageAssets">
             <button mat-button (click)="addNew()" class="d-block d-md-inline">
                 <mat-icon class="text-primary">add</mat-icon>
                 {{ 'personnel.add' | translate }}
             </button>
         </ng-container>
 
-        <ng-container *ngIf="claims.canView">
+        <ng-container *ngIf="claims.canManageAssets">
             <button mat-button (click)="addIssue()" class="d-block d-md-inline">
                 <mat-icon class="text-primary">feedback</mat-icon>
                 {{ 'personnel.includeSelectedInATicket' | translate }}
             </button>
         </ng-container>
 
-        <ng-container *ngIf="claims.canSendEmails">
+        <ng-container *ngIf="claims.canManageAssets">
             <button mat-button (click)="sendEmail()" class="d-block d-md-inline">
                 <mat-icon class="text-primary">mail</mat-icon>
                 {{ 'personnel.sendEmailToSelected' | translate }}

@@ -2,13 +2,12 @@ import { Component, EventEmitter, Inject, Input, OnInit, Optional, Output, OnDes
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { ConfirmService } from 'src/app/confirm.service';
-import { Property } from 'src/app/models/equipment/view-property.model';
+import { Property } from 'src/app/models/asset/view-property.model';
 import { RoomsService } from 'src/app/services/rooms.service';
 import { TEMSComponent } from 'src/app/tems/tems.component';
 import { DialogService } from '../../../services/dialog.service';
 import { SnackService } from '../../../services/snack.service';
 import { TokenService } from '../../../services/token.service';
-import { CAN_MANAGE_ENTITIES } from './../../../models/claims';
 import { ViewRoom } from './../../../models/room/view-room.model';
 import { AddRoomComponent } from './../add-room/add-room.component';
 import { CommonModule } from '@angular/common';

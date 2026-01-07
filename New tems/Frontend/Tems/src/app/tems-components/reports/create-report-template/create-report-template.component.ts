@@ -8,7 +8,7 @@ import { IOption } from '../../../models/option.model';
 import { CheckboxItem } from '../../../models/checkboxItem.model';
 import { AddReportTemplate } from '../../../models/report/add-report.model';
 import { DefinitionService } from '../../../services/definition.service';
-import { EquipmentService } from '../../../services/equipment.service';
+import { AssetService } from '../../../services/asset.service';
 import { PersonnelService } from '../../../services/personnel.service';
 import { ReportService } from '../../../services/report.service';
 import { RoomsService } from '../../../services/rooms.service';
@@ -67,7 +67,7 @@ export class CreateReportTemplateComponent extends TEMSComponent implements OnIn
   constructor(
     private fb: FormBuilder,
     public roomService: RoomsService,
-    public equipmentService: EquipmentService,
+    public assetService: AssetService,
     public typeService: TypeService,
     public definitionService: DefinitionService,
     public personnelService: PersonnelService,
@@ -266,8 +266,8 @@ export class CreateReportTemplateComponent extends TEMSComponent implements OnIn
 //     this.putBackCommonProps();
 //   else
 //   {
-//     this.equipmentCommonProperties = this.universalProperties;
-//     this.equipmentCommonProperties.forEach(element => {
+//     this.assetCommonProperties = this.universalProperties;
+//     this.assetCommonProperties.forEach(element => {
 //       element.checked = false;
 //       if(this.templateToUpdate.properties.indexOf(element.value) > -1)
 //         element.checked = true;
@@ -305,18 +305,18 @@ export class CreateReportTemplateComponent extends TEMSComponent implements OnIn
 //   // selection group, but will be brought up to Common properites, due to the fact that It indeed is a common property
 //   // along all of CURRENTLY SELECTED TYPES.
 
-//   this.equipmentCommonProperties = this.equipmentCommonProperties
+//   this.assetCommonProperties = this.assetCommonProperties
 //     .filter((el) => !this.universalProperties.map(q => q.label).includes(el.label));
 
 //   this.typeSpecificProperties.forEach(specific => {
-//     this.equipmentCommonProperties.forEach(common => {
+//     this.assetCommonProperties.forEach(common => {
 //       specific.properties.push(new CheckboxItem(common.value, common.label, common.checked))
 //     });
 //   });
 // }
 
 // findCommonProps() {
-//   this.equipmentCommonProperties = this.universalProperties;
+//   this.assetCommonProperties = this.universalProperties;
   
 //   if (this.typeSpecificProperties.length >= 2){
 //     let localCommonProperties = this.typeSpecificProperties[0].properties;
@@ -335,7 +335,7 @@ export class CreateReportTemplateComponent extends TEMSComponent implements OnIn
 //           .includes(value.label));
 //     });
 
-//     this.equipmentCommonProperties = this.equipmentCommonProperties
+//     this.assetCommonProperties = this.assetCommonProperties
 //       .concat(localCommonProperties);
 //   }
 
@@ -343,7 +343,7 @@ export class CreateReportTemplateComponent extends TEMSComponent implements OnIn
 //   if(this.templateToUpdate == undefined)
 //     return;
 
-//   this.equipmentCommonProperties.forEach(element => {
+//   this.assetCommonProperties.forEach(element => {
 //     element.checked = false;
 //     if(this.templateToUpdate.properties.indexOf(element.value) > -1)
 //       element.checked = true;

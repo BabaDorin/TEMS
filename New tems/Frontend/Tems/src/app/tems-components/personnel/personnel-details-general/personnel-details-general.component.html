@@ -28,7 +28,7 @@
                     <ul class="breadcrumb bg-transparent">
                         <ng-container *ngIf="canManage">
                             <li class="breadcrumb-item" aria-current="page">
-                                <button mat-button [matMenuTriggerFor]="menu" aria-label="Add Equipment Menu"
+                                <button mat-button [matMenuTriggerFor]="menu" aria-label="Add Asset Menu"
                                     class="float-right">
                                     <mat-icon class="text-primary">more_vert</mat-icon>
                                 </button>
@@ -42,7 +42,7 @@
                                             <mat-icon class="text-muted">auto_delete</mat-icon>
                                             {{ 'general.archive' | translate }}
                                         </button>
-                                        <button mat-menu-item *ngIf="claims.canSendEmails" (click)="sendMail()">
+                                        <button mat-menu-item *ngIf="claims.canManageAssets" (click)="sendMail()">
                                             <mat-icon class="text-muted">mail</mat-icon>
                                             {{ 'general.sendEmail' | translate }}
                                         </button>

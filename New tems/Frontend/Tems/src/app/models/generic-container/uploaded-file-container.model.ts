@@ -7,7 +7,6 @@ import { LibraryService } from '../../services/library.service';
 import { IContainerAction, IGenericContainerModel, ITagGroup } from './IGenericContainer.model';
 import { TEMSComponent } from './../../tems/tems.component';
 import { Downloader } from 'src/app/shared/downloader/fileDownloader';
-import { CAN_MANAGE_ENTITIES } from '../claims';
 import { DecimalPipe } from '@angular/common';
 import { ConfirmService } from 'src/app/confirm.service';
 
@@ -58,7 +57,7 @@ export class UploadedFileContainerModel extends TEMSComponent implements IGeneri
             action: () => this.download()
         });
 
-        if (this.claims.canManage) {
+        if (this.claims.canManageAssets) {
             this.actions.push(
                 {
                     value: 'delete',

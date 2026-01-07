@@ -102,7 +102,7 @@ export class AgGridRoomsComponent extends TEMSComponent implements OnInit, OnDes
       },
     ];
 
-    if(this.claims.canManage){
+    if(this.claims.canManageAssets) {
       this.columnDefs.push(      {
         cellRenderer: 'btnCellRendererComponent',
         cellRendererParams: {

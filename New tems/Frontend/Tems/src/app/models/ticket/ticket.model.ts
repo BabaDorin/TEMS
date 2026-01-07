@@ -10,7 +10,7 @@ export interface Ticket {
   assigneeId?: string;
   attributes: { [key: string]: any };
   auditMetadata: AuditMetadata;
-  equipmentIds?: string[];
+  assetIds?: string[];
 }
 
 export interface Reporter {
@@ -32,7 +32,7 @@ export interface CreateTicketRequest {
   reporter: Reporter;
   assigneeId?: string;
   attributes: { [key: string]: any };
-  equipmentIds?: string[];
+  assetIds?: string[];
 }
 
 export interface UpdateTicketRequest {

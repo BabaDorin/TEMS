@@ -11,7 +11,18 @@ public class GetAllAssetCommandHandler(IAssetRepository assetRepository)
 {
     public async Task<GetAllAssetResponse> Handle(GetAllAssetCommand request, CancellationToken cancellationToken)
     {
-        var assets = await assetRepository.GetAllAsync(request.IncludeArchived, cancellationToken);
+        var filter = request.Filter ?? new AssetFilterDto();
+        
+        var (assets, totalCount) = await assetRepository.GetPagedAsync(
+            assetTypeIds: filter.AssetTypeIds,
+            includeArchived: filter.IncludeArchived,
+            pageNumber: request.PageNumber,
+            pageSize: request.PageSize,
+            definitionIds: filter.DefinitionIds,
+            assetTag: filter.AssetTag,
+            cancellationToken: cancellationToken);
+
+        var totalPages = (int)Math.Ceiling(totalCount / (double)request.PageSize);
 
         var assetDtos = assets.Select(a => new AssetDto(
             a.Id,
@@ -71,6 +82,12 @@ public class GetAllAssetCommandHandler(IAssetRepository assetRepository)
             a.ArchivedBy
         )).ToList();
 
-        return new GetAllAssetResponse(assetDtos);
+        return new GetAllAssetResponse(
+            assetDtos,
+            totalCount,
+            request.PageNumber,
+            request.PageSize,
+            totalPages
+        );
     }
 }

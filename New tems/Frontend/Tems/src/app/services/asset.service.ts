@@ -1,9 +1,17 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { API_ASSET_URL } from '../models/backend.config';
 import { Asset, CreateAssetRequest, UpdateAssetRequest } from '../models/asset/asset.model';
+
+export interface AssetPageResponse {
+  assets: Asset[];
+  totalCount: number;
+  pageNumber: number;
+  pageSize: number;
+  totalPages: number;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -13,12 +21,27 @@ export class AssetService {
 
   constructor(private http: HttpClient) {}
 
-  getAll(): Observable<Asset[]> {
-    return this.http.get<{ assets: Asset[] }>(this.baseUrl, {
-      headers: new HttpHeaders({ 'Content-Type': 'application/json' })
-    }).pipe(
-      map(response => response.assets)
-    );
+  getAll(assetTypeIds?: string[], pageNumber: number = 1, pageSize: number = 50, definitionIds?: string[], assetTag?: string): Observable<AssetPageResponse> {
+    let params = new HttpParams()
+      .set('pageNumber', pageNumber.toString())
+      .set('pageSize', pageSize.toString());
+    
+    if (assetTypeIds && assetTypeIds.length > 0) {
+      params = params.set('assetTypeIds', assetTypeIds.join(','));
+    }
+
+    if (definitionIds && definitionIds.length > 0) {
+      params = params.set('definitionIds', definitionIds.join(','));
+    }
+
+    if (assetTag && assetTag.trim().length > 0) {
+      params = params.set('assetTag', assetTag.trim());
+    }
+
+    return this.http.get<AssetPageResponse>(this.baseUrl, {
+      headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
+      params
+    });
   }
 
   getById(id: string): Observable<Asset> {

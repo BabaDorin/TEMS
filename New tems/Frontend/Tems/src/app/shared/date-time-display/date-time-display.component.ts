@@ -1,10 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { CommonModule, DatePipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-date-time-display',
   standalone: true,
-  imports: [CommonModule, DatePipe],
+  imports: [CommonModule],
   templateUrl: './date-time-display.component.html',
   styleUrls: ['./date-time-display.component.scss']
 })

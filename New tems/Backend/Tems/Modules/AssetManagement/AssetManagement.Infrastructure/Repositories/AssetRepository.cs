@@ -31,6 +31,55 @@ public class AssetRepository(IMongoDatabase database) : IAssetRepository
         return dbEntities.Select(x => x.ToDomain()).ToList();
     }
 
+    public async Task<(List<DomainEntity.Asset> Assets, int TotalCount)> GetPagedAsync(
+        List<string>? assetTypeIds = null,
+        bool includeArchived = false,
+        int pageNumber = 1,
+        int pageSize = 20,
+        List<string>? definitionIds = null,
+        string? assetTag = null,
+        CancellationToken cancellationToken = default)
+    {
+        var filterBuilder = Builders<DbEntity.Asset>.Filter;
+        var filters = new List<FilterDefinition<DbEntity.Asset>>();
+
+        if (!includeArchived)
+        {
+            filters.Add(filterBuilder.Eq(x => x.IsArchived, false));
+        }
+
+        if (assetTypeIds?.Count > 0)
+        {
+            filters.Add(filterBuilder.In("definition.asset_type_id", assetTypeIds));
+        }
+
+        if (definitionIds?.Count > 0)
+        {
+            filters.Add(filterBuilder.In("definition.definition_id", definitionIds));
+        }
+
+        if (!string.IsNullOrWhiteSpace(assetTag))
+        {
+            filters.Add(filterBuilder.Regex(x => x.AssetTag, new MongoDB.Bson.BsonRegularExpression(assetTag, "i")));
+        }
+
+        var filter = filters.Count > 0 
+            ? filterBuilder.And(filters) 
+            : filterBuilder.Empty;
+
+        var totalCount = await _collection.CountDocumentsAsync(filter, cancellationToken: cancellationToken);
+
+        var skip = (pageNumber - 1) * pageSize;
+        var dbEntities = await _collection.Find(filter)
+            .SortBy(x => x.AssetTag)
+            .Skip(skip)
+            .Limit(pageSize)
+            .ToListAsync(cancellationToken);
+
+        var assets = dbEntities.Select(x => x.ToDomain()).ToList();
+        return (assets, (int)totalCount);
+    }
+
     public async Task<DomainEntity.Asset?> GetBySerialNumberAsync(string serialNumber, CancellationToken cancellationToken = default)
     {
         var filter = Builders<DbEntity.Asset>.Filter.Eq(x => x.SerialNumber, serialNumber);

@@ -1,4 +1,5 @@
 using AssetManagement.Contract.Commands;
+using AssetManagement.Contract.DTOs;
 using AssetManagement.Contract.Responses;
 using FastEndpoints;
 using MediatR;
@@ -16,7 +17,31 @@ public class GetAllAssetEndpoint(IMediator mediator) : EndpointWithoutRequest<Ge
     public override async Task HandleAsync(CancellationToken ct)
     {
         var includeArchived = Query<bool>("includeArchived", false);
-        var command = new GetAllAssetCommand(includeArchived);
+        var assetTypeIdsParam = Query<string>("assetTypeIds", false);
+        var definitionIdsParam = Query<string>("definitionIds", false);
+        var assetTag = Query<string>("assetTag", false);
+        var pageNumber = Query<int>("pageNumber", false);
+        var pageSize = Query<int>("pageSize", false);
+        
+        var typeIdList = string.IsNullOrEmpty(assetTypeIdsParam) 
+            ? null 
+            : assetTypeIdsParam.Split(',').ToList();
+
+        var definitionIdList = string.IsNullOrEmpty(definitionIdsParam)
+            ? null
+            : definitionIdsParam.Split(',').ToList();
+
+        var filter = new AssetFilterDto(
+            AssetTag: string.IsNullOrWhiteSpace(assetTag) ? null : assetTag,
+            AssetTypeIds: typeIdList,
+            DefinitionIds: definitionIdList,
+            IncludeArchived: includeArchived
+        );
+        
+        var command = new GetAllAssetCommand(
+            Filter: filter,
+            PageNumber: pageNumber > 0 ? pageNumber : 1, 
+            PageSize: pageSize > 0 ? pageSize : 50);
         var result = await mediator.Send(command, ct);
         await Send.OkAsync(result, ct);
     }

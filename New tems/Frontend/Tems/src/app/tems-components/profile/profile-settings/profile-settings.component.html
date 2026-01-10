@@ -1,51 +1,80 @@
-<div class="card strech-card">
-    <div class="card-body">
-        <h2>
-            {{ 'profile.accountSettings' | translate }}
-        </h2>
-        <hr>
-        <h3>
-            {{ 'profile.generalAccountInfomration' | translate }}
-        </h3>
-        <form [formGroup]="accountGeneralInfoFormlyData.form" (ngSubmit)="editGeneralInfo(accountGeneralInfoFormlyData.model)">
-            <formly-form [form]="accountGeneralInfoFormlyData.form" [fields]="accountGeneralInfoFormlyData.fields"
-                [model]="accountGeneralInfoFormlyData.model"></formly-form>
-            <br>
-            <button mat-button type="submit" class="btn-gradient-primary"
-                [disabled]="accountGeneralInfoFormlyData.form.status == 'INVALID'">
-                {{ 'form.submit' | translate }}
-            </button>
+<div class="profile-settings">
+    <div class="profile-header">
+        <h1 class="profile-title">{{ 'profile.accountSettings' | translate }}</h1>
+    </div>
+
+    <!-- General Account Information Section -->
+    <div class="settings-section">
+        <div class="section-header">
+            <h2 class="section-title">{{ 'profile.generalAccountInfomration' | translate }}</h2>
+        </div>
+        <form [formGroup]="accountGeneralInfoFormlyData.form" (ngSubmit)="editGeneralInfo(accountGeneralInfoFormlyData.model)" class="settings-form">
+            <div class="form-container">
+                <formly-form [form]="accountGeneralInfoFormlyData.form" [fields]="accountGeneralInfoFormlyData.fields"
+                    [model]="accountGeneralInfoFormlyData.model"></formly-form>
+            </div>
+            <div class="form-actions">
+                <button mat-flat-button type="submit" class="primary-button"
+                    [disabled]="accountGeneralInfoFormlyData.form.status == 'INVALID'">
+                    {{ 'form.submit' | translate }}
+                </button>
+            </div>
         </form>
-        <hr>
-            <button mat-button type="submit" class="btn-gradient-primary" (click)="changePhoto()">
+    </div>
+
+    <!-- Profile Photo Section -->
+    <div class="settings-section">
+        <div class="section-header">
+            <h2 class="section-title">{{ 'profile.profilePhoto' | translate }}</h2>
+        </div>
+        <div class="form-actions">
+            <button mat-flat-button class="secondary-button" (click)="changePhoto()">
                 {{ 'profile.changePhoto' | translate }}
             </button>
-        <hr>
-        <h3>{{ 'profile.changePassowrd' | translate }}</h3>
-        <form [formGroup]="changePasswordFormlyData.form" (ngSubmit)="changePass(changePasswordFormlyData.model)">
-            <formly-form [form]="changePasswordFormlyData.form" [fields]="changePasswordFormlyData.fields"
-                [model]="changePasswordFormlyData.model"></formly-form>
-            <br>
-            <p class="text-muted">
+        </div>
+    </div>
+
+    <!-- Change Password Section -->
+    <div class="settings-section">
+        <div class="section-header">
+            <h2 class="section-title">{{ 'profile.changePassowrd' | translate }}</h2>
+        </div>
+        <form [formGroup]="changePasswordFormlyData.form" (ngSubmit)="changePass(changePasswordFormlyData.model)" class="settings-form">
+            <div class="form-container">
+                <formly-form [form]="changePasswordFormlyData.form" [fields]="changePasswordFormlyData.fields"
+                    [model]="changePasswordFormlyData.model"></formly-form>
+            </div>
+            <p class="info-text">
                 {{ 'profile.afterPasswordChangeTip' | translate }}
             </p>
-            <button mat-button type="submit" class="btn-gradient-primary"
-                [disabled]="changePasswordFormlyData.form.status == 'INVALID'">
-                {{ 'profile.changeMyPassword' | translate }}
-            </button>
+            <div class="form-actions">
+                <button mat-flat-button type="submit" class="primary-button"
+                    [disabled]="changePasswordFormlyData.form.status == 'INVALID'">
+                    {{ 'profile.changeMyPassword' | translate }}
+                </button>
+            </div>
         </form>
-        <hr>
-        <h3>{{ 'profile.emailPreferences' | translate }}</h3>
-        <form [formGroup]="emailPreferencesFormlyData.form" (ngSubmit)="saveEmailPreferences(emailPreferencesFormlyData.model)">
-            <formly-form [form]="emailPreferencesFormlyData.form" [fields]="emailPreferencesFormlyData.fields"
-                [model]="emailPreferencesFormlyData.model"></formly-form>
-            <p class="text-muted">
+    </div>
+
+    <!-- Email Preferences Section -->
+    <div class="settings-section">
+        <div class="section-header">
+            <h2 class="section-title">{{ 'profile.emailPreferences' | translate }}</h2>
+        </div>
+        <form [formGroup]="emailPreferencesFormlyData.form" (ngSubmit)="saveEmailPreferences(emailPreferencesFormlyData.model)" class="settings-form">
+            <div class="form-container">
+                <formly-form [form]="emailPreferencesFormlyData.form" [fields]="emailPreferencesFormlyData.fields"
+                    [model]="emailPreferencesFormlyData.model"></formly-form>
+            </div>
+            <p class="info-text">
                 {{ 'profile.emailTip' | translate }}
             </p>
-            <button mat-button type="submit" class="btn-gradient-primary"
-                [disabled]="emailPreferencesFormlyData.form.status == 'INVALID'">
-                {{ 'form.submit' | translate }}
-            </button>
+            <div class="form-actions">
+                <button mat-flat-button type="submit" class="primary-button"
+                    [disabled]="emailPreferencesFormlyData.form.status == 'INVALID'">
+                    {{ 'form.submit' | translate }}
+                </button>
+            </div>
         </form>
     </div>
 </div>

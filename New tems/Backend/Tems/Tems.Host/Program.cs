@@ -7,6 +7,9 @@ using Tems.Common.Tenant;
 using Tems.Host.Middleware;
 using Tems.Host.Seeding;
 using TicketManagement.API;
+using UserManagement.API;
+using UserManagement.Infrastructure.Repositories;
+using UserManagement.Application.Handlers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,6 +27,7 @@ builder.Services.AddScoped<ITenantContext, TenantContext>();
 // builder.Services.AddExampleServices(builder.Configuration);
 builder.Services.AddAssetManagementServices(builder.Configuration);
 builder.Services.AddTicketManagementServices(builder.Configuration);
+builder.Services.AddUserManagementServices(builder.Configuration);
 
 // Add JWT Bearer Authentication - Validate tokens from Keycloak
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -96,8 +100,17 @@ builder.Services.AddCors(options =>
     });
 });
 
-// Add FastEndpoints
-builder.Services.AddFastEndpoints();
+// Add FastEndpoints - scan all assemblies including module assemblies
+builder.Services.AddFastEndpoints(options =>
+{
+    options.Assemblies = new[]
+    {
+        typeof(Program).Assembly,
+        typeof(AssetManagementServiceRegistration).Assembly,
+        typeof(TicketManagementServiceRegistration).Assembly,
+        typeof(UserManagementServiceRegistration).Assembly
+    };
+});
 
 // Add Swagger
 builder.Services.SwaggerDocument();

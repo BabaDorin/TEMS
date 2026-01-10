@@ -17,7 +17,6 @@ import { FileUploadComponent } from '../../file-upload/file-upload.component';
     MatButtonModule,
     MatProgressBarModule,
     TranslateModule,
-    FileUploadComponent,
     ImageCropperModule
   ],
   templateUrl: './upload-profile-photo.component.html',

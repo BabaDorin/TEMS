@@ -14,6 +14,7 @@ import { Role } from '../models/role.model';
 import { Injectable } from '@angular/core';
 import { ViewProfile } from 'src/app/models/profile/view-profile.model';
 import { ViewNotification } from 'src/app/models/communication/notification/view-notification.model';
+import { UserProfile } from '../models/user/user-profile.model';
 
 @Injectable({
   providedIn: 'root'
@@ -26,6 +27,14 @@ export class UserService extends TEMSService {
     private http: HttpClient
   ) {
     super();
+  }
+
+  // Get or create user profile from new UserManagement module
+  getProfile(): Observable<UserProfile> {
+    return this.http.get<UserProfile>(
+      `${API_URL}/profile`,
+      this.httpOptions
+    );
   }
 
   getRoles(): IOption[]{

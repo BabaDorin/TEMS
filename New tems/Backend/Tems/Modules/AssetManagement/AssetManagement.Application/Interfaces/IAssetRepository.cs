@@ -6,6 +6,14 @@ public interface IAssetRepository
 {
     Task<DomainEntity.Asset?> GetByIdAsync(string id, CancellationToken cancellationToken = default);
     Task<List<DomainEntity.Asset>> GetAllAsync(bool includeArchived = false, CancellationToken cancellationToken = default);
+    Task<(List<DomainEntity.Asset> Assets, int TotalCount)> GetPagedAsync(
+        List<string>? assetTypeIds = null,
+        bool includeArchived = false,
+        int pageNumber = 1,
+        int pageSize = 20,
+        List<string>? definitionIds = null,
+        string? assetTag = null,
+        CancellationToken cancellationToken = default);
     Task<DomainEntity.Asset?> GetBySerialNumberAsync(string serialNumber, CancellationToken cancellationToken = default);
     Task<DomainEntity.Asset?> GetByAssetTagAsync(string assetTag, CancellationToken cancellationToken = default);
     Task<DomainEntity.Asset> CreateAsync(DomainEntity.Asset asset, CancellationToken cancellationToken = default);

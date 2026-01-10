@@ -3,7 +3,13 @@ using AssetManagement.Contract.DTOs;
 
 namespace AssetManagement.Contract.Responses;
 
-public record GetAllAssetResponse(List<AssetDto> Assets);
+public record GetAllAssetResponse(
+    List<AssetDto> Assets,
+    int TotalCount,
+    int PageNumber,
+    int PageSize,
+    int TotalPages
+);
 
 public record AssetDto(
     string Id,

@@ -1,1 +1,11 @@
-// Additional styles if needed
+.type-dropdown-container,
+.definition-dropdown-container {
+  position: relative;
+  z-index: 100;
+}
+
+// Ensure dropdowns appear above other content
+.type-dropdown-container > div > div:last-child,
+.definition-dropdown-container > div > div:last-child {
+  z-index: 1000;
+}

@@ -19,6 +19,8 @@
         <ProjectReference Include="..\Modules\Example\Example.API\Example.API.csproj" />
         <ProjectReference Include="..\Modules\TicketManagement\TicketManagement.API\TicketManagement.API.csproj" />
         <ProjectReference Include="..\Modules\TicketManagement\TicketManagement.Infrastructure\TicketManagement.Infrastructure.csproj" />
+        <ProjectReference Include="..\Modules\UserManagement\UserManagement.API\UserManagement.API.csproj" />
+        <ProjectReference Include="..\Modules\UserManagement\UserManagement.Infrastructure\UserManagement.Infrastructure.csproj" />
         <ProjectReference Include="..\Tems.Common\Tems.Common.csproj" />
     </ItemGroup>
 

@@ -1,0 +1,108 @@
+<div class="dropdown-container">
+  <div 
+    class="dropdown-trigger"
+    [class.disabled]="disabled"
+    [class.open]="isOpen"
+    (click)="toggleDropdown($event)"
+  >
+    <div class="dropdown-content">
+      <!-- Chips display when items are selected -->
+      <div *ngIf="hasSelection" class="chips-container">
+        <div 
+          *ngFor="let selectedValue of selectedValues" 
+          class="chip"
+        >
+          <span class="chip-label">{{ getOptionLabel(selectedValue) }}</span>
+          <button 
+            type="button"
+            class="chip-remove"
+            (click)="removeChip(selectedValue, $event)"
+            [disabled]="disabled"
+          >
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <path d="M10.5 3.5L3.5 10.5M3.5 3.5L10.5 10.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Placeholder when nothing is selected -->
+      <span *ngIf="!hasSelection" class="placeholder">{{ placeholder }}</span>
+
+      <!-- Clear all button (only for multiple mode with selections) -->
+      <button 
+        *ngIf="hasSelection && multiple"
+        type="button"
+        class="clear-all"
+        (click)="clearAll($event)"
+        [disabled]="disabled"
+      >
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M12 4L4 12M4 4L12 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Animated arrow -->
+    <div class="dropdown-arrow" [class.open]="isOpen">
+      <svg width="12" height="8" viewBox="0 0 12 8" fill="none">
+        <path d="M1 1.5L6 6.5L11 1.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- Dropdown menu -->
+  <div class="dropdown-menu" [class.open]="isOpen">
+    <div class="dropdown-menu-inner">
+      <!-- Search box (if searchable) -->
+      <div *ngIf="searchable" class="search-box">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <circle cx="7" cy="7" r="5" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M11 11L14 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <input 
+          type="text" 
+          [value]="searchText"
+          (input)="searchText = $any($event.target).value"
+          placeholder="Search..."
+          (click)="$event.stopPropagation()"
+        >
+      </div>
+
+      <!-- Options list -->
+      <div class="options-list">
+        <div 
+          *ngFor="let option of getFilteredOptions()"
+          class="option-item"
+          [class.selected]="isSelected(option.value)"
+          [class.disabled]="option.disabled"
+          (click)="toggleOption(option, $event)"
+        >
+          <!-- Checkbox for multi-select -->
+          <div *ngIf="multiple" class="checkbox">
+            <div class="checkbox-inner" [class.checked]="isSelected(option.value)">
+              <svg *ngIf="isSelected(option.value)" width="12" height="10" viewBox="0 0 12 10" fill="none">
+                <path d="M1 5L4.5 8.5L11 1.5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+          </div>
+
+          <!-- Radio for single-select -->
+          <div *ngIf="!multiple" class="radio">
+            <div class="radio-inner" [class.checked]="isSelected(option.value)"></div>
+          </div>
+
+          <span class="option-label">{{ option.label }}</span>
+        </div>
+
+        <div *ngIf="getFilteredOptions().length === 0 && options.length === 0" class="no-results">
+          No options available
+        </div>
+
+        <div *ngIf="getFilteredOptions().length === 0 && options.length > 0" class="no-results">
+          No options found
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

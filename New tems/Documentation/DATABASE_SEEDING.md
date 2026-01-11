@@ -1,6 +1,6 @@
 # TEMS Database Seeding Guide
 
-**Last Updated:** January 7, 2026
+**Last Updated:** January 18, 2026
 
 ## Overview
 
@@ -19,51 +19,78 @@ The seeding system runs automatically on application startup via a `BackgroundSe
 
 ### Asset Management Module
 
-#### Asset Types (5 types)
+#### Asset Types (10 types)
 | Name | Description |
 |------|-------------|
-| Computer | Desktop and laptop computers |
+| Computer | Root for desktops and laptops |
+| Laptop | Portable computer (child of Computer) |
+| Desktop | Workstation (child of Computer) |
 | Monitor | Display monitors and screens |
-| Peripheral | Keyboards, mice, webcams, headsets |
-| Network Equipment | Routers, switches, access points |
-| Mobile Device | Smartphones, tablets, mobile devices |
+| Printer | Printing device |
+| Network Switch | Routers, switches, access points |
+| IP Phone | VoIP telephone |
+| Furniture | Parent for desks and chairs |
+| Desk | Office desk (child of Furniture) |
+| Office Chair | Seating (child of Furniture) |
 
-#### Asset Properties (10 properties)
-| Name | Data Type | Description |
-|------|-----------|-------------|
-| Serial Number | Text | Manufacturer serial number |
-| Purchase Date | Date | Date of purchase |
-| Warranty Expiry | Date | Warranty expiration date |
-| Manufacturer | Text | Equipment manufacturer |
-| Model | Text | Model name/number |
-| Processor | Text | CPU type and speed |
-| RAM | Text | Memory capacity |
-| Storage | Text | Storage type and capacity |
-| Screen Size | Text | Display diagonal size |
-| MAC Address | Text | Network MAC address |
+#### Asset Properties (25 properties)
+Data types covered: string, number, boolean, enum, and date (Warranty Expiration).
+| Name | Data Type | Category |
+|------|-----------|----------|
+| CPU | string | Hardware |
+| RAM | number | Hardware |
+| Storage | number | Hardware |
+| Screen Size | number | Display |
+| Resolution | string | Display |
+| Operating System | enum | Software |
+| IP Address | string | Network |
+| MAC Address | string | Network |
+| Hostname | string | Network |
+| Warranty Expiration | date | Lifecycle |
+| Print Speed | number | Performance |
+| Print Technology | enum | Hardware |
+| Color Support | boolean | Features |
+| Duplex Printing | boolean | Features |
+| Panel Type | enum | Display |
+| Refresh Rate | number | Display |
+| Port Count | number | Network |
+| PoE Support | boolean | Features |
+| Speed | enum | Performance |
+| VoIP Support | boolean | Features |
+| PoE Class | enum | Hardware |
+| Dimensions | string | Physical |
+| Material | enum | Physical |
+| Color | string | Appearance |
+| Adjustable | boolean | Features |
 
-#### Asset Definitions (5 definitions)
-| Name | Type | Properties |
-|------|------|------------|
-| Dell Laptop | Computer | Serial, Purchase Date, Warranty, Manufacturer, Model, Processor, RAM, Storage |
-| HP Monitor | Monitor | Serial, Purchase Date, Warranty, Manufacturer, Model, Screen Size |
-| Logitech Keyboard | Peripheral | Serial, Manufacturer, Model |
-| Cisco Switch | Network Equipment | Serial, Purchase Date, Warranty, Manufacturer, Model, MAC Address |
-| iPhone | Mobile Device | Serial, Purchase Date, Warranty, Manufacturer, Model, Storage |
+#### Asset Definitions (12 definitions)
+| Name | Type |
+|------|------|
+| Dell Latitude 5430 | Laptop |
+| Apple MacBook Pro 14-inch | Laptop |
+| Lenovo ThinkPad X1 Carbon Gen 11 | Laptop |
+| Dell OptiPlex 7090 | Desktop |
+| Dell P2722H | Monitor |
+| LG 27UP850 | Monitor |
+| HP LaserJet Pro M404dn | Printer |
+| Canon PIXMA TR8620 | Printer |
+| Cisco Catalyst 2960-X | Network Switch |
+| Yealink SIP-T46S | IP Phone |
+| Steelcase Series 1 | Office Chair |
+| Fully Jarvis Standing Desk | Desk |
 
-#### Assets (10 sample assets)
-| TEMSID | Definition | Location |
-|--------|------------|----------|
-| TEMS-001 | Dell Laptop | Room 101 |
-| TEMS-002 | Dell Laptop | Room 102 |
-| TEMS-003 | Dell Laptop | Room 201 |
-| TEMS-004 | HP Monitor | Room 101 |
-| TEMS-005 | HP Monitor | Room 102 |
-| TEMS-006 | Logitech Keyboard | Room 101 |
-| TEMS-007 | Logitech Keyboard | Room 102 |
-| TEMS-008 | Cisco Switch | Server Room |
-| TEMS-009 | iPhone | Reception |
-| TEMS-010 | iPhone | IT Department |
+#### Assets (9 sample assets)
+| Asset Tag | Definition | Location |
+|-----------|------------|----------|
+| LAP-001 | Dell Latitude 5430 | Room 101, Desk A |
+| LAP-002 | Apple MacBook Pro 14-inch | Room 102, Desk B |
+| MON-001 | Dell P2722H | Room 101, Desk A |
+| MON-002 | Dell P2722H | Room 101, Desk A |
+| PRN-001 | HP LaserJet Pro M404dn | Print Room |
+| NET-001 | Cisco Catalyst 2960-X | Server Room |
+| PHN-001 | Yealink SIP-T46S | Room 101, Desk A |
+| CHR-001 | Steelcase Series 1 | Room 101, Desk A |
+| DSK-001 | Fully Jarvis Standing Desk | Room 101, Desk A |
 
 ### Ticket Management Module
 
@@ -157,10 +184,10 @@ public class MyModuleSeeder : IModuleSeeder
 
 | Collection | Document Count |
 |------------|----------------|
-| AssetTypes | 5 |
-| AssetProperties | 10 |
-| AssetDefinitions | 5 |
-| Assets | 10 |
+| AssetTypes | 10 |
+| AssetProperties | 25 |
+| AssetDefinitions | 12 |
+| Assets | 9 |
 | TicketTypes | 5 |
 | Tickets | 5 |
 
@@ -173,13 +200,13 @@ On startup, you'll see logs like:
 ```
 [DatabaseSeederService] Starting database seeding...
 [AssetManagementSeeder] Seeding asset types...
-[AssetManagementSeeder] Created 5 asset types
+[AssetManagementSeeder] Created 10 asset types
 [AssetManagementSeeder] Seeding asset properties...
-[AssetManagementSeeder] Created 10 asset properties
+[AssetManagementSeeder] Created 25 asset properties
 [AssetManagementSeeder] Seeding asset definitions...
-[AssetManagementSeeder] Created 5 asset definitions
+[AssetManagementSeeder] Created 12 asset definitions
 [AssetManagementSeeder] Seeding assets...
-[AssetManagementSeeder] Created 10 assets
+[AssetManagementSeeder] Created 9 assets
 [TicketManagementSeeder] Seeding ticket types...
 [TicketManagementSeeder] Created 5 ticket types
 [TicketManagementSeeder] Seeding tickets...
@@ -197,10 +224,10 @@ docker exec -it tems-mongodb mongosh
 use TemsDb
 
 # Check collections
-db.AssetTypes.countDocuments()      # Should return 5
-db.AssetProperties.countDocuments() # Should return 10
-db.AssetDefinitions.countDocuments() # Should return 5
-db.Assets.countDocuments()          # Should return 10
+db.AssetTypes.countDocuments()      # Should return 10
+db.AssetProperties.countDocuments() # Should return 25
+db.AssetDefinitions.countDocuments() # Should return 12
+db.Assets.countDocuments()          # Should return 9
 db.TicketTypes.countDocuments()     # Should return 5
 db.Tickets.countDocuments()         # Should return 5
 ```

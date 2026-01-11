@@ -1,22 +1,21 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, ReactiveFormsModule, FormsModule, Validators } from '@angular/forms';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { AgGridAngular } from 'ag-grid-angular';
 import { ColDef, GridApi, GridReadyEvent } from 'ag-grid-community';
 import { AssetDefinitionService } from 'src/app/services/asset-definition.service';
 import { AssetTypeService } from 'src/app/services/asset-type.service';
 import { AssetDefinition } from 'src/app/models/asset/asset-definition.model';
 import { AssetType } from 'src/app/models/asset/asset-type.model';
-import { AssetSpecification } from 'src/app/models/asset/asset.model';
+import { AddDefinitionComponent } from '../../../asset/add-definition/add-definition.component';
 
 @Component({
   selector: 'app-asset-definition-management',
   standalone: true,
   imports: [
     CommonModule,
-    ReactiveFormsModule,
-    FormsModule,
-    AgGridAngular
+    AgGridAngular,
+    MatDialogModule
   ],
   templateUrl: './asset-definition-management.component.html',
   styleUrls: ['./asset-definition-management.component.scss']
@@ -25,16 +24,7 @@ export class AssetDefinitionManagementComponent implements OnInit {
   rowData: AssetDefinition[] = [];
   assetTypes: AssetType[] = [];
   gridApi!: GridApi;
-  showCreateModal = false;
-  showEditModal = false;
-  selectedDefinition: AssetDefinition | null = null;
-  createForm!: FormGroup;
-  editForm!: FormGroup;
-  isSubmitting = false;
   gridReady = false;
-  
-  createSpecifications: Partial<AssetSpecification>[] = [];
-  editSpecifications: Partial<AssetSpecification>[] = [];
 
   columnDefs: ColDef[] = [
     {
@@ -117,25 +107,10 @@ export class AssetDefinitionManagementComponent implements OnInit {
   constructor(
     private assetDefinitionService: AssetDefinitionService,
     private assetTypeService: AssetTypeService,
-    private fb: FormBuilder
-  ) {
-    this.createForm = this.fb.group({
-      assetTypeId: ['', Validators.required],
-      name: ['', Validators.required],
-      manufacturer: [''],
-      model: [''],
-      tags: ['']
-    });
+    private dialog: MatDialog
+  ) {}
 
-    this.editForm = this.fb.group({
-      name: ['', Validators.required],
-      manufacturer: [''],
-      model: [''],
-      tags: ['']
-    });
-  }
-
-  ngOnInit() {
+  ngOnInit(): void {
     this.loadDefinitions();
     this.loadTypes();
   }
@@ -169,141 +144,11 @@ export class AssetDefinitionManagementComponent implements OnInit {
   }
 
   openCreateModal() {
-    this.createForm.reset();
-    this.createSpecifications = [];
-    this.showCreateModal = true;
-  }
-
-  closeCreateModal() {
-    this.showCreateModal = false;
-    this.createForm.reset();
-    this.createSpecifications = [];
-  }
-
-  addCreateSpecification() {
-    this.createSpecifications.push({ propertyId: '', name: '', value: '', dataType: 'string' });
-  }
-
-  removeCreateSpecification(index: number) {
-    this.createSpecifications.splice(index, 1);
-  }
-
-  createDefinition() {
-    if (this.createForm.invalid || this.isSubmitting) return;
-
-    this.isSubmitting = true;
-    const formValue = this.createForm.value;
-    
-    const specifications: AssetSpecification[] = this.createSpecifications
-      .filter(spec => spec.name && spec.value !== undefined)
-      .map(spec => ({
-        propertyId: spec.propertyId || spec.name?.toLowerCase().replace(/\s+/g, '_') || '',
-        name: spec.name || '',
-        value: spec.value,
-        dataType: spec.dataType || 'string',
-        unit: spec.unit
-      }));
-
-    const tags = formValue.tags 
-      ? formValue.tags.split(',').map((t: string) => t.trim()).filter((t: string) => t)
-      : [];
-
-    const request = {
-      assetTypeId: formValue.assetTypeId,
-      name: formValue.name,
-      manufacturer: formValue.manufacturer || undefined,
-      model: formValue.model || undefined,
-      specifications: specifications,
-      tags: tags
-    };
-
-    this.assetDefinitionService.create(request).subscribe({
-      next: () => {
-        this.loadDefinitions();
-        this.closeCreateModal();
-        this.isSubmitting = false;
-      },
-      error: (error) => {
-        console.error('Error creating definition:', error);
-        this.isSubmitting = false;
-      }
-    });
+    this.openDefinitionDialog();
   }
 
   editDefinition(definition: AssetDefinition) {
-    this.selectedDefinition = definition;
-    this.editForm.patchValue({
-      name: definition.name,
-      manufacturer: definition.manufacturer || '',
-      model: definition.model || '',
-      tags: definition.tags.join(', ')
-    });
-    
-    this.editSpecifications = definition.specifications.map(spec => ({
-      propertyId: spec.propertyId,
-      name: spec.name,
-      value: spec.value,
-      dataType: spec.dataType,
-      unit: spec.unit
-    }));
-    
-    this.showEditModal = true;
-  }
-
-  closeEditModal() {
-    this.showEditModal = false;
-    this.selectedDefinition = null;
-    this.editForm.reset();
-    this.editSpecifications = [];
-  }
-
-  addEditSpecification() {
-    this.editSpecifications.push({ propertyId: '', name: '', value: '', dataType: 'string' });
-  }
-
-  removeEditSpecification(index: number) {
-    this.editSpecifications.splice(index, 1);
-  }
-
-  updateDefinition() {
-    if (this.editForm.invalid || this.isSubmitting || !this.selectedDefinition) return;
-
-    this.isSubmitting = true;
-    const formValue = this.editForm.value;
-    
-    const specifications: AssetSpecification[] = this.editSpecifications
-      .filter(spec => spec.name && spec.value !== undefined)
-      .map(spec => ({
-        propertyId: spec.propertyId || spec.name?.toLowerCase().replace(/\s+/g, '_') || '',
-        name: spec.name || '',
-        value: spec.value,
-        dataType: spec.dataType || 'string',
-        unit: spec.unit
-      }));
-
-    const tags = formValue.tags 
-      ? formValue.tags.split(',').map((t: string) => t.trim()).filter((t: string) => t)
-      : [];
-
-    const request = {
-      name: formValue.name,
-      manufacturer: formValue.manufacturer || undefined,
-      model: formValue.model || undefined,
-      specifications: specifications,
-      tags: tags
-    };
-
-    this.assetDefinitionService.update(this.selectedDefinition.id, request).subscribe({
-      next: () => {
-        this.loadDefinitions();
-        this.closeEditModal();
-        this.isSubmitting = false;
-      },
-      error: (error) => {
-        console.error('Error updating definition:', error);
-        this.isSubmitting = false;
-      }
-    });
+    this.openDefinitionDialog({ updateDefinitionId: definition.id, typeId: definition.assetTypeId });
   }
 
   deleteDefinition(id: string) {
@@ -315,6 +160,21 @@ export class AssetDefinitionManagementComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error deleting definition:', error);
+      }
+    });
+  }
+
+  private openDefinitionDialog(data?: { updateDefinitionId?: string; typeId?: string }) {
+    const dialogRef = this.dialog.open(AddDefinitionComponent, {
+      width: '960px',
+      maxHeight: '90vh',
+      data
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result !== undefined) {
+        this.loadDefinitions();
+        this.loadTypes();
       }
     });
   }

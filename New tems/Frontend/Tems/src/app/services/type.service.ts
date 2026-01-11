@@ -1,4 +1,5 @@
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { IOption } from 'src/app/models/option.model';
@@ -24,15 +25,20 @@ export class TypeService extends TEMSService {
     );
   }
 
-  getAllAutocompleteOptions(filter?: string, includeChildren: boolean = true): Observable<IOption[]> {
-    let endPoint = API_ASSET_TYPE_URL + '/getallautocompleteoptions';
-    filter == undefined || filter == '' ? endPoint += '/ ' : endPoint += '/' + filter;
+  getAllAutocompleteOptions(filter?: string, includeArchived: boolean = false): Observable<IOption[]> {
+    const url = `${API_ASSET_TYPE_URL}?includeArchived=${includeArchived}`;
+    const filterText = (filter ?? '').trim().toLowerCase();
 
-    endPoint += '/' + includeChildren;
-     
-    return this.http.get<IOption[]>(
-      endPoint,
-      this.httpOptions
+    return this.http
+      .get<{ assetTypes: Array<{ id: string; name: string; description: string; isArchived: boolean }> }>(url, this.httpOptions)
+      .pipe(
+        map(response => {
+          const types = response.assetTypes ?? [];
+          const activeTypes = includeArchived ? types : types.filter(t => !t.isArchived);
+          const options = activeTypes.map(t => ({ value: t.id, label: t.name, description: t.description } as IOption));
+          if (!filterText) return options;
+          return options.filter(o => o.label.toLowerCase().includes(filterText));
+        })
       );
   }
 

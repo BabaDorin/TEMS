@@ -1,18 +1,14 @@
 import { TranslateService } from '@ngx-translate/core';
 import { Component, Inject, OnInit, Optional } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { Observable } from 'rxjs';
 import { SnackService } from 'src/app/services/snack.service';
 import { TEMSComponent } from 'src/app/tems/tems.component';
-import { DialogService } from '../../../services/dialog.service';
-import { TypeService } from '../../../services/type.service';
-import { AddPropertyComponent } from '../add-property/add-property.component';
-import { AddType } from './../../../models/asset/add-type.model';
-import { AssetType } from './../../../models/asset/view-type.model';
-import { IOption } from './../../../models/option.model';
-import { AssetService } from './../../../services/asset.service';
+import { AssetTypeService } from 'src/app/services/asset-type.service';
+import { AssetPropertyService } from 'src/app/services/asset-property.service';
+import { AssetType } from 'src/app/models/asset/asset-type.model';
+import { AssetProperty } from 'src/app/models/asset/asset-property.model';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
@@ -21,6 +17,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { TranslateModule } from '@ngx-translate/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ChipsAutocompleteComponent } from 'src/app/public/formly/chips-autocomplete/chips-autocomplete.component';
+import { CustomSelectComponent, SelectOption } from 'src/app/shared/custom-select/custom-select.component';
 
 
 @Component({
@@ -35,126 +32,201 @@ import { ChipsAutocompleteComponent } from 'src/app/public/formly/chips-autocomp
     MatSelectModule,
     MatIconModule,
     TranslateModule,
-    ChipsAutocompleteComponent
+    ChipsAutocompleteComponent,
+    CustomSelectComponent
   ],
   templateUrl: './add-type.component.html',
   styleUrls: ['./add-type.component.scss']
 })
 
 export class AddTypeComponent extends TEMSComponent implements OnInit {
-
-  // Provide a value for this field and it will update the record
   updateTypeId: string;
-
   formGroup: FormGroup;
+  parentTypes: AssetType[] = [];
+  availableProperties: AssetProperty[] = [];
+  propertyMap: Record<string, AssetProperty> = {};
+  submitAttempted = false;
+  serverError = '';
 
-  get parents() { return this.formGroup.controls.parents; }
-  get properties() { return this.formGroup.controls.properties; }
+  get propertyRows() {
+    return this.formGroup.get('properties') as FormArray;
+  }
 
-  parentTypeOptions: IOption[] = [];
-  propertyOptions: IOption[] = [];
-  parentTypeAlreadySelected: IOption[] = [];
-  propertyAlreadySelected: IOption[] = [];
+  get propertyRowGroups(): FormGroup[] {
+    return this.propertyRows.controls as FormGroup[];
+  }
+
+  get parentTypeOptions(): SelectOption[] {
+    return this.parentTypes.map(t => ({ value: t.id, label: t.name }));
+  }
+
+  get propertyOptions(): SelectOption[] {
+    return this.availableProperties
+      .filter(p => (p as any)?.id || (p as any)?.propertyId)
+      .map(p => ({
+        value: (p as any).id ?? (p as any).propertyId,
+        label: p.name
+      }));
+  }
+
+  get allPropertiesSelected(): boolean {
+    return this.propertyRowGroups.every(group => !!group.get('propertyId')?.value);
+  }
+
+  get canSubmit(): boolean {
+    const nameValid = !!this.formGroup.get('name')?.value?.toString().trim();
+    return nameValid && this.allPropertiesSelected;
+  }
+
+  get shouldShowClientError(): boolean {
+    return !this.canSubmit && (this.submitAttempted || this.formGroup.touched);
+  }
+
+  trackByIndex(index: number): number {
+    return index;
+  }
 
   constructor(
-    private assetService: AssetService,
-    private dialogService: DialogService,
-    private typeService: TypeService,
+    private assetTypeService: AssetTypeService,
+    private assetPropertyService: AssetPropertyService,
     private snackService: SnackService,
+    private fb: FormBuilder,
     public translate: TranslateService,
     @Optional() public dialogRef: MatDialogRef<AddTypeComponent>,
     @Optional() @Inject(MAT_DIALOG_DATA) public dialogData: any
   ) {
     super();
     this.updateTypeId = this.updateTypeId ?? this.dialogData?.updateTypeId;
-
-    this.formGroup = new FormGroup({
-      parents: new FormControl(),
-      name: new FormControl('', Validators.required),
-      properties: new FormControl(''),
+    this.formGroup = this.fb.group({
+      name: ['', Validators.required],
+      description: [''],
+      parentTypeId: [''],
+      properties: this.fb.array([])
     });
   }
 
   ngOnInit(): void {
     this.fetchTypes();
     this.fetchProperties();
-
-    if (this.updateTypeId != undefined)
+    if (this.updateTypeId != undefined) {
       this.update();
+    }
   }
 
   update() {
     this.subscriptions.push(
-      this.typeService.getFullType(this.updateTypeId)
+      this.assetTypeService.getById(this.updateTypeId)
         .subscribe(result => {
-          let resultType: AssetType = result;
-          let updateType = new AddType();
+          this.formGroup.patchValue({
+            name: result.name,
+            description: result.description || '',
+            parentTypeId: result.parentTypeId || ''
+          });
 
-          updateType.name = resultType.name;
-          updateType.parents = resultType.parents != undefined
-            ? resultType.parents
-            : [];
-          updateType.properties = resultType.properties != undefined
-            ? resultType.properties.map(q => ({ value: q.id, label: q.displayName }))
-            : [];
+          this.propertyRows.clear();
+          (result.properties || [])
+            .sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0))
+            .forEach((p) => {
+              this.propertyRows.push(this.fb.group({
+                propertyId: [p.propertyId, Validators.required],
+                isRequired: [p.isRequired]
+              }));
+          });
 
-          if (updateType.parents != undefined) this.parentTypeAlreadySelected = updateType.parents;
-          if (updateType.properties != undefined) this.propertyAlreadySelected = updateType.properties;
-
-          this.formGroup.setValue(updateType);
+          if (this.propertyRows.length === 0) {
+            this.addPropertyRow();
+          }
         })
-    )
+    );
+  }
+
+  addPropertyRow() {
+    this.propertyRows.push(this.fb.group({
+      propertyId: ['', Validators.required],
+      isRequired: [false]
+    }));
+  }
+
+  removePropertyRow(index: number) {
+    this.propertyRows.removeAt(index);
   }
 
   onSubmit() {
-    let addType: AddType = {
-      id: this.updateTypeId,
-      parents: this.parents == undefined ? [] as IOption[] : this.parents.value as IOption[],
-      name: this.formGroup.controls.name.value,
-      properties: this.properties == undefined ? [] as IOption[] : this.properties.value as IOption[]
+    this.submitAttempted = true;
+    this.serverError = '';
+
+    if (this.formGroup.invalid) {
+      this.formGroup.markAllAsTouched();
+      return;
     }
 
-    let endPoint: Observable<any> = this.assetService.addType(addType);
-    if (addType.id != undefined)
-      endPoint = this.assetService.updateType(addType);
+    if (!this.canSubmit) {
+      this.formGroup.markAllAsTouched();
+      return;
+    }
+
+    const formValue = this.formGroup.value;
+    const request = {
+      name: formValue.name?.trim(),
+      description: formValue.description || undefined,
+      parentTypeId: formValue.parentTypeId || undefined,
+      properties: (formValue.properties || []).map((p, idx) => ({
+        propertyId: p.propertyId,
+        isRequired: !!p.isRequired,
+        displayOrder: idx + 1
+      }))
+    };
+
+    const save$ = this.updateTypeId
+      ? this.assetTypeService.update(this.updateTypeId, request)
+      : this.assetTypeService.create(request);
 
     this.subscriptions.push(
-      endPoint
-        .subscribe(result => {
-          this.snackService.snack(result);
-          if (result.status == 1)
-            this.dialogRef.close();
-        })
-    )
-  }
-
-  addProperty() {
-    this.dialogService.openDialog(
-      AddPropertyComponent,
-      undefined,
-      () => {
-        this.subscriptions.forEach(s => s.unsubscribe());
-        this.subscriptions = [];
-        this.fetchProperties();
-      });
+      save$.subscribe({
+        next: (res) => {
+          this.snackService.snack({ status: 1, message: 'Saved' });
+          if (this.dialogRef) {
+            this.dialogRef.close(res);
+          }
+        },
+        error: (err) => {
+          console.error('Error saving type', err);
+          const apiMessage = err?.error?.errors?.name?.[0] || err?.error?.message || err?.error?.title;
+          if (err?.status === 409) {
+            this.serverError = apiMessage || 'An asset type with this name already exists.';
+          } else {
+            this.serverError = apiMessage || 'Failed to save type';
+          }
+          this.snackService.snack({ status: 0, message: this.serverError });
+        }
+      })
+    );
   }
 
   fetchTypes() {
-    this.subscriptions.push(this.typeService.getAllAutocompleteOptions().subscribe(response => {
-      this.parentTypeOptions = response;
-      if (this.parentTypeOptions.length == 0)
-        this.formGroup.controls.parents.disable();
-    }));
+    this.subscriptions.push(
+      this.assetTypeService.getAll().subscribe(types => {
+        this.parentTypes = types.filter(t => !t.isArchived);
+      })
+    );
   }
 
   fetchProperties() {
-    this.subscriptions.push(this.assetService.getProperties().subscribe(response => {
-      this.propertyOptions = response;
+    this.subscriptions.push(
+      this.assetPropertyService.getAll().subscribe(props => {
+        this.availableProperties = props;
+        this.propertyMap = (props || []).reduce((acc, curr) => {
+          if (curr?.id) {
+            acc[curr.id] = curr;
+          }
+          return acc;
+        }, {} as Record<string, AssetProperty>);
+      })
+    );
+  }
 
-      if (this.propertyOptions.length == 0)
-        this.formGroup.controls.properties.disable();
-      else
-        this.formGroup.controls.properties.enable();
-    }));
+  propertyById(propertyId: string | null | undefined): AssetProperty | undefined {
+    if (!propertyId) return undefined;
+    return this.propertyMap[propertyId];
   }
 }

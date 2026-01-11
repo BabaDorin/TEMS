@@ -1,4 +1,5 @@
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { IOption } from '../models/option.model';
 import { HttpClient } from '@angular/common/http';
 import { TEMSService } from './tems.service';
@@ -32,11 +33,23 @@ export class DefinitionService extends TEMSService {
     );
   }
 
-  getDefinitionsOfType(typeId: string): Observable<any> {
-    return this.http.get(
-      API_ASSET_DEFINITION_URL + '/getdefinitionsoftype/' + typeId, 
-      this.httpOptions
-    );
+  getDefinitionsOfType(typeId: string, includeArchived: boolean = false): Observable<IOption[]> {
+    const url = `${API_ASSET_DEFINITION_URL}?includeArchived=${includeArchived}`;
+
+    return this.http
+      .get<{ assetDefinitions: Array<{ id: string; name: string; assetTypeId: string; model?: string; manufacturer?: string; isArchived: boolean }> }>(url, this.httpOptions)
+      .pipe(
+        map(response => {
+          const defs = response.assetDefinitions ?? [];
+          const byType = defs.filter(d => d.assetTypeId === typeId);
+          const active = includeArchived ? byType : byType.filter(d => !d.isArchived);
+          return active.map(d => ({
+            value: d.id,
+            label: d.name,
+            description: d.model || d.manufacturer || ''
+          } as IOption));
+        })
+      );
   }
 
   getDefinitionsOfTypes(typeIds: string[]): Observable<IOption[]>{

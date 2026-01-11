@@ -6,6 +6,8 @@ import { AgGridAngular } from 'ag-grid-angular';
 import { ColDef, GridApi, GridReadyEvent } from 'ag-grid-community';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { trigger, state, style, transition, animate } from '@angular/animations';
+import { MatDialog } from '@angular/material/dialog';
 import { AssetService } from 'src/app/services/asset.service';
 import { AssetTypeService } from 'src/app/services/asset-type.service';
 import { AssetDefinitionService } from 'src/app/services/asset-definition.service';
@@ -13,6 +15,7 @@ import { Asset, AssetStatus } from 'src/app/models/asset/asset.model';
 import { AssetType } from 'src/app/models/asset/asset-type.model';
 import { AssetDefinition } from 'src/app/models/asset/asset-definition.model';
 import { AssetLabelComponent } from '../../asset/asset-label/asset-label.component';
+import { AddAssetComponent } from '../../asset/add-asset/add-asset.component';
 
 @Component({
   selector: 'app-view-assets',
@@ -25,7 +28,19 @@ import { AssetLabelComponent } from '../../asset/asset-label/asset-label.compone
     AssetLabelComponent
   ],
   templateUrl: './view-assets.component.html',
-  styleUrls: ['./view-assets.component.scss']
+  styleUrls: ['./view-assets.component.scss'],
+  animations: [
+    trigger('expandCollapse', [
+      transition(':enter', [
+        style({ height: '0', opacity: '0', overflow: 'hidden' }),
+        animate('200ms ease-in-out', style({ height: '*', opacity: '1' }))
+      ]),
+      transition(':leave', [
+        style({ height: '*', opacity: '1', overflow: 'hidden' }),
+        animate('200ms ease-in-out', style({ height: '0', opacity: '0' }))
+      ])
+    ])
+  ]
 })
 export class ViewAssetsComponent implements OnInit, OnDestroy {
   Math = Math;
@@ -74,9 +89,9 @@ export class ViewAssetsComponent implements OnInit, OnDestroy {
     {
       headerCheckboxSelection: true,
       checkboxSelection: true,
-      width: 60,
-      maxWidth: 60,
-      minWidth: 60,
+      width: 50,
+      maxWidth: 50,
+      minWidth: 50,
       pinned: 'left',
       lockPosition: true,
       suppressMovable: true,
@@ -167,7 +182,8 @@ export class ViewAssetsComponent implements OnInit, OnDestroy {
     private assetTypeService: AssetTypeService,
     private assetDefinitionService: AssetDefinitionService,
     private fb: FormBuilder,
-    private router: Router
+    private router: Router,
+    private dialog: MatDialog
   ) {
     this.createForm = this.fb.group({
       assetTypeId: ['', Validators.required],
@@ -321,10 +337,20 @@ export class ViewAssetsComponent implements OnInit, OnDestroy {
   }
 
   openCreateModal() {
-    this.createForm.reset({ status: AssetStatus.Available });
-    this.filteredDefinitions = [];
-    this.selectedDefinition = null;
-    this.showCreateModal = true;
+    const dialogRef = this.dialog.open(AddAssetComponent, {
+      width: '90vw',
+      maxWidth: '1200px',
+      maxHeight: '90vh',
+      panelClass: 'custom-dialog-container',
+      disableClose: false
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        // Refresh the asset list after successful creation
+        this.loadAssets();
+      }
+    });
   }
 
   closeCreateModal() {

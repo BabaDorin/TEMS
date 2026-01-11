@@ -1,6 +1,7 @@
 using AssetManagement.Contract.DTOs;
 using AssetManagement.Application.Domain;
 using AssetManagement.Application.Interfaces;
+using AssetManagement.Application.Exceptions;
 using AssetManagement.Contract.Commands;
 using AssetManagement.Contract.Responses;
 using MediatR;
@@ -18,7 +19,14 @@ public class UpdateAssetTypeCommandHandler(IAssetTypeRepository assetTypeReposit
             return new UpdateAssetTypeResponse(false);
         }
 
-        existingAssetType.Name = request.Name;
+        var normalizedName = request.Name?.Trim() ?? string.Empty;
+        var conflicting = await assetTypeRepository.GetByNameInsensitiveAsync(normalizedName, cancellationToken);
+        if (conflicting != null && conflicting.Id != request.Id)
+        {
+            throw new DuplicateAssetTypeNameException(normalizedName);
+        }
+
+        existingAssetType.Name = normalizedName;
         existingAssetType.Description = request.Description;
         existingAssetType.ParentTypeId = request.ParentTypeId;
         existingAssetType.Properties = request.Properties.Select(p => new AssetTypeProperty

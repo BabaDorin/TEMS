@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { API_ASSET_URL } from '../models/backend.config';
+import { API_ASSET_URL, API_URL } from '../models/backend.config';
 import { Asset, CreateAssetRequest, UpdateAssetRequest } from '../models/asset/asset.model';
 
 export interface AssetPageResponse {
@@ -115,6 +115,25 @@ export class AssetService {
   addEquipment(data: any): Observable<any> {
     console.warn('Using deprecated method addEquipment - migrate to new asset module');
     return this.http.post<any>(API_ASSET_URL, data);
+  }
+
+  createAsset(assetData: {
+    serialNumber: string,
+    assetTag: string,
+    status: string,
+    assetTypeId: string,
+    assetTypeName: string,
+    definitionId: string,
+    definitionName: string,
+    manufacturer: string,
+    model: string,
+    tags: string[],
+    customizeDefinition: boolean,
+    customSpecifications: any[] | null,
+    notes: string,
+    createdBy: string
+  }): Observable<any> {
+    return this.http.post<any>(this.baseUrl, assetData);
   }
 
   updateEquipment(data: any): Observable<any> {

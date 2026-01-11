@@ -1,22 +1,15 @@
 import { Component, Inject, Input, OnInit, Optional } from '@angular/core';
-import { FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { FormlyFieldConfig } from '@ngx-formly/core';
-import { AssetService } from 'src/app/services/asset.service';
-import { FormlyParserService } from 'src/app/services/formly-parser.service';
-import { SnackService } from 'src/app/services/snack.service';
-import { TEMSComponent } from 'src/app/tems/tems.component';
-import { TypeService } from '../../../services/type.service';
-import { AddDefinition, Definition } from './../../../models/asset/add-definition.model';
-import { AssetType } from './../../../models/asset/view-type.model';
-import { IOption } from './../../../models/option.model';
 import { CommonModule } from '@angular/common';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatSelectModule } from '@angular/material/select';
-import { MatOptionModule } from '@angular/material/core';
-import { MatButtonModule } from '@angular/material/button';
-import { TranslateModule } from '@ngx-translate/core';
-import { TEMS_FORMS_IMPORTS } from 'src/app/shared/constants/tems-forms-imports.const';
+import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { TEMSComponent } from 'src/app/tems/tems.component';
+import { SnackService } from 'src/app/services/snack.service';
+import { AssetDefinitionService } from 'src/app/services/asset-definition.service';
+import { AssetTypeService } from 'src/app/services/asset-type.service';
+import { AssetPropertyService } from 'src/app/services/asset-property.service';
+import { AssetSpecification } from 'src/app/models/asset/asset.model';
+import { AssetType } from 'src/app/models/asset/asset-type.model';
+import { CustomSelectComponent, SelectOption } from 'src/app/shared/custom-select/custom-select.component';
 
 @Component({
   selector: 'app-add-definition',
@@ -24,201 +17,215 @@ import { TEMS_FORMS_IMPORTS } from 'src/app/shared/constants/tems-forms-imports.
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    MatFormFieldModule,
-    MatSelectModule,
-    MatOptionModule,
-    MatButtonModule,
-    TranslateModule,
-    ...TEMS_FORMS_IMPORTS
+    CustomSelectComponent
   ],
   templateUrl: './add-definition.component.html',
   styleUrls: ['./add-definition.component.scss']
 })
 
 export class AddDefinitionComponent extends TEMSComponent implements OnInit {
-
-  // Provide a value for this in order to edit a definition instead of adding one.
   updateDefinitionId: string;
   @Input() typeId: string;
+  assetTypes: AssetType[] = [];
+  availableProperties: any[] = [];
+  formGroup: FormGroup;
+  isSubmitting = false;
+  assetTypeLocked = false;
 
-  formlyData = {
-    isVisible: false,
-    form: new FormGroup({}),
-    model: {} as any,
-    fields: [] as FormlyFieldConfig[],
+  get specs(): FormArray {
+    return this.formGroup.get('specifications') as FormArray;
   }
-  dialogRef;
 
-  addDefinition: Definition;
-  assetTypes: IOption[];
-  eqProperies: string[];
+  get specsControls(): FormGroup[] {
+    return this.specs.controls as FormGroup[];
+  }
+
+  get assetTypeOptions(): SelectOption[] {
+    return this.assetTypes.map(t => ({ value: t.id, label: t.name }));
+  }
+
+  get propertyOptions(): SelectOption[] {
+    return this.availableProperties
+      .filter(p => (p as any)?.id || (p as any)?.propertyId)
+      .map(p => ({
+        value: (p as any).id ?? (p as any).propertyId,
+        label: p.name
+      }));
+  }
 
   constructor(
-    private formlyParserService: FormlyParserService,
-    private assetService: AssetService,
-    private typeService: TypeService,
+    private fb: FormBuilder,
+    private assetDefinitionService: AssetDefinitionService,
+    private assetTypeService: AssetTypeService,
+    private assetPropertyService: AssetPropertyService,
     private snackService: SnackService,
-    @Optional() @Inject(MAT_DIALOG_DATA) public dialogData: any) {
+    @Optional() public dialogRef: MatDialogRef<AddDefinitionComponent>,
+    @Optional() @Inject(MAT_DIALOG_DATA) public dialogData: any
+  ) {
     super();
-    
-    if(dialogData != undefined){
-      this.updateDefinitionId = dialogData.updateDefinitionId;
-      this.typeId = dialogData.typeId;
-    }
+    this.updateDefinitionId = this.updateDefinitionId ?? this.dialogData?.updateDefinitionId;
+    this.typeId = this.typeId ?? this.dialogData?.typeId;
+
+    this.formGroup = this.fb.group({
+      assetTypeId: ['', Validators.required],
+      name: ['', Validators.required],
+      manufacturer: [''],
+      model: [''],
+      tags: [''],
+      specifications: this.fb.array([])
+    });
   }
 
   ngOnInit(): void {
-    // There are two ways of getting the type:
-    // 1) The type was sent via matDialog data
-    // 2) User chooses the type via select input
+    this.typeId = this.typeId ?? this.dialogData?.typeId;
+    this.updateDefinitionId = this.updateDefinitionId ?? this.dialogData?.updateDefinitionId;
 
-    if (this.updateDefinitionId != undefined) {
-      this.update();
+    this.fetchTypes();
+    this.fetchProperties();
+
+    if (this.typeId) {
+      this.formGroup.patchValue({ assetTypeId: this.typeId });
+      this.lockAssetType();
+    }
+
+    if (this.updateDefinitionId) {
+      this.lockAssetType();
+      this.loadDefinition(this.updateDefinitionId);
       return;
     }
 
-
-    if (this.typeId != undefined)
-      this.setDefinitionType(this.typeId);
-    else
-      this.subscriptions.push(
-        this.typeService.getAllAutocompleteOptions()
-          .subscribe(response => {
-            this.assetTypes = response;
-          }));
+    this.addSpecification();
   }
 
-  onSelectionChanged(eventData) {
-    this.setDefinitionType(eventData.value);
-  }
-
-  setDefinitionType(typeId: string) {
-    this.typeId = typeId;
-
-    this.addDefinition = new Definition();
-    let parentFullType: AssetType;
-
-    this.subscriptions.forEach(s => s.unsubscribe);
+  fetchTypes() {
     this.subscriptions.push(
-      this.typeService.getFullType(typeId)
-        .subscribe(
-          response => {
-            parentFullType = response;
-            this.addDefinition.assetType = { value: parentFullType.id, label: parentFullType.name } as IOption;
-
-            // Properties are copied from the definition types because we don't want
-            // definition properties to be tight coupled with equipment properties.
-            // We may add / remove properties from a definition (this support will be added soon)
-            this.addDefinition.properties = parentFullType.properties;
-
-            if (parentFullType.children != undefined)
-              parentFullType.children.forEach(childType => {
-                let childDefinition = new Definition();
-                childDefinition.assetType = { value: childType.id, label: childType.name } as IOption;
-                childDefinition.properties = childType.properties;
-
-                this.addDefinition.children.push(childDefinition);
-              });
-
-            this.formlyData.fields = this.formlyParserService.parseAddDefinition(this.addDefinition);
-            this.formlyData.isVisible = true;
-          }
-        ))
+      this.assetTypeService.getAll().subscribe(types => {
+        this.assetTypes = types.filter(t => !t.isArchived);
+      })
+    );
   }
 
-  update() {
+  fetchProperties() {
     this.subscriptions.push(
-      this.assetService.getDefinitionToUpdate(this.updateDefinitionId)
-        .subscribe(result => {
-          if(this.snackService.snackIfError(result))
-            return;
+      this.assetPropertyService.getAll().subscribe(props => {
+        this.availableProperties = props;
+      })
+    );
+  }
 
-          let resultDefinition: AddDefinition = result;
-          this.setDefinitionType(resultDefinition.typeId);
+  get isUpdateMode(): boolean {
+    return !!this.updateDefinitionId;
+  }
 
-          let updateDefinition = {
-            typeId: result.typeId,
-            identifier: result.identifier,
-            description: result.description,
-            price: result.price,
-            currency: result.currency,
-          };
+  private lockAssetType() {
+    this.assetTypeLocked = true;
+    this.formGroup.get('assetTypeId')?.disable();
+  }
 
-          resultDefinition.properties.forEach(property => {
-            updateDefinition[property.label] = property.value;
+  addSpecification() {
+    this.specs.push(this.buildSpecificationGroup());
+  }
+
+  removeSpecification(index: number) {
+    this.specs.removeAt(index);
+  }
+
+  private buildSpecificationGroup(spec?: AssetSpecification): FormGroup {
+    return this.fb.group({
+      propertyId: [spec?.propertyId || ''],
+      name: [spec?.name || '', Validators.required],
+      value: [spec?.value ?? '', Validators.required],
+      dataType: [spec?.dataType || 'string'],
+      unit: [spec?.unit || ''],
+      isRequired: [spec?.isRequired || false]
+    });
+  }
+
+  private loadDefinition(id: string) {
+    this.subscriptions.push(
+      this.assetDefinitionService.getById(id).subscribe({
+        next: (definition) => {
+          this.formGroup.patchValue({
+            assetTypeId: definition.assetTypeId,
+            name: definition.name,
+            manufacturer: definition.manufacturer || '',
+            model: definition.model || '',
+            tags: definition.tags?.join(', ') || ''
           });
 
-          resultDefinition.children.forEach(child => {
-
-            if(updateDefinition[child.typeId] == undefined)
-              updateDefinition[child.typeId] = [];
-
-            updateDefinition[child.typeId].push({
-              typeId: child.typeId,
-              // identifier: child.identifier,
-              identifierSelect: child.id,
-              description: child.description,
-              price: child.price,
-              currency: child.currency,
-            });
-
-            child.properties.forEach(property => {
-              updateDefinition[child.typeId][updateDefinition[child.typeId].length-1][property.label] = property.value;
-              updateDefinition[child.typeId][updateDefinition[child.typeId].length-1][property.label];
-            });
-          })
-
-          this.formlyData.model = {};
-          this.formlyData.model = updateDefinition;
-        }));
+          this.specs.clear();
+          if (definition.specifications?.length) {
+            definition.specifications.forEach(spec => this.specs.push(this.buildSpecificationGroup(spec)));
+          } else {
+            this.addSpecification();
+          }
+        },
+        error: (err) => {
+          console.error('Error loading definition', err);
+          this.snackService.snack({ status: 0, message: 'Failed to load definition' });
+        }
+      })
+    );
   }
 
-  onSubmit(model) {
-    let addDefinition: AddDefinition = this.generateAddDefinitionModel(model, this.typeId);
-    addDefinition.id = this.updateDefinitionId;
+  onSubmit() {
+    if (this.formGroup.invalid || this.isSubmitting) {
+      this.formGroup.markAllAsTouched();
+      return;
+    }
 
-    let endPoint = this.assetService.addDefinition(addDefinition);
-    if (addDefinition.id != undefined)
-      endPoint = this.assetService.updateDefinition(addDefinition);
+    const formValue = this.formGroup.getRawValue();
+    const specifications: AssetSpecification[] = (formValue.specifications || []).map((s: any) => ({
+      propertyId: s.propertyId || s.name.toLowerCase().replace(/\s+/g, '_'),
+      name: s.name,
+      value: s.value,
+      dataType: s.dataType,
+      unit: s.unit || undefined,
+      isRequired: s.isRequired || false
+    }));
+
+    const tags = formValue.tags
+      ? formValue.tags.split(',').map((t: string) => t.trim()).filter((t: string) => t)
+      : [];
+
+    const createRequest = {
+      assetTypeId: formValue.assetTypeId,
+      name: formValue.name,
+      manufacturer: formValue.manufacturer || undefined,
+      model: formValue.model || undefined,
+      specifications,
+      tags
+    };
+
+    const updateRequest = {
+      name: formValue.name,
+      manufacturer: formValue.manufacturer || undefined,
+      model: formValue.model || undefined,
+      specifications,
+      tags
+    };
+
+    const save$ = this.isUpdateMode
+      ? this.assetDefinitionService.update(this.updateDefinitionId, updateRequest)
+      : this.assetDefinitionService.create(createRequest);
+
+    this.isSubmitting = true;
 
     this.subscriptions.push(
-      endPoint
-        .subscribe(result => {
-          this.snackService.snack(result);
-          if (result.status == 1)
-            this.dialogRef.close();
-        }));
-  }
-
-  commonDefinitionProperties = ["Identifier", "IdentifierSelect", "Description", "Price", "Currency", "TypeId"];
-  generateAddDefinitionModel(model, typeId): AddDefinition{
-    let addDefinition = new AddDefinition();
-
-    if(model.identifierSelect != undefined && model.identifierSelect != "new"){
-      addDefinition.id = model.identifierSelect;
-      return addDefinition;
-    }
-    
-    addDefinition.typeId = typeId;
-    addDefinition.identifier = model.identifier;
-    addDefinition.price = model.price;
-    addDefinition.description = model.description;
-    addDefinition.currency = model.currency;
-
-    var propNames = Object.getOwnPropertyNames(model);
-    propNames.forEach(propName => {
-      if(!Array.isArray(model[propName])
-        && this.commonDefinitionProperties.findIndex(q => q.toLowerCase() == propName.toLowerCase()) == -1){
-          addDefinition.properties.push({ value: propName, label: model[propName].toString() } as IOption)
+      save$.subscribe({
+        next: (res) => {
+          this.snackService.snack({ status: 1, message: 'Saved' });
+          if (this.dialogRef) {
+            this.dialogRef.close(res);
+          }
+        },
+        error: (err) => {
+          console.error('Error saving definition', err);
+          this.snackService.snack({ status: 0, message: 'Failed to save definition' });
         }
-
-      if(Array.isArray(model[propName])){
-        model[propName].forEach(def => {
-          addDefinition.children.push(this.generateAddDefinitionModel(def, propName))
-        })
-      }
-    });
-
-    return addDefinition;
+      }).add(() => {
+        this.isSubmitting = false;
+      })
+    );
   }
 }

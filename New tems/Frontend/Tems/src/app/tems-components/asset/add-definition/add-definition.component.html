@@ -1,22 +1,144 @@
-<div class="col-md-12">
-  <ng-container *ngIf="typeId == undefined">
-    <mat-form-field class="form-field">
-      <mat-label>
-        {{ 'entities.types' | translate }}
-      </mat-label>
-      <mat-select (selectionChange)="onSelectionChanged($event)">
-        <mat-option *ngFor="let option of assetTypes" [value]="option.value">
-          {{ option.label }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
-  </ng-container>
+<div class="min-h-full bg-[#f5f5f7]">
+  <div class="max-w-3xl mx-auto" [ngClass]="dialogRef ? 'p-4' : 'py-8 px-4'">
+    <div class="bg-white rounded-2xl border border-gray-200 shadow-sm">
+      <div class="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
+        <div>
+          <h2 class="text-lg font-semibold text-gray-900 m-0">{{ isUpdateMode ? 'Edit Definition' : 'Add New Definition' }}</h2>
+          <p class="text-xs text-gray-500 m-0 mt-1">{{ isUpdateMode ? 'Update details and specifications.' : 'Type and name are required. Add specifications below.' }}</p>
+        </div>
+        <div *ngIf="dialogRef" class="text-xs text-gray-500">Dialog</div>
+      </div>
 
-  <form *ngIf="formlyData.isVisible" [formGroup]="formlyData.form" (ngSubmit)="onSubmit(formlyData.model)">
-    <formly-form [form]="formlyData.form" [fields]="formlyData.fields" [model]="formlyData.model"></formly-form>
-    <button type="submit" class="btn btn-gradient-primary mt-3"
-      [disabled]="formlyData.form.status=='INVALID'">
-      {{ 'form.submit' | translate }}
-    </button>
-  </form>
+      <form [formGroup]="formGroup" (ngSubmit)="onSubmit()" class="px-6 py-6 space-y-6">
+        <div class="grid grid-cols-2 gap-4">
+          <div class="col-span-2">
+            <label class="block text-sm font-medium text-gray-800">Asset Type *</label>
+            <app-custom-select 
+              formControlName="assetTypeId"
+              [options]="assetTypeOptions"
+              placeholder="Select type"
+              [disabled]="assetTypeLocked"
+              [allowEmpty]="false">
+            </app-custom-select>
+            <p *ngIf="assetTypeLocked" class="text-[11px] text-gray-500 mt-1">Asset type locked for this action.</p>
+          </div>
+          <div class="col-span-2">
+            <label class="block text-sm font-medium text-gray-800">Name *</label>
+            <input formControlName="name" type="text" placeholder="MacBook Pro 14" maxlength="150"
+              class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#007aff] focus:border-[#007aff]"
+              [class.border-red-400]="formGroup.get('name')?.invalid && formGroup.get('name')?.touched">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-800">Manufacturer</label>
+            <input formControlName="manufacturer" type="text" placeholder="Apple"
+              class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#007aff] focus:border-[#007aff]">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-800">Model</label>
+            <input formControlName="model" type="text" placeholder="A2992"
+              class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#007aff] focus:border-[#007aff]">
+          </div>
+          <div class="col-span-2">
+            <label class="block text-sm font-medium text-gray-800">Tags (comma separated)</label>
+            <input formControlName="tags" type="text" placeholder="laptop, m1, 14"
+              class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#007aff] focus:border-[#007aff]">
+          </div>
+        </div>
+
+        <div class="space-y-3">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm font-medium text-gray-800 m-0">Specifications</p>
+              <p class="text-xs text-gray-500 m-0">Link to properties or add custom fields with value and type.</p>
+            </div>
+            <button type="button" (click)="addSpecification()" [disabled]="isSubmitting"
+              class="inline-flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-[#007aff] border border-[#007aff]/30 hover:border-[#007aff] hover:bg-[#007aff]/5 transition">
+              <span class="text-base leading-none">＋</span>
+              Add specification
+            </button>
+          </div>
+
+          <div class="space-y-3">
+            <div *ngFor="let spec of specsControls; let i = index" [formGroup]="spec"
+              class="border border-gray-200 rounded-xl p-4 bg-white">
+              <div class="grid grid-cols-12 gap-3">
+                <!-- First row: Labels -->
+                <div class="col-span-3">
+                  <label class="text-xs text-gray-600">Property</label>
+                </div>
+                <div class="col-span-2">
+                  <label class="text-xs text-gray-600">Name *</label>
+                </div>
+                <div class="col-span-2">
+                  <label class="text-xs text-gray-600">Value *</label>
+                </div>
+                <div class="col-span-2">
+                  <label class="text-xs text-gray-600">Type</label>
+                </div>
+                <div class="col-span-1">
+                  <label class="text-xs text-gray-600">Unit</label>
+                </div>
+                <div class="col-span-2">
+                  <label class="text-xs text-gray-600">Required</label>
+                </div>
+                
+                <!-- Second row: Controls -->
+                <div class="col-span-3">
+                  <app-custom-select 
+                    formControlName="propertyId"
+                    [options]="propertyOptions"
+                    placeholder="Custom"
+                    [allowEmpty]="true"
+                    emptyLabel="Custom">
+                  </app-custom-select>
+                </div>
+                <div class="col-span-2">
+                  <input formControlName="name" type="text"
+                    class="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#007aff] focus:border-[#007aff]">
+                </div>
+                <div class="col-span-2">
+                  <input formControlName="value" type="text"
+                    class="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#007aff] focus:border-[#007aff]">
+                </div>
+                <div class="col-span-2">
+                  <select formControlName="dataType"
+                    class="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#007aff] focus:border-[#007aff]">
+                    <option value="string">String</option>
+                    <option value="number">Number</option>
+                    <option value="boolean">Boolean</option>
+                  </select>
+                </div>
+                <div class="col-span-1">
+                  <input formControlName="unit" type="text"
+                    class="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#007aff] focus:border-[#007aff]">
+                </div>
+                <div class="col-span-2 flex items-center gap-2">
+                  <label class="relative inline-block w-10 h-6">
+                    <input type="checkbox" formControlName="isRequired" class="sr-only peer">
+                    <span class="absolute inset-0 bg-gray-200 rounded-full transition peer-checked:bg-[#34c759] cursor-pointer"></span>
+                    <span class="absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition peer-checked:translate-x-4 cursor-pointer"></span>
+                  </label>
+                </div>
+                
+                <!-- Third row: Remove button -->
+                <div class="col-span-12 flex justify-end pt-2">
+                  <button type="button" (click)="removeSpecification(i)" aria-label="Remove"
+                    class="text-gray-400 hover:text-red-500 transition text-sm">Remove</button>
+                </div>
+              </div>
+            </div>
+            <p *ngIf="specs.length === 0" class="text-xs text-gray-500">No specifications added yet.</p>
+          </div>
+        </div>
+
+        <div class="flex justify-end gap-3 pt-2">
+          <button type="button" *ngIf="dialogRef" (click)="dialogRef.close()"
+            class="px-4 py-2 rounded-lg border border-gray-300 text-sm text-gray-700 hover:bg-gray-50">Cancel</button>
+          <button type="submit"
+            class="px-4 py-2 rounded-lg bg-[#007aff] text-white text-sm font-medium hover:bg-[#0061d5] transition disabled:bg-gray-300"
+            [disabled]="formGroup.invalid || isSubmitting">{{ isUpdateMode ? 'Update' : 'Save' }}</button>
+        </div>
+      </form>
+    </div>
+  </div>
 </div>

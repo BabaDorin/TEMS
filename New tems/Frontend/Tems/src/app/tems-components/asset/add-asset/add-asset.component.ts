@@ -1,13 +1,18 @@
-import { Component, EventEmitter, Input, OnInit, Output, Inject, Optional } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, Inject, Optional, HostListener, ElementRef, ChangeDetectorRef } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Router } from '@angular/router';
+import { trigger, transition, style, animate } from '@angular/animations';
 import { AddEquipment } from 'src/app/models/asset/add-asset.model';
 import { DefinitionService } from 'src/app/services/definition.service';
+import { AssetDefinitionService } from 'src/app/services/asset-definition.service';
+import { AssetDefinition } from 'src/app/models/asset/asset-definition.model';
 import { TEMSComponent } from 'src/app/tems/tems.component';
 import { Definition } from '../../../models/asset/add-definition.model';
 import { DialogService } from '../../../services/dialog.service';
 import { FormlyParserService } from '../../../services/formly-parser.service';
 import { SnackService } from '../../../services/snack.service';
+import { ErrorMessageService } from '../../../services/error-message.service';
 import { TypeService } from '../../../services/type.service';
 import { AddTypeComponent } from '.././add-type/add-type.component';
 import { BulkUploadComponent } from '../bulk-upload/bulk-upload.component';
@@ -45,7 +50,19 @@ import { BulkUploadResultsComponent } from '../bulk-upload-results/bulk-upload-r
   ],
   templateUrl: './add-asset.component.html',
   styleUrls: ['./add-asset.component.scss'],
-  providers: []
+  providers: [],
+  animations: [
+    trigger('expandCollapse', [
+      transition(':enter', [
+        style({ height: '0', opacity: '0', overflow: 'hidden' }),
+        animate('200ms ease-in-out', style({ height: '*', opacity: '1' }))
+      ]),
+      transition(':leave', [
+        style({ height: '*', opacity: '1', overflow: 'hidden' }),
+        animate('200ms ease-in-out', style({ height: '0', opacity: '0' }))
+      ])
+    ])
+  ]
 })
 export class AddAssetComponent extends TEMSComponent implements OnInit {
 
@@ -64,7 +81,42 @@ export class AddAssetComponent extends TEMSComponent implements OnInit {
 
   definitionsOfType: IOption[];
   selectedDefinition: IOption;
-  selectedFullDefinition: Definition = undefined;
+  selectedFullDefinition: AssetDefinition = undefined;
+  originalDefinition: AssetDefinition = undefined; // Store original for restore
+
+  // UI State
+  isTypeDropdownOpen = false;
+  isDefinitionDropdownOpen = false;
+  isStatusDropdownOpen = false;
+  isDefinitionPreviewExpanded = false;
+  isProcurementExpanded = false;
+  isAllocationExpanded = false;
+  
+  typeSearchText = '';
+  definitionSearchText = '';
+  
+  // Editing state
+  isEditingAssetName = false;
+  editingSpecificationIndex: number | null = null;
+  editedAssetName = '';
+  editedSpecificationValue: any = null;
+
+  private focusElementById(elementId: string) {
+    setTimeout(() => {
+      const el = document.getElementById(elementId) as HTMLInputElement | HTMLSelectElement | null;
+      if (el) {
+        el.focus();
+      }
+    });
+  }
+  
+  // Status selection
+  selectedStatus: 'new' | 'used' | 'defect' | undefined = undefined;
+  statusOptions = [
+    { value: 'new' as const, label: 'New', description: 'Brand new, never used' },
+    { value: 'used' as const, label: 'Used', description: 'Previously used, functional' },
+    { value: 'defect' as const, label: 'Defect', description: 'Non-functional or damaged' }
+  ] as const;
 
   // For selecting type and definition
   formGroup = new FormGroup({
@@ -82,9 +134,14 @@ export class AddAssetComponent extends TEMSComponent implements OnInit {
     private assetService: AssetService,
     private typeService: TypeService,
     private definitionService: DefinitionService,
+    private assetDefinitionService: AssetDefinitionService,
     private formlyParserService: FormlyParserService,
     private dialogService: DialogService,
     private snackService: SnackService,
+    private errorMessageService: ErrorMessageService,
+    private router: Router,
+    private elementRef: ElementRef,
+    private cdr: ChangeDetectorRef,
     @Optional() public dialogRef: MatDialogRef<AddAssetComponent>,
     @Optional() @Inject(MAT_DIALOG_DATA) public data: any
   ) {
@@ -92,6 +149,7 @@ export class AddAssetComponent extends TEMSComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    console.log('AddAssetComponent ngOnInit called, updateEquipmentId:', this.updateEquipmentId);
     if (this.updateEquipmentId != undefined) {
       this.edit();
       return;
@@ -101,13 +159,21 @@ export class AddAssetComponent extends TEMSComponent implements OnInit {
   }
 
   fetchTypes() {
+    console.log('Fetching asset types from backend...');
     this.subscriptions.push(
       this.typeService.getAllAutocompleteOptions()
-        .subscribe(response => {
-          if (this.snackService.snackIfError(response))
-            return;
+        .subscribe({
+          next: (response) => {
+            console.log('Asset types received:', response);
+            if (this.snackService.snackIfError(response))
+              return;
 
-          this.types = response;
+            this.types = response;
+            console.log('Asset types set:', this.types);
+          },
+          error: (error) => {
+            console.error('Error fetching asset types:', error);
+          }
         }));
   }
 
@@ -145,30 +211,85 @@ export class AddAssetComponent extends TEMSComponent implements OnInit {
     if (eventData.value == undefined)
       return;
 
+    // reset form visibility while loading
+    this.formlyData.isVisible = false;
+
     this.subscriptions.push(
-      this.assetService.getFullDefinition(eventData.value)
-        .subscribe(result => {
-          if (this.snackService.snackIfError(result))
-            return;
-          this.selectedFullDefinition = result;
-          this.createAddAssetFormly();
+      this.assetDefinitionService.getById(eventData.value)
+        .subscribe({
+          next: (result: any) => {
+            // Unwrap the assetDefinition property if it exists
+            this.selectedFullDefinition = result.assetDefinition || result;
+            // Store original definition for restore
+            this.originalDefinition = JSON.parse(JSON.stringify(this.selectedFullDefinition));
+            
+            // Initialize editing state
+            this.editedAssetName = this.selectedFullDefinition.name || '';
+            this.isEditingAssetName = false;
+            this.editingSpecificationIndex = null;
+            this.editedSpecificationValue = null;
+            
+            // Show the form
+            this.formlyData.isVisible = true;
+            this.cdr.markForCheck();
+          },
+          error: (err) => {
+            console.error('Error fetching definition:', err);
+            this.snackService.snack({ message: 'Failed to load asset definition', status: 0 });
+            this.formlyData.isVisible = true;
+          }
         }));
   }
 
   // Calls formly parser service in order to build formly form structure
   // and sets the formly data object 
   createAddAssetFormly() {
-    let addEq = this.assetService.generateAddAssetOfDefinition(this.selectedFullDefinition);
-    let formlyFields = this.formlyParserService.parseAddEquipment(addEq, this.updateEquipmentId != undefined);
-
-    this.formlyData.fields = formlyFields;
-
-    this.formlyData.model = {
-      assetDefinitionID: addEq.definition.id,
-      identifier: this.selectedFullDefinition.identifier,
+    // Adapt the new AssetDefinition model to the legacy AddEquipment structure expected by the formly parser
+    const legacyDefinition: any = {
+      id: this.selectedFullDefinition.id,
+      identifier: this.selectedFullDefinition.name,
+      price: 0,
+      currency: 'usd',
+      assetType: { label: this.selectedFullDefinition.assetTypeName ?? 'Asset' },
+      children: [],
+      properties: this.selectedFullDefinition.specifications || []
     };
 
-    this.formlyData.isVisible = true;
+    const addEquipment: any = {
+      definition: legacyDefinition,
+      temsid: '',
+      serialNumber: '',
+      price: legacyDefinition.price,
+      currency: legacyDefinition.currency,
+      description: '',
+      purchaseDate: new Date(),
+      isDefect: false,
+      isUsed: false,
+      children: []
+    };
+
+    try {
+      const formlyFields = this.formlyParserService.parseAddEquipment(addEquipment, this.updateEquipmentId != undefined);
+      this.formlyData.fields = formlyFields;
+
+      this.formlyData.model = {
+        assetDefinitionID: this.selectedFullDefinition.id,
+        identifier: this.selectedFullDefinition.name,
+        temsid: '',
+        serialNumber: '',
+        price: legacyDefinition.price,
+        currency: legacyDefinition.currency,
+        purchaseDate: new Date().toISOString().split('T')[0],
+        description: '',
+        isUsed: false,
+        isDefect: false
+      };
+    } catch (err) {
+      console.error('Failed to build formly form', err);
+      this.snackService.snack({ message: 'Form generation failed for this definition', status: 0 });
+    } finally {
+      this.formlyData.isVisible = true;
+    }
   }
 
   // Wipes collected data except equipment type
@@ -244,14 +365,14 @@ export class AddAssetComponent extends TEMSComponent implements OnInit {
           this.formlyData.wipeModel();
 
           this.formlyData.model.assetDefinitionID = this.selectedFullDefinition.id;
-          this.formlyData.model.identifier = this.selectedFullDefinition.identifier;
+          this.formlyData.model.identifier = this.selectedFullDefinition.name;
           this.formlyData.model.temsid = result.temsid;
           this.formlyData.model.serialNumber = result.serialNumber;
           this.formlyData.model.isDefect = result.isDefect;
           this.formlyData.model.isUsed = result.isUsed;
           this.formlyData.model.description = result.description;
           this.formlyData.model.price = result.price;
-          this.formlyData.model.currency = (result.currency != undefined) ? result.currency : this.selectedFullDefinition.currency;
+          this.formlyData.model.currency = (result.currency != undefined) ? result.currency : 'USD';
           this.formlyData.model.purchaseDate = result.purchaseDate.toString().split('T')[0];
         })
     )
@@ -259,62 +380,257 @@ export class AddAssetComponent extends TEMSComponent implements OnInit {
 
   // Build an instance of AddAssetViewModel and sends it the server
   onSubmit(model) {
-    let submitAddEquipment = new AddEquipment();
-    submitAddEquipment = model;
-    submitAddEquipment.id = this.updateEquipmentId;
-    submitAddEquipment.children = [];
+    if (!this.isFormValid()) {
+      this.snackService.snack({ status: 0, message: 'Please complete all required fields' });
+      return;
+    }
 
-    // The following lines are here to identitfy children equipment from the
-    // formly model.
-    // Each array contains the '---' sequence, followed by the array index
-    // For example, if a computer has 4 RAM chips and 2 GPUs, the information
-    // will be prezented within the model the following way:
+    // Check if definition has been customized
+    const isCustomized = this.isDefinitionEdited();
+    
+    // Prepare custom specifications if definition was edited
+    const customSpecifications = isCustomized && this.selectedFullDefinition?.specifications
+      ? this.selectedFullDefinition.specifications.map(spec => ({
+          propertyId: spec.propertyId || '',
+          name: spec.name,
+          value: spec.value,
+          dataType: spec.dataType,
+          unit: spec.unit || null
+        }))
+      : null;
 
-    // Computer object {
-    //   other properties...
+    const assetData = {
+      serialNumber: this.formlyData.model.serialNumber,
+      assetTag: this.formlyData.model.temsid,
+      status: this.selectedStatus || 'used',
+      assetTypeId: this.selectedType,
+      assetTypeName: this.selectedFullDefinition?.assetTypeName || '',
+      definitionId: this.selectedDefinition?.value || '',
+      definitionName: this.selectedFullDefinition?.name || '',
+      manufacturer: this.selectedFullDefinition?.manufacturer || '',
+      model: this.selectedFullDefinition?.model || '',
+      tags: this.selectedFullDefinition?.tags || [],
+      customizeDefinition: isCustomized,
+      customSpecifications: customSpecifications,
+      notes: this.formlyData.model.description || '',
+      createdBy: 'current-user' // TODO: Get from auth service
+    };
 
-    //   RAM objects:
-    //   {ram definition id}---{0}[ <---- 0 because it's the first array of Computer object
-    //     {...},
-    //     {...},
-    //     {...},
-    //     {...}  
-    //   ];
-
-    //   {cpu definition id}---{1}[
-    //     {...},
-    //     {...}
-    //   ];
-    // }
-
-    // We don't have to worry about updating children objects because the user will have to 
-    // access them separately in order to update them.
-
-    var propNames = Object.getOwnPropertyNames(model);
-    propNames.forEach(propName => {
-      if (Array.isArray(model[propName]) && propName.indexOf("---") > -1) {
-        model[propName].forEach(child => {
-          let childEquipment = new AddEquipment();
-          childEquipment = child;
-          childEquipment.assetDefinitionID = propName.split('---')[0];
-          submitAddEquipment.children.push(childEquipment);
-        })
-      }
-    });
-
-    // Send the collected data packed in an instance of AddAssetModel.
-    let endPoint = this.updateEquipmentId == undefined
-      ? this.assetService.addEquipment(submitAddEquipment)
-      : this.assetService.updateEquipment(submitAddEquipment);
+    const endPoint = this.updateEquipmentId == undefined
+      ? this.assetService.createAsset(assetData)
+      : this.assetService.updateEquipment(model); // Keep old logic for update
 
     this.subscriptions.push(
       endPoint
-        .subscribe(result => {
-          this.snackService.snack(result);
-
-          if (result.status == 1 && this.updateEquipmentId == undefined) {
-            this.createAddAssetFormly();
+        .subscribe({
+          next: (result) => {
+            if (this.updateEquipmentId == undefined) {
+              this.snackService.snack({ status: 1, message: 'Asset created successfully!' });
+              // Clear mandatory fields
+              this.formlyData.model.temsid = '';
+              this.formlyData.model.serialNumber = '';
+              this.selectedStatus = undefined;
+              // Reset definition to original
+              if (this.originalDefinition) {
+                this.selectedFullDefinition = JSON.parse(JSON.stringify(this.originalDefinition));
+              }
+            } else {
+              this.snackService.snack({ status: 1, message: 'Asset updated successfully!' });
+            }
+          },
+          error: (error) => {
+            if (error.status === 409) {
+              const errorMessage = this.errorMessageService.getErrorMessage(409);
+              this.snackService.snack({ status: 0, message: errorMessage });
+            } else {
+              const errorMessage = this.errorMessageService.getErrorMessage(
+                error.status,
+                error.error?.message || 'An error occurred while saving the asset'
+              );
+              this.snackService.snack({ status: 0, message: errorMessage });
+            }
           }
-      }));
+        }));
+  }
+
+  // UI Control Methods
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+    const target = event.target as HTMLElement;
+    const clickedInside = this.elementRef.nativeElement.contains(target);
+    
+    if (!clickedInside) {
+      this.isTypeDropdownOpen = false;
+      this.isDefinitionDropdownOpen = false;
+      this.isStatusDropdownOpen = false;
+      this.typeSearchText = '';
+      this.definitionSearchText = '';
+    }
+  }
+
+  toggleTypeDropdown() {
+    this.isTypeDropdownOpen = !this.isTypeDropdownOpen;
+    if (!this.isTypeDropdownOpen) {
+      this.typeSearchText = '';
+    }
+  }
+
+  toggleDefinitionDropdown() {
+    this.isDefinitionDropdownOpen = !this.isDefinitionDropdownOpen;
+    if (!this.isDefinitionDropdownOpen) {
+      this.definitionSearchText = '';
+    }
+  }
+
+  toggleStatusDropdown() {
+    this.isStatusDropdownOpen = !this.isStatusDropdownOpen;
+  }
+
+  toggleDefinitionPreview() {
+    this.isDefinitionPreviewExpanded = !this.isDefinitionPreviewExpanded;
+  }
+  
+  startEditingAssetName() {
+    this.editedAssetName = this.selectedFullDefinition?.name ?? '';
+    this.isEditingAssetName = true;
+    this.cdr.detectChanges();
+    this.focusElementById('asset-name-input');
+  }
+  
+  saveAssetName() {
+    if (this.editedAssetName.trim()) {
+      this.selectedFullDefinition = { ...this.selectedFullDefinition, name: this.editedAssetName };
+      this.isEditingAssetName = false;
+    }
+  }
+  
+  cancelEditingAssetName() {
+    this.isEditingAssetName = false;
+    this.editedAssetName = this.selectedFullDefinition.name || '';
+  }
+  
+  startEditingSpecification(index: number) {
+    this.editingSpecificationIndex = index;
+    this.editedSpecificationValue = this.selectedFullDefinition?.specifications?.[index]?.value ?? '';
+    this.cdr.detectChanges();
+    this.focusElementById(`spec-input-${index}`);
+  }
+  
+  saveSpecification(index: number) {
+    if (this.editedSpecificationValue !== null && this.editedSpecificationValue !== undefined) {
+      const updatedSpecs = [...this.selectedFullDefinition.specifications];
+      updatedSpecs[index] = { ...updatedSpecs[index], value: this.editedSpecificationValue };
+      this.selectedFullDefinition = {
+        ...this.selectedFullDefinition,
+        specifications: updatedSpecs
+      };
+    }
+    this.editingSpecificationIndex = null;
+    this.editedSpecificationValue = null;
+  }
+  
+  cancelEditingSpecification() {
+    this.editingSpecificationIndex = null;
+    this.editedSpecificationValue = null;
+  }
+  
+  isDefinitionEdited(): boolean {
+    if (!this.selectedFullDefinition || !this.originalDefinition) return false;
+    return this.selectedFullDefinition.name !== this.originalDefinition.name ||
+           JSON.stringify(this.selectedFullDefinition.specifications) !== JSON.stringify(this.originalDefinition.specifications);
+  }
+  
+  restoreDefinition() {
+    if (this.originalDefinition) {
+      this.selectedFullDefinition = JSON.parse(JSON.stringify(this.originalDefinition));
+      this.editedAssetName = this.selectedFullDefinition.name || '';
+      this.isEditingAssetName = false;
+      this.editingSpecificationIndex = null;
+      this.editedSpecificationValue = null;
+      this.cdr.markForCheck();
+    }
+  }
+
+  toggleProcurement() {
+    this.isProcurementExpanded = !this.isProcurementExpanded;
+  }
+
+  toggleAllocation() {
+    this.isAllocationExpanded = !this.isAllocationExpanded;
+  }
+
+  selectType(typeId: string) {
+    this.selectedType = typeId;
+    this.isTypeDropdownOpen = false;
+    this.typeSearchText = '';
+    this.onTypeChanged({ value: typeId });
+  }
+
+  selectDefinition(definitionId: string) {
+    const definition = this.definitionsOfType.find(d => d.value === definitionId);
+    this.selectedDefinition = definition;
+    this.isDefinitionDropdownOpen = false;
+    this.definitionSearchText = '';
+    this.onDefinitionChanged({ value: definitionId });
+  }
+
+  getFilteredTypes(): IOption[] {
+    if (!this.typeSearchText) {
+      return this.types;
+    }
+    return this.types.filter(t => 
+      t.label.toLowerCase().includes(this.typeSearchText.toLowerCase())
+    );
+  }
+
+  getFilteredDefinitions(): IOption[] {
+    if (!this.definitionsOfType) {
+      return [];
+    }
+    if (!this.definitionSearchText) {
+      return this.definitionsOfType;
+    }
+    return this.definitionsOfType.filter(d => 
+      d.label.toLowerCase().includes(this.definitionSearchText.toLowerCase())
+    );
+  }
+
+  getTypeName(typeId: string): string {
+    const type = this.types.find(t => t.value === typeId);
+    return type ? type.label : '';
+  }
+
+  getDefinitionName(defId: string): string {
+    const def = this.definitionsOfType?.find(d => d.value === defId);
+    return def ? def.label : '';
+  }
+
+  selectStatus(status: 'new' | 'used' | 'defect' | undefined) {
+    this.selectedStatus = status;
+    this.isStatusDropdownOpen = false;
+    if (this.formlyData.model && status) {
+      this.formlyData.model.isUsed = status !== 'new';
+      this.formlyData.model.isDefect = status === 'defect';
+    }
+  }
+
+  getStatusLabel(status: 'new' | 'used' | 'defect'): string {
+    const statusOption = this.statusOptions.find(s => s.value === status);
+    return statusOption ? statusOption.label : '';
+  }
+
+  isFormValid(): boolean {
+    return !!this.selectedType && 
+           !!this.selectedDefinition && 
+           !!this.formlyData.model.temsid?.trim() && 
+           !!this.formlyData.model.serialNumber?.trim() && 
+           !!this.selectedStatus;
+  }
+
+  openInFullPage() {
+    if (this.dialogRef) {
+      this.dialogRef.close();
+    }
+    this.router.navigate(['/asset/add']);
   }
 }

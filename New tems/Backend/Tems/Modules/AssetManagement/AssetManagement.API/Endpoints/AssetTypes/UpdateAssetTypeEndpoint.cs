@@ -1,5 +1,6 @@
 using AssetManagement.Contract.Commands;
 using AssetManagement.Contract.Responses;
+using AssetManagement.Application.Exceptions;
 using FastEndpoints;
 using MediatR;
 
@@ -15,7 +16,14 @@ public class UpdateAssetTypeEndpoint(IMediator mediator) : Endpoint<UpdateAssetT
 
     public override async Task HandleAsync(UpdateAssetTypeCommand command, CancellationToken ct)
     {
-        var response = await mediator.Send(command, ct);
-        await Send.OkAsync(response, cancellation: ct);
+        try
+        {
+            var response = await mediator.Send(command, ct);
+            await Send.OkAsync(response, cancellation: ct);
+        }
+        catch (DuplicateAssetTypeNameException ex)
+        {
+            ThrowError(ex.Message, 409);
+        }
     }
 }

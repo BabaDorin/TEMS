@@ -16,6 +16,7 @@ public interface IAssetRepository
         CancellationToken cancellationToken = default);
     Task<DomainEntity.Asset?> GetBySerialNumberAsync(string serialNumber, CancellationToken cancellationToken = default);
     Task<DomainEntity.Asset?> GetByAssetTagAsync(string assetTag, CancellationToken cancellationToken = default);
+    Task<DomainEntity.Asset?> GetBySerialNumberOrTagAsync(string serialNumber, string assetTag, CancellationToken cancellationToken = default);
     Task<DomainEntity.Asset> CreateAsync(DomainEntity.Asset asset, CancellationToken cancellationToken = default);
     Task<bool> UpdateAsync(DomainEntity.Asset asset, CancellationToken cancellationToken = default);
     Task<bool> DeleteAsync(string id, CancellationToken cancellationToken = default);

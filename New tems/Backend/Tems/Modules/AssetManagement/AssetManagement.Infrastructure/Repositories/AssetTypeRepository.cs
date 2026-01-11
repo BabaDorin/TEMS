@@ -38,6 +38,18 @@ public class AssetTypeRepository(IMongoDatabase database) : IAssetTypeRepository
         return dbEntity?.ToDomain();
     }
 
+    public async Task<DomainEntity.AssetType?> GetByNameInsensitiveAsync(string name, CancellationToken cancellationToken = default)
+    {
+        var filter = Builders<DbEntity.AssetType>.Filter.Eq(x => x.Name, name);
+        var collation = new Collation("en", strength: CollationStrength.Secondary);
+        var options = new FindOptions
+        {
+            Collation = collation
+        };
+        var dbEntity = await _collection.Find(filter, options).FirstOrDefaultAsync(cancellationToken);
+        return dbEntity?.ToDomain();
+    }
+
     public async Task<DomainEntity.AssetType> CreateAsync(DomainEntity.AssetType assetType, CancellationToken cancellationToken = default)
     {
         assetType.CreatedAt = DateTime.UtcNow;

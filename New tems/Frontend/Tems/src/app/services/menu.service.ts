@@ -221,6 +221,15 @@ export class MenuService {
                 submenu: []
               },
               {
+                path: '/asset/add',
+                title: 'Add Asset',
+                icon: 'mdi mdi-plus menu-icon',
+                isActive: false,
+                isShown: true,
+                showSubmenu: false,
+                submenu: []
+              },
+              {
                 path: '/assets/management',
                 title: 'Asset Management',
                 icon: 'mdi mdi-cog menu-icon',

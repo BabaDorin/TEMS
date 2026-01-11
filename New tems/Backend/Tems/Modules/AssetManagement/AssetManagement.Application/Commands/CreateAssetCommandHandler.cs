@@ -14,6 +14,14 @@ public class CreateAssetCommandHandler(
 {
     public async Task<CreateAssetResponse> Handle(CreateAssetCommand request, CancellationToken cancellationToken)
     {
+        // Check for duplicate Serial Number or Asset Tag
+        var existingAsset = await assetRepository.GetBySerialNumberOrTagAsync(request.SerialNumber, request.AssetTag, cancellationToken);
+        if (existingAsset != null)
+        {
+            throw new InvalidOperationException("An asset with this Serial Number or TEMS ID already exists.");
+        }
+
+        // Verify definition exists (but use data from command)
         var definition = await assetDefinitionRepository.GetByIdAsync(request.DefinitionId, cancellationToken);
         if (definition == null)
         {
@@ -39,14 +47,14 @@ public class CreateAssetCommandHandler(
             Status = request.Status,
             Definition = new AssetDefinitionSnapshot
             {
-                DefinitionId = definition.Id,
+                DefinitionId = request.DefinitionId,
                 IsCustomized = request.CustomizeDefinition,
                 SnapshotAt = DateTime.UtcNow,
-                Name = definition.Name,
-                AssetTypeId = definition.AssetTypeId,
-                AssetTypeName = definition.AssetTypeName,
-                Manufacturer = definition.Manufacturer,
-                Model = definition.Model,
+                Name = request.DefinitionName,
+                AssetTypeId = request.AssetTypeId,
+                AssetTypeName = request.AssetTypeName,
+                Manufacturer = request.Manufacturer,
+                Model = request.Model,
                 Specifications = specifications
             },
             PurchaseInfo = request.PurchaseInfo != null ? new PurchaseInfo

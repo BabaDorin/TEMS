@@ -1,12 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, FormArray } from '@angular/forms';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { AgGridAngular } from 'ag-grid-angular';
 import { ColDef, GridApi, GridReadyEvent } from 'ag-grid-community';
 import { AssetTypeService } from 'src/app/services/asset-type.service';
 import { AssetPropertyService } from 'src/app/services/asset-property.service';
 import { AssetType, AssetTypePropertyRequest } from 'src/app/models/asset/asset-type.model';
 import { AssetProperty } from 'src/app/models/asset/asset-property.model';
+import { AddTypeComponent } from '../../../asset/add-type/add-type.component';
 
 @Component({
   selector: 'app-asset-type-management',
@@ -14,7 +16,8 @@ import { AssetProperty } from 'src/app/models/asset/asset-property.model';
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    AgGridAngular
+    AgGridAngular,
+    MatDialogModule
   ],
   templateUrl: './asset-type-management.component.html',
   styleUrls: ['./asset-type-management.component.scss']
@@ -24,10 +27,8 @@ export class AssetTypeManagementComponent implements OnInit {
   availableProperties: AssetProperty[] = [];
   parentTypes: AssetType[] = [];
   gridApi!: GridApi;
-  showCreateModal = false;
   showEditModal = false;
   selectedType: AssetType | null = null;
-  createForm!: FormGroup;
   editForm!: FormGroup;
   isSubmitting = false;
   gridReady = false;
@@ -100,25 +101,15 @@ export class AssetTypeManagementComponent implements OnInit {
   constructor(
     private assetTypeService: AssetTypeService,
     private assetPropertyService: AssetPropertyService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private dialog: MatDialog
   ) {
-    this.createForm = this.fb.group({
-      name: ['', Validators.required],
-      description: [''],
-      parentTypeId: [''],
-      selectedProperties: this.fb.array([])
-    });
-
     this.editForm = this.fb.group({
       name: ['', Validators.required],
       description: [''],
       parentTypeId: [''],
       selectedProperties: this.fb.array([])
     });
-  }
-
-  get createSelectedProperties() {
-    return this.createForm.get('selectedProperties') as FormArray;
   }
 
   get editSelectedProperties() {
@@ -160,59 +151,16 @@ export class AssetTypeManagementComponent implements OnInit {
   }
 
   openCreateModal() {
-    this.createForm.reset();
-    this.createSelectedProperties.clear();
-    this.showCreateModal = true;
-  }
-
-  closeCreateModal() {
-    this.showCreateModal = false;
-    this.createForm.reset();
-  }
-
-  addPropertyToCreate() {
-    const propertyGroup = this.fb.group({
-      propertyId: ['', Validators.required],
-      isRequired: [false],
-      displayOrder: [this.createSelectedProperties.length + 1],
-      defaultValue: ['']
+    const dialogRef = this.dialog.open(AddTypeComponent, {
+      width: '900px',
+      maxHeight: '90vh',
+      panelClass: 'custom-dialog-container'
     });
-    this.createSelectedProperties.push(propertyGroup);
-  }
 
-  removePropertyFromCreate(index: number) {
-    this.createSelectedProperties.removeAt(index);
-  }
-
-  createType() {
-    if (this.createForm.invalid || this.isSubmitting) return;
-
-    this.isSubmitting = true;
-    const formValue = this.createForm.value;
-    
-    const properties: AssetTypePropertyRequest[] = formValue.selectedProperties.map((p: any) => ({
-      propertyId: p.propertyId,
-      isRequired: p.isRequired,
-      displayOrder: p.displayOrder,
-      defaultValue: p.defaultValue || undefined
-    }));
-
-    const request = {
-      name: formValue.name,
-      description: formValue.description || undefined,
-      parentTypeId: formValue.parentTypeId || undefined,
-      properties: properties
-    };
-
-    this.assetTypeService.create(request).subscribe({
-      next: () => {
+    dialogRef.afterClosed().subscribe(result => {
+      if (result !== undefined) {
         this.loadTypes();
-        this.closeCreateModal();
-        this.isSubmitting = false;
-      },
-      error: (error) => {
-        console.error('Error creating type:', error);
-        this.isSubmitting = false;
+        this.loadProperties();
       }
     });
   }
@@ -224,18 +172,18 @@ export class AssetTypeManagementComponent implements OnInit {
       description: type.description || '',
       parentTypeId: type.parentTypeId || ''
     });
-    
+
     this.editSelectedProperties.clear();
-    type.properties.forEach(prop => {
+    (type.properties || []).forEach((p, index) => {
       const propertyGroup = this.fb.group({
-        propertyId: [prop.propertyId, Validators.required],
-        isRequired: [prop.isRequired],
-        displayOrder: [prop.displayOrder],
-        defaultValue: [prop.defaultValue || '']
+        propertyId: [p.propertyId, Validators.required],
+        isRequired: [p.isRequired],
+        displayOrder: [p.displayOrder ?? index + 1],
+        defaultValue: [p.defaultValue || '']
       });
       this.editSelectedProperties.push(propertyGroup);
     });
-    
+
     this.showEditModal = true;
   }
 
@@ -243,8 +191,9 @@ export class AssetTypeManagementComponent implements OnInit {
     this.showEditModal = false;
     this.selectedType = null;
     this.editForm.reset();
+    this.editSelectedProperties.clear();
+    this.isSubmitting = false;
   }
-
   addPropertyToEdit() {
     const propertyGroup = this.fb.group({
       propertyId: ['', Validators.required],

@@ -46,6 +46,7 @@ public class AssetManagementSeeder(IMongoDatabase database, ILogger<AssetManagem
             new() { PropertyId = "prop_ip_address", Name = "IP Address", Description = "Network IP address", DataType = "string", Category = "Network" },
             new() { PropertyId = "prop_mac_address", Name = "MAC Address", Description = "Network MAC address", DataType = "string", Category = "Network" },
             new() { PropertyId = "prop_hostname", Name = "Hostname", Description = "Network hostname", DataType = "string", Category = "Network" },
+            new() { PropertyId = "prop_warranty_expiry", Name = "Warranty Expiration", Description = "Warranty end date", DataType = "date", Category = "Lifecycle" },
             
             // Printer Properties
             new() { PropertyId = "prop_print_speed", Name = "Print Speed", Description = "Pages per minute", DataType = "number", Category = "Performance", Unit = "ppm" },
@@ -110,6 +111,7 @@ public class AssetManagementSeeder(IMongoDatabase database, ILogger<AssetManagem
                     new AssetTypeProperty { PropertyId = "prop_hostname", Name = "Hostname", DataType = "string", Required = false, DisplayOrder = 5 },
                     new AssetTypeProperty { PropertyId = "prop_ip_address", Name = "IP Address", DataType = "string", Required = false, DisplayOrder = 6 },
                     new AssetTypeProperty { PropertyId = "prop_mac_address", Name = "MAC Address", DataType = "string", Required = false, DisplayOrder = 7 },
+                    new AssetTypeProperty { PropertyId = "prop_warranty_expiry", Name = "Warranty Expiration", DataType = "date", Required = false, DisplayOrder = 8 },
                 ],
                 CreatedBy = "system"
             },
@@ -146,6 +148,7 @@ public class AssetManagementSeeder(IMongoDatabase database, ILogger<AssetManagem
                     new AssetTypeProperty { PropertyId = "prop_resolution", Name = "Resolution", DataType = "string", Required = true, DisplayOrder = 2 },
                     new AssetTypeProperty { PropertyId = "prop_panel_type", Name = "Panel Type", DataType = "enum", Required = false, DisplayOrder = 3 },
                     new AssetTypeProperty { PropertyId = "prop_refresh_rate", Name = "Refresh Rate", DataType = "number", Required = false, DisplayOrder = 4 },
+                    new AssetTypeProperty { PropertyId = "prop_warranty_expiry", Name = "Warranty Expiration", DataType = "date", Required = false, DisplayOrder = 5 },
                 ],
                 CreatedBy = "system"
             },
@@ -161,6 +164,7 @@ public class AssetManagementSeeder(IMongoDatabase database, ILogger<AssetManagem
                     new AssetTypeProperty { PropertyId = "prop_duplex", Name = "Duplex Printing", DataType = "boolean", Required = false, DisplayOrder = 3 },
                     new AssetTypeProperty { PropertyId = "prop_print_speed", Name = "Print Speed", DataType = "number", Required = false, DisplayOrder = 4 },
                     new AssetTypeProperty { PropertyId = "prop_ip_address", Name = "IP Address", DataType = "string", Required = false, DisplayOrder = 5 },
+                    new AssetTypeProperty { PropertyId = "prop_warranty_expiry", Name = "Warranty Expiration", DataType = "date", Required = false, DisplayOrder = 6 },
                 ],
                 CreatedBy = "system"
             },
@@ -175,6 +179,7 @@ public class AssetManagementSeeder(IMongoDatabase database, ILogger<AssetManagem
                     new AssetTypeProperty { PropertyId = "prop_speed", Name = "Speed", DataType = "enum", Required = true, DisplayOrder = 2 },
                     new AssetTypeProperty { PropertyId = "prop_poe_support", Name = "PoE Support", DataType = "boolean", Required = false, DisplayOrder = 3 },
                     new AssetTypeProperty { PropertyId = "prop_ip_address", Name = "IP Address", DataType = "string", Required = false, DisplayOrder = 4 },
+                    new AssetTypeProperty { PropertyId = "prop_warranty_expiry", Name = "Warranty Expiration", DataType = "date", Required = false, DisplayOrder = 5 },
                 ],
                 CreatedBy = "system"
             },
@@ -189,6 +194,7 @@ public class AssetManagementSeeder(IMongoDatabase database, ILogger<AssetManagem
                     new AssetTypeProperty { PropertyId = "prop_poe_class", Name = "PoE Class", DataType = "enum", Required = false, DisplayOrder = 2 },
                     new AssetTypeProperty { PropertyId = "prop_ip_address", Name = "IP Address", DataType = "string", Required = false, DisplayOrder = 3 },
                     new AssetTypeProperty { PropertyId = "prop_mac_address", Name = "MAC Address", DataType = "string", Required = false, DisplayOrder = 4 },
+                    new AssetTypeProperty { PropertyId = "prop_warranty_expiry", Name = "Warranty Expiration", DataType = "date", Required = false, DisplayOrder = 5 },
                 ],
                 CreatedBy = "system"
             },
@@ -246,6 +252,8 @@ public class AssetManagementSeeder(IMongoDatabase database, ILogger<AssetManagem
 
         logger.LogInformation("Seeding asset definitions...");
 
+        var defaultWarrantyEnd = DateTime.UtcNow.AddYears(3).Date;
+
         var definitions = new List<AssetDefinition>
         {
             // Laptops
@@ -266,6 +274,7 @@ public class AssetManagementSeeder(IMongoDatabase database, ILogger<AssetManagem
                     new() { PropertyId = "prop_storage", Name = "Storage", Value = 512, DataType = "number", Unit = "GB" },
                     new() { PropertyId = "prop_screen_size", Name = "Screen Size", Value = 14, DataType = "number", Unit = "inches" },
                     new() { PropertyId = "prop_resolution", Name = "Resolution", Value = "1920x1080", DataType = "string" },
+                    new() { PropertyId = "prop_warranty_expiry", Name = "Warranty Expiration", Value = defaultWarrantyEnd, DataType = "date" },
                 ],
                 Tags = ["Business", "Mobile", "Intel"],
                 CreatedBy = "system"
@@ -287,6 +296,7 @@ public class AssetManagementSeeder(IMongoDatabase database, ILogger<AssetManagem
                     new() { PropertyId = "prop_storage", Name = "Storage", Value = 512, DataType = "number", Unit = "GB" },
                     new() { PropertyId = "prop_screen_size", Name = "Screen Size", Value = 14, DataType = "number", Unit = "inches" },
                     new() { PropertyId = "prop_resolution", Name = "Resolution", Value = "3024x1964", DataType = "string" },
+                    new() { PropertyId = "prop_warranty_expiry", Name = "Warranty Expiration", Value = defaultWarrantyEnd, DataType = "date" },
                 ],
                 Tags = ["Apple", "Mobile", "Development"],
                 CreatedBy = "system"
@@ -308,6 +318,7 @@ public class AssetManagementSeeder(IMongoDatabase database, ILogger<AssetManagem
                     new() { PropertyId = "prop_storage", Name = "Storage", Value = 1024, DataType = "number", Unit = "GB" },
                     new() { PropertyId = "prop_screen_size", Name = "Screen Size", Value = 14, DataType = "number", Unit = "inches" },
                     new() { PropertyId = "prop_resolution", Name = "Resolution", Value = "2880x1800", DataType = "string" },
+                    new() { PropertyId = "prop_warranty_expiry", Name = "Warranty Expiration", Value = defaultWarrantyEnd, DataType = "date" },
                 ],
                 Tags = ["Business", "Premium", "Intel"],
                 CreatedBy = "system"
@@ -329,6 +340,7 @@ public class AssetManagementSeeder(IMongoDatabase database, ILogger<AssetManagem
                     new() { PropertyId = "prop_cpu", Name = "CPU", Value = "Intel Core i7-11700", DataType = "string" },
                     new() { PropertyId = "prop_ram", Name = "RAM", Value = 16, DataType = "number", Unit = "GB" },
                     new() { PropertyId = "prop_storage", Name = "Storage", Value = 512, DataType = "number", Unit = "GB" },
+                    new() { PropertyId = "prop_warranty_expiry", Name = "Warranty Expiration", Value = defaultWarrantyEnd, DataType = "date" },
                 ],
                 Tags = ["Business", "Desktop", "Intel"],
                 CreatedBy = "system"
@@ -351,6 +363,7 @@ public class AssetManagementSeeder(IMongoDatabase database, ILogger<AssetManagem
                     new() { PropertyId = "prop_resolution", Name = "Resolution", Value = "1920x1080", DataType = "string" },
                     new() { PropertyId = "prop_panel_type", Name = "Panel Type", Value = "IPS", DataType = "string" },
                     new() { PropertyId = "prop_refresh_rate", Name = "Refresh Rate", Value = 60, DataType = "number", Unit = "Hz" },
+                    new() { PropertyId = "prop_warranty_expiry", Name = "Warranty Expiration", Value = defaultWarrantyEnd, DataType = "date" },
                 ],
                 Tags = ["Display", "Office"],
                 CreatedBy = "system"
@@ -371,6 +384,7 @@ public class AssetManagementSeeder(IMongoDatabase database, ILogger<AssetManagem
                     new() { PropertyId = "prop_resolution", Name = "Resolution", Value = "3840x2160", DataType = "string" },
                     new() { PropertyId = "prop_panel_type", Name = "Panel Type", Value = "IPS", DataType = "string" },
                     new() { PropertyId = "prop_refresh_rate", Name = "Refresh Rate", Value = 60, DataType = "number", Unit = "Hz" },
+                    new() { PropertyId = "prop_warranty_expiry", Name = "Warranty Expiration", Value = defaultWarrantyEnd, DataType = "date" },
                 ],
                 Tags = ["Display", "4K", "Premium"],
                 CreatedBy = "system"
@@ -393,6 +407,7 @@ public class AssetManagementSeeder(IMongoDatabase database, ILogger<AssetManagem
                     new() { PropertyId = "prop_color_support", Name = "Color Support", Value = false, DataType = "boolean" },
                     new() { PropertyId = "prop_duplex", Name = "Duplex Printing", Value = true, DataType = "boolean" },
                     new() { PropertyId = "prop_print_speed", Name = "Print Speed", Value = 38, DataType = "number", Unit = "ppm" },
+                    new() { PropertyId = "prop_warranty_expiry", Name = "Warranty Expiration", Value = defaultWarrantyEnd, DataType = "date" },
                 ],
                 Tags = ["Printer", "Laser", "Monochrome"],
                 CreatedBy = "system"
@@ -413,6 +428,7 @@ public class AssetManagementSeeder(IMongoDatabase database, ILogger<AssetManagem
                     new() { PropertyId = "prop_color_support", Name = "Color Support", Value = true, DataType = "boolean" },
                     new() { PropertyId = "prop_duplex", Name = "Duplex Printing", Value = true, DataType = "boolean" },
                     new() { PropertyId = "prop_print_speed", Name = "Print Speed", Value = 15, DataType = "number", Unit = "ppm" },
+                    new() { PropertyId = "prop_warranty_expiry", Name = "Warranty Expiration", Value = defaultWarrantyEnd, DataType = "date" },
                 ],
                 Tags = ["Printer", "Inkjet", "Color", "All-in-One"],
                 CreatedBy = "system"
@@ -434,6 +450,7 @@ public class AssetManagementSeeder(IMongoDatabase database, ILogger<AssetManagem
                     new() { PropertyId = "prop_port_count", Name = "Port Count", Value = 24, DataType = "number" },
                     new() { PropertyId = "prop_speed", Name = "Speed", Value = "1 Gbps", DataType = "string" },
                     new() { PropertyId = "prop_poe_support", Name = "PoE Support", Value = true, DataType = "boolean" },
+                    new() { PropertyId = "prop_warranty_expiry", Name = "Warranty Expiration", Value = defaultWarrantyEnd, DataType = "date" },
                 ],
                 Tags = ["Network", "Switch", "Managed", "PoE"],
                 CreatedBy = "system"
@@ -454,6 +471,7 @@ public class AssetManagementSeeder(IMongoDatabase database, ILogger<AssetManagem
                 [
                     new() { PropertyId = "prop_voip_support", Name = "VoIP Support", Value = true, DataType = "boolean" },
                     new() { PropertyId = "prop_poe_class", Name = "PoE Class", Value = "Class 2", DataType = "string" },
+                    new() { PropertyId = "prop_warranty_expiry", Name = "Warranty Expiration", Value = defaultWarrantyEnd, DataType = "date" },
                 ],
                 Tags = ["Phone", "VoIP", "PoE"],
                 CreatedBy = "system"
@@ -540,6 +558,7 @@ public class AssetManagementSeeder(IMongoDatabase database, ILogger<AssetManagem
                         new() { PropertyId = "prop_storage", Name = "Storage", Value = 512, DataType = "number", Unit = "GB" },
                         new() { PropertyId = "prop_os", Name = "Operating System", Value = "Windows 11", DataType = "string" },
                         new() { PropertyId = "prop_hostname", Name = "Hostname", Value = "LAP-001-WIN11", DataType = "string" },
+                        new() { PropertyId = "prop_warranty_expiry", Name = "Warranty Expiration", Value = now.AddYears(3).AddMonths(-6).Date, DataType = "date" },
                     ]
                 },
                 PurchaseInfo = new PurchaseInfo
@@ -580,6 +599,7 @@ public class AssetManagementSeeder(IMongoDatabase database, ILogger<AssetManagem
                         new() { PropertyId = "prop_storage", Name = "Storage", Value = 512, DataType = "number", Unit = "GB" },
                         new() { PropertyId = "prop_os", Name = "Operating System", Value = "macOS Sonoma", DataType = "string" },
                         new() { PropertyId = "prop_hostname", Name = "Hostname", Value = "LAP-002-MACOS", DataType = "string" },
+                        new() { PropertyId = "prop_warranty_expiry", Name = "Warranty Expiration", Value = now.AddYears(1).AddMonths(-3).Date, DataType = "date" },
                     ]
                 },
                 PurchaseInfo = new PurchaseInfo
@@ -612,6 +632,7 @@ public class AssetManagementSeeder(IMongoDatabase database, ILogger<AssetManagem
                     [
                         new() { PropertyId = "prop_screen_size", Name = "Screen Size", Value = 27, DataType = "number", Unit = "inches" },
                         new() { PropertyId = "prop_resolution", Name = "Resolution", Value = "1920x1080", DataType = "string" },
+                        new() { PropertyId = "prop_warranty_expiry", Name = "Warranty Expiration", Value = now.AddYears(2).Date, DataType = "date" },
                     ]
                 },
                 PurchaseInfo = new PurchaseInfo
@@ -648,6 +669,7 @@ public class AssetManagementSeeder(IMongoDatabase database, ILogger<AssetManagem
                     [
                         new() { PropertyId = "prop_screen_size", Name = "Screen Size", Value = 27, DataType = "number", Unit = "inches" },
                         new() { PropertyId = "prop_resolution", Name = "Resolution", Value = "1920x1080", DataType = "string" },
+                        new() { PropertyId = "prop_warranty_expiry", Name = "Warranty Expiration", Value = now.AddYears(2).Date, DataType = "date" },
                     ]
                 },
                 PurchaseInfo = new PurchaseInfo
@@ -687,6 +709,7 @@ public class AssetManagementSeeder(IMongoDatabase database, ILogger<AssetManagem
                         new() { PropertyId = "prop_print_technology", Name = "Print Technology", Value = "Laser", DataType = "string" },
                         new() { PropertyId = "prop_color_support", Name = "Color Support", Value = false, DataType = "boolean" },
                         new() { PropertyId = "prop_ip_address", Name = "IP Address", Value = "192.168.1.50", DataType = "string" },
+                        new() { PropertyId = "prop_warranty_expiry", Name = "Warranty Expiration", Value = now.AddMonths(-12).Date, DataType = "date" },
                     ]
                 },
                 PurchaseInfo = new PurchaseInfo
@@ -720,6 +743,7 @@ public class AssetManagementSeeder(IMongoDatabase database, ILogger<AssetManagem
                         new() { PropertyId = "prop_port_count", Name = "Port Count", Value = 24, DataType = "number" },
                         new() { PropertyId = "prop_speed", Name = "Speed", Value = "1 Gbps", DataType = "string" },
                         new() { PropertyId = "prop_ip_address", Name = "IP Address", Value = "192.168.1.1", DataType = "string" },
+                        new() { PropertyId = "prop_warranty_expiry", Name = "Warranty Expiration", Value = now.AddMonths(-12).Date, DataType = "date" },
                     ]
                 },
                 PurchaseInfo = new PurchaseInfo
@@ -752,6 +776,7 @@ public class AssetManagementSeeder(IMongoDatabase database, ILogger<AssetManagem
                     [
                         new() { PropertyId = "prop_voip_support", Name = "VoIP Support", Value = true, DataType = "boolean" },
                         new() { PropertyId = "prop_ip_address", Name = "IP Address", Value = "192.168.1.101", DataType = "string" },
+                        new() { PropertyId = "prop_warranty_expiry", Name = "Warranty Expiration", Value = now.AddYears(1).Date, DataType = "date" },
                     ]
                 },
                 PurchaseInfo = new PurchaseInfo

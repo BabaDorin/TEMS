@@ -94,6 +94,15 @@ public class AssetRepository(IMongoDatabase database) : IAssetRepository
         return dbEntity?.ToDomain();
     }
 
+    public async Task<DomainEntity.Asset?> GetBySerialNumberOrTagAsync(string serialNumber, string assetTag, CancellationToken cancellationToken = default)
+    {
+        var filterSerial = Builders<DbEntity.Asset>.Filter.Eq(x => x.SerialNumber, serialNumber);
+        var filterTag = Builders<DbEntity.Asset>.Filter.Eq(x => x.AssetTag, assetTag);
+        var filter = Builders<DbEntity.Asset>.Filter.Or(filterSerial, filterTag);
+        var dbEntity = await _collection.Find(filter).FirstOrDefaultAsync(cancellationToken);
+        return dbEntity?.ToDomain();
+    }
+
     public async Task<DomainEntity.Asset> CreateAsync(DomainEntity.Asset asset, CancellationToken cancellationToken = default)
     {
         asset.CreatedAt = DateTime.UtcNow;

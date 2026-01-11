@@ -127,6 +127,10 @@ Implement a comprehensive asset management system in the frontend with two main 
 - Tags management
 - Create/Edit/Delete modals
 
+**Current implementation status (Jan 2026):**
+- AddDefinition dialog now uses a reactive form with specification rows (property, value, data type, unit) and supports both create and update flows with type locking when launched from a specific type.
+- Asset Definition Management grid opens the shared AddDefinition dialog for create/edit; the legacy inline edit modal has been removed.
+
 ### 4. Services to Create
 
 #### A. Asset Service

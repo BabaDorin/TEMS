@@ -37,6 +37,7 @@ export interface AssetSpecification {
   value: any;
   dataType: string;
   unit?: string;
+  isRequired?: boolean;
 }
 
 export interface PurchaseInfo {

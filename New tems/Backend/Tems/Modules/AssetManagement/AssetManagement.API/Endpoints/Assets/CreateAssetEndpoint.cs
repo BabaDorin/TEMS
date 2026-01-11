@@ -15,7 +15,14 @@ public class CreateAssetEndpoint(IMediator mediator) : Endpoint<CreateAssetComma
 
     public override async Task HandleAsync(CreateAssetCommand command, CancellationToken ct)
     {
-        var response = await mediator.Send(command, ct);
-        await Send.OkAsync(response, cancellation: ct);
+        try
+        {
+            var response = await mediator.Send(command, ct);
+            await Send.OkAsync(response, cancellation: ct);
+        }
+        catch (InvalidOperationException ex) when (ex.Message.Contains("already exists"))
+        {
+            ThrowError(ex.Message, 409);
+        }
     }
 }

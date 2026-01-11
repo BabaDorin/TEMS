@@ -1,6 +1,7 @@
 using AssetManagement.Contract.DTOs;
 using AssetManagement.Application.Domain;
 using AssetManagement.Application.Interfaces;
+using AssetManagement.Application.Exceptions;
 using AssetManagement.Contract.Commands;
 using AssetManagement.Contract.Responses;
 using MediatR;
@@ -12,10 +13,18 @@ public class CreateAssetTypeCommandHandler(IAssetTypeRepository assetTypeReposit
 {
     public async Task<CreateAssetTypeResponse> Handle(CreateAssetTypeCommand request, CancellationToken cancellationToken)
     {
+        var normalizedName = request.Name?.Trim() ?? string.Empty;
+
+        var existing = await assetTypeRepository.GetByNameInsensitiveAsync(normalizedName, cancellationToken);
+        if (existing != null)
+        {
+            throw new DuplicateAssetTypeNameException(normalizedName);
+        }
+
         var domainEntity = new AssetType
         {
             Id = Guid.NewGuid().ToString(),
-            Name = request.Name,
+            Name = normalizedName,
             Description = request.Description,
             ParentTypeId = request.ParentTypeId,
             Properties = request.Properties.Select(p => new AssetTypeProperty

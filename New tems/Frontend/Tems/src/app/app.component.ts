@@ -92,21 +92,8 @@ export class AppComponent extends TEMSComponent implements OnInit{
       return;
     }
 
-    // Defer language preference loading until after initial render
-    setTimeout(() => {
-      this.subscriptions.push(
-        this.userService.getUserPrefferedLang()
-        .subscribe(result => {
-          if(this.snackService.snackIfError(result))  
-          {
-            this.translate.use(this.getBrowserLang());
-            return;
-          }
-
-          this.translate.use(result);
-        })
-      )
-    }, 0);
+    // Use browser language - user preference endpoint not implemented
+    this.translate.use(this.getBrowserLang());
   }
 
   getBrowserLang(): string{
@@ -123,18 +110,10 @@ export class AppComponent extends TEMSComponent implements OnInit{
       window.scrollTo(0, 0);
     });
 
-    // Defer library password loading - only needed for specific feature
-    // Don't load on initial app load
-    if (this.tokenService.tokenExists()) {
-      setTimeout(() => {
-        this.subscriptions.push(
-          this.systemConfigurationService.getLibraryPassword()
-          .subscribe(result => {
-            this.libraryPassword = result.toLowerCase();
-          })
-        )
-      }, 2000);
-    }
+    // Library password feature disabled - endpoint not implemented
+    // if (this.tokenService.tokenExists()) {
+    //   this.libraryPassword = 'disabled';
+    // }
   }
 
   @HostListener('document:keypress', ['$event'])

@@ -142,6 +142,10 @@
                   <span class="text-sm text-gray-600">Status:</span>
                   <p class="font-medium">{{ getStatusLabel(asset.status) }}</p>
                 </div>
+                <div *ngIf="asset.assetTypeName || asset.definition?.assetTypeName">
+                  <span class="text-sm text-gray-600">Asset Type:</span>
+                  <p class="font-medium">{{ asset.assetTypeName || asset.definition?.assetTypeName || '—' }}</p>
+                </div>
                 <div>
                   <span class="text-sm text-gray-600">Created:</span>
                   <p class="font-medium">{{ asset.createdAt | date:'medium' }}</p>

@@ -43,6 +43,8 @@
     "canvas-confetti": "^1.9.0",
     "chart.js": "^4.4.0",
     "compass-mixins": "^0.12.10",
+    "heroicons": "^2.2.0",
+    "html2canvas": "^1.4.1",
     "jquery": "^3.7.1",
     "ng2-charts": "^4.1.1",
     "ngx-image-cropper": "^7.0.0",

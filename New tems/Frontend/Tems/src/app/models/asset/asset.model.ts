@@ -2,33 +2,38 @@ export interface Asset {
   id: string;
   assetTag: string;
   serialNumber?: string;
-  status: AssetStatus;
-  assetTypeId: string;
-  assetTypeName: string;
+  status: AssetStatus | string;
+  assetTypeId?: string;
+  assetTypeName?: string;
   definition: AssetDefinitionSnapshot;
   purchaseInfo?: PurchaseInfo;
   location?: AssetLocation;
   assignment?: AssetAssignment;
   parentAssetId?: string;
-  childAssetIds: string[];
-  maintenanceHistory: MaintenanceRecord[];
+  childAssetIds?: string[];
+  maintenanceHistory?: MaintenanceRecord[];
   customFields?: { [key: string]: any };
   notes?: string;
-  isArchived: boolean;
-  archivedAt?: Date;
-  archivedBy?: string;
-  createdAt: Date;
-  updatedAt: Date;
+  isArchived?: boolean;
+  archivedAt?: Date | string | null;
+  archivedBy?: string | null;
+  createdAt: Date | string;
+  updatedAt: Date | string;
+  createdBy?: string;
 }
 
 export interface AssetDefinitionSnapshot {
   definitionId: string;
+  assetTypeId?: string;
+  assetTypeName?: string;
   name: string;
   manufacturer?: string;
   model?: string;
   description?: string;
   specifications: AssetSpecification[];
-  snapshotTakenAt: Date;
+  snapshotTakenAt?: Date;
+  snapshotAt?: Date;
+  isCustomized?: boolean;
 }
 
 export interface AssetSpecification {

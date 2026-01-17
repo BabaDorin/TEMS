@@ -16,6 +16,8 @@ import { AssetType } from 'src/app/models/asset/asset-type.model';
 import { AssetDefinition } from 'src/app/models/asset/asset-definition.model';
 import { AssetLabelComponent } from '../../asset/asset-label/asset-label.component';
 import { AddAssetComponent } from '../../asset/add-asset/add-asset.component';
+import { DownloadService } from 'src/app/download.service';
+import { ViewChild } from '@angular/core';
 
 @Component({
   selector: 'app-view-assets',
@@ -68,6 +70,10 @@ export class ViewAssetsComponent implements OnInit, OnDestroy {
   isFiltersExpanded = false;
   assetTagSearch = '';
   private assetTagSearchSubject = new Subject<string>();
+  isDefinitionExpanded = false;
+  isPurchaseInfoExpanded = false;
+
+  @ViewChild('assetLabel') assetLabelComponent: AssetLabelComponent;
 
   // Pagination
   currentPage = 1;
@@ -106,12 +112,12 @@ export class ViewAssetsComponent implements OnInit, OnDestroy {
       field: 'assetTag',
       flex: 1,
       minWidth: 120,
-      cellClass: 'font-medium',
+      cellClass: 'font-medium cursor-pointer',
       onCellClicked: (params) => {
         this.viewAssetDetails(params.data);
       },
       cellRenderer: (params: any) => {
-        return `<span class="text-blue-600 hover:text-blue-800 cursor-pointer">${params.value}</span>`;
+        return `<span class="text-blue-600 hover:text-blue-800">${params.value}</span>`;
       }
     },
     {
@@ -183,7 +189,8 @@ export class ViewAssetsComponent implements OnInit, OnDestroy {
     private assetDefinitionService: AssetDefinitionService,
     private fb: FormBuilder,
     private router: Router,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private downloadService: DownloadService
   ) {
     this.createForm = this.fb.group({
       assetTypeId: ['', Validators.required],
@@ -340,6 +347,7 @@ export class ViewAssetsComponent implements OnInit, OnDestroy {
     const dialogRef = this.dialog.open(AddAssetComponent, {
       width: '90vw',
       maxWidth: '1200px',
+      minHeight: '600px',
       maxHeight: '90vh',
       panelClass: 'custom-dialog-container',
       disableClose: false
@@ -416,6 +424,16 @@ export class ViewAssetsComponent implements OnInit, OnDestroy {
   closePreviewModal() {
     this.showPreviewModal = false;
     this.selectedAsset = null;
+  }
+
+  downloadAssetLabel(event: Event) {
+    event.stopPropagation();
+    if (!this.selectedAsset || !this.assetLabelComponent) return;
+    
+    // Give the component a moment to render if needed
+    setTimeout(() => {
+      this.assetLabelComponent.downloadLabel();
+    }, 100);
   }
 
   navigateToDetail(id: string) {

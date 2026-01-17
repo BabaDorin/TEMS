@@ -1,9 +1,12 @@
 .label-wrapper{
     width: 300px;
     height: auto;
+    position: relative;
 }
 
 .download-button{
-    margin-top: -40px;
-    text-align: right;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    z-index: 10;
 }

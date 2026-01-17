@@ -312,7 +312,7 @@
 <!-- Create Asset Modal -->
 <div
   *ngIf="showCreateModal"
-  class="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+  class="fixed inset-0 bg-black/50 flex items-center justify-center z-[100]"
   (click)="closeCreateModal()">
   <div
     class="bg-white rounded-lg shadow-xl max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto"
@@ -539,128 +539,162 @@
 <!-- Preview Modal -->
 <div
   *ngIf="showPreviewModal && selectedAsset"
-  class="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+  class="fixed inset-0 bg-black/50 flex items-center justify-center z-[100]"
   (click)="closePreviewModal()">
   <div
     class="bg-white rounded-lg shadow-xl max-w-3xl w-full mx-4 max-h-[90vh] overflow-y-auto"
     (click)="$event.stopPropagation()">
     <!-- Preview Header -->
-    <div class="px-6 py-4 border-b sticky top-0 bg-white z-10">
-      <div class="flex justify-between items-start">
-        <div class="flex-1">
-          <h2 class="text-xl font-semibold text-gray-900">Asset Details</h2>
-          <p class="text-sm text-gray-500 mt-1">{{ selectedAsset.assetTag }}</p>
+    <div class="px-6 py-3 sticky top-0 bg-white z-10">
+      <div class="flex justify-between items-center">
+        <div>
+          <h2 class="text-lg font-semibold text-gray-900 m-0">Asset Details</h2>
         </div>
         
-        <!-- TEMS ID Label with QR Code -->
-        <div>
-          <app-asset-label 
-            [mainText]="selectedAsset.assetTag" 
-            [downloadable]="true">
-          </app-asset-label>
+        <!-- Asset Tag with QR Icon -->
+        <div class="flex items-center gap-2">
+          <span class="text-sm text-gray-600">Asset tag:</span>
+          <button 
+            (click)="downloadAssetLabel($event)"
+            class="p-1.5 hover:bg-gray-100 rounded-lg transition-colors cursor-pointer group"
+            title="Download QR Label">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-gray-700 group-hover:text-[#007aff] transition-colors">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 0 1 3.75 9.375v-4.5ZM3.75 14.625c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5a1.125 1.125 0 0 1-1.125-1.125v-4.5ZM13.5 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 0 1 13.5 9.375v-4.5Z" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 6.75h.75v.75h-.75v-.75ZM6.75 16.5h.75v.75h-.75v-.75ZM16.5 6.75h.75v.75h-.75v-.75ZM13.5 13.5h.75v.75h-.75v-.75ZM13.5 19.5h.75v.75h-.75v-.75ZM19.5 13.5h.75v.75h-.75v-.75ZM19.5 19.5h.75v.75h-.75v-.75ZM16.5 16.5h.75v.75h-.75v-.75Z" />
+            </svg>
+          </button>
+          <span class="text-base font-medium text-gray-900">{{ selectedAsset.assetTag }}</span>
         </div>
       </div>
     </div>
 
     <!-- Preview Body -->
-    <div class="p-6">
+    <div class="px-6 py-2">
       <!-- Basic Info -->
-      <div class="grid grid-cols-2 gap-4 mb-6">
-        <div>
-          <span class="text-sm text-gray-600">Asset Tag:</span>
-          <p class="font-medium">{{ selectedAsset.assetTag }}</p>
-        </div>
-        <div>
-          <span class="text-sm text-gray-600">Serial Number:</span>
-          <p class="font-medium">{{ selectedAsset.serialNumber || '—' }}</p>
-        </div>
-        <div>
-          <span class="text-sm text-gray-600">Status:</span>
-          <p class="font-medium">{{ selectedAsset.status }}</p>
-        </div>
-        <div>
-          <span class="text-sm text-gray-600">Created:</span>
-          <p class="font-medium">{{ selectedAsset.createdAt | date:'short' }}</p>
+      <div class="mb-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div>
+            <span class="text-sm text-gray-600">Serial Number:</span>
+            <p class="font-medium">{{ selectedAsset.serialNumber || '—' }}</p>
+          </div>
+          <div>
+            <span class="text-sm text-gray-600">Status:</span>
+            <p class="font-medium">{{ selectedAsset.status }}</p>
+          </div>
+          <div>
+            <span class="text-sm text-gray-600">Created:</span>
+            <p class="font-medium">{{ selectedAsset.createdAt | date:'MMMM d, y' }}</p>
+          </div>
+          <div>
+            <span class="text-sm text-gray-600">Location:</span>
+            <p class="font-medium">{{ selectedAsset.location ? getLocationString(selectedAsset.location) : '—' }}</p>
+          </div>
         </div>
       </div>
 
-      <!-- Definition Info -->
-      <div *ngIf="selectedAsset.definition" class="mb-6 p-4 bg-gray-50 rounded-lg">
-        <h3 class="text-sm font-semibold text-gray-700 mb-2">Definition</h3>
-        <div class="grid grid-cols-2 gap-3 text-sm">
-          <div>
-            <span class="text-gray-600">Name:</span>
-            <span class="font-medium ml-2">{{ selectedAsset.definition.name }}</span>
-          </div>
-          <div>
-            <span class="text-gray-600">Manufacturer:</span>
-            <span class="font-medium ml-2">{{ selectedAsset.definition.manufacturer }}</span>
-          </div>
-          <div>
-            <span class="text-gray-600">Model:</span>
-            <span class="font-medium ml-2">{{ selectedAsset.definition.model }}</span>
-          </div>
-        </div>
-        <div *ngIf="selectedAsset.definition.specifications && selectedAsset.definition.specifications.length > 0" class="mt-3">
-          <span class="text-xs font-medium text-gray-600 uppercase">Specifications:</span>
-          <div class="grid grid-cols-2 gap-2 mt-2">
-            <div *ngFor="let spec of selectedAsset.definition.specifications" class="text-xs">
-              <span class="text-gray-600">{{ spec.name || spec.propertyId }}:</span>
-              <span class="font-medium ml-1">{{ formatSpecValue(spec.value, spec.unit) }}</span>
+      <!-- Definition Info (Collapsible) -->
+      <div *ngIf="selectedAsset.definition" class="mb-4 bg-white rounded-xl border border-gray-200">
+        <div 
+          class="px-4 py-2 cursor-pointer hover:bg-gray-50 transition flex items-center justify-between" 
+          (click)="isDefinitionExpanded = !isDefinitionExpanded">
+          <div class="flex items-center gap-2">
+            <div class="self-center">
+              <h3 class="text-sm font-medium text-gray-900 leading-tight m-0">Definition</h3>
+              <p class="text-xs text-gray-500 leading-tight m-0">View definition details</p>
             </div>
           </div>
+          <svg width="18" height="18" viewBox="0 0 20 20" fill="none" class="text-gray-600 transition-transform" [class.rotate-180]="isDefinitionExpanded">
+            <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div *ngIf="isDefinitionExpanded" @expandCollapse class="overflow-hidden">
+          <div class="p-4">
+            <div class="grid grid-cols-2 gap-3 text-sm">
+            <div>
+              <span class="text-gray-600">Name:</span>
+              <span class="font-medium ml-2">{{ selectedAsset.definition.name }}</span>
+            </div>
+            <div>
+              <span class="text-gray-600">Manufacturer:</span>
+              <span class="font-medium ml-2">{{ selectedAsset.definition.manufacturer }}</span>
+            </div>
+            <div>
+              <span class="text-gray-600">Model:</span>
+              <span class="font-medium ml-2">{{ selectedAsset.definition.model }}</span>
+            </div>
+          </div>
+          <div *ngIf="selectedAsset.definition.specifications && selectedAsset.definition.specifications.length > 0" class="mt-3">
+            <span class="text-xs font-medium text-gray-600 uppercase">Specifications:</span>
+            <div class="grid grid-cols-2 gap-2 mt-2">
+              <div *ngFor="let spec of selectedAsset.definition.specifications" class="text-xs">
+                <span class="text-gray-600">{{ spec.name || spec.propertyId }}:</span>
+                <span class="font-medium ml-1">{{ formatSpecValue(spec.value, spec.unit) }}</span>
+              </div>
+            </div>
+          </div>
+          </div>
         </div>
       </div>
 
-      <!-- Purchase Info -->
-      <div *ngIf="selectedAsset.purchaseInfo" class="mb-6 p-4 bg-gray-50 rounded-lg">
-        <h3 class="text-sm font-semibold text-gray-700 mb-2">Purchase Information</h3>
-        <div class="grid grid-cols-2 gap-3 text-sm">
-          <div *ngIf="selectedAsset.purchaseInfo.vendor">
-            <span class="text-gray-600">Vendor:</span>
-            <span class="font-medium ml-2">{{ selectedAsset.purchaseInfo.vendor }}</span>
+      <!-- Purchase Info (Collapsible) -->
+      <div *ngIf="selectedAsset.purchaseInfo" class="mb-4 bg-white rounded-xl border border-gray-200">
+        <div 
+          class="px-4 py-2 cursor-pointer hover:bg-gray-50 transition flex items-center justify-between" 
+          (click)="isPurchaseInfoExpanded = !isPurchaseInfoExpanded">
+          <div class="flex items-center gap-2">
+            <div class="self-center">
+              <h3 class="text-sm font-medium text-gray-900 leading-tight m-0">Purchase Information</h3>
+              <p class="text-xs text-gray-500 leading-tight m-0">Purchase and warranty details</p>
+            </div>
           </div>
-          <div *ngIf="selectedAsset.purchaseInfo.purchaseDate">
-            <span class="text-gray-600">Purchase Date:</span>
-            <span class="font-medium ml-2">{{ selectedAsset.purchaseInfo.purchaseDate | date:'shortDate' }}</span>
+          <svg width="18" height="18" viewBox="0 0 20 20" fill="none" class="text-gray-600 transition-transform" [class.rotate-180]="isPurchaseInfoExpanded">
+            <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div *ngIf="isPurchaseInfoExpanded" @expandCollapse class="overflow-hidden">
+          <div class="p-4">
+            <div class="grid grid-cols-2 gap-3 text-sm">
+            <div *ngIf="selectedAsset.purchaseInfo.vendor">
+              <span class="text-gray-600">Vendor:</span>
+              <span class="font-medium ml-2">{{ selectedAsset.purchaseInfo.vendor }}</span>
+            </div>
+            <div *ngIf="selectedAsset.purchaseInfo.purchaseDate">
+              <span class="text-gray-600">Purchase Date:</span>
+              <span class="font-medium ml-2">{{ selectedAsset.purchaseInfo.purchaseDate | date:'shortDate' }}</span>
+            </div>
+            <div *ngIf="selectedAsset.purchaseInfo.purchasePrice">
+              <span class="text-gray-600">Price:</span>
+              <span class="font-medium ml-2">{{ selectedAsset.purchaseInfo.purchasePrice | currency }}</span>
+            </div>
+            <div *ngIf="selectedAsset.purchaseInfo.warrantyExpiration">
+              <span class="text-gray-600">Warranty Expires:</span>
+              <span class="font-medium ml-2">{{ selectedAsset.purchaseInfo.warrantyExpiration | date:'shortDate' }}</span>
+            </div>
           </div>
-          <div *ngIf="selectedAsset.purchaseInfo.purchasePrice">
-            <span class="text-gray-600">Price:</span>
-            <span class="font-medium ml-2">{{ selectedAsset.purchaseInfo.purchasePrice | currency }}</span>
-          </div>
-          <div *ngIf="selectedAsset.purchaseInfo.warrantyExpiration">
-            <span class="text-gray-600">Warranty Expires:</span>
-            <span class="font-medium ml-2">{{ selectedAsset.purchaseInfo.warrantyExpiration | date:'shortDate' }}</span>
           </div>
         </div>
-      </div>
-
-      <!-- Location -->
-      <div *ngIf="selectedAsset.location" class="mb-6 p-4 bg-gray-50 rounded-lg">
-        <h3 class="text-sm font-semibold text-gray-700 mb-2">Location</h3>
-        <p class="text-sm">
-          {{ getLocationString(selectedAsset.location) }}
-        </p>
       </div>
 
       <!-- See More Button -->
-      <div class="mt-6 pt-4 border-t">
+      <div class="mt-4 flex justify-center">
         <button
           (click)="navigateToDetail(selectedAsset.id); closePreviewModal()"
-          class="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition flex items-center justify-center gap-2">
-          <i class="mdi mdi-open-in-new"></i>
-          See More Details
+          class="px-2.5 py-1.5 text-xs text-gray-500 hover:text-[#007aff] hover:bg-[#007aff]/5 rounded-lg transition flex items-center gap-1.5">
+          <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
+            <path d="M6 2H3C2.44772 2 2 2.44772 2 3V13C2 13.5523 2.44772 14 3 14H13C13.5523 14 14 13.5523 14 13V10M9 2H14M14 2V7M14 2L7 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span>See More Details</span>
         </button>
       </div>
-    </div>
-
-    <!-- Preview Footer -->
-    <div class="px-6 py-4 border-t sticky bottom-0 bg-white flex justify-end">
-      <button
-        (click)="closePreviewModal()"
-        class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">
-        Close
-      </button>
+      
+      <!-- Hidden Asset Label Component for Download -->
+      <div class="hidden">
+        <app-asset-label 
+          #assetLabel
+          [mainText]="selectedAsset.assetTag" 
+          [downloadable]="false">
+        </app-asset-label>
+      </div>
     </div>
   </div>
 </div>

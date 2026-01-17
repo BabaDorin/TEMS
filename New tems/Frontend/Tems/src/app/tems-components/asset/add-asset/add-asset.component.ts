@@ -430,10 +430,7 @@ export class AddAssetComponent extends TEMSComponent implements OnInit {
               this.formlyData.model.temsid = '';
               this.formlyData.model.serialNumber = '';
               this.selectedStatus = undefined;
-              // Reset definition to original
-              if (this.originalDefinition) {
-                this.selectedFullDefinition = JSON.parse(JSON.stringify(this.originalDefinition));
-              }
+              // Keep customized definition - user can reset manually if needed
             } else {
               this.snackService.snack({ status: 1, message: 'Asset updated successfully!' });
             }

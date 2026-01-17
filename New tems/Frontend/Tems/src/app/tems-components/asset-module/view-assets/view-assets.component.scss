@@ -1,11 +1,11 @@
 .type-dropdown-container,
 .definition-dropdown-container {
   position: relative;
-  z-index: 100;
+  z-index: 10;
 }
 
-// Ensure dropdowns appear above other content
+// Ensure dropdowns appear above other content but below modals (z-50 = 50)
 .type-dropdown-container > div > div:last-child,
 .definition-dropdown-container > div > div:last-child {
-  z-index: 1000;
+  z-index: 40;
 }

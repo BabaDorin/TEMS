@@ -91,14 +91,19 @@ export class AssetDetailComponent implements OnInit {
   }
 
   getStatusClass(status: string): string {
-    switch (status) {
+    const normalizedStatus = status?.toUpperCase();
+    switch (normalizedStatus) {
       case 'AVAILABLE':
+      case 'NEW':
         return 'bg-green-100 text-green-800';
       case 'IN_USE':
+      case 'ACTIVE':
         return 'bg-blue-100 text-blue-800';
       case 'UNDER_MAINTENANCE':
+      case 'MAINTENANCE':
         return 'bg-yellow-100 text-yellow-800';
       case 'RETIRED':
+      case 'DEFECT':
         return 'bg-red-100 text-red-800';
       default:
         return 'bg-gray-100 text-gray-800';
@@ -106,17 +111,25 @@ export class AssetDetailComponent implements OnInit {
   }
 
   getStatusLabel(status: string): string {
-    switch (status) {
+    const normalizedStatus = status?.toUpperCase();
+    switch (normalizedStatus) {
       case 'AVAILABLE':
         return 'Available';
+      case 'NEW':
+        return 'New';
       case 'IN_USE':
         return 'In Use';
+      case 'ACTIVE':
+        return 'Active';
       case 'UNDER_MAINTENANCE':
+      case 'MAINTENANCE':
         return 'Under Maintenance';
       case 'RETIRED':
         return 'Retired';
+      case 'DEFECT':
+        return 'Defect';
       default:
-        return status;
+        return status ? status.charAt(0).toUpperCase() + status.slice(1).toLowerCase() : '';
     }
   }
 }

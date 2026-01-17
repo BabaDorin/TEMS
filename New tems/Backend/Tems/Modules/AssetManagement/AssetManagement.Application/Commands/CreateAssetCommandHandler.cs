@@ -4,6 +4,7 @@ using AssetManagement.Application.Interfaces;
 using AssetManagement.Contract.Commands;
 using AssetManagement.Contract.Responses;
 using MediatR;
+using System.Text.Json;
 
 namespace AssetManagement.Application.Commands;
 
@@ -33,7 +34,7 @@ public class CreateAssetCommandHandler(
             {
                 PropertyId = s.PropertyId,
                 Name = s.Name,
-                Value = s.Value,
+                Value = ConvertJsonElementToValue(s.Value),
                 DataType = s.DataType,
                 Unit = s.Unit
             }).ToList()
@@ -93,5 +94,23 @@ public class CreateAssetCommandHandler(
         await assetDefinitionRepository.IncrementUsageCountAsync(definition.Id, cancellationToken);
 
         return new CreateAssetResponse(domainEntity.Id);
+    }
+
+    private static object ConvertJsonElementToValue(object value)
+    {
+        if (value is not JsonElement jsonElement)
+            return value;
+
+        return jsonElement.ValueKind switch
+        {
+            JsonValueKind.String => jsonElement.GetString() ?? string.Empty,
+            JsonValueKind.Number => jsonElement.TryGetInt32(out var intValue) ? intValue : 
+                                   jsonElement.TryGetInt64(out var longValue) ? longValue : 
+                                   jsonElement.GetDouble(),
+            JsonValueKind.True => true,
+            JsonValueKind.False => false,
+            JsonValueKind.Null => string.Empty,
+            _ => jsonElement.GetRawText()
+        };
     }
 }

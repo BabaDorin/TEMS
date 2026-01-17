@@ -45,9 +45,11 @@ export class AssetService {
   }
 
   getById(id: string): Observable<Asset> {
-    return this.http.get<Asset>(`${this.baseUrl}/${id}`, {
+    return this.http.get<{ asset: Asset }>(`${this.baseUrl}/${id}`, {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' })
-    });
+    }).pipe(
+      map(response => response.asset)
+    );
   }
 
   getByAssetTag(tag: string): Observable<Asset> {

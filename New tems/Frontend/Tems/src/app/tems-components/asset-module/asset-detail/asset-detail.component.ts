@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
+import { trigger, transition, style, animate } from '@angular/animations';
 import { AssetService } from 'src/app/services/asset.service';
 import { Asset } from 'src/app/models/asset/asset.model';
 import { AssetLabelComponent } from '../../asset/asset-label/asset-label.component';
@@ -10,13 +11,29 @@ import { AssetLabelComponent } from '../../asset/asset-label/asset-label.compone
   standalone: true,
   imports: [CommonModule, AssetLabelComponent],
   templateUrl: './asset-detail.component.html',
-  styleUrls: ['./asset-detail.component.scss']
+  styleUrls: ['./asset-detail.component.scss'],
+  animations: [
+    trigger('expandCollapse', [
+      transition(':enter', [
+        style({ height: '0', opacity: '0', overflow: 'hidden' }),
+        animate('200ms ease-in-out', style({ height: '*', opacity: '1' }))
+      ]),
+      transition(':leave', [
+        style({ height: '*', opacity: '1', overflow: 'hidden' }),
+        animate('200ms ease-in-out', style({ height: '0', opacity: '0' }))
+      ])
+    ])
+  ]
 })
 export class AssetDetailComponent implements OnInit {
+  @ViewChild('assetLabel') assetLabel: AssetLabelComponent;
+  
   asset: Asset | null = null;
   loading = true;
   error: string | null = null;
-  activeTab: 'overview' | 'specifications' | 'purchase' | 'maintenance' | 'history' = 'overview';
+  activeTab: 'overview' | 'acc' | 'purchase' | 'maintenance' | 'history' = 'overview';
+  showActionsDropdown = false;
+  isDefinitionExpanded = true;
 
   constructor(
     private route: ActivatedRoute,
@@ -131,5 +148,41 @@ export class AssetDetailComponent implements OnInit {
       default:
         return status ? status.charAt(0).toUpperCase() + status.slice(1).toLowerCase() : '';
     }
+  }
+
+  downloadAssetLabel(event: Event) {
+    event.stopPropagation();
+    if (this.assetLabel) {
+      this.assetLabel.downloadLabel();
+    }
+  }
+
+  getLocationString(location: any): string {
+    const parts = [];
+    if (location.building) parts.push(location.building);
+    if (location.floor) parts.push(location.floor);
+    if (location.room) parts.push(location.room);
+    return parts.join(', ') || '—';
+  }
+
+  navigateToLocation() {
+    console.log('Navigate to location:', this.asset?.location);
+  }
+
+  navigateToAssignee() {
+    console.log('Navigate to assignee:', this.asset?.assignment);
+  }
+
+  getAccData(): { key: string; value: string }[] {
+    return [
+      { key: 'CPU Temperature', value: '52°C' },
+      { key: 'Memory Usage', value: '4.2 GB / 8 GB' },
+      { key: 'Disk Space', value: '125 GB / 256 GB' },
+      { key: 'Network Status', value: 'Connected' },
+      { key: 'Last Sync', value: '2 minutes ago' },
+      { key: 'Battery Health', value: '92%' },
+      { key: 'Screen Brightness', value: '75%' },
+      { key: 'OS Version', value: 'macOS 14.2' }
+    ];
   }
 }

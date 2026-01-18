@@ -7,6 +7,7 @@ public class TicketManagementSeeder(IMongoDatabase database, ILogger<TicketManag
 {
     private readonly IMongoCollection<TicketType> _ticketTypes = database.GetCollection<TicketType>("ticket_types");
     private readonly IMongoCollection<Ticket> _tickets = database.GetCollection<Ticket>("tickets");
+    private const string DefaultTenantId = "default";
 
     public async Task SeedAsync()
     {
@@ -34,6 +35,7 @@ public class TicketManagementSeeder(IMongoDatabase database, ILogger<TicketManag
             new()
             {
                 TicketTypeId = "ticket_type_hardware_issue",
+                TenantId = DefaultTenantId,
                 Name = "Hardware Issue",
                 Description = "Hardware malfunction or failure",
                 ItilCategory = "incident",
@@ -122,6 +124,7 @@ public class TicketManagementSeeder(IMongoDatabase database, ILogger<TicketManag
             new()
             {
                 TicketTypeId = "ticket_type_software_request",
+                TenantId = DefaultTenantId,
                 Name = "Software Request",
                 Description = "Software installation or license request",
                 ItilCategory = "service_request",
@@ -210,6 +213,7 @@ public class TicketManagementSeeder(IMongoDatabase database, ILogger<TicketManag
             new()
             {
                 TicketTypeId = "ticket_type_access_request",
+                TenantId = DefaultTenantId,
                 Name = "Access Request",
                 Description = "Request for system or resource access",
                 ItilCategory = "service_request",
@@ -299,6 +303,7 @@ public class TicketManagementSeeder(IMongoDatabase database, ILogger<TicketManag
             new()
             {
                 TicketTypeId = "ticket_type_network_issue",
+                TenantId = DefaultTenantId,
                 Name = "Network Issue",
                 Description = "Network connectivity or performance problems",
                 ItilCategory = "incident",
@@ -386,6 +391,7 @@ public class TicketManagementSeeder(IMongoDatabase database, ILogger<TicketManag
             new()
             {
                 TicketTypeId = "ticket_type_password_reset",
+                TenantId = DefaultTenantId,
                 Name = "Password Reset",
                 Description = "Password reset or account unlock request",
                 ItilCategory = "service_request",
@@ -479,6 +485,7 @@ public class TicketManagementSeeder(IMongoDatabase database, ILogger<TicketManag
             new()
             {
                 HumanReadableId = "TEMS-2024-001",
+                TenantId = DefaultTenantId,
                 TicketTypeId = "ticket_type_hardware_issue",
                 Summary = "Laptop won't power on - LAP-001",
                 Priority = "high",
@@ -496,6 +503,7 @@ public class TicketManagementSeeder(IMongoDatabase database, ILogger<TicketManag
             new()
             {
                 HumanReadableId = "TEMS-2024-002",
+                TenantId = DefaultTenantId,
                 TicketTypeId = "ticket_type_software_request",
                 Summary = "Request for Adobe Creative Cloud license",
                 Priority = "medium",
@@ -512,6 +520,7 @@ public class TicketManagementSeeder(IMongoDatabase database, ILogger<TicketManag
             new()
             {
                 HumanReadableId = "TEMS-2024-003",
+                TenantId = DefaultTenantId,
                 TicketTypeId = "ticket_type_network_issue",
                 Summary = "Cannot connect to Wi-Fi network",
                 Priority = "high",
@@ -528,6 +537,7 @@ public class TicketManagementSeeder(IMongoDatabase database, ILogger<TicketManag
             new()
             {
                 HumanReadableId = "TEMS-2024-004",
+                TenantId = DefaultTenantId,
                 TicketTypeId = "ticket_type_password_reset",
                 Summary = "Password reset for email account",
                 Priority = "high",
@@ -545,6 +555,7 @@ public class TicketManagementSeeder(IMongoDatabase database, ILogger<TicketManag
             new()
             {
                 HumanReadableId = "TEMS-2024-005",
+                TenantId = DefaultTenantId,
                 TicketTypeId = "ticket_type_access_request",
                 Summary = "Request access to Project Management system",
                 Priority = "medium",
@@ -561,6 +572,7 @@ public class TicketManagementSeeder(IMongoDatabase database, ILogger<TicketManag
             new()
             {
                 HumanReadableId = "TEMS-2024-006",
+                TenantId = DefaultTenantId,
                 TicketTypeId = "ticket_type_hardware_issue",
                 Summary = "Monitor flickering intermittently - MON-002",
                 Priority = "low",

@@ -1,0 +1,599 @@
+<div class="min-h-screen bg-gray-50/50">
+  <!-- Loading State -->
+  <div *ngIf="loading" class="flex items-center justify-center h-screen">
+    <div class="text-center">
+      <svg class="animate-spin h-10 w-10 text-[#007aff] mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+      </svg>
+      <p class="mt-3 text-sm text-gray-600">Loading room details...</p>
+    </div>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="!loading && error" class="flex items-center justify-center h-screen">
+    <div class="text-center">
+      <svg class="h-12 w-12 text-red-500 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+      <p class="mt-3 text-sm text-gray-900 font-medium">{{ error }}</p>
+      <button
+        (click)="goBack()"
+        class="mt-4 px-4 py-2 bg-[#007aff] text-white text-sm rounded-lg hover:bg-[#0051d5] transition">
+        Back to Locations
+      </button>
+    </div>
+  </div>
+
+  <!-- Room Detail -->
+  <div *ngIf="!loading && !error && room" class="max-w-5xl mx-auto p-4 sm:p-6">
+    <!-- Back Button -->
+    <button
+      (click)="goBack()"
+      class="mb-4 text-sm text-[#007aff] hover:text-[#0051d5] flex items-center gap-1.5 transition">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <path d="M10 12L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      Back to Locations
+    </button>
+
+    <!-- Header Card -->
+    <div class="bg-white rounded-xl shadow-sm mb-4">
+      <div class="px-6 py-4">
+        <div class="flex justify-between items-start">
+          <div class="flex-1">
+            <div class="flex items-center gap-3">
+              <h1 class="text-2xl font-semibold text-gray-900 m-0">{{ room.name }}</h1>
+            </div>
+            
+            <!-- Hierarchy Path -->
+            <div class="flex items-center gap-2 mt-3 mb-1">
+              <div class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gray-100 text-gray-700 rounded-full text-xs font-medium">
+                <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
+                  <path d="M8 1.333C6.23189 1.333 4.83325 2.73165 4.83325 4.5C4.83325 6.26835 6.23189 7.667 8 7.667C9.76811 7.667 11.1666 6.26835 11.1666 4.5C11.1666 2.73165 9.76811 1.333 8 1.333ZM8 1.333C10.3932 1.333 12.3333 3.27315 12.3333 5.66634C12.3333 9.33301 8 14.6663 8 14.6663C8 14.6663 3.66659 9.33301 3.66659 5.66634C3.66659 3.27315 5.60672 1.333 8 1.333Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                {{ getHierarchyPath() }}
+              </div>
+            </div>
+          </div>
+          
+          <!-- Actions Dropdown -->
+          <div class="relative ml-4">
+            <button
+              (click)="showActionsDropdown = !showActionsDropdown"
+              class="px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-100 rounded-lg transition flex items-center gap-1.5 border border-gray-300">
+              <span>Actions</span>
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none" class="transition-transform" [class.rotate-180]="showActionsDropdown">
+                <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+            <div 
+              *ngIf="showActionsDropdown"
+              class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-10">
+              <button
+                (click)="editRoom(); showActionsDropdown = false"
+                class="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2">
+                <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+                  <path d="M11.3337 2.00004C11.5089 1.82494 11.7169 1.68605 11.9457 1.59129C12.1745 1.49653 12.4197 1.44775 12.667 1.44775C12.9144 1.44775 13.1596 1.49653 13.3884 1.59129C13.6172 1.68605 13.8252 1.82494 14.0003 2.00004C14.1754 2.17513 14.3143 2.38311 14.4091 2.61195C14.5038 2.84079 14.5526 3.08595 14.5526 3.33337C14.5526 3.58079 14.5038 3.82595 14.4091 4.05479C14.3143 4.28363 14.1754 4.49161 14.0003 4.66671L5.00033 13.6667L1.33366 14.6667L2.33366 11L11.3337 2.00004Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Edit
+              </button>
+              <button
+                (click)="deleteRoom(); showActionsDropdown = false"
+                class="w-full px-4 py-2 text-left text-sm text-red-600 hover:bg-red-50 flex items-center gap-2">
+                <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+                  <path d="M2 4H14M5.333 4V2.667C5.333 2.313 5.474 1.974 5.724 1.724C5.974 1.474 6.313 1.333 6.667 1.333H9.333C9.687 1.333 10.026 1.474 10.276 1.724C10.526 1.974 10.667 2.313 10.667 2.667V4M12.667 4V13.333C12.667 13.687 12.526 14.026 12.276 14.276C12.026 14.526 11.687 14.667 11.333 14.667H4.667C4.313 14.667 3.974 14.526 3.724 14.276C3.474 14.026 3.333 13.687 3.333 13.333V4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="bg-white rounded-xl shadow-sm">
+      <div>
+        <nav class="flex px-4 overflow-x-auto">
+          <button
+            (click)="activeTab = 'overview'"
+            [class.border-[#007aff]]="activeTab === 'overview'"
+            [class.text-[#007aff]]="activeTab === 'overview'"
+            [class.border-transparent]="activeTab !== 'overview'"
+            [class.text-gray-500]="activeTab !== 'overview'"
+            class="px-4 py-3 border-b-2 font-medium text-sm hover:text-[#007aff] transition whitespace-nowrap">
+            Overview
+          </button>
+          <button
+            (click)="selectTab('assets')"
+            [class.border-[#007aff]]="activeTab === 'assets'"
+            [class.text-[#007aff]]="activeTab === 'assets'"
+            [class.border-transparent]="activeTab !== 'assets'"
+            [class.text-gray-500]="activeTab !== 'assets'"
+            class="px-4 py-3 border-b-2 font-medium text-sm hover:text-[#007aff] transition whitespace-nowrap">
+            Assets
+          </button>
+          <button
+            disabled
+            class="px-4 py-3 border-b-2 border-transparent text-gray-400 text-sm cursor-not-allowed whitespace-nowrap">
+            Allocations
+          </button>
+        </nav>
+      </div>
+
+      <!-- Tab Content -->
+      <div class="p-6">
+        <!-- Overview Tab -->
+        <div *ngIf="activeTab === 'overview'" class="space-y-4">
+          <!-- Basic Information Grid -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <div>
+              <span class="text-xs text-gray-600 uppercase tracking-wide">Room Number</span>
+              <p class="text-sm font-medium text-gray-900 mt-1 mb-0">{{ room.roomNumber || '—' }}</p>
+            </div>
+            <div *ngIf="room.capacity">
+              <span class="text-xs text-gray-600 uppercase tracking-wide">Capacity</span>
+              <p class="text-sm font-medium text-gray-900 mt-1 mb-0">{{ room.capacity }} people</p>
+            </div>
+            <div *ngIf="room.area">
+              <span class="text-xs text-gray-600 uppercase tracking-wide">Area</span>
+              <p class="text-sm font-medium text-gray-900 mt-1 mb-0">{{ room.area }} m²</p>
+            </div>
+            <div>
+              <span class="text-xs text-gray-600 uppercase tracking-wide">Created</span>
+              <p class="text-sm font-medium text-gray-900 mt-1 mb-0">{{ room.createdAt | date:'MMMM d, y' }}</p>
+            </div>
+          </div>
+
+          <!-- Description -->
+          <div *ngIf="room.description" class="bg-white rounded-xl border border-gray-200">
+            <div class="px-4 py-3 border-b border-gray-100">
+              <h3 class="text-sm font-semibold text-gray-900 m-0">Description</h3>
+            </div>
+            <div class="p-4">
+              <p class="text-sm text-gray-700 whitespace-pre-wrap m-0">{{ room.description }}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Assets Tab -->
+        <div *ngIf="activeTab === 'assets'">
+          <!-- Filters -->
+          <div class="bg-white rounded-xl border border-gray-200 mb-4 transition-all duration-300">
+            <!-- Filter Header -->
+            <div 
+              (click)="toggleFilters()"
+              class="px-4 py-2 cursor-pointer hover:bg-gray-50 transition flex items-center justify-between">
+              <div class="flex items-center gap-2 flex-1">
+                <div class="w-8 h-8 rounded-full bg-[#007aff]/10 flex items-center justify-center flex-shrink-0">
+                  <svg width="18" height="18" viewBox="0 0 20 20" fill="none" class="text-[#007aff]">
+                    <path d="M2.5 5.83333H17.5M5.83333 10H14.1667M8.33333 14.1667H11.6667" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+                <div class="self-center">
+                  <h3 class="text-sm font-medium text-gray-900 leading-tight m-0">Filters</h3>
+                  <p class="text-xs text-gray-500 leading-tight m-0">
+                    <span *ngIf="getActiveFilterCount() === 0">No filters applied</span>
+                    <span *ngIf="getActiveFilterCount() > 0">{{ getActiveFilterCount() }} filter(s) active</span>
+                  </p>
+                </div>
+              </div>
+              <div class="flex items-center gap-2">
+                <button
+                  *ngIf="getActiveFilterCount() > 0 && !isFiltersExpanded"
+                  (click)="clearFilters(); $event.stopPropagation()"
+                  class="text-sm text-[#007aff] hover:text-[#0051d5] transition">
+                  Clear All Filters
+                </button>
+                <button class="p-1.5 hover:bg-gray-100 rounded-lg transition">
+                  <svg width="18" height="18" viewBox="0 0 20 20" fill="none" class="text-gray-600 transition-transform" [class.rotate-180]="isFiltersExpanded">
+                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <!-- Filter Content -->
+            <div *ngIf="isFiltersExpanded" @expandCollapse class="border-t border-gray-200">
+              <div class="p-4">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <!-- Asset Tag Filter -->
+                  <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Search by Asset Tag</label>
+                    <div class="relative">
+                      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
+                        <circle cx="6.5" cy="6.5" r="5" stroke="currentColor" stroke-width="1.5"/>
+                        <path d="M10 10L14 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                      </svg>
+                      <input
+                        type="text"
+                        [(ngModel)]="assetTagSearch"
+                        (ngModelChange)="onAssetTagChange()"
+                        placeholder="Enter asset tag..."
+                        class="w-full pl-10 pr-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#007aff] focus:border-transparent text-sm">
+                    </div>
+                  </div>
+
+                  <!-- Type Filter -->
+                  <div class="type-dropdown-container">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Filter by Type</label>
+                    <div class="relative">
+                      <div 
+                        (click)="toggleDropdown()"
+                        class="min-h-[42px] px-3 py-2 bg-white border border-gray-200 rounded-lg cursor-pointer hover:border-[#007aff] transition flex items-center justify-between"
+                        [class.border-[#007aff]]="isDropdownOpen"
+                        [class.ring-2]="isDropdownOpen"
+                        [class.ring-[#007aff]/20]="isDropdownOpen">
+                        <div class="flex-1 flex flex-wrap gap-1.5">
+                          <span *ngIf="selectedTypeIds.length === 0" class="text-gray-400 text-sm">Filter by asset type</span>
+                          <span *ngFor="let typeId of selectedTypeIds" 
+                            class="inline-flex items-center gap-1 px-2 py-1 bg-[#007aff] text-white rounded-md text-xs font-medium">
+                            {{ getTypeName(typeId) }}
+                            <button 
+                              (click)="removeTypeFilter(typeId); $event.stopPropagation()"
+                              class="hover:bg-white/20 rounded-full p-0.5 transition">
+                              <svg width="12" height="12" viewBox="0 0 14 14" fill="none">
+                                <path d="M10.5 3.5L3.5 10.5M3.5 3.5L10.5 10.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                              </svg>
+                            </button>
+                          </span>
+                        </div>
+                        <svg width="12" height="8" viewBox="0 0 12 8" fill="none" class="ml-2 transition-transform duration-200" [class.rotate-180]="isDropdownOpen">
+                          <path d="M1 1.5L6 6.5L11 1.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                      </div>
+                      
+                      <div *ngIf="isDropdownOpen" class="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-50 max-h-64 overflow-hidden">
+                        <div class="p-2 border-b border-gray-200">
+                          <input
+                            type="text"
+                            [(ngModel)]="searchText"
+                            (click)="$event.stopPropagation()"
+                            placeholder="Search types..."
+                            class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#007aff] focus:border-transparent">
+                        </div>
+                        <div class="max-h-52 overflow-y-auto">
+                          <div 
+                            *ngFor="let type of getFilteredAndSortedTypes()"
+                            (click)="toggleTypeSelection(type.id); $event.stopPropagation()"
+                            class="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 cursor-pointer border-b border-gray-100 last:border-b-0">
+                            <div class="w-5 h-5 flex-shrink-0 border-2 rounded-md flex items-center justify-center transition"
+                              [class.border-[#007aff]]="isTypeSelected(type.id)"
+                              [class.bg-[#007aff]]="isTypeSelected(type.id)"
+                              [class.border-gray-300]="!isTypeSelected(type.id)">
+                              <svg *ngIf="isTypeSelected(type.id)" width="12" height="10" viewBox="0 0 12 10" fill="none">
+                                <path d="M1 5L4.5 8.5L11 1.5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                              </svg>
+                            </div>
+                            <span class="text-sm text-gray-900">{{ type.name }}</span>
+                          </div>
+                          <div *ngIf="getFilteredAndSortedTypes().length === 0" class="px-4 py-6 text-center text-sm text-gray-400">
+                            No types found
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Definition Filter -->
+                  <div class="definition-dropdown-container">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Filter by Definition</label>
+                    <div class="relative">
+                      <div 
+                        (click)="toggleDefinitionDropdown()"
+                        class="min-h-[42px] px-3 py-2 bg-white border border-gray-200 rounded-lg cursor-pointer hover:border-[#007aff] transition flex items-center justify-between"
+                        [class.border-[#007aff]]="isDefinitionDropdownOpen && selectedTypeIds.length > 0"
+                        [class.ring-2]="isDefinitionDropdownOpen && selectedTypeIds.length > 0"
+                        [class.ring-[#007aff]/20]="isDefinitionDropdownOpen && selectedTypeIds.length > 0"
+                        [class.opacity-50]="selectedTypeIds.length === 0"
+                        [class.cursor-not-allowed]="selectedTypeIds.length === 0">
+                        <div class="flex-1 flex flex-wrap gap-1.5">
+                          <span *ngIf="selectedDefinitionIds.length === 0" class="text-gray-400 text-sm">
+                            {{ selectedTypeIds.length === 0 ? 'Select type first' : 'Filter by definition' }}
+                          </span>
+                          <span *ngFor="let defId of selectedDefinitionIds" 
+                            class="inline-flex items-center gap-1 px-2 py-1 bg-[#007aff] text-white rounded-md text-xs font-medium">
+                            {{ getDefinitionName(defId) }}
+                            <button 
+                              (click)="removeDefinitionFilter(defId); $event.stopPropagation()"
+                              class="hover:bg-white/20 rounded-full p-0.5 transition">
+                              <svg width="12" height="12" viewBox="0 0 14 14" fill="none">
+                                <path d="M10.5 3.5L3.5 10.5M3.5 3.5L10.5 10.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                              </svg>
+                            </button>
+                          </span>
+                        </div>
+                        <svg width="12" height="8" viewBox="0 0 12 8" fill="none" class="ml-2 transition-transform duration-200" [class.rotate-180]="isDefinitionDropdownOpen">
+                          <path d="M1 1.5L6 6.5L11 1.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                      </div>
+                      
+                      <div *ngIf="isDefinitionDropdownOpen && selectedTypeIds.length > 0" class="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-50 max-h-64 overflow-hidden">
+                        <div class="p-2 border-b border-gray-200">
+                          <input
+                            type="text"
+                            [(ngModel)]="definitionSearchText"
+                            (click)="$event.stopPropagation()"
+                            placeholder="Search definitions..."
+                            class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#007aff] focus:border-transparent">
+                        </div>
+                        <div class="max-h-52 overflow-y-auto">
+                          <div 
+                            *ngFor="let definition of getFilteredAndSortedDefinitions()"
+                            (click)="toggleDefinitionSelection(definition.id); $event.stopPropagation()"
+                            class="flex items-start gap-3 px-4 py-3 hover:bg-gray-50 cursor-pointer border-b border-gray-100 last:border-b-0">
+                            <div class="w-5 h-5 mt-0.5 flex-shrink-0 border-2 rounded-md flex items-center justify-center transition"
+                              [class.border-[#007aff]]="isDefinitionSelected(definition.id)"
+                              [class.bg-[#007aff]]="isDefinitionSelected(definition.id)"
+                              [class.border-gray-300]="!isDefinitionSelected(definition.id)">
+                              <svg *ngIf="isDefinitionSelected(definition.id)" width="12" height="10" viewBox="0 0 12 10" fill="none">
+                                <path d="M1 5L4.5 8.5L11 1.5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                              </svg>
+                            </div>
+                            <div class="flex-1">
+                              <div class="text-xs text-gray-500 mb-0.5">{{ getDefinitionTypeName(definition) }}</div>
+                              <div class="text-sm text-gray-900 font-medium">{{ definition.name }}</div>
+                            </div>
+                          </div>
+                          <div *ngIf="getFilteredAndSortedDefinitions().length === 0" class="px-4 py-6 text-center text-sm text-gray-400">
+                            No definitions found
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Action Buttons - Moved inside table section -->
+          
+
+          <!-- Loading State -->
+          <div *ngIf="assetsLoading" class="flex justify-center items-center py-12">
+            <div class="text-center">
+              <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-[#007aff] mx-auto mb-3"></div>
+              <p class="text-sm text-gray-600">Loading assets...</p>
+            </div>
+          </div>
+
+          <!-- Empty State -->
+          <div *ngIf="!assetsLoading && filteredAssets.length === 0" class="text-center py-12">
+            <svg class="h-12 w-12 text-gray-400 mx-auto mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+            </svg>
+            <p class="text-sm text-gray-600">{{ assets.length === 0 ? 'No assets found in this room' : 'No assets match your filters' }}</p>
+            <button *ngIf="assets.length === 0" (click)="openAddAssetModal()" class="mt-3 px-4 py-2 text-sm text-[#007aff] hover:text-[#0051d5] transition">
+              + Add the first asset
+            </button>
+          </div>
+
+          <!-- Grid with Action Buttons -->
+          <div *ngIf="!assetsLoading && filteredAssets.length > 0" class="border border-gray-200 rounded-xl overflow-hidden">
+            <!-- Action Buttons Inside Grid Header -->
+            <div class="px-4 py-3 border-b border-gray-200 flex items-center justify-between bg-gray-50">
+              <div class="flex items-center gap-2">
+                <span class="text-sm text-gray-600">
+                  <span *ngIf="selectedAssets.length === 0">No items selected</span>
+                  <span *ngIf="selectedAssets.length > 0" class="font-medium text-gray-900">{{ selectedAssets.length }} item(s) selected</span>
+                </span>
+              </div>
+              <div class="flex items-center gap-2">
+                <button
+                  disabled
+                  class="px-3 py-1.5 bg-white border border-gray-200 rounded-md opacity-50 cursor-not-allowed transition flex items-center gap-1.5 text-xs text-gray-700">
+                  <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+                    <path d="M14 2H2C0.9 2 0 2.9 0 4V12C0 13.1 0.9 14 2 14H14C15.1 14 16 13.1 16 12V4C16 2.9 15.1 2 14 2ZM14 12H2V4H14V12Z" fill="currentColor"/>
+                    <path d="M4 6H12V8H4V6Z" fill="currentColor"/>
+                  </svg>
+                  Move to Room
+                </button>
+                <button
+                  disabled
+                  class="px-3 py-1.5 bg-white border border-gray-200 rounded-md opacity-50 cursor-not-allowed transition flex items-center gap-1.5 text-xs text-gray-700">
+                  <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+                    <path d="M12.667 5.333V13.333C12.667 13.7 12.533 14.033 12.267 14.3C12 14.567 11.667 14.7 11.267 14.7H4.667C4.267 14.7 3.933 14.567 3.667 14.3C3.4 14.033 3.267 13.7 3.267 13.333V5.333" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                    <path d="M2 4H14M5.333 4V2.667C5.333 2.313 5.474 1.974 5.724 1.724C5.974 1.474 6.313 1.333 6.667 1.333H9.333C9.687 1.333 10.026 1.474 10.276 1.724C10.526 1.974 10.667 2.313 10.667 2.667V4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                  </svg>
+                  Archive
+                </button>
+                <button
+                  (click)="openAddAssetModal()"
+                  class="px-3 py-1.5 bg-[#007aff] text-white rounded-md hover:bg-[#0051d5] transition flex items-center gap-1.5 text-xs font-medium">
+                  <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+                    <path d="M8 0C7.44772 0 7 0.447715 7 1V7H1C0.447715 7 0 7.44772 0 8C0 8.55228 0.447715 9 1 9H7V15C7 15.5523 7.44772 16 8 16C8.55228 16 9 15.5523 9 15V9H15C15.5523 9 16 8.55228 16 8C16 7.44772 15.5523 7 15 7H9V1C9 0.447715 8.55228 0 8 0Z" fill="currentColor"/>
+                  </svg>
+                  Add Asset to Room
+                </button>
+              </div>
+            </div>
+            
+            <ag-grid-angular
+              style="width: 100%; height: 500px;"
+              class="ag-theme-quartz"
+              [rowData]="filteredAssets"
+              [columnDefs]="assetsColumnDefs"
+              [pagination]="false"
+              [suppressPaginationPanel]="true"
+              [rowSelection]="'multiple'"
+              [suppressRowClickSelection]="true"
+              (gridReady)="onAssetsGridReady($event)"
+              (selectionChanged)="onSelectionChanged()"
+              [overlayNoRowsTemplate]="'<span>No assets found</span>'">
+            </ag-grid-angular>
+
+            <div class="flex justify-between items-center px-4 py-3 border-t border-gray-200 text-sm text-gray-700">
+              <span>Showing {{ filteredAssets.length }} of {{ assetsTotalCount }} assets</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Allocations Tab -->
+        <div *ngIf="activeTab === 'allocations'">
+          <div class="text-center py-12">
+            <svg class="h-12 w-12 text-gray-400 mx-auto mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+            </svg>
+            <p class="text-sm text-gray-600">Allocation history coming soon</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Asset Preview Modal -->
+<div
+  *ngIf="showPreviewModal && selectedAssetForPreview"
+  class="fixed inset-0 bg-black/50 flex items-center justify-center z-[100]"
+  (click)="closePreviewModal()">
+  <div
+    class="bg-white rounded-lg shadow-xl max-w-3xl w-full mx-4 max-h-[90vh] overflow-y-auto"
+    (click)="$event.stopPropagation()">
+    <!-- Preview Header -->
+    <div class="px-6 py-3 sticky top-0 bg-white z-10">
+      <div class="flex justify-between items-center">
+        <div>
+          <h2 class="text-lg font-semibold text-gray-900 m-0">Asset Details</h2>
+        </div>
+        
+        <!-- Asset Tag with QR Icon -->
+        <div class="flex items-center gap-2">
+          <span class="text-sm text-gray-600">Asset tag:</span>
+          <button 
+            (click)="downloadAssetLabel($event)"
+            class="p-1.5 hover:bg-gray-100 rounded-lg transition-colors cursor-pointer group"
+            title="Download QR Label">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-gray-700 group-hover:text-[#007aff] transition-colors">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 0 1 3.75 9.375v-4.5ZM3.75 14.625c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5a1.125 1.125 0 0 1-1.125-1.125v-4.5ZM13.5 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 0 1 13.5 9.375v-4.5Z" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 6.75h.75v.75h-.75v-.75ZM6.75 16.5h.75v.75h-.75v-.75ZM16.5 6.75h.75v.75h-.75v-.75ZM13.5 13.5h.75v.75h-.75v-.75ZM13.5 19.5h.75v.75h-.75v-.75ZM19.5 13.5h.75v.75h-.75v-.75ZM19.5 19.5h.75v.75h-.75v-.75ZM16.5 16.5h.75v.75h-.75v-.75Z" />
+            </svg>
+          </button>
+          <span class="text-base font-medium text-gray-900">{{ selectedAssetForPreview.assetTag }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Preview Body -->
+    <div class="px-6 py-2">
+      <!-- Basic Info -->
+      <div class="mb-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div>
+            <span class="text-sm text-gray-600">Serial Number:</span>
+            <p class="font-medium">{{ selectedAssetForPreview.serialNumber || '—' }}</p>
+          </div>
+          <div>
+            <span class="text-sm text-gray-600">Status:</span>
+            <p class="font-medium">{{ selectedAssetForPreview.status }}</p>
+          </div>
+          <div>
+            <span class="text-sm text-gray-600">Created:</span>
+            <p class="font-medium">{{ selectedAssetForPreview.createdAt | date:'MMMM d, y' }}</p>
+          </div>
+          <div>
+            <span class="text-sm text-gray-600">Location:</span>
+            <p class="font-medium">{{ room?.name || '—' }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Definition Info (Collapsible) -->
+      <div *ngIf="selectedAssetForPreview.definition" class="mb-4 bg-white rounded-xl border border-gray-200">
+        <div 
+          class="px-4 py-2 cursor-pointer hover:bg-gray-50 transition flex items-center justify-between" 
+          (click)="isDefinitionExpanded = !isDefinitionExpanded">
+          <div class="flex items-center gap-2">
+            <div class="self-center">
+              <h3 class="text-sm font-medium text-gray-900 leading-tight m-0">Definition</h3>
+              <p class="text-xs text-gray-500 leading-tight m-0">View definition details</p>
+            </div>
+          </div>
+          <svg width="18" height="18" viewBox="0 0 20 20" fill="none" class="text-gray-600 transition-transform" [class.rotate-180]="isDefinitionExpanded">
+            <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div *ngIf="isDefinitionExpanded" @expandCollapse class="overflow-hidden">
+          <div class="p-4">
+            <div class="grid grid-cols-2 gap-3 text-sm">
+              <div>
+                <span class="text-gray-600">Name:</span>
+                <span class="font-medium ml-2">{{ selectedAssetForPreview.definition.name }}</span>
+              </div>
+              <div>
+                <span class="text-gray-600">Manufacturer:</span>
+                <span class="font-medium ml-2">{{ selectedAssetForPreview.definition.manufacturer }}</span>
+              </div>
+              <div>
+                <span class="text-gray-600">Model:</span>
+                <span class="font-medium ml-2">{{ selectedAssetForPreview.definition.model }}</span>
+              </div>
+            </div>
+            <div *ngIf="selectedAssetForPreview.definition.specifications && selectedAssetForPreview.definition.specifications.length > 0" class="mt-3">
+              <span class="text-xs font-medium text-gray-600 uppercase">Specifications:</span>
+              <div class="grid grid-cols-2 gap-2 mt-2">
+                <div *ngFor="let spec of selectedAssetForPreview.definition.specifications" class="text-xs">
+                  <span class="text-gray-600">{{ spec.name || spec.propertyId }}:</span>
+                  <span class="font-medium ml-1">{{ formatSpecValue(spec.value, spec.unit) }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Purchase Info (Collapsible) -->
+      <div *ngIf="selectedAssetForPreview.purchaseInfo" class="mb-4 bg-white rounded-xl border border-gray-200">
+        <div 
+          class="px-4 py-2 cursor-pointer hover:bg-gray-50 transition flex items-center justify-between" 
+          (click)="isPurchaseInfoExpanded = !isPurchaseInfoExpanded">
+          <div class="flex items-center gap-2">
+            <div class="self-center">
+              <h3 class="text-sm font-medium text-gray-900 leading-tight m-0">Purchase Information</h3>
+              <p class="text-xs text-gray-500 leading-tight m-0">Purchase and warranty details</p>
+            </div>
+          </div>
+          <svg width="18" height="18" viewBox="0 0 20 20" fill="none" class="text-gray-600 transition-transform" [class.rotate-180]="isPurchaseInfoExpanded">
+            <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div *ngIf="isPurchaseInfoExpanded" @expandCollapse class="overflow-hidden">
+          <div class="p-4">
+            <div class="grid grid-cols-2 gap-3 text-sm">
+              <div *ngIf="selectedAssetForPreview.purchaseInfo.vendor">
+                <span class="text-gray-600">Vendor:</span>
+                <span class="font-medium ml-2">{{ selectedAssetForPreview.purchaseInfo.vendor }}</span>
+              </div>
+              <div *ngIf="selectedAssetForPreview.purchaseInfo.purchaseDate">
+                <span class="text-gray-600">Purchase Date:</span>
+                <span class="font-medium ml-2">{{ selectedAssetForPreview.purchaseInfo.purchaseDate | date:'shortDate' }}</span>
+              </div>
+              <div *ngIf="selectedAssetForPreview.purchaseInfo.purchasePrice">
+                <span class="text-gray-600">Price:</span>
+                <span class="font-medium ml-2">{{ selectedAssetForPreview.purchaseInfo.purchasePrice | currency }}</span>
+              </div>
+              <div *ngIf="selectedAssetForPreview.purchaseInfo.warrantyExpiration">
+                <span class="text-gray-600">Warranty Expires:</span>
+                <span class="font-medium ml-2">{{ selectedAssetForPreview.purchaseInfo.warrantyExpiration | date:'shortDate' }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- See More Button -->
+      <div class="mt-4 flex justify-center">
+        <button
+          (click)="navigateToDetail(selectedAssetForPreview.id); closePreviewModal()"
+          class="px-2.5 py-1.5 text-xs text-gray-500 hover:text-[#007aff] hover:bg-[#007aff]/5 rounded-lg transition flex items-center gap-1.5">
+          <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
+            <path d="M6 2H3C2.44772 2 2 2.44772 2 3V13C2 13.5523 2.44772 14 3 14H13C13.5523 14 14 13.5523 14 13V10M9 2H14M14 2V7M14 2L7 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span>See More Details</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

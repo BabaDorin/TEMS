@@ -91,6 +91,16 @@ export const routes: Routes = [
     ]
   },
   
+  // Locations
+  {
+    path: 'locations',
+    children: [
+      { path: '', redirectTo: 'view', pathMatch: 'full' },
+      { path: 'view', loadComponent: () => import('./tems-components/location-module/view-locations/view-locations.component').then(m => m.ViewLocationsComponent), canActivate: [canManageAssetsGuard] },
+      { path: ':id', loadComponent: () => import('./tems-components/location-module/room-detail/room-detail.component').then(m => m.RoomDetailComponent), canActivate: [canManageAssetsGuard] },
+    ]
+  },
+  
   // Technical Support
   {
     path: 'technical-support',

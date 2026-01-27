@@ -569,6 +569,7 @@ public class AssetManagementSeeder(IMongoDatabase database, ILogger<AssetManagem
                     Vendor = "Dell Direct",
                     WarrantyExpiry = now.AddYears(3).AddMonths(-6)
                 },
+                LocationId = "room_hq_main_101",
                 Location = new AssetLocation { Building = "Main Office", Room = "Room 101", Desk = "Desk A" },
                 Assignment = new AssetAssignment
                 {
@@ -610,6 +611,7 @@ public class AssetManagementSeeder(IMongoDatabase database, ILogger<AssetManagem
                     Vendor = "Apple Store",
                     WarrantyExpiry = now.AddYears(1).AddMonths(-3)
                 },
+                LocationId = "b2c3d4e5-f6a7-4b5c-9d0e-1f2a3b4c5d6e", // Room 102
                 Location = new AssetLocation { Building = "Main Office", Room = "Room 102", Desk = "Desk B" },
                 CreatedBy = "system"
             },
@@ -641,8 +643,7 @@ public class AssetManagementSeeder(IMongoDatabase database, ILogger<AssetManagem
                     PurchasePrice = 299.99m,
                     Currency = "USD",
                     Vendor = "Dell Direct"
-                },
-                Location = new AssetLocation { Building = "Main Office", Room = "Room 101", Desk = "Desk A" },
+                },                LocationId = "a1b2c3d4-e5f6-4a5b-8c9d-0e1f2a3b4c5d", // Room 101                Location = new AssetLocation { Building = "Main Office", Room = "Room 101", Desk = "Desk A" },
                 Assignment = new AssetAssignment
                 {
                     AssignedToUserId = "70025a13-16e3-45cb-ae4c-5cf95b90a625",
@@ -679,6 +680,7 @@ public class AssetManagementSeeder(IMongoDatabase database, ILogger<AssetManagem
                     Currency = "USD",
                     Vendor = "Dell Direct"
                 },
+                LocationId = "c3d4e5f6-a7b8-4c5d-0e1f-2a3b4c5d6e7f", // Room 201
                 Location = new AssetLocation { Building = "Main Office", Room = "Room 101", Desk = "Desk A" },
                 Assignment = new AssetAssignment
                 {
@@ -720,6 +722,7 @@ public class AssetManagementSeeder(IMongoDatabase database, ILogger<AssetManagem
                     Vendor = "HP Direct",
                     WarrantyExpiry = now.AddMonths(-12)
                 },
+                LocationId = "e5f6a7b8-c9d0-4e5f-2a3b-4c5d6e7f8a9b", // Workshop
                 Location = new AssetLocation { Building = "Main Office", Room = "Print Room" },
                 CreatedBy = "system"
             },
@@ -754,6 +757,7 @@ public class AssetManagementSeeder(IMongoDatabase database, ILogger<AssetManagem
                     Vendor = "Cisco Reseller",
                     WarrantyExpiry = now.AddMonths(-12)
                 },
+                LocationId = "d4e5f6a7-b8c9-4d5e-1f2a-3b4c5d6e7f8a", // Server Room
                 Location = new AssetLocation { Building = "Main Office", Room = "Server Room" },
                 CreatedBy = "system"
             },
@@ -786,6 +790,7 @@ public class AssetManagementSeeder(IMongoDatabase database, ILogger<AssetManagem
                     Currency = "USD",
                     Vendor = "VoIP Supplier"
                 },
+                LocationId = "a1b2c3d4-e5f6-4a5b-8c9d-0e1f2a3b4c5d", // Room 101
                 Location = new AssetLocation { Building = "Main Office", Room = "Room 101", Desk = "Desk A" },
                 Assignment = new AssetAssignment
                 {
@@ -824,6 +829,7 @@ public class AssetManagementSeeder(IMongoDatabase database, ILogger<AssetManagem
                     Currency = "USD",
                     Vendor = "Office Furniture Inc"
                 },
+                LocationId = "a1b2c3d4-e5f6-4a5b-8c9d-0e1f2a3b4c5d", // Room 101
                 Location = new AssetLocation { Building = "Main Office", Room = "Room 101", Desk = "Desk A" },
                 Assignment = new AssetAssignment
                 {
@@ -834,10 +840,290 @@ public class AssetManagementSeeder(IMongoDatabase database, ILogger<AssetManagem
                 },
                 CreatedBy = "system"
             },
+            
+            // Additional assets to cover all rooms
+            // Room 201 - Desktop PC
             new()
             {
-                SerialNumber = "JARVIS-2024-001",
-                AssetTag = "DSK-001",
+                SerialNumber = "PC-OPT-001",
+                AssetTag = "PC-001",
+                Status = "active",
+                Definition = new AssetDefinitionSnapshot
+                {
+                    DefinitionId = "def_dell_optiplex",
+                    Name = "Dell OptiPlex 7090",
+                    AssetTypeId = "type_desktop",
+                    AssetTypeName = "Desktop PC",
+                    Manufacturer = "Dell",
+                    Model = "OptiPlex 7090",
+                    Specifications =
+                    [
+                        new() { PropertyId = "prop_cpu", Name = "CPU", Value = "Intel Core i7-11700", DataType = "string" },
+                        new() { PropertyId = "prop_ram", Name = "RAM", Value = 32, DataType = "number", Unit = "GB" },
+                        new() { PropertyId = "prop_storage", Name = "Storage", Value = 1024, DataType = "number", Unit = "GB" },
+                    ]
+                },
+                PurchaseInfo = new PurchaseInfo
+                {
+                    PurchaseDate = now.AddMonths(-8),
+                    PurchasePrice = 1499.99m,
+                    Currency = "USD",
+                    Vendor = "Dell Direct"
+                },
+                LocationId = "c3d4e5f6-a7b8-4c5d-0e1f-2a3b4c5d6e7f", // Room 201
+                Location = new AssetLocation { Building = "Main Office", Room = "Room 201" },
+                CreatedBy = "system"
+            },
+            // Server Room - Rack Server
+            new()
+            {
+                SerialNumber = "R740-2024-001",
+                AssetTag = "SRV-001",
+                Status = "active",
+                Definition = new AssetDefinitionSnapshot
+                {
+                    DefinitionId = "def_dell_poweredge",
+                    Name = "Dell PowerEdge R740",
+                    AssetTypeId = "type_server",
+                    AssetTypeName = "Server",
+                    Manufacturer = "Dell",
+                    Model = "PowerEdge R740",
+                    Specifications =
+                    [
+                        new() { PropertyId = "prop_cpu", Name = "CPU", Value = "Dual Intel Xeon Gold 6226R", DataType = "string" },
+                        new() { PropertyId = "prop_ram", Name = "RAM", Value = 256, DataType = "number", Unit = "GB" },
+                    ]
+                },
+                PurchaseInfo = new PurchaseInfo
+                {
+                    PurchaseDate = now.AddYears(-2),
+                    PurchasePrice = 8999.99m,
+                    Currency = "USD",
+                    Vendor = "Dell Enterprise"
+                },
+                LocationId = "d4e5f6a7-b8c9-4d5e-1f2a-3b4c5d6e7f8a", // Server Room
+                Location = new AssetLocation { Building = "Main Office", Room = "Server Room" },
+                CreatedBy = "system"
+            },
+            // Equipment Storage - Laptop
+            new()
+            {
+                SerialNumber = "LAT-5440-001",
+                AssetTag = "LAP-003",
+                Status = "active",
+                Definition = new AssetDefinitionSnapshot
+                {
+                    DefinitionId = "def_dell_latitude",
+                    Name = "Dell Latitude 5440",
+                    AssetTypeId = "type_laptop",
+                    AssetTypeName = "Laptop",
+                    Manufacturer = "Dell",
+                    Model = "Latitude 5440",
+                    Specifications =
+                    [
+                        new() { PropertyId = "prop_cpu", Name = "CPU", Value = "Intel Core i7-1355U", DataType = "string" },
+                        new() { PropertyId = "prop_ram", Name = "RAM", Value = 16, DataType = "number", Unit = "GB" },
+                    ]
+                },
+                PurchaseInfo = new PurchaseInfo
+                {
+                    PurchaseDate = now.AddMonths(-4),
+                    PurchasePrice = 1599.99m,
+                    Currency = "USD",
+                    Vendor = "Dell Direct"
+                },
+                LocationId = "f6a7b8c9-d0e1-4f5a-3b4c-5d6e7f8a9b0c", // Equipment Storage
+                Location = new AssetLocation { Building = "Annex", Room = "Storage" },
+                CreatedBy = "system"
+            },
+            // Server Room A - Network Switch
+            new()
+            {
+                SerialNumber = "C9300-001",
+                AssetTag = "NET-002",
+                Status = "active",
+                Definition = new AssetDefinitionSnapshot
+                {
+                    DefinitionId = "def_cisco_catalyst",
+                    Name = "Cisco Catalyst 9300",
+                    AssetTypeId = "type_network_switch",
+                    AssetTypeName = "Network Switch",
+                    Manufacturer = "Cisco",
+                    Model = "Catalyst 9300",
+                    Specifications =
+                    [
+                        new() { PropertyId = "prop_port_count", Name = "Port Count", Value = 48, DataType = "number" },
+                    ]
+                },
+                PurchaseInfo = new PurchaseInfo
+                {
+                    PurchaseDate = now.AddYears(-1),
+                    PurchasePrice = 5999.99m,
+                    Currency = "USD",
+                    Vendor = "Cisco Direct"
+                },
+                LocationId = "a7b8c9d0-e1f2-4a5b-4c5d-6e7f8a9b0c1d", // Server Room A
+                Location = new AssetLocation { Building = "Data Center", Room = "Server Room A" },
+                CreatedBy = "system"
+            },
+            // Server Room B - Server
+            new()
+            {
+                SerialNumber = "R750-2024-001",
+                AssetTag = "SRV-002",
+                Status = "active",
+                Definition = new AssetDefinitionSnapshot
+                {
+                    DefinitionId = "def_dell_poweredge",
+                    Name = "Dell PowerEdge R750",
+                    AssetTypeId = "type_server",
+                    AssetTypeName = "Server",
+                    Manufacturer = "Dell",
+                    Model = "PowerEdge R750",
+                    Specifications =
+                    [
+                        new() { PropertyId = "prop_cpu", Name = "CPU", Value = "Dual Intel Xeon Gold 6338", DataType = "string" },
+                        new() { PropertyId = "prop_ram", Name = "RAM", Value = 512, DataType = "number", Unit = "GB" },
+                    ]
+                },
+                PurchaseInfo = new PurchaseInfo
+                {
+                    PurchaseDate = now.AddYears(-1),
+                    PurchasePrice = 12999.99m,
+                    Currency = "USD",
+                    Vendor = "Dell Enterprise"
+                },
+                LocationId = "b8c9d0e1-f2a3-4b5c-5d6e-7f8a9b0c1d2e", // Server Room B
+                Location = new AssetLocation { Building = "Data Center", Room = "Server Room B" },
+                CreatedBy = "system"
+            },
+            // Network Operations Center - Desktop PC
+            new()
+            {
+                SerialNumber = "PC-OPT-002",
+                AssetTag = "PC-002",
+                Status = "active",
+                Definition = new AssetDefinitionSnapshot
+                {
+                    DefinitionId = "def_dell_optiplex",
+                    Name = "Dell OptiPlex 7090",
+                    AssetTypeId = "type_desktop",
+                    AssetTypeName = "Desktop PC",
+                    Manufacturer = "Dell",
+                    Model = "OptiPlex 7090",
+                    Specifications =
+                    [
+                        new() { PropertyId = "prop_cpu", Name = "CPU", Value = "Intel Core i7-11700", DataType = "string" },
+                        new() { PropertyId = "prop_ram", Name = "RAM", Value = 32, DataType = "number", Unit = "GB" },
+                    ]
+                },
+                PurchaseInfo = new PurchaseInfo
+                {
+                    PurchaseDate = now.AddMonths(-10),
+                    PurchasePrice = 1499.99m,
+                    Currency = "USD",
+                    Vendor = "Dell Direct"
+                },
+                LocationId = "c9d0e1f2-a3b4-4c5d-6e7f-8a9b0c1d2e3f", // Network Operations Center
+                Location = new AssetLocation { Building = "Data Center", Room = "NOC" },
+                CreatedBy = "system"
+            },
+            // Open Office Space - Multiple Laptops
+            new()
+            {
+                SerialNumber = "LAT-5450-001",
+                AssetTag = "LAP-004",
+                Status = "active",
+                Definition = new AssetDefinitionSnapshot
+                {
+                    DefinitionId = "def_dell_latitude",
+                    Name = "Dell Latitude 5450",
+                    AssetTypeId = "type_laptop",
+                    AssetTypeName = "Laptop",
+                    Manufacturer = "Dell",
+                    Model = "Latitude 5450",
+                    Specifications =
+                    [
+                        new() { PropertyId = "prop_cpu", Name = "CPU", Value = "Intel Core i5-1345U", DataType = "string" },
+                        new() { PropertyId = "prop_ram", Name = "RAM", Value = 16, DataType = "number", Unit = "GB" },
+                    ]
+                },
+                PurchaseInfo = new PurchaseInfo
+                {
+                    PurchaseDate = now.AddMonths(-5),
+                    PurchasePrice = 1399.99m,
+                    Currency = "USD",
+                    Vendor = "Dell Direct"
+                },
+                LocationId = "d0e1f2a3-b4c5-4d5e-7f8a-9b0c1d2e3f4a", // Open Office Space
+                Location = new AssetLocation { Building = "LA Office", Room = "Open Space" },
+                CreatedBy = "system"
+            },
+            new()
+            {
+                SerialNumber = "LAT-5450-002",
+                AssetTag = "LAP-005",
+                Status = "active",
+                Definition = new AssetDefinitionSnapshot
+                {
+                    DefinitionId = "def_dell_latitude",
+                    Name = "Dell Latitude 5450",
+                    AssetTypeId = "type_laptop",
+                    AssetTypeName = "Laptop",
+                    Manufacturer = "Dell",
+                    Model = "Latitude 5450",
+                    Specifications =
+                    [
+                        new() { PropertyId = "prop_cpu", Name = "CPU", Value = "Intel Core i5-1345U", DataType = "string" },
+                        new() { PropertyId = "prop_ram", Name = "RAM", Value = 16, DataType = "number", Unit = "GB" },
+                    ]
+                },
+                PurchaseInfo = new PurchaseInfo
+                {
+                    PurchaseDate = now.AddMonths(-5),
+                    PurchasePrice = 1399.99m,
+                    Currency = "USD",
+                    Vendor = "Dell Direct"
+                },
+                LocationId = "d0e1f2a3-b4c5-4d5e-7f8a-9b0c1d2e3f4a", // Open Office Space
+                Location = new AssetLocation { Building = "LA Office", Room = "Open Space" },
+                CreatedBy = "system"
+            },
+            // Conference Room - Monitor and Projector
+            new()
+            {
+                SerialNumber = "P2723DE-001",
+                AssetTag = "MON-003",
+                Status = "active",
+                Definition = new AssetDefinitionSnapshot
+                {
+                    DefinitionId = "def_dell_p2723de",
+                    Name = "Dell P2723DE",
+                    AssetTypeId = "type_monitor",
+                    AssetTypeName = "Monitor",
+                    Manufacturer = "Dell",
+                    Model = "P2723DE",
+                    Specifications =
+                    [
+                        new() { PropertyId = "prop_screen_size", Name = "Screen Size", Value = 27, DataType = "number", Unit = "inches" },
+                        new() { PropertyId = "prop_resolution", Name = "Resolution", Value = "2560x1440", DataType = "string" },
+                    ]
+                },
+                PurchaseInfo = new PurchaseInfo
+                {
+                    PurchaseDate = now.AddMonths(-6),
+                    PurchasePrice = 449.99m,
+                    Currency = "USD",
+                    Vendor = "Dell Direct"
+                },
+                LocationId = "e1f2a3b4-c5d6-4e5f-8a9b-0c1d2e3f4a5b", // Conference Room
+                Location = new AssetLocation { Building = "LA Office", Room = "Conference Room" },
+                CreatedBy = "system"
+            },
+            new()
+            {
+                SerialNumber = "JARVIS-2024-002",
+                AssetTag = "DSK-002",
                 Status = "active",
                 Definition = new AssetDefinitionSnapshot
                 {
@@ -860,14 +1146,8 @@ public class AssetManagementSeeder(IMongoDatabase database, ILogger<AssetManagem
                     Currency = "USD",
                     Vendor = "Fully Direct"
                 },
-                Location = new AssetLocation { Building = "Main Office", Room = "Room 101", Desk = "Desk A" },
-                Assignment = new AssetAssignment
-                {
-                    AssignedToUserId = "70025a13-16e3-45cb-ae4c-5cf95b90a625",
-                    AssignedToName = "System Administrator",
-                    AssignedAt = now.AddMonths(-11),
-                    AssignmentType = "permanent"
-                },
+                LocationId = "e1f2a3b4-c5d6-4e5f-8a9b-0c1d2e3f4a5b", // Conference Room
+                Location = new AssetLocation { Building = "LA Office", Room = "Conference Room" },
                 CreatedBy = "system"
             },
         };

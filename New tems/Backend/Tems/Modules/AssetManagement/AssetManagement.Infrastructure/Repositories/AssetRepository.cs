@@ -38,6 +38,7 @@ public class AssetRepository(IMongoDatabase database) : IAssetRepository
         int pageSize = 20,
         List<string>? definitionIds = null,
         string? assetTag = null,
+        string? locationId = null,
         CancellationToken cancellationToken = default)
     {
         var filterBuilder = Builders<DbEntity.Asset>.Filter;
@@ -61,6 +62,11 @@ public class AssetRepository(IMongoDatabase database) : IAssetRepository
         if (!string.IsNullOrWhiteSpace(assetTag))
         {
             filters.Add(filterBuilder.Regex(x => x.AssetTag, new MongoDB.Bson.BsonRegularExpression(assetTag, "i")));
+        }
+
+        if (!string.IsNullOrWhiteSpace(locationId))
+        {
+            filters.Add(filterBuilder.Eq(x => x.LocationId, locationId));
         }
 
         var filter = filters.Count > 0 
@@ -193,5 +199,40 @@ public class AssetRepository(IMongoDatabase database) : IAssetRepository
         var dbEntities = await _collection.Find(filter).ToListAsync(cancellationToken);
 
         return dbEntities.Select(x => x.ToDomain()).ToList();
+    }
+
+    public async Task<Dictionary<string, Dictionary<string, int>>> GetAssetCountsByLocationIdsAsync(
+        List<string> locationIds, 
+        CancellationToken cancellationToken = default)
+    {
+        if (locationIds.Count == 0)
+            return [];
+
+        var filter = Builders<DbEntity.Asset>.Filter.And(
+            Builders<DbEntity.Asset>.Filter.In(x => x.LocationId, locationIds),
+            Builders<DbEntity.Asset>.Filter.Eq(x => x.IsArchived, false)
+        );
+
+        var projection = Builders<DbEntity.Asset>.Projection
+            .Include(x => x.LocationId)
+            .Include("definition.asset_type_name");
+
+        var assets = await _collection
+            .Find(filter)
+            .Project<DbEntity.Asset>(projection)
+            .ToListAsync(cancellationToken);
+
+        return assets
+            .Where(a => a.LocationId != null)
+            .GroupBy(a => a.LocationId!)
+            .ToDictionary(
+                locationGroup => locationGroup.Key,
+                locationGroup => locationGroup
+                    .GroupBy(a => a.Definition.AssetTypeName)
+                    .ToDictionary(
+                        typeGroup => typeGroup.Key,
+                        typeGroup => typeGroup.Count()
+                    )
+            );
     }
 }

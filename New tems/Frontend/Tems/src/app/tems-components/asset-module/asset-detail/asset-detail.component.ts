@@ -158,6 +158,17 @@ export class AssetDetailComponent implements OnInit {
   }
 
   getLocationString(location: any): string {
+    if (!this.asset) return '—';
+    
+    const asset = this.asset as any;
+    if (asset.locationDetails?.fullPath) {
+      return asset.locationDetails.fullPath;
+    }
+    if (asset.locationDetails?.name) {
+      return asset.locationDetails.name;
+    }
+    
+    if (!location) return '—';
     const parts = [];
     if (location.building) parts.push(location.building);
     if (location.floor) parts.push(location.floor);
@@ -166,7 +177,15 @@ export class AssetDetailComponent implements OnInit {
   }
 
   navigateToLocation() {
-    console.log('Navigate to location:', this.asset?.location);
+    const asset = this.asset as any;
+    if (asset?.locationId) {
+      this.router.navigate(['/locations', asset.locationId]);
+    }
+  }
+
+  hasLocationId(): boolean {
+    const asset = this.asset as any;
+    return !!asset?.locationId;
   }
 
   navigateToAssignee() {

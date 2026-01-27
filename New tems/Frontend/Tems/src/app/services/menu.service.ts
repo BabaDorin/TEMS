@@ -242,6 +242,25 @@ export class MenuService {
           },
           {
             path: '',
+            title: 'Locations',
+            icon: 'mdi mdi-map-marker-radius menu-icon',
+            isActive: false,
+            isShown: this.tokenService.canManageAssets(),
+            showSubmenu: false,
+            submenu: [
+              {
+                path: '/locations/view',
+                title: 'View Locations',
+                icon: 'mdi mdi-view-list menu-icon',
+                isActive: false,
+                isShown: this.tokenService.canManageAssets(),
+                showSubmenu: false,
+                submenu: []
+              }
+            ]
+          },
+          {
+            path: '',
             title: 'Technical Support',
             icon: 'mdi mdi-lifebuoy menu-icon',
             isShown: true,

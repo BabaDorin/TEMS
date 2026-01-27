@@ -1,0 +1,154 @@
+<div class="bg-white rounded-xl max-w-lg w-full mx-auto overflow-hidden">
+  <!-- Header -->
+  <div class="px-6 py-4">
+    <div class="flex items-center justify-between">
+      <div>
+        <h2 class="text-lg font-semibold text-gray-900 m-0">Add Asset to Room</h2>
+        <p class="text-sm text-gray-500 mt-0.5 m-0">{{ roomName }}</p>
+      </div>
+      <button
+        (click)="close()"
+        class="p-2 hover:bg-gray-100 rounded-lg transition">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+          <path d="M15 5L5 15M5 5L15 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div class="px-6 pb-5">
+    <!-- Search Dropdown -->
+    <div class="relative">
+      <label class="block text-sm font-medium text-gray-700 mb-2">Search by Asset Tag</label>
+      <div class="relative">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none z-10">
+          <circle cx="6.5" cy="6.5" r="5" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M10 10L14 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <input
+          type="text"
+          [(ngModel)]="searchText"
+          (ngModelChange)="onSearchChange()"
+          (focus)="onInputFocus()"
+          placeholder="Type asset tag to search..."
+          class="w-full pl-10 pr-10 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-300 focus:border-transparent text-sm">
+        <button
+          *ngIf="selectedAsset"
+          (click)="clearSelection()"
+          class="absolute right-3 top-1/2 -translate-y-1/2 p-1 hover:bg-gray-100 rounded-full transition">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <path d="M10.5 3.5L3.5 10.5M3.5 3.5L10.5 10.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Dropdown Results -->
+      <div 
+        *ngIf="isDropdownOpen && (searchResults.length > 0 || isSearching)"
+        class="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-50 max-h-64 overflow-hidden">
+        
+        <!-- Loading State -->
+        <div *ngIf="isSearching" class="px-4 py-6 text-center">
+          <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-gray-500 mx-auto mb-2"></div>
+          <p class="text-sm text-gray-500 m-0">Searching...</p>
+        </div>
+
+        <!-- Results List -->
+        <div *ngIf="!isSearching" class="max-h-64 overflow-y-auto">
+          <div 
+            *ngFor="let asset of searchResults"
+            (click)="selectAsset(asset)"
+            class="flex items-start gap-3 px-4 py-3 hover:bg-gray-50 cursor-pointer border-b border-gray-100 last:border-b-0 transition">
+            <div class="flex-1 min-w-0">
+              <div class="text-xs text-gray-500 mb-0.5">{{ asset.definition?.assetTypeName || 'Unknown Type' }}</div>
+              <div class="text-sm font-medium text-gray-900 truncate">{{ asset.assetTag }}</div>
+              <div class="text-xs text-gray-500 truncate">{{ asset.definition?.name || asset.definition?.manufacturer + ' ' + asset.definition?.model }}</div>
+            </div>
+            <div class="flex-shrink-0">
+              <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium"
+                [class.bg-green-100]="asset.status === 'active' || asset.status === 'AVAILABLE'"
+                [class.text-green-700]="asset.status === 'active' || asset.status === 'AVAILABLE'"
+                [class.bg-blue-100]="asset.status === 'IN_USE'"
+                [class.text-blue-700]="asset.status === 'IN_USE'"
+                [class.bg-gray-100]="asset.status !== 'active' && asset.status !== 'AVAILABLE' && asset.status !== 'IN_USE'"
+                [class.text-gray-700]="asset.status !== 'active' && asset.status !== 'AVAILABLE' && asset.status !== 'IN_USE'">
+                {{ formatStatus(asset.status) }}
+              </span>
+            </div>
+          </div>
+          <div *ngIf="searchResults.length === 0 && !isSearching && searchText.length >= 1" class="px-4 py-6 text-center text-sm text-gray-400">
+            No assets found matching "{{ searchText }}"
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Selected Asset Info -->
+    <div *ngIf="selectedAsset" class="mt-5 bg-gray-50 rounded-xl border border-gray-200 overflow-hidden">
+      <div class="px-4 py-3 border-b border-gray-200 bg-white">
+        <div class="flex items-center gap-2">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" class="text-green-600">
+            <path d="M13.3333 4L6 11.3333L2.66667 8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span class="text-sm font-medium text-gray-900">Asset Selected</span>
+        </div>
+      </div>
+      <div class="p-4">
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <span class="text-xs text-gray-500 uppercase tracking-wide">Asset Tag</span>
+            <p class="text-sm font-medium text-gray-900 mt-1 m-0">{{ selectedAsset.assetTag }}</p>
+          </div>
+          <div>
+            <span class="text-xs text-gray-500 uppercase tracking-wide">Status</span>
+            <p class="text-sm font-medium text-gray-900 mt-1 m-0">{{ formatStatus(selectedAsset.status) }}</p>
+          </div>
+          <div>
+            <span class="text-xs text-gray-500 uppercase tracking-wide">Type</span>
+            <p class="text-sm font-medium text-gray-900 mt-1 m-0">{{ selectedAsset.definition?.assetTypeName || '—' }}</p>
+          </div>
+          <div>
+            <span class="text-xs text-gray-500 uppercase tracking-wide">Definition</span>
+            <p class="text-sm font-medium text-gray-900 mt-1 m-0">{{ selectedAsset.definition?.name || '—' }}</p>
+          </div>
+          <div>
+            <span class="text-xs text-gray-500 uppercase tracking-wide">Serial Number</span>
+            <p class="text-sm font-medium text-gray-900 mt-1 m-0">{{ selectedAsset.serialNumber || '—' }}</p>
+          </div>
+          <div>
+            <span class="text-xs text-gray-500 uppercase tracking-wide">Created</span>
+            <p class="text-sm font-medium text-gray-900 mt-1 m-0">{{ formatDate(selectedAsset.createdAt) }}</p>
+          </div>
+          <div class="col-span-2">
+            <span class="text-xs text-gray-500 uppercase tracking-wide">Current Location</span>
+            <p class="text-sm font-medium mt-1 m-0"
+              [class.text-gray-900]="getAssetCurrentLocation() !== 'Already in this room'"
+              [class.text-yellow-600]="getAssetCurrentLocation() === 'Already in this room'">
+              {{ getAssetCurrentLocation() }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty State - shown until asset is selected -->
+    <div *ngIf="!selectedAsset" class="mt-5 text-center py-8">
+      <svg class="h-10 w-10 text-gray-300 mx-auto mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+      </svg>
+      <p class="text-sm text-gray-500 m-0">Search for an asset by tag to add it to this room</p>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="px-6 py-4 flex items-center justify-end">
+    <button
+      (click)="addAssetToRoom()"
+      [disabled]="!selectedAsset || isSubmitting || getAssetCurrentLocation() === 'Already in this room'"
+      class="px-5 py-2.5 text-sm font-medium text-white bg-gray-800 rounded-lg hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition flex items-center gap-2">
+      <span *ngIf="isSubmitting" class="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></span>
+      <span>{{ isSubmitting ? 'Adding...' : 'Add to Room' }}</span>
+    </button>
+  </div>
+</div>

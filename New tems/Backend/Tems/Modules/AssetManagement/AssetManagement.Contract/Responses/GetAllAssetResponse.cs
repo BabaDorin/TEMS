@@ -18,6 +18,8 @@ public record AssetDto(
     string Status,
     AssetDefinitionSnapshotDto Definition,
     PurchaseInfoDto? PurchaseInfo,
+    string? LocationId,
+    LocationDetailsDto? LocationDetails,
     AssetLocationDto? Location,
     AssetAssignmentDto? Assignment,
     string? ParentAssetId,
@@ -41,3 +43,23 @@ public record AssetDefinitionSnapshotDto(
     string Manufacturer,
     string Model,
     List<AssetSpecificationDto> Specifications);
+
+public record LocationDetailsDto(
+    string Id,
+    string Name,
+    string Type,
+    string? ParentId,
+    string FullPath,
+    LocationSiteDto? Site,
+    LocationBuildingDto? Building);
+
+public record LocationSiteDto(
+    string Id,
+    string Name,
+    string Code,
+    string Timezone);
+
+public record LocationBuildingDto(
+    string Id,
+    string Name,
+    string AddressLine);

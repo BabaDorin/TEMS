@@ -7,6 +7,8 @@ export interface Asset {
   assetTypeName?: string;
   definition: AssetDefinitionSnapshot;
   purchaseInfo?: PurchaseInfo;
+  locationId?: string;
+  locationDetails?: LocationDetails;
   location?: AssetLocation;
   assignment?: AssetAssignment;
   parentAssetId?: string;
@@ -20,6 +22,25 @@ export interface Asset {
   createdAt: Date | string;
   updatedAt: Date | string;
   createdBy?: string;
+}
+
+export interface LocationDetails {
+  id: string;
+  name: string;
+  type: string;
+  parentId?: string;
+  fullPath: string;
+  site?: {
+    id: string;
+    name: string;
+    code: string;
+    timezone: string;
+  };
+  building?: {
+    id: string;
+    name: string;
+    addressLine: string;
+  };
 }
 
 export interface AssetDefinitionSnapshot {
@@ -105,6 +126,7 @@ export interface UpdateAssetRequest {
   status?: AssetStatus;
   purchaseInfo?: PurchaseInfo;
   location?: AssetLocation;
+  locationId?: string;
   assignment?: AssetAssignment;
   parentAssetId?: string;
   customFields?: { [key: string]: any };

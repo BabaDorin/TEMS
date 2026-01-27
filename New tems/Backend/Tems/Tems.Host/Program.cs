@@ -1,4 +1,5 @@
 using AssetManagement.API;
+using LocationManagement.Api;
 using FastEndpoints;
 using FastEndpoints.Swagger;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -26,6 +27,7 @@ builder.Services.AddScoped<ITenantContext, TenantContext>();
 // Add modules first
 // builder.Services.AddExampleServices(builder.Configuration);
 builder.Services.AddAssetManagementServices(builder.Configuration);
+builder.Services.AddLocationManagementModule();
 builder.Services.AddTicketManagementServices(builder.Configuration);
 builder.Services.AddUserManagementServices(builder.Configuration);
 

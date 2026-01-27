@@ -24,6 +24,9 @@ public class Asset
     [BsonElement("purchase_info")]
     public PurchaseInfo? PurchaseInfo { get; set; }
 
+    [BsonElement("location_id")]
+    public string? LocationId { get; set; }
+
     [BsonElement("location")]
     public AssetLocation? Location { get; set; }
 

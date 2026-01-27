@@ -12,6 +12,7 @@ public record UpdateAssetCommand(
     bool IsCustomized,
     List<AssetSpecificationDto> Specifications,
     PurchaseInfoDto? PurchaseInfo,
+    string? LocationId,
     AssetLocationDto? Location,
     AssetAssignmentDto? Assignment,
     string? ParentAssetId,

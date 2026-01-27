@@ -156,13 +156,36 @@ export class ViewAssetsComponent implements OnInit, OnDestroy {
     },
     {
       headerName: 'Location',
-      field: 'location',
+      field: 'locationDetails',
       flex: 1,
       minWidth: 150,
-      valueFormatter: (params) => {
-        const loc = params.value;
-        if (!loc) return '—';
-        return [loc.building, loc.floor, loc.room].filter(v => v).join(' - ');
+      cellRenderer: (params: any) => {
+        const asset = params.data;
+        const locationDetails = asset?.locationDetails;
+        const legacyLoc = asset?.location;
+        
+        let locationText = '—';
+        let locationId = asset?.locationId;
+        
+        if (locationDetails?.fullPath) {
+          locationText = locationDetails.fullPath;
+        } else if (locationDetails?.name) {
+          locationText = locationDetails.name;
+        } else if (legacyLoc) {
+          locationText = [legacyLoc.building, legacyLoc.floor, legacyLoc.room].filter(v => v).join(' - ') || '—';
+          locationId = null;
+        }
+        
+        if (locationId && locationText !== '—') {
+          return `<a href="javascript:void(0)" class="text-gray-900 hover:text-[#007aff] hover:underline cursor-pointer" data-location-id="${locationId}">${locationText}</a>`;
+        }
+        return locationText;
+      },
+      onCellClicked: (params: any) => {
+        const locationId = params.data?.locationId;
+        if (locationId) {
+          this.router.navigate(['/locations', locationId]);
+        }
       }
     },
     {
@@ -609,8 +632,31 @@ export class ViewAssetsComponent implements OnInit, OnDestroy {
     // TODO: Implement move to room functionality
   }
 
-  getLocationString(location: any): string {
+  getLocationString(location: any, asset?: Asset): string {
+    const assetData = asset || this.selectedAsset;
+    if (assetData) {
+      const a = assetData as any;
+      if (a.locationDetails?.fullPath) {
+        return a.locationDetails.fullPath;
+      }
+      if (a.locationDetails?.name) {
+        return a.locationDetails.name;
+      }
+    }
     if (!location) return '—';
     return [location.building, location.floor, location.room].filter(v => v).join(' - ') || '—';
+  }
+
+  navigateToLocation(asset?: Asset) {
+    const assetData = asset || this.selectedAsset;
+    const a = assetData as any;
+    if (a?.locationId) {
+      this.router.navigate(['/locations', a.locationId]);
+    }
+  }
+
+  hasLocationId(asset?: Asset): boolean {
+    const assetData = asset || this.selectedAsset;
+    return !!(assetData as any)?.locationId;
   }
 }

@@ -20,6 +20,7 @@ public class GetAllAssetEndpoint(IMediator mediator) : EndpointWithoutRequest<Ge
         var assetTypeIdsParam = Query<string>("assetTypeIds", false);
         var definitionIdsParam = Query<string>("definitionIds", false);
         var assetTag = Query<string>("assetTag", false);
+        var locationId = Query<string>("locationId", false);
         var pageNumber = Query<int>("pageNumber", false);
         var pageSize = Query<int>("pageSize", false);
         
@@ -35,6 +36,7 @@ public class GetAllAssetEndpoint(IMediator mediator) : EndpointWithoutRequest<Ge
             AssetTag: string.IsNullOrWhiteSpace(assetTag) ? null : assetTag,
             AssetTypeIds: typeIdList,
             DefinitionIds: definitionIdList,
+            LocationId: string.IsNullOrWhiteSpace(locationId) ? null : locationId,
             IncludeArchived: includeArchived
         );
         

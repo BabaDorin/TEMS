@@ -17,6 +17,8 @@
         <ProjectReference Include="..\Modules\AssetManagement\AssetManagement.API\AssetManagement.API.csproj" />
         <ProjectReference Include="..\Modules\AssetManagement\AssetManagement.Infrastructure\AssetManagement.Infrastructure.csproj" />
         <ProjectReference Include="..\Modules\Example\Example.API\Example.API.csproj" />
+        <ProjectReference Include="..\Modules\LocationManagement\LocationManagement.Api\LocationManagement.Api.csproj" />
+        <ProjectReference Include="..\Modules\LocationManagement\LocationManagement.Infrastructure\LocationManagement.Infrastructure.csproj" />
         <ProjectReference Include="..\Modules\TicketManagement\TicketManagement.API\TicketManagement.API.csproj" />
         <ProjectReference Include="..\Modules\TicketManagement\TicketManagement.Infrastructure\TicketManagement.Infrastructure.csproj" />
         <ProjectReference Include="..\Modules\UserManagement\UserManagement.API\UserManagement.API.csproj" />

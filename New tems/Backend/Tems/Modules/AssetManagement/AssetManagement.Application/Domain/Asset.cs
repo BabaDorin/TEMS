@@ -7,8 +7,7 @@ public class Asset
     public string AssetTag { get; set; } = string.Empty;
     public string Status { get; set; } = "active";
     public AssetDefinitionSnapshot Definition { get; set; } = new();
-    public PurchaseInfo? PurchaseInfo { get; set; }
-    public AssetLocation? Location { get; set; }
+    public PurchaseInfo? PurchaseInfo { get; set; }    public string? LocationId { get; set; }    public AssetLocation? Location { get; set; }
     public AssetAssignment? Assignment { get; set; }
     public string? ParentAssetId { get; set; }
     public List<string> ChildAssetIds { get; set; } = [];

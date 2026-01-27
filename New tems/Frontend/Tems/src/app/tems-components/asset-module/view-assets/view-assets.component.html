@@ -572,7 +572,7 @@
     <div class="px-6 py-2">
       <!-- Basic Info -->
       <div class="mb-4">
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           <div>
             <span class="text-sm text-gray-600">Serial Number:</span>
             <p class="font-medium">{{ selectedAsset.serialNumber || '—' }}</p>
@@ -585,11 +585,23 @@
             <span class="text-sm text-gray-600">Created:</span>
             <p class="font-medium">{{ selectedAsset.createdAt | date:'MMMM d, y' }}</p>
           </div>
-          <div>
-            <span class="text-sm text-gray-600">Location:</span>
-            <p class="font-medium">{{ selectedAsset.location ? getLocationString(selectedAsset.location) : '—' }}</p>
-          </div>
         </div>
+      </div>
+
+      <!-- Location Chip -->
+      <div *ngIf="selectedAsset.locationId || selectedAsset.location" class="mb-4">
+        <span class="text-sm text-gray-600 block mb-2">Location:</span>
+        <button 
+          (click)="navigateToLocation()"
+          class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gray-100 text-gray-700 rounded-full text-xs font-medium transition"
+          [class.hover:bg-gray-200]="hasLocationId()"
+          [class.cursor-pointer]="hasLocationId()"
+          [class.cursor-default]="!hasLocationId()">
+          <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
+            <path d="M8 1.333C6.23189 1.333 4.83325 2.73165 4.83325 4.5C4.83325 6.26835 6.23189 7.667 8 7.667C9.76811 7.667 11.1666 6.26835 11.1666 4.5C11.1666 2.73165 9.76811 1.333 8 1.333ZM8 1.333C10.3932 1.333 12.3333 3.27315 12.3333 5.66634C12.3333 9.33301 8 14.6663 8 14.6663C8 14.6663 3.66659 9.33301 3.66659 5.66634C3.66659 3.27315 5.60672 1.333 8 1.333Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          {{ getLocationString(selectedAsset.location) }}
+        </button>
       </div>
 
       <!-- Definition Info (Collapsible) -->

@@ -38,6 +38,12 @@ public class UpdateAssetCommandHandler(IAssetRepository assetRepository)
             Vendor = request.PurchaseInfo.Vendor,
             WarrantyExpiry = request.PurchaseInfo.WarrantyExpiry
         } : null;
+        
+        if (request.LocationId != null)
+        {
+            existingAsset.LocationId = request.LocationId;
+        }
+        
         existingAsset.Location = request.Location != null ? new AssetLocation
         {
             Building = request.Location.Building,

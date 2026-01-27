@@ -17,6 +17,7 @@ public class DatabaseSeederService(
             // Use the configured IMongoDatabase from DI instead of hardcoding database name
             var database = scope.ServiceProvider.GetRequiredService<IMongoDatabase>();
 
+            await SeedLocationManagementAsync(database);
             await SeedAssetManagementAsync(database);
             await SeedTicketManagementAsync(database);
 
@@ -31,6 +32,12 @@ public class DatabaseSeederService(
     public Task StopAsync(CancellationToken cancellationToken)
     {
         return Task.CompletedTask;
+    }
+
+    private async Task SeedLocationManagementAsync(IMongoDatabase database)
+    {
+        var seeder = new LocationManagementSeeder(database, serviceProvider.GetRequiredService<ILogger<LocationManagementSeeder>>());
+        await seeder.SeedAsync();
     }
 
     private async Task SeedAssetManagementAsync(IMongoDatabase database)

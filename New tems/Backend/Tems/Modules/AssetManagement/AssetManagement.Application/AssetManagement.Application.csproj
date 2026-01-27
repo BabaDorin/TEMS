@@ -16,6 +16,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\AssetManagement.Contract\AssetManagement.Contract.csproj" />
+      <ProjectReference Include="..\..\LocationManagement\LocationManagement.Application\LocationManagement.Application.csproj" />
     </ItemGroup>
 
 </Project>

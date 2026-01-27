@@ -76,6 +76,12 @@ export class AssetService {
     });
   }
 
+  assignToRoom(assetId: string, roomId: string): Observable<Asset> {
+    return this.http.put<Asset>(`${this.baseUrl}/${assetId}/room`, { roomId }, {
+      headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+    });
+  }
+
   delete(id: string): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/${id}`, {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' })

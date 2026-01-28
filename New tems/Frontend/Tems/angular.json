@@ -29,6 +29,7 @@
             ],
             "styles": [
               "src/theme.scss",
+              "src/styles.scss",
               "src/tailwind.css",
               "node_modules/animate.css/animate.min.css",
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
@@ -102,6 +103,7 @@
             ],
             "styles": [
               "src/theme.scss",
+              "src/styles.scss",
               "src/tailwind.css"
             ],
             "scripts": []

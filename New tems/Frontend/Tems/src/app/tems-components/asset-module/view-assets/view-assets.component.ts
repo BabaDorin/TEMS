@@ -11,6 +11,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { AssetService } from 'src/app/services/asset.service';
 import { AssetTypeService } from 'src/app/services/asset-type.service';
 import { AssetDefinitionService } from 'src/app/services/asset-definition.service';
+import { ThemeService } from 'src/app/services/theme.service';
 import { Asset, AssetStatus } from 'src/app/models/asset/asset.model';
 import { AssetType } from 'src/app/models/asset/asset-type.model';
 import { AssetDefinition } from 'src/app/models/asset/asset-definition.model';
@@ -213,7 +214,8 @@ export class ViewAssetsComponent implements OnInit, OnDestroy {
     private fb: FormBuilder,
     private router: Router,
     private dialog: MatDialog,
-    private downloadService: DownloadService
+    private downloadService: DownloadService,
+    private themeService: ThemeService
   ) {
     this.createForm = this.fb.group({
       assetTypeId: ['', Validators.required],
@@ -231,6 +233,10 @@ export class ViewAssetsComponent implements OnInit, OnDestroy {
       locationRoom: [''],
       notes: ['']
     });
+  }
+
+  get gridThemeClass(): string {
+    return this.themeService.isDarkMode ? 'ag-theme-quartz-auto-dark' : 'ag-theme-quartz';
   }
 
   @HostListener('document:click', ['$event'])

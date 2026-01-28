@@ -1,17 +1,17 @@
-<div [ngClass]="dialogRef ? 'bg-white' : 'bg-[#f5f5f7] min-h-screen p-4'">
+<div [ngClass]="dialogRef ? 'bg-white dark:bg-[#2c2c2e]' : 'bg-[#f5f5f7] dark:bg-[#1c1c1e] min-h-screen p-4'">
   <div class="max-w-4xl mx-auto" [ngClass]="{'px-4 py-2': dialogRef}">
     
     <!-- Header (modal and full page mode) -->
     <div class="mb-4">
       <div class="flex items-center justify-between gap-4">
         <div class="flex-1">
-          <h1 class="text-2xl font-semibold text-gray-900 m-0" style="letter-spacing: -0.5px;">Add New Room</h1>
-          <p class="text-sm text-gray-500 mt-1 m-0">Fill in the details to add a new room to the system</p>
+          <h1 class="text-2xl font-semibold text-gray-900 dark:text-white m-0" style="letter-spacing: -0.5px;">Add New Room</h1>
+          <p class="text-sm text-gray-500 dark:text-gray-400 mt-1 m-0">Fill in the details to add a new room to the system</p>
         </div>
         <button 
           *ngIf="dialogRef"
           (click)="openInFullPage()"
-          class="px-2.5 py-1.5 text-xs text-gray-500 hover:text-[#007aff] hover:bg-[#007aff]/5 rounded-lg transition flex items-center gap-1.5 flex-shrink-0"
+          class="px-2.5 py-1.5 text-xs text-gray-500 dark:text-gray-400 hover:text-[#007aff] hover:bg-[#007aff]/5 rounded-lg transition flex items-center gap-1.5 flex-shrink-0"
           title="Open in Full Page">
           <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
             <path d="M6 2H3C2.44772 2 2 2.44772 2 3V13C2 13.5523 2.44772 14 3 14H13C13.5523 14 14 13.5523 14 13V10M9 2H14M14 2V7M14 2L7 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -25,12 +25,12 @@
     <div class="space-y-4">
       
       <!-- Step 1: Select Site -->
-      <div class="bg-white rounded-xl border border-gray-200">
+      <div class="bg-white dark:bg-[#2c2c2e] rounded-xl border border-gray-200 dark:border-[#48484a]">
         <div class="px-4 py-3">
           <div class="flex items-start justify-between gap-4 mb-3">
             <div class="flex-1">
-              <h3 class="text-sm font-medium text-gray-900 m-0">Step 1: Select Site</h3>
-              <p class="text-xs text-gray-500 mt-0.5 m-0">Choose the site where the room will be located</p>
+              <h3 class="text-sm font-medium text-gray-900 dark:text-white m-0">Step 1: Select Site</h3>
+              <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5 m-0">Choose the site where the room will be located</p>
             </div>
             <div class="flex-shrink-0 mt-0.5">
               <div class="flex items-center gap-1.5 px-2 py-1 bg-blue-50 rounded-md">
@@ -45,26 +45,26 @@
           <div class="relative max-w-xl">
             <div 
               (click)="toggleSiteDropdown()"
-              class="px-3 py-2 bg-white border border-gray-200 rounded-lg cursor-pointer hover:border-[#007aff] transition flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-[#007aff]"
+              class="px-3 py-2 bg-white dark:bg-[#3a3a3c] border border-gray-200 dark:border-[#48484a] rounded-lg cursor-pointer hover:border-[#007aff] transition flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-[#007aff]"
               [class.border-[#007aff]]="isSiteDropdownOpen"
               [class.ring-2]="isSiteDropdownOpen"
               [class.ring-[#007aff]/20]="isSiteDropdownOpen">
-              <span *ngIf="!selectedSite" class="text-gray-400 text-sm">Select site</span>
-              <span *ngIf="selectedSite" class="text-sm font-medium text-gray-900">{{ getSiteName(selectedSite) }}</span>
+              <span *ngIf="!selectedSite" class="text-gray-400 dark:text-gray-500 text-sm">Select site</span>
+              <span *ngIf="selectedSite" class="text-sm font-medium text-gray-900 dark:text-white">{{ getSiteName(selectedSite) }}</span>
               <svg width="12" height="8" viewBox="0 0 12 8" fill="none" class="ml-2 transition-transform duration-200" [class.rotate-180]="isSiteDropdownOpen">
                 <path d="M1 1.5L6 6.5L11 1.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
             </div>
             
-            <div *ngIf="isSiteDropdownOpen" class="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-50 max-h-64 overflow-hidden">
+            <div *ngIf="isSiteDropdownOpen" class="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-[#3a3a3c] border border-gray-200 dark:border-[#48484a] rounded-lg shadow-lg z-50 max-h-64 overflow-hidden">
               <div class="max-h-52 overflow-y-auto">
-                <div *ngFor="let site of sites" (click)="selectSite(site.id); $event.stopPropagation()" class="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 cursor-pointer border-b border-gray-100 last:border-b-0" [class.bg-[#007aff]/5]="selectedSite === site.id">
-                  <div class="w-5 h-5 flex-shrink-0 rounded-full border-2 flex items-center justify-center transition" [class.border-[#007aff]]="selectedSite === site.id" [class.bg-[#007aff]]="selectedSite === site.id" [class.border-gray-300]="selectedSite !== site.id">
+                <div *ngFor="let site of sites" (click)="selectSite(site.id); $event.stopPropagation()" class="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 dark:hover:bg-white/5 cursor-pointer border-b border-gray-100 dark:border-[#48484a] last:border-b-0" [class.bg-[#007aff]/5]="selectedSite === site.id">
+                  <div class="w-5 h-5 flex-shrink-0 rounded-full border-2 flex items-center justify-center transition" [class.border-[#007aff]]="selectedSite === site.id" [class.bg-[#007aff]]="selectedSite === site.id" [class.border-gray-300]="selectedSite !== site.id" [class.dark:border-gray-600]="selectedSite !== site.id">
                     <svg *ngIf="selectedSite === site.id" width="12" height="12" viewBox="0 0 12 12" fill="none">
                       <path d="M2 6L5 9L10 3" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
                   </div>
-                  <span class="text-sm text-gray-900">{{ site.name }}</span>
+                  <span class="text-sm text-gray-900 dark:text-white">{{ site.name }}</span>
                 </div>
               </div>
             </div>
@@ -73,12 +73,12 @@
       </div>
 
       <!-- Step 2: Select Building -->
-      <div *ngIf="selectedSite" class="bg-white rounded-xl border border-gray-200" @expandCollapse>
+      <div *ngIf="selectedSite" class="bg-white dark:bg-[#2c2c2e] rounded-xl border border-gray-200 dark:border-[#48484a]" @expandCollapse>
         <div class="px-4 py-3">
           <div class="flex items-start justify-between gap-4 mb-3">
             <div class="flex-1">
-              <h3 class="text-sm font-medium text-gray-900 m-0">Step 2: Select Building</h3>
-              <p class="text-xs text-gray-500 mt-0.5 m-0">Choose the building for the room</p>
+              <h3 class="text-sm font-medium text-gray-900 dark:text-white m-0">Step 2: Select Building</h3>
+              <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5 m-0">Choose the building for the room</p>
             </div>
             <div class="flex-shrink-0 mt-0.5">
               <div class="flex items-center gap-1.5 px-2 py-1 bg-blue-50 rounded-md">
@@ -93,26 +93,26 @@
           <div class="relative max-w-xl">
             <div 
               (click)="toggleBuildingDropdown()"
-              class="px-3 py-2 bg-white border border-gray-200 rounded-lg cursor-pointer hover:border-[#007aff] transition flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-[#007aff]"
+              class="px-3 py-2 bg-white dark:bg-[#3a3a3c] border border-gray-200 dark:border-[#48484a] rounded-lg cursor-pointer hover:border-[#007aff] transition flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-[#007aff]"
               [class.border-[#007aff]]="isBuildingDropdownOpen"
               [class.ring-2]="isBuildingDropdownOpen"
               [class.ring-[#007aff]/20]="isBuildingDropdownOpen">
-              <span *ngIf="!selectedBuilding" class="text-gray-400 text-sm">Select building</span>
-              <span *ngIf="selectedBuilding" class="text-sm font-medium text-gray-900">{{ getBuildingName(selectedBuilding) }}</span>
+              <span *ngIf="!selectedBuilding" class="text-gray-400 dark:text-gray-500 text-sm">Select building</span>
+              <span *ngIf="selectedBuilding" class="text-sm font-medium text-gray-900 dark:text-white">{{ getBuildingName(selectedBuilding) }}</span>
               <svg width="12" height="8" viewBox="0 0 12 8" fill="none" class="ml-2 transition-transform duration-200" [class.rotate-180]="isBuildingDropdownOpen">
                 <path d="M1 1.5L6 6.5L11 1.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
             </div>
             
-            <div *ngIf="isBuildingDropdownOpen" class="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-50 max-h-64 overflow-hidden">
+            <div *ngIf="isBuildingDropdownOpen" class="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-[#3a3a3c] border border-gray-200 dark:border-[#48484a] rounded-lg shadow-lg z-50 max-h-64 overflow-hidden">
               <div class="max-h-52 overflow-y-auto">
-                <div *ngFor="let building of buildings" (click)="selectBuilding(building.id); $event.stopPropagation()" class="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 cursor-pointer border-b border-gray-100 last:border-b-0" [class.bg-[#007aff]/5]="selectedBuilding === building.id">
-                  <div class="w-5 h-5 flex-shrink-0 rounded-full border-2 flex items-center justify-center transition" [class.border-[#007aff]]="selectedBuilding === building.id" [class.bg-[#007aff]]="selectedBuilding === building.id" [class.border-gray-300]="selectedBuilding !== building.id">
+                <div *ngFor="let building of buildings" (click)="selectBuilding(building.id); $event.stopPropagation()" class="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 dark:hover:bg-white/5 cursor-pointer border-b border-gray-100 dark:border-[#48484a] last:border-b-0" [class.bg-[#007aff]/5]="selectedBuilding === building.id">
+                  <div class="w-5 h-5 flex-shrink-0 rounded-full border-2 flex items-center justify-center transition" [class.border-[#007aff]]="selectedBuilding === building.id" [class.bg-[#007aff]]="selectedBuilding === building.id" [class.border-gray-300]="selectedBuilding !== building.id" [class.dark:border-gray-600]="selectedBuilding !== building.id">
                     <svg *ngIf="selectedBuilding === building.id" width="12" height="12" viewBox="0 0 12 12" fill="none">
                       <path d="M2 6L5 9L10 3" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
                   </div>
-                  <span class="text-sm text-gray-900">{{ building.name }}</span>
+                  <span class="text-sm text-gray-900 dark:text-white">{{ building.name }}</span>
                 </div>
               </div>
             </div>
@@ -121,68 +121,68 @@
       </div>
 
       <!-- Step 3: Room Details -->
-      <div *ngIf="selectedBuilding" class="bg-white rounded-xl border border-gray-200" @expandCollapse>
-        <div class="px-4 py-3 border-b border-gray-200">
-          <h3 class="text-sm font-medium text-gray-900 m-0">Step 3: Room Details</h3>
-          <p class="text-xs text-gray-500 mt-0.5 m-0">Enter the room information</p>
+      <div *ngIf="selectedBuilding" class="bg-white dark:bg-[#2c2c2e] rounded-xl border border-gray-200 dark:border-[#48484a]" @expandCollapse>
+        <div class="px-4 py-3 border-b border-gray-200 dark:border-[#48484a]">
+          <h3 class="text-sm font-medium text-gray-900 dark:text-white m-0">Step 3: Room Details</h3>
+          <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5 m-0">Enter the room information</p>
         </div>
         <div class="p-4">
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
             <!-- Room Name -->
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2">Room Name *</label>
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Room Name *</label>
               <input 
                 type="text" 
                 [(ngModel)]="roomName"
                 placeholder="e.g., Conference Room A"
-                class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#007aff] focus:border-transparent text-sm">
+                class="w-full px-3 py-2 border border-gray-200 dark:border-[#48484a] dark:bg-[#3a3a3c] dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-[#007aff] focus:border-transparent text-sm">
             </div>
 
             <!-- Room Number -->
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2">Room Number</label>
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Room Number</label>
               <input 
                 type="text" 
                 [(ngModel)]="roomNumber"
                 placeholder="e.g., 101"
-                class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#007aff] focus:border-transparent text-sm">
+                class="w-full px-3 py-2 border border-gray-200 dark:border-[#48484a] dark:bg-[#3a3a3c] dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-[#007aff] focus:border-transparent text-sm">
             </div>
 
             <!-- Floor -->
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2">Floor *</label>
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Floor *</label>
               <input 
                 type="number" 
                 [(ngModel)]="floor"
                 placeholder="e.g., 1"
-                class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#007aff] focus:border-transparent text-sm">
+                class="w-full px-3 py-2 border border-gray-200 dark:border-[#48484a] dark:bg-[#3a3a3c] dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-[#007aff] focus:border-transparent text-sm">
             </div>
 
             <!-- Room Type -->
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2">Room Type *</label>
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Room Type *</label>
               <div class="relative">
                 <div 
                   (click)="toggleTypeDropdown()"
-                  class="px-3 py-2 bg-white border border-gray-200 rounded-lg cursor-pointer hover:border-[#007aff] transition flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-[#007aff]"
+                  class="px-3 py-2 bg-white dark:bg-[#3a3a3c] border border-gray-200 dark:border-[#48484a] rounded-lg cursor-pointer hover:border-[#007aff] transition flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-[#007aff]"
                   [class.border-[#007aff]]="isTypeDropdownOpen"
                   [class.ring-2]="isTypeDropdownOpen"
                   [class.ring-[#007aff]/20]="isTypeDropdownOpen">
-                  <span *ngIf="!roomType" class="text-gray-400 text-sm">Select room type</span>
-                  <span *ngIf="roomType" class="text-sm font-medium text-gray-900">{{ getRoomTypeLabel(roomType) }}</span>
+                  <span *ngIf="!roomType" class="text-gray-400 dark:text-gray-500 text-sm">Select room type</span>
+                  <span *ngIf="roomType" class="text-sm font-medium text-gray-900 dark:text-white">{{ getRoomTypeLabel(roomType) }}</span>
                   <svg width="12" height="8" viewBox="0 0 12 8" fill="none" class="ml-2 transition-transform duration-200" [class.rotate-180]="isTypeDropdownOpen">
                     <path d="M1 1.5L6 6.5L11 1.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                   </svg>
                 </div>
                 
-                <div *ngIf="isTypeDropdownOpen" class="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-50 overflow-hidden">
-                  <div *ngFor="let type of roomTypes" (click)="selectRoomType(type.value); $event.stopPropagation()" class="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 cursor-pointer border-b border-gray-100 last:border-b-0" [class.bg-[#007aff]/5]="roomType === type.value">
-                    <div class="w-5 h-5 flex-shrink-0 rounded-full border-2 flex items-center justify-center transition" [class.border-[#007aff]]="roomType === type.value" [class.bg-[#007aff]]="roomType === type.value" [class.border-gray-300]="roomType !== type.value">
+                <div *ngIf="isTypeDropdownOpen" class="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-[#3a3a3c] border border-gray-200 dark:border-[#48484a] rounded-lg shadow-lg z-50 overflow-hidden">
+                  <div *ngFor="let type of roomTypes" (click)="selectRoomType(type.value); $event.stopPropagation()" class="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 dark:hover:bg-white/5 cursor-pointer border-b border-gray-100 dark:border-[#48484a] last:border-b-0" [class.bg-[#007aff]/5]="roomType === type.value">
+                    <div class="w-5 h-5 flex-shrink-0 rounded-full border-2 flex items-center justify-center transition" [class.border-[#007aff]]="roomType === type.value" [class.bg-[#007aff]]="roomType === type.value" [class.border-gray-300]="roomType !== type.value" [class.dark:border-gray-600]="roomType !== type.value">
                       <svg *ngIf="roomType === type.value" width="12" height="12" viewBox="0 0 12 12" fill="none">
                         <path d="M2 6L5 9L10 3" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                       </svg>
                     </div>
-                    <span class="text-sm text-gray-900">{{ type.label }}</span>
+                    <span class="text-sm text-gray-900 dark:text-white">{{ type.label }}</span>
                   </div>
                 </div>
               </div>
@@ -190,23 +190,23 @@
 
             <!-- Capacity -->
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2">Capacity</label>
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Capacity</label>
               <input 
                 type="number" 
                 [(ngModel)]="capacity"
                 placeholder="e.g., 10"
-                class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#007aff] focus:border-transparent text-sm">
+                class="w-full px-3 py-2 border border-gray-200 dark:border-[#48484a] dark:bg-[#3a3a3c] dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-[#007aff] focus:border-transparent text-sm">
             </div>
           </div>
 
           <!-- Description (Full Width) -->
           <div class="mt-4">
-            <label class="block text-sm font-medium text-gray-700 mb-2">Description</label>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Description</label>
             <textarea 
               [(ngModel)]="description"
               rows="3"
               placeholder="Additional information about the room..."
-              class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#007aff] focus:border-transparent text-sm resize-none"></textarea>
+              class="w-full px-3 py-2 border border-gray-200 dark:border-[#48484a] dark:bg-[#3a3a3c] dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-[#007aff] focus:border-transparent text-sm resize-none"></textarea>
           </div>
         </div>
       </div>
@@ -216,7 +216,7 @@
         <button 
           *ngIf="dialogRef"
           (click)="close()"
-          class="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-lg transition">
+          class="px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg transition">
           Cancel
         </button>
         <button 

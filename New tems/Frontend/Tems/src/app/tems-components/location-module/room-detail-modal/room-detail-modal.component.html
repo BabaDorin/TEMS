@@ -1,20 +1,20 @@
-<div class="bg-white rounded-2xl overflow-hidden max-w-lg">
+<div class="bg-white dark:bg-[#2c2c2e] rounded-2xl overflow-hidden max-w-lg">
   <!-- Header -->
   <div class="px-6 py-4">
     <div class="flex justify-between items-start">
       <div class="flex-1">
         <div class="flex items-center gap-3">
-          <h2 class="text-xl font-semibold text-gray-900 m-0">{{ room.name }}</h2>
+          <h2 class="text-xl font-semibold text-gray-900 dark:text-white m-0">{{ room.name }}</h2>
           <span [class]="'inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ' + getStatusClass(room.status)">
             {{ getStatusLabel(room.status) }}
           </span>
         </div>
-        <p class="text-sm text-gray-600 mt-1 mb-0">{{ getTypeLabel(room.type) }}</p>
+        <p class="text-sm text-gray-600 dark:text-gray-400 mt-1 mb-0">{{ getTypeLabel(room.type) }}</p>
       </div>
       <button
         (click)="close()"
-        class="ml-4 p-1.5 rounded-full hover:bg-gray-100 transition">
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" class="text-gray-500">
+        class="ml-4 p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-white/10 transition">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" class="text-gray-500 dark:text-gray-400">
           <path d="M15 5L5 15M5 5L15 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       </button>
@@ -25,42 +25,42 @@
   <div class="px-6 py-4 max-h-96 overflow-y-auto">
     <!-- Location Info -->
     <div class="mb-4">
-      <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">Location</h3>
+      <h3 class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-3">Location</h3>
       <div class="space-y-2">
         <div class="flex items-center gap-2 text-sm">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" class="text-gray-400">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" class="text-gray-400 dark:text-gray-500">
             <path d="M8 1.333C6.23189 1.333 4.83325 2.73165 4.83325 4.5C4.83325 6.26835 6.23189 7.667 8 7.667C9.76811 7.667 11.1666 6.26835 11.1666 4.5C11.1666 2.73165 9.76811 1.333 8 1.333ZM8 1.333C10.3932 1.333 12.3333 3.27315 12.3333 5.66634C12.3333 9.33301 8 14.6663 8 14.6663C8 14.6663 3.66659 9.33301 3.66659 5.66634C3.66659 3.27315 5.60672 1.333 8 1.333Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
           <div>
-            <span class="text-gray-600">Site:</span>
-            <span class="ml-1 font-medium text-gray-900">{{ room.siteName || '—' }}</span>
+            <span class="text-gray-600 dark:text-gray-400">Site:</span>
+            <span class="ml-1 font-medium text-gray-900 dark:text-white">{{ room.siteName || '—' }}</span>
           </div>
         </div>
         <div class="flex items-center gap-2 text-sm">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" class="text-gray-400">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" class="text-gray-400 dark:text-gray-500">
             <path d="M2 14h12M3.333 14V4.667c0-.534 0-.8.104-1.006a.954.954 0 01.416-.417c.206-.104.473-.104 1.006-.104h6.282c.534 0 .8 0 1.006.104.185.092.324.231.417.417.104.206.104.472.104 1.006V14M5.333 7.333h1.334M5.333 10h1.334M9.333 7.333h1.334M9.333 10h1.334" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
           <div>
-            <span class="text-gray-600">Building:</span>
-            <span class="ml-1 font-medium text-gray-900">{{ room.buildingName || '—' }}</span>
+            <span class="text-gray-600 dark:text-gray-400">Building:</span>
+            <span class="ml-1 font-medium text-gray-900 dark:text-white">{{ room.buildingName || '—' }}</span>
           </div>
         </div>
         <div *ngIf="room.floorLabel" class="flex items-center gap-2 text-sm">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" class="text-gray-400">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" class="text-gray-400 dark:text-gray-500">
             <path d="M3.333 6h9.334M3.333 10h9.334M8 14V2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
           <div>
-            <span class="text-gray-600">Floor:</span>
-            <span class="ml-1 font-medium text-gray-900">{{ room.floorLabel }}</span>
+            <span class="text-gray-600 dark:text-gray-400">Floor:</span>
+            <span class="ml-1 font-medium text-gray-900 dark:text-white">{{ room.floorLabel }}</span>
           </div>
         </div>
         <div *ngIf="room.roomNumber" class="flex items-center gap-2 text-sm">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" class="text-gray-400">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" class="text-gray-400 dark:text-gray-500">
             <path d="M2.667 5.333c0-.933 0-1.4.181-1.756.16-.315.415-.57.73-.73.357-.181.823-.181 1.756-.181h5.333c.934 0 1.4 0 1.757.181.314.16.57.415.73.73.18.357.18.823.18 1.756v5.334c0 .933 0 1.4-.18 1.756a1.667 1.667 0 01-.73.73c-.357.181-.823.181-1.757.181H5.334c-.933 0-1.4 0-1.756-.181a1.667 1.667 0 01-.73-.73c-.181-.357-.181-.823-.181-1.756V5.333z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
           <div>
-            <span class="text-gray-600">Room Number:</span>
-            <span class="ml-1 font-medium text-gray-900">{{ room.roomNumber }}</span>
+            <span class="text-gray-600 dark:text-gray-400">Room Number:</span>
+            <span class="ml-1 font-medium text-gray-900 dark:text-white">{{ room.roomNumber }}</span>
           </div>
         </div>
       </div>
@@ -69,27 +69,27 @@
     <!-- Room Details -->
     <div *ngIf="room.area" class="mb-4">
       <div class="grid grid-cols-2 gap-4">
-        <div class="bg-gray-50 rounded-lg px-3 py-2">
-          <div class="text-xs text-gray-600 mb-0.5">Area</div>
-          <div class="text-sm font-semibold text-gray-900">{{ room.area }} m²</div>
+        <div class="bg-gray-50 dark:bg-[#3a3a3c] rounded-lg px-3 py-2">
+          <div class="text-xs text-gray-600 dark:text-gray-400 mb-0.5">Area</div>
+          <div class="text-sm font-semibold text-gray-900 dark:text-white">{{ room.area }} m²</div>
         </div>
       </div>
     </div>
 
     <!-- Description -->
     <div *ngIf="room.description" class="mb-4">
-      <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">Description</h3>
-      <p class="text-sm text-gray-700 leading-relaxed">{{ room.description }}</p>
+      <h3 class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-3">Description</h3>
+      <p class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">{{ room.description }}</p>
     </div>
 
     <!-- Assets -->
     <div *ngIf="hasAssets()" class="mb-4">
-      <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">{{ getTotalAssetCount() }} Asset{{ getTotalAssetCount() !== 1 ? 's' : '' }}</h3>
+      <h3 class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-3">{{ getTotalAssetCount() }} Asset{{ getTotalAssetCount() !== 1 ? 's' : '' }}</h3>
       <div class="flex flex-wrap gap-2">
         @for (item of getAssetCountEntries(); track item.type) {
-          <div class="bg-[#f5f5f7] rounded-lg px-3 py-1.5 inline-flex items-center gap-2">
-            <span class="text-sm text-gray-700">{{ item.type }}</span>
-            <span class="text-sm font-semibold text-gray-900 bg-white rounded-full px-2 py-0.5 min-w-[24px] text-center">{{ item.count }}</span>
+          <div class="bg-[#f5f5f7] dark:bg-[#3a3a3c] rounded-lg px-3 py-1.5 inline-flex items-center gap-2">
+            <span class="text-sm text-gray-700 dark:text-gray-300">{{ item.type }}</span>
+            <span class="text-sm font-semibold text-gray-900 dark:text-white bg-white dark:bg-[#2c2c2e] rounded-full px-2 py-0.5 min-w-[24px] text-center">{{ item.count }}</span>
           </div>
         }
       </div>
@@ -99,7 +99,7 @@
     <div class="mt-6 flex justify-center">
       <button
         (click)="viewFullPage()"
-        class="px-2.5 py-1.5 text-xs text-gray-500 hover:text-[#007aff] hover:bg-[#007aff]/5 rounded-lg transition flex items-center gap-1.5">
+        class="px-2.5 py-1.5 text-xs text-gray-500 dark:text-gray-400 hover:text-[#007aff] hover:bg-[#007aff]/5 rounded-lg transition flex items-center gap-1.5">
         <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
           <path d="M6 2H3C2.44772 2 2 2.44772 2 3V13C2 13.5523 2.44772 14 3 14H13C13.5523 14 14 13.5523 14 13V10M9 2H14M14 2V7M14 2L7 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>

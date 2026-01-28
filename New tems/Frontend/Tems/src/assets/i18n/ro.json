@@ -249,6 +249,8 @@
         "emailNotificationsDescription": "Dacă indicați o adresă validă de e-mail, sistemul va transmite notificări și mesaje prin intermediul acestei căi (Cu acordul dumneavoastră).",
         "emailNotifications": "Primește notificări prin E-Mail",
         "profile": "Profil",
+        "darkMode": "Mod Întunecat",
+        "lightMode": "Mod Luminos",
         "signOut": "Deconectare",
         "logIn": "Log In",
         "add": "Adaugă utilizator",

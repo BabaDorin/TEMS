@@ -1,15 +1,15 @@
-<div class="min-h-screen bg-gray-50 p-4 md:p-6 lg:p-8">
+<div class="min-h-screen bg-gray-50 dark:bg-[#1c1c1e] p-4 md:p-6 lg:p-8">
   <div class="max-w-7xl mx-auto">
     <!-- Header -->
-    <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
+    <div class="bg-white dark:bg-[#2c2c2e] rounded-lg shadow-sm p-6 mb-6">
       <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <h1 class="text-2xl font-semibold text-gray-900">Ticket Types</h1>
-          <p class="text-sm text-gray-600 mt-1">Manage ticket type configurations</p>
+          <h1 class="text-2xl font-semibold text-gray-900 dark:text-white">Ticket Types</h1>
+          <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Manage ticket type configurations</p>
         </div>
         <button
           (click)="openCreateModal()"
-          class="inline-flex items-center justify-center px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors">
+          class="inline-flex items-center justify-center px-4 py-2 bg-gray-900 dark:bg-[#007aff] text-white rounded-lg hover:bg-gray-800 dark:hover:bg-[#0051d5] transition-colors">
           <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
           </svg>
@@ -19,8 +19,8 @@
     </div>
 
     <!-- AG Grid -->
-    <div class="bg-white rounded-lg shadow-sm overflow-hidden">
-      <div class="ag-theme-quartz w-full" style="height: calc(100vh - 280px);">
+    <div class="bg-white dark:bg-[#2c2c2e] rounded-lg shadow-sm overflow-hidden">
+      <div [class]="gridThemeClass" class="w-full" style="height: calc(100vh - 280px);">
         <ag-grid-angular
           class="w-full h-full"
           [rowData]="rowData"
@@ -40,11 +40,11 @@
 
 <!-- Create Modal -->
 <div *ngIf="showCreateModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-  <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-    <div class="sticky top-0 bg-white border-b border-gray-200 px-6 py-4">
+  <div class="bg-white dark:bg-[#2c2c2e] rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+    <div class="sticky top-0 bg-white dark:bg-[#2c2c2e] border-b border-gray-200 dark:border-[#38383a] px-6 py-4">
       <div class="flex items-center justify-between">
-        <h2 class="text-xl font-semibold text-gray-900">Create Ticket Type</h2>
-        <button (click)="closeCreateModal()" class="text-gray-400 hover:text-gray-600">
+        <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Create Ticket Type</h2>
+        <button (click)="closeCreateModal()" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
           </svg>
@@ -55,12 +55,12 @@
     <form [formGroup]="createForm" (ngSubmit)="onSubmit()" class="p-6 space-y-6">
       <!-- Name -->
       <div>
-        <label class="block text-sm font-medium text-gray-700 mb-2">Name *</label>
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Name *</label>
         <input
           type="text"
           formControlName="name"
           placeholder="e.g., Security Incident"
-          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent"
+          class="w-full px-4 py-2 border border-gray-300 dark:border-[#48484a] dark:bg-[#3a3a3c] dark:text-white rounded-lg focus:ring-2 focus:ring-gray-900 dark:focus:ring-[#007aff] focus:border-transparent"
           [class.border-red-500]="createForm.get('name')?.invalid && createForm.get('name')?.touched">
         <p *ngIf="createForm.get('name')?.invalid && createForm.get('name')?.touched" class="text-red-500 text-sm mt-1">
           Name is required
@@ -69,12 +69,12 @@
 
       <!-- Description -->
       <div>
-        <label class="block text-sm font-medium text-gray-700 mb-2">Description *</label>
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Description *</label>
         <textarea
           formControlName="description"
           rows="3"
           placeholder="Describe the purpose of this ticket type"
-          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent resize-none"
+          class="w-full px-4 py-2 border border-gray-300 dark:border-[#48484a] dark:bg-[#3a3a3c] dark:text-white rounded-lg focus:ring-2 focus:ring-gray-900 dark:focus:ring-[#007aff] focus:border-transparent resize-none"
           [class.border-red-500]="createForm.get('description')?.invalid && createForm.get('description')?.touched">
         </textarea>
         <p *ngIf="createForm.get('description')?.invalid && createForm.get('description')?.touched" class="text-red-500 text-sm mt-1">
@@ -84,10 +84,10 @@
 
       <!-- ITIL Category -->
       <div>
-        <label class="block text-sm font-medium text-gray-700 mb-2">ITIL Category *</label>
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">ITIL Category *</label>
         <select
           formControlName="itilCategory"
-          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent"
+          class="w-full px-4 py-2 border border-gray-300 dark:border-[#48484a] dark:bg-[#3a3a3c] dark:text-white rounded-lg focus:ring-2 focus:ring-gray-900 dark:focus:ring-[#007aff] focus:border-transparent"
           [class.border-red-500]="createForm.get('itilCategory')?.invalid && createForm.get('itilCategory')?.touched">
           <option value="">Select a category</option>
           <option value="INCIDENT">Incident</option>
@@ -104,12 +104,12 @@
 
       <!-- Initial State -->
       <div>
-        <label class="block text-sm font-medium text-gray-700 mb-2">Initial State ID *</label>
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Initial State ID *</label>
         <input
           type="text"
           formControlName="initialStateId"
           placeholder="e.g., new, open, analyzing"
-          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gray-900 focus:border-transparent"
+          class="w-full px-4 py-2 border border-gray-300 dark:border-[#48484a] dark:bg-[#3a3a3c] dark:text-white rounded-lg focus:ring-2 focus:ring-gray-900 dark:focus:ring-[#007aff] focus:border-transparent"
           [class.border-red-500]="createForm.get('initialStateId')?.invalid && createForm.get('initialStateId')?.touched">
         <p *ngIf="createForm.get('initialStateId')?.invalid && createForm.get('initialStateId')?.touched" class="text-red-500 text-sm mt-1">
           Initial state ID is required
@@ -117,24 +117,24 @@
       </div>
 
       <!-- Attributes Section -->
-      <div class="border-t border-gray-200 pt-6">
+      <div class="border-t border-gray-200 dark:border-[#38383a] pt-6">
         <app-attribute-builder 
           [(attributes)]="attributeDefinitions">
         </app-attribute-builder>
       </div>
 
       <!-- Actions -->
-      <div class="flex flex-col sm:flex-row gap-3 pt-4 border-t border-gray-200">
+      <div class="flex flex-col sm:flex-row gap-3 pt-4 border-t border-gray-200 dark:border-[#38383a]">
         <button
           type="button"
           (click)="closeCreateModal()"
-          class="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
+          class="flex-1 px-4 py-2 border border-gray-300 dark:border-[#48484a] text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
           Cancel
         </button>
         <button
           type="submit"
           [disabled]="createForm.invalid || isSubmitting"
-          class="flex-1 px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+          class="flex-1 px-4 py-2 bg-gray-900 dark:bg-[#007aff] text-white rounded-lg hover:bg-gray-800 dark:hover:bg-[#0051d5] transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
           {{ isSubmitting ? 'Creating...' : 'Create Ticket Type' }}
         </button>
       </div>
@@ -144,11 +144,11 @@
 
 <!-- Details Modal -->
 <div *ngIf="showDetailsModal && selectedTicketType" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-  <div class="bg-white rounded-lg shadow-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
-    <div class="sticky top-0 bg-white border-b border-gray-200 px-6 py-4">
+  <div class="bg-white dark:bg-[#2c2c2e] rounded-lg shadow-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
+    <div class="sticky top-0 bg-white dark:bg-[#2c2c2e] border-b border-gray-200 dark:border-[#38383a] px-6 py-4">
       <div class="flex items-center justify-between">
-        <h2 class="text-xl font-semibold text-gray-900">Ticket Type Details</h2>
-        <button (click)="closeDetailsModal()" class="text-gray-400 hover:text-gray-600">
+        <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Ticket Type Details</h2>
+        <button (click)="closeDetailsModal()" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
           </svg>
@@ -160,53 +160,53 @@
       <!-- Basic Info -->
       <div class="space-y-4">
         <div>
-          <label class="text-sm font-medium text-gray-500">Name</label>
-          <p class="text-base text-gray-900 mt-1">{{ selectedTicketType.name }}</p>
+          <label class="text-sm font-medium text-gray-500 dark:text-gray-400">Name</label>
+          <p class="text-base text-gray-900 dark:text-white mt-1">{{ selectedTicketType.name }}</p>
         </div>
         <div>
-          <label class="text-sm font-medium text-gray-500">Description</label>
-          <p class="text-base text-gray-900 mt-1">{{ selectedTicketType.description }}</p>
+          <label class="text-sm font-medium text-gray-500 dark:text-gray-400">Description</label>
+          <p class="text-base text-gray-900 dark:text-white mt-1">{{ selectedTicketType.description }}</p>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label class="text-sm font-medium text-gray-500">ITIL Category</label>
-            <p class="text-base text-gray-900 mt-1">{{ selectedTicketType.itilCategory }}</p>
+            <label class="text-sm font-medium text-gray-500 dark:text-gray-400">ITIL Category</label>
+            <p class="text-base text-gray-900 dark:text-white mt-1">{{ selectedTicketType.itilCategory }}</p>
           </div>
           <div>
-            <label class="text-sm font-medium text-gray-500">Version</label>
-            <p class="text-base text-gray-900 mt-1">{{ selectedTicketType.version }}</p>
+            <label class="text-sm font-medium text-gray-500 dark:text-gray-400">Version</label>
+            <p class="text-base text-gray-900 dark:text-white mt-1">{{ selectedTicketType.version }}</p>
           </div>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label class="text-sm font-medium text-gray-500">Status</label>
-            <p class="text-base text-gray-900 mt-1">
-              <span [class]="selectedTicketType.isActive ? 'text-green-600' : 'text-gray-600'">
+            <label class="text-sm font-medium text-gray-500 dark:text-gray-400">Status</label>
+            <p class="text-base text-gray-900 dark:text-white mt-1">
+              <span [class]="selectedTicketType.isActive ? 'text-green-600' : 'text-gray-600 dark:text-gray-400'">
                 {{ selectedTicketType.isActive ? 'Active' : 'Inactive' }}
               </span>
             </p>
           </div>
           <div>
-            <label class="text-sm font-medium text-gray-500">Initial State</label>
-            <p class="text-base text-gray-900 mt-1">{{ selectedTicketType.workflowConfig.initialStateId }}</p>
+            <label class="text-sm font-medium text-gray-500 dark:text-gray-400">Initial State</label>
+            <p class="text-base text-gray-900 dark:text-white mt-1">{{ selectedTicketType.workflowConfig.initialStateId }}</p>
           </div>
         </div>
       </div>
 
       <!-- Workflow States -->
       <div>
-        <label class="text-sm font-medium text-gray-700 mb-3 block">Workflow States</label>
+        <label class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3 block">Workflow States</label>
         <div class="space-y-2">
           <div *ngFor="let state of selectedTicketType.workflowConfig.states"
-            class="p-3 bg-gray-50 rounded-lg border border-gray-200">
+            class="p-3 bg-gray-50 dark:bg-[#3a3a3c] rounded-lg border border-gray-200 dark:border-[#48484a]">
             <div class="flex items-center justify-between">
               <div>
-                <p class="font-medium text-gray-900">{{ state.label }}</p>
-                <p class="text-sm text-gray-600">ID: {{ state.id }} | Type: {{ state.type }}</p>
+                <p class="font-medium text-gray-900 dark:text-white">{{ state.label }}</p>
+                <p class="text-sm text-gray-600 dark:text-gray-400">ID: {{ state.id }} | Type: {{ state.type }}</p>
               </div>
             </div>
             <div *ngIf="state.allowedTransitions && state.allowedTransitions.length > 0" class="mt-2">
-              <p class="text-xs text-gray-500">Can transition to: {{ state.allowedTransitions.join(', ') }}</p>
+              <p class="text-xs text-gray-500 dark:text-gray-400">Can transition to: {{ state.allowedTransitions.join(', ') }}</p>
             </div>
           </div>
         </div>
@@ -214,19 +214,19 @@
 
       <!-- Attribute Definitions -->
       <div *ngIf="selectedTicketType.attributeDefinitions && selectedTicketType.attributeDefinitions.length > 0">
-        <label class="text-sm font-medium text-gray-700 mb-3 block">Attribute Definitions</label>
+        <label class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3 block">Attribute Definitions</label>
         <div class="space-y-2">
           <div *ngFor="let attr of selectedTicketType.attributeDefinitions"
-            class="p-3 bg-gray-50 rounded-lg border border-gray-200">
+            class="p-3 bg-gray-50 dark:bg-[#3a3a3c] rounded-lg border border-gray-200 dark:border-[#48484a]">
             <div class="flex items-center justify-between">
               <div class="flex-1">
-                <p class="font-medium text-gray-900">{{ attr.label }}</p>
-                <p class="text-sm text-gray-600">Key: {{ attr.key }} | Type: {{ attr.dataType }}</p>
+                <p class="font-medium text-gray-900 dark:text-white">{{ attr.label }}</p>
+                <p class="text-sm text-gray-600 dark:text-gray-400">Key: {{ attr.key }} | Type: {{ attr.dataType }}</p>
                 <div *ngIf="attr.dataType === 'DROPDOWN' && attr.options && attr.options.length > 0" class="mt-2">
-                  <p class="text-xs text-gray-500 mb-1">Options:</p>
+                  <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Options:</p>
                   <div class="flex flex-wrap gap-1">
                     <span *ngFor="let option of attr.options" 
-                      class="px-2 py-1 text-xs bg-white border border-gray-300 rounded">
+                      class="px-2 py-1 text-xs bg-white dark:bg-[#2c2c2e] border border-gray-300 dark:border-[#48484a] dark:text-white rounded">
                       {{ option }}
                     </span>
                   </div>
@@ -241,15 +241,15 @@
       </div>
 
       <!-- Timestamps -->
-      <div class="pt-4 border-t border-gray-200">
+      <div class="pt-4 border-t border-gray-200 dark:border-[#38383a]">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
           <div>
-            <span class="text-gray-500">Created:</span>
-            <span class="text-gray-900 ml-2">{{ selectedTicketType.createdAt | date: 'short' }}</span>
+            <span class="text-gray-500 dark:text-gray-400">Created:</span>
+            <span class="text-gray-900 dark:text-white ml-2">{{ selectedTicketType.createdAt | date: 'short' }}</span>
           </div>
           <div>
-            <span class="text-gray-500">Updated:</span>
-            <span class="text-gray-900 ml-2">{{ selectedTicketType.updatedAt | date: 'short' }}</span>
+            <span class="text-gray-500 dark:text-gray-400">Updated:</span>
+            <span class="text-gray-900 dark:text-white ml-2">{{ selectedTicketType.updatedAt | date: 'short' }}</span>
           </div>
         </div>
       </div>

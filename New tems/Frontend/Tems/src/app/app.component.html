@@ -1,4 +1,4 @@
-<div class="flex flex-col h-screen">
+<div class="flex flex-col h-screen bg-[#f5f5f7] dark:bg-[#1c1c1e] transition-colors duration-200">
   <!-- Navbar -->
   <app-navbar *ngIf="showNavbar" class="fixed top-0 left-0 right-0 z-50"></app-navbar>
 
@@ -13,9 +13,9 @@
       <div class="flex-1 overflow-auto">
           <!-- Loading Spinner -->
           <ng-container *ngIf="isLoading">
-            <div class="fixed inset-0 flex items-center justify-center bg-white bg-opacity-90 z-50">
+            <div class="fixed inset-0 flex items-center justify-center bg-white dark:bg-[#1c1c1e] bg-opacity-90 dark:bg-opacity-90 z-50">
               <div class="flex flex-col items-center">
-                <div class="flex text-xs font-bold text-blue-500">
+                <div class="flex text-xs font-bold text-blue-500 dark:text-blue-400">
                   <div class="bounce-letter-1">T</div>
                   <div class="bounce-letter-2">e</div>
                   <div class="bounce-letter-3">m</div>

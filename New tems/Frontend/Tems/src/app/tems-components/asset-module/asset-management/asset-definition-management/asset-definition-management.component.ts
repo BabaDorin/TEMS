@@ -5,6 +5,7 @@ import { AgGridAngular } from 'ag-grid-angular';
 import { ColDef, GridApi, GridReadyEvent } from 'ag-grid-community';
 import { AssetDefinitionService } from 'src/app/services/asset-definition.service';
 import { AssetTypeService } from 'src/app/services/asset-type.service';
+import { ThemeService } from 'src/app/services/theme.service';
 import { AssetDefinition } from 'src/app/models/asset/asset-definition.model';
 import { AssetType } from 'src/app/models/asset/asset-type.model';
 import { AddDefinitionComponent } from '../../../asset/add-definition/add-definition.component';
@@ -104,10 +105,15 @@ export class AssetDefinitionManagementComponent implements OnInit {
     flex: 1
   };
 
+  get gridThemeClass(): string {
+    return this.themeService.isDarkMode ? 'ag-theme-quartz-auto-dark' : 'ag-theme-quartz';
+  }
+
   constructor(
     private assetDefinitionService: AssetDefinitionService,
     private assetTypeService: AssetTypeService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private themeService: ThemeService
   ) {}
 
   ngOnInit(): void {

@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { AgGridAngular } from 'ag-grid-angular';
 import { ColDef, GridApi, GridReadyEvent } from 'ag-grid-community';
 import { AssetPropertyService } from 'src/app/services/asset-property.service';
+import { ThemeService } from 'src/app/services/theme.service';
 import { AssetProperty, PropertyDataType } from 'src/app/models/asset/asset-property.model';
 
 @Component({
@@ -103,9 +104,14 @@ export class AssetPropertyManagementComponent implements OnInit {
     flex: 1
   };
 
+  get gridThemeClass(): string {
+    return this.themeService.isDarkMode ? 'ag-theme-quartz-auto-dark' : 'ag-theme-quartz';
+  }
+
   constructor(
     private assetPropertyService: AssetPropertyService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private themeService: ThemeService
   ) {
     this.createForm = this.fb.group({
       name: ['', Validators.required],

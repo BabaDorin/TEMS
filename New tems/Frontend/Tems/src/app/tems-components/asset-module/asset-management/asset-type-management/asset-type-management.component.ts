@@ -6,6 +6,7 @@ import { AgGridAngular } from 'ag-grid-angular';
 import { ColDef, GridApi, GridReadyEvent } from 'ag-grid-community';
 import { AssetTypeService } from 'src/app/services/asset-type.service';
 import { AssetPropertyService } from 'src/app/services/asset-property.service';
+import { ThemeService } from 'src/app/services/theme.service';
 import { AssetType, AssetTypePropertyRequest } from 'src/app/models/asset/asset-type.model';
 import { AssetProperty } from 'src/app/models/asset/asset-property.model';
 import { AddTypeComponent } from '../../../asset/add-type/add-type.component';
@@ -98,11 +99,16 @@ export class AssetTypeManagementComponent implements OnInit {
     flex: 1
   };
 
+  get gridThemeClass(): string {
+    return this.themeService.isDarkMode ? 'ag-theme-quartz-auto-dark' : 'ag-theme-quartz';
+  }
+
   constructor(
     private assetTypeService: AssetTypeService,
     private assetPropertyService: AssetPropertyService,
     private fb: FormBuilder,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private themeService: ThemeService
   ) {
     this.editForm = this.fb.group({
       name: ['', Validators.required],

@@ -249,6 +249,8 @@
         "emailNotificationsDescription": "The email address is primarily used for account recovering. If you desire, you can recieve notifications too.",
         "emailNotifications": "Get notifications via E-mail",
         "profile": "Profile",
+        "darkMode": "Dark Mode",
+        "lightMode": "Light Mode",
         "signOut": "Sign Out",
         "logIn": "Log In",
         "add": "Add user",

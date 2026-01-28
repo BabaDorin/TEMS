@@ -4,18 +4,30 @@
   height: 330px;
   transition: 0.3s;
   background-color: $content-bg;
+
+  :host-context(.dark) & {
+    background-color: #2c2c2e;
+  }
 }
 
 .reportContainer:hover {
-  // background-image: $bg-gradient-primary;
   background-color: white;
   cursor: pointer;
+
+  :host-context(.dark) & {
+    background-color: #3a3a3c;
+  }
 }
 
 .mat-card {
   border: 1px solid #e5e7eb;
   box-shadow: none;
   border-radius: 2px;
+
+  :host-context(.dark) & {
+    border-color: #38383a;
+    background-color: #2c2c2e;
+  }
 }
 
 .template-title {

@@ -104,6 +104,10 @@ code {
   padding: 15px;
   display: flex;
   margin-bottom: 1rem;
+
+  .dark & {
+    background: #2c2c2e;
+  }
   @include media-breakpoint-down(md) { 
     padding: 15px 20px; 
     display: block;
@@ -128,6 +132,10 @@ code {
     color: #1c273c;
     font-weight: 400;
     vertical-align: middle;
+
+    .dark & {
+      color: #f5f5f7;
+    }
     line-height: 1;
     @include media-breakpoint-down(md) { 
       margin-bottom: 10px;

@@ -1,24 +1,24 @@
-<div class="card stretch-card">
-    <div class="card-body">
-        <h2>{{ profile.fullName }}
-            <p>
-                <label *ngFor="let role of profile.roles" class="badge badge-gradient-info mr-2">{{ role }}</label>
+<div class="bg-white dark:bg-[#2c2c2e] rounded-xl border border-gray-200 dark:border-[#38383a] p-6">
+    <div>
+        <h2 class="text-2xl font-semibold text-gray-900 dark:text-white">{{ profile.fullName }}
+            <p class="mt-2">
+                <label *ngFor="let role of profile.roles" class="inline-block px-3 py-1 text-xs font-medium text-white bg-gradient-to-r from-blue-500 to-blue-600 rounded-full mr-2">{{ role }}</label>
             </p>
         </h2> 
-        <p>{{ 'profile.username' | translate }}: {{ profile.username }}</p>
-        <p>{{ 'profile.joined' | translate }}: {{ profile.dateRegistered | date:'short' }}</p>
-        <hr>
+        <p class="text-gray-700 dark:text-gray-300">{{ 'profile.username' | translate }}: {{ profile.username }}</p>
+        <p class="text-gray-700 dark:text-gray-300">{{ 'profile.joined' | translate }}: {{ profile.dateRegistered | date:'short' }}</p>
+        <hr class="border-gray-200 dark:border-[#38383a] my-4">
         <ng-container *ngIf="profile.personnel != undefined">
-            <p class="mt-4">
+            <p class="mt-4 text-gray-700 dark:text-gray-300">
                 {{ 'profile.associatedWithPersonnel' | translate }}:
-                <a mat-button [routerLink]="'personnel/details/' + profile.personnel.value">
-                    <mat-icon class="text-primary">account_circle</mat-icon>{{ profile.personnel.label }}
+                <a mat-button [routerLink]="'personnel/details/' + profile.personnel.value" class="text-blue-600 dark:text-blue-400 no-underline hover:underline">
+                    <mat-icon class="text-blue-600 dark:text-blue-400 align-middle">account_circle</mat-icon>{{ profile.personnel.label }}
                 </a>
             </p>
         </ng-container>
     
         <ng-container *ngIf="profile.personnel == undefined">
-            <p class="mt-4">
+            <p class="mt-4 text-gray-600 dark:text-gray-400">
                 {{ 'profile.notAssociatedWithPersonnel' | translate }}.
             </p>
         </ng-container>

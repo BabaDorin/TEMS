@@ -1,14 +1,14 @@
-<div class="min-h-screen bg-gray-50 p-6">
+<div class="min-h-screen bg-gray-50 dark:bg-[#1c1c1e] p-6">
   <div class="max-w-7xl mx-auto">
     <!-- Header -->
     <div class="mb-6">
-      <h1 class="text-2xl font-semibold text-gray-900">Asset Management</h1>
-      <p class="mt-1 text-sm text-gray-600">Manage asset properties, types, and definitions</p>
+      <h1 class="text-2xl font-semibold text-gray-900 dark:text-white">Asset Management</h1>
+      <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">Manage asset properties, types, and definitions</p>
     </div>
 
     <!-- iOS-style Horizontal Tabs -->
-    <div class="bg-white rounded-lg shadow-sm">
-      <div class="border-b border-gray-200">
+    <div class="bg-white dark:bg-[#2c2c2e] rounded-lg shadow-sm">
+      <div class="border-b border-gray-200 dark:border-[#38383a]">
         <nav class="flex -mb-px">
           <button
             (click)="setActiveTab('properties')"
@@ -16,7 +16,8 @@
             [class.text-blue-600]="activeTab === 'properties'"
             [class.border-transparent]="activeTab !== 'properties'"
             [class.text-gray-600]="activeTab !== 'properties'"
-            class="flex-1 py-4 px-1 text-center border-b-2 font-medium text-sm transition-colors duration-200 hover:text-gray-900 hover:border-gray-300">
+            [class.dark:text-gray-400]="activeTab !== 'properties'"
+            class="flex-1 py-4 px-1 text-center border-b-2 font-medium text-sm transition-colors duration-200 hover:text-gray-900 dark:hover:text-white hover:border-gray-300 dark:hover:border-gray-600">
             <i class="mdi mdi-format-list-bulleted mr-2"></i>
             Properties
           </button>
@@ -26,7 +27,8 @@
             [class.text-blue-600]="activeTab === 'types'"
             [class.border-transparent]="activeTab !== 'types'"
             [class.text-gray-600]="activeTab !== 'types'"
-            class="flex-1 py-4 px-1 text-center border-b-2 font-medium text-sm transition-colors duration-200 hover:text-gray-900 hover:border-gray-300">
+            [class.dark:text-gray-400]="activeTab !== 'types'"
+            class="flex-1 py-4 px-1 text-center border-b-2 font-medium text-sm transition-colors duration-200 hover:text-gray-900 dark:hover:text-white hover:border-gray-300 dark:hover:border-gray-600">
             <i class="mdi mdi-shape mr-2"></i>
             Types
           </button>
@@ -36,7 +38,8 @@
             [class.text-blue-600]="activeTab === 'definitions'"
             [class.border-transparent]="activeTab !== 'definitions'"
             [class.text-gray-600]="activeTab !== 'definitions'"
-            class="flex-1 py-4 px-1 text-center border-b-2 font-medium text-sm transition-colors duration-200 hover:text-gray-900 hover:border-gray-300">
+            [class.dark:text-gray-400]="activeTab !== 'definitions'"
+            class="flex-1 py-4 px-1 text-center border-b-2 font-medium text-sm transition-colors duration-200 hover:text-gray-900 dark:hover:text-white hover:border-gray-300 dark:hover:border-gray-600">
             <i class="mdi mdi-file-document-outline mr-2"></i>
             Definitions
           </button>

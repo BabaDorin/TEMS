@@ -9,6 +9,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { MatDialog } from '@angular/material/dialog';
 import { LocationService } from 'src/app/services/location.service';
+import { ThemeService } from 'src/app/services/theme.service';
 import { Site } from 'src/app/models/location/site.model';
 import { Building } from 'src/app/models/location/building.model';
 import { RoomWithHierarchy, RoomType, RoomStatus } from 'src/app/models/location/room.model';
@@ -149,8 +150,13 @@ export class ViewLocationsComponent implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     private locationService: LocationService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private themeService: ThemeService
   ) {}
+
+  get gridThemeClass(): string {
+    return this.themeService.isDarkMode ? 'ag-theme-quartz-auto-dark' : 'ag-theme-quartz';
+  }
 
   ngOnInit() {
     this.loadSites();

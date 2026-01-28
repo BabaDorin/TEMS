@@ -15,6 +15,10 @@
   color: #1d1d1f;
   margin: 0;
   letter-spacing: -0.5px;
+
+  :host-context(.dark) & {
+    color: #f5f5f7;
+  }
 }
 
 .settings-section {
@@ -28,11 +32,24 @@
   &:hover {
     border-color: #d1d1d6;
   }
+
+  :host-context(.dark) & {
+    background: #2c2c2e;
+    border-color: #38383a;
+
+    &:hover {
+      border-color: #48484a;
+    }
+  }
 }
 
 .section-header {
   padding: 1.25rem 1.5rem;
   border-bottom: 1px solid #f5f5f7;
+
+  :host-context(.dark) & {
+    border-bottom-color: #38383a;
+  }
 }
 
 .section-title {
@@ -41,6 +58,10 @@
   color: #1d1d1f;
   margin: 0;
   letter-spacing: -0.3px;
+
+  :host-context(.dark) & {
+    color: #f5f5f7;
+  }
 }
 
 .settings-form {
@@ -82,6 +103,31 @@
       }
     }
   }
+
+  :host-context(.dark) & {
+    ::ng-deep {
+      .mat-mdc-text-field-wrapper {
+        background-color: #3a3a3c;
+        
+        &:hover {
+          background-color: #48484a;
+        }
+      }
+
+      .mdc-text-field--focused .mat-mdc-text-field-wrapper {
+        background-color: #2c2c2e;
+        border-color: #0a84ff;
+      }
+
+      .mat-mdc-input-element {
+        color: #f5f5f7;
+      }
+
+      .mat-mdc-floating-label {
+        color: #98989d;
+      }
+    }
+  }
 }
 
 .form-actions {
@@ -90,6 +136,10 @@
   display: flex;
   gap: 0.75rem;
   justify-content: flex-end;
+
+  :host-context(.dark) & {
+    border-top-color: #38383a;
+  }
 }
 
 .primary-button {
@@ -128,6 +178,15 @@
   &:hover {
     background-color: #e5e5e7 !important;
   }
+
+  :host-context(.dark) & {
+    background-color: #3a3a3c !important;
+    color: #0a84ff !important;
+
+    &:hover {
+      background-color: #48484a !important;
+    }
+  }
 }
 
 .info-text {
@@ -136,6 +195,10 @@
   line-height: 1.5;
   margin: 1rem 0 0 0;
   padding: 0 1.5rem;
+
+  :host-context(.dark) & {
+    color: #98989d;
+  }
 }
 
 @media (max-width: 768px) {

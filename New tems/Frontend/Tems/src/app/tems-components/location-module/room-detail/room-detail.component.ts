@@ -11,6 +11,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { LocationService } from 'src/app/services/location.service';
 import { AssetTypeService } from 'src/app/services/asset-type.service';
 import { AssetDefinitionService } from 'src/app/services/asset-definition.service';
+import { ThemeService } from 'src/app/services/theme.service';
 import { RoomWithHierarchy, RoomType, RoomStatus } from 'src/app/models/location/room.model';
 import { Asset } from 'src/app/models/asset/asset.model';
 import { AssetType } from 'src/app/models/asset/asset-type.model';
@@ -69,6 +70,10 @@ export class RoomDetailComponent implements OnInit {
   searchText = '';
   definitionSearchText = '';
   private assetTagSearchSubject = new Subject<string>();
+
+  get gridThemeClass(): string {
+    return this.themeService.isDarkMode ? 'ag-theme-quartz-auto-dark' : 'ag-theme-quartz';
+  }
 
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent) {
@@ -157,7 +162,8 @@ export class RoomDetailComponent implements OnInit {
     private locationService: LocationService,
     private assetTypeService: AssetTypeService,
     private assetDefinitionService: AssetDefinitionService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private themeService: ThemeService
   ) {
     this.assetTagSearchSubject.pipe(
       debounceTime(300),

@@ -15,6 +15,10 @@
     display: inline-block;
     font-size: 14px;
     color: #777;
+    
+    :host-context(.dark) & {
+      color: #8e8e93;
+    }
   }
   
   .load-6 .letter {

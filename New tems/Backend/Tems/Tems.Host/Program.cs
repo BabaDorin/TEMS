@@ -1,11 +1,16 @@
-using EquipmentManagement.API;
+using AssetManagement.API;
+using LocationManagement.Api;
 using FastEndpoints;
 using FastEndpoints.Swagger;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Tems.Common.Tenant;
 using Tems.Host.Middleware;
+using Tems.Host.Seeding;
 using TicketManagement.API;
+using UserManagement.API;
+using UserManagement.Infrastructure.Repositories;
+using UserManagement.Application.Handlers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,8 +26,10 @@ builder.Services.AddScoped<ITenantContext, TenantContext>();
 
 // Add modules first
 // builder.Services.AddExampleServices(builder.Configuration);
-builder.Services.AddEquipmentManagementServices(builder.Configuration);
+builder.Services.AddAssetManagementServices(builder.Configuration);
+builder.Services.AddLocationManagementModule();
 builder.Services.AddTicketManagementServices(builder.Configuration);
+builder.Services.AddUserManagementServices(builder.Configuration);
 
 // Add JWT Bearer Authentication - Validate tokens from Keycloak
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -34,12 +41,14 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         options.Audience = "account"; // Keycloak default audience
         options.TokenValidationParameters = new TokenValidationParameters
         {
-            ValidateAudience = false, // Keycloak tokens might not have audience
+            ValidateAudience = true,
+            ValidAudiences = new[] { "account", "tems-api" },
             ValidateIssuer = true,
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
             ClockSkew = TimeSpan.Zero,
-            RoleClaimType = "role" // Map Keycloak roles to role claims
+            RoleClaimType = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role", // Microsoft claim type
+            NameClaimType = "preferred_username"
         };
         options.RequireHttpsMetadata = false; // Only for dev
         options.Events = new JwtBearerEvents
@@ -49,6 +58,17 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<Program>>();
                 logger.LogError(context.Exception, "Authentication failed");
                 return Task.CompletedTask;
+            },
+            OnTokenValidated = context =>
+            {
+                var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<Program>>();
+                var claims = context.Principal?.Claims.Select(c => $"{c.Type}={c.Value}") ?? Array.Empty<string>();
+                logger.LogInformation("Token validated. Claims: {Claims}", string.Join(", ", claims));
+                
+                var roles = context.Principal?.FindAll("http://schemas.microsoft.com/ws/2008/06/identity/claims/role")
+                    .Select(c => c.Value) ?? Array.Empty<string>();
+                logger.LogInformation("User roles: {Roles}", string.Join(", ", roles));
+                return Task.CompletedTask;
             }
         };
     });
@@ -56,23 +76,16 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 // Add Authorization Policies - Using roles from Keycloak
 builder.Services.AddAuthorization(options =>
 {
-    options.AddPolicy("CanViewEntities", policy =>
-        policy.RequireRole("can_view_entities"));
+    // Asset Management
+    options.AddPolicy("CanManageAssets", policy =>
+        policy.RequireRole("can_manage_assets"));
     
-    options.AddPolicy("CanManageEntities", policy =>
-        policy.RequireRole("can_manage_entities"));
+    // Ticket Management
+    options.AddPolicy("CanManageTickets", policy =>
+        policy.RequireRole("can_manage_tickets"));
         
-    options.AddPolicy("CanAllocateKeys", policy =>
-        policy.RequireRole("can_allocate_keys"));
-        
-    options.AddPolicy("CanSendEmails", policy =>
-        policy.RequireRole("can_send_emails"));
-        
-    options.AddPolicy("CanManageAnnouncements", policy =>
-        policy.RequireRole("can_manage_announcements"));
-        
-    options.AddPolicy("CanManageSystemConfiguration", policy =>
-        policy.RequireRole("can_manage_system_configuration"));
+    options.AddPolicy("CanOpenTickets", policy =>
+        policy.RequireRole("can_open_tickets"));
 });
 
 // Add CORS for Angular frontend
@@ -89,11 +102,23 @@ builder.Services.AddCors(options =>
     });
 });
 
-// Add FastEndpoints
-builder.Services.AddFastEndpoints();
+// Add FastEndpoints - scan all assemblies including module assemblies
+builder.Services.AddFastEndpoints(options =>
+{
+    options.Assemblies = new[]
+    {
+        typeof(Program).Assembly,
+        typeof(AssetManagementServiceRegistration).Assembly,
+        typeof(TicketManagementServiceRegistration).Assembly,
+        typeof(UserManagementServiceRegistration).Assembly
+    };
+});
 
 // Add Swagger
 builder.Services.SwaggerDocument();
+
+// Add Database Seeder Service
+builder.Services.AddHostedService<DatabaseSeederService>();
 
 var app = builder.Build();
 

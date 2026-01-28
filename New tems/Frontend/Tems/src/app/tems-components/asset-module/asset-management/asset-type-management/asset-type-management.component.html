@@ -1,0 +1,118 @@
+<div>
+  <!-- Header with Create Button -->
+  <div class="flex justify-between items-center mb-4">
+    <h2 class="text-lg font-medium text-gray-900 dark:text-white">Asset Types</h2>
+    <button
+      (click)="openCreateModal()"
+      class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200">
+      <i class="mdi mdi-plus mr-2"></i>
+      Create Type
+    </button>
+  </div>
+
+  <!-- AG Grid -->
+  <div [class]="gridThemeClass" style="height: 600px; width: 100%;">
+    <ag-grid-angular
+      [rowData]="rowData"
+      [columnDefs]="columnDefs"
+      [defaultColDef]="defaultColDef"
+      [pagination]="true"
+      [paginationPageSize]="20"
+      (gridReady)="onGridReady($event)"
+      class="w-full h-full">
+    </ag-grid-angular>
+  </div>
+
+  <!-- Create Modal -->
+
+
+  <!-- Edit Modal -->
+  <div *ngIf="showEditModal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50" (click)="closeEditModal()">
+    <div class="bg-white dark:bg-[#2c2c2e] rounded-lg shadow-xl max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto" (click)="$event.stopPropagation()">
+      <div class="px-6 py-4 border-b border-gray-200 dark:border-[#38383a] sticky top-0 bg-white dark:bg-[#2c2c2e]">
+        <h3 class="text-lg font-medium text-gray-900 dark:text-white">Edit Asset Type</h3>
+      </div>
+      
+      <form [formGroup]="editForm" (ngSubmit)="updateType()" class="px-6 py-4">
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Name *</label>
+            <input type="text" formControlName="name" 
+              class="w-full px-3 py-2 border border-gray-300 dark:border-[#48484a] bg-white dark:bg-[#3a3a3c] text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Description</label>
+            <textarea formControlName="description" rows="2"
+              class="w-full px-3 py-2 border border-gray-300 dark:border-[#48484a] bg-white dark:bg-[#3a3a3c] text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"></textarea>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Parent Type</label>
+            <select formControlName="parentTypeId" 
+              class="w-full px-3 py-2 border border-gray-300 dark:border-[#48484a] bg-white dark:bg-[#3a3a3c] text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+              <option value="">None (Root Type)</option>
+              <option *ngFor="let type of parentTypes" [value]="type.id">{{ type.name }}</option>
+            </select>
+          </div>
+
+          <!-- Properties Section -->
+          <div class="border-t dark:border-[#38383a] pt-4">
+            <div class="flex justify-between items-center mb-3">
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Properties</label>
+              <button type="button" (click)="addPropertyToEdit()"
+                class="px-3 py-1 text-sm bg-green-600 text-white rounded hover:bg-green-700">
+                <i class="mdi mdi-plus mr-1"></i> Add Property
+              </button>
+            </div>
+            
+            <div *ngFor="let prop of editSelectedProperties.controls; let i = index" 
+              [formGroup]="$any(prop)" class="grid grid-cols-12 gap-2 mb-2">
+              <div class="col-span-5">
+                <select formControlName="propertyId" class="w-full px-2 py-1 text-sm border border-gray-300 dark:border-[#48484a] bg-white dark:bg-[#3a3a3c] text-gray-900 dark:text-white rounded">
+                  <option value="">Select Property</option>
+                  <option *ngFor="let p of availableProperties" [value]="p.id">{{ p.name }}</option>
+                </select>
+              </div>
+              <div class="col-span-2">
+                <label class="flex items-center text-sm text-gray-700 dark:text-gray-300">
+                  <input type="checkbox" formControlName="isRequired" class="mr-1">
+                  Required
+                </label>
+              </div>
+              <div class="col-span-2">
+                <input type="number" formControlName="displayOrder" placeholder="Order" 
+                  class="w-full px-2 py-1 text-sm border border-gray-300 dark:border-[#48484a] bg-white dark:bg-[#3a3a3c] text-gray-900 dark:text-white rounded">
+              </div>
+              <div class="col-span-2">
+                <input type="text" formControlName="defaultValue" placeholder="Default" 
+                  class="w-full px-2 py-1 text-sm border border-gray-300 dark:border-[#48484a] bg-white dark:bg-[#3a3a3c] text-gray-900 dark:text-white rounded">
+              </div>
+              <div class="col-span-1">
+                <button type="button" (click)="removePropertyFromEdit(i)" 
+                  class="w-full px-2 py-1 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded">
+                  <i class="mdi mdi-close"></i>
+                </button>
+              </div>
+            </div>
+            
+            <p *ngIf="editSelectedProperties.length === 0" class="text-sm text-gray-500 dark:text-gray-400 italic">
+              No properties added yet
+            </p>
+          </div>
+        </div>
+
+        <div class="flex justify-end space-x-3 mt-6 sticky bottom-0 bg-white dark:bg-[#2c2c2e] pt-4 border-t dark:border-[#38383a]">
+          <button type="button" (click)="closeEditModal()"
+            class="px-4 py-2 border border-gray-300 dark:border-[#48484a] text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-[#3a3a3c] transition-colors duration-200">
+            Cancel
+          </button>
+          <button type="submit" [disabled]="editForm.invalid || isSubmitting"
+            class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-300 dark:disabled:bg-gray-600 disabled:cursor-not-allowed transition-colors duration-200">
+            {{ isSubmitting ? 'Updating...' : 'Update' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

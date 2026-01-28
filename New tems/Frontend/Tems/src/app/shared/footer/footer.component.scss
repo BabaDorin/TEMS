@@ -22,6 +22,12 @@
     margin-left: 0;
     width: 100%;
   }
+  
+  :host-context(.dark) & {
+    background: #1c1c1e;
+    color: #8e8e93;
+    border-top-color: #38383a;
+  }
 }
 
 .btn-bug-report{

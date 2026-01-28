@@ -1,0 +1,533 @@
+<div [ngClass]="dialogRef ? 'bg-white dark:bg-[#2c2c2e]' : 'bg-[#f5f5f7] dark:bg-[#1c1c1e] min-h-screen p-4'">
+  <div class="max-w-4xl mx-auto" [ngClass]="{'px-4 py-2': dialogRef}">
+    
+    <!-- Header (modal and full page mode) -->
+    <div *ngIf="updateEquipmentId == undefined" class="mb-4">
+      <div class="flex items-center justify-between gap-4">
+        <div class="flex-1">
+          <h1 class="text-2xl font-semibold text-gray-900 dark:text-white m-0" style="letter-spacing: -0.5px;">Add New Asset</h1>
+          <p class="text-sm text-gray-500 dark:text-gray-400 mt-1 m-0">Fill in the details to add a new asset to the system</p>
+        </div>
+        <button 
+          *ngIf="dialogRef"
+          (click)="openInFullPage()"
+          class="px-2.5 py-1.5 text-xs text-gray-500 dark:text-gray-400 hover:text-[#007aff] hover:bg-[#007aff]/5 dark:hover:bg-[#007aff]/10 rounded-lg transition flex items-center gap-1.5 flex-shrink-0"
+          title="Open in Full Page">
+          <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
+            <path d="M6 2H3C2.44772 2 2 2.44772 2 3V13C2 13.5523 2.44772 14 3 14H13C13.5523 14 14 13.5523 14 13V10M9 2H14M14 2V7M14 2L7 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span>Open in Full Page</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Update Header -->
+    <div *ngIf="updateEquipmentId != undefined" class="mb-4">
+      <h1 class="text-2xl font-semibold text-gray-900 dark:text-white m-0" style="letter-spacing: -0.5px;">Update Asset</h1>
+      <p class="text-sm text-gray-500 dark:text-gray-400 mt-1 m-0">Modify asset information</p>
+    </div>
+
+    <!-- Bulk Upload Results -->
+    <ng-container *ngIf="bulkUploadResults != undefined">
+      <div class="bg-white dark:bg-[#2c2c2e] rounded-xl border border-gray-200 dark:border-[#38383a] p-6">
+        <app-bulk-upload-results [bulkUploadResults]="bulkUploadResults"></app-bulk-upload-results>
+        <button 
+          (click)="clearResults()"
+          class="mt-4 px-4 py-2 text-sm text-[#007aff] hover:bg-[#007aff]/5 dark:hover:bg-[#007aff]/10 rounded-lg transition flex items-center gap-2">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M10 4L6 8L10 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Back
+        </button>
+      </div>
+    </ng-container>
+
+    <!-- Main Form -->
+    <ng-container *ngIf="bulkUploadResults == undefined">
+      <form class="space-y-4" [formGroup]="formGroup">
+        
+        <!-- Step 1: Select Type -->
+        <div class="bg-white dark:bg-[#2c2c2e] rounded-xl border border-gray-200 dark:border-[#38383a]">
+          <div class="px-4 py-3">
+            <div class="flex items-start justify-between gap-4 mb-3">
+              <div class="flex-1">
+                <h3 class="text-sm font-medium text-gray-900 dark:text-white m-0">Step 1: Select Asset Type</h3>
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5 m-0">Asset types are broad categories that define the general class of equipment (e.g., Laptop, Monitor, Server)</p>
+              </div>
+              <div class="flex-shrink-0 mt-0.5">
+                <div class="flex items-center gap-1.5 px-2 py-1 bg-blue-50 dark:bg-blue-900/20 rounded-md">
+                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none" class="text-blue-600 dark:text-blue-400">
+                    <circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.5"/>
+                    <path d="M6 4V6.5M6 8.5V9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                  </svg>
+                  <span class="text-xs font-medium text-blue-600 dark:text-blue-400">Required</span>
+                </div>
+              </div>
+            </div>
+            <div class="relative max-w-xl">
+              <div 
+                (click)="toggleTypeDropdown()"
+                (keydown.enter)="toggleTypeDropdown()"
+                (keydown.space)="toggleTypeDropdown(); $event.preventDefault()"
+                tabindex="1"
+                class="px-3 py-2 bg-white dark:bg-[#3a3a3c] border border-gray-200 dark:border-[#48484a] rounded-lg cursor-pointer hover:border-[#007aff] transition flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-[#007aff]"
+                [class.border-[#007aff]]="isTypeDropdownOpen"
+                [class.ring-2]="isTypeDropdownOpen"
+                [class.ring-[#007aff]/20]="isTypeDropdownOpen">
+                <span *ngIf="!selectedType" class="text-gray-400 dark:text-gray-500 text-sm">Select asset type</span>
+                <span *ngIf="selectedType" class="text-sm font-medium text-gray-900 dark:text-white">{{ getTypeName(selectedType) }}</span>
+                <svg width="12" height="8" viewBox="0 0 12 8" fill="none" class="ml-2 transition-transform duration-200 text-gray-500 dark:text-gray-400" [class.rotate-180]="isTypeDropdownOpen">
+                  <path d="M1 1.5L6 6.5L11 1.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              
+              <div *ngIf="isTypeDropdownOpen" class="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-[#2c2c2e] border border-gray-200 dark:border-[#48484a] rounded-lg shadow-lg z-50 max-h-64 overflow-hidden">
+                <div class="p-2 border-b border-gray-200 dark:border-[#48484a]">
+                  <input type="text" [(ngModel)]="typeSearchText" [ngModelOptions]="{standalone: true}" (click)="$event.stopPropagation()" placeholder="Search types..." class="w-full px-3 py-2 text-sm border border-gray-200 dark:border-[#48484a] bg-white dark:bg-[#3a3a3c] text-gray-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-[#007aff] focus:border-transparent">
+                </div>
+                <div class="max-h-52 overflow-y-auto">
+                  <div (click)="openAddType(); $event.stopPropagation()" class="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 dark:hover:bg-white/5 cursor-pointer border-b border-gray-100 dark:border-[#48484a]">
+                    <div class="w-8 h-8 rounded-full bg-[#007aff]/10 flex items-center justify-center">
+                      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" class="text-[#007aff]">
+                        <path d="M7 2V12M2 7H12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                      </svg>
+                    </div>
+                    <span class="text-sm font-medium text-[#007aff]">Add New Type</span>
+                  </div>
+                  <div *ngFor="let type of getFilteredTypes()" (click)="selectType(type.value); $event.stopPropagation()" class="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 dark:hover:bg-white/5 cursor-pointer border-b border-gray-100 dark:border-[#48484a] last:border-b-0" [class.bg-[#007aff]/5]="selectedType === type.value">
+                    <div class="w-5 h-5 flex-shrink-0 rounded-full border-2 flex items-center justify-center transition" [class.border-[#007aff]]="selectedType === type.value" [class.bg-[#007aff]]="selectedType === type.value" [class.border-gray-300]="selectedType !== type.value" [class.dark:border-gray-600]="selectedType !== type.value">
+                      <svg *ngIf="selectedType === type.value" width="12" height="12" viewBox="0 0 12 12" fill="none">
+                        <path d="M2 6L5 9L10 3" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                    </div>
+                    <span class="text-sm text-gray-900 dark:text-white">{{ type.label }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 2: Select Definition -->
+        <div *ngIf="selectedType" class="bg-white dark:bg-[#2c2c2e] rounded-xl border border-gray-200 dark:border-[#38383a]" @expandCollapse>
+          <div class="px-4 py-3">
+            <div class="flex items-start justify-between gap-4 mb-3">
+              <div class="flex-1">
+                <h3 class="text-sm font-medium text-gray-900 dark:text-white m-0">Step 2: Select Asset Definition</h3>
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5 m-0">Choose the specific model or configuration</p>
+              </div>
+              <div class="flex-shrink-0 mt-0.5">
+                <div class="flex items-center gap-1.5 px-2 py-1 bg-blue-50 dark:bg-blue-900/20 rounded-md">
+                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none" class="text-blue-600 dark:text-blue-400">
+                    <circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.5"/>
+                    <path d="M6 4V6.5M6 8.5V9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                  </svg>
+                  <span class="text-xs font-medium text-blue-600 dark:text-blue-400">Required</span>
+                </div>
+              </div>
+            </div>
+            <div class="relative max-w-xl">
+              <div 
+                (click)="toggleDefinitionDropdown()" 
+                (keydown.enter)="toggleDefinitionDropdown()"
+                (keydown.space)="toggleDefinitionDropdown(); $event.preventDefault()"
+                tabindex="2"
+                class="px-3 py-2 bg-white dark:bg-[#3a3a3c] border border-gray-200 dark:border-[#38383a] rounded-lg cursor-pointer hover:border-[#007aff] transition flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-[#007aff]" [class.border-[#007aff]]="isDefinitionDropdownOpen" [class.ring-2]="isDefinitionDropdownOpen" [class.ring-[#007aff]/20]="isDefinitionDropdownOpen">
+                <span *ngIf="!selectedDefinition?.value" class="text-gray-400 dark:text-gray-500 text-sm">Select definition</span>
+                <span *ngIf="selectedDefinition?.value" class="text-sm font-medium text-gray-900 dark:text-white">{{ selectedDefinition.label }}</span>
+                <svg width="12" height="8" viewBox="0 0 12 8" fill="none" class="ml-2 transition-transform duration-200" [class.rotate-180]="isDefinitionDropdownOpen">
+                  <path d="M1 1.5L6 6.5L11 1.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              
+              <div *ngIf="isDefinitionDropdownOpen" class="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-[#2c2c2e] border border-gray-200 dark:border-[#38383a] rounded-lg shadow-lg z-50 max-h-64 overflow-hidden">
+                <div class="p-2 border-b border-gray-200 dark:border-[#38383a]">
+                  <input type="text" [(ngModel)]="definitionSearchText" [ngModelOptions]="{standalone: true}" (click)="$event.stopPropagation()" placeholder="Search definitions..." class="w-full px-3 py-2 text-sm border border-gray-200 dark:border-[#38383a] rounded-lg bg-white dark:bg-[#3a3a3c] text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#007aff] focus:border-transparent">
+                </div>
+                <div class="max-h-52 overflow-y-auto">
+                  <div (click)="openAddDefinition(); $event.stopPropagation()" class="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 dark:hover:bg-white/5 cursor-pointer border-b border-gray-100 dark:border-[#48484a]">
+                    <div class="w-8 h-8 rounded-full bg-[#007aff]/10 flex items-center justify-center">
+                      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" class="text-[#007aff]">
+                        <path d="M7 2V12M2 7H12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                      </svg>
+                    </div>
+                    <span class="text-sm font-medium text-[#007aff]">Add New Definition</span>
+                  </div>
+                  <div *ngFor="let def of getFilteredDefinitions()" (click)="selectDefinition(def.value); $event.stopPropagation()" class="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 dark:hover:bg-white/5 cursor-pointer border-b border-gray-100 dark:border-[#48484a] last:border-b-0" [class.bg-[#007aff]/5]="selectedDefinition?.value === def.value">
+                    <div class="w-5 h-5 flex-shrink-0 rounded-full border-2 flex items-center justify-center transition" [class.border-[#007aff]]="selectedDefinition?.value === def.value" [class.bg-[#007aff]]="selectedDefinition?.value === def.value" [class.border-gray-300]="selectedDefinition?.value !== def.value" [class.dark:border-gray-600]="selectedDefinition?.value !== def.value">
+                      <svg *ngIf="selectedDefinition?.value === def.value" width="12" height="12" viewBox="0 0 12 12" fill="none">
+                        <path d="M2 6L5 9L10 3" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                    </div>
+                    <span class="text-sm text-gray-900 dark:text-white">{{ def.label }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+
+      <!-- Form Loading -->
+      <div *ngIf="(selectedFullDefinition != undefined || updateEquipmentId != undefined) && formlyData.isVisible == false" class="bg-white dark:bg-[#2c2c2e] rounded-xl border border-gray-200 dark:border-[#38383a] p-4 mt-4">
+        <div class="flex items-center justify-center py-8">
+          <div class="text-center">
+            <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-[#007aff]"></div>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mt-3">Loading form...</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Asset Information Form -->
+      <div *ngIf="formlyData.isVisible" @expandCollapse class="mt-4">
+        <form [formGroup]="formlyData.form" (ngSubmit)="onSubmit(formlyData.model)" class="space-y-4">
+          
+          <!-- Required Fields -->
+          <div class="bg-white dark:bg-[#2c2c2e] rounded-xl border border-gray-200 dark:border-[#38383a]">
+            <div class="px-4 py-3 border-b border-gray-200 dark:border-[#38383a]">
+              <h3 class="text-sm font-medium text-gray-900 dark:text-white m-0">Required Information</h3>
+              <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5 m-0">Basic asset details (mandatory)</p>
+            </div>
+            <div class="p-4">
+              <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">TEMS ID *</label>
+                  <input type="text" [(ngModel)]="formlyData.model.temsid" [ngModelOptions]="{standalone: true}" placeholder="Enter TEMS ID..." tabindex="3" class="w-full px-3 py-2 border border-gray-200 dark:border-[#38383a] rounded-lg bg-white dark:bg-[#3a3a3c] text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#007aff] focus:border-transparent text-sm">
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Serial Number *</label>
+                  <input type="text" [(ngModel)]="formlyData.model.serialNumber" [ngModelOptions]="{standalone: true}" placeholder="Enter serial number..." tabindex="4" class="w-full px-3 py-2 border border-gray-200 dark:border-[#38383a] rounded-lg bg-white dark:bg-[#3a3a3c] text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#007aff] focus:border-transparent text-sm">
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Asset Status *</label>
+                  <div class="relative">
+                    <div 
+                      (click)="toggleStatusDropdown()"
+                      (keydown.enter)="toggleStatusDropdown()"
+                      (keydown.space)="toggleStatusDropdown(); $event.preventDefault()"
+                      tabindex="5"
+                      class="px-3 py-2 bg-white dark:bg-[#3a3a3c] border border-gray-200 dark:border-[#38383a] rounded-lg cursor-pointer hover:border-[#007aff] transition flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-[#007aff]"
+                      [class.border-[#007aff]]="isStatusDropdownOpen"
+                      [class.ring-2]="isStatusDropdownOpen"
+                      [class.ring-[#007aff]/20]="isStatusDropdownOpen">
+                      <span *ngIf="!selectedStatus" class="text-gray-400 dark:text-gray-500 text-sm">Select status</span>
+                      <span *ngIf="selectedStatus" class="text-sm font-medium text-gray-900 dark:text-white">{{ getStatusLabel(selectedStatus) }}</span>
+                      <svg width="12" height="8" viewBox="0 0 12 8" fill="none" class="ml-2 transition-transform duration-200" [class.rotate-180]="isStatusDropdownOpen">
+                        <path d="M1 1.5L6 6.5L11 1.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                    </div>
+                    
+                    <div *ngIf="isStatusDropdownOpen" class="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-[#2c2c2e] border border-gray-200 dark:border-[#38383a] rounded-lg shadow-lg z-50 overflow-hidden">
+                      <div *ngFor="let status of statusOptions" (click)="selectStatus(status.value); $event.stopPropagation()" class="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 dark:hover:bg-white/5 cursor-pointer border-b border-gray-100 dark:border-[#48484a] last:border-b-0" [class.bg-[#007aff]/5]="selectedStatus === status.value">
+                        <div class="w-5 h-5 flex-shrink-0 rounded-full border-2 flex items-center justify-center transition" [class.border-[#007aff]]="selectedStatus === status.value" [class.bg-[#007aff]]="selectedStatus === status.value" [class.border-gray-300]="selectedStatus !== status.value" [class.dark:border-gray-600]="selectedStatus !== status.value">
+                          <svg *ngIf="selectedStatus === status.value" width="12" height="12" viewBox="0 0 12 12" fill="none">
+                            <path d="M2 6L5 9L10 3" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                          </svg>
+                        </div>
+                        <span class="text-sm text-gray-900 dark:text-white">{{ status.label }}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Definition Preview -->
+          <div class="bg-white dark:bg-[#2c2c2e] rounded-xl border border-gray-200 dark:border-[#38383a]">
+            <div class="px-4 py-2 cursor-pointer hover:bg-gray-50 dark:hover:bg-white/5 transition flex items-center justify-between" (click)="toggleDefinitionPreview()">
+              <div class="flex items-center gap-2">
+                <div class="self-center">
+                  <h3 class="text-sm font-medium text-gray-900 dark:text-white leading-tight m-0">Definition Preview</h3>
+                  <p class="text-xs text-gray-500 dark:text-gray-400 leading-tight m-0">View selected definition details</p>
+                </div>
+              </div>
+              <div class="flex items-center gap-3">
+                <button *ngIf="isDefinitionEdited()"
+                        type="button"
+                        (click)="$event.stopPropagation(); restoreDefinition()"
+                        class="text-xs text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 font-medium flex items-center gap-1.5 transition">
+                  <svg width="14" height="14" viewBox="0 0 16 16" fill="none" class="text-gray-500 dark:text-gray-400">
+                    <path d="M14 8C14 11.3137 11.3137 14 8 14C4.68629 14 2 11.3137 2 8C2 4.68629 4.68629 2 8 2C9.84893 2 11.5051 2.83482 12.6 4.15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                    <path d="M14 2V5H11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  Restore Original
+                </button>
+                <svg width="18" height="18" viewBox="0 0 20 20" fill="none" class="text-gray-600 dark:text-gray-400 transition-transform" [class.rotate-180]="isDefinitionPreviewExpanded">
+                  <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+            </div>
+            <div *ngIf="isDefinitionPreviewExpanded" @expandCollapse class="border-t border-gray-200 dark:border-[#38383a] p-4">
+              <!-- Asset Name (Editable) -->
+              <div *ngIf="selectedFullDefinition" class="mb-4">
+                <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1.5">Asset Name</label>
+                <div *ngIf="!isEditingAssetName" class="group flex items-center justify-between py-2 px-3 rounded-lg">
+                  <span class="text-sm text-gray-900 dark:text-white">{{ selectedFullDefinition.name }}</span>
+                  <div class="flex items-center gap-2">
+                    <button
+                      type="button"
+                      (click)="startEditingAssetName()"
+                      class="p-1 rounded hover:bg-gray-100 dark:hover:bg-white/10 transition">
+                      <svg width="14" height="14" viewBox="0 0 16 16" fill="none" class="text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300 transition">
+                        <path d="M11.3337 2.00004C11.5089 1.82494 11.7169 1.68605 11.9457 1.59129C12.1745 1.49653 12.4197 1.44775 12.667 1.44775C12.9144 1.44775 13.1596 1.49653 13.3884 1.59129C13.6172 1.68605 13.8252 1.82494 14.0003 2.00004C14.1754 2.17513 14.3143 2.38311 14.4091 2.61195C14.5038 2.84079 14.5526 3.08595 14.5526 3.33337C14.5526 3.58079 14.5038 3.82595 14.4091 4.05479C14.3143 4.28363 14.1754 4.49161 14.0003 4.66671L5.00033 13.6667L1.33366 14.6667L2.33366 11L11.3337 2.00004Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                    </button>
+                    <div class="relative inline-flex">
+                      <div class="group">
+                        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" class="text-gray-400 dark:text-gray-500">
+                          <circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.5"/>
+                          <path d="M8 7V11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                          <circle cx="8" cy="5" r="0.8" fill="currentColor" />
+                        </svg>
+                        <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block w-max max-w-xs">
+                          <div class="bg-gray-700 dark:bg-gray-800 text-white text-xs rounded-lg px-3 py-2 shadow-lg">
+                            Changes to the defintion apply only to this asset and will not affect other assets using the same definition.
+                          </div>
+                          <div class="w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900 absolute left-1/2 -translate-x-1/2"></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div *ngIf="isEditingAssetName" class="flex gap-2 items-center">
+                  <input 
+                    type="text"
+                    [(ngModel)]="editedAssetName"
+                    [ngModelOptions]="{ standalone: true }"
+                    class="flex-1 px-3 py-2 text-sm border border-gray-300 dark:border-[#38383a] rounded-lg bg-white dark:bg-[#3a3a3c] text-gray-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-[#007aff] focus:border-[#007aff]"
+                    placeholder="Enter asset name"
+                    (keydown.enter)="saveAssetName()"
+                    (keydown.escape)="cancelEditingAssetName()"
+                    id="asset-name-input">
+                  <button 
+                    type="button"
+                    (click)="saveAssetName()"
+                    class="p-2 text-xs font-medium bg-gray-100 dark:bg-[#3a3a3c] text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-[#48484a] transition flex items-center justify-center border border-gray-200 dark:border-[#38383a]">
+                    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" class="text-gray-600 dark:text-gray-400">
+                      <path d="M3 8.5L6.5 12L13 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </button>
+                  <button 
+                    type="button"
+                    (click)="cancelEditingAssetName()"
+                    class="px-3 py-2 text-xs font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg transition">
+                    Cancel
+                  </button>
+                </div>
+              </div>
+
+              <!-- Basic Information (Read-only, displayed like Asset Name) -->
+              <div *ngIf="selectedFullDefinition">
+                <div class="mb-4" *ngIf="selectedFullDefinition?.assetTypeName">
+                  <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1.5">Type</label>
+                  <div class="py-2 px-3 rounded-lg">
+                    <span class="text-sm text-gray-900 dark:text-white">{{ selectedFullDefinition.assetTypeName }}</span>
+                  </div>
+                </div>
+                <div class="mb-4" *ngIf="selectedFullDefinition?.manufacturer">
+                  <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1.5">Manufacturer</label>
+                  <div class="py-2 px-3 rounded-lg">
+                    <span class="text-sm text-gray-900 dark:text-white">{{ selectedFullDefinition.manufacturer }}</span>
+                  </div>
+                </div>
+                <div class="mb-4" *ngIf="selectedFullDefinition?.model">
+                  <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1.5">Model</label>
+                  <div class="py-2 px-3 rounded-lg">
+                    <span class="text-sm text-gray-900 dark:text-white">{{ selectedFullDefinition.model }}</span>
+                  </div>
+                </div>
+                <div class="mb-4 pb-4 border-b border-gray-100 dark:border-[#48484a]" *ngIf="selectedFullDefinition?.tags && selectedFullDefinition.tags.length > 0">
+                  <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-1.5">Tags</label>
+                  <div class="py-2 px-3 rounded-lg">
+                    <span class="text-sm text-gray-900 dark:text-white">{{ selectedFullDefinition.tags.join(', ') }}</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Specifications (Individual Edit Mode) -->
+              <div *ngIf="selectedFullDefinition?.specifications && selectedFullDefinition.specifications.length > 0">
+                <label class="block text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2">Specifications</label>
+                <div class="space-y-2">
+                  <div *ngFor="let spec of selectedFullDefinition.specifications; let i = index">
+                    <!-- View Mode -->
+                    <div *ngIf="editingSpecificationIndex !== i" 
+                         class="group flex items-center justify-between py-2 px-3 rounded-lg">
+                      <div class="flex-1 min-w-0">
+                        <div class="flex items-baseline gap-2">
+                          <span class="text-xs text-gray-500 dark:text-gray-400">{{ spec.name }}</span>
+                          <span *ngIf="spec.unit" class="text-xs text-gray-400 dark:text-gray-500">{{ spec.unit }}</span>
+                        </div>
+                        <div class="text-sm text-gray-900 dark:text-white truncate mt-0.5">{{ spec.value || 'Not set' }}</div>
+                      </div>
+                      <div class="flex items-center gap-2 ml-2 flex-shrink-0">
+                        <button
+                          type="button"
+                          (click)="startEditingSpecification(i)"
+                          class="p-1 rounded hover:bg-gray-100 dark:hover:bg-white/10 transition">
+                          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" class="text-gray-400 group-hover:text-gray-600 dark:group-hover:text-gray-300 transition">
+                            <path d="M11.3337 2.00004C11.5089 1.82494 11.7169 1.68605 11.9457 1.59129C12.1745 1.49653 12.4197 1.44775 12.667 1.44775C12.9144 1.44775 13.1596 1.49653 13.3884 1.59129C13.6172 1.68605 13.8252 1.82494 14.0003 2.00004C14.1754 2.17513 14.3143 2.38311 14.4091 2.61195C14.5038 2.84079 14.5526 3.08595 14.5526 3.33337C14.5526 3.58079 14.5038 3.82595 14.4091 4.05479C14.3143 4.28363 14.1754 4.49161 14.0003 4.66671L5.00033 13.6667L1.33366 14.6667L2.33366 11L11.3337 2.00004Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                          </svg>
+                        </button>
+                        <div class="relative inline-flex">
+                          <div class="group">
+                            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" class="text-gray-400 dark:text-gray-500">
+                              <circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.5"/>
+                              <path d="M8 7V11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                              <circle cx="8" cy="5" r="0.8" fill="currentColor" />
+                            </svg>
+                            <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block w-max max-w-xs">
+                              <div class="bg-gray-900 dark:bg-gray-800 text-white text-xs rounded-lg px-3 py-2 shadow-lg">
+                                Changes apply only to this asset. The definition remains unchanged.
+                              </div>
+                              <div class="w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900 absolute left-1/2 -translate-x-1/2"></div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <!-- Edit Mode -->
+                    <div *ngIf="editingSpecificationIndex === i" class="py-1 px-1">
+                      <div class="flex items-baseline gap-2 mb-1">
+                        <span class="text-xs font-medium text-gray-700 dark:text-gray-300">{{ spec.name }}</span>
+                        <span *ngIf="spec.unit" class="text-xs text-gray-500 dark:text-gray-400">{{ spec.unit }}</span>
+                      </div>
+                      <div class="flex gap-2 items-center">
+                        <input 
+                          *ngIf="spec.dataType === 'string' || spec.dataType === 'text'"
+                          type="text"
+                          [(ngModel)]="editedSpecificationValue"
+                          [ngModelOptions]="{ standalone: true }"
+                          class="flex-1 px-3 py-2 text-sm border border-gray-300 dark:border-[#38383a] rounded-lg bg-white dark:bg-[#3a3a3c] text-gray-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-[#007aff] focus:border-[#007aff]"
+                          placeholder="Enter value"
+                          (keydown.enter)="saveSpecification(i)"
+                          (keydown.escape)="cancelEditingSpecification()"
+                          id="spec-input-{{i}}">
+                        <input 
+                          *ngIf="spec.dataType === 'number'"
+                          type="number"
+                          [(ngModel)]="editedSpecificationValue"
+                          [ngModelOptions]="{ standalone: true }"
+                          class="flex-1 px-3 py-2 text-sm border border-gray-300 dark:border-[#38383a] rounded-lg bg-white dark:bg-[#3a3a3c] text-gray-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-[#007aff] focus:border-[#007aff]"
+                          placeholder="Enter value"
+                          (keydown.enter)="saveSpecification(i)"
+                          (keydown.escape)="cancelEditingSpecification()"
+                          id="spec-input-{{i}}">
+                        <select
+                          *ngIf="spec.dataType === 'boolean'"
+                          [(ngModel)]="editedSpecificationValue"
+                          [ngModelOptions]="{ standalone: true }"
+                          class="flex-1 px-3 py-2 text-sm border border-gray-300 dark:border-[#38383a] rounded-lg bg-white dark:bg-[#3a3a3c] text-gray-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-[#007aff] focus:border-[#007aff]"
+                          id="spec-input-{{i}}">
+                          <option [ngValue]="true">Yes</option>
+                          <option [ngValue]="false">No</option>
+                        </select>
+                        <button 
+                          type="button"
+                          (click)="saveSpecification(i)"
+                          class="p-2 text-xs font-medium bg-gray-100 dark:bg-[#3a3a3c] text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-[#48484a] transition flex items-center justify-center border border-gray-200 dark:border-[#38383a]">
+                          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" class="text-gray-600 dark:text-gray-400">
+                            <path d="M3 8.5L6.5 12L13 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                          </svg>
+                        </button>
+                        <button 
+                          type="button"
+                          (click)="cancelEditingSpecification()"
+                          class="px-3 py-2 text-xs font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg transition">
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Procurement Information -->
+          <div class="bg-white dark:bg-[#2c2c2e] rounded-xl border border-gray-200 dark:border-[#38383a] opacity-60">
+            <div class="px-4 py-2">
+              <div class="flex items-center gap-2">
+                <div class="self-center">
+                  <h3 class="text-sm font-medium text-gray-900 dark:text-white leading-tight m-0 flex items-center gap-2">
+                    Procurement Information
+                    <span class="text-[10px] px-2 py-0.5 bg-gray-200 dark:bg-[#3a3a3c] text-gray-600 dark:text-gray-400 rounded-full">Coming Soon</span>
+                  </h3>
+                  <p class="text-xs text-gray-500 dark:text-gray-400 leading-tight m-0">Optional purchase details</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Allocation Information -->
+          <div class="bg-white dark:bg-[#2c2c2e] rounded-xl border border-gray-200 dark:border-[#38383a] opacity-60">
+            <div (click)="toggleAllocation()" class="px-4 py-2 cursor-pointer hover:bg-gray-50 dark:hover:bg-white/5 transition flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <div class="self-center">
+                  <h3 class="text-sm font-medium text-gray-900 dark:text-white leading-tight m-0 flex items-center gap-2">
+                    Allocation Information
+                    <span class="text-[10px] px-2 py-0.5 bg-gray-200 dark:bg-[#3a3a3c] text-gray-600 dark:text-gray-400 rounded-full">Coming Soon</span>
+                  </h3>
+                  <p class="text-xs text-gray-500 dark:text-gray-400 leading-tight m-0">Assign to user or room</p>
+                </div>
+              </div>
+              <button class="p-1.5 hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg transition">
+                <svg width="18" height="18" viewBox="0 0 20 20" fill="none" class="text-gray-600 dark:text-gray-400 transition-transform" [class.rotate-180]="isAllocationExpanded">
+                  <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </button>
+            </div>
+            <div *ngIf="isAllocationExpanded" @expandCollapse class="border-t border-gray-200 dark:border-[#38383a] p-4 space-y-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Assign to User</label>
+                <input type="text" disabled placeholder="Select user..." class="w-full px-3 py-2 border border-gray-200 dark:border-[#38383a] rounded-lg bg-gray-50 dark:bg-[#1c1c1e] text-sm text-gray-900 dark:text-white cursor-not-allowed">
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Assign to Room</label>
+                <input type="text" disabled placeholder="Select room..." class="w-full px-3 py-2 border border-gray-200 dark:border-[#38383a] rounded-lg bg-gray-50 dark:bg-[#1c1c1e] text-sm text-gray-900 dark:text-white cursor-not-allowed">
+              </div>
+            </div>
+          </div>
+
+          <!-- Additional Formly Fields - Temporarily disabled -->
+          <!-- <div *ngIf="formlyData.fields.length > 0" class="bg-white rounded-xl border border-gray-200">
+            <div class="px-4 py-3 border-b border-gray-200">
+              <h3 class="text-sm font-medium text-gray-900 m-0">Additional Properties</h3>
+              <p class="text-xs text-gray-500 mt-0.5 m-0">Definition-specific fields</p>
+            </div>
+            <div class="p-4">
+              <formly-form [form]="formlyData.form" [fields]="formlyData.fields" [model]="formlyData.model"></formly-form>
+            </div>
+          </div> -->
+
+          <!-- Action Buttons -->
+          <div class="mt-6 flex items-center justify-end">
+            <div class="relative group">
+              <button 
+                type="submit" 
+                [disabled]="!isFormValid()" 
+                tabindex="6"
+                class="px-6 py-2.5 text-sm bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition disabled:opacity-50 disabled:cursor-not-allowed font-medium flex items-center gap-2"
+                [class.hover:bg-gray-700]="isFormValid()"
+                [class.cursor-not-allowed]="!isFormValid()">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <path d="M3 8.5L6.5 12L13 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                {{ updateEquipmentId ? 'Update Asset' : 'Save Asset' }}
+              </button>
+              <div *ngIf="!isFormValid()" class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block w-max">
+                <div class="bg-gray-900 dark:bg-gray-800 text-white text-xs rounded-lg px-3 py-2 shadow-lg whitespace-nowrap">
+                  Please complete required data first
+                </div>
+                <div class="w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900 dark:border-t-gray-800 absolute left-1/2 -translate-x-1/2"></div>
+              </div>
+            </div>
+          </div>
+
+        </form>
+      </div>
+    </ng-container>
+
+  </div>
+</div>

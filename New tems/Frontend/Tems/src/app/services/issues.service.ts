@@ -25,14 +25,14 @@ export class IssuesService extends TEMSService {
   }
 
   getIssues(
-    equipmentId: string,
+    assetId: string,
     roomId: string,
     personnelId: string,
     includingClosed: boolean,
     onlyClosed: boolean): Observable<ViewIssueSimplified[]>
   {
     return this.http.get<ViewIssueSimplified[]>(
-      API_ISU_URL + '/gettickets/' + equipmentId + '/' + roomId + '/' + personnelId + '/' 
+      API_ISU_URL + '/gettickets/' + assetId + '/' + roomId + '/' + personnelId + '/' 
       + includingClosed + '/' + onlyClosed,
       this.httpOptions
     );
@@ -70,10 +70,10 @@ export class IssuesService extends TEMSService {
       );
   }
 
-  getIssuesOfEquipment(equipmentId: string, includingClosed?: boolean, onlyClosed?: boolean, ): Observable<any>{
+  getIssuesOfEquipment(assetId: string, includingClosed?: boolean, onlyClosed?: boolean, ): Observable<any>{
     return this.getIssuesOfEntity(
-      'equipment', 
-      equipmentId, 
+      'asset', 
+      assetId, 
       includingClosed ?? false, 
       onlyClosed ?? false
       );

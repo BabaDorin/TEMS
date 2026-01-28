@@ -6,12 +6,12 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
 import { TranslateModule } from '@ngx-translate/core';
-import { EquipmentFilter } from 'src/app/helpers/filters/equipment.filter';
+import { AssetFilter } from 'src/app/helpers/filters/asset.filter';
 import { ViewPersonnelSimplified } from 'src/app/models/personnel/view-personnel-simplified.model';
 import { ReportFromFilterComponent } from '../../reports/report-from-filter/report-from-filter.component';
-import { IncludeEquipmentLabelsComponent } from 'src/app/shared/include-equipment-tags/include-equipment-tags.component';
-import { SummaryEquipmentAnalyticsComponent } from '../../analytics/summary-equipment-analytics/summary-equipment-analytics.component';
-import { AgGridEquipmentComponent } from '../../equipment/ag-grid-equipment/ag-grid-equipment.component';
+import { IncludeAssetLabelsComponent } from 'src/app/shared/include-asset-tags/include-asset-tags.component';
+import { SummaryAssetAnalyticsComponent } from '../../analytics/summary-asset-analytics/summary-asset-analytics.component';
+import { AgGridAssetComponent } from '../../asset/ag-grid-asset/ag-grid-asset.component';
 import { EntityAllocationsListComponent } from '../../entity-allocations-list/entity-allocations-list.component';
 
 @Component({
@@ -23,9 +23,9 @@ import { EntityAllocationsListComponent } from '../../entity-allocations-list/en
     MatButtonModule,
     MatMenuModule,
     TranslateModule,
-    IncludeEquipmentLabelsComponent,
-    SummaryEquipmentAnalyticsComponent,
-    AgGridEquipmentComponent,
+    IncludeAssetLabelsComponent,
+    SummaryAssetAnalyticsComponent,
+    AgGridAssetComponent,
     EntityAllocationsListComponent
   ],
   templateUrl: './personnel-details-allocations.component.html',
@@ -34,8 +34,8 @@ import { EntityAllocationsListComponent } from '../../entity-allocations-list/en
 export class PersonnelDetailsAllocationsComponent implements OnInit {
   
   @Input() personnel: ViewPersonnelSimplified;
-  equipmentFilter: EquipmentFilter;
-  @ViewChild('includeEquipmentLabels') includeEquipmentLabels: IncludeEquipmentLabelsComponent;
+  assetFilter: AssetFilter;
+  @ViewChild('includeEquipmentLabels') includeEquipmentLabels: IncludeAssetLabelsComponent;
   defaultLabels = ['Equipment'];
 
   constructor(
@@ -47,10 +47,10 @@ export class PersonnelDetailsAllocationsComponent implements OnInit {
     if(this.personnel == undefined)
       return;
     
-    let filter = new EquipmentFilter();
+    let filter = new AssetFilter();
     filter.personnel = [this.personnel.id];
     filter.includeLabels = this.includeEquipmentLabels?.value ?? this.defaultLabels;
-    this.equipmentFilter = Object.assign(new EquipmentFilter(), filter);
+    this.assetFilter = Object.assign(new AssetFilter(), filter);
   }
 
   async generateReport(){
@@ -58,17 +58,17 @@ export class PersonnelDetailsAllocationsComponent implements OnInit {
     this.dialogService.openDialog(
       ReportFromFilterComponent,
       [
-        { label: 'equipmentFilter', value: this.equipmentFilter }
+        { label: 'assetFilter', value: this.assetFilter }
       ]
     );
   }
 
   includeLabelsChanged(){
-    this.equipmentFilter.includeLabels = this.includeEquipmentLabels?.value ?? this.defaultLabels;
-    this.equipmentFilter = Object.assign(new EquipmentFilter(), this.equipmentFilter);
+    this.assetFilter.includeLabels = this.includeEquipmentLabels?.value ?? this.defaultLabels;
+    this.assetFilter = Object.assign(new AssetFilter(), this.assetFilter);
   }
 
   refreshAgGrid(){
-    this.equipmentFilter = Object.assign(new EquipmentFilter(), this.equipmentFilter);
+    this.assetFilter = Object.assign(new AssetFilter(), this.assetFilter);
   }
 }

@@ -8,7 +8,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { AddIssue } from 'src/app/models/communication/issues/add-issue.model';
-import { EquipmentService } from 'src/app/services/equipment.service';
+import { AssetService } from 'src/app/services/asset.service';
 import { FormlyParserService } from 'src/app/services/formly-parser.service';
 import { UserService } from 'src/app/services/user.service';
 import { IssuesService } from '../../../services/issues.service';
@@ -55,14 +55,14 @@ export class CreateIssueComponent extends TEMSComponent implements OnInit {
   }
 
   @Input() roomsAlreadySelected: IOption[] = [];
-  @Input() equipmentAlreadySelected: IOption[] = [];
+  @Input() assetAlreadySelected: IOption[] = [];
   @Input() personnelAlreadySelected: IOption[] = [];
   @Input() assigneesAlreadySelected: IOption[] = [];
 
   @ViewChild('assignees') assignees;
   @ViewChild('rooms') rooms;
   @ViewChild('personnel') personnel;
-  @ViewChild('equipment') equipment;
+  @ViewChild('asset') equipment;
 
   constructor(
     private formlyParserService: FormlyParserService,
@@ -70,7 +70,7 @@ export class CreateIssueComponent extends TEMSComponent implements OnInit {
     public userService: UserService,
     private tokenService: TokenService,
     public personnelService: PersonnelService,
-    public equipmentService: EquipmentService,
+    public assetService: AssetService,
     private issueService: IssuesService,
     private snackService: SnackService,
     public translate: TranslateService,
@@ -80,7 +80,7 @@ export class CreateIssueComponent extends TEMSComponent implements OnInit {
     super();
 
     if(dialogData != undefined){
-      this.equipmentAlreadySelected = dialogData.equipmentAlreadySelected;
+      this.assetAlreadySelected = dialogData.assetAlreadySelected;
       this.personnelAlreadySelected = dialogData.personnelAlreadySelected;
       this.roomsAlreadySelected = dialogData.roomsAlreadySelected;
       this.assigneesAlreadySelected = dialogData.assigneesAlreadySelected;

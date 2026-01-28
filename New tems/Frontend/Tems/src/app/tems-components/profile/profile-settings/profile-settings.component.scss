@@ -1,0 +1,224 @@
+.profile-settings {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.profile-header {
+  margin-bottom: 2rem;
+  padding: 1.5rem 0;
+}
+
+.profile-title {
+  font-size: 2rem;
+  font-weight: 600;
+  color: #1d1d1f;
+  margin: 0;
+  letter-spacing: -0.5px;
+
+  :host-context(.dark) & {
+    color: #f5f5f7;
+  }
+}
+
+.settings-section {
+  background: #ffffff;
+  border: 1px solid #e5e5e7;
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+  overflow: hidden;
+  transition: border-color 0.2s ease;
+
+  &:hover {
+    border-color: #d1d1d6;
+  }
+
+  :host-context(.dark) & {
+    background: #2c2c2e;
+    border-color: #38383a;
+
+    &:hover {
+      border-color: #48484a;
+    }
+  }
+}
+
+.section-header {
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid #f5f5f7;
+
+  :host-context(.dark) & {
+    border-bottom-color: #38383a;
+  }
+}
+
+.section-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #1d1d1f;
+  margin: 0;
+  letter-spacing: -0.3px;
+
+  :host-context(.dark) & {
+    color: #f5f5f7;
+  }
+}
+
+.settings-form {
+  padding: 1.5rem;
+}
+
+.form-container {
+  margin-bottom: 1.5rem;
+
+  ::ng-deep {
+    .mat-mdc-form-field {
+      width: 100%;
+      margin-bottom: 1rem;
+    }
+
+    .mat-mdc-text-field-wrapper {
+      background-color: #f5f5f7;
+      border-radius: 8px;
+      border: 1px solid transparent;
+      transition: all 0.2s ease;
+
+      &:hover {
+        background-color: #ebebed;
+      }
+    }
+
+    .mdc-text-field--focused .mat-mdc-text-field-wrapper {
+      background-color: #ffffff;
+      border-color: #007aff;
+    }
+
+    .mat-mdc-form-field-subscript-wrapper {
+      margin-top: 0.25rem;
+    }
+
+    .mat-mdc-checkbox {
+      .mdc-checkbox__background {
+        border-radius: 6px;
+      }
+    }
+  }
+
+  :host-context(.dark) & {
+    ::ng-deep {
+      .mat-mdc-text-field-wrapper {
+        background-color: #3a3a3c;
+        
+        &:hover {
+          background-color: #48484a;
+        }
+      }
+
+      .mdc-text-field--focused .mat-mdc-text-field-wrapper {
+        background-color: #2c2c2e;
+        border-color: #0a84ff;
+      }
+
+      .mat-mdc-input-element {
+        color: #f5f5f7;
+      }
+
+      .mat-mdc-floating-label {
+        color: #98989d;
+      }
+    }
+  }
+}
+
+.form-actions {
+  padding: 1.5rem;
+  border-top: 1px solid #f5f5f7;
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+
+  :host-context(.dark) & {
+    border-top-color: #38383a;
+  }
+}
+
+.primary-button {
+  background-color: #007aff !important;
+  color: #ffffff !important;
+  border-radius: 8px !important;
+  padding: 0 1.5rem !important;
+  height: 44px !important;
+  font-weight: 500 !important;
+  letter-spacing: -0.2px !important;
+  text-transform: none !important;
+  transition: background-color 0.2s ease !important;
+
+  &:hover:not(:disabled) {
+    background-color: #0051d5 !important;
+  }
+
+  &:disabled {
+    background-color: #c7c7cc !important;
+    color: #ffffff !important;
+    opacity: 0.6;
+  }
+}
+
+.secondary-button {
+  background-color: #f5f5f7 !important;
+  color: #007aff !important;
+  border-radius: 8px !important;
+  padding: 0 1.5rem !important;
+  height: 44px !important;
+  font-weight: 500 !important;
+  letter-spacing: -0.2px !important;
+  text-transform: none !important;
+  transition: background-color 0.2s ease !important;
+
+  &:hover {
+    background-color: #e5e5e7 !important;
+  }
+
+  :host-context(.dark) & {
+    background-color: #3a3a3c !important;
+    color: #0a84ff !important;
+
+    &:hover {
+      background-color: #48484a !important;
+    }
+  }
+}
+
+.info-text {
+  color: #86868b;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  margin: 1rem 0 0 0;
+  padding: 0 1.5rem;
+
+  :host-context(.dark) & {
+    color: #98989d;
+  }
+}
+
+@media (max-width: 768px) {
+  .profile-settings {
+    padding: 0.5rem;
+  }
+
+  .profile-title {
+    font-size: 1.75rem;
+  }
+
+  .settings-section {
+    border-radius: 10px;
+  }
+
+  .form-actions {
+    flex-direction: column;
+    
+    button {
+      width: 100%;
+    }
+  }
+}

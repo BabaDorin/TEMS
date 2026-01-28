@@ -25,15 +25,32 @@ export class CallbackComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    console.log('[Callback] Processing OAuth callback...');
+    console.log('[Callback] Current URL:', window.location.href);
+    
     this.oauthService.loadDiscoveryDocumentAndTryLogin().then(() => {
-      if (this.oauthService.hasValidAccessToken()) {
-        this.router.navigate(['/tems']);
-      } else {
-        console.error('No valid access token after login');
-        this.router.navigate(['/login']);
-      }
+      // Give a small delay to ensure token is processed
+      setTimeout(() => {
+        const hasToken = this.oauthService.hasValidAccessToken();
+        const accessToken = this.oauthService.getAccessToken();
+        console.log('[Callback] Has valid token:', hasToken);
+        console.log('[Callback] Access token exists:', !!accessToken);
+        
+        if (hasToken && accessToken) {
+          console.log('[Callback] Login successful, redirecting to home');
+          this.router.navigate(['/home']);
+        } else {
+          console.error('[Callback] No valid access token after login');
+          console.error('[Callback] Token details:', {
+            hasValidToken: hasToken,
+            tokenExists: !!accessToken,
+            claims: this.oauthService.getIdentityClaims()
+          });
+          this.router.navigate(['/login']);
+        }
+      }, 100);
     }).catch(err => {
-      console.error('Error during login callback', err);
+      console.error('[Callback] Error during login callback:', err);
       this.router.navigate(['/login']);
     });
   }

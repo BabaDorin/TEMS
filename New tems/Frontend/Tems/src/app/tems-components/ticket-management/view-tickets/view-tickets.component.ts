@@ -6,6 +6,7 @@ import { AgGridAngular } from 'ag-grid-angular';
 import { ColDef, GridApi, GridReadyEvent } from 'ag-grid-community';
 import { TicketService } from 'src/app/services/ticket.service';
 import { TicketTypeService } from 'src/app/services/ticket-type.service';
+import { ThemeService } from 'src/app/services/theme.service';
 import { Ticket, CreateTicketRequest, TicketMessage, AddMessageRequest } from 'src/app/models/ticket/ticket.model';
 import { TicketType } from 'src/app/models/ticket/ticket-type.model';
 import { TicketManagementStateService } from 'src/app/state/ticket-management.state';
@@ -127,12 +128,17 @@ export class ViewTicketsComponent implements OnInit {
     flex: 1
   };
 
+  get gridThemeClass(): string {
+    return this.themeService.isDarkMode ? 'ag-theme-quartz-auto-dark' : 'ag-theme-quartz';
+  }
+
   constructor(
     private ticketService: TicketService,
     private ticketTypeService: TicketTypeService,
     private stateService: TicketManagementStateService,
     private fb: FormBuilder,
-    private router: Router
+    private router: Router,
+    private themeService: ThemeService
   ) {
     this.initializeForms();
     

@@ -1,0 +1,65 @@
+using AssetManagement.Contract.Commands;
+using AssetManagement.Contract.DTOs;
+
+namespace AssetManagement.Contract.Responses;
+
+public record GetAllAssetResponse(
+    List<AssetDto> Assets,
+    int TotalCount,
+    int PageNumber,
+    int PageSize,
+    int TotalPages
+);
+
+public record AssetDto(
+    string Id,
+    string SerialNumber,
+    string AssetTag,
+    string Status,
+    AssetDefinitionSnapshotDto Definition,
+    PurchaseInfoDto? PurchaseInfo,
+    string? LocationId,
+    LocationDetailsDto? LocationDetails,
+    AssetLocationDto? Location,
+    AssetAssignmentDto? Assignment,
+    string? ParentAssetId,
+    List<string> ChildAssetIds,
+    string Notes,
+    List<MaintenanceRecordDto> MaintenanceHistory,
+    DateTime CreatedAt,
+    DateTime UpdatedAt,
+    string CreatedBy,
+    bool IsArchived,
+    DateTime? ArchivedAt,
+    string? ArchivedBy);
+
+public record AssetDefinitionSnapshotDto(
+    string DefinitionId,
+    bool IsCustomized,
+    DateTime SnapshotAt,
+    string Name,
+    string AssetTypeId,
+    string AssetTypeName,
+    string Manufacturer,
+    string Model,
+    List<AssetSpecificationDto> Specifications);
+
+public record LocationDetailsDto(
+    string Id,
+    string Name,
+    string Type,
+    string? ParentId,
+    string FullPath,
+    LocationSiteDto? Site,
+    LocationBuildingDto? Building);
+
+public record LocationSiteDto(
+    string Id,
+    string Name,
+    string Code,
+    string Timezone);
+
+public record LocationBuildingDto(
+    string Id,
+    string Name,
+    string AddressLine);

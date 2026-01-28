@@ -1,7 +1,7 @@
 import { IOption } from 'src/app/models/option.model';
 import { ViewUserSimplified } from './../../user/view-user.model';
 import { ViewPersonnelSimplified } from './../../personnel/view-personnel-simplified.model';
-import { ViewEquipmentSimplified } from './../../equipment/view-equipment-simplified.model';
+import { ViewAssetSimplified } from './../../asset/view-asset-simplified.model';
 import { ViewRoomSimplified } from '../../room/view-room-simplified.model';
 
 export interface IViewIssue {
@@ -9,7 +9,7 @@ export interface IViewIssue {
     problem: string;
     problemDescription?: string,
     roomIdentifier?: ViewRoomSimplified[],    
-    equipmentIdentifier?: ViewEquipmentSimplified[],    
+    assetIdentifier?: ViewAssetSimplified[],    
     personnelIdentifier?: ViewPersonnelSimplified[],
     status: string,
     asignees?: ViewUserSimplified[],
@@ -25,7 +25,7 @@ export class ViewIssue implements IViewIssue{
     problem: string;
     problemDescription?: string;
     rooms?: ViewRoomSimplified[];
-    equipment?: ViewEquipmentSimplified[];
+    equipment?: ViewAssetSimplified[];
     personnel?: ViewPersonnelSimplified[];
     status: string;
     asignees?: ViewUserSimplified[];

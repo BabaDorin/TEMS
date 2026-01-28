@@ -1,0 +1,20 @@
+:host {
+  display: block;
+  min-height: 100vh;
+  background-color: #f5f5f7;
+}
+
+:host-context(.dark) {
+  background-color: #1c1c1e;
+}
+
+// iOS-style enhancements
+button {
+  cursor: pointer;
+  outline: none;
+  border: none;
+  
+  &:active {
+    transform: scale(0.98);
+  }
+}

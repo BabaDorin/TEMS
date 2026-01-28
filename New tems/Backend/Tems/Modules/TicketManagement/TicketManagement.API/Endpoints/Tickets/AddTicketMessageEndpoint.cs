@@ -10,7 +10,7 @@ public class AddTicketMessageEndpoint(IMediator mediator) : Endpoint<AddTicketMe
     public override void Configure()
     {
         Post("/tickets/{TicketId}/messages");
-        AllowAnonymous();
+        Policies("CanManageTickets");
     }
 
     public override async Task HandleAsync(AddTicketMessageCommand request, CancellationToken ct)

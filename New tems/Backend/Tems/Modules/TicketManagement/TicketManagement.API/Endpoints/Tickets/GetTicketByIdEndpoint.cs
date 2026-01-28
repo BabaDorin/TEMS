@@ -17,7 +17,7 @@ public class GetTicketByIdEndpoint : Endpoint<GetTicketByIdCommand, GetTicketRes
     public override void Configure()
     {
         Get("/tickets/{TicketId}");
-        AllowAnonymous();
+        Policies("CanManageTickets");
     }
 
     public override async Task HandleAsync(GetTicketByIdCommand request, CancellationToken ct)

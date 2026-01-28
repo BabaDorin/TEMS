@@ -1,3 +1,204 @@
-<div class="home-wrapper">
-  <h1>Welcome to TEMS Home</h1>
+<!-- Welcome Header -->
+<div class="bg-white dark:bg-[#2c2c2e] border-b border-gray-200 dark:border-[#38383a]" @fadeInUp>
+  <div class="max-w-5xl mx-auto px-4 py-8">
+    <div class="flex items-center justify-between">
+      <div>
+        <h1 class="text-3xl font-semibold text-gray-900 dark:text-white mb-2" style="letter-spacing: -0.5px;">
+          {{ isAuthenticated ? ('Welcome back, ' + userName) : 'Welcome to TEMS' }}
+        </h1>
+        <p class="text-gray-500 dark:text-gray-400">
+          {{ isAuthenticated ? getCurrentGreeting() : 'Technical Equipment Management System' }}
+        </p>
+      </div>
+      <div class="hidden md:flex items-center space-x-2" *ngIf="isAuthenticated">
+        <span class="w-2 h-2 rounded-full bg-[#34c759]"></span>
+        <span class="text-sm text-gray-600 dark:text-gray-400">All Systems Operational</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Stats Section -->
+<div class="bg-[#f5f5f7] dark:bg-[#1c1c1e] py-6 border-b border-gray-200 dark:border-[#38383a]" *ngIf="isAuthenticated">
+  <div class="max-w-5xl mx-auto px-4">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-3" [@staggerFadeIn]="stats.length">
+      <div *ngFor="let stat of stats" 
+        class="bg-white dark:bg-[#2c2c2e] rounded-lg p-4 border border-gray-200 dark:border-[#38383a]">
+        <div class="flex items-center justify-between mb-2">
+          <mat-icon class="!w-5 !h-5 !text-xl text-[#007aff]">{{ stat.icon }}</mat-icon>
+          <span *ngIf="stat.trend" 
+            class="text-xs font-medium px-2 py-0.5 rounded-full" 
+            [class.text-[#34c759]]="stat.trend.startsWith('+')"
+            [class.bg-[#34c759]/10]="stat.trend.startsWith('+')"
+            [class.text-[#ff3b30]]="stat.trend.startsWith('-')"
+            [class.bg-[#ff3b30]/10]="stat.trend.startsWith('-')">
+            {{ stat.trend }}
+          </span>
+        </div>
+        <div class="text-2xl font-semibold text-gray-900 dark:text-white">{{ stat.value }}</div>
+        <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">{{ stat.label }}</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Main Content -->
+<div class="bg-[#f5f5f7] dark:bg-[#1c1c1e] py-8">
+  <div class="max-w-5xl mx-auto px-4">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+      
+      <!-- Quick Actions -->
+      <div class="lg:col-span-2 space-y-4">
+        <div class="flex items-center justify-between mb-2">
+          <h2 class="text-xl font-semibold text-gray-900 dark:text-white" style="letter-spacing: -0.3px;">Quick Actions</h2>
+        </div>
+        
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" [@staggerFadeIn]="quickActions.length">
+          <div *ngFor="let action of quickActions" 
+            class="bg-white dark:bg-[#2c2c2e] rounded-xl p-5 border border-gray-200 dark:border-[#38383a] hover:border-gray-300 dark:hover:border-[#48484a] transition-all cursor-pointer active:scale-[0.98]"
+            (click)="navigateTo(action.route)">
+            <div class="flex items-start space-x-3">
+              <div class="p-2.5 rounded-lg bg-[#007aff]/10">
+                <mat-icon class="!w-6 !h-6 !text-2xl text-[#007aff]">{{ action.icon }}</mat-icon>
+              </div>
+              <div class="flex-1 min-w-0">
+                <h3 class="text-base font-semibold text-gray-900 dark:text-white mb-0.5" style="letter-spacing: -0.2px;">
+                  {{ action.title }}
+                </h3>
+                <p class="text-sm text-gray-500 dark:text-gray-400">
+                  {{ action.description }}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="mt-6" *ngIf="isAuthenticated">
+          <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-2" style="letter-spacing: -0.3px;">Recent Activity</h2>
+          <div class="bg-white dark:bg-[#2c2c2e] rounded-xl border border-gray-200 dark:border-[#38383a] overflow-hidden">
+            <div class="divide-y divide-gray-100 dark:divide-[#38383a]">
+              <div class="flex items-center space-x-3 p-4">
+                <div class="p-2 rounded-lg bg-[#007aff]/10">
+                  <mat-icon class="!w-5 !h-5 !text-xl text-[#007aff]">devices</mat-icon>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <p class="text-sm font-medium text-gray-900 dark:text-white">New asset added</p>
+                  <p class="text-xs text-gray-500 dark:text-gray-400">Dell Latitude 5430 - 2 hours ago</p>
+                </div>
+              </div>
+              <div class="flex items-center space-x-3 p-4">
+                <div class="p-2 rounded-lg bg-[#007aff]/10">
+                  <mat-icon class="!w-5 !h-5 !text-xl text-[#007aff]">confirmation_number</mat-icon>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <p class="text-sm font-medium text-gray-900 dark:text-white">Ticket resolved</p>
+                  <p class="text-xs text-gray-500 dark:text-gray-400">Printer issue #1234 - 5 hours ago</p>
+                </div>
+              </div>
+              <div class="flex items-center space-x-3 p-4">
+                <div class="p-2 rounded-lg bg-[#34c759]/10">
+                  <mat-icon class="!w-5 !h-5 !text-xl text-[#34c759]">inventory_2</mat-icon>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <p class="text-sm font-medium text-gray-900 dark:text-white">Inventory updated</p>
+                  <p class="text-xs text-gray-500 dark:text-gray-400">Stock replenished - Yesterday</p>
+                </div>
+              </div>
+            </div>
+            <button class="w-full p-3 text-[#007aff] text-sm font-medium border-t border-gray-100 dark:border-[#38383a] hover:bg-[#f5f5f7] dark:hover:bg-white/5 transition-colors">
+              View all activity
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Side Panel -->
+      <div class="space-y-4">
+        <!-- System Status -->
+        <div class="bg-white dark:bg-[#2c2c2e] rounded-xl p-5 border border-gray-200 dark:border-[#38383a]">
+          <h3 class="text-base font-semibold text-gray-900 dark:text-white mb-4 flex items-center" style="letter-spacing: -0.2px;">
+            <mat-icon class="mr-2 !w-5 !h-5 !text-xl text-[#007aff]">health_and_safety</mat-icon>
+            System Status
+          </h3>
+          <div class="space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-sm text-gray-600 dark:text-gray-400">API Services</span>
+              <span class="flex items-center text-[#34c759] text-sm font-medium">
+                <span class="w-2 h-2 bg-[#34c759] rounded-full mr-2"></span>
+                Online
+              </span>
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="text-sm text-gray-600 dark:text-gray-400">Database</span>
+              <span class="flex items-center text-[#34c759] text-sm font-medium">
+                <span class="w-2 h-2 bg-[#34c759] rounded-full mr-2"></span>
+                Connected
+              </span>
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="text-sm text-gray-600 dark:text-gray-400">Response Time</span>
+              <span class="text-sm font-medium text-gray-900 dark:text-white">45ms</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Links -->
+        <div class="bg-white dark:bg-[#2c2c2e] rounded-xl border border-gray-200 dark:border-[#38383a] overflow-hidden">
+          <div class="px-5 py-4 border-b border-gray-100 dark:border-[#38383a]">
+            <h3 class="text-base font-semibold text-gray-900 dark:text-white" style="letter-spacing: -0.2px;">Quick Links</h3>
+          </div>
+          <div class="divide-y divide-gray-100 dark:divide-[#38383a]">
+            <button class="w-full flex items-center p-4 hover:bg-[#f5f5f7] dark:hover:bg-white/5 transition-colors text-left" (click)="navigateTo('/dashboard')">
+              <mat-icon class="mr-3 !w-5 !h-5 !text-xl text-gray-600 dark:text-gray-400">dashboard</mat-icon>
+              <span class="text-sm text-gray-900 dark:text-white">Dashboard</span>
+            </button>
+            <button class="w-full flex items-center p-4 hover:bg-[#f5f5f7] dark:hover:bg-white/5 transition-colors text-left" (click)="navigateTo('/reports')">
+              <mat-icon class="mr-3 !w-5 !h-5 !text-xl text-gray-600 dark:text-gray-400">assessment</mat-icon>
+              <span class="text-sm text-gray-900 dark:text-white">Reports</span>
+            </button>
+            <button class="w-full flex items-center p-4 hover:bg-[#f5f5f7] dark:hover:bg-white/5 transition-colors text-left" (click)="navigateTo('/profile/view')">
+              <mat-icon class="mr-3 !w-5 !h-5 !text-xl text-gray-600 dark:text-gray-400">person</mat-icon>
+              <span class="text-sm text-gray-900 dark:text-white">My Profile</span>
+            </button>
+            <button class="w-full flex items-center p-4 hover:bg-[#f5f5f7] dark:hover:bg-white/5 transition-colors text-left" (click)="navigateTo('/settings')">
+              <mat-icon class="mr-3 !w-5 !h-5 !text-xl text-gray-600 dark:text-gray-400">settings</mat-icon>
+              <span class="text-sm text-gray-900 dark:text-white">Settings</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Help Card -->
+        <div class="bg-[#007aff] rounded-xl p-5 text-white">
+          <mat-icon class="mb-3 !w-8 !h-8 !text-3xl">help_outline</mat-icon>
+          <h3 class="text-base font-semibold mb-2" style="letter-spacing: -0.2px;">Need Help?</h3>
+          <p class="text-sm text-white/90 mb-4">Check out our documentation or contact support.</p>
+          <button class="w-full bg-white/20 hover:bg-white/30 text-white rounded-lg py-2.5 px-4 text-sm font-medium transition-colors">
+            Get Support
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Features Section -->
+<div class="bg-white dark:bg-[#2c2c2e] py-12 border-t border-gray-200 dark:border-[#38383a]">
+  <div class="max-w-5xl mx-auto px-4">
+    <div class="text-center mb-8">
+      <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mb-2" style="letter-spacing: -0.3px;">Platform Features</h2>
+      <p class="text-gray-500 dark:text-gray-400">Everything you need in one place</p>
+    </div>
+
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3" [@staggerFadeIn]="features.length">
+      <div *ngFor="let feature of features" 
+        class="bg-[#f5f5f7] dark:bg-[#3a3a3c] rounded-xl p-4 text-center border border-gray-200 dark:border-[#48484a]">
+        <div class="w-10 h-10 rounded-full bg-[#007aff] text-white flex items-center justify-center mb-3 mx-auto">
+          <mat-icon class="!w-5 !h-5 !text-xl">{{ feature.icon }}</mat-icon>
+        </div>
+        <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-1">{{ feature.title }}</h3>
+        <p class="text-xs text-gray-500 dark:text-gray-400 line-clamp-2">{{ feature.description }}</p>
+      </div>
+    </div>
+  </div>
 </div>

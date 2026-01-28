@@ -4,6 +4,7 @@
 
 @import 'ag-grid-community/styles/ag-grid.css';
 @import 'ag-grid-community/styles/ag-theme-quartz.css';
+@import 'ag-grid-community/styles/ag-theme-alpine.css';
 @import "bootstrap/scss/functions";
 @import "bootstrap/scss/variables";
 @import "bootstrap/scss/mixins";
@@ -70,16 +71,64 @@
 /* === Layout === */
 @import "./assets/scss/layout";
 
+/* === Dark Mode Base Styles === */
+:root {
+  --bg-primary: #ffffff;
+  --bg-secondary: #f5f5f7;
+  --bg-tertiary: #e5e5e7;
+  --bg-elevated: #ffffff;
+  --text-primary: #1d1d1f;
+  --text-secondary: #6e6e73;
+  --text-tertiary: #86868b;
+  --border-primary: #d2d2d7;
+  --border-secondary: #e5e5e7;
+  --border-subtle: #f0f0f2;
+  --accent-color: #007aff;
+  color-scheme: light;
+}
+
+html.dark {
+  --bg-primary: #1c1c1e;
+  --bg-secondary: #2c2c2e;
+  --bg-tertiary: #3a3a3c;
+  --bg-elevated: #2c2c2e;
+  --text-primary: #f5f5f7;
+  --text-secondary: #a1a1a6;
+  --text-tertiary: #86868b;
+  --border-primary: #38383a;
+  --border-secondary: #48484a;
+  --border-subtle: #2f2f31;
+  --accent-color: #0a84ff;
+  color-scheme: dark;
+}
+
+/* === Semantic Dark Mode Utility Classes === */
+.dm-bg-page { background-color: var(--bg-primary); }
+.dm-bg-card { background-color: var(--bg-secondary); }
+.dm-bg-elevated { background-color: var(--bg-elevated); }
+.dm-bg-subtle { background-color: var(--bg-tertiary); }
+.dm-text-primary { color: var(--text-primary); }
+.dm-text-secondary { color: var(--text-secondary); }
+.dm-text-tertiary { color: var(--text-tertiary); }
+.dm-border { border-color: var(--border-primary); }
+.dm-border-subtle { border-color: var(--border-subtle); }
+.dm-divide > * + * { border-color: var(--border-primary); }
+
 html {
   height: 100%;
 }
-body {
-  min-height: 100%;
-}
 
 body {
+  min-height: 100%;
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+html.dark body {
+  background-color: #1c1c1e;
 }
 
 formly-field-mat-radio {
@@ -104,6 +153,11 @@ formly-field-mat-radio {
 .default-snackbar {
   background: white;
   color: black;
+
+  .dark & {
+    background: #3a3a3c;
+    color: #f5f5f7;
+  }
 }
 
 .mat-simple-snackbar .mat-button-wrapper {
@@ -112,6 +166,10 @@ formly-field-mat-radio {
 
 .default-snackbar .mat-button-wrapper {
   color: black;
+
+  .dark & {
+    color: #f5f5f7;
+  }
 }
 
 .fade-in {
@@ -350,6 +408,101 @@ button {
 
 .intermitent-light{
   animation: taadaa 5s infinite;
+}
+
+/* ============================================
+   DARK MODE - GLOBAL OVERRIDES
+   ============================================ */
+
+/* Card and Panel Styles */
+html.dark {
+  /* === CORE BACKGROUNDS === */
+  .bg-white {
+    background-color: var(--bg-secondary) !important;
+  }
+  
+  .bg-gray-50, .bg-\[\#f5f5f7\], .bg-\[\#f5f5f5\] {
+    background-color: var(--bg-primary) !important;
+  }
+  
+  .bg-gray-100 {
+    background-color: var(--bg-tertiary) !important;
+  }
+  
+  /* === TEXT COLORS === */
+  /* Only apply to elements without explicit dark: color classes */
+  .text-gray-900:not([class*="dark:"]), .text-gray-800:not([class*="dark:"]) {
+    color: var(--text-primary) !important;
+  }
+  
+  .text-gray-700:not([class*="dark:"]), .text-gray-600:not([class*="dark:"]) {
+    color: var(--text-secondary) !important;
+  }
+  
+  .text-gray-500:not([class*="dark:"]), .text-gray-400:not([class*="dark:"]) {
+    color: var(--text-tertiary) !important;
+  }
+  
+  /* === BORDER COLORS === */
+  .border-gray-200, .border-gray-100 {
+    border-color: var(--border-primary) !important;
+  }
+  
+  .border-gray-300 {
+    border-color: var(--border-secondary) !important;
+  }
+  
+  /* === FORM INPUTS === */
+  input, textarea, select {
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+    border-color: var(--border-primary);
+    
+    &:focus {
+      border-color: var(--accent-color);
+      outline-color: var(--accent-color);
+    }
+    
+    &::placeholder {
+      color: var(--text-tertiary);
+    }
+  }
+  
+  /* === SNACKBARS === */
+  .success-snackbar {
+    background: #30d158 !important;
+  }
+  
+  .error-snackbar {
+    background: #ff453a !important;
+  }
+  
+  .default-snackbar {
+    background: var(--bg-secondary) !important;
+    color: var(--text-primary) !important;
+  }
+  
+  /* === AG GRID DARK MODE ===
+  /* AG Grid dark mode is handled natively by using ag-theme-quartz-auto-dark class */
+  /* Components conditionally apply this class via [class]="gridThemeClass" binding */
+  /* === MODAL DARK MODE (custom modals) === */
+  .fixed.inset-0 > div.bg-white,
+  [class*="modal"] .bg-white,
+  [class*="dialog"] .bg-white {
+    background-color: var(--bg-secondary) !important;
+  }
+
+  /* Note: Cards should use Tailwind's dark: variant instead of global overrides */
+  /* Example: bg-white dark:bg-[#2c2c2e] */
+  
+  /* Note: Buttons should use Tailwind's dark: variant for proper dark mode */
+  /* Example: bg-white dark:bg-[#2c2c2e] text-gray-700 dark:text-white */
+
+  /* === INFO PILLS === */
+  .bg-gray-100.text-gray-700 {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    color: var(--text-secondary) !important;
+  }
 }
 
 // TEMS loading animation with staggered bounce

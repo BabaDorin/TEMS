@@ -10,27 +10,15 @@ public static class IdentityConfig
         {
             new IdentityResources.OpenId(),
             new IdentityResources.Profile(),
-            new IdentityResources.Email(),
-            new IdentityResource
-            {
-                Name = "roles",
-                UserClaims = { "role" }
-            }
+            new IdentityResources.Email()
+            // Roles are managed by Keycloak, not Duende
         };
 
     public static IEnumerable<ApiScope> ApiScopes =>
         new ApiScope[]
         {
-            new ApiScope("tems-api", "TEMS API", new[] 
-            {
-                "role",
-                "can_view_entities",
-                "can_manage_entities",
-                "can_allocate_keys",
-                "can_send_emails",
-                "can_manage_announcements",
-                "can_manage_system_configuration"
-            })
+            // API scope without role claims - roles managed by Keycloak
+            new ApiScope("tems-api", "TEMS API")
         };
 
     public static IEnumerable<Client> Clients =>
@@ -96,8 +84,8 @@ public static class IdentityConfig
                     IdentityServerConstants.StandardScopes.OpenId,
                     IdentityServerConstants.StandardScopes.Profile,
                     IdentityServerConstants.StandardScopes.Email,
-                    "roles",
                     "tems-api"
+                    // Roles managed by Keycloak
                 },
                 
                 AccessTokenLifetime = 900,

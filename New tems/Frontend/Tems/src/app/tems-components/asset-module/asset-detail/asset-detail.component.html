@@ -1,0 +1,356 @@
+<div class="min-h-screen bg-gray-50/50 dark:bg-[#1c1c1e] transition-colors duration-200">
+  <!-- Loading State -->
+  <div *ngIf="loading" class="flex items-center justify-center h-screen">
+    <div class="text-center">
+      <svg class="animate-spin h-10 w-10 text-[#007aff] dark:text-[#0a84ff] mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+      </svg>
+      <p class="mt-3 text-sm text-gray-600 dark:text-gray-400">Loading asset details...</p>
+    </div>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="!loading && error" class="flex items-center justify-center h-screen">
+    <div class="text-center">
+      <svg class="h-12 w-12 text-red-500 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+      <p class="mt-3 text-sm text-gray-900 dark:text-white font-medium">{{ error }}</p>
+      <button
+        (click)="goBack()"
+        class="mt-4 px-4 py-2 bg-[#007aff] text-white text-sm rounded-lg hover:bg-[#0051d5] transition">
+        Back to Assets
+      </button>
+    </div>
+  </div>
+
+  <!-- Asset Detail -->
+  <div *ngIf="!loading && !error && asset" class="max-w-5xl mx-auto p-4 sm:p-6">
+    <!-- Back Button -->
+    <button
+      (click)="goBack()"
+      class="mb-4 text-sm text-[#007aff] dark:text-[#0a84ff] hover:text-[#0051d5] flex items-center gap-1.5 transition">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <path d="M10 12L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      Back to Assets
+    </button>
+
+    <!-- Header Card -->
+    <div class="bg-white dark:bg-[#2c2c2e] rounded-xl shadow-sm mb-4">
+      <div class="px-6 py-4">
+        <div class="flex justify-between items-start">
+          <div class="flex-1">
+            <div class="flex items-center gap-3">
+              <h1 class="text-2xl font-semibold text-gray-900 dark:text-white m-0">{{ asset.assetTag }}</h1>
+              <span [class]="'inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ' + getStatusClass(asset.status)">
+                {{ getStatusLabel(asset.status) }}
+              </span>
+            </div>
+            <p class="text-sm text-gray-600 dark:text-gray-400 mt-1 mb-0">{{ asset.definition?.name || 'Asset Details' }}</p>
+            
+            <!-- Info Pills -->
+            <div class="flex gap-2 mt-3 mb-1">
+              <button 
+                *ngIf="asset.locationId || asset.location" 
+                (click)="navigateToLocation()"
+                class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gray-100 dark:bg-white/10 text-gray-700 dark:text-gray-300 rounded-full text-xs font-medium transition"
+                [class.hover:bg-gray-200]="hasLocationId()"
+                [class.dark:hover:bg-white/20]="hasLocationId()"
+                [class.cursor-pointer]="hasLocationId()"
+                [class.cursor-default]="!hasLocationId()">
+                <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
+                  <path d="M8 1.333C6.23189 1.333 4.83325 2.73165 4.83325 4.5C4.83325 6.26835 6.23189 7.667 8 7.667C9.76811 7.667 11.1666 6.26835 11.1666 4.5C11.1666 2.73165 9.76811 1.333 8 1.333ZM8 1.333C10.3932 1.333 12.3333 3.27315 12.3333 5.66634C12.3333 9.33301 8 14.6663 8 14.6663C8 14.6663 3.66659 9.33301 3.66659 5.66634C3.66659 3.27315 5.60672 1.333 8 1.333Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                {{ getLocationString(asset.location) }}
+              </button>
+              <button 
+                *ngIf="asset.assignment" 
+                (click)="navigateToAssignee()"
+                class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gray-100 dark:bg-white/10 text-gray-700 dark:text-gray-300 rounded-full text-xs font-medium hover:bg-gray-200 dark:hover:bg-white/20 transition">
+                <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
+                  <path d="M13.333 14v-1.333c0-1.473-1.194-2.667-2.666-2.667H5.333c-1.473 0-2.666 1.194-2.666 2.667V14M8 7.333c-1.473 0-2.667-1.194-2.667-2.666C5.333 3.194 6.527 2 8 2c1.473 0 2.667 1.194 2.667 2.667C10.667 6.139 9.473 7.333 8 7.333Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                {{ asset.assignment.assignedToUserName || 'Assigned' }}
+              </button>
+            </div>
+          </div>
+          
+          <!-- Actions Dropdown -->
+          <div class="relative ml-4">
+            <button
+              (click)="showActionsDropdown = !showActionsDropdown"
+              class="px-3 py-1.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg transition flex items-center gap-1.5 border border-gray-300 dark:border-[#48484a]">
+              <span>Actions</span>
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none" class="transition-transform" [class.rotate-180]="showActionsDropdown">
+                <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+            <div 
+              *ngIf="showActionsDropdown"
+              class="absolute right-0 mt-2 w-48 bg-white dark:bg-[#2c2c2e] rounded-lg shadow-lg border border-gray-200 dark:border-[#38383a] py-1 z-10">
+              <button
+                (click)="downloadAssetLabel($event); showActionsDropdown = false"
+                class="w-full px-4 py-2 text-left text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 0 1 3.75 9.375v-4.5ZM3.75 14.625c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5a1.125 1.125 0 0 1-1.125-1.125v-4.5ZM13.5 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 0 1 13.5 9.375v-4.5Z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 6.75h.75v.75h-.75v-.75ZM6.75 16.5h.75v.75h-.75v-.75ZM16.5 6.75h.75v.75h-.75v-.75ZM13.5 13.5h.75v.75h-.75v-.75ZM13.5 19.5h.75v.75h-.75v-.75ZM19.5 13.5h.75v.75h-.75v-.75ZM19.5 19.5h.75v.75h-.75v-.75ZM16.5 16.5h.75v.75h-.75v-.75Z" />
+                </svg>
+                Download Label
+              </button>
+              <button
+                (click)="editAsset(); showActionsDropdown = false"
+                class="w-full px-4 py-2 text-left text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-white/5 flex items-center gap-2">
+                <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+                  <path d="M11.333 2.00004C11.5081 1.82494 11.716 1.68605 11.9447 1.59129C12.1735 1.49653 12.4187 1.44775 12.6663 1.44775C12.914 1.44775 13.1592 1.49653 13.3879 1.59129C13.6167 1.68605 13.8246 1.82494 13.9997 2.00004C14.1748 2.17513 14.3137 2.383 14.4084 2.61178C14.5032 2.84055 14.552 3.08575 14.552 3.33337C14.552 3.58099 14.5032 3.82619 14.4084 4.05497C14.3137 4.28374 14.1748 4.49161 13.9997 4.66671L5.33301 13.3334L1.33301 14.6667L2.66634 10.6667L11.333 2.00004Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Edit
+              </button>
+              <button
+                (click)="deleteAsset(); showActionsDropdown = false"
+                class="w-full px-4 py-2 text-left text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10 flex items-center gap-2">
+                <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+                  <path d="M2 4H14M5.333 4V2.667C5.333 2.313 5.474 1.974 5.724 1.724C5.974 1.474 6.313 1.333 6.667 1.333H9.333C9.687 1.333 10.026 1.474 10.276 1.724C10.526 1.974 10.667 2.313 10.667 2.667V4M12.667 4V13.333C12.667 13.687 12.526 14.026 12.276 14.276C12.026 14.526 11.687 14.667 11.333 14.667H4.667C4.313 14.667 3.974 14.526 3.724 14.276C3.474 14.026 3.333 13.687 3.333 13.333V4H12.667Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="bg-white dark:bg-[#2c2c2e] rounded-xl shadow-sm">
+      <div>
+        <nav class="flex px-4 overflow-x-auto border-b border-gray-200 dark:border-[#38383a]">
+          <button
+            (click)="activeTab = 'overview'"
+            [class.border-[#007aff]]="activeTab === 'overview'"
+            [class.dark:border-[#0a84ff]]="activeTab === 'overview'"
+            [class.text-[#007aff]]="activeTab === 'overview'"
+            [class.dark:text-[#0a84ff]]="activeTab === 'overview'"
+            [class.border-transparent]="activeTab !== 'overview'"
+            [class.text-gray-500]="activeTab !== 'overview'"
+            class="px-4 py-3 border-b-2 font-medium text-sm hover:text-[#007aff] transition whitespace-nowrap">
+            Overview
+          </button>
+          <button
+            (click)="activeTab = 'acc'"
+            [class.border-[#007aff]]="activeTab === 'acc'"
+            [class.text-[#007aff]]="activeTab === 'acc'"
+            [class.border-transparent]="activeTab !== 'acc'"
+            [class.text-gray-500]="activeTab !== 'acc'"
+            class="px-4 py-3 border-b-2 font-medium text-sm hover:text-[#007aff] transition whitespace-nowrap">
+            ACC
+          </button>
+          <button
+            disabled
+            class="px-4 py-3 border-b-2 border-transparent text-gray-400 text-sm cursor-not-allowed whitespace-nowrap">
+            Purchase Info
+          </button>
+          <button
+            disabled
+            class="px-4 py-3 border-b-2 border-transparent text-gray-400 text-sm cursor-not-allowed whitespace-nowrap">
+            Maintenance
+          </button>
+          <button
+            disabled
+            class="px-4 py-3 border-b-2 border-transparent text-gray-400 text-sm cursor-not-allowed whitespace-nowrap">
+            History
+          </button>
+        </nav>
+      </div>
+
+      <!-- Tab Content -->
+      <div class="p-6">
+        <!-- Overview Tab -->
+        <div *ngIf="activeTab === 'overview'" class="space-y-4">
+          <!-- Basic Information Grid -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <div>
+              <span class="text-xs text-gray-600 dark:text-gray-400 uppercase tracking-wide">Serial Number</span>
+              <p class="text-sm font-medium text-gray-900 dark:text-white mt-1 mb-0">{{ asset.serialNumber || '—' }}</p>
+            </div>
+            <div>
+              <span class="text-xs text-gray-600 dark:text-gray-400 uppercase tracking-wide">Asset Type</span>
+              <p class="text-sm font-medium text-gray-900 dark:text-white mt-1 mb-0">{{ asset.assetTypeName || asset.definition?.assetTypeName || '—' }}</p>
+            </div>
+            <div>
+              <span class="text-xs text-gray-600 dark:text-gray-400 uppercase tracking-wide">Created</span>
+              <p class="text-sm font-medium text-gray-900 dark:text-white mt-1 mb-0">{{ asset.createdAt | date:'MMMM d, y' }}</p>
+            </div>
+            <div>
+              <span class="text-xs text-gray-600 dark:text-gray-400 uppercase tracking-wide">Last Updated</span>
+              <p class="text-sm font-medium text-gray-900 dark:text-white mt-1 mb-0">{{ asset.updatedAt | date:'MMMM d, y' }}</p>
+            </div>
+          </div>
+
+          <!-- Definition Information (Collapsible) -->
+          <div *ngIf="asset.definition" class="bg-white dark:bg-[#3a3a3c] rounded-xl border border-gray-200 dark:border-[#48484a]">
+            <div 
+              class="px-4 py-3 cursor-pointer hover:bg-gray-50 dark:hover:bg-white/5 transition flex items-center justify-between" 
+              (click)="isDefinitionExpanded = !isDefinitionExpanded">
+              <div class="flex items-center gap-2">
+                <div class="self-center">
+                  <h3 class="text-sm font-medium text-gray-900 dark:text-white leading-tight m-0">{{ asset.definition.name }}</h3>
+                  <p class="text-xs text-gray-500 dark:text-gray-400 leading-tight m-0">View definition details</p>
+                </div>
+              </div>
+              <svg width="18" height="18" viewBox="0 0 20 20" fill="none" class="text-gray-600 dark:text-gray-400 transition-transform" [class.rotate-180]="isDefinitionExpanded">
+                <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <div *ngIf="isDefinitionExpanded" @expandCollapse class="overflow-hidden">
+              <div class="p-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+                  <div>
+                    <span class="text-gray-600 dark:text-gray-400">Name:</span>
+                    <span class="font-medium ml-2 dark:text-white">{{ asset.definition.name }}</span>
+                  </div>
+                  <div>
+                    <span class="text-gray-600 dark:text-gray-400">Manufacturer:</span>
+                    <span class="font-medium ml-2 dark:text-white">{{ asset.definition.manufacturer }}</span>
+                  </div>
+                  <div>
+                    <span class="text-gray-600 dark:text-gray-400">Model:</span>
+                    <span class="font-medium ml-2 dark:text-white">{{ asset.definition.model }}</span>
+                  </div>
+                  <div *ngIf="asset.definition.description">
+                    <span class="text-gray-600 dark:text-gray-400">Description:</span>
+                    <span class="font-medium ml-2 dark:text-white">{{ asset.definition.description }}</span>
+                  </div>
+                </div>
+                <div *ngIf="asset.definition.specifications && asset.definition.specifications.length > 0" class="mt-3 pt-3 border-t border-gray-100 dark:border-[#48484a]">
+                  <span class="text-xs font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wide">Specifications</span>
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-2">
+                    <div *ngFor="let spec of asset.definition.specifications" class="text-xs">
+                      <span class="text-gray-600 dark:text-gray-400">{{ spec.name || spec.propertyId }}:</span>
+                      <span class="font-medium ml-1 dark:text-white">{{ formatSpecValue(spec.value, spec.unit) }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Notes -->
+          <div *ngIf="asset.notes" class="bg-white dark:bg-[#3a3a3c] rounded-xl border border-gray-200 dark:border-[#48484a]">
+            <div class="px-4 py-3 border-b border-gray-100 dark:border-[#48484a]">
+              <h3 class="text-sm font-semibold text-gray-900 dark:text-white m-0">Notes</h3>
+            </div>
+            <div class="p-4">
+              <p class="text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap m-0">{{ asset.notes }}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- ACC Tab -->
+        <div *ngIf="activeTab === 'acc'">
+          <div class="space-y-3">
+            <div *ngFor="let item of getAccData()" class="flex items-start justify-between py-3 border-b border-gray-100 dark:border-[#48484a] last:border-0">
+              <div class="flex-1">
+                <div class="text-xs text-gray-600 dark:text-gray-400 uppercase tracking-wide mb-1">{{ item.key }}</div>
+                <div class="text-sm font-medium text-gray-900 dark:text-white">{{ item.value }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Purchase Info Tab -->
+        <div *ngIf="activeTab === 'purchase'">
+          <div *ngIf="asset.purchaseInfo" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div class="bg-white dark:bg-[#3a3a3c] rounded-xl border border-gray-200 dark:border-[#48484a] p-4">
+              <span class="text-xs text-gray-600 dark:text-gray-400 uppercase tracking-wide">Vendor</span>
+              <p class="text-sm font-semibold text-gray-900 dark:text-white mt-1.5 mb-0">{{ asset.purchaseInfo.vendor || '—' }}</p>
+            </div>
+            <div class="bg-white dark:bg-[#3a3a3c] rounded-xl border border-gray-200 dark:border-[#48484a] p-4">
+              <span class="text-xs text-gray-600 dark:text-gray-400 uppercase tracking-wide">Purchase Date</span>
+              <p class="text-sm font-semibold text-gray-900 dark:text-white mt-1.5 mb-0">
+                {{ asset.purchaseInfo.purchaseDate ? (asset.purchaseInfo.purchaseDate | date:'MMMM d, y') : '—' }}
+              </p>
+            </div>
+            <div class="bg-white dark:bg-[#3a3a3c] rounded-xl border border-gray-200 dark:border-[#48484a] p-4">
+              <span class="text-xs text-gray-600 dark:text-gray-400 uppercase tracking-wide">Purchase Price</span>
+              <p class="text-sm font-semibold text-gray-900 dark:text-white mt-1.5 mb-0">
+                {{ asset.purchaseInfo.purchasePrice ? (asset.purchaseInfo.purchasePrice | currency) : '—' }}
+              </p>
+            </div>
+            <div class="bg-white dark:bg-[#3a3a3c] rounded-xl border border-gray-200 dark:border-[#48484a] p-4">
+              <span class="text-xs text-gray-600 dark:text-gray-400 uppercase tracking-wide">Warranty Expiration</span>
+              <p class="text-sm font-semibold text-gray-900 dark:text-white mt-1.5 mb-0">
+                {{ asset.purchaseInfo.warrantyExpiration ? (asset.purchaseInfo.warrantyExpiration | date:'MMMM d, y') : '—' }}
+              </p>
+            </div>
+            <div class="bg-white dark:bg-[#3a3a3c] rounded-xl border border-gray-200 dark:border-[#48484a] p-4 sm:col-span-2">
+              <span class="text-xs text-gray-600 dark:text-gray-400 uppercase tracking-wide">Invoice Number</span>
+              <p class="text-sm font-semibold text-gray-900 dark:text-white mt-1.5 mb-0">{{ asset.purchaseInfo.invoiceNumber || '—' }}</p>
+            </div>
+          </div>
+          <div *ngIf="!asset.purchaseInfo" class="text-center py-16">
+            <svg class="h-12 w-12 text-gray-300 dark:text-gray-600 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z" />
+            </svg>
+            <p class="mt-3 text-sm text-gray-500 dark:text-gray-400">No purchase information available</p>
+          </div>
+        </div>
+
+        <!-- Maintenance Tab -->
+        <div *ngIf="activeTab === 'maintenance'">
+          <div *ngIf="asset.maintenanceHistory && asset.maintenanceHistory.length > 0" class="space-y-3">
+            <div *ngFor="let record of asset.maintenanceHistory" class="bg-white dark:bg-[#3a3a3c] rounded-xl border border-gray-200 dark:border-[#48484a] overflow-hidden">
+              <div class="px-4 py-3 bg-[#007aff]/5 dark:bg-[#007aff]/10 border-b border-[#007aff]/10 dark:border-[#007aff]/20">
+                <div class="flex justify-between items-start">
+                  <h4 class="text-sm font-semibold text-gray-900 dark:text-white m-0">{{ record.description }}</h4>
+                  <span class="text-xs text-gray-600 dark:text-gray-400">{{ record.date | date:'MMM d, y' }}</span>
+                </div>
+              </div>
+              <div class="p-4">
+                <div class="grid grid-cols-2 gap-3 text-sm mb-3">
+                  <div>
+                    <span class="text-gray-600 dark:text-gray-400">Performed By:</span>
+                    <span class="font-medium ml-2 dark:text-white">{{ record.performedBy || '—' }}</span>
+                  </div>
+                  <div>
+                    <span class="text-gray-600 dark:text-gray-400">Cost:</span>
+                    <span class="font-medium ml-2 dark:text-white">{{ record.cost ? (record.cost | currency) : '—' }}</span>
+                  </div>
+                </div>
+                <div *ngIf="record.notes" class="text-sm text-gray-700 dark:text-gray-300 pt-3 border-t border-gray-100 dark:border-[#48484a]">
+                  <span class="font-medium">Notes:</span> {{ record.notes }}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div *ngIf="!asset.maintenanceHistory || asset.maintenanceHistory.length === 0" class="text-center py-16">
+            <svg class="h-12 w-12 text-gray-300 dark:text-gray-600 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+            <p class="mt-3 text-sm text-gray-500 dark:text-gray-400">No maintenance records</p>
+          </div>
+        </div>
+
+        <!-- History Tab -->
+        <div *ngIf="activeTab === 'history'">
+          <div class="text-center py-16">
+            <svg class="h-12 w-12 text-gray-300 dark:text-gray-600 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <p class="mt-3 text-sm text-gray-500 dark:text-gray-400">Asset history tracking coming soon</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Hidden Asset Label Component for Download -->
+    <div class="hidden">
+      <app-asset-label 
+        #assetLabel
+        [mainText]="asset.assetTag" 
+        [downloadable]="false">
+      </app-asset-label>
+    </div>
+  </div>
+</div>

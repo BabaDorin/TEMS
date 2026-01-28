@@ -1,4 +1,4 @@
-import { EquipmentFilter } from './../../helpers/filters/equipment.filter';
+import { AssetFilter } from './../../helpers/filters/asset.filter';
 import { IOption } from './../option.model';
 import { ITypeSpecificPropCollection } from './report.model';
 
@@ -52,7 +52,7 @@ export class ReportFromFilter {
     commonProperties: string[] = [];
     footer: string;
     signatories: string[] = [];
-    filter: EquipmentFilter;
+    filter: AssetFilter;
     
     // BEFREE: Add support for this thing (Might be useful in some use-cases)
     separateBy: string;

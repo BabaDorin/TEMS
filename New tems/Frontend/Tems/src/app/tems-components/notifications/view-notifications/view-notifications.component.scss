@@ -1,0 +1,44 @@
+.dropdown-item-simple {
+  padding: 1rem;
+  border-bottom: 1px solid #e5e7eb;
+  position: relative;
+  
+  :host-context(.dark) & {
+    border-bottom-color: #38383a;
+  }
+  
+  .preview-subject {
+    color: #1f2937;
+    
+    :host-context(.dark) & {
+      color: #f5f5f7;
+    }
+  }
+  
+  .text-gray {
+    color: #6b7280;
+    
+    :host-context(.dark) & {
+      color: #8e8e93;
+    }
+  }
+  
+  .close {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    color: #6b7280;
+    
+    :host-context(.dark) & {
+      color: #8e8e93;
+    }
+  }
+}
+
+.container {
+  :host-context(.dark) & {
+    h2 {
+      color: #f5f5f7;
+    }
+  }
+}

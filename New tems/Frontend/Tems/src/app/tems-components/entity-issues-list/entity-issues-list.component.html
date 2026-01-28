@@ -1,4 +1,4 @@
-<ng-container *ngIf="claims.canManage || claims.canView; else elseBlock">
+<ng-container *ngIf="claims.canManageAssets || claims.canManageAssets; else elseBlock">
   <div class="col-md-12">
     <div class="page-header">
       <div class="page-title mt-4 mb-0">
@@ -11,7 +11,7 @@
           <ul class="breadcrumb bg-transparent">
   
             <li class="breadcrumb-item" aria-current="page">
-              <button mat-button [matMenuTriggerFor]="menu" aria-label="Add Equipment Menu" class="float-right">
+              <button mat-button [matMenuTriggerFor]="menu" aria-label="Add Asset Menu" class="float-right">
                 <mat-icon class="text-primary">more_vert</mat-icon>
               </button>
               <mat-menu #menu="matMenu">
@@ -54,7 +54,7 @@
       <mat-accordion>
         <div
           *ngFor="let issue of issues | paginate: { itemsPerPage: 20, currentPage: pageNumber, id: 'issues' }; let i = index">
-          <app-issue-container [canManage]="claims.canManage" [issue]="issue" [statuses]="statuses"
+          <app-issue-container [canManage]="claims.canManageAssets" [issue]="issue" [statuses]="statuses"
             (solve)="solve((pageNumber-1)*20 + i)" (pinned)="ticketPinned($event, (pageNumber-1)*20 + i)"
             (remove)="remove((pageNumber-1)*20 + i)">
           </app-issue-container>

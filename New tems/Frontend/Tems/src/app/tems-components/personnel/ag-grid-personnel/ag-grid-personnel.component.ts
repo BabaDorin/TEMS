@@ -91,7 +91,7 @@ export class AgGridPersonnelComponent extends TEMSComponent implements OnInit {
       },
     ];
 
-    if(this.claims.canManage){
+    if(this.claims.canManageAssets) {
       this.columnDefs.push({
         cellRenderer: BtnCellRendererComponent,
         cellRendererParams: {

@@ -1,0 +1,57 @@
+<div class="min-h-screen bg-gray-50 dark:bg-[#1c1c1e] p-6">
+  <div class="max-w-7xl mx-auto">
+    <!-- Header -->
+    <div class="mb-6">
+      <h1 class="text-2xl font-semibold text-gray-900 dark:text-white">Asset Management</h1>
+      <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">Manage asset properties, types, and definitions</p>
+    </div>
+
+    <!-- iOS-style Horizontal Tabs -->
+    <div class="bg-white dark:bg-[#2c2c2e] rounded-lg shadow-sm">
+      <div class="border-b border-gray-200 dark:border-[#38383a]">
+        <nav class="flex -mb-px">
+          <button
+            (click)="setActiveTab('properties')"
+            [class.border-blue-600]="activeTab === 'properties'"
+            [class.text-blue-600]="activeTab === 'properties'"
+            [class.border-transparent]="activeTab !== 'properties'"
+            [class.text-gray-600]="activeTab !== 'properties'"
+            [class.dark:text-gray-400]="activeTab !== 'properties'"
+            class="flex-1 py-4 px-1 text-center border-b-2 font-medium text-sm transition-colors duration-200 hover:text-gray-900 dark:hover:text-white hover:border-gray-300 dark:hover:border-gray-600">
+            <i class="mdi mdi-format-list-bulleted mr-2"></i>
+            Properties
+          </button>
+          <button
+            (click)="setActiveTab('types')"
+            [class.border-blue-600]="activeTab === 'types'"
+            [class.text-blue-600]="activeTab === 'types'"
+            [class.border-transparent]="activeTab !== 'types'"
+            [class.text-gray-600]="activeTab !== 'types'"
+            [class.dark:text-gray-400]="activeTab !== 'types'"
+            class="flex-1 py-4 px-1 text-center border-b-2 font-medium text-sm transition-colors duration-200 hover:text-gray-900 dark:hover:text-white hover:border-gray-300 dark:hover:border-gray-600">
+            <i class="mdi mdi-shape mr-2"></i>
+            Types
+          </button>
+          <button
+            (click)="setActiveTab('definitions')"
+            [class.border-blue-600]="activeTab === 'definitions'"
+            [class.text-blue-600]="activeTab === 'definitions'"
+            [class.border-transparent]="activeTab !== 'definitions'"
+            [class.text-gray-600]="activeTab !== 'definitions'"
+            [class.dark:text-gray-400]="activeTab !== 'definitions'"
+            class="flex-1 py-4 px-1 text-center border-b-2 font-medium text-sm transition-colors duration-200 hover:text-gray-900 dark:hover:text-white hover:border-gray-300 dark:hover:border-gray-600">
+            <i class="mdi mdi-file-document-outline mr-2"></i>
+            Definitions
+          </button>
+        </nav>
+      </div>
+
+      <!-- Tab Content -->
+      <div class="p-6">
+        <app-asset-property-management *ngIf="activeTab === 'properties'"></app-asset-property-management>
+        <app-asset-type-management *ngIf="activeTab === 'types'"></app-asset-type-management>
+        <app-asset-definition-management *ngIf="activeTab === 'definitions'"></app-asset-definition-management>
+      </div>
+    </div>
+  </div>
+</div>

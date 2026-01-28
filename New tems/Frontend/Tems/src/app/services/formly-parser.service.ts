@@ -1,11 +1,11 @@
-import { EquipmentService } from 'src/app/services/equipment.service';
+import { AssetService } from 'src/app/services/asset.service';
 import { DefinitionService } from 'src/app/services/definition.service';
 import { TEMSComponent } from '../tems/tems.component';
 import { IOption } from 'src/app/models/option.model';
-import { Property } from 'src/app/models/equipment/view-property.model';
-import { AddEquipment } from '../models/equipment/add-equipment.model';
+import { Property } from 'src/app/models/asset/view-property.model';
+import { AddEquipment } from '../models/asset/add-asset.model';
 import { AddIssue } from '../models/communication/issues/add-issue.model';
-import { Definition } from '../models/equipment/add-definition.model';
+import { Definition } from '../models/asset/add-definition.model';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import { Injectable } from '@angular/core';
 import { of } from 'rxjs';
@@ -25,7 +25,7 @@ export class FormlyParserService extends TEMSComponent {
 
   constructor(
     private translate: TranslateService,
-    private equipmentService: EquipmentService,
+    private assetService: AssetService,
     private logsService: LogsService,
     private definitionService: DefinitionService
   ) {
@@ -179,7 +179,7 @@ export class FormlyParserService extends TEMSComponent {
     formlyFieldsAddEquipment.push(
       {
         wrappers: ['formly-wrapper'],
-        fieldGroup: this.generateAddEquipmentFields(addEquipment)
+        fieldGroup: this.generateAddAssetFields(addEquipment)
       }
     )
 
@@ -196,7 +196,7 @@ export class FormlyParserService extends TEMSComponent {
           templateOptions: {
             btnText: childAddEquipment.definition.identifier,
           },
-          fieldGroup: this.generateAddEquipmentFields(childAddEquipment)
+          fieldGroup: this.generateAddAssetFields(childAddEquipment)
         }
       })
     });
@@ -204,11 +204,11 @@ export class FormlyParserService extends TEMSComponent {
     return formlyFieldsAddEquipment;
   }
 
-  generateAddEquipmentFields(addEquipment: AddEquipment) {
+  generateAddAssetFields(addEquipment: AddEquipment) {
     return [
       {
         className: 'section-label',
-        template: '<h3 class="alert alert-primary">' + addEquipment.definition.equipmentType.label + '</h3>'
+        template: '<h3 class="alert alert-primary">' + addEquipment.definition.assetType.label + '</h3>'
       },
       {
         key: 'identifier',
@@ -513,15 +513,15 @@ export class FormlyParserService extends TEMSComponent {
     addDefinition.children.forEach(childDefinition => {
       fields.push(
         {
-          template: '<h4>' + childDefinition.equipmentType.label + ' definitions</h4>',
+          template: '<h4>' + childDefinition.assetType.label + ' definitions</h4>',
         },
         {
-          key: childDefinition.equipmentType.value,
+          key: childDefinition.assetType.value,
           type: 'repeat',
           wrappers: ['formly-wrapper'],
           fieldArray: {
             templateOptions: {
-              btnText: childDefinition.equipmentType.label,
+              btnText: childDefinition.assetType.label,
             },
             fieldGroup: [
               {
@@ -541,7 +541,7 @@ export class FormlyParserService extends TEMSComponent {
                   key: 'identifierSelect',
                   type: 'select',
                   templateOptions: {
-                    options: this.definitionService.getDefinitionsOfType(childDefinition.equipmentType.value).pipe(tap(defs => {
+                    options: this.definitionService.getDefinitionsOfType(childDefinition.assetType.value).pipe(tap(defs => {
                       defs.unshift({value: "new", label: "new"});
                     })),
                     change: (field, $event)=>{ 
@@ -615,7 +615,7 @@ export class FormlyParserService extends TEMSComponent {
     }
 
     this.subscriptions.push(
-      this.equipmentService.getFullDefinition(definitionId)
+      this.assetService.getFullDefinition(definitionId)
       .subscribe(result => {
         
         childFieldGroup.fieldGroup.forEach(e => {

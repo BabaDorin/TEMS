@@ -1,7 +1,7 @@
-import { IncludeEquipmentLabelsComponent } from './../../../shared/include-equipment-tags/include-equipment-tags.component';
+import { IncludeAssetLabelsComponent } from './../../../shared/include-asset-tags/include-asset-tags.component';
 import { DialogService } from './../../../services/dialog.service';
 import { LazyLoaderService } from './../../../services/lazy-loader.service';
-import { EquipmentFilter } from './../../../helpers/filters/equipment.filter';
+import { AssetFilter } from './../../../helpers/filters/asset.filter';
 import { Component, Input, OnInit, NO_ERRORS_SCHEMA } from '@angular/core';
 import { ViewRoomSimplified } from './../../../models/room/view-room-simplified.model';
 import { ReportFromFilterComponent } from '../../reports/report-from-filter/report-from-filter.component';
@@ -30,31 +30,31 @@ import { TranslateModule } from '@ngx-translate/core';
 export class RoomDetailsAllocationsComponent implements OnInit {
 
   @Input() room: ViewRoomSimplified;
-  @ViewChild('includeEquipmentLabels') includeEquipmentLabels: IncludeEquipmentLabelsComponent;
+  @ViewChild('includeEquipmentLabels') includeEquipmentLabels: IncludeAssetLabelsComponent;
 
-  equipmentFilter: EquipmentFilter;
+  assetFilter: AssetFilter;
   defaultLabels = ['Equipment'];
 
   constructor(
     private lazyLoader: LazyLoaderService,
     private dialogService: DialogService
   ) { 
-    this.equipmentFilter = new EquipmentFilter();
+    this.assetFilter = new AssetFilter();
   }
 
   ngOnInit(): void {
     if(this.room == undefined)
       return;
     
-    let filter = new EquipmentFilter();
+    let filter = new AssetFilter();
     filter.rooms = [this.room.id];
     filter.includeLabels = this.includeEquipmentLabels?.value ?? this.defaultLabels;
-    this.equipmentFilter = Object.assign(new EquipmentFilter(), filter);
+    this.assetFilter = Object.assign(new AssetFilter(), filter);
   }
 
   includeLabelsChanged(){
-    this.equipmentFilter.includeLabels = this.includeEquipmentLabels?.value ?? this.defaultLabels;
-    this.equipmentFilter = Object.assign(new EquipmentFilter(), this.equipmentFilter);
+    this.assetFilter.includeLabels = this.includeEquipmentLabels?.value ?? this.defaultLabels;
+    this.assetFilter = Object.assign(new AssetFilter(), this.assetFilter);
   }
 
   async generateReport(){
@@ -62,7 +62,7 @@ export class RoomDetailsAllocationsComponent implements OnInit {
     this.dialogService.openDialog(
       ReportFromFilterComponent,
       [
-        { label: 'equipmentFilter', value: this.equipmentFilter }
+        { label: 'assetFilter', value: this.assetFilter }
       ]
     );
   }

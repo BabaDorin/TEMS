@@ -3,7 +3,7 @@
         "personnel": "Personnel",
         "room": "Room",
         "rooms": "Rooms",
-        "equipment": "Equipment",
+        "asset": "Equipment",
         "registeredEquipment": "Registered equipment",
         "allocatedEquipment": "Allocated equipment",
         "tickets": "Tickets",
@@ -54,7 +54,7 @@
 
     "menu": {
         "bugReports": "Bug reports",
-        "equipment": "Equipment",
+        "asset": "Equipment",
         "view": "View",
         "add": "Add",
         "quickAccess": "Quick access",
@@ -84,7 +84,7 @@
         "generateTEMSID": "Generate TEMSID",
         "writeTEMSID": "Insert a TEMSID",
         "TEMSIDNotAvailable_DownloadAnyway": "The TEMSID that you have indicated already exists and it can not be assigned to another equipment. Do you still want to download it?",
-        "info": "<b>TEMSID</b> (Technical Equipment Management System Identifier) is an unique set of characters which, along with serial number, uniquely identifies an equipment within the sistem. It is an index which helps users to access and manage equipment easier. <br><br> It is highly recommended to assing TEMSIDs to those pieces of equipment which are frequently accessed from TEMS. Also, the only restriction that exists regardless TEMSID generation is it's length - it should not be more than 8 characters long. <br><br>A recommended practice is to assign informative indexes (for example, a PC from 214 room can be indexed with PC21401 TEMSID, a printer with PR21401 etc)."
+        "info": "<b>TEMSID</b> (Technical Asset Management System Identifier) is an unique set of characters which, along with serial number, uniquely identifies an equipment within the sistem. It is an index which helps users to access and manage equipment easier. <br><br> It is highly recommended to assing TEMSIDs to those pieces of equipment which are frequently accessed from TEMS. Also, the only restriction that exists regardless TEMSID generation is it's length - it should not be more than 8 characters long. <br><br>A recommended practice is to assign informative indexes (for example, a PC from 214 room can be indexed with PC21401 TEMSID, a printer with PR21401 etc)."
     },
 
     "library": {
@@ -108,10 +108,10 @@
     },
 
     "analytics": {
-        "equipmentAmount": "Total equipment amount", 
-        "equipmentUsingRate": "Equipment using rage", 
-        "equipmentTypeRate": "Equipment type rate",
-        "equipmentAllocationRate": "Equipment allocation rate",
+        "assetAmount": "Total equipment amount", 
+        "assetUsingRate": "Equipment using rage", 
+        "assetTypeRate": "Equipment type rate",
+        "assetAllocationRate": "Equipment allocation rate",
         "openTickets": "Open tickets",
         "closingRate": "Closing rate",
         "closingByRate": "Closing by rate",
@@ -134,8 +134,8 @@
     },
 
     "quickAccess": {
-        "equipmentHeader": "Find an equipment",
-        "equipmentLabel": "Find equipment by it's TEMSID or Serial Number",
+        "assetHeader": "Find an equipment",
+        "assetLabel": "Find equipment by it's TEMSID or Serial Number",
         "personnelHeader": "Find personnel",
         "personnelLabel": "Find personnel by name",
         "roomHeader": "Find a room",
@@ -177,9 +177,9 @@
         }
     },
     
-    "equipment": {
+    "asset": {
         "labels": {
-            "includeEquipment": "Include Equipment",
+            "includeEquipment": "Include Asset",
             "includeEquipmentTip": "Include only equipment entities of parent types (ex. Computers, Printers etc). Entities that can not be treated as children",
             "includeComponents": "Include Components",
             "includeComponentsTip": "Include equipment entities of child type that are ATTACHED to other entities.",
@@ -249,6 +249,8 @@
         "emailNotificationsDescription": "The email address is primarily used for account recovering. If you desire, you can recieve notifications too.",
         "emailNotifications": "Get notifications via E-mail",
         "profile": "Profile",
+        "darkMode": "Dark Mode",
+        "lightMode": "Light Mode",
         "signOut": "Sign Out",
         "logIn": "Log In",
         "add": "Add user",
@@ -494,7 +496,7 @@
         "pinned": "Pinned tickets",
         "closedOn": "Closed on",
         "changeStatus": "Change ticket status",
-        "equipmentInvolved": "Equipment involved",
+        "assetInvolved": "Equipment involved",
         "roomsInvolved": "Rooms involved",
         "personnelInvolved": "Personnel involved",
         "assignedTo": "Assigned to",

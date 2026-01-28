@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { AgGridAngular } from 'ag-grid-angular';
 import { ColDef, GridApi, GridReadyEvent } from 'ag-grid-community';
 import { TicketTypeService } from 'src/app/services/ticket-type.service';
+import { ThemeService } from 'src/app/services/theme.service';
 import { TicketType, CreateTicketTypeRequest, AttributeDefinition } from 'src/app/models/ticket/ticket-type.model';
 import { TicketManagementStateService } from 'src/app/state/ticket-management.state';
 import { AttributeBuilder } from 'src/app/components/ticket-type/attribute-builder/attribute-builder';
@@ -100,10 +101,15 @@ export class ViewTicketTypesComponent implements OnInit {
     flex: 1
   };
 
+  get gridThemeClass(): string {
+    return this.themeService.isDarkMode ? 'ag-theme-quartz-auto-dark' : 'ag-theme-quartz';
+  }
+
   constructor(
     private ticketTypeService: TicketTypeService,
     private stateService: TicketManagementStateService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private themeService: ThemeService
   ) {
     this.initializeForm();
     

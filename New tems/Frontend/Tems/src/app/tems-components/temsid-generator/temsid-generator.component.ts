@@ -1,7 +1,7 @@
 import { ConfirmService } from './../../confirm.service';
-import { EquipmentLabelComponent } from './../equipment/equipment-label/equipment-label.component';
+import { AssetLabelComponent } from './../asset/asset-label/asset-label.component';
 import { TEMSComponent } from './../../tems/tems.component';
-import { EquipmentService } from './../../services/equipment.service';
+import { AssetService } from './../../services/asset.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -26,7 +26,7 @@ import { MatIconModule } from '@angular/material/icon';
     MatInputModule,
     TranslateModule,
     MatIconModule,
-    EquipmentLabelComponent
+    AssetLabelComponent
   ],
   templateUrl: './temsid-generator.component.html',
   styleUrls: ['./temsid-generator.component.scss']
@@ -34,13 +34,13 @@ import { MatIconModule } from '@angular/material/icon';
 export class TemsidGeneratorComponent extends TEMSComponent implements OnInit, OnDestroy {
 
   temsIdValue = "TEMSID";
-  @ViewChild('equipmentLabel') equipmentLabel: EquipmentLabelComponent;
+  @ViewChild('assetLabel') assetLabel: AssetLabelComponent;
 
   subscriptions: any[] = [];
 
   constructor(
     private translate: TranslateService,
-    private equipmentService: EquipmentService,
+    private assetService: AssetService,
     private confirmService: ConfirmService) {
     super();
   }
@@ -50,7 +50,7 @@ export class TemsidGeneratorComponent extends TEMSComponent implements OnInit, O
 
   async download(){
     this.subscriptions.push(
-      this.equipmentService.isTEMSIDAvailable(this.temsIdValue)
+      this.assetService.isTEMSIDAvailable(this.temsIdValue)
       .subscribe(async result => {
         if(result == false && !await this.confirmService.confirm(this.translate.instant('TEMSID.TEMSIDNotAvailable_DownloadAnyway')))
         {
@@ -63,7 +63,7 @@ export class TemsidGeneratorComponent extends TEMSComponent implements OnInit, O
   }
 
   downloadNonQuery(){
-    this.equipmentLabel.downloadLabel();
+    this.assetLabel.downloadLabel();
   }
 
   ngOnDestroy(): void {

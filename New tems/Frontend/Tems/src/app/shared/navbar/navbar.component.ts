@@ -6,6 +6,7 @@ import { NgbDropdownConfig } from '@ng-bootstrap/ng-bootstrap';
 import { DialogService } from 'src/app/services/dialog.service';
 import { SnackService } from '../../services/snack.service';
 import { UserService } from '../../services/user.service';
+import { ThemeService } from '../../services/theme.service';
 import { ViewNotification } from './../../models/communication/notification/view-notification.model';
 import { AuthService } from './../../services/auth.service';
 import { ViewNotificationsComponent } from './../../tems-components/notifications/view-notifications/view-notifications.component';
@@ -41,9 +42,18 @@ export class NavbarComponent extends TEMSComponent implements OnInit {
     private authService: AuthService,
     private userService: UserService,
     private dialogService: DialogService,
-    private snackService: SnackService) {
+    private snackService: SnackService,
+    private themeService: ThemeService) {
       super();
       config.placement = 'bottom-right';
+  }
+
+  get isDarkMode(): boolean {
+    return this.themeService.isDarkMode;
+  }
+
+  toggleDarkMode(): void {
+    this.themeService.toggleTheme();
   }
 
   navigateToLogin() {

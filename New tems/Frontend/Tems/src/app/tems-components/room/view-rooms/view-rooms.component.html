@@ -12,7 +12,7 @@
             {{ 'entities.rooms' | translate }}
         </h2>
 
-        <ng-container *ngIf="claims.canManage">
+        <ng-container *ngIf="claims.canManageAssets">
             <button mat-button (click)="addNew()" class="d-block d-md-inline">
                 <mat-icon class="text-primary">add</mat-icon>
                 {{ 'room.add' | translate }}
@@ -22,7 +22,7 @@
                 {{ 'room.addLogForSelected' | translate }}
             </button>
         </ng-container>
-        <ng-container *ngIf="claims.canView">
+        <ng-container *ngIf="claims.canManageAssets">
             <button mat-button (click)="addIssue()" class="d-block d-md-inline">
                 <mat-icon class="text-primary">feedback</mat-icon>
                 {{ 'room.includeSelectedInATicket' | translate }}

@@ -1,12 +1,12 @@
 import { ConfirmService } from './../../confirm.service';
-import { ViewDefinitionSimplified } from './../equipment/view-definition-simplified.model';
+import { ViewDefinitionSimplified } from './../asset/view-definition-simplified.model';
 import { SnackService } from '../../services/snack.service';
 import { TEMSComponent } from './../../tems/tems.component';
 import { DialogService } from '../../services/dialog.service';
 import { IContainerAction, IGenericContainerModel, ITagGroup } from './IGenericContainer.model';
-import { ViewDefinitionComponent } from 'src/app/tems-components/equipment/view-definition/view-definition.component';
-import { AddDefinitionComponent } from 'src/app/tems-components/equipment/add-definition/add-definition.component';
-import { EquipmentService } from 'src/app/services/equipment.service';
+import { ViewDefinitionComponent } from 'src/app/tems-components/asset/view-definition/view-definition.component';
+import { AddDefinitionComponent } from 'src/app/tems-components/asset/add-definition/add-definition.component';
+import { AssetService } from 'src/app/services/asset.service';
 
 export class DefinitionContainerModel extends TEMSComponent implements IGenericContainerModel {
     title: string;
@@ -16,7 +16,7 @@ export class DefinitionContainerModel extends TEMSComponent implements IGenericC
     eventEmitted: Function;
 
     constructor(
-        private equipmentService: EquipmentService,
+        private assetService: AssetService,
         private dialogService: DialogService,
         private snackService: SnackService,
         private definition: ViewDefinitionSimplified,
@@ -34,7 +34,7 @@ export class DefinitionContainerModel extends TEMSComponent implements IGenericC
 
         this.tagGroups.push({
             name: 'Equipment Type',
-            tags: [this.definition.equipmentType]
+            tags: [this.definition.assetType]
         });
 
         if (this.definition.children != undefined && this.definition.children.length > 0) {
@@ -73,7 +73,7 @@ export class DefinitionContainerModel extends TEMSComponent implements IGenericC
             () => {
                 this.subscriptions.forEach(s => { try { s?.unsubscribe?.(); } catch {} });
                 this.subscriptions = [];
-                this.equipmentService.getDefinitionSimplifiedById(this.definition.id)
+                this.assetService.getDefinitionSimplifiedById(this.definition.id)
                     .subscribe(result => {
                         if(this.snackService.snackIfError(result))
                             return;
@@ -92,7 +92,7 @@ export class DefinitionContainerModel extends TEMSComponent implements IGenericC
         this.subscriptions.forEach(s => { try { s?.unsubscribe?.(); } catch {} });
         this.subscriptions = [];
         this.subscriptions.push(
-            this.equipmentService.archieveDefinition(this.definition.id)
+            this.assetService.archieveDefinition(this.definition.id)
                 .subscribe(result => {
                     if (result.status == 1)
                         this.eventEmitted('removed');

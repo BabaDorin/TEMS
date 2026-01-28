@@ -1,9 +1,9 @@
 import { AllocationFilter } from './../helpers/filters/allocation.filter';
-import { ViewAllocationSimplified } from '../models/equipment/view-equipment-allocation.model';
-import { ViewEquipmentSimplified } from '../models/equipment/view-equipment-simplified.model';
+import { ViewAllocationSimplified } from '../models/asset/view-asset-allocation.model';
+import { ViewAssetSimplified } from '../models/asset/view-asset-simplified.model';
 import { IOption } from '../models/option.model';
 import { Observable } from 'rxjs';
-import { API_ALL_URL, API_EQ_URL } from '../models/backend.config';
+import { API_ALL_URL, API_ASSET_URL } from '../models/backend.config';
 import { HttpClient } from '@angular/common/http';
 import { AddAllocation } from '../models/allocation/add-allocation.model';
 import { TEMSService } from './tems.service';

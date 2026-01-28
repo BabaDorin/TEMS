@@ -15,7 +15,7 @@ import { API_ARCH_URL } from './../models/backend.config';
 import { TEMSService } from './tems.service';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { EquipmentService } from './equipment.service';
+import { AssetService } from './asset.service';
 
 @Injectable({
   providedIn: 'root'
@@ -23,18 +23,18 @@ import { EquipmentService } from './equipment.service';
 export class ArchieveService extends TEMSService {
 
   public types: IOption[] = [
-    { label: 'Equipment', value: 'equipment'},
+    { label: 'Assets', value: 'asset'},
     { label: 'Issues', value: 'issues'},
     { label: 'Rooms', value: 'rooms'},
     { label: 'Personnel', value: 'personnel'},
     { label: 'Keys', value: 'keys'},
     { label: 'Report templates', value: 'reportTemplates'},
-    { label: 'Equipment allocations', value: 'equipmentAllocations'},
+    { label: 'Asset allocations', value: 'assetAllocations'},
     { label: 'Logs', value: 'logs'},
     { label: 'Key allocations', value: 'keyAllocations'},
     { label: 'Properties', value: 'properties'},
-    { label: 'Equipment types', value: 'equipmentTypes'},
-    { label: 'Equipment definitions', value: 'equipmentDefinitions'},
+    { label: 'Asset types', value: 'assetTypes'},
+    { label: 'Asset definitions', value: 'assetDefinitions'},
     { label: 'Users', value: 'users'},
   ];
 
@@ -42,7 +42,7 @@ export class ArchieveService extends TEMSService {
 
   constructor(
     private http: HttpClient,
-    private equipmentService: EquipmentService,
+    private assetService: AssetService,
     private issuesService: IssuesService,
     private roomsService: RoomsService,
     private personnelService: PersonnelService,
@@ -56,17 +56,17 @@ export class ArchieveService extends TEMSService {
     super();
 
     this.typeRemoveServicesDictionary = {
-      ["equipment"]: (id) =>  this.equipmentService.removeEquipment(id),
-      ["properties"]: (id) => this.equipmentService.removeProperty(id),
+      ["asset"]: (id) =>  this.assetService.removeAsset(id),
+      ["properties"]: (id) => this.assetService.removeProperty(id),
       ["issues"]: (id) =>this.issuesService.remove(id),
       ["personnel"]: (id) =>this.personnelService.remove(id),
       ["keys"]: (id) =>this.keysService.remove(id),
       ["reportTemplates"]: (id) =>this.reportService.remove(id),
-      ["equipmentAllocations"]: (id) =>this.equipmentService.removeAllocation(id),
+      ["assetAllocations"]: (id) =>this.assetService.removeAllocation(id),
       ["logs"]: (id) =>this.logsService.remove(id),
       ["keyAllocations"]:(id) => this.keysService.removeAllocation(id),
-      ["equipmentTypes"]: (id) =>this.typeService.remove(id),
-      ["equipmentDefinitions"]: (id) =>this.defintionService.remove(id),
+      ["assetTypes"]: (id) =>this.typeService.remove(id),
+      ["assetDefinitions"]: (id) =>this.defintionService.remove(id),
       ["rooms"]:(id) => this.roomsService.remove(id),
       ["users"]:(id) => this.userService.remove(id),
     }

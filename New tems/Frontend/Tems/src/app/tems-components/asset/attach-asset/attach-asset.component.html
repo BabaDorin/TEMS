@@ -1,0 +1,57 @@
+<div [ngClass]="dialogRef == undefined ? 'card' : 'card cancel-margins'">
+    <div class="card-body">
+        <h2>
+            {{ 'equipment.attachEquipment' | translate }}
+        </h2>
+        <p class="text-muted">
+            {{ 'equipment.attachTip' | translate }} {{ equipment.definition.identifier }}.
+        </p>
+        <hr>
+        <form [formGroup]="attachEquipmentFormGroup">
+            <div class="row">
+
+                <div class="col-md-6 text-center">
+                    <!-- Select type -->
+                    <mat-form-field>
+                        <mat-label>
+                            {{ 'entities.types' | translate }}
+                        </mat-label>
+                        <mat-select formControlName="assetType" (selectionChange)="typeChanged($event)">
+                            <mat-option *ngFor="let type of types" [value]="type.value">
+                                {{ type.label }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+
+                    <!-- Select definition -->
+                    <mat-form-field>
+                        <mat-label>
+                            {{ 'equipment.availableDefinitions' | translate }}
+                        </mat-label>
+                        <mat-select formControlName="assetDefinition" (selectionChange)="filterChanged()">
+                            <mat-option *ngFor="let def of definitions" [value]="def.value">
+                                {{ def.label }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div class="col-md-6">
+                    <app-include-asset-tags
+                        formControlName="includeEquipmentLabels"
+                        [tagOptions]="tagOptions"
+                        (valueChanged)="filterChanged()"
+                        [defaultValue]="defaultLabels"
+                        [includeParts]="true">
+                    </app-include-asset-tags>
+                </div>
+            </div>
+        </form>
+
+        <!-- Ag Grid containing relevand equipment to be attached -->
+        <ng-container *ngIf="assetFilter != undefined">
+            <app-ag-grid-attach-equipment [parentId]="equipment.id" [assetFilter]="assetFilter"
+                (attached)="attached($event)">
+            </app-ag-grid-attach-equipment>
+        </ng-container>
+    </div>
+</div>

@@ -2,18 +2,18 @@ import { IsNullOrUndefined } from 'src/app/helpers/validators/validations';
 import { AllocationFilter } from './../../helpers/filters/allocation.filter';
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { ViewAllocationSimplified } from 'src/app/models/equipment/view-equipment-allocation.model';
-import { ViewEquipmentSimplified } from 'src/app/models/equipment/view-equipment-simplified.model';
+import { ViewAllocationSimplified } from 'src/app/models/asset/view-asset-allocation.model';
+import { ViewAssetSimplified } from 'src/app/models/asset/view-asset-simplified.model';
 import { IOption } from 'src/app/models/option.model';
 import { DialogService } from 'src/app/services/dialog.service';
 import { AllocationService } from '../../services/allocation.service';
 import { SnackService } from '../../services/snack.service';
-import { EquipmentAllocationComponent } from '../equipment/equipment-allocation/equipment-allocation.component';
+import { AssetAllocationComponent } from '../asset/asset-allocation/asset-allocation.component';
 import { ViewPersonnelSimplified } from './../../models/personnel/view-personnel-simplified.model';
 import { ViewRoomSimplified } from './../../models/room/view-room-simplified.model';
 import { ClaimService } from './../../services/claim.service';
 import { TEMSComponent } from './../../tems/tems.component';
-import { IncludeEquipmentLabelsComponent } from 'src/app/shared/include-equipment-tags/include-equipment-tags.component';
+import { IncludeAssetLabelsComponent } from 'src/app/shared/include-asset-tags/include-asset-tags.component';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -21,7 +21,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgxPaginationModule } from 'ngx-pagination';
-import { EquipmentAllocationContainerComponent } from '../equipment/equipment-allocation-container/equipment-allocation-container.component';
+import { AssetAllocationContainerComponent } from '../asset/asset-allocation-container/asset-allocation-container.component';
 import { LoadingPlaceholderComponent } from '../loading-placeholder/loading-placeholder.component';
 
 @Component({
@@ -35,8 +35,8 @@ import { LoadingPlaceholderComponent } from '../loading-placeholder/loading-plac
     MatProgressBarModule,
     TranslateModule,
     NgxPaginationModule,
-    IncludeEquipmentLabelsComponent,
-    EquipmentAllocationContainerComponent,
+    IncludeAssetLabelsComponent,
+    AssetAllocationContainerComponent,
     LoadingPlaceholderComponent
   ],
   templateUrl: './entity-allocations-list.component.html',
@@ -44,11 +44,11 @@ import { LoadingPlaceholderComponent } from '../loading-placeholder/loading-plac
 })
 export class EntityAllocationsListComponent extends TEMSComponent implements OnInit, OnChanges {
 
-  @Input() equipment: ViewEquipmentSimplified; 
+  @Input() asset: ViewAssetSimplified; 
   @Input() room: ViewRoomSimplified; 
   @Input() personnel: ViewPersonnelSimplified;
 
-  @Input() equipmentIds: string[] = [];
+  @Input() assetIds: string[] = [];
   @Input() personnelIds: string[] = [];
   @Input() definitionIds: string[] = [];
   @Input() roomIds: string[] = [];
@@ -58,10 +58,10 @@ export class EntityAllocationsListComponent extends TEMSComponent implements OnI
   
   @Output() allocationCreated = new EventEmitter();
  
-  @ViewChild('includeEquipmentLabels') includeEquipmentLabels: IncludeEquipmentLabelsComponent;
+  @ViewChild('includeEquipmentLabels') includeEquipmentLabels: IncludeAssetLabelsComponent;
   defaultLabels = ['Equipment'];
  
-  equipmentNotAllocated = false;
+  assetNotAllocated = false;
   
   // Pagination
   pageNumber = 1;
@@ -129,7 +129,7 @@ export class EntityAllocationsListComponent extends TEMSComponent implements OnI
     aux.take = this.itemsPerPage;
 
     // Data selection
-    aux.equipment = this.equipmentIds;
+    aux.equipment = this.assetIds;
     aux.definitions = this.definitionIds;
     aux.personnel = this.personnelIds;
     aux.rooms = this.roomIds;
@@ -142,7 +142,7 @@ export class EntityAllocationsListComponent extends TEMSComponent implements OnI
   }
 
   readInputVariables(){
-    if(this.equipment) this.equipmentIds = [this.equipment.id];
+    if(this.asset) this.assetIds = [this.asset.id];
     if(this.room) this.roomIds = [this.room.id];
     if(this.personnel) this.personnelIds = [this.personnel.id];
 
@@ -166,7 +166,7 @@ export class EntityAllocationsListComponent extends TEMSComponent implements OnI
           return;
 
         this.allocations = result;
-        this.equipmentNotAllocated = (this.equipment != undefined && this.allocations.findIndex(q => q.dateReturned == null) == -1);
+        this.assetNotAllocated = (this.asset != undefined && this.allocations.findIndex(q => q.dateReturned == null) == -1);
       })
     )
   }
@@ -175,12 +175,12 @@ export class EntityAllocationsListComponent extends TEMSComponent implements OnI
     let selectedEntityType: string;
     let selectedEntities: IOption[];
 
-    if(this.equipment){
-      selectedEntityType = "equipment";
+    if(this.asset){
+      selectedEntityType = "asset";
       selectedEntities = [
         {
-          value: this.equipment.id, 
-          label: this.equipment.temsIdOrSerialNumber
+          value: this.asset.id, 
+          label: this.asset.temsIdOrSerialNumber
         }];
     }
 
@@ -203,7 +203,7 @@ export class EntityAllocationsListComponent extends TEMSComponent implements OnI
     }
 
     this.dialogService.openDialog(
-      EquipmentAllocationComponent,
+      AssetAllocationComponent,
       [{label: selectedEntityType, value: selectedEntities}],
       () => {
         this.fetchAllocations();

@@ -11,11 +11,11 @@
                         <mat-icon>more_vert</mat-icon>
                     </button>
                     <mat-menu #menu="matMenu">
-                        <app-include-equipment-tags 
+                        <app-include-asset-tags 
                             #includeEquipmentLabels 
                             (valueChanged)="includeLabelsChanged()"
                             [defaultValue]="defaultLabels">
-                        </app-include-equipment-tags>
+                        </app-include-asset-tags>
                     </mat-menu>
                 </li>
             </ul>
@@ -23,10 +23,10 @@
     </div>
     <hr>
 
-    <!-- Equipment analytics summary -->
+    <!-- Asset analytics summary -->
     <div id="section1">
-        <app-summary-equipment-analytics [personnelId]="personnel.id">
-        </app-summary-equipment-analytics>
+        <app-summary-asset-analytics [personnelId]="personnel.id">
+        </app-summary-asset-analytics>
     </div>
 
     <!-- Actions -->
@@ -38,10 +38,10 @@
     </div>
     <hr class="separator">
 
-    <!-- Equipment grid -->
-    <ng-container *ngIf="equipmentFilter != undefined">
+    <!-- Asset grid -->
+    <ng-container *ngIf="assetFilter != undefined">
         <div id="section2" class="mt-3">
-            <app-ag-grid-equipment [equipmentFilter]="equipmentFilter">
+            <app-ag-grid-equipment [assetFilter]="assetFilter">
             </app-ag-grid-equipment>
         </div>
     </ng-container>

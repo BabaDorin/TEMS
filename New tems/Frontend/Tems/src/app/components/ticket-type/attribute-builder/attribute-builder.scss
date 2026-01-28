@@ -1,5 +1,9 @@
 .attribute-builder {
   padding: 1rem;
+
+  :host-context(.dark) & {
+    color: #f5f5f7;
+  }
 }
 
 .attributes-header {
@@ -12,6 +16,10 @@
     margin: 0;
     font-size: 1.25rem;
     font-weight: 600;
+
+    :host-context(.dark) & {
+      color: #f5f5f7;
+    }
   }
 
   .add-button {
@@ -48,6 +56,10 @@
   font-size: 0.875rem;
   color: #666;
   margin-bottom: 1rem;
+
+  :host-context(.dark) & {
+    color: #8e8e93;
+  }
 }
 
 .attributes-list {
@@ -61,6 +73,11 @@
   border-radius: 12px;
   padding: 1rem;
   border: 1px solid #E5E5E5;
+
+  :host-context(.dark) & {
+    background-color: #2c2c2e;
+    border-color: #38383a;
+  }
 
   .attribute-header {
     display: flex;
@@ -109,6 +126,10 @@
         font-weight: 500;
         color: #666;
         margin-bottom: 0.25rem;
+
+        :host-context(.dark) & {
+          color: #8e8e93;
+        }
       }
 
       .form-control {
@@ -118,6 +139,12 @@
         font-size: 0.875rem;
         background-color: white;
         transition: border-color 0.2s;
+
+        :host-context(.dark) & {
+          background-color: #3a3a3c;
+          border-color: #48484a;
+          color: #f5f5f7;
+        }
 
         &:focus {
           outline: none;
@@ -146,6 +173,10 @@
             font-size: 0.875rem;
             font-weight: 500;
             color: #333;
+
+            :host-context(.dark) & {
+              color: #f5f5f7;
+            }
           }
         }
       }
@@ -159,6 +190,11 @@
     border-radius: 10px;
     border: 1px solid #E5E5E5;
 
+    :host-context(.dark) & {
+      background-color: #3a3a3c;
+      border-color: #48484a;
+    }
+
     .options-header {
       display: flex;
       justify-content: space-between;
@@ -169,6 +205,10 @@
         font-size: 0.875rem;
         font-weight: 600;
         color: #333;
+
+        :host-context(.dark) & {
+          color: #f5f5f7;
+        }
       }
 
       .add-option-button {
@@ -204,6 +244,12 @@
           border: 1px solid #D1D1D6;
           border-radius: 6px;
           font-size: 0.875rem;
+
+          :host-context(.dark) & {
+            background-color: #2c2c2e;
+            border-color: #48484a;
+            color: #f5f5f7;
+          }
 
           &:focus {
             outline: none;
@@ -243,4 +289,10 @@
   background-color: #F9F9F9;
   border-radius: 12px;
   border: 1px dashed #D1D1D6;
+
+  :host-context(.dark) & {
+    background-color: #2c2c2e;
+    border-color: #48484a;
+    color: #8e8e93;
+  }
 }

@@ -1,0 +1,47 @@
+import { Definition } from './add-definition.model';
+import { IOption } from 'src/app/models/option.model';
+import { ViewRoomSimplified } from './../room/view-room-simplified.model';
+import { Property } from './view-property.model';
+import { AssetType } from './view-type.model';
+
+export interface ILightViewEquipment{
+    id: string;
+    type: string;
+    identifier: string;
+}
+
+export interface IViewEquipment{
+    id: string,
+    definition: Definition;
+    temsId: string,
+    serialNumber: string,
+    room: IOption,
+    personnel: IOption,
+    type: AssetType,
+    specificProperties: Property[],
+    children,
+    parent: IOption;
+    isUsed: boolean,
+    isDefect: boolean,
+    price: number,
+    description: string,
+    isArchieved: boolean,
+}
+
+export class ViewEquipment implements IViewEquipment{
+    id: string;
+    definition: Definition;
+    temsId: string;
+    serialNumber: string;
+    room: IOption;
+    personnel: IOption;
+    type: AssetType;
+    children;
+    parent: IOption;
+    isUsed: boolean;
+    isDefect: boolean;
+    price: number;
+    specificProperties: Property[];
+    description: string;
+    isArchieved: boolean;
+}

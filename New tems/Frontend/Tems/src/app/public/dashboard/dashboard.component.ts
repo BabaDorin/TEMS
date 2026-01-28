@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { MATERIAL_MODULES } from 'src/app/shared/constants/material-modules.const';
-import { QuickAccessComponent } from 'src/app/tems-components/equipment/quick-access/quick-access.component';
+import { QuickAccessComponent } from 'src/app/tems-components/asset/quick-access/quick-access.component';
 import { AnnouncementsListComponent } from 'src/app/tems-components/announcement/announcements-list/announcements-list.component';
 import { UserCardsListComponent } from 'src/app/tems-components/profile/user-cards-list/user-cards-list.component';
 import { LastCreatedTicketsChartComponent } from 'src/app/tems-components/analytics/last-created-tickets-chart/last-created-tickets-chart.component';
@@ -41,8 +41,8 @@ export class DashboardComponent implements OnInit {
     const identityClaims = this.authService.getIdentityClaims();
     if (identityClaims) {
       this.claims = {
-        canView: identityClaims.can_view_entities === 'true',
-        canManage: identityClaims.can_manage_entities === 'true'
+        canView: identityClaims.can_manage_assets === 'true',
+        canManage: identityClaims.can_manage_assets === 'true'
       };
     }
   }

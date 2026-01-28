@@ -1,12 +1,12 @@
 <!-- Modern iOS-style Sidebar -->
-<nav class="bg-white/80 backdrop-blur-md border-r border-gray-200/50 transition-all duration-100 ease-out overflow-hidden" 
+<nav class="bg-white/80 dark:bg-[#1c1c1e]/80 backdrop-blur-md border-r border-gray-200/50 dark:border-white/10 transition-all duration-100 ease-out h-full flex flex-col" 
   [class.w-64]="isVisible"
   [class.w-0]="!isVisible"
   [class.opacity-100]="isVisible"
   [class.opacity-0]="!isVisible"
   style="will-change: width, opacity;"
   id="sidebar">
-  <div class="py-4 px-3">
+  <div class="py-4 px-3 flex-1 overflow-y-auto">
     <ul class="space-y-1 !pl-0" *ngIf="menuService.ROUTES != undefined">
       <li *ngFor="let sidebarNavItem of menuService.ROUTES">
         <!-- Menu item with submenu -->
@@ -16,9 +16,13 @@
             [attr.aria-expanded]="sidebarNavItem.showSubmenu"
             class="w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200"
             [class.bg-blue-50]="sidebarNavItem.isActive"
+            [class.dark:bg-blue-500/20]="sidebarNavItem.isActive"
             [class.text-blue-600]="sidebarNavItem.isActive"
+            [class.dark:text-blue-400]="sidebarNavItem.isActive"
             [class.text-gray-700]="!sidebarNavItem.isActive"
-            [class.hover:bg-gray-50]="!sidebarNavItem.isActive">
+            [class.dark:text-gray-300]="!sidebarNavItem.isActive"
+            [class.hover:bg-gray-50]="!sidebarNavItem.isActive"
+            [class.dark:hover:bg-white/5]="!sidebarNavItem.isActive">
             <span class="flex items-center space-x-3">
               <i [class]="sidebarNavItem.icon" class="text-lg"></i>
               <span>{{ sidebarNavItem.title }}</span>
@@ -36,9 +40,9 @@
               <li *ngFor="let submenu of sidebarNavItem.submenu">
                 <a *ngIf="submenu.isShown" 
                   [routerLink]="submenu.path"
-                  routerLinkActive="bg-blue-50 text-blue-600"
+                  routerLinkActive="bg-blue-50 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400"
                   (click)="optionSelected()"
-                  class="flex items-center space-x-3 px-3 py-2 rounded-lg text-sm transition-all duration-200 hover:bg-gray-50 text-gray-600 hover:text-gray-900 no-underline">
+                  class="flex items-center space-x-3 px-3 py-2 rounded-lg text-sm transition-all duration-200 hover:bg-gray-50 dark:hover:bg-white/5 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 no-underline">
                   <i [class]="submenu.icon" class="text-base"></i>
                   <span>{{ submenu.title }}</span>
                 </a>
@@ -50,9 +54,9 @@
         <!-- Menu item without submenu -->
         <div *ngIf="sidebarNavItem.isShown && sidebarNavItem.submenu.length == 0">
           <a [routerLink]="sidebarNavItem.path"
-            routerLinkActive="bg-blue-50 text-blue-600"
+            routerLinkActive="bg-blue-50 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400"
             (click)="optionSelected(); closePreviousSubmenu(sidebarNavItem)"
-            class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 hover:bg-gray-50 text-gray-700 no-underline">
+            class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 hover:bg-gray-50 dark:hover:bg-white/5 text-gray-700 dark:text-gray-300 no-underline">
             <i [class]="sidebarNavItem.icon" class="text-lg"></i>
             <span>{{ sidebarNavItem.title }}</span>
           </a>

@@ -44,14 +44,14 @@ export class EntityIssuesListComponent extends TEMSComponent implements OnInit, 
   @Input() issues: ViewIssueSimplified[];
 
   // for ticket fetching
-  @Input() equipmentId;
+  @Input() assetId;
   @Input() personnelId;
   @Input() roomId;
   @Input() addIssueEnabled: boolean = true;
   @Input() endPoint;
 
   // for AddIssueComponent
-  @Input() equipment: IOption[] = [];
+  @Input() asset: IOption[] = [];
   @Input() rooms: IOption[] = [];
   @Input() personnel: IOption[] =[];
 
@@ -99,7 +99,7 @@ export class EntityIssuesListComponent extends TEMSComponent implements OnInit, 
 
   getIssues(){
     this.endPoint =  this.issuesService.getIssues(
-      this.equipmentId ?? "any", 
+      this.assetId ?? "any", 
       this.roomId ?? "any", 
       this.personnelId ?? "any", 
       this.includingClosed, this.onlyClosed);
@@ -149,7 +149,7 @@ export class EntityIssuesListComponent extends TEMSComponent implements OnInit, 
   }
 
   solve(index){
-    if(!this.claims.canManage)
+    if(!this.claims.canManageAssets)
       return;
 
     let selectedIssue = this.issues[index];
@@ -166,7 +166,7 @@ export class EntityIssuesListComponent extends TEMSComponent implements OnInit, 
     this.dialogService.openDialog(
       CreateIssueComponent,
       [
-        { label: "equipmentAlreadySelected", value: this.equipment},
+        { label: "assetAlreadySelected", value: this.asset},
         { label: "roomsAlreadySelected", value: this.rooms},
         { label: "personnelAlreadySelected", value: this.personnel},
       ],

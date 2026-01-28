@@ -2,7 +2,6 @@ import { Location } from '@angular/common';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ArchievedItem } from 'src/app/models/archieve/archieved-item.model';
-import { CAN_MANAGE_SYSTEM_CONFIGURATION } from 'src/app/models/claims';
 import { ArchieveService } from 'src/app/services/archieve.service';
 import { SnackService } from 'src/app/services/snack.service';
 import { TEMSComponent } from 'src/app/tems/tems.component';
@@ -57,7 +56,7 @@ export class ViewArchieveComponent extends TEMSComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.canRemove = this.tokenService.hasClaim(CAN_MANAGE_SYSTEM_CONFIGURATION);
+    this.canRemove = this.tokenService.canManageAssets();
     this.selectedType = this.getSelectedTypeFromUrl(this.router.url);
   }
 

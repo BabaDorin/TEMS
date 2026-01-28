@@ -52,10 +52,10 @@
     </div>
     <br>
     <div *ngIf="issue.equipments != undefined && issue.equipments.length > 0" class="mb-4">
-      <h4>{{ 'ticket.equipmentInvolved' | translate }}</h4>
+      <h4>{{ 'ticket.assetInvolved' | translate }}</h4>
       <hr>
       <div class="alert alert-info">
-        <a mat-button *ngFor="let eq of issue.equipments" [routerLink]="'/equipment/details/' + eq.value">
+        <a mat-button *ngFor="let eq of issue.equipments" [routerLink]="'/asset/details/' + eq.value">
           <mat-icon class="text-primary">computer</mat-icon>
           {{ eq.label }} {{ eq.additional }}
         </a>

@@ -23,6 +23,8 @@ public class MongoDbProfileService : IProfileService
 
         if (user == null) return;
 
+        // Duende only provides authentication claims
+        // Roles and permissions are managed by Keycloak
         var claims = new List<Claim>
         {
             new Claim("sub", user.Id),
@@ -31,16 +33,9 @@ public class MongoDbProfileService : IProfileService
             new Claim("name", user.FullName),
         };
 
-        // Add roles
-        foreach (var role in user.Roles)
+        if (!string.IsNullOrEmpty(user.PhoneNumber))
         {
-            claims.Add(new Claim("role", role));
-        }
-
-        // Add custom claims
-        foreach (var claim in user.Claims)
-        {
-            claims.Add(new Claim(claim.Key, claim.Value));
+            claims.Add(new Claim("phone_number", user.PhoneNumber));
         }
 
         context.IssuedClaims = claims;

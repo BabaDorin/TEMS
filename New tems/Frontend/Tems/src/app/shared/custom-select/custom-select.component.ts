@@ -51,7 +51,7 @@ export class CustomSelectComponent implements ControlValueAccessor, OnInit, OnDe
     this.cdr.markForCheck();
   }
 
-  private onChange: (value: string) => void = () => {};
+  private onChange: (value: string | string[]) => void = () => {};
   private onTouched: () => void = () => {};
 
   constructor(
@@ -90,6 +90,17 @@ export class CustomSelectComponent implements ControlValueAccessor, OnInit, OnDe
   }
 
   get selectedLabel(): string {
+    if (this.mode === 'multiple') {
+      if (this.selectedValues.length === 0) {
+        return this.placeholder;
+      }
+      if (this.selectedValues.length === 1) {
+        const option = this.options.find(opt => opt.value === this.selectedValues[0]);
+        return option ? option.label : this.placeholder;
+      }
+      return `${this.selectedValues.length} selected`;
+    }
+    
     if (this._selectedValue === null || this._selectedValue === undefined || this._selectedValue === '') {
       return this.placeholder;
     }
@@ -114,10 +125,24 @@ export class CustomSelectComponent implements ControlValueAccessor, OnInit, OnDe
       this.isOpen = false;
       this.searchText = '';
       this.cdr.markForCheck();
+    } else {
+      // Multiple mode
+      const index = this.selectedValues.indexOf(value);
+      if (index > -1) {
+        this.selectedValues = this.selectedValues.filter(v => v !== value);
+      } else {
+        this.selectedValues = [...this.selectedValues, value];
+      }
+      this.onChange(this.selectedValues);
+      this.onTouched();
+      this.cdr.markForCheck();
     }
   }
 
   isSelected(value: string): boolean {
+    if (this.mode === 'multiple') {
+      return this.selectedValues.includes(value);
+    }
     return this._selectedValue === value;
   }
 
@@ -125,17 +150,30 @@ export class CustomSelectComponent implements ControlValueAccessor, OnInit, OnDe
     return option.value;
   }
 
-  writeValue(value: string | null): void {
-    if (value === null || value === undefined) {
-      this._selectedValue = '';
+  getOptionLabel(value: string): string {
+    const option = this.options.find(opt => opt.value === value);
+    return option ? option.label : value;
+  }
+
+  writeValue(value: string | string[] | null): void {
+    if (this.mode === 'multiple') {
+      if (Array.isArray(value)) {
+        this.selectedValues = value;
+      } else {
+        this.selectedValues = [];
+      }
     } else {
-      this._selectedValue = value;
+      if (value === null || value === undefined) {
+        this._selectedValue = '';
+      } else {
+        this._selectedValue = Array.isArray(value) ? '' : value;
+      }
     }
     this.cdr.markForCheck();
   }
 
-  registerOnChange(fn: (value: string) => void): void {
-    this.onChange = fn;
+  registerOnChange(fn: (value: string | string[]) => void): void {
+    this.onChange = fn as any;
   }
 
   registerOnTouched(fn: () => void): void {

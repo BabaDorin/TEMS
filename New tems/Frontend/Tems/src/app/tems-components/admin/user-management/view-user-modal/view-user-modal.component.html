@@ -1,0 +1,132 @@
+<div class="bg-white dark:bg-[#2c2c2e] rounded-xl p-6 min-w-[500px] max-w-[600px] overflow-hidden">
+  <!-- Header -->
+  <div class="flex justify-between items-center mb-6 pb-4 border-b border-gray-200 dark:border-[#38383a]">
+    <h2 class="text-xl font-semibold text-gray-900 dark:text-white">User Details</h2>
+    <button 
+      (click)="close()"
+      class="p-2 hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg transition">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" class="text-gray-600 dark:text-gray-400">
+        <path d="M15 5L5 15M5 5L15 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </button>
+  </div>
+
+  <div class="space-y-6">
+    <!-- Avatar and Name -->
+    <div class="flex items-center gap-4">
+      <div class="w-20 h-20 flex items-center justify-center flex-shrink-0 relative">
+        <!-- Modern Techy 2026 Avatar - Hexagonal with digital pattern -->
+        <svg width="80" height="80" viewBox="0 0 80 80" fill="none">
+          <defs>
+            <linearGradient id="techGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#00d4ff"/>
+              <stop offset="50%" stop-color="#0a84ff"/>
+              <stop offset="100%" stop-color="#5e5ce6"/>
+            </linearGradient>
+            <linearGradient id="innerGlow" x1="50%" y1="0%" x2="50%" y2="100%">
+              <stop offset="0%" stop-color="#ffffff" stop-opacity="0.2"/>
+              <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          
+          <!-- Hexagonal background -->
+          <path d="M 40 4 L 68 20 L 68 52 L 40 68 L 12 52 L 12 20 Z" fill="url(#techGradient)" opacity="0.9"/>
+          
+          <!-- Inner hexagon glow -->
+          <path d="M 40 10 L 62 23 L 62 49 L 40 62 L 18 49 L 18 23 Z" fill="url(#innerGlow)"/>
+          
+          <!-- Digital grid pattern -->
+          <g opacity="0.3" stroke="#ffffff" stroke-width="0.5">
+            <line x1="40" y1="15" x2="40" y2="57"/>
+            <line x1="25" y1="28" x2="55" y2="28"/>
+            <line x1="25" y1="44" x2="55" y2="44"/>
+            <line x1="30" y1="20" x2="30" y2="52"/>
+            <line x1="50" y1="20" x2="50" y2="52"/>
+          </g>
+          
+          <!-- Central user icon - geometric -->
+          <g transform="translate(40, 36)">
+            <!-- Head - geometric circle -->
+            <circle cx="0" cy="-6" r="8" fill="#ffffff" opacity="0.9"/>
+            
+            <!-- Body - geometric trapezoid -->
+            <path d="M -10 10 L -6 2 L 6 2 L 10 10 Z" fill="#ffffff" opacity="0.9"/>
+          </g>
+          
+          <!-- Corner accent triangles -->
+          <path d="M 40 4 L 50 10 L 40 10 Z" fill="#ffffff" opacity="0.15"/>
+          <path d="M 68 20 L 68 30 L 62 25 Z" fill="#ffffff" opacity="0.15"/>
+          <path d="M 12 20 L 18 25 L 12 30 Z" fill="#ffffff" opacity="0.15"/>
+          
+          <!-- Outer hexagon border -->
+          <path d="M 40 4 L 68 20 L 68 52 L 40 68 L 12 52 L 12 20 Z" stroke="url(#techGradient)" stroke-width="2" fill="none" opacity="0.6"/>
+        </svg>
+      </div>
+      <div>
+        <h3 class="text-xl font-semibold text-gray-900 dark:text-white">{{ user.username }}</h3>
+        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">{{ user.email }}</p>
+      </div>
+    </div>
+
+    <!-- User Info Grid -->
+    <div class="grid grid-cols-2 gap-4 p-4 bg-gray-50 dark:bg-[#1c1c1e] rounded-lg">
+      <div>
+        <label class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">First Name</label>
+        <p class="mt-1 text-sm text-gray-900 dark:text-white font-medium">{{ user.firstName || '—' }}</p>
+      </div>
+      <div>
+        <label class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Last Name</label>
+        <p class="mt-1 text-sm text-gray-900 dark:text-white font-medium">{{ user.lastName || '—' }}</p>
+      </div>
+      <div>
+        <label class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Created At</label>
+        <p class="mt-1 text-sm text-gray-900 dark:text-white font-medium">{{ formatDate(user.createdAt) }}</p>
+      </div>
+      <div>
+        <label class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Updated At</label>
+        <p class="mt-1 text-sm text-gray-900 dark:text-white font-medium">{{ formatDate(user.updatedAt) }}</p>
+      </div>
+    </div>
+
+    <!-- Tenants -->
+    <div class="p-4 bg-gray-50 dark:bg-[#1c1c1e] rounded-lg">
+      <label class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider block mb-3">Tenants</label>
+      <div class="flex flex-wrap gap-2">
+        <span 
+          *ngFor="let tenant of user.tenantIds" 
+          class="px-3 py-1.5 text-sm rounded-lg bg-[#007aff]/10 text-[#007aff] dark:bg-[#0a84ff]/20 dark:text-[#0a84ff] font-medium">
+          {{ tenant }}
+        </span>
+        <span *ngIf="!user.tenantIds?.length" class="text-sm text-gray-400 dark:text-gray-500">No tenants assigned</span>
+      </div>
+    </div>
+
+    <!-- Roles -->
+    <div class="p-4 bg-gray-50 dark:bg-[#1c1c1e] rounded-lg">
+      <label class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider block mb-3">Roles</label>
+      <div class="flex flex-wrap gap-2">
+        <span 
+          *ngFor="let role of user.roles" 
+          class="px-3 py-1.5 text-sm rounded-lg bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300 font-medium">
+          {{ role }}
+        </span>
+        <span *ngIf="!user.roles?.length" class="text-sm text-gray-400 dark:text-gray-500">No roles assigned</span>
+      </div>
+    </div>
+
+    <!-- Keycloak ID -->
+    <div *ngIf="user.keycloakId" class="p-4 bg-gray-50 dark:bg-[#1c1c1e] rounded-lg">
+      <label class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider block mb-2">Keycloak ID</label>
+      <p class="text-sm text-gray-700 dark:text-gray-300 font-mono break-all">{{ user.keycloakId }}</p>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="mt-6 pt-4 border-t border-gray-200 dark:border-[#38383a] flex justify-end">
+    <button 
+      (click)="close()"
+      class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg transition">
+      Close
+    </button>
+  </div>
+</div>

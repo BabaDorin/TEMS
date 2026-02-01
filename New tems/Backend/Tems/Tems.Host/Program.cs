@@ -86,6 +86,10 @@ builder.Services.AddAuthorization(options =>
         
     options.AddPolicy("CanOpenTickets", policy =>
         policy.RequireRole("can_open_tickets"));
+    
+    // User Management
+    options.AddPolicy("CanManageUsers", policy =>
+        policy.RequireRole("can_manage_users"));
 });
 
 // Add CORS for Angular frontend

@@ -7,10 +7,27 @@
     [class.ring-[#007aff]/20]="isOpen"
     [class.opacity-50]="disabled"
     [class.cursor-not-allowed]="disabled">
-    <span [class.text-gray-400]="!selectedValue" [class.dark:text-gray-500]="!selectedValue" [class.text-gray-900]="selectedValue" [class.dark:text-white]="selectedValue" [class.font-medium]="selectedValue" class="text-sm">
-      {{ selectedLabel }}
-    </span>
-    <svg width="12" height="8" viewBox="0 0 12 8" fill="none" class="ml-2 transition-transform duration-200 text-gray-600 dark:text-gray-400" [class.rotate-180]="isOpen">
+    <div class="flex-1 flex flex-wrap gap-1.5">
+      <ng-container *ngIf="mode === 'multiple' && selectedValues.length > 0; else singleDisplay">
+        <span *ngFor="let value of selectedValues" 
+          class="inline-flex items-center gap-1 px-2 py-1 bg-[#007aff] dark:bg-[#0a84ff] text-white rounded-md text-xs font-medium">
+          {{ getOptionLabel(value) }}
+          <button 
+            (click)="selectOption(value); $event.stopPropagation()"
+            class="hover:bg-white/20 rounded-full p-0.5 transition">
+            <svg width="12" height="12" viewBox="0 0 14 14" fill="none">
+              <path d="M10.5 3.5L3.5 10.5M3.5 3.5L10.5 10.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </span>
+      </ng-container>
+      <ng-template #singleDisplay>
+        <span [class.text-gray-400]="!selectedValue && mode === 'single'" [class.dark:text-gray-500]="!selectedValue && mode === 'single'" [class.text-gray-900]="selectedValue || mode === 'multiple'" [class.dark:text-white]="selectedValue || mode === 'multiple'" [class.font-medium]="selectedValue" class="text-sm">
+          {{ selectedLabel }}
+        </span>
+      </ng-template>
+    </div>
+    <svg width="12" height="8" viewBox="0 0 12 8" fill="none" class="ml-2 transition-transform duration-200 text-gray-600 dark:text-gray-400 flex-shrink-0" [class.rotate-180]="isOpen">
       <path d="M1 1.5L6 6.5L11 1.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>
   </div>
@@ -26,13 +43,11 @@
     </div>
     <div class="max-h-52 overflow-y-auto">
       <div 
-        *ngIf="allowEmpty"
+        *ngIf="allowEmpty && mode === 'single'"
         (click)="selectOption(''); $event.stopPropagation()" 
         class="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 dark:hover:bg-white/5 cursor-pointer border-b border-gray-100 dark:border-[#48484a]" 
         [class.bg-[#007aff]/5]="isSelected('')">
-        <div class="w-5 h-5 flex-shrink-0 border-2 flex items-center justify-center transition"
-          [class.rounded-full]="mode === 'single'"
-          [class.rounded]="mode === 'multiple'"
+        <div class="w-5 h-5 flex-shrink-0 border-2 rounded-full flex items-center justify-center transition"
           [class.border-[#007aff]]="isSelected('')" 
           [class.bg-[#007aff]]="isSelected('')" 
           [class.border-gray-300]="!isSelected('')"

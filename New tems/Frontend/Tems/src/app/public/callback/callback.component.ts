@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { CommonModule } from '@angular/common';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-callback',
@@ -21,6 +22,7 @@ import { CommonModule } from '@angular/common';
 export class CallbackComponent implements OnInit {
   constructor(
     private oauthService: OAuthService,
+    private authService: AuthService,
     private router: Router
   ) {}
 
@@ -37,7 +39,9 @@ export class CallbackComponent implements OnInit {
         console.log('[Callback] Access token exists:', !!accessToken);
         
         if (hasToken && accessToken) {
-          console.log('[Callback] Login successful, redirecting to home');
+          console.log('[Callback] Login successful, notifying auth service and redirecting to home');
+          // Notify auth service to update authentication state
+          this.authService.notifyLoginComplete();
           this.router.navigate(['/home']);
         } else {
           console.error('[Callback] No valid access token after login');

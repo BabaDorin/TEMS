@@ -1,47 +1,83 @@
-<ng-container *ngIf="formlyData.isVisible == true; else elseBlock">
-    <h3 *ngIf="userIdToUpdate == undefined">
-        {{ 'user.add' | translate }}
-    </h3>
-    <h3 *ngIf="userIdToUpdate != undefined">
-        {{ 'user.update' | translate }}
-    </h3>
-    <form [formGroup]="formlyData.form" (ngSubmit)="onSubmit()">
-        <formly-form [form]="formlyData.form" [fields]="formlyData.fields" [model]="formlyData.model"></formly-form>
+<div class="p-6 min-w-[400px] max-w-[500px]">
+  <div class="flex justify-between items-center mb-6">
+    <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Add New User</h2>
+    <button mat-icon-button (click)="close()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
 
-        <app-chips-autocomplete 
-            #rolesChips [label]="translate.instant('user.roleLabel')" [autocompleteOptions]="roleOptions"
-            (dataCollected)="markRoleClaims()" (dataRemoved)="markRoleClaims(true)">
-        </app-chips-autocomplete>
-        <br>
+  <!-- Error Message -->
+  <div *ngIf="errorMessage" class="mb-4 p-3 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 rounded-lg">
+    {{ errorMessage }}
+  </div>
 
-        <app-chips-autocomplete #personnelChips [label]="translate.instant('user.assignPersonnelLabel')"
-            [endPoint]="personnelService" [maxOptionsSelected]="1">
-        </app-chips-autocomplete>
+  <form [formGroup]="userForm" (ngSubmit)="onSubmit()" class="space-y-4">
+    <!-- Username -->
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Username</mat-label>
+      <input matInput formControlName="username" placeholder="Enter username">
+      <mat-error *ngIf="userForm.get('username')?.hasError('required')">Username is required</mat-error>
+      <mat-error *ngIf="userForm.get('username')?.hasError('minlength')">Username must be at least 3 characters</mat-error>
+    </mat-form-field>
 
-        <div class="mt-2">
-            <mat-expansion-panel>
-                <mat-expansion-panel-header>
-                    <mat-panel-title>
-                        <h3 class="m-2">
-                            {{ 'user.claims' | translate }}
-                        </h3>
-                    </mat-panel-title>
-                </mat-expansion-panel-header>
-                <ng-template matExpansionPanelContent>
-                    <app-checkbox-group [options]="claims"
-                        [label]="translate.instant('user.claimsLabel')"
-                        (toggle)="onClaimsChange($event)">
-                    </app-checkbox-group>
-                </ng-template>
-            </mat-expansion-panel>
-        </div>
+    <!-- Email -->
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Email</mat-label>
+      <input matInput formControlName="email" type="email" placeholder="Enter email">
+      <mat-error *ngIf="userForm.get('email')?.hasError('required')">Email is required</mat-error>
+      <mat-error *ngIf="userForm.get('email')?.hasError('email')">Please enter a valid email</mat-error>
+    </mat-form-field>
 
-        <button type="submit" class="btn btn-gradient-primary mt-2" [disabled]="formlyData.form.status=='INVALID'">
-            {{ 'form.submit' | translate }}
-        </button>
-    </form>
-</ng-container>
+    <!-- First Name -->
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>First Name (optional)</mat-label>
+      <input matInput formControlName="firstName" placeholder="Enter first name">
+    </mat-form-field>
 
-<ng-template #elseBlock>
-    {{ 'general.preparing' | translate }}
-</ng-template>
+    <!-- Last Name -->
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Last Name (optional)</mat-label>
+      <input matInput formControlName="lastName" placeholder="Enter last name">
+    </mat-form-field>
+
+    <!-- Temporary Password -->
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Temporary Password (optional)</mat-label>
+      <input matInput formControlName="temporaryPassword" type="password" placeholder="Leave empty for no password">
+      <mat-hint>User will be required to change this on first login</mat-hint>
+      <mat-error *ngIf="userForm.get('temporaryPassword')?.hasError('minlength')">Password must be at least 8 characters</mat-error>
+    </mat-form-field>
+
+    <!-- Roles Selection -->
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Initial Roles</mat-label>
+      <mat-select formControlName="selectedRoles" multiple>
+        <mat-option *ngFor="let role of availableRoles" [value]="role.name">
+          {{ role.name }}
+        </mat-option>
+      </mat-select>
+      <mat-hint *ngIf="isLoadingRoles">Loading roles...</mat-hint>
+    </mat-form-field>
+
+    <!-- Tenant Info -->
+    <div class="p-3 bg-blue-50 dark:bg-blue-900/30 rounded-lg">
+      <p class="text-sm text-blue-700 dark:text-blue-300">
+        <mat-icon class="!text-base align-middle mr-1">info</mat-icon>
+        User will be assigned to the default tenant automatically.
+      </p>
+    </div>
+
+    <!-- Actions -->
+    <div class="flex justify-end gap-3 pt-4">
+      <button mat-button type="button" (click)="close()" [disabled]="isSaving">Cancel</button>
+      <button 
+        mat-raised-button 
+        color="primary" 
+        type="submit"
+        [disabled]="userForm.invalid || isSaving">
+        <mat-spinner *ngIf="isSaving" diameter="20" class="mr-2"></mat-spinner>
+        {{ isSaving ? 'Creating...' : 'Create User' }}
+      </button>
+    </div>
+  </form>
+</div>

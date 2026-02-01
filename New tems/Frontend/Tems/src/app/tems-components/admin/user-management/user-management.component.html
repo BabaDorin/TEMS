@@ -1,20 +1,12 @@
-<div class="card">
-    <div class="card-body">
-        <h2>
-            <span>  
-                <mat-icon class="text-primary">account_circle</mat-icon>
-                {{ 'user.management' | translate }}
-            </span>
-        </h2>
-        <button mat-button (click)="addUser()">
-            <mat-icon class="text-primary">add</mat-icon>
-            {{ 'user.add' | translate }}
-        </button>
-        <hr>
-        <div class="mt-3">
-            <app-view-users #viewUsers>
-                {{ 'general.loading' | translate }}
-            </app-view-users>
-        </div>
+<div class="bg-[#f5f5f7] dark:bg-[#1c1c1e] min-h-screen p-4 transition-colors duration-200">
+  <div class="max-w-7xl mx-auto">
+    <!-- Header -->
+    <div class="mb-4">
+      <h1 class="text-2xl font-semibold text-gray-900 dark:text-white" style="letter-spacing: -0.5px;">User Management</h1>
+      <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Manage users, their roles, and tenant assignments</p>
     </div>
+
+    <!-- Users Grid -->
+    <app-view-users #viewUsers (addUserClicked)="addUser()"></app-view-users>
+  </div>
 </div>

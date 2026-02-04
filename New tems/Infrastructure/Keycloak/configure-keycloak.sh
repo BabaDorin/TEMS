@@ -116,7 +116,7 @@ curl -s -X POST "${KEYCLOAK_URL}/admin/realms/${REALM}/identity-provider/instanc
             "clientId": "keycloak-broker",
             "clientSecret": "keycloak-secret",
             "clientAuthMethod": "client_secret_post",
-            "defaultScope": "openid profile email roles tems-api",
+            "defaultScope": "openid profile email",
             "syncMode": "FORCE",
             "useJwksUrl": "true",
             "jwksUrl": "http://host.docker.internal:5001/.well-known/openid-configuration/jwks",
@@ -217,20 +217,35 @@ curl -s -X PUT "${KEYCLOAK_URL}/admin/realms/${REALM}" \
 echo "Browser flow configured - Keycloak will now redirect to Duende IdentityServer"
 
 # Add protocol mappers for roles and claims
-# Create realm roles for permissions
-echo "Creating realm roles for permissions..."
+# Create realm roles for TEMS permissions (correct roles matching backend)
+echo "Creating realm roles for TEMS permissions..."
 
-for role in "can_view_entities" "can_manage_entities" "can_allocate_keys" "can_send_emails" "can_manage_announcements" "can_manage_system_configuration"; do
-    echo "Creating role: ${role}"
-    curl -s -X POST "${KEYCLOAK_URL}/admin/realms/${REALM}/roles" \
-        -H "Authorization: Bearer ${ADMIN_TOKEN}" \
-        -H "Content-Type: application/json" \
-        -d "{
-            \"name\": \"${role}\",
-            \"description\": \"Permission to ${role}\",
-            \"composite\": false,
-            \"clientRole\": false
-        }"
+TEMS_ROLES=(
+    "can_manage_assets"
+    "can_manage_tickets"
+    "can_open_tickets"
+    "can_manage_users"
+)
+
+for role in "${TEMS_ROLES[@]}"; do
+    # Check if role already exists
+    EXISTING_ROLE=$(curl -s -X GET "${KEYCLOAK_URL}/admin/realms/${REALM}/roles/${role}" \
+        -H "Authorization: Bearer ${ADMIN_TOKEN}" 2>/dev/null | jq -r '.name')
+    
+    if [ "$EXISTING_ROLE" = "$role" ]; then
+        echo "  ✅ Role '${role}' already exists"
+    else
+        echo "  Creating role: ${role}"
+        curl -s -X POST "${KEYCLOAK_URL}/admin/realms/${REALM}/roles" \
+            -H "Authorization: Bearer ${ADMIN_TOKEN}" \
+            -H "Content-Type: application/json" \
+            -d "{
+                \"name\": \"${role}\",
+                \"description\": \"Permission for ${role}\",
+                \"composite\": false,
+                \"clientRole\": false
+            }"
+    fi
 done
 
 echo "Realm roles created"
@@ -284,8 +299,8 @@ ADMIN_USER_ID=$(curl -s -X GET "${KEYCLOAK_URL}/admin/realms/${REALM}/users?user
     -H "Authorization: Bearer ${ADMIN_TOKEN}" | jq -r '.[0].id')
 
 # Assign all roles to admin user
-echo "Assigning all roles to admin user..."
-for role in "can_view_entities" "can_manage_entities" "can_allocate_keys" "can_send_emails" "can_manage_announcements" "can_manage_system_configuration"; do
+echo "Assigning all TEMS roles to admin user..."
+for role in "${TEMS_ROLES[@]}"; do
     ROLE_DATA=$(curl -s -X GET "${KEYCLOAK_URL}/admin/realms/${REALM}/roles/${role}" \
         -H "Authorization: Bearer ${ADMIN_TOKEN}")
     
@@ -320,15 +335,15 @@ curl -s -X POST "${KEYCLOAK_URL}/admin/realms/${REALM}/users" \
 REGULAR_USER_ID=$(curl -s -X GET "${KEYCLOAK_URL}/admin/realms/${REALM}/users?username=user" \
     -H "Authorization: Bearer ${ADMIN_TOKEN}" | jq -r '.[0].id')
 
-# Assign only view role to regular user
-echo "Assigning view role to regular user..."
-VIEW_ROLE_DATA=$(curl -s -X GET "${KEYCLOAK_URL}/admin/realms/${REALM}/roles/can_view_entities" \
+# Assign can_open_tickets role to regular user
+echo "Assigning can_open_tickets role to regular user..."
+TICKET_ROLE_DATA=$(curl -s -X GET "${KEYCLOAK_URL}/admin/realms/${REALM}/roles/can_open_tickets" \
     -H "Authorization: Bearer ${ADMIN_TOKEN}")
 
 curl -s -X POST "${KEYCLOAK_URL}/admin/realms/${REALM}/users/${REGULAR_USER_ID}/role-mappings/realm" \
     -H "Authorization: Bearer ${ADMIN_TOKEN}" \
     -H "Content-Type: application/json" \
-    -d "[${VIEW_ROLE_DATA}]"
+    -d "[${TICKET_ROLE_DATA}]"
 
 echo "Regular user created with username: user, password: User123!"
 
@@ -345,10 +360,10 @@ echo "Test Users Created:"
 echo "  Admin User:"
 echo "    Username: admin"
 echo "    Password: Admin123!"
-echo "    Permissions: ALL"
+echo "    Permissions: can_manage_assets, can_manage_tickets, can_open_tickets, can_manage_users"
 echo ""
 echo "  Regular User:"
 echo "    Username: user"
 echo "    Password: User123!"
-echo "    Permissions: can_view_entities only"
+echo "    Permissions: can_open_tickets only"
 echo "=========================================="

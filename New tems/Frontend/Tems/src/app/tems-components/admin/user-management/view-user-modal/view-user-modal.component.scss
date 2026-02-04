@@ -1,5 +1,9 @@
 :host {
   display: block;
-  border-radius: 0.75rem;
   overflow: hidden;
+  background-color: white;
+}
+
+:host-context(.dark) {
+  background-color: #2c2c2e;
 }

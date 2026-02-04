@@ -2,17 +2,11 @@ import { Component, Inject, OnInit, Optional } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
-import { MatButtonModule } from '@angular/material/button';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatIconModule } from '@angular/material/icon';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { UserService } from 'src/app/services/user.service';
 import { TEMSComponent } from 'src/app/tems/tems.component';
 import { RoleDto } from 'src/app/models/user/user-management.model';
+import { CustomSelectComponent, SelectOption } from 'src/app/shared/custom-select/custom-select.component';
 
 @Component({
   selector: 'app-add-user',
@@ -22,14 +16,8 @@ import { RoleDto } from 'src/app/models/user/user-management.model';
     FormsModule,
     ReactiveFormsModule,
     MatDialogModule,
-    MatButtonModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatSelectModule,
-    MatCheckboxModule,
-    MatIconModule,
-    MatProgressSpinnerModule,
-    TranslateModule
+    TranslateModule,
+    CustomSelectComponent
   ],
   templateUrl: './add-user.component.html',
   styleUrls: ['./add-user.component.scss']
@@ -37,6 +25,8 @@ import { RoleDto } from 'src/app/models/user/user-management.model';
 export class AddUserComponent extends TEMSComponent implements OnInit {
   userForm: FormGroup;
   availableRoles: RoleDto[] = [];
+  roleOptions: SelectOption[] = [];
+  selectedRoleIds: string[] = [];
   isLoading = false;
   isLoadingRoles = false;
   isSaving = false;
@@ -71,6 +61,10 @@ export class AddUserComponent extends TEMSComponent implements OnInit {
       this.userService.getAvailableRoles().subscribe({
         next: (response) => {
           this.availableRoles = response.roles;
+          this.roleOptions = response.roles.map(role => ({
+            value: role.name,
+            label: role.name
+          }));
           this.isLoadingRoles = false;
         },
         error: (err) => {
@@ -79,6 +73,11 @@ export class AddUserComponent extends TEMSComponent implements OnInit {
         }
       })
     );
+  }
+
+  onRoleSelectionChange(selectedValues: string[]) {
+    this.selectedRoleIds = selectedValues;
+    this.userForm.patchValue({ selectedRoles: selectedValues });
   }
 
   onSubmit() {

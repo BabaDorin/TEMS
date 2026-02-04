@@ -1,17 +1,21 @@
-<div class="bg-white dark:bg-[#2c2c2e] rounded-xl p-6 min-w-[500px] max-w-[600px] overflow-hidden">
+<div class="min-w-[500px] max-w-[600px] flex flex-col max-h-[85vh]">
   <!-- Header -->
-  <div class="flex justify-between items-center mb-6 pb-4 border-b border-gray-200 dark:border-[#38383a]">
-    <h2 class="text-xl font-semibold text-gray-900 dark:text-white">User Details</h2>
-    <button 
-      (click)="close()"
-      class="p-2 hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg transition">
-      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" class="text-gray-600 dark:text-gray-400">
-        <path d="M15 5L5 15M5 5L15 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-      </svg>
-    </button>
+  <div class="px-6 py-4 border-b border-gray-200 dark:border-[#38383a] flex-shrink-0">
+    <div class="flex justify-between items-center">
+      <h2 class="text-xl font-semibold text-gray-900 dark:text-white">User Details</h2>
+      <button 
+        (click)="close()"
+        class="p-2 hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg transition">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" class="text-gray-600 dark:text-gray-400">
+          <path d="M15 5L5 15M5 5L15 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
   </div>
 
-  <div class="space-y-6">
+  <!-- Scrollable Content -->
+  <div class="p-6 overflow-y-auto flex-1">
+    <div class="space-y-6">
     <!-- Avatar and Name -->
     <div class="flex items-center gap-4">
       <div class="w-20 h-20 flex items-center justify-center flex-shrink-0 relative">
@@ -119,10 +123,11 @@
       <label class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider block mb-2">Keycloak ID</label>
       <p class="text-sm text-gray-700 dark:text-gray-300 font-mono break-all">{{ user.keycloakId }}</p>
     </div>
+    </div>
   </div>
 
   <!-- Footer -->
-  <div class="mt-6 pt-4 border-t border-gray-200 dark:border-[#38383a] flex justify-end">
+  <div class="px-6 py-4 border-t border-gray-200 dark:border-[#38383a] flex justify-end flex-shrink-0">
     <button 
       (click)="close()"
       class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg transition">

@@ -1,23 +1,44 @@
 import { TokenService } from './token.service';
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import { RouteInfo } from 'src/app/shared/sidebar/sidebar.metadata';
 import { TranslateService } from '@ngx-translate/core';
+import { AuthService } from './auth.service';
+import { Subject, takeUntil } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
-export class MenuService {
+export class MenuService implements OnDestroy {
 
-  ROUTES: RouteInfo[];
+  ROUTES: RouteInfo[] = [];
+  private destroy$ = new Subject<void>();
 
   constructor(
     private tokenService: TokenService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private authService: AuthService
   ) {
-    this.translate.get(['menu'])
-      .subscribe(translations => {
-        let menu = translations.menu;
+    this.buildRoutes();
+    
+    this.authService.isAuthenticated$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        setTimeout(() => this.buildRoutes(), 100);
+      });
+  }
 
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  refreshMenu(): void {
+    this.buildRoutes();
+  }
+
+  private buildRoutes(): void {
+    this.translate.get(['menu'])
+      .subscribe(() => {
         this.ROUTES = [
           {
             path: '',
@@ -113,7 +134,7 @@ export class MenuService {
               }
             ]
           }
-        ]
-      })
+        ];
+      });
   }
 }

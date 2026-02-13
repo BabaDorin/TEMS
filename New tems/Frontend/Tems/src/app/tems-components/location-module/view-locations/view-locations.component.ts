@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule, FormsModule } from '@angular/forms';
@@ -15,6 +15,7 @@ import { Building } from 'src/app/models/location/building.model';
 import { RoomWithHierarchy, RoomType, RoomStatus } from 'src/app/models/location/room.model';
 import { RoomDetailModalComponent } from '../room-detail-modal/room-detail-modal.component';
 import { AddRoomModalComponent } from '../add-room-modal/add-room-modal.component';
+import { CustomSelectComponent, SelectOption } from 'src/app/shared/custom-select/custom-select.component';
 
 @Component({
   selector: 'app-view-locations',
@@ -23,7 +24,8 @@ import { AddRoomModalComponent } from '../add-room-modal/add-room-modal.componen
     CommonModule,
     ReactiveFormsModule,
     FormsModule,
-    AgGridAngular
+    AgGridAngular,
+    CustomSelectComponent
   ],
   templateUrl: './view-locations.component.html',
   styleUrls: ['./view-locations.component.scss'],
@@ -55,11 +57,9 @@ export class ViewLocationsComponent implements OnInit, OnDestroy {
   isFiltersExpanded = false;
   private roomNameSearchSubject = new Subject<string>();
 
-  // Dropdown states
-  isSiteDropdownOpen = false;
-  isBuildingDropdownOpen = false;
-  siteSearchText = '';
-  buildingSearchText = '';
+  // Select options
+  siteOptions: SelectOption[] = [];
+  buildingOptions: SelectOption[] = [];
 
   // Pagination
   currentPage = 1;
@@ -155,7 +155,7 @@ export class ViewLocationsComponent implements OnInit, OnDestroy {
   ) {}
 
   get gridThemeClass(): string {
-    return this.themeService.isDarkMode ? 'ag-theme-quartz-auto-dark' : 'ag-theme-quartz';
+    return this.themeService.isDarkMode ? 'ag-theme-quartz-dark' : 'ag-theme-quartz';
   }
 
   ngOnInit() {
@@ -171,6 +171,7 @@ export class ViewLocationsComponent implements OnInit, OnDestroy {
     this.locationService.getAllSites().subscribe({
       next: (sites) => {
         this.sites = sites.sort((a, b) => a.name.localeCompare(b.name));
+        this.siteOptions = [{ value: '', label: 'All Sites' }, ...this.sites.map(s => ({ value: s.id, label: s.name }))];
         
         // Auto-select if only one site
         if (this.sites.length === 1) {
@@ -191,6 +192,7 @@ export class ViewLocationsComponent implements OnInit, OnDestroy {
     this.locationService.getAllBuildings(siteId).subscribe({
       next: (buildings) => {
         this.buildings = buildings.sort((a, b) => a.name.localeCompare(b.name));
+        this.buildingOptions = [{ value: '', label: 'All Buildings' }, ...this.buildings.map(b => ({ value: b.id, label: b.name }))];
         
         // Auto-select if only one building
         if (this.selectedSiteId && this.buildings.length === 1) {
@@ -269,7 +271,7 @@ export class ViewLocationsComponent implements OnInit, OnDestroy {
 
   viewRoomDetails(room: RoomWithHierarchy) {
     const dialogRef = this.dialog.open(RoomDetailModalComponent, {
-      width: '500px',
+      width: '520px',
       maxWidth: '95vw',
       data: { room },
       panelClass: 'custom-dialog-container'
@@ -357,73 +359,13 @@ export class ViewLocationsComponent implements OnInit, OnDestroy {
     return count;
   }
 
-  getFilteredBuildings(): Building[] {
-    // Buildings are already filtered by site when loaded
-    if (!this.buildingSearchText.trim()) {
-      return this.buildings;
-    }
-    const search = this.buildingSearchText.toLowerCase();
-    return this.buildings.filter(b => b.name.toLowerCase().includes(search));
-  }
-
-  // Dropdown methods
-  @HostListener('document:click', ['$event'])
-  onDocumentClick(event: Event) {
-    const target = event.target as HTMLElement;
-    if (!target.closest('.site-dropdown-container')) {
-      this.isSiteDropdownOpen = false;
-    }
-    if (!target.closest('.building-dropdown-container')) {
-      this.isBuildingDropdownOpen = false;
-    }
-  }
-
-  toggleSiteDropdown() {
-    this.isSiteDropdownOpen = !this.isSiteDropdownOpen;
-    this.isBuildingDropdownOpen = false;
-    if (this.isSiteDropdownOpen) {
-      this.siteSearchText = '';
-    }
-  }
-
-  toggleBuildingDropdown() {
-    if (this.buildings.length === 0) return;
-    this.isBuildingDropdownOpen = !this.isBuildingDropdownOpen;
-    this.isSiteDropdownOpen = false;
-    if (this.isBuildingDropdownOpen) {
-      this.buildingSearchText = '';
-    }
-  }
-
-  getFilteredSites(): Site[] {
-    if (!this.siteSearchText.trim()) {
-      return this.sites;
-    }
-    const search = this.siteSearchText.toLowerCase();
-    return this.sites.filter(s => s.name.toLowerCase().includes(search));
-  }
-
-  selectSite(siteId: string | null) {
-    this.selectedSiteId = siteId;
-    this.isSiteDropdownOpen = false;
-    this.siteSearchText = '';
+  selectSite(siteId: string) {
+    this.selectedSiteId = siteId || null;
     this.onSiteChange();
   }
 
-  selectBuilding(buildingId: string | null) {
-    this.selectedBuildingId = buildingId;
-    this.isBuildingDropdownOpen = false;
-    this.buildingSearchText = '';
+  selectBuilding(buildingId: string) {
+    this.selectedBuildingId = buildingId || null;
     this.onBuildingChange();
-  }
-
-  getSiteName(siteId: string): string {
-    const site = this.sites.find(s => s.id === siteId);
-    return site ? site.name : '';
-  }
-
-  getBuildingName(buildingId: string): string {
-    const building = this.buildings.find(b => b.id === buildingId);
-    return building ? building.name : '';
   }
 }

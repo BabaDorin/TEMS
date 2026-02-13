@@ -5,6 +5,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatChipsModule } from '@angular/material/chips';
+import { MatDialog } from '@angular/material/dialog';
 import { TranslateModule } from '@ngx-translate/core';
 import { AgGridAngular } from 'ag-grid-angular';
 import { ColDef, GridApi, GridReadyEvent } from 'ag-grid-community';
@@ -15,6 +16,7 @@ import { TEMSComponent } from './../../../../tems/tems.component';
 import { UserDto } from 'src/app/models/user/user-management.model';
 import { ViewUserModalComponent } from '../view-user-modal/view-user-modal.component';
 import { EditUserRolesModalComponent } from '../edit-user-roles-modal/edit-user-roles-modal.component';
+import { DeleteUserConfirmModalComponent } from '../../../user-module/delete-user-confirm-modal/delete-user-confirm-modal.component';
 
 @Component({
   selector: 'app-view-users',
@@ -149,7 +151,8 @@ export class ViewUsersComponent extends TEMSComponent implements OnInit {
   constructor(
     private userService: UserService,
     private dialogService: DialogService,
-    private themeService: ThemeService
+    private themeService: ThemeService,
+    private dialog: MatDialog
   ) {
     super();
   }
@@ -211,21 +214,18 @@ export class ViewUsersComponent extends TEMSComponent implements OnInit {
   }
 
   deleteUser(user: UserDto) {
-    if (confirm(`Are you sure you want to delete user "${user.username}"? This will remove the user from Keycloak.`)) {
-      this.userService.deleteManagedUser(user.id).subscribe({
-        next: (response) => {
-          if (response.success) {
-            this.fetchUsers();
-          } else {
-            alert(response.message || 'Failed to delete user');
-          }
-        },
-        error: (err) => {
-          console.error('Failed to delete user:', err);
-          alert('Failed to delete user');
-        }
-      });
-    }
+    const dialogRef = this.dialog.open(DeleteUserConfirmModalComponent, {
+      width: '520px',
+      maxWidth: '95vw',
+      panelClass: 'custom-dialog-container',
+      data: { user }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result?.deleted) {
+        this.fetchUsers();
+      }
+    });
   }
 
   // Pagination methods

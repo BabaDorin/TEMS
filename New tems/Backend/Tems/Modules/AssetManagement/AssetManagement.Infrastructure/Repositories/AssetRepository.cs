@@ -39,6 +39,7 @@ public class AssetRepository(IMongoDatabase database) : IAssetRepository
         List<string>? definitionIds = null,
         string? assetTag = null,
         string? locationId = null,
+        string? assignedToUserId = null,
         CancellationToken cancellationToken = default)
     {
         var filterBuilder = Builders<DbEntity.Asset>.Filter;
@@ -67,6 +68,11 @@ public class AssetRepository(IMongoDatabase database) : IAssetRepository
         if (!string.IsNullOrWhiteSpace(locationId))
         {
             filters.Add(filterBuilder.Eq(x => x.LocationId, locationId));
+        }
+
+        if (!string.IsNullOrWhiteSpace(assignedToUserId))
+        {
+            filters.Add(filterBuilder.Eq("assignment.assigned_to_user_id", assignedToUserId));
         }
 
         var filter = filters.Count > 0 
@@ -229,6 +235,41 @@ public class AssetRepository(IMongoDatabase database) : IAssetRepository
                 locationGroup => locationGroup.Key,
                 locationGroup => locationGroup
                     .GroupBy(a => a.Definition.AssetTypeName)
+                    .ToDictionary(
+                        typeGroup => typeGroup.Key,
+                        typeGroup => typeGroup.Count()
+                    )
+            );
+    }
+
+    public async Task<Dictionary<string, Dictionary<string, int>>> GetAssetCountsByUserIdsAsync(
+        List<string> userIds,
+        CancellationToken cancellationToken = default)
+    {
+        if (userIds.Count == 0)
+            return [];
+
+        var filter = Builders<DbEntity.Asset>.Filter.And(
+            Builders<DbEntity.Asset>.Filter.In("assignment.assigned_to_user_id", userIds),
+            Builders<DbEntity.Asset>.Filter.Eq(x => x.IsArchived, false)
+        );
+
+        var projection = Builders<DbEntity.Asset>.Projection
+            .Include("assignment.assigned_to_user_id")
+            .Include("definition.asset_type_name");
+
+        var assets = await _collection
+            .Find(filter)
+            .Project<DbEntity.Asset>(projection)
+            .ToListAsync(cancellationToken);
+
+        return assets
+            .Where(a => a.Assignment?.AssignedToUserId != null)
+            .GroupBy(a => a.Assignment!.AssignedToUserId!)
+            .ToDictionary(
+                userGroup => userGroup.Key,
+                userGroup => userGroup
+                    .GroupBy(a => a.Definition?.AssetTypeName ?? "Unknown")
                     .ToDictionary(
                         typeGroup => typeGroup.Key,
                         typeGroup => typeGroup.Count()

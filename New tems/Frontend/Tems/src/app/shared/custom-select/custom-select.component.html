@@ -1,7 +1,7 @@
 <div class="relative w-full">
   <div 
     (click)="toggleDropdown()"
-    class="min-h-[44px] px-3 py-2 bg-white dark:bg-[#3a3a3c] border border-gray-200 dark:border-[#48484a] rounded-xl cursor-pointer hover:border-[#007aff] transition flex items-center justify-between"
+    class="select-trigger min-h-[44px] px-3 py-2 bg-white dark:bg-[#3a3a3c] border border-gray-200 dark:border-[#48484a] rounded-xl cursor-pointer hover:border-[#007aff] transition flex items-center justify-between"
     [class.border-[#007aff]]="isOpen"
     [class.ring-2]="isOpen"
     [class.ring-[#007aff]/20]="isOpen"
@@ -32,7 +32,13 @@
     </svg>
   </div>
   
-  <div *ngIf="isOpen" class="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-[#3a3a3c] border border-gray-200 dark:border-[#48484a] rounded-xl shadow-lg z-50 max-h-64 overflow-hidden">
+  <div *ngIf="isOpen" 
+    class="fixed bg-white dark:bg-[#3a3a3c] border border-gray-200 dark:border-[#48484a] rounded-xl shadow-lg overflow-hidden"
+    [style.top.px]="dropdownTop"
+    [style.left.px]="dropdownLeft"
+    [style.width.px]="dropdownWidth"
+    [style.max-height.px]="280"
+    style="z-index: 10000;">
     <div *ngIf="searchable" class="p-2 border-b border-gray-200 dark:border-[#48484a]">
       <input 
         type="text" 

@@ -91,7 +91,61 @@ curl -s -X POST "${KEYCLOAK_URL}/admin/realms/${REALM}/clients" \
 
 echo "Angular SPA client created"
 
-# Create Duende Identity Provider
+# =============================================================================
+# STEP A: Create custom "auto-link-first-login" flow
+# This flow auto-creates a Keycloak user on first IDP login, or auto-links to
+# an existing user — without ever showing the user any Keycloak pages.
+# =============================================================================
+echo "Creating custom auto-link-first-login flow..."
+curl -s -X POST "${KEYCLOAK_URL}/admin/realms/${REALM}/authentication/flows" \
+    -H "Authorization: Bearer ${ADMIN_TOKEN}" \
+    -H "Content-Type: application/json" \
+    -d '{
+        "alias": "auto-link-first-login",
+        "description": "Auto-creates or auto-links federated users without any prompts",
+        "providerId": "basic-flow",
+        "topLevel": true,
+        "builtIn": false
+    }'
+
+# Add "Create User If Unique" execution (creates new KC user if none matches)
+curl -s -X POST "${KEYCLOAK_URL}/admin/realms/${REALM}/authentication/flows/auto-link-first-login/executions/execution" \
+    -H "Authorization: Bearer ${ADMIN_TOKEN}" \
+    -H "Content-Type: application/json" \
+    -d '{ "provider": "idp-create-user-if-unique" }'
+
+# Add "Automatically Set Existing User" execution (links to existing KC user)
+curl -s -X POST "${KEYCLOAK_URL}/admin/realms/${REALM}/authentication/flows/auto-link-first-login/executions/execution" \
+    -H "Authorization: Bearer ${ADMIN_TOKEN}" \
+    -H "Content-Type: application/json" \
+    -d '{ "provider": "idp-auto-link" }'
+
+# Get execution IDs so we can set their requirements to ALTERNATIVE
+FIRST_LOGIN_EXECUTIONS=$(curl -s -X GET \
+    "${KEYCLOAK_URL}/admin/realms/${REALM}/authentication/flows/auto-link-first-login/executions" \
+    -H "Authorization: Bearer ${ADMIN_TOKEN}")
+
+CREATE_USER_EXEC_ID=$(echo "$FIRST_LOGIN_EXECUTIONS" | jq -r '.[] | select(.providerId=="idp-create-user-if-unique") | .id')
+AUTO_LINK_EXEC_ID=$(echo "$FIRST_LOGIN_EXECUTIONS" | jq -r '.[] | select(.providerId=="idp-auto-link") | .id')
+
+# Set "Create User If Unique" to ALTERNATIVE
+curl -s -X PUT "${KEYCLOAK_URL}/admin/realms/${REALM}/authentication/flows/auto-link-first-login/executions" \
+    -H "Authorization: Bearer ${ADMIN_TOKEN}" \
+    -H "Content-Type: application/json" \
+    -d "{\"id\": \"${CREATE_USER_EXEC_ID}\", \"requirement\": \"ALTERNATIVE\"}"
+
+# Set "Automatically Set Existing User" to ALTERNATIVE
+curl -s -X PUT "${KEYCLOAK_URL}/admin/realms/${REALM}/authentication/flows/auto-link-first-login/executions" \
+    -H "Authorization: Bearer ${ADMIN_TOKEN}" \
+    -H "Content-Type: application/json" \
+    -d "{\"id\": \"${AUTO_LINK_EXEC_ID}\", \"requirement\": \"ALTERNATIVE\"}"
+
+echo "  ✅ auto-link-first-login flow created (no prompts, no password verification)"
+
+# =============================================================================
+# STEP B: Create Duende Identity Provider
+# Uses the auto-link flow for first login, NO post-broker-login flow.
+# =============================================================================
 echo "Creating Duende IdentityServer identity provider..."
 curl -s -X POST "${KEYCLOAK_URL}/admin/realms/${REALM}/identity-provider/instances" \
     -H "Authorization: Bearer ${ADMIN_TOKEN}" \
@@ -106,8 +160,7 @@ curl -s -X POST "${KEYCLOAK_URL}/admin/realms/${REALM}/identity-provider/instanc
         "addReadTokenRoleOnCreate": false,
         "authenticateByDefault": true,
         "linkOnly": false,
-        "firstBrokerLoginFlowAlias": "first broker login",
-        "postBrokerLoginFlowAlias": "first broker login",
+        "firstBrokerLoginFlowAlias": "auto-link-first-login",
         "config": {
             "authorizationUrl": "http://localhost:5001/connect/authorize",
             "tokenUrl": "http://host.docker.internal:5001/connect/token",
@@ -130,23 +183,14 @@ curl -s -X POST "${KEYCLOAK_URL}/admin/realms/${REALM}/identity-provider/instanc
         }
     }'
 
-echo "Duende identity provider created"
+echo "  ✅ Duende identity provider created (firstBrokerLoginFlow=auto-link, no postBrokerLogin)"
 
-# Set Duende as default IdP for the realm
-echo "Setting Duende as default identity provider..."
-curl -s -X PUT "${KEYCLOAK_URL}/admin/realms/${REALM}" \
-    -H "Authorization: Bearer ${ADMIN_TOKEN}" \
-    -H "Content-Type: application/json" \
-    -d '{
-        "defaultDefaultClientScopes": ["web-origins","acr","roles","profile","email"],
-        "identityProviders": [],
-        "identityProviderMappers": []
-    }'
-
-# Configure authentication flow to redirect directly to Duende
+# =============================================================================
+# STEP C: Create custom browser flow that auto-redirects to Duende
+# The user never sees Keycloak's login page.
+# =============================================================================
 echo "Creating custom browser flow with automatic IdP redirect..."
 
-# Create a new authentication flow
 curl -s -X POST "${KEYCLOAK_URL}/admin/realms/${REALM}/authentication/flows" \
     -H "Authorization: Bearer ${ADMIN_TOKEN}" \
     -H "Content-Type: application/json" \
@@ -158,11 +202,7 @@ curl -s -X POST "${KEYCLOAK_URL}/admin/realms/${REALM}/authentication/flows" \
         "builtIn": false
     }'
 
-echo "Custom browser flow created"
-
-# Get the flow ID
-CUSTOM_FLOW_ID=$(curl -s -X GET "${KEYCLOAK_URL}/admin/realms/${REALM}/authentication/flows" \
-    -H "Authorization: Bearer ${ADMIN_TOKEN}" | jq -r '.[] | select(.alias=="duende-browser-flow") | .id')
+echo "  Custom browser flow created"
 
 # Add Identity Provider Redirector execution
 curl -s -X POST "${KEYCLOAK_URL}/admin/realms/${REALM}/authentication/flows/duende-browser-flow/executions/execution" \
@@ -172,8 +212,6 @@ curl -s -X POST "${KEYCLOAK_URL}/admin/realms/${REALM}/authentication/flows/duen
         "provider": "identity-provider-redirector"
     }'
 
-echo "IdP redirector execution added"
-
 # Get the execution ID
 EXECUTIONS=$(curl -s -X GET "${KEYCLOAK_URL}/admin/realms/${REALM}/authentication/flows/duende-browser-flow/executions" \
     -H "Authorization: Bearer ${ADMIN_TOKEN}")
@@ -182,9 +220,9 @@ IDP_REDIRECTOR_ID=$(echo "$EXECUTIONS" | jq -r '.[] | select(.providerId=="ident
 
 # Configure the redirector to use Duende as default
 if [ ! -z "$IDP_REDIRECTOR_ID" ] && [ "$IDP_REDIRECTOR_ID" != "null" ]; then
-    echo "Configuring IdP redirector to automatically redirect to Duende..."
+    echo "  Configuring IdP redirector to automatically redirect to Duende..."
     
-    # First, update the execution to be REQUIRED
+    # Update the execution to be REQUIRED
     curl -s -X PUT "${KEYCLOAK_URL}/admin/realms/${REALM}/authentication/flows/duende-browser-flow/executions" \
         -H "Authorization: Bearer ${ADMIN_TOKEN}" \
         -H "Content-Type: application/json" \
@@ -205,6 +243,8 @@ if [ ! -z "$IDP_REDIRECTOR_ID" ] && [ "$IDP_REDIRECTOR_ID" != "null" ]; then
         }'
 fi
 
+echo "  ✅ IdP redirector configured"
+
 # Set the custom flow as the default browser flow for the realm
 echo "Setting custom flow as default browser flow..."
 curl -s -X PUT "${KEYCLOAK_URL}/admin/realms/${REALM}" \
@@ -214,7 +254,7 @@ curl -s -X PUT "${KEYCLOAK_URL}/admin/realms/${REALM}" \
         "browserFlow": "duende-browser-flow"
     }'
 
-echo "Browser flow configured - Keycloak will now redirect to Duende IdentityServer"
+echo "  ✅ Browser flow configured — user will always be redirected to Duende automatically"
 
 # Add protocol mappers for roles and claims
 # Create realm roles for TEMS permissions (correct roles matching backend)

@@ -29,6 +29,7 @@ public class GetAllAssetCommandHandler(
             definitionIds: filter.DefinitionIds,
             assetTag: filter.AssetTag,
             locationId: filter.LocationId,
+            assignedToUserId: filter.AssignedToUserId,
             cancellationToken: cancellationToken);
 
         var totalPages = (int)Math.Ceiling(totalCount / (double)request.PageSize);

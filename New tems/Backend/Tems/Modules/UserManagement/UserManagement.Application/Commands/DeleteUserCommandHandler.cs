@@ -1,3 +1,4 @@
+using AssetManagement.Application.Interfaces;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using UserManagement.Contract.Commands;
@@ -10,20 +11,22 @@ namespace UserManagement.Application.Commands;
 
 /// <summary>
 /// Handles user deletion across all 3 systems:
-/// 1. Keycloak - for roles and access management
-/// 2. Duende Identity Server - for authentication (WORKAROUND: will be removed in future)
-/// 3. TEMS Database - for user management table
+/// 1. Unallocate assets from user (move to deposit)
+/// 2. Keycloak - for roles and access management
+/// 3. Duende Identity Server - for authentication (WORKAROUND: will be removed in future)
+/// 4. TEMS Database - for user management table
 /// </summary>
 public class DeleteUserCommandHandler(
     IUserRepository userRepository,
     IKeycloakClient keycloakClient,
     IIdentityServerClient identityServerClient,
+    IAssetRepository assetRepository,
     ILogger<DeleteUserCommandHandler> logger
 ) : IRequestHandler<DeleteUserCommand, DeleteUserResponse>
 {
     public async Task<DeleteUserResponse> Handle(DeleteUserCommand request, CancellationToken cancellationToken)
     {
-        logger.LogInformation("Deleting user {UserId} from all 3 systems", request.Id);
+        logger.LogInformation("Deleting user {UserId} from all systems", request.Id);
         
         try
         {
@@ -40,13 +43,45 @@ public class DeleteUserCommandHandler(
             var errors = new List<string>();
 
             // =============================================
+            // STEP 0: Unallocate all assets from user (move to deposit)
+            // =============================================
+            try
+            {
+                logger.LogInformation("Step 0/4: Unallocating assets from user {Username}", user.Name);
+                var userAssets = await assetRepository.GetByAssignedUserIdAsync(request.Id, cancellationToken);
+                
+                if (userAssets.Count > 0)
+                {
+                    logger.LogInformation("Found {Count} assets assigned to user, unallocating...", userAssets.Count);
+                    
+                    foreach (var asset in userAssets)
+                    {
+                        asset.Assignment = null;
+                        asset.UpdatedAt = DateTime.UtcNow;
+                        await assetRepository.UpdateAsync(asset, cancellationToken);
+                    }
+                    
+                    logger.LogInformation("Successfully unallocated {Count} assets from user", userAssets.Count);
+                }
+                else
+                {
+                    logger.LogInformation("No assets assigned to user");
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.LogWarning(ex, "Failed to unallocate assets from user - continuing with deletion");
+                errors.Add($"Asset unallocation: {ex.Message}");
+            }
+
+            // =============================================
             // STEP 1: Delete from Keycloak
             // =============================================
             if (!string.IsNullOrEmpty(user.KeycloakId))
             {
                 try
                 {
-                    logger.LogInformation("Step 1/3: Deleting user {Username} from Keycloak", user.Name);
+                    logger.LogInformation("Step 1/4: Deleting user {Username} from Keycloak", user.Name);
                     await keycloakClient.DeleteUserAsync(user.KeycloakId);
                     logger.LogInformation("Successfully deleted user from Keycloak");
                 }
@@ -67,7 +102,7 @@ public class DeleteUserCommandHandler(
             // =============================================
             try
             {
-                logger.LogInformation("Step 2/3: Deleting user {Username} from Identity Server (WORKAROUND)", user.Name);
+                logger.LogInformation("Step 2/4: Deleting user {Username} from Identity Server (WORKAROUND)", user.Name);
                 
                 // Try to delete by username first
                 var deleted = await identityServerClient.DeleteUserAsync(user.Name);
@@ -99,7 +134,7 @@ public class DeleteUserCommandHandler(
             // =============================================
             try
             {
-                logger.LogInformation("Step 3/3: Deleting user {UserId} from TEMS Database", request.Id);
+                logger.LogInformation("Step 3/4: Deleting user {UserId} from TEMS Database", request.Id);
                 await userRepository.DeleteAsync(request.Id, cancellationToken);
                 logger.LogInformation("Successfully deleted user from TEMS Database");
             }
@@ -124,7 +159,7 @@ public class DeleteUserCommandHandler(
                 );
             }
 
-            logger.LogInformation("User {UserId} deleted successfully from all 3 systems", request.Id);
+            logger.LogInformation("User {UserId} deleted successfully from all systems", request.Id);
 
             return new DeleteUserResponse(
                 Success: true,

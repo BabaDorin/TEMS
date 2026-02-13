@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject, Optional, HostListener, ElementRef } from '@angular/core';
+import { Component, OnInit, Inject, Optional } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
@@ -7,11 +7,12 @@ import { trigger, transition, style, animate } from '@angular/animations';
 import { LocationService } from 'src/app/services/location.service';
 import { Site } from 'src/app/models/location/site.model';
 import { Building } from 'src/app/models/location/building.model';
+import { CustomSelectComponent, SelectOption } from 'src/app/shared/custom-select/custom-select.component';
 
 @Component({
   selector: 'app-add-room-modal',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+    imports: [CommonModule, FormsModule, CustomSelectComponent],
   templateUrl: './add-room-modal.component.html',
   styleUrls: ['./add-room-modal.component.scss'],
   animations: [
@@ -31,36 +32,32 @@ export class AddRoomModalComponent implements OnInit {
   sites: Site[] = [];
   buildings: Building[] = [];
   
-  selectedSite: string | null = null;
-  selectedBuilding: string | null = null;
-  
-  roomName = '';
-  floor: number | null = null;
-  roomType: string | null = null;
-  roomNumber = '';
-  capacity: number | null = null;
-  description = '';
-  isSaving = false;
+    selectedSite: string = '';
+    selectedBuilding: string = '';
+    
+    roomName = '';
+    floor: number | null = null;
+    roomType: string = '';
+    roomNumber = '';
+    capacity: number | null = null;
+    description = '';
+    isSaving = false;
 
-  // UI State
-  isSiteDropdownOpen = false;
-  isBuildingDropdownOpen = false;
-  isTypeDropdownOpen = false;
+    siteOptions: SelectOption[] = [];
+    buildingOptions: SelectOption[] = [];
+    roomTypeOptions: SelectOption[] = [
+      { value: 'Meeting', label: 'Meeting Room' },
+      { value: 'Desk', label: 'Desk Area' },
+      { value: 'Workshop', label: 'Workshop' },
+      { value: 'ServerRoom', label: 'Server Room' }
+    ];
 
-  roomTypes = [
-    { value: 'Meeting', label: 'Meeting Room' },
-    { value: 'Desk', label: 'Desk Area' },
-    { value: 'Workshop', label: 'Workshop' },
-    { value: 'ServerRoom', label: 'Server Room' }
-  ];
-
-  constructor(
-    @Optional() public dialogRef: MatDialogRef<AddRoomModalComponent>,
-    @Optional() @Inject(MAT_DIALOG_DATA) public data: any,
-    private locationService: LocationService,
-    private router: Router,
-    private elementRef: ElementRef
-  ) {}
+    constructor(
+      @Optional() public dialogRef: MatDialogRef<AddRoomModalComponent>,
+      @Optional() @Inject(MAT_DIALOG_DATA) public data: any,
+      private locationService: LocationService,
+      private router: Router
+    ) {}
 
   ngOnInit() {
     this.loadSites();
@@ -70,7 +67,7 @@ export class AddRoomModalComponent implements OnInit {
     this.locationService.getAllSites().subscribe({
       next: (sites) => {
         this.sites = sites;
-        // Auto-select if only one site
+        this.siteOptions = sites.map(s => ({ value: s.id, label: s.name }));
         if (this.sites.length === 1) {
           this.selectedSite = this.sites[0].id;
           this.loadBuildings();
@@ -88,7 +85,7 @@ export class AddRoomModalComponent implements OnInit {
     this.locationService.getAllBuildings(this.selectedSite).subscribe({
       next: (buildings) => {
         this.buildings = buildings;
-        // Auto-select if only one building
+        this.buildingOptions = buildings.map(b => ({ value: b.id, label: b.name }));
         if (this.buildings.length === 1) {
           this.selectedBuilding = this.buildings[0].id;
         }
@@ -99,61 +96,22 @@ export class AddRoomModalComponent implements OnInit {
     });
   }
 
-  // Dropdown toggles
-  toggleSiteDropdown() {
-    this.isSiteDropdownOpen = !this.isSiteDropdownOpen;
-    this.isBuildingDropdownOpen = false;
-    this.isTypeDropdownOpen = false;
-  }
-
-  toggleBuildingDropdown() {
-    this.isBuildingDropdownOpen = !this.isBuildingDropdownOpen;
-    this.isSiteDropdownOpen = false;
-    this.isTypeDropdownOpen = false;
-  }
-
-  toggleTypeDropdown() {
-    this.isTypeDropdownOpen = !this.isTypeDropdownOpen;
-    this.isSiteDropdownOpen = false;
-    this.isBuildingDropdownOpen = false;
-  }
-
-  // Selection handlers
-  selectSite(siteId: string) {
+  onSiteChange(siteId: string) {
     this.selectedSite = siteId;
-    this.selectedBuilding = null;
+    this.selectedBuilding = '';
     this.buildings = [];
-    this.isSiteDropdownOpen = false;
-    this.loadBuildings();
+    this.buildingOptions = [];
+    if (siteId) {
+      this.loadBuildings();
+    }
   }
 
-  selectBuilding(buildingId: string) {
+  onBuildingChange(buildingId: string) {
     this.selectedBuilding = buildingId;
-    this.isBuildingDropdownOpen = false;
   }
 
-  selectRoomType(type: string) {
+  onRoomTypeChange(type: string) {
     this.roomType = type;
-    this.isTypeDropdownOpen = false;
-  }
-
-  // Helper methods
-  getSiteName(siteId: string | null): string {
-    if (!siteId) return '';
-    const site = this.sites.find(s => s.id === siteId);
-    return site ? site.name : '';
-  }
-
-  getBuildingName(buildingId: string | null): string {
-    if (!buildingId) return '';
-    const building = this.buildings.find(b => b.id === buildingId);
-    return building ? building.name : '';
-  }
-
-  getRoomTypeLabel(type: string | null): string {
-    if (!type) return '';
-    const roomType = this.roomTypes.find(t => t.value === type);
-    return roomType ? roomType.label : '';
   }
 
   canSaveRoom(): boolean {
@@ -210,15 +168,5 @@ export class AddRoomModalComponent implements OnInit {
       this.dialogRef.close();
     }
     this.router.navigate(['/locations/add']);
-  }
-
-  // Close dropdowns when clicking outside
-  @HostListener('document:click', ['$event'])
-  onDocumentClick(event: Event) {
-    if (!this.elementRef.nativeElement.contains(event.target)) {
-      this.isSiteDropdownOpen = false;
-      this.isBuildingDropdownOpen = false;
-      this.isTypeDropdownOpen = false;
-    }
   }
 }

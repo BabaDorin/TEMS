@@ -16,51 +16,47 @@ public class UpdateUserRolesCommandHandler(
 {
     public async Task<UpdateUserRolesResponse> Handle(UpdateUserRolesCommand request, CancellationToken cancellationToken)
     {
+        var user = await userRepository.GetByIdAsync(request.Id, cancellationToken);
+        user ??= await userRepository.GetByKeycloakIdAsync(request.Id, cancellationToken);
+
+        if (user == null)
+        {
+            return new UpdateUserRolesResponse(
+                Success: false,
+                Message: $"User with ID {request.Id} not found in database",
+                User: null
+            );
+        }
+
+        if (string.IsNullOrEmpty(user.KeycloakId))
+        {
+            return new UpdateUserRolesResponse(
+                Success: false,
+                Message: "User does not have a Keycloak ID. Please log in first to sync your identity.",
+                User: null
+            );
+        }
+
         try
         {
-            // Get the user from our database
-            var user = await userRepository.GetByIdAsync(request.Id, cancellationToken);
-            if (user == null)
-            {
-                return new UpdateUserRolesResponse(
-                    Success: false,
-                    Message: $"User with ID {request.Id} not found",
-                    User: null
-                );
-            }
-
-            if (string.IsNullOrEmpty(user.KeycloakId))
-            {
-                return new UpdateUserRolesResponse(
-                    Success: false,
-                    Message: "User does not have a Keycloak ID, cannot update roles",
-                    User: null
-                );
-            }
-
-            // Get current roles from Keycloak
             var currentRoles = await keycloakClient.GetUserRolesAsync(user.KeycloakId);
             var currentRoleNames = currentRoles.Select(r => r.Name ?? "").Where(n => !string.IsNullOrEmpty(n)).ToList();
 
-            // Calculate roles to add and remove
             var rolesToAdd = request.Roles.Except(currentRoleNames).ToList();
             var rolesToRemove = currentRoleNames.Except(request.Roles).ToList();
 
-            // Remove old roles
-            if (rolesToRemove.Any())
+            if (rolesToRemove.Count > 0)
             {
                 await keycloakClient.RemoveRolesFromUserAsync(user.KeycloakId, rolesToRemove);
                 logger.LogInformation("Removed roles {Roles} from user {UserId}", string.Join(", ", rolesToRemove), user.KeycloakId);
             }
 
-            // Add new roles
-            if (rolesToAdd.Any())
+            if (rolesToAdd.Count > 0)
             {
                 await keycloakClient.AssignRolesToUserAsync(user.KeycloakId, rolesToAdd);
                 logger.LogInformation("Added roles {Roles} to user {UserId}", string.Join(", ", rolesToAdd), user.KeycloakId);
             }
 
-            // Update the user's UpdatedAt timestamp
             user.UpdatedAt = DateTime.UtcNow;
             await userRepository.UpdateAsync(user, cancellationToken);
 
@@ -86,10 +82,11 @@ public class UpdateUserRolesCommandHandler(
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Failed to update user roles");
+            logger.LogError(ex, "Keycloak error while updating roles for user {UserId} (KeycloakId: {KeycloakId})",
+                user.Id, user.KeycloakId);
             return new UpdateUserRolesResponse(
                 Success: false,
-                Message: $"Failed to update user roles: {ex.Message}",
+                Message: $"Failed to communicate with Keycloak: {ex.Message}",
                 User: null
             );
         }

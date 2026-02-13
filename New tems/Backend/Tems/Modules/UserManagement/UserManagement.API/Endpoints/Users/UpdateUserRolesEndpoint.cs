@@ -19,7 +19,7 @@ public class UpdateUserRolesEndpoint(IMediator mediator) : Endpoint<UpdateUserRo
         
         if (!response.Success)
         {
-            if (response.Message?.Contains("not found") == true)
+            if (response.Message?.Contains("not found in database") == true)
             {
                 await Send.NotFoundAsync(ct);
                 return;

@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, forwardRef, OnInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, Input, forwardRef, OnInit, OnDestroy, OnChanges, SimpleChanges, ChangeDetectionStrategy, ChangeDetectorRef, ElementRef, HostListener, ViewChild, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { DropdownManagerService } from './dropdown-manager.service';
@@ -26,7 +26,7 @@ let instanceCounter = 0;
     }
   ]
 })
-export class CustomSelectComponent implements ControlValueAccessor, OnInit, OnDestroy {
+export class CustomSelectComponent implements ControlValueAccessor, OnInit, OnDestroy, OnChanges {
   @Input() options: SelectOption[] = [];
   @Input() placeholder: string = 'Select...';
   @Input() searchable: boolean = true;
@@ -42,6 +42,11 @@ export class CustomSelectComponent implements ControlValueAccessor, OnInit, OnDe
   selectedValues: string[] = [];
   private subscription: Subscription = new Subscription();
 
+  dropdownTop = 0;
+  dropdownLeft = 0;
+  dropdownWidth = 0;
+  dropdownDirection: 'down' | 'up' = 'down';
+
   get selectedValue(): string {
     return this._selectedValue;
   }
@@ -56,9 +61,28 @@ export class CustomSelectComponent implements ControlValueAccessor, OnInit, OnDe
 
   constructor(
     private cdr: ChangeDetectorRef,
-    private dropdownManager: DropdownManagerService
+    private dropdownManager: DropdownManagerService,
+    private elementRef: ElementRef,
+    private ngZone: NgZone
   ) {
     this.instanceId = ++instanceCounter;
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+    if (this.isOpen && !this.elementRef.nativeElement.contains(event.target)) {
+      this.isOpen = false;
+      this.searchText = '';
+      this.cdr.markForCheck();
+    }
+  }
+
+  @HostListener('window:resize')
+  @HostListener('window:scroll', ['$event'])
+  onWindowChange() {
+    if (this.isOpen) {
+      this.updateDropdownPosition();
+    }
   }
 
   ngOnInit() {
@@ -71,17 +95,33 @@ export class CustomSelectComponent implements ControlValueAccessor, OnInit, OnDe
         }
       })
     );
+
+    this.ngZone.runOutsideAngular(() => {
+      document.addEventListener('scroll', this.onScrollCapture, true);
+    });
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['options']) {
+      this.cdr.detectChanges();
+    }
   }
 
   ngOnDestroy() {
     this.subscription.unsubscribe();
+    document.removeEventListener('scroll', this.onScrollCapture, true);
   }
+
+  private onScrollCapture = () => {
+    if (this.isOpen) {
+      this.ngZone.run(() => {
+        this.updateDropdownPosition();
+      });
+    }
+  };
 
   get filteredOptions(): SelectOption[] {
     if (!this.searchText) {
-    if (!this.isOpen) {
-      this.dropdownManager.notifyOpen(this.instanceId);
-    }
       return this.options;
     }
     return this.options.filter(opt => 
@@ -108,9 +148,37 @@ export class CustomSelectComponent implements ControlValueAccessor, OnInit, OnDe
     return option ? option.label : this.placeholder;
   }
 
+  updateDropdownPosition() {
+    const trigger = this.elementRef.nativeElement.querySelector('.select-trigger');
+    if (!trigger) return;
+
+    const rect = trigger.getBoundingClientRect();
+    const viewportHeight = window.innerHeight;
+    const dropdownMaxHeight = 280;
+    const spaceBelow = viewportHeight - rect.bottom;
+    const spaceAbove = rect.top;
+
+    this.dropdownWidth = rect.width;
+    this.dropdownLeft = rect.left;
+
+    if (spaceBelow >= dropdownMaxHeight || spaceBelow >= spaceAbove) {
+      this.dropdownDirection = 'down';
+      this.dropdownTop = rect.bottom + 4;
+    } else {
+      this.dropdownDirection = 'up';
+      this.dropdownTop = rect.top - dropdownMaxHeight - 4;
+    }
+
+    this.cdr.markForCheck();
+  }
+
   toggleDropdown() {
     if (this.disabled) return;
     this.isOpen = !this.isOpen;
+    if (this.isOpen) {
+      this.dropdownManager.notifyOpen(this.instanceId);
+      this.updateDropdownPosition();
+    }
     if (!this.isOpen) {
       this.searchText = '';
     }
@@ -126,7 +194,6 @@ export class CustomSelectComponent implements ControlValueAccessor, OnInit, OnDe
       this.searchText = '';
       this.cdr.markForCheck();
     } else {
-      // Multiple mode
       const index = this.selectedValues.indexOf(value);
       if (index > -1) {
         this.selectedValues = this.selectedValues.filter(v => v !== value);
@@ -158,7 +225,7 @@ export class CustomSelectComponent implements ControlValueAccessor, OnInit, OnDe
   writeValue(value: string | string[] | null): void {
     if (this.mode === 'multiple') {
       if (Array.isArray(value)) {
-        this.selectedValues = value;
+        this.selectedValues = [...value];
       } else {
         this.selectedValues = [];
       }
@@ -169,7 +236,7 @@ export class CustomSelectComponent implements ControlValueAccessor, OnInit, OnDe
         this._selectedValue = Array.isArray(value) ? '' : value;
       }
     }
-    this.cdr.markForCheck();
+    this.cdr.detectChanges();
   }
 
   registerOnChange(fn: (value: string | string[]) => void): void {

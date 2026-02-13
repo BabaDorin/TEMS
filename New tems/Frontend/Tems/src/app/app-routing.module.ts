@@ -61,6 +61,14 @@ export const routes: Routes = [
       { path: 'users', loadComponent: () => import('./tems-components/admin/user-management/user-management.component').then(m => m.UserManagementComponent) }
     ]
   },
+
+  // Users (non-admin routes)
+  {
+    path: 'users',
+    children: [
+      { path: ':id', loadComponent: () => import('./tems-components/user-module/user-detail/user-detail.component').then(m => m.UserDetailComponent) }
+    ]
+  },
   
   // Profile
   {

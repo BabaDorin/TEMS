@@ -101,7 +101,6 @@ export class AppComponent extends TEMSComponent implements OnInit{
   }
   
   ngOnInit() {
-    // Scroll to top after route change
     this.router.events.subscribe((evt) => {
       if (!(evt instanceof NavigationEnd)) {
           return;
@@ -109,10 +108,9 @@ export class AppComponent extends TEMSComponent implements OnInit{
       window.scrollTo(0, 0);
     });
 
-    // Library password feature disabled - endpoint not implemented
-    // if (this.tokenService.tokenExists()) {
-    //   this.libraryPassword = 'disabled';
-    // }
+    if (this.tokenService.tokenExists()) {
+      this.userService.getProfile().subscribe();
+    }
   }
 
   @HostListener('document:keypress', ['$event'])

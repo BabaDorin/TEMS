@@ -7,10 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MediatR" Version="12.4.1" />
+    <PackageReference Include="MediatR" Version="13.1.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\AssetManagement\AssetManagement.Application\AssetManagement.Application.csproj" />
     <ProjectReference Include="..\UserManagement.Contract\UserManagement.Contract.csproj" />
     <ProjectReference Include="..\UserManagement.Infrastructure\UserManagement.Infrastructure.csproj" />
   </ItemGroup>

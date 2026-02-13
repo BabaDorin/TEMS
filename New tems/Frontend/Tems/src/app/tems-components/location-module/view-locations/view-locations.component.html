@@ -62,165 +62,32 @@
             </div>
 
             <!-- Site Filter -->
-            <div class="site-dropdown-container">
+            <div>
               <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Filter by Site</label>
-              <div class="relative">
-                <!-- Dropdown trigger -->
-                <div 
-                  (click)="toggleSiteDropdown()"
-                  class="min-h-[42px] px-3 py-2 bg-white dark:bg-[#2c2c2e] border border-gray-200 dark:border-[#38383a] rounded-lg cursor-pointer hover:border-[#007aff] dark:hover:border-[#0a84ff] transition flex items-center justify-between"
-                  [class.border-[#007aff]]="isSiteDropdownOpen"
-                  [class.ring-2]="isSiteDropdownOpen"
-                  [class.ring-[#007aff]/20]="isSiteDropdownOpen">
-                  <div class="flex-1">
-                    <span *ngIf="!selectedSiteId" class="text-gray-400 dark:text-gray-500 text-sm">All Sites</span>
-                    <span *ngIf="selectedSiteId" class="text-sm text-gray-900 dark:text-white">{{ getSiteName(selectedSiteId) }}</span>
-                  </div>
-                  <svg 
-                    width="12" 
-                    height="8" 
-                    viewBox="0 0 12 8" 
-                    fill="none"
-                    class="ml-2 transition-transform duration-200"
-                    [class.rotate-180]="isSiteDropdownOpen">
-                    <path d="M1 1.5L6 6.5L11 1.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
-                </div>
-                
-                <!-- Dropdown menu -->
-                <div 
-                  *ngIf="isSiteDropdownOpen"
-                  class="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-[#2c2c2e] border border-gray-200 dark:border-[#38383a] rounded-lg shadow-lg z-50 max-h-64 overflow-hidden">
-                  <!-- Search input -->
-                  <div class="p-2 border-b border-gray-200 dark:border-[#38383a]">
-                    <input
-                      type="text"
-                      [(ngModel)]="siteSearchText"
-                      (click)="$event.stopPropagation()"
-                      placeholder="Search sites..."
-                      class="w-full px-3 py-2 text-sm border border-gray-200 dark:border-[#38383a] dark:bg-[#3a3a3c] dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-[#007aff] dark:focus:ring-[#0a84ff] focus:border-transparent">
-                  </div>
-                  <!-- Options list -->
-                  <div class="max-h-52 overflow-y-auto">
-                    <div 
-                      (click)="selectSite(null); $event.stopPropagation()"
-                      class="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 dark:hover:bg-white/5 cursor-pointer border-b border-gray-100 dark:border-[#38383a]"
-                      [class.bg-[#007aff]/5]="!selectedSiteId">
-                      <div class="w-5 h-5 flex-shrink-0 border-2 rounded-md flex items-center justify-center transition"
-                        [class.border-[#007aff]]="!selectedSiteId"
-                        [class.bg-[#007aff]]="!selectedSiteId"
-                        [class.border-gray-300]="selectedSiteId"
-                        [class.dark:border-gray-600]="selectedSiteId">
-                        <svg *ngIf="!selectedSiteId" width="12" height="10" viewBox="0 0 12 10" fill="none">
-                          <path d="M1 5L4.5 8.5L11 1.5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                      </div>
-                      <span class="text-sm text-gray-900 dark:text-white">All Sites</span>
-                    </div>
-                    <div 
-                      *ngFor="let site of getFilteredSites()"
-                      (click)="selectSite(site.id); $event.stopPropagation()"
-                      class="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 dark:hover:bg-white/5 cursor-pointer border-b border-gray-100 dark:border-[#38383a] last:border-b-0"
-                      [class.bg-[#007aff]/5]="selectedSiteId === site.id">
-                      <div class="w-5 h-5 flex-shrink-0 border-2 rounded-md flex items-center justify-center transition"
-                        [class.border-[#007aff]]="selectedSiteId === site.id"
-                        [class.bg-[#007aff]]="selectedSiteId === site.id"
-                        [class.border-gray-300]="selectedSiteId !== site.id"
-                        [class.dark:border-gray-600]="selectedSiteId !== site.id">
-                        <svg *ngIf="selectedSiteId === site.id" width="12" height="10" viewBox="0 0 12 10" fill="none">
-                          <path d="M1 5L4.5 8.5L11 1.5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                      </div>
-                      <span class="text-sm text-gray-900 dark:text-white">{{ site.name }}</span>
-                    </div>
-                    <div *ngIf="getFilteredSites().length === 0" class="px-4 py-6 text-center text-sm text-gray-400 dark:text-gray-500">
-                      No sites found
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <app-custom-select
+                [options]="siteOptions"
+                [mode]="'single'"
+                [searchable]="sites.length > 5"
+                [allowEmpty]="false"
+                placeholder="All Sites"
+                [(ngModel)]="selectedSiteId"
+                (ngModelChange)="selectSite($event)">
+              </app-custom-select>
             </div>
 
             <!-- Building Filter -->
-            <div class="building-dropdown-container">
+            <div>
               <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Filter by Building</label>
-              <div class="relative">
-                <!-- Dropdown trigger -->
-                <div 
-                  (click)="toggleBuildingDropdown()"
-                  class="min-h-[42px] px-3 py-2 bg-white dark:bg-[#2c2c2e] border border-gray-200 dark:border-[#38383a] rounded-lg cursor-pointer hover:border-[#007aff] dark:hover:border-[#0a84ff] transition flex items-center justify-between"
-                  [class.border-[#007aff]]="isBuildingDropdownOpen && buildings.length > 0"
-                  [class.ring-2]="isBuildingDropdownOpen && buildings.length > 0"
-                  [class.ring-[#007aff]/20]="isBuildingDropdownOpen && buildings.length > 0"
-                  [class.opacity-50]="buildings.length === 0"
-                  [class.cursor-not-allowed]="buildings.length === 0">
-                  <div class="flex-1">
-                    <span *ngIf="!selectedBuildingId" class="text-gray-400 dark:text-gray-500 text-sm">All Buildings</span>
-                    <span *ngIf="selectedBuildingId" class="text-sm text-gray-900 dark:text-white">{{ getBuildingName(selectedBuildingId) }}</span>
-                  </div>
-                  <svg 
-                    width="12" 
-                    height="8" 
-                    viewBox="0 0 12 8" 
-                    fill="none"
-                    class="ml-2 transition-transform duration-200"
-                    [class.rotate-180]="isBuildingDropdownOpen">
-                    <path d="M1 1.5L6 6.5L11 1.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
-                </div>
-                
-                <!-- Dropdown menu -->
-                <div 
-                  *ngIf="isBuildingDropdownOpen && buildings.length > 0"
-                  class="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-[#2c2c2e] border border-gray-200 dark:border-[#38383a] rounded-lg shadow-lg z-50 max-h-64 overflow-hidden">
-                  <!-- Search input -->
-                  <div class="p-2 border-b border-gray-200 dark:border-[#38383a]">
-                    <input
-                      type="text"
-                      [(ngModel)]="buildingSearchText"
-                      (click)="$event.stopPropagation()"
-                      placeholder="Search buildings..."
-                      class="w-full px-3 py-2 text-sm border border-gray-200 dark:border-[#38383a] dark:bg-[#3a3a3c] dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-[#007aff] dark:focus:ring-[#0a84ff] focus:border-transparent">
-                  </div>
-                  <!-- Options list -->
-                  <div class="max-h-52 overflow-y-auto">
-                    <div 
-                      (click)="selectBuilding(null); $event.stopPropagation()"
-                      class="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 dark:hover:bg-white/5 cursor-pointer border-b border-gray-100 dark:border-[#38383a]"
-                      [class.bg-[#007aff]/5]="!selectedBuildingId">
-                      <div class="w-5 h-5 flex-shrink-0 border-2 rounded-md flex items-center justify-center transition"
-                        [class.border-[#007aff]]="!selectedBuildingId"
-                        [class.bg-[#007aff]]="!selectedBuildingId"
-                        [class.border-gray-300]="selectedBuildingId"
-                        [class.dark:border-gray-600]="selectedBuildingId">
-                        <svg *ngIf="!selectedBuildingId" width="12" height="10" viewBox="0 0 12 10" fill="none">
-                          <path d="M1 5L4.5 8.5L11 1.5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                      </div>
-                      <span class="text-sm text-gray-900 dark:text-white">All Buildings</span>
-                    </div>
-                    <div 
-                      *ngFor="let building of getFilteredBuildings()"
-                      (click)="selectBuilding(building.id); $event.stopPropagation()"
-                      class="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 dark:hover:bg-white/5 cursor-pointer border-b border-gray-100 dark:border-[#38383a] last:border-b-0"
-                      [class.bg-[#007aff]/5]="selectedBuildingId === building.id">
-                      <div class="w-5 h-5 flex-shrink-0 border-2 rounded-md flex items-center justify-center transition"
-                        [class.border-[#007aff]]="selectedBuildingId === building.id"
-                        [class.bg-[#007aff]]="selectedBuildingId === building.id"
-                        [class.border-gray-300]="selectedBuildingId !== building.id"
-                        [class.dark:border-gray-600]="selectedBuildingId !== building.id">
-                        <svg *ngIf="selectedBuildingId === building.id" width="12" height="10" viewBox="0 0 12 10" fill="none">
-                          <path d="M1 5L4.5 8.5L11 1.5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                      </div>
-                      <span class="text-sm text-gray-900 dark:text-white">{{ building.name }}</span>
-                    </div>
-                    <div *ngIf="getFilteredBuildings().length === 0" class="px-4 py-6 text-center text-sm text-gray-400 dark:text-gray-500">
-                      No buildings found
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <app-custom-select
+                [options]="buildingOptions"
+                [mode]="'single'"
+                [searchable]="buildings.length > 5"
+                [allowEmpty]="false"
+                placeholder="All Buildings"
+                [disabled]="buildings.length === 0"
+                [(ngModel)]="selectedBuildingId"
+                (ngModelChange)="selectBuilding($event)">
+              </app-custom-select>
             </div>
           </div>
         </div>

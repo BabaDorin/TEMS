@@ -10,6 +10,7 @@ export interface UserDto {
   roles: string[];
   createdAt: string;
   updatedAt: string;
+  assetCounts?: { [typeName: string]: number };
 }
 
 export interface RoleDto {
@@ -58,4 +59,43 @@ export interface UpdateUserRolesResponse {
 
 export interface GetAllRolesResponse {
   roles: RoleDto[];
+}
+
+export interface UserAssetsResponse {
+  assets: UserAssetDto[];
+  totalCount: number;
+  pageNumber: number;
+  pageSize: number;
+}
+
+export interface UserAssetDto {
+  id: string;
+  assetTag: string;
+  serialNumber?: string;
+  status: string;
+  definition?: {
+    definitionId: string;
+    name: string;
+    assetTypeId: string;
+    assetTypeName: string;
+    manufacturer: string;
+    model: string;
+  };
+  locationId?: string;
+  location?: {
+    building?: string;
+    room?: string;
+    desk?: string;
+  };
+  assignment?: {
+    assignedToUserId: string;
+    assignedToName: string;
+    assignedAt: string;
+    assignmentType: string;
+  };
+  createdAt?: string;
+}
+
+export interface UserAssetCountResponse {
+  count: number;
 }

@@ -26,17 +26,16 @@ curl -s -X PUT "${KEYCLOAK_URL}/admin/realms/${REALM}/identity-provider/instance
         "displayName": "Duende IdentityServer",
         "providerId": "oidc",
         "enabled": true,
-        "updateProfileFirstLoginMode": "on",
         "trustEmail": true,
-        "storeToken": false,
+        "storeToken": true,
         "addReadTokenRoleOnCreate": false,
-        "authenticateByDefault": false,
+        "authenticateByDefault": true,
         "linkOnly": false,
-        "firstBrokerLoginFlowAlias": "first broker login",
+        "firstBrokerLoginFlowAlias": "auto-link-first-login",
         "config": {
             "hideOnLoginPage": "false",
             "userInfoUrl": "http://host.docker.internal:5001/connect/userinfo",
-            "validateSignature": "false",
+            "validateSignature": "true",
             "tokenUrl": "http://host.docker.internal:5001/connect/token",
             "uiLocales": "false",
             "backchannelSupported": "false",
@@ -50,9 +49,9 @@ curl -s -X PUT "${KEYCLOAK_URL}/admin/realms/${REALM}/identity-provider/instance
             "clientId": "keycloak-broker",
             "acceptsPromptNoneForwardFromClient": "false",
             "jwksUrl": "http://host.docker.internal:5001/.well-known/openid-configuration/jwks",
-            "syncMode": "IMPORT",
+            "syncMode": "FORCE",
             "clientSecret": "keycloak-secret",
-            "defaultScope": "openid profile email roles",
+            "defaultScope": "openid profile email",
             "clientAuthMethod": "client_secret_post"
         }
     }'
@@ -60,8 +59,9 @@ curl -s -X PUT "${KEYCLOAK_URL}/admin/realms/${REALM}/identity-provider/instance
 echo ""
 echo "Identity Provider settings updated!"
 echo "Key changes:"
+echo "  - firstBrokerLoginFlowAlias: auto-link-first-login (no prompts)"
+echo "  - postBrokerLoginFlowAlias: removed (no re-authentication)"
 echo "  - trustEmail: true (trust email from Duende)"
-echo "  - syncMode: IMPORT (create users on first login)"
-echo "  - updateProfileFirstLoginMode: on"
+echo "  - syncMode: FORCE (always sync user data from Duende)"
 echo ""
 echo "Try logging in again. The user should be created automatically in Keycloak."

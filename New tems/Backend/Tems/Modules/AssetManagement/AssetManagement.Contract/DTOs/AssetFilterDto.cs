@@ -5,5 +5,6 @@ public record AssetFilterDto(
     List<string>? AssetTypeIds = null,
     List<string>? DefinitionIds = null,
     string? LocationId = null,
+    string? AssignedToUserId = null,
     bool IncludeArchived = false
 );

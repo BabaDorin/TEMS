@@ -15,7 +15,7 @@ import { Injectable } from '@angular/core';
 import { ViewProfile } from 'src/app/models/profile/view-profile.model';
 import { ViewNotification } from 'src/app/models/communication/notification/view-notification.model';
 import { UserProfile } from '../models/user/user-profile.model';
-import { GetAllUsersResponse, CreateUserRequest, CreateUserResponse, DeleteUserResponse, UpdateUserRolesRequest, UpdateUserRolesResponse, GetAllRolesResponse } from '../models/user/user-management.model';
+import { GetAllUsersResponse, CreateUserRequest, CreateUserResponse, DeleteUserResponse, UpdateUserRolesRequest, UpdateUserRolesResponse, GetAllRolesResponse, UserDto, UserAssetsResponse, UserAssetCountResponse } from '../models/user/user-management.model';
 
 @Injectable({
   providedIn: 'root'
@@ -308,6 +308,40 @@ export class UserService extends TEMSService {
   getAvailableRoles(): Observable<GetAllRolesResponse> {
     return this.http.get<GetAllRolesResponse>(
       API_ROLES_URL,
+      this.httpOptions
+    );
+  }
+
+  /**
+   * Get user by ID (from new UserManagement module)
+   */
+  getUserById(userId: string): Observable<UserDto> {
+    return this.http.get<UserDto>(
+      `${API_USERS_URL}/${userId}`,
+      this.httpOptions
+    );
+  }
+
+  /**
+   * Get assets assigned to a user
+   */
+  getUserAssets(userId: string, pageNumber: number = 1, pageSize: number = 50): Observable<UserAssetsResponse> {
+    let params = new HttpParams()
+      .append('pageNumber', pageNumber.toString())
+      .append('pageSize', pageSize.toString());
+
+    return this.http.get<UserAssetsResponse>(
+      `${API_USERS_URL}/${userId}/assets`,
+      { ...this.httpOptions, params }
+    );
+  }
+
+  /**
+   * Get count of assets assigned to a user
+   */
+  getUserAssetCount(userId: string): Observable<UserAssetCountResponse> {
+    return this.http.get<UserAssetCountResponse>(
+      `${API_USERS_URL}/${userId}/assets/count`,
       this.httpOptions
     );
   }

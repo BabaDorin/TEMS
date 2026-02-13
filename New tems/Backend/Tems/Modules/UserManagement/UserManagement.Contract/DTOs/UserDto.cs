@@ -11,7 +11,8 @@ public record UserDto(
     string? KeycloakId,
     List<string> Roles,
     DateTime CreatedAt,
-    DateTime UpdatedAt
+    DateTime UpdatedAt,
+    Dictionary<string, int>? AssetCounts = null
 );
 
 public record RoleDto(

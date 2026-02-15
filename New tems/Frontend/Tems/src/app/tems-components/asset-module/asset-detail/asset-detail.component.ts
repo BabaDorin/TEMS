@@ -10,11 +10,12 @@ import { Asset } from 'src/app/models/asset/asset.model';
 import { AssetLabelComponent } from '../../asset/asset-label/asset-label.component';
 import { RoomDetailModalComponent } from '../../location-module/room-detail-modal/room-detail-modal.component';
 import { ViewUserModalComponent } from '../../admin/user-management/view-user-modal/view-user-modal.component';
+import { AssetTimelineComponent } from '../asset-timeline/asset-timeline.component';
 
 @Component({
   selector: 'app-asset-detail',
   standalone: true,
-  imports: [CommonModule, AssetLabelComponent],
+  imports: [CommonModule, AssetLabelComponent, AssetTimelineComponent],
   templateUrl: './asset-detail.component.html',
   styleUrls: ['./asset-detail.component.scss'],
   animations: [

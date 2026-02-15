@@ -16,6 +16,8 @@
     <ItemGroup>
         <ProjectReference Include="..\Modules\AssetManagement\AssetManagement.API\AssetManagement.API.csproj" />
         <ProjectReference Include="..\Modules\AssetManagement\AssetManagement.Infrastructure\AssetManagement.Infrastructure.csproj" />
+        <ProjectReference Include="..\Modules\ChangeLog\ChangeLog.API\ChangeLog.API.csproj" />
+        <ProjectReference Include="..\Modules\ChangeLog\ChangeLog.Infrastructure\ChangeLog.Infrastructure.csproj" />
         <ProjectReference Include="..\Modules\Example\Example.API\Example.API.csproj" />
         <ProjectReference Include="..\Modules\LocationManagement\LocationManagement.Api\LocationManagement.Api.csproj" />
         <ProjectReference Include="..\Modules\LocationManagement\LocationManagement.Infrastructure\LocationManagement.Infrastructure.csproj" />

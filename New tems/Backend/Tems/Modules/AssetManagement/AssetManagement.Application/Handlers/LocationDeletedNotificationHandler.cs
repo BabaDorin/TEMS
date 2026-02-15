@@ -5,12 +5,9 @@ using Tems.Common.Notifications;
 
 namespace AssetManagement.Application.Handlers;
 
-/// <summary>
-/// Clears asset location references when a location is deleted from the system.
-/// Sets LocationId and Location to null so the asset appears unlocated.
-/// </summary>
 public class LocationDeletedNotificationHandler(
     IAssetRepository assetRepository,
+    IPublisher publisher,
     ILogger<LocationDeletedNotificationHandler> logger
 ) : INotificationHandler<LocationDeletedNotification>
 {
@@ -34,10 +31,20 @@ public class LocationDeletedNotificationHandler(
 
         foreach (var asset in assets)
         {
+            var locationName = asset.Location != null
+                ? $"{asset.Location.Building} / {asset.Location.Room}".Trim(' ', '/')
+                : string.Empty;
+
             asset.LocationId = null;
             asset.Location = null;
             asset.UpdatedAt = DateTime.UtcNow;
             await assetRepository.UpdateAsync(asset, cancellationToken);
+
+            await publisher.Publish(new AssetUnassignedFromLocationNotification(
+                asset.Id, asset.AssetTag,
+                notification.LocationId, locationName,
+                $"{notification.LocationType} deleted", null, null
+            ), cancellationToken);
         }
 
         logger.LogInformation(

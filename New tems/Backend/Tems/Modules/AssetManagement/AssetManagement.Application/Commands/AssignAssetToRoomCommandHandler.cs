@@ -3,10 +3,11 @@ using AssetManagement.Contract.Commands;
 using AssetManagement.Contract.DTOs;
 using AssetManagement.Contract.Responses;
 using MediatR;
+using Tems.Common.Notifications;
 
 namespace AssetManagement.Application.Commands;
 
-public class AssignAssetToRoomCommandHandler(IAssetRepository assetRepository) 
+public class AssignAssetToRoomCommandHandler(IAssetRepository assetRepository, IPublisher publisher) 
     : IRequestHandler<AssignAssetToRoomCommand, AssetDto>
 {
     public async Task<AssetDto> Handle(AssignAssetToRoomCommand request, CancellationToken cancellationToken)
@@ -14,9 +15,25 @@ public class AssignAssetToRoomCommandHandler(IAssetRepository assetRepository)
         var asset = await assetRepository.GetByIdAsync(request.AssetId, cancellationToken) 
             ?? throw new KeyNotFoundException($"Asset with ID {request.AssetId} not found");
 
+        var previousLocationId = asset.LocationId;
+        var previousLocationName = asset.Location != null 
+            ? $"{asset.Location.Building} / {asset.Location.Room}" 
+            : null;
+
         asset.LocationId = request.RoomId;
 
         await assetRepository.UpdateAsync(asset, cancellationToken);
+
+        if (!string.IsNullOrEmpty(previousLocationId) && previousLocationId != request.RoomId)
+        {
+            await publisher.Publish(new AssetUnassignedFromLocationNotification(
+                asset.Id, asset.AssetTag, previousLocationId, previousLocationName ?? "Unknown",
+                null, null, null), cancellationToken);
+        }
+
+        await publisher.Publish(new AssetAssignedToLocationNotification(
+            asset.Id, asset.AssetTag, request.RoomId, request.RoomId,
+            previousLocationId, previousLocationName, null, null), cancellationToken);
 
         return new AssetDto(
             asset.Id,

@@ -5,6 +5,7 @@ export const API_ASSET_PROPERTY_URL = API_URL + '/asset-property';
 export const API_ASSET_TYPE_URL = API_URL + '/asset-type';
 export const API_ASSET_DEFINITION_URL = API_URL + '/asset-definition';
 export const API_ASSET_URL = API_URL + '/asset';
+export const API_CHANGELOG_URL = API_URL + '/changelog';
 export const API_LOG_URL = API_URL + '/log';
 export const API_ISU_URL = API_URL + '/ticket';
 export const API_ALL_URL = API_URL + '/allocation';

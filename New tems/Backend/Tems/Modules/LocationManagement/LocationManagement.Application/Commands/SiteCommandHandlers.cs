@@ -9,7 +9,7 @@ using Tems.Common.Tenant;
 
 namespace LocationManagement.Application.Commands;
 
-public class CreateSiteCommandHandler(ISiteRepository siteRepository, ITenantContext tenantContext) 
+public class CreateSiteCommandHandler(ISiteRepository siteRepository, ITenantContext tenantContext, IPublisher publisher) 
     : IRequestHandler<CreateSiteCommand, CreateSiteResponse>
 {
     public async Task<CreateSiteResponse> Handle(CreateSiteCommand request, CancellationToken cancellationToken)
@@ -30,6 +30,10 @@ public class CreateSiteCommandHandler(ISiteRepository siteRepository, ITenantCon
         };
 
         await siteRepository.CreateAsync(domainEntity, cancellationToken);
+
+        await publisher.Publish(new LocationCreatedNotification(
+            domainEntity.Id, domainEntity.Name, "Site", null, null, request.CreatedBy, null
+        ), cancellationToken);
 
         var dto = new SiteDto(
             domainEntity.Id,

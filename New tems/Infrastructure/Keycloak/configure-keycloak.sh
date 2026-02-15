@@ -340,14 +340,63 @@ ADMIN_USER_ID=$(curl -s -X GET "${KEYCLOAK_URL}/admin/realms/${REALM}/users?user
 
 # Assign all roles to admin user
 echo "Assigning all TEMS roles to admin user..."
+ROLE_PAYLOAD="["
+FIRST=true
 for role in "${TEMS_ROLES[@]}"; do
     ROLE_DATA=$(curl -s -X GET "${KEYCLOAK_URL}/admin/realms/${REALM}/roles/${role}" \
         -H "Authorization: Bearer ${ADMIN_TOKEN}")
-    
-    curl -s -X POST "${KEYCLOAK_URL}/admin/realms/${REALM}/users/${ADMIN_USER_ID}/role-mappings/realm" \
-        -H "Authorization: Bearer ${ADMIN_TOKEN}" \
-        -H "Content-Type: application/json" \
-        -d "[${ROLE_DATA}]"
+    ROLE_ID=$(echo "$ROLE_DATA" | jq -r '.id')
+    if [ -z "$ROLE_ID" ] || [ "$ROLE_ID" = "null" ]; then
+        echo "  ⚠️  Could not find role '${role}' — skipping"
+        continue
+    fi
+    if [ "$FIRST" = true ]; then
+        FIRST=false
+    else
+        ROLE_PAYLOAD="${ROLE_PAYLOAD},"
+    fi
+    ROLE_PAYLOAD="${ROLE_PAYLOAD}{\"id\":\"${ROLE_ID}\",\"name\":\"${role}\"}"
+done
+ROLE_PAYLOAD="${ROLE_PAYLOAD}]"
+
+HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" -X POST \
+    "${KEYCLOAK_URL}/admin/realms/${REALM}/users/${ADMIN_USER_ID}/role-mappings/realm" \
+    -H "Authorization: Bearer ${ADMIN_TOKEN}" \
+    -H "Content-Type: application/json" \
+    -d "${ROLE_PAYLOAD}")
+
+if [ "$HTTP_CODE" = "204" ]; then
+    echo "  ✅ All roles assigned to admin user"
+else
+    echo "  ⚠️  Role assignment returned HTTP ${HTTP_CODE}, retrying individually..."
+    for role in "${TEMS_ROLES[@]}"; do
+        ROLE_DATA=$(curl -s -X GET "${KEYCLOAK_URL}/admin/realms/${REALM}/roles/${role}" \
+            -H "Authorization: Bearer ${ADMIN_TOKEN}")
+        RETRY_CODE=$(curl -s -o /dev/null -w "%{http_code}" -X POST \
+            "${KEYCLOAK_URL}/admin/realms/${REALM}/users/${ADMIN_USER_ID}/role-mappings/realm" \
+            -H "Authorization: Bearer ${ADMIN_TOKEN}" \
+            -H "Content-Type: application/json" \
+            -d "[${ROLE_DATA}]")
+        if [ "$RETRY_CODE" = "204" ]; then
+            echo "    ✅ Assigned ${role}"
+        else
+            echo "    ❌ Failed to assign ${role} (HTTP ${RETRY_CODE})"
+        fi
+    done
+fi
+
+# Verify roles were assigned
+echo "Verifying admin user roles..."
+ASSIGNED_ROLES=$(curl -s -X GET \
+    "${KEYCLOAK_URL}/admin/realms/${REALM}/users/${ADMIN_USER_ID}/role-mappings/realm" \
+    -H "Authorization: Bearer ${ADMIN_TOKEN}" | jq -r '.[].name')
+
+for role in "${TEMS_ROLES[@]}"; do
+    if echo "$ASSIGNED_ROLES" | grep -q "^${role}$"; then
+        echo "  ✅ ${role} — assigned"
+    else
+        echo "  ❌ ${role} — MISSING"
+    fi
 done
 
 echo "Admin user created with username: admin, password: Admin123!"

@@ -1,5 +1,6 @@
 using MediatR;
 using Microsoft.Extensions.Logging;
+using Tems.Common.Notifications;
 using Tems.Common.Tenant;
 using UserManagement.Contract.Commands;
 using UserManagement.Contract.DTOs;
@@ -11,16 +12,11 @@ using UserManagement.Infrastructure.Repositories;
 
 namespace UserManagement.Application.Commands;
 
-/// <summary>
-/// Handles user creation across all 3 systems:
-/// 1. Keycloak - for roles and access management
-/// 2. Duende Identity Server - for authentication (WORKAROUND: will be removed in future)
-/// 3. TEMS Database - for user management table
-/// </summary>
 public class CreateUserCommandHandler(
     IUserRepository userRepository,
     IKeycloakClient keycloakClient,
     IIdentityServerClient identityServerClient,
+    IPublisher publisher,
     ITenantContext tenantContext,
     ILogger<CreateUserCommandHandler> logger
 ) : IRequestHandler<CreateUserCommand, CreateUserResponse>
@@ -237,6 +233,10 @@ public class CreateUserCommandHandler(
             );
 
             logger.LogInformation("User {Username} created successfully in all 3 systems", request.Username);
+
+            await publisher.Publish(new UserCreatedNotification(
+                createdUser.Id, request.Username, request.Email, null, null
+            ), cancellationToken);
 
             return new CreateUserResponse(
                 Success: true,

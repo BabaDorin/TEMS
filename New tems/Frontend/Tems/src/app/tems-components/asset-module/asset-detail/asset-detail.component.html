@@ -152,8 +152,14 @@
             Maintenance
           </button>
           <button
-            disabled
-            class="px-4 py-3 border-b-2 border-transparent text-gray-400 text-sm cursor-not-allowed whitespace-nowrap">
+            (click)="activeTab = 'history'"
+            [class.border-[#007aff]]="activeTab === 'history'"
+            [class.dark:border-[#0a84ff]]="activeTab === 'history'"
+            [class.text-[#007aff]]="activeTab === 'history'"
+            [class.dark:text-[#0a84ff]]="activeTab === 'history'"
+            [class.border-transparent]="activeTab !== 'history'"
+            [class.text-gray-500]="activeTab !== 'history'"
+            class="px-4 py-3 border-b-2 font-medium text-sm hover:text-[#007aff] transition whitespace-nowrap">
             History
           </button>
         </nav>
@@ -330,12 +336,7 @@
 
         <!-- History Tab -->
         <div *ngIf="activeTab === 'history'">
-          <div class="text-center py-16">
-            <svg class="h-12 w-12 text-gray-300 dark:text-gray-600 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            <p class="mt-3 text-sm text-gray-500 dark:text-gray-400">Asset history tracking coming soon</p>
-          </div>
+          <app-asset-timeline [assetId]="asset.id"></app-asset-timeline>
         </div>
       </div>
     </div>

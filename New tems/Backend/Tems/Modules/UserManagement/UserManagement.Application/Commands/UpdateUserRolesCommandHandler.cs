@@ -1,5 +1,6 @@
 using MediatR;
 using Microsoft.Extensions.Logging;
+using Tems.Common.Notifications;
 using UserManagement.Contract.Commands;
 using UserManagement.Contract.DTOs;
 using UserManagement.Contract.Responses;
@@ -11,6 +12,7 @@ namespace UserManagement.Application.Commands;
 public class UpdateUserRolesCommandHandler(
     IUserRepository userRepository,
     IKeycloakClient keycloakClient,
+    IPublisher publisher,
     ILogger<UpdateUserRolesCommandHandler> logger
 ) : IRequestHandler<UpdateUserRolesCommand, UpdateUserRolesResponse>
 {
@@ -59,6 +61,13 @@ public class UpdateUserRolesCommandHandler(
 
             user.UpdatedAt = DateTime.UtcNow;
             await userRepository.UpdateAsync(user, cancellationToken);
+
+            if (rolesToAdd.Count > 0 || rolesToRemove.Count > 0)
+            {
+                await publisher.Publish(new UserRolesUpdatedNotification(
+                    user.Id, user.Name, rolesToAdd, rolesToRemove, null, null
+                ), cancellationToken);
+            }
 
             var userDto = new UserDto(
                 Id: user.Id,

@@ -5,12 +5,9 @@ using Tems.Common.Notifications;
 
 namespace AssetManagement.Application.Handlers;
 
-/// <summary>
-/// Clears asset assignments when a user is deleted from the system.
-/// Sets Assignment to null so the asset appears unassigned.
-/// </summary>
 public class UserDeletedNotificationHandler(
     IAssetRepository assetRepository,
+    IPublisher publisher,
     ILogger<UserDeletedNotificationHandler> logger
 ) : INotificationHandler<UserDeletedNotification>
 {
@@ -37,6 +34,12 @@ public class UserDeletedNotificationHandler(
             asset.Assignment = null;
             asset.UpdatedAt = DateTime.UtcNow;
             await assetRepository.UpdateAsync(asset, cancellationToken);
+
+            await publisher.Publish(new AssetUnassignedFromUserNotification(
+                asset.Id, asset.AssetTag,
+                notification.UserId, notification.UserName ?? string.Empty,
+                "User deleted", null, null
+            ), cancellationToken);
         }
 
         logger.LogInformation(

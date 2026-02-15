@@ -1,4 +1,5 @@
 using AssetManagement.API;
+using ChangeLog.API;
 using LocationManagement.Api;
 using FastEndpoints;
 using FastEndpoints.Swagger;
@@ -28,6 +29,7 @@ builder.Services.AddScoped<ITenantContext, TenantContext>();
 // Add modules first
 // builder.Services.AddExampleServices(builder.Configuration);
 builder.Services.AddAssetManagementServices(builder.Configuration);
+builder.Services.AddChangeLogServices(builder.Configuration);
 builder.Services.AddLocationManagementModule();
 builder.Services.AddTicketManagementServices(builder.Configuration);
 builder.Services.AddUserManagementServices(builder.Configuration);
@@ -137,6 +139,7 @@ builder.Services.AddFastEndpoints(options =>
     {
         typeof(Program).Assembly,
         typeof(AssetManagementServiceRegistration).Assembly,
+        typeof(ChangeLogServiceRegistration).Assembly,
         typeof(TicketManagementServiceRegistration).Assembly,
         typeof(UserManagementServiceRegistration).Assembly
     };

@@ -5,12 +5,14 @@ using AssetManagement.Contract.Commands;
 using AssetManagement.Contract.Responses;
 using MediatR;
 using System.Text.Json;
+using Tems.Common.Notifications;
 
 namespace AssetManagement.Application.Commands;
 
 public class CreateAssetCommandHandler(
     IAssetRepository assetRepository,
-    IAssetDefinitionRepository assetDefinitionRepository) 
+    IAssetDefinitionRepository assetDefinitionRepository,
+    IPublisher publisher) 
     : IRequestHandler<CreateAssetCommand, CreateAssetResponse>
 {
     public async Task<CreateAssetResponse> Handle(CreateAssetCommand request, CancellationToken cancellationToken)
@@ -92,6 +94,30 @@ public class CreateAssetCommandHandler(
         await assetRepository.CreateAsync(domainEntity, cancellationToken);
 
         await assetDefinitionRepository.IncrementUsageCountAsync(definition.Id, cancellationToken);
+
+        await publisher.Publish(new AssetCreatedNotification(
+            domainEntity.Id,
+            domainEntity.AssetTag,
+            request.DefinitionName,
+            request.AssetTypeName,
+            request.Status,
+            request.CreatedBy,
+            null
+        ), cancellationToken);
+
+        if (request.Assignment?.AssignedToUserId != null)
+        {
+            await publisher.Publish(new AssetAssignedToUserNotification(
+                domainEntity.Id,
+                domainEntity.AssetTag,
+                request.Assignment.AssignedToUserId,
+                request.Assignment.AssignedToName,
+                null,
+                null,
+                request.CreatedBy,
+                null
+            ), cancellationToken);
+        }
 
         return new CreateAssetResponse(domainEntity.Id);
     }

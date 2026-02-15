@@ -4,16 +4,20 @@ using AssetManagement.Contract.DTOs;
 using AssetManagement.Contract.Responses;
 using AssetManagement.Application.Domain;
 using MediatR;
+using Tems.Common.Notifications;
 
 namespace AssetManagement.Application.Commands;
 
-public class AssignAssetToUserCommandHandler(IAssetRepository assetRepository) 
+public class AssignAssetToUserCommandHandler(IAssetRepository assetRepository, IPublisher publisher) 
     : IRequestHandler<AssignAssetToUserCommand, AssetDto>
 {
     public async Task<AssetDto> Handle(AssignAssetToUserCommand request, CancellationToken cancellationToken)
     {
         var asset = await assetRepository.GetByIdAsync(request.AssetId, cancellationToken) 
             ?? throw new KeyNotFoundException($"Asset with ID {request.AssetId} not found");
+
+        var previousUserId = asset.Assignment?.AssignedToUserId;
+        var previousUserName = asset.Assignment?.AssignedToName;
 
         asset.Assignment = new AssetAssignment
         {
@@ -25,6 +29,17 @@ public class AssignAssetToUserCommandHandler(IAssetRepository assetRepository)
         asset.UpdatedAt = DateTime.UtcNow;
 
         await assetRepository.UpdateAsync(asset, cancellationToken);
+
+        if (!string.IsNullOrEmpty(previousUserId) && previousUserId != request.UserId)
+        {
+            await publisher.Publish(new AssetUnassignedFromUserNotification(
+                asset.Id, asset.AssetTag, previousUserId, previousUserName ?? "Unknown",
+                null, null, null), cancellationToken);
+        }
+
+        await publisher.Publish(new AssetAssignedToUserNotification(
+            asset.Id, asset.AssetTag, request.UserId, request.UserName,
+            previousUserId, previousUserName, null, null), cancellationToken);
 
         return MapToDto(asset);
     }

@@ -9,7 +9,7 @@ using Tems.Common.Tenant;
 
 namespace LocationManagement.Application.Commands;
 
-public class CreateRoomCommandHandler(IRoomRepository roomRepository, ITenantContext tenantContext) 
+public class CreateRoomCommandHandler(IRoomRepository roomRepository, ITenantContext tenantContext, IPublisher publisher) 
     : IRequestHandler<CreateRoomCommand, CreateRoomResponse>
 {
     public async Task<CreateRoomResponse> Handle(CreateRoomCommand request, CancellationToken cancellationToken)
@@ -38,6 +38,10 @@ public class CreateRoomCommandHandler(IRoomRepository roomRepository, ITenantCon
         };
 
         await roomRepository.CreateAsync(domainEntity, cancellationToken);
+
+        await publisher.Publish(new LocationCreatedNotification(
+            domainEntity.Id, domainEntity.Name, "Room", request.BuildingId, null, request.CreatedBy, null
+        ), cancellationToken);
 
         var dto = new RoomDto(
             domainEntity.Id,

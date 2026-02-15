@@ -9,7 +9,6 @@ import { SystemConfigurationService } from 'src/app/services/system-configuratio
 import { TEMSComponent } from 'src/app/tems/tems.component';
 import { Md5 } from 'ts-md5';
 import { TokenService } from './services/token.service';
-import { ViewLibraryComponent } from './tems-components/library/view-library/view-library.component';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FooterComponent } from './shared/footer/footer.component';
@@ -102,7 +101,6 @@ export class AppComponent extends TEMSComponent implements OnInit{
   }
   
   ngOnInit() {
-    // Scroll to top after route change
     this.router.events.subscribe((evt) => {
       if (!(evt instanceof NavigationEnd)) {
           return;
@@ -110,39 +108,39 @@ export class AppComponent extends TEMSComponent implements OnInit{
       window.scrollTo(0, 0);
     });
 
-    // Library password feature disabled - endpoint not implemented
-    // if (this.tokenService.tokenExists()) {
-    //   this.libraryPassword = 'disabled';
-    // }
+    if (this.tokenService.tokenExists()) {
+      this.userService.getProfile().subscribe();
+    }
   }
 
   @HostListener('document:keypress', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) { 
-    if(this.libraryPassword == undefined)
-      return;
-
-    if(event.key == '`')
-    {
-      this.lastPressedKeys = '';
-      this.listen = !this.listen;
-    }
-
-    if(this.listen){
-      if(this.lastPressedKeys.length == 0 && event.key == '`')
-        return;
-
-      this.lastPressedKeys += event.key;
-
-      if(Md5.hashStr(this.lastPressedKeys) == this.libraryPassword){
-        this.listen = false;
-        this.lazyLoad.loadModuleAsync('library/library.module.ts').then(() => {
-          this.dialogService.openDialog(
-            ViewLibraryComponent,
-            [{ label: 'accessPass', value: this.lastPressedKeys}]
-          );
-        });
-      }
-    }
+    // Library feature removed
+    // if(this.libraryPassword == undefined)
+    //   return;
+    //
+    // if(event.key == '`')
+    // {
+    //   this.lastPressedKeys = '';
+    //   this.listen = !this.listen;
+    // }
+    //
+    // if(this.listen){
+    //   if(this.lastPressedKeys.length == 0 && event.key == '`')
+    //     return;
+    //
+    //   this.lastPressedKeys += event.key;
+    //
+    //   if(Md5.hashStr(this.lastPressedKeys) == this.libraryPassword){
+    //     this.listen = false;
+    //     this.lazyLoad.loadModuleAsync('library/library.module.ts').then(() => {
+    //       this.dialogService.openDialog(
+    //         ViewLibraryComponent,
+    //         [{ label: 'accessPass', value: this.lastPressedKeys}]
+    //       );
+    //     });
+    //   }
+    // }
   }
 
   lastPressedKeys = '';

@@ -1,31 +1,93 @@
 @model LogoutViewModel
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>TEMS - Logout</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="~/css/site.css" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        @@media (prefers-color-scheme: dark) {
+            .glass-card {
+                background: rgba(30, 41, 59, 0.95);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+            }
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+        .floating-shapes {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 0;
+        }
+        .shape {
+            position: absolute;
+            opacity: 0.1;
+            animation: float 15s infinite ease-in-out;
+        }
+        .shape:nth-child(1) { top: 10%; left: 10%; animation-delay: 0s; }
+        .shape:nth-child(2) { top: 60%; left: 80%; animation-delay: 5s; }
+        .shape:nth-child(3) { top: 80%; left: 20%; animation-delay: 10s; }
+        @@keyframes float {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            50% { transform: translate(30px, -30px) rotate(180deg); }
+        }
+    </style>
 </head>
-<body>
-    <div class="container">
-        <div class="row justify-content-center mt-5">
-            <div class="col-md-6 col-lg-4">
-                <div class="card shadow">
-                    <div class="card-body p-4">
-                        <h2 class="text-center mb-4">Logout</h2>
-                        
-                        <p>Would you like to logout of TEMS?</p>
+<body class="min-h-screen gradient-bg flex items-center justify-center p-4">
+    <!-- Floating Shapes -->
+    <div class="floating-shapes">
+        <div class="shape w-64 h-64 bg-white rounded-full"></div>
+        <div class="shape w-48 h-48 bg-white rounded-full"></div>
+        <div class="shape w-32 h-32 bg-white rounded-full"></div>
+    </div>
 
-                        <form asp-route="Logout" method="post">
-                            <input type="hidden" asp-for="LogoutId" />
-                            <button type="submit" class="btn btn-primary w-100">Yes, Logout</button>
-                        </form>
-                    </div>
-                </div>
+    <!-- Logout Card -->
+    <div class="glass-card rounded-2xl shadow-2xl w-full max-w-md p-8 relative z-10">
+        <!-- Icon & Title -->
+        <div class="text-center mb-8">
+            <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-amber-500 to-orange-600 mb-4">
+                <i class="fas fa-sign-out-alt text-white text-2xl"></i>
             </div>
+            <h1 class="text-2xl font-bold text-gray-800 dark:text-white">Logout</h1>
+            <p class="text-gray-500 dark:text-gray-400 mt-2">Ready to leave?</p>
+        </div>
+
+        <p class="text-center text-gray-600 dark:text-gray-300 mb-6">
+            Would you like to logout of TEMS?
+        </p>
+
+        <form asp-route="Logout" method="post" class="space-y-4">
+            <input type="hidden" asp-for="LogoutId" />
+            <button type="submit" class="btn-primary w-full py-3 px-4 text-white font-semibold rounded-lg shadow-lg">
+                <i class="fas fa-sign-out-alt mr-2"></i>
+                Yes, Logout
+            </button>
+        </form>
+
+        <!-- Footer -->
+        <div class="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700 text-center">
+            <p class="text-xs text-gray-500 dark:text-gray-500">
+                Technical Equipment Management System
+            </p>
         </div>
     </div>
 </body>

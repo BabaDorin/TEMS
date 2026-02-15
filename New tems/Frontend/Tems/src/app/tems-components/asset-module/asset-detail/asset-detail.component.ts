@@ -2,9 +2,14 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { trigger, transition, style, animate } from '@angular/animations';
+import { MatDialog } from '@angular/material/dialog';
 import { AssetService } from 'src/app/services/asset.service';
+import { LocationService } from 'src/app/services/location.service';
+import { UserService } from 'src/app/services/user.service';
 import { Asset } from 'src/app/models/asset/asset.model';
 import { AssetLabelComponent } from '../../asset/asset-label/asset-label.component';
+import { RoomDetailModalComponent } from '../../location-module/room-detail-modal/room-detail-modal.component';
+import { ViewUserModalComponent } from '../../admin/user-management/view-user-modal/view-user-modal.component';
 
 @Component({
   selector: 'app-asset-detail',
@@ -34,11 +39,15 @@ export class AssetDetailComponent implements OnInit {
   activeTab: 'overview' | 'acc' | 'purchase' | 'maintenance' | 'history' = 'overview';
   showActionsDropdown = false;
   isDefinitionExpanded = true;
+  private cachedAssigneeEmail: string | null = null;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private assetService: AssetService
+    private assetService: AssetService,
+    private dialog: MatDialog,
+    private locationService: LocationService,
+    private userService: UserService
   ) {}
 
   ngOnInit() {
@@ -59,6 +68,7 @@ export class AssetDetailComponent implements OnInit {
       next: (asset) => {
         this.asset = asset;
         this.loading = false;
+        this.resolveAssigneeDisplayName();
       },
       error: (error) => {
         console.error('Error loading asset:', error);
@@ -176,20 +186,59 @@ export class AssetDetailComponent implements OnInit {
     return parts.join(', ') || '—';
   }
 
-  navigateToLocation() {
-    const asset = this.asset as any;
-    if (asset?.locationId) {
-      this.router.navigate(['/locations', asset.locationId]);
-    }
+  openLocationModal() {
+    if (!this.asset?.locationId) return;
+    this.locationService.getRoomById(this.asset.locationId).subscribe({
+      next: (room) => {
+        this.dialog.open(RoomDetailModalComponent, {
+          width: '520px',
+          maxWidth: '95vw',
+          data: { room },
+          panelClass: 'custom-dialog-container'
+        });
+      }
+    });
+  }
+
+  openAssigneeModal() {
+    if (!this.asset?.assignment?.assignedToUserId) return;
+    this.userService.getUserById(this.asset.assignment.assignedToUserId).subscribe({
+      next: (user) => {
+        this.dialog.open(ViewUserModalComponent, {
+          width: '520px',
+          maxWidth: '95vw',
+          data: { user },
+          panelClass: 'custom-dialog-container'
+        });
+      }
+    });
   }
 
   hasLocationId(): boolean {
-    const asset = this.asset as any;
-    return !!asset?.locationId;
+    return !!this.asset?.locationId;
   }
 
-  navigateToAssignee() {
-    console.log('Navigate to assignee:', this.asset?.assignment);
+  hasAssignee(): boolean {
+    return !!this.asset?.assignment?.assignedToUserId;
+  }
+
+  getAssigneeName(): string {
+    if (!this.asset?.assignment) return '';
+    const a = this.asset.assignment;
+    if (a.assignedToUserName) return a.assignedToUserName;
+    if (this.cachedAssigneeEmail) return this.cachedAssigneeEmail;
+    return '';
+  }
+
+  private resolveAssigneeDisplayName() {
+    if (!this.asset?.assignment?.assignedToUserId) return;
+    if (this.asset.assignment.assignedToUserName) return;
+
+    this.userService.getUserById(this.asset.assignment.assignedToUserId).subscribe({
+      next: (user) => {
+        this.cachedAssigneeEmail = user.email;
+      }
+    });
   }
 
   getAccData(): { key: string; value: string }[] {

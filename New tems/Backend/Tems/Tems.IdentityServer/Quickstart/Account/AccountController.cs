@@ -163,6 +163,90 @@ public class AccountController : Controller
         return View("LoggedOut", vm);
     }
 
+    [HttpGet]
+    public IActionResult Register(string? returnUrl)
+    {
+        var vm = new RegisterViewModel { ReturnUrl = returnUrl };
+        return View(vm);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Register(RegisterInputModel model)
+    {
+        if (ModelState.IsValid)
+        {
+            // Check if username already exists
+            var existingUsername = await _users.Find(u => u.Username == model.Username).FirstOrDefaultAsync();
+            if (existingUsername != null)
+            {
+                ModelState.AddModelError("Username", "Username is already taken");
+                return View(new RegisterViewModel 
+                { 
+                    Username = model.Username, 
+                    Email = model.Email, 
+                    FullName = model.FullName,
+                    ReturnUrl = model.ReturnUrl 
+                });
+            }
+
+            // Check if email already exists
+            var existingEmail = await _users.Find(u => u.Email == model.Email).FirstOrDefaultAsync();
+            if (existingEmail != null)
+            {
+                ModelState.AddModelError("Email", "Email is already registered");
+                return View(new RegisterViewModel 
+                { 
+                    Username = model.Username, 
+                    Email = model.Email, 
+                    FullName = model.FullName,
+                    ReturnUrl = model.ReturnUrl 
+                });
+            }
+
+            // Create the user
+            var user = new User
+            {
+                Id = MongoDB.Bson.ObjectId.GenerateNewId().ToString(),
+                Username = model.Username,
+                Email = model.Email,
+                FullName = model.FullName ?? model.Username,
+                IsActive = true,
+                Roles = new List<string> { "User" },
+                Claims = new Dictionary<string, string>
+                {
+                    { "can_view_entities", "true" }
+                },
+                CreatedAt = DateTime.UtcNow
+            };
+
+            user.PasswordHash = _passwordHasher.HashPassword(user, model.Password);
+
+            try
+            {
+                await _users.InsertOneAsync(user);
+                _logger.LogInformation("User {Username} registered successfully", model.Username);
+
+                // Redirect to login page with success message
+                TempData["SuccessMessage"] = "Registration successful! Please log in with your new account.";
+                return RedirectToAction("Login", new { returnUrl = model.ReturnUrl });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error registering user {Username}", model.Username);
+                ModelState.AddModelError(string.Empty, "An error occurred during registration. Please try again.");
+            }
+        }
+
+        return View(new RegisterViewModel 
+        { 
+            Username = model.Username, 
+            Email = model.Email, 
+            FullName = model.FullName,
+            ReturnUrl = model.ReturnUrl 
+        });
+    }
+
     private async Task<LoginViewModel> BuildLoginViewModelAsync(string? returnUrl)
     {
         var context = await _interaction.GetAuthorizationContextAsync(returnUrl);

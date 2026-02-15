@@ -5,7 +5,7 @@ import { ChangePasswordModel } from '../models/identity/change-password.model';
 import { IOption } from 'src/app/models/option.model';
 import { ViewUser, ViewUserSimplified } from '../models/user/view-user.model';
 import { LoginModel } from '../models/identity/login.model';
-import { API_USER_URL, API_AUTH_URL, API_URL, API_PROFILE_URL, API_ALL_URL, API_NOTIF_URL } from '../models/backend.config';
+import { API_USER_URL, API_AUTH_URL, API_URL, API_PROFILE_URL, API_ALL_URL, API_NOTIF_URL, API_USERS_URL, API_ROLES_URL } from '../models/backend.config';
 import { TEMSService } from './tems.service';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
@@ -15,6 +15,7 @@ import { Injectable } from '@angular/core';
 import { ViewProfile } from 'src/app/models/profile/view-profile.model';
 import { ViewNotification } from 'src/app/models/communication/notification/view-notification.model';
 import { UserProfile } from '../models/user/user-profile.model';
+import { GetAllUsersResponse, CreateUserRequest, CreateUserResponse, DeleteUserResponse, UpdateUserRolesRequest, UpdateUserRolesResponse, GetAllRolesResponse, UserDto, UserAssetsResponse, UserAssetCountResponse } from '../models/user/user-management.model';
 
 @Injectable({
   providedIn: 'root'
@@ -248,5 +249,100 @@ export class UserService extends TEMSService {
     return this.http.get(
       API_USER_URL + '/getPrefferedLang'
     );    
+  }
+
+  // ============================================
+  // New User Management API (Keycloak integration)
+  // ============================================
+
+  /**
+   * Get all users with pagination (from new UserManagement module)
+   */
+  getAllUsers(pageNumber: number = 1, pageSize: number = 50): Observable<GetAllUsersResponse> {
+    let params = new HttpParams()
+      .append('pageNumber', pageNumber.toString())
+      .append('pageSize', pageSize.toString());
+
+    return this.http.get<GetAllUsersResponse>(
+      API_USERS_URL,
+      { ...this.httpOptions, params }
+    );
+  }
+
+  /**
+   * Create a new user in Keycloak and TEMS database
+   */
+  createManagedUser(request: CreateUserRequest): Observable<CreateUserResponse> {
+    return this.http.post<CreateUserResponse>(
+      API_USERS_URL,
+      JSON.stringify(request),
+      this.httpOptions
+    );
+  }
+
+  /**
+   * Delete a user (from Keycloak only per requirements)
+   */
+  deleteManagedUser(userId: string): Observable<DeleteUserResponse> {
+    return this.http.delete<DeleteUserResponse>(
+      `${API_USERS_URL}/${userId}`,
+      this.httpOptions
+    );
+  }
+
+  /**
+   * Update user roles in Keycloak
+   */
+  updateUserRoles(userId: string, roles: string[]): Observable<UpdateUserRolesResponse> {
+    const request: UpdateUserRolesRequest = { id: userId, roles };
+    return this.http.put<UpdateUserRolesResponse>(
+      `${API_USERS_URL}/${userId}/roles`,
+      JSON.stringify(request),
+      this.httpOptions
+    );
+  }
+
+  /**
+   * Get all available roles from Keycloak
+   */
+  getAvailableRoles(): Observable<GetAllRolesResponse> {
+    return this.http.get<GetAllRolesResponse>(
+      API_ROLES_URL,
+      this.httpOptions
+    );
+  }
+
+  /**
+   * Get user by ID (from new UserManagement module)
+   */
+  getUserById(userId: string): Observable<UserDto> {
+    return this.http.get<UserDto>(
+      `${API_USERS_URL}/${userId}`,
+      this.httpOptions
+    );
+  }
+
+  /**
+   * Get assets assigned to a user
+   */
+  getUserAssets(userId: string, pageNumber: number = 1, pageSize: number = 50): Observable<UserAssetsResponse> {
+    let params = new HttpParams()
+      .append('pageNumber', pageNumber.toString())
+      .append('pageSize', pageSize.toString());
+
+    return this.http.get<UserAssetsResponse>(
+      `${API_USERS_URL}/${userId}/assets`,
+      { ...this.httpOptions, params }
+    );
+  }
+
+  /**
+   * Get count of assets assigned to a user
+   */
+  getUserAssetCount(userId: string): Observable<UserAssetCountResponse> {
+    return this.http.get<UserAssetCountResponse>(
+      `${API_USERS_URL}/${userId}/assets/count`,
+      this.httpOptions
+    );
   }
 } 

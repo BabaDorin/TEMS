@@ -91,7 +91,61 @@ curl -s -X POST "${KEYCLOAK_URL}/admin/realms/${REALM}/clients" \
 
 echo "Angular SPA client created"
 
-# Create Duende Identity Provider
+# =============================================================================
+# STEP A: Create custom "auto-link-first-login" flow
+# This flow auto-creates a Keycloak user on first IDP login, or auto-links to
+# an existing user — without ever showing the user any Keycloak pages.
+# =============================================================================
+echo "Creating custom auto-link-first-login flow..."
+curl -s -X POST "${KEYCLOAK_URL}/admin/realms/${REALM}/authentication/flows" \
+    -H "Authorization: Bearer ${ADMIN_TOKEN}" \
+    -H "Content-Type: application/json" \
+    -d '{
+        "alias": "auto-link-first-login",
+        "description": "Auto-creates or auto-links federated users without any prompts",
+        "providerId": "basic-flow",
+        "topLevel": true,
+        "builtIn": false
+    }'
+
+# Add "Create User If Unique" execution (creates new KC user if none matches)
+curl -s -X POST "${KEYCLOAK_URL}/admin/realms/${REALM}/authentication/flows/auto-link-first-login/executions/execution" \
+    -H "Authorization: Bearer ${ADMIN_TOKEN}" \
+    -H "Content-Type: application/json" \
+    -d '{ "provider": "idp-create-user-if-unique" }'
+
+# Add "Automatically Set Existing User" execution (links to existing KC user)
+curl -s -X POST "${KEYCLOAK_URL}/admin/realms/${REALM}/authentication/flows/auto-link-first-login/executions/execution" \
+    -H "Authorization: Bearer ${ADMIN_TOKEN}" \
+    -H "Content-Type: application/json" \
+    -d '{ "provider": "idp-auto-link" }'
+
+# Get execution IDs so we can set their requirements to ALTERNATIVE
+FIRST_LOGIN_EXECUTIONS=$(curl -s -X GET \
+    "${KEYCLOAK_URL}/admin/realms/${REALM}/authentication/flows/auto-link-first-login/executions" \
+    -H "Authorization: Bearer ${ADMIN_TOKEN}")
+
+CREATE_USER_EXEC_ID=$(echo "$FIRST_LOGIN_EXECUTIONS" | jq -r '.[] | select(.providerId=="idp-create-user-if-unique") | .id')
+AUTO_LINK_EXEC_ID=$(echo "$FIRST_LOGIN_EXECUTIONS" | jq -r '.[] | select(.providerId=="idp-auto-link") | .id')
+
+# Set "Create User If Unique" to ALTERNATIVE
+curl -s -X PUT "${KEYCLOAK_URL}/admin/realms/${REALM}/authentication/flows/auto-link-first-login/executions" \
+    -H "Authorization: Bearer ${ADMIN_TOKEN}" \
+    -H "Content-Type: application/json" \
+    -d "{\"id\": \"${CREATE_USER_EXEC_ID}\", \"requirement\": \"ALTERNATIVE\"}"
+
+# Set "Automatically Set Existing User" to ALTERNATIVE
+curl -s -X PUT "${KEYCLOAK_URL}/admin/realms/${REALM}/authentication/flows/auto-link-first-login/executions" \
+    -H "Authorization: Bearer ${ADMIN_TOKEN}" \
+    -H "Content-Type: application/json" \
+    -d "{\"id\": \"${AUTO_LINK_EXEC_ID}\", \"requirement\": \"ALTERNATIVE\"}"
+
+echo "  ✅ auto-link-first-login flow created (no prompts, no password verification)"
+
+# =============================================================================
+# STEP B: Create Duende Identity Provider
+# Uses the auto-link flow for first login, NO post-broker-login flow.
+# =============================================================================
 echo "Creating Duende IdentityServer identity provider..."
 curl -s -X POST "${KEYCLOAK_URL}/admin/realms/${REALM}/identity-provider/instances" \
     -H "Authorization: Bearer ${ADMIN_TOKEN}" \
@@ -106,8 +160,7 @@ curl -s -X POST "${KEYCLOAK_URL}/admin/realms/${REALM}/identity-provider/instanc
         "addReadTokenRoleOnCreate": false,
         "authenticateByDefault": true,
         "linkOnly": false,
-        "firstBrokerLoginFlowAlias": "first broker login",
-        "postBrokerLoginFlowAlias": "first broker login",
+        "firstBrokerLoginFlowAlias": "auto-link-first-login",
         "config": {
             "authorizationUrl": "http://localhost:5001/connect/authorize",
             "tokenUrl": "http://host.docker.internal:5001/connect/token",
@@ -116,7 +169,7 @@ curl -s -X POST "${KEYCLOAK_URL}/admin/realms/${REALM}/identity-provider/instanc
             "clientId": "keycloak-broker",
             "clientSecret": "keycloak-secret",
             "clientAuthMethod": "client_secret_post",
-            "defaultScope": "openid profile email roles tems-api",
+            "defaultScope": "openid profile email",
             "syncMode": "FORCE",
             "useJwksUrl": "true",
             "jwksUrl": "http://host.docker.internal:5001/.well-known/openid-configuration/jwks",
@@ -130,23 +183,14 @@ curl -s -X POST "${KEYCLOAK_URL}/admin/realms/${REALM}/identity-provider/instanc
         }
     }'
 
-echo "Duende identity provider created"
+echo "  ✅ Duende identity provider created (firstBrokerLoginFlow=auto-link, no postBrokerLogin)"
 
-# Set Duende as default IdP for the realm
-echo "Setting Duende as default identity provider..."
-curl -s -X PUT "${KEYCLOAK_URL}/admin/realms/${REALM}" \
-    -H "Authorization: Bearer ${ADMIN_TOKEN}" \
-    -H "Content-Type: application/json" \
-    -d '{
-        "defaultDefaultClientScopes": ["web-origins","acr","roles","profile","email"],
-        "identityProviders": [],
-        "identityProviderMappers": []
-    }'
-
-# Configure authentication flow to redirect directly to Duende
+# =============================================================================
+# STEP C: Create custom browser flow that auto-redirects to Duende
+# The user never sees Keycloak's login page.
+# =============================================================================
 echo "Creating custom browser flow with automatic IdP redirect..."
 
-# Create a new authentication flow
 curl -s -X POST "${KEYCLOAK_URL}/admin/realms/${REALM}/authentication/flows" \
     -H "Authorization: Bearer ${ADMIN_TOKEN}" \
     -H "Content-Type: application/json" \
@@ -158,11 +202,7 @@ curl -s -X POST "${KEYCLOAK_URL}/admin/realms/${REALM}/authentication/flows" \
         "builtIn": false
     }'
 
-echo "Custom browser flow created"
-
-# Get the flow ID
-CUSTOM_FLOW_ID=$(curl -s -X GET "${KEYCLOAK_URL}/admin/realms/${REALM}/authentication/flows" \
-    -H "Authorization: Bearer ${ADMIN_TOKEN}" | jq -r '.[] | select(.alias=="duende-browser-flow") | .id')
+echo "  Custom browser flow created"
 
 # Add Identity Provider Redirector execution
 curl -s -X POST "${KEYCLOAK_URL}/admin/realms/${REALM}/authentication/flows/duende-browser-flow/executions/execution" \
@@ -172,8 +212,6 @@ curl -s -X POST "${KEYCLOAK_URL}/admin/realms/${REALM}/authentication/flows/duen
         "provider": "identity-provider-redirector"
     }'
 
-echo "IdP redirector execution added"
-
 # Get the execution ID
 EXECUTIONS=$(curl -s -X GET "${KEYCLOAK_URL}/admin/realms/${REALM}/authentication/flows/duende-browser-flow/executions" \
     -H "Authorization: Bearer ${ADMIN_TOKEN}")
@@ -182,9 +220,9 @@ IDP_REDIRECTOR_ID=$(echo "$EXECUTIONS" | jq -r '.[] | select(.providerId=="ident
 
 # Configure the redirector to use Duende as default
 if [ ! -z "$IDP_REDIRECTOR_ID" ] && [ "$IDP_REDIRECTOR_ID" != "null" ]; then
-    echo "Configuring IdP redirector to automatically redirect to Duende..."
+    echo "  Configuring IdP redirector to automatically redirect to Duende..."
     
-    # First, update the execution to be REQUIRED
+    # Update the execution to be REQUIRED
     curl -s -X PUT "${KEYCLOAK_URL}/admin/realms/${REALM}/authentication/flows/duende-browser-flow/executions" \
         -H "Authorization: Bearer ${ADMIN_TOKEN}" \
         -H "Content-Type: application/json" \
@@ -205,6 +243,8 @@ if [ ! -z "$IDP_REDIRECTOR_ID" ] && [ "$IDP_REDIRECTOR_ID" != "null" ]; then
         }'
 fi
 
+echo "  ✅ IdP redirector configured"
+
 # Set the custom flow as the default browser flow for the realm
 echo "Setting custom flow as default browser flow..."
 curl -s -X PUT "${KEYCLOAK_URL}/admin/realms/${REALM}" \
@@ -214,23 +254,38 @@ curl -s -X PUT "${KEYCLOAK_URL}/admin/realms/${REALM}" \
         "browserFlow": "duende-browser-flow"
     }'
 
-echo "Browser flow configured - Keycloak will now redirect to Duende IdentityServer"
+echo "  ✅ Browser flow configured — user will always be redirected to Duende automatically"
 
 # Add protocol mappers for roles and claims
-# Create realm roles for permissions
-echo "Creating realm roles for permissions..."
+# Create realm roles for TEMS permissions (correct roles matching backend)
+echo "Creating realm roles for TEMS permissions..."
 
-for role in "can_view_entities" "can_manage_entities" "can_allocate_keys" "can_send_emails" "can_manage_announcements" "can_manage_system_configuration"; do
-    echo "Creating role: ${role}"
-    curl -s -X POST "${KEYCLOAK_URL}/admin/realms/${REALM}/roles" \
-        -H "Authorization: Bearer ${ADMIN_TOKEN}" \
-        -H "Content-Type: application/json" \
-        -d "{
-            \"name\": \"${role}\",
-            \"description\": \"Permission to ${role}\",
-            \"composite\": false,
-            \"clientRole\": false
-        }"
+TEMS_ROLES=(
+    "can_manage_assets"
+    "can_manage_tickets"
+    "can_open_tickets"
+    "can_manage_users"
+)
+
+for role in "${TEMS_ROLES[@]}"; do
+    # Check if role already exists
+    EXISTING_ROLE=$(curl -s -X GET "${KEYCLOAK_URL}/admin/realms/${REALM}/roles/${role}" \
+        -H "Authorization: Bearer ${ADMIN_TOKEN}" 2>/dev/null | jq -r '.name')
+    
+    if [ "$EXISTING_ROLE" = "$role" ]; then
+        echo "  ✅ Role '${role}' already exists"
+    else
+        echo "  Creating role: ${role}"
+        curl -s -X POST "${KEYCLOAK_URL}/admin/realms/${REALM}/roles" \
+            -H "Authorization: Bearer ${ADMIN_TOKEN}" \
+            -H "Content-Type: application/json" \
+            -d "{
+                \"name\": \"${role}\",
+                \"description\": \"Permission for ${role}\",
+                \"composite\": false,
+                \"clientRole\": false
+            }"
+    fi
 done
 
 echo "Realm roles created"
@@ -284,15 +339,64 @@ ADMIN_USER_ID=$(curl -s -X GET "${KEYCLOAK_URL}/admin/realms/${REALM}/users?user
     -H "Authorization: Bearer ${ADMIN_TOKEN}" | jq -r '.[0].id')
 
 # Assign all roles to admin user
-echo "Assigning all roles to admin user..."
-for role in "can_view_entities" "can_manage_entities" "can_allocate_keys" "can_send_emails" "can_manage_announcements" "can_manage_system_configuration"; do
+echo "Assigning all TEMS roles to admin user..."
+ROLE_PAYLOAD="["
+FIRST=true
+for role in "${TEMS_ROLES[@]}"; do
     ROLE_DATA=$(curl -s -X GET "${KEYCLOAK_URL}/admin/realms/${REALM}/roles/${role}" \
         -H "Authorization: Bearer ${ADMIN_TOKEN}")
-    
-    curl -s -X POST "${KEYCLOAK_URL}/admin/realms/${REALM}/users/${ADMIN_USER_ID}/role-mappings/realm" \
-        -H "Authorization: Bearer ${ADMIN_TOKEN}" \
-        -H "Content-Type: application/json" \
-        -d "[${ROLE_DATA}]"
+    ROLE_ID=$(echo "$ROLE_DATA" | jq -r '.id')
+    if [ -z "$ROLE_ID" ] || [ "$ROLE_ID" = "null" ]; then
+        echo "  ⚠️  Could not find role '${role}' — skipping"
+        continue
+    fi
+    if [ "$FIRST" = true ]; then
+        FIRST=false
+    else
+        ROLE_PAYLOAD="${ROLE_PAYLOAD},"
+    fi
+    ROLE_PAYLOAD="${ROLE_PAYLOAD}{\"id\":\"${ROLE_ID}\",\"name\":\"${role}\"}"
+done
+ROLE_PAYLOAD="${ROLE_PAYLOAD}]"
+
+HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" -X POST \
+    "${KEYCLOAK_URL}/admin/realms/${REALM}/users/${ADMIN_USER_ID}/role-mappings/realm" \
+    -H "Authorization: Bearer ${ADMIN_TOKEN}" \
+    -H "Content-Type: application/json" \
+    -d "${ROLE_PAYLOAD}")
+
+if [ "$HTTP_CODE" = "204" ]; then
+    echo "  ✅ All roles assigned to admin user"
+else
+    echo "  ⚠️  Role assignment returned HTTP ${HTTP_CODE}, retrying individually..."
+    for role in "${TEMS_ROLES[@]}"; do
+        ROLE_DATA=$(curl -s -X GET "${KEYCLOAK_URL}/admin/realms/${REALM}/roles/${role}" \
+            -H "Authorization: Bearer ${ADMIN_TOKEN}")
+        RETRY_CODE=$(curl -s -o /dev/null -w "%{http_code}" -X POST \
+            "${KEYCLOAK_URL}/admin/realms/${REALM}/users/${ADMIN_USER_ID}/role-mappings/realm" \
+            -H "Authorization: Bearer ${ADMIN_TOKEN}" \
+            -H "Content-Type: application/json" \
+            -d "[${ROLE_DATA}]")
+        if [ "$RETRY_CODE" = "204" ]; then
+            echo "    ✅ Assigned ${role}"
+        else
+            echo "    ❌ Failed to assign ${role} (HTTP ${RETRY_CODE})"
+        fi
+    done
+fi
+
+# Verify roles were assigned
+echo "Verifying admin user roles..."
+ASSIGNED_ROLES=$(curl -s -X GET \
+    "${KEYCLOAK_URL}/admin/realms/${REALM}/users/${ADMIN_USER_ID}/role-mappings/realm" \
+    -H "Authorization: Bearer ${ADMIN_TOKEN}" | jq -r '.[].name')
+
+for role in "${TEMS_ROLES[@]}"; do
+    if echo "$ASSIGNED_ROLES" | grep -q "^${role}$"; then
+        echo "  ✅ ${role} — assigned"
+    else
+        echo "  ❌ ${role} — MISSING"
+    fi
 done
 
 echo "Admin user created with username: admin, password: Admin123!"
@@ -320,15 +424,15 @@ curl -s -X POST "${KEYCLOAK_URL}/admin/realms/${REALM}/users" \
 REGULAR_USER_ID=$(curl -s -X GET "${KEYCLOAK_URL}/admin/realms/${REALM}/users?username=user" \
     -H "Authorization: Bearer ${ADMIN_TOKEN}" | jq -r '.[0].id')
 
-# Assign only view role to regular user
-echo "Assigning view role to regular user..."
-VIEW_ROLE_DATA=$(curl -s -X GET "${KEYCLOAK_URL}/admin/realms/${REALM}/roles/can_view_entities" \
+# Assign can_open_tickets role to regular user
+echo "Assigning can_open_tickets role to regular user..."
+TICKET_ROLE_DATA=$(curl -s -X GET "${KEYCLOAK_URL}/admin/realms/${REALM}/roles/can_open_tickets" \
     -H "Authorization: Bearer ${ADMIN_TOKEN}")
 
 curl -s -X POST "${KEYCLOAK_URL}/admin/realms/${REALM}/users/${REGULAR_USER_ID}/role-mappings/realm" \
     -H "Authorization: Bearer ${ADMIN_TOKEN}" \
     -H "Content-Type: application/json" \
-    -d "[${VIEW_ROLE_DATA}]"
+    -d "[${TICKET_ROLE_DATA}]"
 
 echo "Regular user created with username: user, password: User123!"
 
@@ -345,10 +449,10 @@ echo "Test Users Created:"
 echo "  Admin User:"
 echo "    Username: admin"
 echo "    Password: Admin123!"
-echo "    Permissions: ALL"
+echo "    Permissions: can_manage_assets, can_manage_tickets, can_open_tickets, can_manage_users"
 echo ""
 echo "  Regular User:"
 echo "    Username: user"
 echo "    Password: User123!"
-echo "    Permissions: can_view_entities only"
+echo "    Permissions: can_open_tickets only"
 echo "=========================================="

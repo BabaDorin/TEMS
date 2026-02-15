@@ -4,6 +4,7 @@ using FastEndpoints;
 using FastEndpoints.Swagger;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using System.Security.Claims;
 using Tems.Common.Tenant;
 using Tems.Host.Middleware;
 using Tems.Host.Seeding;
@@ -47,7 +48,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
             ClockSkew = TimeSpan.Zero,
-            RoleClaimType = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role", // Microsoft claim type
+            RoleClaimType = "roles",
             NameClaimType = "preferred_username"
         };
         options.RequireHttpsMetadata = false; // Only for dev
@@ -62,12 +63,35 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             OnTokenValidated = context =>
             {
                 var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<Program>>();
-                var claims = context.Principal?.Claims.Select(c => $"{c.Type}={c.Value}") ?? Array.Empty<string>();
-                logger.LogInformation("Token validated. Claims: {Claims}", string.Join(", ", claims));
                 
-                var roles = context.Principal?.FindAll("http://schemas.microsoft.com/ws/2008/06/identity/claims/role")
-                    .Select(c => c.Value) ?? Array.Empty<string>();
-                logger.LogInformation("User roles: {Roles}", string.Join(", ", roles));
+                // .NET 9 JsonWebTokenHandler does NOT auto-split JSON arrays into
+                // individual claims. Keycloak sends "roles": ["a","b","c"] as a single
+                // claim whose Value is the first element. We must read the raw token
+                // and expand the array ourselves, using claim type "roles" so it
+                // matches RoleClaimType.
+                if (context.Principal?.Identity is ClaimsIdentity identity)
+                {
+                    var existingRoles = identity.FindAll("roles").ToList();
+                    
+                    if (existingRoles.Count <= 1)
+                    {
+                        // The handler collapsed the array — read from the raw JWT
+                        foreach (var c in existingRoles)
+                            identity.RemoveClaim(c);
+
+                        if (context.SecurityToken is Microsoft.IdentityModel.JsonWebTokens.JsonWebToken jwt)
+                        {
+                            if (jwt.TryGetPayloadValue<string[]>("roles", out var rolesArr) && rolesArr != null)
+                            {
+                                foreach (var role in rolesArr)
+                                    identity.AddClaim(new Claim("roles", role));
+                            }
+                        }
+                    }
+                }
+                
+                var userRoles = context.Principal?.FindAll("roles").Select(c => c.Value) ?? [];
+                logger.LogInformation("Token validated. Roles: {Roles}", string.Join(", ", userRoles));
                 return Task.CompletedTask;
             }
         };
@@ -86,6 +110,10 @@ builder.Services.AddAuthorization(options =>
         
     options.AddPolicy("CanOpenTickets", policy =>
         policy.RequireRole("can_open_tickets"));
+    
+    // User Management
+    options.AddPolicy("CanManageUsers", policy =>
+        policy.RequireRole("can_manage_users"));
 });
 
 // Add CORS for Angular frontend

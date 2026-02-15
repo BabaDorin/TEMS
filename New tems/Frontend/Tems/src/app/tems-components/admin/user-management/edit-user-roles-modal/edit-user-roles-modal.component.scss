@@ -1,0 +1,9 @@
+:host {
+  display: block;
+  overflow: hidden;
+  background-color: white;
+}
+
+:host-context(.dark) {
+  background-color: #2c2c2e;
+}

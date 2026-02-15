@@ -302,6 +302,14 @@ formly-field-mat-radio {
   min-width: 35vw;
 }
 
+.mat-mdc-dialog-container .mdc-dialog__surface {
+  border-radius: 0 !important;
+}
+
+.mat-mdc-dialog-container {
+  border-radius: 0 !important;
+}
+
 .text-justify {
   text-align: justify;
 }
@@ -483,7 +491,7 @@ html.dark {
   }
   
   /* === AG GRID DARK MODE ===
-  /* AG Grid dark mode is handled natively by using ag-theme-quartz-auto-dark class */
+  /* AG Grid dark mode is handled by using ag-theme-quartz-dark class */
   /* Components conditionally apply this class via [class]="gridThemeClass" binding */
   /* === MODAL DARK MODE (custom modals) === */
   .fixed.inset-0 > div.bg-white,

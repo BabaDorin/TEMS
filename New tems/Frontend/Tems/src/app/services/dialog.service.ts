@@ -31,8 +31,11 @@ export class DialogService {
 
     dialogRef = this.dialog.open(component,
     {
+      width: '520px',
+      maxWidth: '95vw',
       maxHeight: '80vh',
       autoFocus: false,
+      panelClass: 'custom-dialog-container',
       data: data
     });
 

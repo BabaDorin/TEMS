@@ -106,7 +106,7 @@ export class AssetDefinitionManagementComponent implements OnInit {
   };
 
   get gridThemeClass(): string {
-    return this.themeService.isDarkMode ? 'ag-theme-quartz-auto-dark' : 'ag-theme-quartz';
+    return this.themeService.isDarkMode ? 'ag-theme-quartz-dark' : 'ag-theme-quartz';
   }
 
   constructor(

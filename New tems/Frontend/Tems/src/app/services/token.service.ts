@@ -1,4 +1,4 @@
-import { CAN_MANAGE_ASSETS, CAN_MANAGE_TICKETS, CAN_OPEN_TICKETS } from '../models/claims';
+import { CAN_MANAGE_ASSETS, CAN_MANAGE_TICKETS, CAN_OPEN_TICKETS, CAN_MANAGE_USERS } from '../models/claims';
 import { Injectable, inject } from '@angular/core';
 import { OAuthService } from 'angular-oauth2-oidc';
 
@@ -18,7 +18,8 @@ export class TokenService {
     const claimMap: Record<string, string> = {
       [CAN_MANAGE_ASSETS]: 'can_manage_assets',
       [CAN_MANAGE_TICKETS]: 'can_manage_tickets',
-      [CAN_OPEN_TICKETS]: 'can_open_tickets'
+      [CAN_OPEN_TICKETS]: 'can_open_tickets',
+      [CAN_MANAGE_USERS]: 'can_manage_users'
     };
     
     const roleName = claimMap[claimType] || claimType;
@@ -72,5 +73,10 @@ export class TokenService {
 
   canOpenTickets() {
     return this.hasClaim(CAN_OPEN_TICKETS) || this.hasClaim(CAN_MANAGE_TICKETS);
+  }
+
+  // User Management permissions
+  canManageUsers() {
+    return this.hasClaim(CAN_MANAGE_USERS);
   }
 }

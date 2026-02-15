@@ -83,9 +83,8 @@ public static class IdentityConfig
                 {
                     IdentityServerConstants.StandardScopes.OpenId,
                     IdentityServerConstants.StandardScopes.Profile,
-                    IdentityServerConstants.StandardScopes.Email,
-                    "tems-api"
-                    // Roles managed by Keycloak
+                    IdentityServerConstants.StandardScopes.Email
+                    // Roles managed by Keycloak only
                 },
                 
                 AccessTokenLifetime = 900,

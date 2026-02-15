@@ -4,6 +4,7 @@ using LocationManagement.Application.Interfaces;
 using LocationManagement.Contract.Commands;
 using LocationManagement.Contract.Responses;
 using MediatR;
+using Tems.Common.Notifications;
 using Tems.Common.Tenant;
 
 namespace LocationManagement.Application.Commands;
@@ -215,13 +216,18 @@ public class UpdateRoomCommandHandler(IRoomRepository roomRepository, ITenantCon
     }
 }
 
-public class DeleteRoomCommandHandler(IRoomRepository roomRepository, ITenantContext tenantContext)
+public class DeleteRoomCommandHandler(IRoomRepository roomRepository, ITenantContext tenantContext, IPublisher publisher)
     : IRequestHandler<DeleteRoomCommand, DeleteRoomResponse>
 {
     public async Task<DeleteRoomResponse> Handle(DeleteRoomCommand request, CancellationToken cancellationToken)
     {
         var tenantId = tenantContext.TenantId ?? throw new InvalidOperationException("Tenant context is required");
         var deleted = await roomRepository.DeleteAsync(request.Id, tenantId, cancellationToken);
+
+        if (deleted)
+        {
+            await publisher.Publish(new LocationDeletedNotification(request.Id, "Room"), cancellationToken);
+        }
 
         return deleted 
             ? new DeleteRoomResponse(true, "Room deleted successfully")

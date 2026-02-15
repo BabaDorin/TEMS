@@ -21,6 +21,18 @@ public class User
     [BsonElement("identity_provider_id")]
     public string IdentityProviderId { get; set; } = string.Empty;
 
+    /// <summary>
+    /// List of tenant IDs this user belongs to
+    /// </summary>
+    [BsonElement("tenant_ids")]
+    public List<string> TenantIds { get; set; } = new() { "default" };
+
+    /// <summary>
+    /// Keycloak user ID (sub claim from Keycloak)
+    /// </summary>
+    [BsonElement("keycloak_id")]
+    public string? KeycloakId { get; set; }
+
     [BsonElement("created_at")]
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 

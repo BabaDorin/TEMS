@@ -1,208 +1,45 @@
 import { TokenService } from './token.service';
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import { RouteInfo } from 'src/app/shared/sidebar/sidebar.metadata';
 import { TranslateService } from '@ngx-translate/core';
+import { AuthService } from './auth.service';
+import { Subject, takeUntil } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
-export class MenuService {
+export class MenuService implements OnDestroy {
 
-  ROUTES: RouteInfo[];
+  ROUTES: RouteInfo[] = [];
+  private destroy$ = new Subject<void>();
 
   constructor(
     private tokenService: TokenService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private authService: AuthService
   ) {
-    this.translate.get(['menu'])
-      .subscribe(translations => {
-        let menu = translations.menu;
+    this.buildRoutes();
+    
+    this.authService.isAuthenticated$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        setTimeout(() => this.buildRoutes(), 100);
+      });
+  }
 
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  refreshMenu(): void {
+    this.buildRoutes();
+  }
+
+  private buildRoutes(): void {
+    this.translate.get(['menu'])
+      .subscribe(() => {
         this.ROUTES = [
-          {
-            path: '',
-            title: menu.equipment,
-            icon: 'mdi mdi-desktop-mac menu-icon',
-            isActive: false,
-            isShown: this.tokenService.canManageAssets(),
-            showSubmenu: false,
-            submenu: [
-              {
-                path: '/asset/all',
-                title: menu.view,
-                icon: 'mdi mdi-view-list menu-icon',
-                isActive: false,
-                isShown: this.tokenService.canManageAssets(),
-                showSubmenu: false,
-                submenu: []
-              },
-              {
-                path: '/asset/add',
-                title: menu.add,
-                icon: 'mdi mdi-plus menu-icon',
-                isActive: false,
-                isShown: this.tokenService.canManageAssets(),
-                showSubmenu: false,
-                submenu: []
-              },
-              {
-                path: '/quick-access/equipment',
-                title: menu.quickAccess,
-                icon: 'mdi mdi-crosshairs-gps menu-icon',
-                isShown: this.tokenService.canManageAssets(),
-                isActive: false,
-                showSubmenu: false,
-                submenu: []
-              },
-              {
-                path: '/asset/allocate',
-                title: menu.allocate,
-                icon: 'mdi mdi-transfer menu-icon',
-                isActive: false,
-                isShown: this.tokenService.canManageAssets(),
-                showSubmenu: false,
-                submenu: []
-              },
-              {
-                path: '/asset/allocations',
-                title: menu.allocations,
-                icon: 'mdi mdi-history menu-icon',
-                isActive: false,
-                isShown: this.tokenService.canManageAssets(),
-                showSubmenu: false,
-                submenu: []
-              },
-              {
-                path: '/asset/generate-temsid',
-                title: menu.generateTEMSID,
-                icon: 'mdi mdi-label menu-icon',
-                isActive: false,
-                isShown: this.tokenService.canManageAssets(),
-                showSubmenu: false,
-                submenu: []
-              },
-            ]
-          },
-          {
-            path: '',
-            title: menu.rooms,
-            icon: 'mdi mdi-panorama-wide-angle menu-icon',
-            isActive: false,
-            isShown: this.tokenService.canManageAssets(),
-            showSubmenu: false,
-            submenu: [
-              {
-                path: '/rooms/view',
-                title: menu.view,
-                icon: 'mdi mdi-view-list menu-icon',
-                isActive: false,
-                isShown: this.tokenService.canManageAssets(),
-                showSubmenu: false,
-                submenu: []
-              },
-              {
-                path: '/rooms/add',
-                title: menu.add,
-                icon: 'mdi mdi-plus menu-icon',
-                isActive: false,
-                isShown: this.tokenService.canManageAssets(),
-                showSubmenu: false,
-                submenu: []
-              },
-              {
-                path: '/quick-access/rooms',
-                title: menu.quickAccess,
-                icon: 'mdi mdi-crosshairs-gps menu-icon',
-                isShown: this.tokenService.canManageAssets(),
-                isActive: false,
-                showSubmenu: false,
-                submenu: []
-              },
-              // {
-              //   path: '/rooms/map',
-              //   title: 'College Map',
-              //   icon: 'mdi mdi-map menu-icon',
-              //   isActive: false,
-              //   isShown: this.hasClaim(CAN_VIEW_ENTITIES),
-              //   showSubmenu: false,
-              //   submenu: []
-              // },
-            ]
-          },
-          {
-            path: '',
-            title: menu.personnel,
-            icon: 'mdi mdi-account-multiple menu-icon',
-            isShown: this.tokenService.canManageAssets(),
-            isActive: false,
-            showSubmenu: false,
-            submenu: [
-              {
-                path: '/personnel/all',
-                title: menu.view,
-                icon: 'mdi mdi-view-list menu-icon',
-                isActive: false,
-                isShown: this.tokenService.canManageAssets(),
-                showSubmenu: false,
-                submenu: []
-              },
-              {
-                path: '/personnel/add',
-                title: menu.add,
-                icon: 'mdi mdi-plus menu-icon',
-                isActive: false,
-                isShown: this.tokenService.canManageAssets(),
-                showSubmenu: false,
-                submenu: []
-              },
-              {
-                path: '/quick-access/personnel',
-                title: menu.quickAccess,
-                icon: 'mdi mdi-crosshairs-gps menu-icon',
-                isShown: this.tokenService.canManageAssets(),
-                isActive: false,
-                showSubmenu: false,
-                submenu: []
-              }
-            ]
-          },
-          {
-            path: '',
-            title: menu.keys,
-            icon: 'mdi mdi-key-variant menu-icon',
-            isActive: false,
-            isShown: this.tokenService.canManageAssets() || this.tokenService.canManageAssets(),
-            showSubmenu: false,
-            submenu: [
-              {
-                path: '/keys/all',
-                title: menu.view,
-                icon: 'mdi mdi-key-change menu-icon',
-                isActive: false,
-                isShown: this.tokenService.canManageAssets() || this.tokenService.canManageAssets(),
-                showSubmenu: false,
-                submenu: []
-              },
-              {
-                path: '/keys/allocations',
-                title: menu.allocations,
-                icon: 'mdi mdi-account-search menu-icon',
-                isActive: false,
-                isShown: this.tokenService.canManageAssets() || this.tokenService.canManageAssets(),
-                showSubmenu: false,
-                submenu: []
-              },
-              {
-                path: '/keys/allocate',
-                title: menu.allocate,
-                icon: 'mdi mdi-account-key menu-icon',
-                isActive: false,
-                isShown: this.tokenService.canManageAssets(),
-                showSubmenu: false,
-                submenu: []
-              },
-            ]
-          },
           {
             path: '',
             title: 'Assets',
@@ -213,17 +50,8 @@ export class MenuService {
             submenu: [
               {
                 path: '/assets/view',
-                title: 'Assets',
+                title: 'View Assets',
                 icon: 'mdi mdi-view-list menu-icon',
-                isActive: false,
-                isShown: true,
-                showSubmenu: false,
-                submenu: []
-              },
-              {
-                path: '/asset/add',
-                title: 'Add Asset',
-                icon: 'mdi mdi-plus menu-icon',
                 isActive: false,
                 isShown: true,
                 showSubmenu: false,
@@ -288,96 +116,25 @@ export class MenuService {
             ]
           },
           {
-            path: '/library/all',
-            title: menu.library,
-            icon: 'mdi mdi-view-list menu-icon',
-            isActive: false,
-            isShown: this.tokenService.canManageAssets(),
-            showSubmenu: false,
-            submenu: []
-          },
-          {
-            path: 'reports',
-            title: menu.report,
-            icon: 'mdi mdi-printer menu-icon',
-            isActive: false,
-            isShown: this.tokenService.canManageAssets(),
-            showSubmenu: false,
-            submenu: []
-          },
-          {
             path: '',
-            title: menu.administration,
-            icon: 'mdi mdi-account-star menu-icon',
+            title: 'User Management',
+            icon: 'mdi mdi-account-multiple menu-icon',
             isActive: false,
-            isShown: this.tokenService.canManageAssets(),
+            isShown: this.tokenService.canManageUsers(),
             showSubmenu: false,
             submenu: [
               {
-                path: '/administration/equipment',
-                title: menu.equipment,
-                icon: 'mdi mdi-database-plus menu-icon',
-                isActive: false,
-                isShown: this.tokenService.canManageAssets(),
-                showSubmenu: false,
-                submenu: []
-              },
-              {
                 path: '/administration/users',
-                title: menu.users,
+                title: 'Manage Users',
                 icon: 'mdi mdi-account-multiple-outline menu-icon',
-                isShown: this.tokenService.canManageAssets(),
+                isShown: this.tokenService.canManageUsers(),
                 isActive: false,
                 showSubmenu: false,
                 submenu: []
-              },
-              {
-                path: '/administration/system-configuration',
-                title: menu.configuration,
-                icon: 'mdi mdi-sitemap menu-icon',
-                isActive: false,
-                isShown: this.tokenService.canManageAssets(),
-                showSubmenu: false,
-                submenu: []
-              },
-              {
-                path: '/administration/system-logs',
-                title: menu.systemLogs,
-                icon: 'mdi mdi-menu menu-icon',
-                isActive: false,
-                isShown: this.tokenService.canManageAssets(),
-                showSubmenu: false,
-                submenu: []
-              },
-              {
-                path: '/administration/bug-reports',
-                title: menu.bugReports,
-                icon: 'mdi mdi-bug menu-icon',
-                isActive: false,
-                isShown: this.tokenService.canManageAssets(),
-                showSubmenu: false,
-                submenu: []
-              },
+              }
             ]
-          },
-          //   path: '/analytics',
-          //   title: 'Analytics',
-          //   icon: 'mdi mdi-chart-bar menu-icon',
-          //   isActive: false,
-          //   isShown: this.hasClaim(CAN_VIEW_ENTITIES) || this.hasClaim(CAN_MANAGE_ENTITIES),
-          //   showSubmenu: false,
-          //   submenu: []
-          // },
-          {
-            path: '/archieve',
-            title: menu.archive,
-            icon: 'mdi mdi-file-sync menu-icon',
-            isActive: false,
-            isShown: this.tokenService.canManageAssets(),
-            showSubmenu: false,
-            submenu: []
           }
-        ]
-      })
+        ];
+      });
   }
 }

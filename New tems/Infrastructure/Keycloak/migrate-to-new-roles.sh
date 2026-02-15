@@ -25,6 +25,7 @@ NEW_ROLES=(
     "can_manage_assets"
     "can_manage_tickets"
     "can_open_tickets"
+    "can_manage_users"
 )
 
 # Define old roles to remove

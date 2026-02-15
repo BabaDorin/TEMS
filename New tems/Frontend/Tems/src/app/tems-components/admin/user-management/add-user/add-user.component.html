@@ -1,47 +1,198 @@
-<ng-container *ngIf="formlyData.isVisible == true; else elseBlock">
-    <h3 *ngIf="userIdToUpdate == undefined">
-        {{ 'user.add' | translate }}
-    </h3>
-    <h3 *ngIf="userIdToUpdate != undefined">
-        {{ 'user.update' | translate }}
-    </h3>
-    <form [formGroup]="formlyData.form" (ngSubmit)="onSubmit()">
-        <formly-form [form]="formlyData.form" [fields]="formlyData.fields" [model]="formlyData.model"></formly-form>
+<div class="bg-white dark:bg-[#2c2c2e]">
+  <div class="max-w-4xl mx-auto px-4 py-2">
+    
+    <!-- Header -->
+    <div class="mb-4">
+      <div class="flex items-center justify-between gap-4">
+        <div class="flex-1">
+          <h1 class="text-2xl font-semibold text-gray-900 dark:text-white m-0" style="letter-spacing: -0.5px;">Add New User</h1>
+          <p class="text-sm text-gray-500 dark:text-gray-400 mt-1 m-0">Fill in the details to add a new user to the system</p>
+        </div>
+      </div>
+    </div>
 
-        <app-chips-autocomplete 
-            #rolesChips [label]="translate.instant('user.roleLabel')" [autocompleteOptions]="roleOptions"
-            (dataCollected)="markRoleClaims()" (dataRemoved)="markRoleClaims(true)">
-        </app-chips-autocomplete>
-        <br>
+    <!-- Main Form -->
+    <div class="space-y-4">
+      
+      <!-- Error Message -->
+      <div *ngIf="errorMessage" class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl">
+        <div class="px-4 py-3 flex items-start gap-3">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" class="flex-shrink-0 mt-0.5 text-red-600 dark:text-red-400">
+            <circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M10 6V11M10 13.5V14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          <span class="text-sm text-red-700 dark:text-red-400">{{ errorMessage }}</span>
+        </div>
+      </div>
 
-        <app-chips-autocomplete #personnelChips [label]="translate.instant('user.assignPersonnelLabel')"
-            [endPoint]="personnelService" [maxOptionsSelected]="1">
-        </app-chips-autocomplete>
+      <form [formGroup]="userForm" (ngSubmit)="onSubmit()" class="space-y-4">
+        
+        <!-- Account Information -->
+        <div class="bg-white dark:bg-[#2c2c2e] rounded-xl border border-gray-200 dark:border-[#48484a]">
+          <div class="px-4 py-3">
+            <div class="flex items-start justify-between gap-4 mb-3">
+              <div class="flex-1">
+                <h3 class="text-sm font-medium text-gray-900 dark:text-white m-0">Account Information</h3>
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5 m-0">Basic account credentials</p>
+              </div>
+            </div>
+            
+            <div class="space-y-4">
+              <!-- Username -->
+              <div>
+                <label class="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Username
+                  <div class="flex items-center gap-1.5 px-2 py-1 bg-blue-50 dark:bg-blue-900/20 rounded-md">
+                    <span class="text-xs font-medium text-blue-600 dark:text-blue-400">Required</span>
+                  </div>
+                </label>
+                <input 
+                  type="text" 
+                  formControlName="username"
+                  placeholder="Enter username"
+                  class="w-full px-3 py-2 border border-gray-200 dark:border-[#48484a] dark:bg-[#3a3a3c] dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-[#007aff] focus:border-transparent text-sm transition">
+                <p *ngIf="userForm.get('username')?.hasError('required') && userForm.get('username')?.touched" class="mt-1.5 text-xs text-red-500 dark:text-red-400">Username is required</p>
+                <p *ngIf="userForm.get('username')?.hasError('minlength') && userForm.get('username')?.touched" class="mt-1.5 text-xs text-red-500 dark:text-red-400">Username must be at least 3 characters</p>
+              </div>
 
-        <div class="mt-2">
-            <mat-expansion-panel>
-                <mat-expansion-panel-header>
-                    <mat-panel-title>
-                        <h3 class="m-2">
-                            {{ 'user.claims' | translate }}
-                        </h3>
-                    </mat-panel-title>
-                </mat-expansion-panel-header>
-                <ng-template matExpansionPanelContent>
-                    <app-checkbox-group [options]="claims"
-                        [label]="translate.instant('user.claimsLabel')"
-                        (toggle)="onClaimsChange($event)">
-                    </app-checkbox-group>
-                </ng-template>
-            </mat-expansion-panel>
+              <!-- Email -->
+              <div>
+                <label class="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  Email
+                  <div class="flex items-center gap-1.5 px-2 py-1 bg-blue-50 dark:bg-blue-900/20 rounded-md">
+                    <span class="text-xs font-medium text-blue-600 dark:text-blue-400">Required</span>
+                  </div>
+                </label>
+                <input 
+                  type="email" 
+                  formControlName="email"
+                  placeholder="Enter email address"
+                  class="w-full px-3 py-2 border border-gray-200 dark:border-[#48484a] dark:bg-[#3a3a3c] dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-[#007aff] focus:border-transparent text-sm transition">
+                <p *ngIf="userForm.get('email')?.hasError('required') && userForm.get('email')?.touched" class="mt-1.5 text-xs text-red-500 dark:text-red-400">Email is required</p>
+                <p *ngIf="userForm.get('email')?.hasError('email') && userForm.get('email')?.touched" class="mt-1.5 text-xs text-red-500 dark:text-red-400">Please enter a valid email</p>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <button type="submit" class="btn btn-gradient-primary mt-2" [disabled]="formlyData.form.status=='INVALID'">
-            {{ 'form.submit' | translate }}
-        </button>
-    </form>
-</ng-container>
+        <!-- Personal Information -->
+        <div class="bg-white dark:bg-[#2c2c2e] rounded-xl border border-gray-200 dark:border-[#48484a]">
+          <div class="px-4 py-3">
+            <div class="flex items-start justify-between gap-4 mb-3">
+              <div class="flex-1">
+                <h3 class="text-sm font-medium text-gray-900 dark:text-white m-0">Personal Information</h3>
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5 m-0">Optional profile details</p>
+              </div>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-4">
+              <!-- First Name -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">First Name</label>
+                <input 
+                  type="text" 
+                  formControlName="firstName"
+                  placeholder="Enter first name"
+                  class="w-full px-3 py-2 border border-gray-200 dark:border-[#48484a] dark:bg-[#3a3a3c] dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-[#007aff] focus:border-transparent text-sm transition">
+              </div>
 
-<ng-template #elseBlock>
-    {{ 'general.preparing' | translate }}
-</ng-template>
+              <!-- Last Name -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Last Name</label>
+                <input 
+                  type="text" 
+                  formControlName="lastName"
+                  placeholder="Enter last name"
+                  class="w-full px-3 py-2 border border-gray-200 dark:border-[#48484a] dark:bg-[#3a3a3c] dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-[#007aff] focus:border-transparent text-sm transition">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Security -->
+        <div class="bg-white dark:bg-[#2c2c2e] rounded-xl border border-gray-200 dark:border-[#48484a]">
+          <div class="px-4 py-3">
+            <div class="flex items-start justify-between gap-4 mb-3">
+              <div class="flex-1">
+                <h3 class="text-sm font-medium text-gray-900 dark:text-white m-0">Security</h3>
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5 m-0">Password settings</p>
+              </div>
+            </div>
+            
+            <div>
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Temporary Password</label>
+              <input 
+                type="password" 
+                formControlName="temporaryPassword"
+                placeholder="Leave empty for auto-generated password"
+                class="w-full px-3 py-2 border border-gray-200 dark:border-[#48484a] dark:bg-[#3a3a3c] dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-[#007aff] focus:border-transparent text-sm transition">
+              <p class="mt-1.5 text-xs text-gray-500 dark:text-gray-400">User will be required to change on first login</p>
+              <p *ngIf="userForm.get('temporaryPassword')?.hasError('minlength') && userForm.get('temporaryPassword')?.touched" class="mt-1.5 text-xs text-red-500 dark:text-red-400">Password must be at least 8 characters</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Roles -->
+        <div class="bg-white dark:bg-[#2c2c2e] rounded-xl border border-gray-200 dark:border-[#48484a]">
+          <div class="px-4 py-3">
+            <div class="flex items-start justify-between gap-4 mb-3">
+              <div class="flex-1">
+                <h3 class="text-sm font-medium text-gray-900 dark:text-white m-0">Initial Roles</h3>
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5 m-0">Assign permissions to the user</p>
+              </div>
+            </div>
+            
+            <div>
+              <app-custom-select
+                [options]="roleOptions"
+                [mode]="'multiple'"
+                [searchable]="true"
+                [allowEmpty]="true"
+                [placeholder]="isLoadingRoles ? 'Loading roles...' : 'Select roles...'"
+                [disabled]="isLoadingRoles"
+                [(ngModel)]="selectedRoleIds"
+                [ngModelOptions]="{standalone: true}"
+                (ngModelChange)="onRoleSelectionChange($event)">
+              </app-custom-select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Info Banner -->
+        <div class="bg-[#007aff]/5 dark:bg-[#0a84ff]/10 border border-[#007aff]/20 dark:border-[#0a84ff]/20 rounded-xl">
+          <div class="px-4 py-3 flex items-start gap-3">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" class="flex-shrink-0 mt-0.5 text-[#007aff] dark:text-[#0a84ff]">
+              <circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.5"/>
+              <path d="M10 9V14M10 6V7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            <p class="text-sm text-[#007aff] dark:text-[#0a84ff]">
+              User will be assigned to the default tenant automatically and created in all connected systems.
+            </p>
+          </div>
+        </div>
+
+        <!-- Submit Button Section -->
+        <div class="flex items-center justify-end gap-2 pt-2">
+          <button 
+            type="button"
+            (click)="close()"
+            [disabled]="isSaving"
+            class="px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed">
+            Cancel
+          </button>
+          <button 
+            type="button"
+            (click)="onSubmit()"
+            [disabled]="userForm.invalid || isSaving"
+            class="px-4 py-2 text-sm bg-[#007aff] text-white rounded-lg hover:bg-[#0051d5] disabled:opacity-50 disabled:cursor-not-allowed transition flex items-center gap-2">
+            <svg *ngIf="isSaving" class="animate-spin h-4 w-4" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            {{ isSaving ? 'Creating...' : 'Create User' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

@@ -191,6 +191,20 @@ export class AuthService implements OnDestroy {
     return '';
   }
 
+  /**
+   * Called by the callback component after OAuth login completes.
+   * This ensures the navbar and other components are notified of the auth state change.
+   */
+  notifyLoginComplete(): void {
+    const hasValidToken = this.oauthService.hasValidAccessToken();
+    console.log('[AuthService] Login complete notification, hasValidToken:', hasValidToken);
+    
+    if (hasValidToken) {
+      this.isAuthenticatedSubject.next(true);
+      this.startTokenRefreshTimer();
+    }
+  }
+
   async forceTokenRefresh(): Promise<boolean> {
     try {
       await this.oauthService.refreshToken();

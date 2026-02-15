@@ -11,9 +11,18 @@ public class GetOrCreateProfileQueryHandler(IUserRepository userRepository)
 {
     public async Task<GetProfileResponse> Handle(GetOrCreateProfileQuery request, CancellationToken cancellationToken)
     {
-        // Try to get existing user by Identity Provider ID
         var existingUser = await userRepository.GetByIdentityProviderIdAsync(
             request.IdentityProviderId, 
+            cancellationToken
+        );
+
+        existingUser ??= await userRepository.GetByKeycloakIdAsync(
+            request.IdentityProviderId,
+            cancellationToken
+        );
+
+        existingUser ??= await userRepository.GetByEmailAsync(
+            request.Email,
             cancellationToken
         );
 
@@ -21,13 +30,13 @@ public class GetOrCreateProfileQueryHandler(IUserRepository userRepository)
 
         if (existingUser == null)
         {
-            // Create new user
             dbUser = new Infrastructure.Entities.User
             {
                 Name = request.Name,
                 Email = request.Email,
                 AvatarUrl = request.AvatarUrl,
                 IdentityProviderId = request.IdentityProviderId,
+                KeycloakId = request.IdentityProviderId,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
             };
@@ -36,7 +45,6 @@ public class GetOrCreateProfileQueryHandler(IUserRepository userRepository)
         }
         else
         {
-            // Check if any data has changed and update if necessary
             bool hasChanges = false;
 
             if (existingUser.Name != request.Name)
@@ -54,6 +62,18 @@ public class GetOrCreateProfileQueryHandler(IUserRepository userRepository)
             if (existingUser.AvatarUrl != request.AvatarUrl)
             {
                 existingUser.AvatarUrl = request.AvatarUrl;
+                hasChanges = true;
+            }
+
+            if (existingUser.IdentityProviderId != request.IdentityProviderId)
+            {
+                existingUser.IdentityProviderId = request.IdentityProviderId;
+                hasChanges = true;
+            }
+
+            if (existingUser.KeycloakId != request.IdentityProviderId)
+            {
+                existingUser.KeycloakId = request.IdentityProviderId;
                 hasChanges = true;
             }
 

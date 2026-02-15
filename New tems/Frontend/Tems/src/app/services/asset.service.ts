@@ -82,6 +82,18 @@ export class AssetService {
     });
   }
 
+  assignToUser(assetId: string, userId: string, userName: string): Observable<Asset> {
+    return this.http.put<Asset>(`${this.baseUrl}/${assetId}/user`, { userId, userName }, {
+      headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+    });
+  }
+
+  unassignFromUser(assetId: string): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/${assetId}/user`, {
+      headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+    });
+  }
+
   delete(id: string): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/${id}`, {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' })

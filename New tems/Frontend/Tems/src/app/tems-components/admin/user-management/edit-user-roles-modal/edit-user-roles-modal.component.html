@@ -1,0 +1,62 @@
+<div class="p-6 min-w-[500px] max-w-[600px]">
+  <!-- Header -->
+  <div class="flex justify-between items-center mb-6 pb-4 border-b border-gray-200 dark:border-[#38383a]">
+    <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Edit User Roles</h2>
+    <button 
+      (click)="close()"
+      class="p-2 hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg transition">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" class="text-gray-600 dark:text-gray-400">
+        <path d="M15 5L5 15M5 5L15 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </button>
+  </div>
+
+  <!-- User Info -->
+  <div class="mb-6 p-4 bg-gray-50 dark:bg-[#1c1c1e] rounded-lg">
+    <p class="font-semibold text-gray-900 dark:text-white">{{ user.username }}</p>
+    <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">{{ user.email }}</p>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="flex justify-center py-12">
+    <div class="w-8 h-8 border-4 border-[#007aff] dark:border-[#0a84ff] border-t-transparent rounded-full animate-spin"></div>
+  </div>
+
+  <!-- Error Message -->
+  <div *ngIf="errorMessage" class="mb-4 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 rounded-lg text-sm">
+    {{ errorMessage }}
+  </div>
+
+  <!-- Role Selection using Custom Multi-Select -->
+  <div *ngIf="!isLoading" class="space-y-4">
+    <div>
+      <label class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider block mb-2">Select Roles</label>
+      <app-custom-select
+        [options]="roleOptions"
+        [mode]="'multiple'"
+        [searchable]="true"
+        [allowEmpty]="false"
+        placeholder="Select roles..."
+        [(ngModel)]="selectedRoleIds"
+        (ngModelChange)="onRoleSelectionChange($event)">
+      </app-custom-select>
+    </div>
+  </div>
+
+  <!-- Actions -->
+  <div class="mt-6 pt-4 border-t border-gray-200 dark:border-[#38383a] flex justify-end gap-3">
+    <button 
+      (click)="close()" 
+      [disabled]="isSaving"
+      class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed">
+      Cancel
+    </button>
+    <button 
+      (click)="save()" 
+      [disabled]="isLoading || isSaving"
+      class="px-4 py-2 text-sm font-medium text-white bg-[#007aff] dark:bg-[#0a84ff] hover:bg-[#0051d5] dark:hover:bg-[#0077ed] rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2">
+      <div *ngIf="isSaving" class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+      {{ isSaving ? 'Saving...' : 'Save Changes' }}
+    </button>
+  </div>
+</div>

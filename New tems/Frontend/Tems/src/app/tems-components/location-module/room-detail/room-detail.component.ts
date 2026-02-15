@@ -1,4 +1,4 @@
-import { Component, OnInit, HostListener } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -17,11 +17,12 @@ import { Asset } from 'src/app/models/asset/asset.model';
 import { AssetType } from 'src/app/models/asset/asset-type.model';
 import { AssetDefinition } from 'src/app/models/asset/asset-definition.model';
 import { AddAssetToRoomModalComponent } from '../add-asset-to-room-modal/add-asset-to-room-modal.component';
+import { CustomSelectComponent, SelectOption } from 'src/app/shared/custom-select/custom-select.component';
 
 @Component({
   selector: 'app-room-detail',
   standalone: true,
-  imports: [CommonModule, FormsModule, AgGridAngular],
+  imports: [CommonModule, FormsModule, AgGridAngular, CustomSelectComponent],
   templateUrl: './room-detail.component.html',
   styleUrls: ['./room-detail.component.scss'],
   animations: [
@@ -65,25 +66,12 @@ export class RoomDetailComponent implements OnInit {
   selectedDefinitionIds: string[] = [];
   assetTypes: AssetType[] = [];
   assetDefinitions: AssetDefinition[] = [];
-  isDropdownOpen = false;
-  isDefinitionDropdownOpen = false;
-  searchText = '';
-  definitionSearchText = '';
+  typeOptions: SelectOption[] = [];
+  definitionOptions: SelectOption[] = [];
   private assetTagSearchSubject = new Subject<string>();
 
   get gridThemeClass(): string {
-    return this.themeService.isDarkMode ? 'ag-theme-quartz-auto-dark' : 'ag-theme-quartz';
-  }
-
-  @HostListener('document:click', ['$event'])
-  onDocumentClick(event: MouseEvent) {
-    const target = event.target as HTMLElement;
-    if (!target.closest('.type-dropdown-container')) {
-      this.isDropdownOpen = false;
-    }
-    if (!target.closest('.definition-dropdown-container')) {
-      this.isDefinitionDropdownOpen = false;
-    }
+    return this.themeService.isDarkMode ? 'ag-theme-quartz-dark' : 'ag-theme-quartz';
   }
 
   assetsColumnDefs: ColDef[] = [
@@ -189,6 +177,7 @@ export class RoomDetailComponent implements OnInit {
     this.assetTypeService.getAll().subscribe({
       next: (types) => {
         this.assetTypes = types;
+        this.typeOptions = this.assetTypes.map(t => ({ value: t.id, label: t.name }));
       }
     });
   }
@@ -197,6 +186,7 @@ export class RoomDetailComponent implements OnInit {
     this.assetDefinitionService.getAll().subscribe({
       next: (definitions) => {
         this.assetDefinitions = definitions;
+        this.definitionOptions = this.assetDefinitions.map(d => ({ value: d.id, label: d.name }));
       }
     });
   }
@@ -373,88 +363,21 @@ export class RoomDetailComponent implements OnInit {
     this.assetTagSearchSubject.next(this.assetTagSearch);
   }
 
-  toggleDropdown() {
-    this.isDropdownOpen = !this.isDropdownOpen;
-    this.isDefinitionDropdownOpen = false;
-  }
-
-  toggleDefinitionDropdown() {
-    if (this.selectedTypeIds.length === 0) return;
-    this.isDefinitionDropdownOpen = !this.isDefinitionDropdownOpen;
-    this.isDropdownOpen = false;
-  }
-
-  getFilteredAndSortedTypes(): AssetType[] {
-    let filtered = this.assetTypes;
-    if (this.searchText) {
-      filtered = filtered.filter(t => t.name.toLowerCase().includes(this.searchText.toLowerCase()));
-    }
-    return filtered.sort((a, b) => a.name.localeCompare(b.name));
-  }
-
-  getFilteredAndSortedDefinitions(): AssetDefinition[] {
-    let filtered = this.assetDefinitions.filter(d => 
-      this.selectedTypeIds.includes(d.assetTypeId)
-    );
-    if (this.definitionSearchText) {
-      filtered = filtered.filter(d => d.name.toLowerCase().includes(this.definitionSearchText.toLowerCase()));
-    }
-    return filtered.sort((a, b) => a.name.localeCompare(b.name));
-  }
-
-  toggleTypeSelection(typeId: string) {
-    const index = this.selectedTypeIds.indexOf(typeId);
-    if (index > -1) {
-      this.selectedTypeIds.splice(index, 1);
-      this.selectedDefinitionIds = this.selectedDefinitionIds.filter(defId => {
-        const def = this.assetDefinitions.find(d => d.id === defId);
-        return def && this.selectedTypeIds.includes(def.assetTypeId);
-      });
-    } else {
-      this.selectedTypeIds.push(typeId);
-    }
+  onTypeSelectionChange(ids: string[]) {
+    this.selectedTypeIds = ids;
+    this.selectedDefinitionIds = this.selectedDefinitionIds.filter(defId => {
+      const def = this.assetDefinitions.find(d => d.id === defId);
+      return def && this.selectedTypeIds.includes(def.assetTypeId);
+    });
+    this.definitionOptions = this.assetDefinitions
+      .filter(d => this.selectedTypeIds.includes(d.assetTypeId))
+      .map(d => ({ value: d.id, label: d.name }));
     this.applyFilters();
   }
 
-  toggleDefinitionSelection(defId: string) {
-    const index = this.selectedDefinitionIds.indexOf(defId);
-    if (index > -1) {
-      this.selectedDefinitionIds.splice(index, 1);
-    } else {
-      this.selectedDefinitionIds.push(defId);
-    }
+  onDefinitionSelectionChange(ids: string[]) {
+    this.selectedDefinitionIds = ids;
     this.applyFilters();
-  }
-
-  isTypeSelected(typeId: string): boolean {
-    return this.selectedTypeIds.includes(typeId);
-  }
-
-  isDefinitionSelected(defId: string): boolean {
-    return this.selectedDefinitionIds.includes(defId);
-  }
-
-  getTypeName(typeId: string): string {
-    const type = this.assetTypes.find(t => t.id === typeId);
-    return type?.name || typeId;
-  }
-
-  getDefinitionName(defId: string): string {
-    const def = this.assetDefinitions.find(d => d.id === defId);
-    return def?.name || defId;
-  }
-
-  getDefinitionTypeName(def: AssetDefinition): string {
-    const type = this.assetTypes.find(t => t.id === def.assetTypeId);
-    return type?.name || '';
-  }
-
-  removeTypeFilter(typeId: string) {
-    this.toggleTypeSelection(typeId);
-  }
-
-  removeDefinitionFilter(defId: string) {
-    this.toggleDefinitionSelection(defId);
   }
 
   applyFilters() {
@@ -489,8 +412,9 @@ export class RoomDetailComponent implements OnInit {
     if (!this.room) return;
     
     const dialogRef = this.dialog.open(AddAssetToRoomModalComponent, {
-      width: '500px',
-      panelClass: 'custom-dialog',
+      width: '520px',
+      maxWidth: '95vw',
+      panelClass: 'custom-dialog-container',
       data: { roomId: this.room.id, roomName: this.room.name }
     });
 

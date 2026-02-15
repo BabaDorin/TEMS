@@ -1,4 +1,4 @@
-import { Component, OnInit, HostListener, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, FormsModule } from '@angular/forms';
@@ -12,13 +12,17 @@ import { AssetService } from 'src/app/services/asset.service';
 import { AssetTypeService } from 'src/app/services/asset-type.service';
 import { AssetDefinitionService } from 'src/app/services/asset-definition.service';
 import { ThemeService } from 'src/app/services/theme.service';
+import { UserService } from 'src/app/services/user.service';
 import { Asset, AssetStatus } from 'src/app/models/asset/asset.model';
 import { AssetType } from 'src/app/models/asset/asset-type.model';
 import { AssetDefinition } from 'src/app/models/asset/asset-definition.model';
 import { AssetLabelComponent } from '../../asset/asset-label/asset-label.component';
 import { AddAssetComponent } from '../../asset/add-asset/add-asset.component';
 import { DownloadService } from 'src/app/download.service';
-import { ViewChild } from '@angular/core';
+import { CustomSelectComponent, SelectOption } from 'src/app/shared/custom-select/custom-select.component';
+import { ViewUserModalComponent } from '../../admin/user-management/view-user-modal/view-user-modal.component';
+import { RoomDetailModalComponent } from '../../location-module/room-detail-modal/room-detail-modal.component';
+import { LocationService } from 'src/app/services/location.service';
 
 @Component({
   selector: 'app-view-assets',
@@ -28,7 +32,8 @@ import { ViewChild } from '@angular/core';
     ReactiveFormsModule,
     FormsModule,
     AgGridAngular,
-    AssetLabelComponent
+    AssetLabelComponent,
+    CustomSelectComponent
   ],
   templateUrl: './view-assets.component.html',
   styleUrls: ['./view-assets.component.scss'],
@@ -63,10 +68,8 @@ export class ViewAssetsComponent implements OnInit, OnDestroy {
   // Filtering
   selectedTypeIds: string[] = [];
   selectedDefinitionIds: string[] = [];
-  isDropdownOpen = false;
-  isDefinitionDropdownOpen = false;
-  searchText = '';
-  definitionSearchText = '';
+  typeOptions: SelectOption[] = [];
+  definitionOptions: SelectOption[] = [];
   availableDefinitions: AssetDefinition[] = [];
   isFiltersExpanded = false;
   assetTagSearch = '';
@@ -215,7 +218,9 @@ export class ViewAssetsComponent implements OnInit, OnDestroy {
     private router: Router,
     private dialog: MatDialog,
     private downloadService: DownloadService,
-    private themeService: ThemeService
+    private themeService: ThemeService,
+    private userService: UserService,
+    private locationService: LocationService
   ) {
     this.createForm = this.fb.group({
       assetTypeId: ['', Validators.required],
@@ -236,18 +241,7 @@ export class ViewAssetsComponent implements OnInit, OnDestroy {
   }
 
   get gridThemeClass(): string {
-    return this.themeService.isDarkMode ? 'ag-theme-quartz-auto-dark' : 'ag-theme-quartz';
-  }
-
-  @HostListener('document:click', ['$event'])
-  onClickOutside(event: MouseEvent) {
-    const target = event.target as HTMLElement;
-    if (!target.closest('.type-dropdown-container')) {
-      this.isDropdownOpen = false;
-    }
-    if (!target.closest('.definition-dropdown-container')) {
-      this.isDefinitionDropdownOpen = false;
-    }
+    return this.themeService.isDarkMode ? 'ag-theme-quartz-dark' : 'ag-theme-quartz';
   }
 
   ngOnInit() {
@@ -353,6 +347,7 @@ export class ViewAssetsComponent implements OnInit, OnDestroy {
       next: (types) => {
         console.log('Raw types received:', types);
         this.assetTypes = types.filter(t => !t.isArchived);
+        this.typeOptions = this.assetTypes.map(t => ({ value: t.id, label: t.name }));
         console.log('Asset types loaded:', this.assetTypes);
       },
       error: (error) => {
@@ -475,30 +470,7 @@ export class ViewAssetsComponent implements OnInit, OnDestroy {
     return unit ? `${stringValue} ${unit}` : stringValue;
   }
 
-  onTypeFilterChange(event: Event) {
-    const select = event.target as HTMLSelectElement;
-    const selectedOptions = Array.from(select.selectedOptions).map(opt => opt.value);
-    console.log('Type filter changed:', selectedOptions);
-    this.selectedTypeIds = selectedOptions;
-    this.currentPage = 1;
-    this.loadAssets();
-  }
 
-  toggleDropdown() {
-    this.isDropdownOpen = !this.isDropdownOpen;
-    if (!this.isDropdownOpen) {
-      this.searchText = '';
-    }
-  }
-
-  toggleDefinitionDropdown() {
-    if (this.selectedTypeIds.length > 0) {
-      this.isDefinitionDropdownOpen = !this.isDefinitionDropdownOpen;
-      if (!this.isDefinitionDropdownOpen) {
-        this.definitionSearchText = '';
-      }
-    }
-  }
 
   loadDefinitionsForSelectedTypes() {
     if (this.selectedTypeIds.length === 0) {
@@ -512,6 +484,7 @@ export class ViewAssetsComponent implements OnInit, OnDestroy {
         this.availableDefinitions = definitions.filter(d => 
           this.selectedTypeIds.includes(d.assetTypeId) && !d.isArchived
         );
+        this.definitionOptions = this.availableDefinitions.map(d => ({ value: d.id, label: d.name }));
         // Clear selected definitions that are no longer available
         this.selectedDefinitionIds = this.selectedDefinitionIds.filter(id =>
           this.availableDefinitions.some(d => d.id === id)
@@ -523,103 +496,27 @@ export class ViewAssetsComponent implements OnInit, OnDestroy {
     });
   }
 
-  getFilteredAndSortedTypes(): AssetType[] {
-    let filtered = this.assetTypes;
-    
-    if (this.searchText) {
-      const search = this.searchText.toLowerCase();
-      filtered = filtered.filter(type => 
-        type.name.toLowerCase().includes(search)
-      );
-    }
-    
-    return filtered.sort((a, b) => a.name.localeCompare(b.name));
-  }
-
-  getFilteredAndSortedDefinitions(): AssetDefinition[] {
-    let filtered = this.availableDefinitions;
-    
-    if (this.definitionSearchText) {
-      const search = this.definitionSearchText.toLowerCase();
-      filtered = filtered.filter(def => 
-        def.name.toLowerCase().includes(search)
-      );
-    }
-    
-    return filtered.sort((a, b) => a.name.localeCompare(b.name));
-  }
-
-  toggleTypeSelection(typeId: string) {
-    console.log('toggleTypeSelection called with:', typeId);
-    const index = this.selectedTypeIds.indexOf(typeId);
-    if (index > -1) {
-      this.selectedTypeIds.splice(index, 1);
-      console.log('Removed type, selectedTypeIds:', this.selectedTypeIds);
-    } else {
-      this.selectedTypeIds.push(typeId);
-      console.log('Added type, selectedTypeIds:', this.selectedTypeIds);
-    }
+  onTypeSelectionChange(ids: string[]) {
+    this.selectedTypeIds = ids;
     this.loadDefinitionsForSelectedTypes();
     this.currentPage = 1;
-    console.log('Calling loadAssets...');
     this.loadAssets();
   }
 
-  toggleDefinitionSelection(definitionId: string) {
-    console.log('toggleDefinitionSelection called with:', definitionId);
-    const index = this.selectedDefinitionIds.indexOf(definitionId);
-    if (index > -1) {
-      this.selectedDefinitionIds.splice(index, 1);
-      console.log('Removed definition, selectedDefinitionIds:', this.selectedDefinitionIds);
-    } else {
-      this.selectedDefinitionIds.push(definitionId);
-      console.log('Added definition, selectedDefinitionIds:', this.selectedDefinitionIds);
-    }
+  onDefinitionSelectionChange(ids: string[]) {
+    this.selectedDefinitionIds = ids;
     this.currentPage = 1;
-    console.log('Calling loadAssets...');
     this.loadAssets();
-  }
-
-  isTypeSelected(typeId: string): boolean {
-    return this.selectedTypeIds.includes(typeId);
-  }
-
-  isDefinitionSelected(definitionId: string): boolean {
-    return this.selectedDefinitionIds.includes(definitionId);
-  }
-
-  getDefinitionTypeName(definition: AssetDefinition): string {
-    return this.assetTypes.find(t => t.id === definition.assetTypeId)?.name || '';
-  }
-
-  getDefinitionName(definitionId: string): string {
-    return this.availableDefinitions.find(d => d.id === definitionId)?.name || '';
   }
 
   clearFilters() {
     this.selectedTypeIds = [];
     this.selectedDefinitionIds = [];
     this.availableDefinitions = [];
+    this.definitionOptions = [];
     this.assetTagSearch = '';
     this.currentPage = 1;
     this.loadAssets();
-  }
-
-  removeTypeFilter(typeId: string) {
-    this.selectedTypeIds = this.selectedTypeIds.filter(id => id !== typeId);
-    this.loadDefinitionsForSelectedTypes();
-    this.currentPage = 1;
-    this.loadAssets();
-  }
-
-  removeDefinitionFilter(definitionId: string) {
-    this.selectedDefinitionIds = this.selectedDefinitionIds.filter(id => id !== definitionId);
-    this.currentPage = 1;
-    this.loadAssets();
-  }
-
-  getTypeName(typeId: string): string {
-    return this.assetTypes.find(t => t.id === typeId)?.name || '';
   }
 
   goToPage(page: number) {
@@ -664,5 +561,39 @@ export class ViewAssetsComponent implements OnInit, OnDestroy {
   hasLocationId(asset?: Asset): boolean {
     const assetData = asset || this.selectedAsset;
     return !!(assetData as any)?.locationId;
+  }
+
+  openAssigneeModal() {
+    if (!this.selectedAsset?.assignment?.assignedToUserId) return;
+    this.userService.getUserById(this.selectedAsset.assignment.assignedToUserId).subscribe({
+      next: (user) => {
+        this.dialog.open(ViewUserModalComponent, {
+          width: '520px',
+          maxWidth: '95vw',
+          data: { user },
+          panelClass: 'custom-dialog-container'
+        });
+      }
+    });
+  }
+
+  openLocationModal() {
+    if (!this.selectedAsset?.locationId) return;
+    this.locationService.getRoomById(this.selectedAsset.locationId).subscribe({
+      next: (room) => {
+        this.dialog.open(RoomDetailModalComponent, {
+          width: '520px',
+          maxWidth: '95vw',
+          data: { room },
+          panelClass: 'custom-dialog-container'
+        });
+      }
+    });
+  }
+
+  getAssigneeName(): string {
+    if (!this.selectedAsset?.assignment) return '';
+    const a = this.selectedAsset.assignment;
+    return a.assignedToUserName || '';
   }
 }

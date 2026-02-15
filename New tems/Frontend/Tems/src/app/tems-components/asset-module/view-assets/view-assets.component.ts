@@ -12,6 +12,7 @@ import { AssetService } from 'src/app/services/asset.service';
 import { AssetTypeService } from 'src/app/services/asset-type.service';
 import { AssetDefinitionService } from 'src/app/services/asset-definition.service';
 import { ThemeService } from 'src/app/services/theme.service';
+import { UserService } from 'src/app/services/user.service';
 import { Asset, AssetStatus } from 'src/app/models/asset/asset.model';
 import { AssetType } from 'src/app/models/asset/asset-type.model';
 import { AssetDefinition } from 'src/app/models/asset/asset-definition.model';
@@ -19,6 +20,9 @@ import { AssetLabelComponent } from '../../asset/asset-label/asset-label.compone
 import { AddAssetComponent } from '../../asset/add-asset/add-asset.component';
 import { DownloadService } from 'src/app/download.service';
 import { CustomSelectComponent, SelectOption } from 'src/app/shared/custom-select/custom-select.component';
+import { ViewUserModalComponent } from '../../admin/user-management/view-user-modal/view-user-modal.component';
+import { RoomDetailModalComponent } from '../../location-module/room-detail-modal/room-detail-modal.component';
+import { LocationService } from 'src/app/services/location.service';
 
 @Component({
   selector: 'app-view-assets',
@@ -214,7 +218,9 @@ export class ViewAssetsComponent implements OnInit, OnDestroy {
     private router: Router,
     private dialog: MatDialog,
     private downloadService: DownloadService,
-    private themeService: ThemeService
+    private themeService: ThemeService,
+    private userService: UserService,
+    private locationService: LocationService
   ) {
     this.createForm = this.fb.group({
       assetTypeId: ['', Validators.required],
@@ -555,5 +561,39 @@ export class ViewAssetsComponent implements OnInit, OnDestroy {
   hasLocationId(asset?: Asset): boolean {
     const assetData = asset || this.selectedAsset;
     return !!(assetData as any)?.locationId;
+  }
+
+  openAssigneeModal() {
+    if (!this.selectedAsset?.assignment?.assignedToUserId) return;
+    this.userService.getUserById(this.selectedAsset.assignment.assignedToUserId).subscribe({
+      next: (user) => {
+        this.dialog.open(ViewUserModalComponent, {
+          width: '520px',
+          maxWidth: '95vw',
+          data: { user },
+          panelClass: 'custom-dialog-container'
+        });
+      }
+    });
+  }
+
+  openLocationModal() {
+    if (!this.selectedAsset?.locationId) return;
+    this.locationService.getRoomById(this.selectedAsset.locationId).subscribe({
+      next: (room) => {
+        this.dialog.open(RoomDetailModalComponent, {
+          width: '520px',
+          maxWidth: '95vw',
+          data: { room },
+          panelClass: 'custom-dialog-container'
+        });
+      }
+    });
+  }
+
+  getAssigneeName(): string {
+    if (!this.selectedAsset?.assignment) return '';
+    const a = this.selectedAsset.assignment;
+    return a.assignedToUserName || '';
   }
 }

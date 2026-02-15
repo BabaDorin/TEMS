@@ -1,9 +1,10 @@
-using AssetManagement.Application.Interfaces;
+using AssetManagement.Contract.Commands;
 using FastEndpoints;
+using MediatR;
 
 namespace UserManagement.API.Endpoints.Users;
 
-public class GetUserAssetCountEndpoint(IAssetRepository assetRepository) : EndpointWithoutRequest<GetUserAssetCountResponse>
+public class GetUserAssetCountEndpoint(IMediator mediator) : EndpointWithoutRequest<GetUserAssetCountResponse>
 {
     public override void Configure()
     {
@@ -21,9 +22,15 @@ public class GetUserAssetCountEndpoint(IAssetRepository assetRepository) : Endpo
             return;
         }
 
-        var assets = await assetRepository.GetByAssignedUserIdAsync(userId, ct);
-        
-        await Send.OkAsync(new GetUserAssetCountResponse(assets.Count), ct);
+        var response = await mediator.Send(new GetAssetCountsByUsersCommand([userId]), ct);
+        var totalCount = 0;
+
+        if (response.Success && response.Data.TryGetValue(userId, out var counts))
+        {
+            totalCount = counts.Values.Sum();
+        }
+
+        await Send.OkAsync(new GetUserAssetCountResponse(totalCount), ct);
     }
 }
 

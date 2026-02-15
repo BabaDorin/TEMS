@@ -1,6 +1,6 @@
-using AssetManagement.Application.Interfaces;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using Tems.Common.Notifications;
 using UserManagement.Contract.Commands;
 using UserManagement.Contract.Responses;
 using UserManagement.Infrastructure.IdentityServer;
@@ -10,17 +10,17 @@ using UserManagement.Infrastructure.Repositories;
 namespace UserManagement.Application.Commands;
 
 /// <summary>
-/// Handles user deletion across all 3 systems:
-/// 1. Unallocate assets from user (move to deposit)
-/// 2. Keycloak - for roles and access management
-/// 3. Duende Identity Server - for authentication (WORKAROUND: will be removed in future)
-/// 4. TEMS Database - for user management table
+/// Handles user deletion across all systems:
+/// 1. Keycloak - for roles and access management
+/// 2. Duende Identity Server - for authentication (WORKAROUND: will be removed in future)
+/// 3. TEMS Database - for user management table
+/// 4. Publishes UserDeletedNotification so other modules (e.g. AssetManagement) can react
 /// </summary>
 public class DeleteUserCommandHandler(
     IUserRepository userRepository,
     IKeycloakClient keycloakClient,
     IIdentityServerClient identityServerClient,
-    IAssetRepository assetRepository,
+    IPublisher publisher,
     ILogger<DeleteUserCommandHandler> logger
 ) : IRequestHandler<DeleteUserCommand, DeleteUserResponse>
 {
@@ -30,7 +30,6 @@ public class DeleteUserCommandHandler(
         
         try
         {
-            // Get the user from our database
             var user = await userRepository.GetByIdAsync(request.Id, cancellationToken);
             if (user == null)
             {
@@ -40,48 +39,24 @@ public class DeleteUserCommandHandler(
                 );
             }
 
+            // Self-delete prevention
+            if (!string.IsNullOrEmpty(request.CallerKeycloakId) &&
+                string.Equals(user.KeycloakId, request.CallerKeycloakId, StringComparison.OrdinalIgnoreCase))
+            {
+                return new DeleteUserResponse(
+                    Success: false,
+                    Message: "Cannot delete your own account"
+                );
+            }
+
             var errors = new List<string>();
 
-            // =============================================
-            // STEP 0: Unallocate all assets from user (move to deposit)
-            // =============================================
-            try
-            {
-                logger.LogInformation("Step 0/4: Unallocating assets from user {Username}", user.Name);
-                var userAssets = await assetRepository.GetByAssignedUserIdAsync(request.Id, cancellationToken);
-                
-                if (userAssets.Count > 0)
-                {
-                    logger.LogInformation("Found {Count} assets assigned to user, unallocating...", userAssets.Count);
-                    
-                    foreach (var asset in userAssets)
-                    {
-                        asset.Assignment = null;
-                        asset.UpdatedAt = DateTime.UtcNow;
-                        await assetRepository.UpdateAsync(asset, cancellationToken);
-                    }
-                    
-                    logger.LogInformation("Successfully unallocated {Count} assets from user", userAssets.Count);
-                }
-                else
-                {
-                    logger.LogInformation("No assets assigned to user");
-                }
-            }
-            catch (Exception ex)
-            {
-                logger.LogWarning(ex, "Failed to unallocate assets from user - continuing with deletion");
-                errors.Add($"Asset unallocation: {ex.Message}");
-            }
-
-            // =============================================
-            // STEP 1: Delete from Keycloak
-            // =============================================
+            // Step 1: Delete from Keycloak
             if (!string.IsNullOrEmpty(user.KeycloakId))
             {
                 try
                 {
-                    logger.LogInformation("Step 1/4: Deleting user {Username} from Keycloak", user.Name);
+                    logger.LogInformation("Step 1/3: Deleting user {Username} from Keycloak", user.Name);
                     await keycloakClient.DeleteUserAsync(user.KeycloakId);
                     logger.LogInformation("Successfully deleted user from Keycloak");
                 }
@@ -96,18 +71,13 @@ public class DeleteUserCommandHandler(
                 logger.LogWarning("User does not have a Keycloak ID - skipping Keycloak deletion");
             }
 
-            // =============================================
-            // STEP 2: Delete from Duende Identity Server
-            // WORKAROUND: This step will be removed in the future
-            // =============================================
+            // Step 2: Delete from Duende Identity Server (WORKAROUND)
             try
             {
-                logger.LogInformation("Step 2/4: Deleting user {Username} from Identity Server (WORKAROUND)", user.Name);
+                logger.LogInformation("Step 2/3: Deleting user {Username} from Identity Server (WORKAROUND)", user.Name);
                 
-                // Try to delete by username first
                 var deleted = await identityServerClient.DeleteUserAsync(user.Name);
                 
-                // If not found by username, try by email
                 if (!deleted && !string.IsNullOrEmpty(user.Email))
                 {
                     deleted = await identityServerClient.DeleteUserByEmailAsync(user.Email);
@@ -129,12 +99,10 @@ public class DeleteUserCommandHandler(
                 errors.Add($"Identity Server: {ex.Message}");
             }
 
-            // =============================================
-            // STEP 3: Delete from TEMS Database
-            // =============================================
+            // Step 3: Delete from TEMS Database
             try
             {
-                logger.LogInformation("Step 3/4: Deleting user {UserId} from TEMS Database", request.Id);
+                logger.LogInformation("Step 3/3: Deleting user {UserId} from TEMS Database", request.Id);
                 await userRepository.DeleteAsync(request.Id, cancellationToken);
                 logger.LogInformation("Successfully deleted user from TEMS Database");
             }
@@ -147,8 +115,19 @@ public class DeleteUserCommandHandler(
                 );
             }
 
-            // Report final status
-            if (errors.Any())
+            // Publish notification so other modules can clean up (e.g. unassign assets)
+            try
+            {
+                await publisher.Publish(new UserDeletedNotification(request.Id, user.Name), cancellationToken);
+                logger.LogInformation("Published UserDeletedNotification for user {UserId}", request.Id);
+            }
+            catch (Exception ex)
+            {
+                logger.LogWarning(ex, "Failed to publish UserDeletedNotification - user was still deleted");
+                errors.Add($"Notification: {ex.Message}");
+            }
+
+            if (errors.Count > 0)
             {
                 logger.LogWarning("User deleted from TEMS database but some systems had issues: {Errors}", 
                     string.Join(", ", errors));

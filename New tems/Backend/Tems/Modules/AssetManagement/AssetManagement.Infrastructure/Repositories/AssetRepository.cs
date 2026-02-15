@@ -191,6 +191,14 @@ public class AssetRepository(IMongoDatabase database) : IAssetRepository
         return dbEntities.Select(x => x.ToDomain()).ToList();
     }
 
+    public async Task<List<DomainEntity.Asset>> GetByLocationIdAsync(string locationId, CancellationToken cancellationToken = default)
+    {
+        var filter = Builders<DbEntity.Asset>.Filter.Eq(x => x.LocationId, locationId);
+        var dbEntities = await _collection.Find(filter).ToListAsync(cancellationToken);
+
+        return dbEntities.Select(x => x.ToDomain()).ToList();
+    }
+
     public async Task<List<DomainEntity.Asset>> GetByParentAssetIdAsync(string parentAssetId, CancellationToken cancellationToken = default)
     {
         var filter = Builders<DbEntity.Asset>.Filter.Eq(x => x.ParentAssetId, parentAssetId);

@@ -11,7 +11,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\AssetManagement\AssetManagement.Application\AssetManagement.Application.csproj" />
+    <ProjectReference Include="..\..\..\Tems.Common\Tems.Common.csproj" />
+    <ProjectReference Include="..\..\AssetManagement\AssetManagement.Contract\AssetManagement.Contract.csproj" />
     <ProjectReference Include="..\UserManagement.Contract\UserManagement.Contract.csproj" />
     <ProjectReference Include="..\UserManagement.Infrastructure\UserManagement.Infrastructure.csproj" />
   </ItemGroup>

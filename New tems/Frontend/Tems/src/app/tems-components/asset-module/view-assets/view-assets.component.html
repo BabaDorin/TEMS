@@ -468,7 +468,7 @@
       <div *ngIf="selectedAsset.locationId || selectedAsset.location" class="mb-4">
         <span class="text-sm text-gray-600 dark:text-gray-400 block mb-2">Location:</span>
         <button 
-          (click)="navigateToLocation()"
+          (click)="openLocationModal()"
           class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gray-100 dark:bg-[#3a3a3c] text-gray-700 dark:text-gray-200 rounded-full text-xs font-medium transition"
           [class.hover:bg-gray-200]="hasLocationId()"
           [class.dark:hover:bg-[#48484a]]="hasLocationId()"
@@ -478,6 +478,19 @@
             <path d="M8 1.333C6.23189 1.333 4.83325 2.73165 4.83325 4.5C4.83325 6.26835 6.23189 7.667 8 7.667C9.76811 7.667 11.1666 6.26835 11.1666 4.5C11.1666 2.73165 9.76811 1.333 8 1.333ZM8 1.333C10.3932 1.333 12.3333 3.27315 12.3333 5.66634C12.3333 9.33301 8 14.6663 8 14.6663C8 14.6663 3.66659 9.33301 3.66659 5.66634C3.66659 3.27315 5.60672 1.333 8 1.333Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
           {{ getLocationString(selectedAsset.location) }}
+        </button>
+      </div>
+
+      <!-- Assignee Chip -->
+      <div *ngIf="selectedAsset.assignment?.assignedToUserId" class="mb-4">
+        <span class="text-sm text-gray-600 dark:text-gray-400 block mb-2">Assigned To:</span>
+        <button 
+          (click)="openAssigneeModal()"
+          class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gray-100 dark:bg-[#3a3a3c] text-gray-700 dark:text-gray-200 rounded-full text-xs font-medium hover:bg-gray-200 dark:hover:bg-[#48484a] cursor-pointer transition">
+          <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
+            <path d="M13.333 14v-1.333c0-1.473-1.194-2.667-2.666-2.667H5.333c-1.473 0-2.666 1.194-2.666 2.667V14M8 7.333c-1.473 0-2.667-1.194-2.667-2.666C5.333 3.194 6.527 2 8 2c1.473 0 2.667 1.194 2.667 2.667C10.667 6.139 9.473 7.333 8 7.333Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          {{ getAssigneeName() }}
         </button>
       </div>
 

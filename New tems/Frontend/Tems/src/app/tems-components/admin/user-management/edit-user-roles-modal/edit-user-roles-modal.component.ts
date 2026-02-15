@@ -97,7 +97,7 @@ export class EditUserRolesModalComponent implements OnInit {
       next: (response) => {
         this.isSaving = false;
         if (response.success) {
-          this.dialogRef.close(true);
+          this.dialogRef.close(response.user || { ...this.user, roles });
         } else {
           this.errorMessage = response.message || 'Failed to update roles';
         }

@@ -10,6 +10,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { AgGridAngular } from 'ag-grid-angular';
 import { ColDef, GridApi, GridReadyEvent } from 'ag-grid-community';
 import { UserService } from 'src/app/services/user.service';
+import { TokenService } from 'src/app/services/token.service';
 import { DialogService } from '../../../../services/dialog.service';
 import { ThemeService } from 'src/app/services/theme.service';
 import { TEMSComponent } from './../../../../tems/tems.component';
@@ -40,6 +41,7 @@ export class ViewUsersComponent extends TEMSComponent implements OnInit {
   users: UserDto[] = [];
   gridApi!: GridApi;
   isLoading = false;
+  currentUserKeycloakId: string | undefined;
 
   // Pagination
   currentPage = 1;
@@ -112,6 +114,8 @@ export class ViewUsersComponent extends TEMSComponent implements OnInit {
         const container = document.createElement('div');
         container.className = 'flex gap-2 items-center h-full';
         
+        const isSelf = params.data.keycloakId && params.data.keycloakId === this.currentUserKeycloakId;
+
         // View button
         const viewBtn = document.createElement('button');
         viewBtn.className = 'p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors';
@@ -128,10 +132,17 @@ export class ViewUsersComponent extends TEMSComponent implements OnInit {
         
         // Delete button
         const deleteBtn = document.createElement('button');
-        deleteBtn.className = 'p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors';
-        deleteBtn.innerHTML = '<i class="mdi mdi-delete text-red-600 dark:text-red-400"></i>';
-        deleteBtn.title = 'Delete';
-        deleteBtn.onclick = () => this.deleteUser(params.data);
+        if (isSelf) {
+          deleteBtn.className = 'p-1 rounded opacity-30 cursor-not-allowed';
+          deleteBtn.innerHTML = '<i class="mdi mdi-delete text-gray-400 dark:text-gray-600"></i>';
+          deleteBtn.title = 'Cannot delete your own account';
+          deleteBtn.disabled = true;
+        } else {
+          deleteBtn.className = 'p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors';
+          deleteBtn.innerHTML = '<i class="mdi mdi-delete text-red-600 dark:text-red-400"></i>';
+          deleteBtn.title = 'Delete';
+          deleteBtn.onclick = () => this.deleteUser(params.data);
+        }
         
         container.appendChild(viewBtn);
         container.appendChild(editBtn);
@@ -150,11 +161,13 @@ export class ViewUsersComponent extends TEMSComponent implements OnInit {
 
   constructor(
     private userService: UserService,
+    private tokenService: TokenService,
     private dialogService: DialogService,
     private themeService: ThemeService,
     private dialog: MatDialog
   ) {
     super();
+    this.currentUserKeycloakId = this.tokenService.getUserId();
   }
 
   get gridThemeClass(): string {
@@ -206,14 +219,30 @@ export class ViewUsersComponent extends TEMSComponent implements OnInit {
   }
 
   editUserRoles(user: UserDto) {
-    this.dialogService.openDialog(
-      EditUserRolesModalComponent,
-      [{ label: 'user', value: user }],
-      () => this.fetchUsers()
-    );
+    const dialogRef = this.dialog.open(EditUserRolesModalComponent, {
+      width: '520px',
+      maxWidth: '95vw',
+      maxHeight: '80vh',
+      autoFocus: false,
+      panelClass: 'custom-dialog-container',
+      data: { user }
+    });
+
+    dialogRef.afterClosed().subscribe((updatedUser: UserDto | null) => {
+      if (updatedUser && updatedUser.id) {
+        const index = this.users.findIndex(u => u.id === updatedUser.id);
+        if (index >= 0) {
+          this.users[index] = { ...this.users[index], roles: updatedUser.roles };
+          this.users = [...this.users];
+        }
+      }
+      this.fetchUsers();
+    });
   }
 
   deleteUser(user: UserDto) {
+    if (user.keycloakId && user.keycloakId === this.currentUserKeycloakId) return;
+
     const dialogRef = this.dialog.open(DeleteUserConfirmModalComponent, {
       width: '520px',
       maxWidth: '95vw',

@@ -1,3 +1,4 @@
+### Technical Equipment Management System - let's rethink asset management
 **TEMS** is a comprehensive, multi-tenant ITSM (IT Service Management) platform designed to orchestrate the complete lifecycle of corporate digital assets. From high-performance workstations to mobile devices, TEMS provides a centralized, cloud-native command center for the modern enterprise.
 
 ### 🌐 Global Infrastructure, Local Control

@@ -1,235 +1,257 @@
-<div class="min-h-screen bg-gray-50 dark:bg-[#1c1c1e]">
-  <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-    
-    <!-- Loading State -->
-    <div *ngIf="isLoadingTicket" class="flex items-center justify-center py-12">
+<div class="min-h-screen bg-gray-50/50 dark:bg-[#1c1c1e] transition-colors duration-200">
+  <div class="max-w-5xl mx-auto p-4 sm:p-6">
+    <div *ngIf="isLoadingTicket" class="flex items-center justify-center h-[60vh]">
       <div class="text-center">
-        <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 dark:border-white"></div>
-        <p class="mt-4 text-gray-600 dark:text-gray-400">Loading ticket...</p>
+        <svg class="animate-spin h-10 w-10 text-[#007aff] dark:text-[#0a84ff] mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+        <p class="mt-3 text-sm text-gray-600 dark:text-gray-400">Loading ticket details...</p>
       </div>
     </div>
 
-    <!-- Content -->
     <div *ngIf="!isLoadingTicket && ticket">
-      
-      <!-- Header with Back Button -->
-      <div class="mb-6">
-        <button 
-          (click)="goBack()"
-          class="inline-flex items-center text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
-          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
-          </svg>
-          Back to Tickets
-        </button>
-      </div>
+      <button
+        (click)="goBack()"
+        class="mb-4 text-sm text-[#007aff] dark:text-[#0a84ff] hover:text-[#0051d5] flex items-center gap-1.5 transition">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M10 12L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Back to Tickets
+      </button>
 
-      <!-- Section 1: Metadata -->
-      <div class="bg-white dark:bg-[#2c2c2e] rounded-lg shadow-sm p-6 mb-6">
-        <div class="flex items-start justify-between mb-4">
-          <div>
-            <h1 class="text-2xl font-bold text-gray-900 dark:text-white">{{ ticket.humanReadableId }}</h1>
-            <p class="text-gray-600 dark:text-gray-400 mt-1">{{ ticket.summary }}</p>
-          </div>
-          <span 
-            class="px-3 py-1 rounded-full text-sm font-semibold"
-            [ngClass]="{
-              'bg-red-100 text-red-800': ticket.priority === 'CRITICAL',
-              'bg-orange-100 text-orange-800': ticket.priority === 'HIGH',
-              'bg-yellow-100 text-yellow-800': ticket.priority === 'MEDIUM',
-              'bg-gray-100 text-gray-800': ticket.priority === 'LOW'
-            }">
-            {{ ticket.priority }}
-          </span>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 pt-4 border-t border-gray-200 dark:border-[#38383a]">
-          <div>
-            <label class="text-sm font-medium text-gray-500 dark:text-gray-400">Status</label>
-            <p class="text-base text-gray-900 dark:text-white mt-1">{{ ticket.currentStateId }}</p>
-          </div>
-          <div>
-            <label class="text-sm font-medium text-gray-500 dark:text-gray-400">Channel</label>
-            <p class="text-base text-gray-900 dark:text-white mt-1">{{ ticket.reporter.channelSource }}</p>
-          </div>
-          <div>
-            <label class="text-sm font-medium text-gray-500 dark:text-gray-400">Created</label>
-            <p class="text-base text-gray-900 dark:text-white mt-1">{{ ticket.auditMetadata?.createdAt | date:'short' }}</p>
-          </div>
-          <div>
-            <label class="text-sm font-medium text-gray-500 dark:text-gray-400">Reporter</label>
-            <p class="text-base text-gray-900 dark:text-white mt-1">{{ ticket.reporter.userId }}</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Section 2: Ticket Data -->
-      <div class="bg-white dark:bg-[#2c2c2e] rounded-lg shadow-sm p-6 mb-6">
-        <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4">Request Details</h2>
-        
-        <div class="space-y-4">
-          <!-- Type -->
-          <div>
-            <label class="text-sm font-medium text-gray-500 dark:text-gray-400">Ticket Type</label>
-            <p class="text-base text-gray-900 dark:text-white mt-1">{{ ticketType?.name || 'Loading...' }}</p>
-          </div>
-
-          <!-- Summary -->
-          <div>
-            <label class="text-sm font-medium text-gray-500 dark:text-gray-400">Summary</label>
-            <p class="text-base text-gray-900 dark:text-white mt-1">{{ ticket.summary }}</p>
-          </div>
-
-          <!-- Custom Attributes -->
-          <div *ngIf="getAttributeKeys().length > 0" class="pt-4 border-t border-gray-200 dark:border-[#38383a]">
-            <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-3">Additional Information</h3>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div *ngFor="let key of getAttributeKeys()">
-                <label class="text-sm font-medium text-gray-500 dark:text-gray-400">{{ getAttributeLabel(key) }}</label>
-                <p class="text-base text-gray-900 dark:text-white mt-1">{{ formatAttributeValue(ticket.attributes[key]) }}</p>
+      <div class="bg-white dark:bg-[#2c2c2e] rounded-xl shadow-sm mb-4">
+        <div class="px-6 py-4">
+          <div class="flex justify-between items-start gap-4">
+            <div class="min-w-0">
+              <div class="flex items-center gap-2 flex-wrap">
+                <h1 class="text-2xl font-semibold text-gray-900 dark:text-white m-0">{{ ticket.humanReadableId }}</h1>
+                <span
+                  class="px-2.5 py-1 rounded-full text-xs font-semibold"
+                  [ngClass]="{
+                    'bg-red-100 text-red-800': ticket.priority === 'CRITICAL',
+                    'bg-orange-100 text-orange-800': ticket.priority === 'HIGH',
+                    'bg-yellow-100 text-yellow-800': ticket.priority === 'MEDIUM',
+                    'bg-gray-100 text-gray-800': ticket.priority === 'LOW'
+                  }">
+                  {{ ticket.priority }}
+                </span>
               </div>
+              <p class="text-sm text-gray-600 dark:text-gray-400 mt-1 mb-0 truncate">{{ ticket.summary }}</p>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-4 pt-4 border-t border-gray-200 dark:border-[#38383a]">
+            <div>
+              <span class="text-xs text-gray-600 dark:text-gray-400 uppercase tracking-wide">Status</span>
+              <p class="text-sm font-medium text-gray-900 dark:text-white mt-1 mb-0">{{ ticket.currentStateId }}</p>
+            </div>
+            <div>
+              <span class="text-xs text-gray-600 dark:text-gray-400 uppercase tracking-wide">Channel</span>
+              <p class="text-sm font-medium text-gray-900 dark:text-white mt-1 mb-0">{{ ticket.reporter.channelSource }}</p>
+            </div>
+            <div>
+              <span class="text-xs text-gray-600 dark:text-gray-400 uppercase tracking-wide">Created</span>
+              <p class="text-sm font-medium text-gray-900 dark:text-white mt-1 mb-0">{{ ticket.auditMetadata?.createdAt | date:'MMM d, y, HH:mm' }}</p>
+            </div>
+            <div>
+              <span class="text-xs text-gray-600 dark:text-gray-400 uppercase tracking-wide">Reporter</span>
+              <p class="text-sm font-medium text-gray-900 dark:text-white mt-1 mb-0">{{ ticket.reporter.userId }}</p>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Section 3: Communication Layer -->
-      <div class="bg-white dark:bg-[#2c2c2e] rounded-lg shadow-sm overflow-hidden">
-        
-        <!-- Tabs -->
-        <div class="border-b border-gray-200 dark:border-[#38383a]">
-          <nav class="flex -mb-px">
-            <button
-              (click)="activeTab = 'messages'"
-              [class.border-gray-900]="activeTab === 'messages'"
-              [class.dark:border-white]="activeTab === 'messages'"
-              [class.text-gray-900]="activeTab === 'messages'"
-              [class.dark:text-white]="activeTab === 'messages'"
-              [class.border-transparent]="activeTab !== 'messages'"
-              [class.text-gray-500]="activeTab !== 'messages'"
-              class="px-6 py-3 border-b-2 font-medium text-sm hover:text-gray-900 dark:hover:text-white hover:border-gray-300 dark:hover:border-gray-500 transition-colors">
-              Messages
-            </button>
-            <button
-              (click)="activeTab = 'notes'"
-              [class.border-gray-900]="activeTab === 'notes'"
-              [class.dark:border-white]="activeTab === 'notes'"
-              [class.text-gray-900]="activeTab === 'notes'"
-              [class.dark:text-white]="activeTab === 'notes'"
-              [class.border-transparent]="activeTab !== 'notes'"
-              [class.text-gray-500]="activeTab !== 'notes'"
-              class="px-6 py-3 border-b-2 font-medium text-sm hover:text-gray-900 dark:hover:text-white hover:border-gray-300 dark:hover:border-gray-500 transition-colors">
-              Internal Notes
-              <span class="ml-2 text-xs bg-gray-100 dark:bg-[#3a3a3c] text-gray-600 dark:text-gray-400 px-2 py-1 rounded-full">Agents Only</span>
-            </button>
-          </nav>
-        </div>
+      <div class="bg-white dark:bg-[#2c2c2e] rounded-xl shadow-sm">
+        <nav class="flex px-4 overflow-x-auto border-b border-gray-200 dark:border-[#38383a]">
+          <button
+            (click)="activeMainTab = 'details'"
+            [class.border-[#007aff]]="activeMainTab === 'details'"
+            [class.dark:border-[#0a84ff]]="activeMainTab === 'details'"
+            [class.text-[#007aff]]="activeMainTab === 'details'"
+            [class.dark:text-[#0a84ff]]="activeMainTab === 'details'"
+            [class.border-transparent]="activeMainTab !== 'details'"
+            [class.text-gray-500]="activeMainTab !== 'details'"
+            class="px-4 py-3 border-b-2 font-medium text-sm hover:text-[#007aff] transition whitespace-nowrap">
+            Request Details
+          </button>
+          <button
+            (click)="activeMainTab = 'chat'"
+            [class.border-[#007aff]]="activeMainTab === 'chat'"
+            [class.dark:border-[#0a84ff]]="activeMainTab === 'chat'"
+            [class.text-[#007aff]]="activeMainTab === 'chat'"
+            [class.dark:text-[#0a84ff]]="activeMainTab === 'chat'"
+            [class.border-transparent]="activeMainTab !== 'chat'"
+            [class.text-gray-500]="activeMainTab !== 'chat'"
+            class="px-4 py-3 border-b-2 font-medium text-sm hover:text-[#007aff] transition whitespace-nowrap">
+            Chat
+          </button>
+        </nav>
 
-        <!-- Messages Container -->
-        <div class="p-6 bg-gray-50 dark:bg-[#1c1c1e]">
-          
-          <!-- Loading Messages -->
-          <div *ngIf="isLoadingMessages" class="text-center py-8">
-            <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 dark:border-white"></div>
-            <p class="mt-2 text-gray-600 dark:text-gray-400">Loading messages...</p>
-          </div>
-
-          <!-- Messages List (WhatsApp style) -->
-          <div *ngIf="!isLoadingMessages" class="space-y-4 max-h-96 overflow-y-auto mb-6">
-            
-            <!-- Empty State -->
-            <div *ngIf="getDisplayMessages().length === 0" class="text-center py-8 text-gray-500 dark:text-gray-400">
-              <svg class="w-12 h-12 mx-auto mb-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
-              </svg>
-              <p>No {{ activeTab === 'messages' ? 'messages' : 'internal notes' }} yet</p>
+        <div class="p-6">
+          <div *ngIf="activeMainTab === 'details'" class="space-y-5">
+            <div class="bg-white dark:bg-[#3a3a3c] rounded-xl border border-gray-200 dark:border-[#48484a] p-4">
+              <span class="text-xs text-gray-600 dark:text-gray-400 uppercase tracking-wide">Ticket Type</span>
+              <p class="text-sm font-semibold text-gray-900 dark:text-white mt-1.5 mb-0">{{ ticketType?.name || 'Loading...' }}</p>
             </div>
 
-            <!-- Message Bubble -->
-            <div 
-              *ngFor="let message of getDisplayMessages()"
-              [class.flex-row-reverse]="isUserMessage(message)"
-              class="flex items-start gap-3">
-              
-              <!-- Avatar -->
-              <div 
-                [class.bg-blue-500]="isUserMessage(message)"
-                [class.bg-gray-500]="!isUserMessage(message)"
-                class="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-semibold flex-shrink-0">
-                {{ (message.senderId || 'U').charAt(0).toUpperCase() }}
-              </div>
+            <div class="bg-white dark:bg-[#3a3a3c] rounded-xl border border-gray-200 dark:border-[#48484a] p-4">
+              <span class="text-xs text-gray-600 dark:text-gray-400 uppercase tracking-wide">Summary</span>
+              <p class="text-sm font-semibold text-gray-900 dark:text-white mt-1.5 mb-0">{{ ticket.summary }}</p>
+            </div>
 
-              <!-- Message Content -->
-              <div 
-                [class.items-end]="isUserMessage(message)"
-                [class.items-start]="!isUserMessage(message)"
-                class="flex flex-col max-w-xs md:max-w-md lg:max-w-lg">
-                
-                <!-- Author & Time -->
-                <div 
-                  [class.text-right]="isUserMessage(message)"
-                  class="flex items-center gap-2 mb-1">
-                  <span class="text-xs font-medium text-gray-700 dark:text-gray-300">
-                    {{ message.senderId || 'Unknown' }}
-                  </span>
-                  <span class="text-xs text-gray-500 dark:text-gray-400">
-                    {{ message.timestamp | date:'short' }}
-                  </span>
-                </div>
-
-                <!-- Message Bubble -->
-                <div 
-                  [class.bg-blue-500]="isUserMessage(message)"
-                  [class.text-white]="isUserMessage(message)"
-                  [class.bg-white]="!isUserMessage(message)"
-                  [class.dark:bg-[#3a3a3c]]="!isUserMessage(message)"
-                  [class.text-gray-900]="!isUserMessage(message)"
-                  [class.dark:text-white]="!isUserMessage(message)"
-                  class="rounded-2xl px-4 py-2 shadow-sm">
-                  <p class="text-sm whitespace-pre-wrap break-words">{{ message.content }}</p>
+            <div *ngIf="getAttributeKeys().length > 0" class="bg-white dark:bg-[#3a3a3c] rounded-xl border border-gray-200 dark:border-[#48484a] p-4">
+              <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">Additional Information</h3>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div *ngFor="let key of getAttributeKeys()">
+                  <span class="text-xs text-gray-600 dark:text-gray-400 uppercase tracking-wide">{{ getAttributeLabel(key) }}</span>
+                  <p class="text-sm font-medium text-gray-900 dark:text-white mt-1 mb-0">{{ formatAttributeValue(ticket.attributes[key]) }}</p>
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- Message Input -->
-          <div class="border-t border-gray-200 dark:border-[#38383a] pt-4 bg-white dark:bg-[#2c2c2e] rounded-lg p-4">
-            <div class="flex gap-3">
-              <textarea
-                [(ngModel)]="newMessageContent"
-                [placeholder]="activeTab === 'messages' ? 'Type a message...' : 'Type an internal note...'"
-                (keydown.enter)="$any($event).ctrlKey && sendMessage()"
-                rows="2"
-                class="flex-1 px-4 py-2 border border-gray-300 dark:border-[#48484a] dark:bg-[#3a3a3c] dark:text-white rounded-lg focus:ring-2 focus:ring-gray-900 dark:focus:ring-[#007aff] focus:border-transparent resize-none"
-                [disabled]="isSendingMessage"></textarea>
+          <div *ngIf="activeMainTab === 'chat'" class="space-y-4">
+            <div class="flex gap-2 border-b border-gray-100 dark:border-[#3f3f42] pb-3">
               <button
-                (click)="sendMessage()"
-                [disabled]="isSendingMessage || !newMessageContent.trim()"
-                class="px-6 py-2 bg-gray-900 dark:bg-[#007aff] text-white rounded-lg hover:bg-gray-800 dark:hover:bg-[#0051d5] transition-colors disabled:opacity-50 disabled:cursor-not-allowed self-end">
-                <span *ngIf="!isSendingMessage">Send</span>
-                <span *ngIf="isSendingMessage">Sending...</span>
+                (click)="activeChatTab = 'messages'"
+                [class.bg-[#007aff]]="activeChatTab === 'messages'"
+                [class.text-white]="activeChatTab === 'messages'"
+                [class.bg-gray-100]="activeChatTab !== 'messages'"
+                [class.text-gray-600]="activeChatTab !== 'messages'"
+                class="px-3 py-1.5 rounded-full text-xs font-semibold transition">
+                Messages
+              </button>
+              <button
+                (click)="activeChatTab = 'notes'"
+                [class.bg-[#007aff]]="activeChatTab === 'notes'"
+                [class.text-white]="activeChatTab === 'notes'"
+                [class.bg-gray-100]="activeChatTab !== 'notes'"
+                [class.text-gray-600]="activeChatTab !== 'notes'"
+                class="px-3 py-1.5 rounded-full text-xs font-semibold transition">
+                Internal Notes
               </button>
             </div>
-            <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">Press Ctrl+Enter to send</p>
+
+            <div class="chat-surface rounded-xl border border-gray-200 dark:border-[#48484a] p-4">
+              <div *ngIf="isLoadingMessages" class="text-center py-10">
+                <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-[#007aff]"></div>
+                <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">Loading conversation...</p>
+              </div>
+
+              <div *ngIf="!isLoadingMessages" class="chat-scroll space-y-4">
+                <div *ngIf="getDisplayMessages().length === 0" class="text-center py-12 text-gray-500 dark:text-gray-400">
+                  <svg class="w-10 h-10 mx-auto mb-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                  </svg>
+                  <p>No {{ activeChatTab === 'messages' ? 'messages' : 'internal notes' }} yet</p>
+                </div>
+
+                <div
+                  *ngFor="let message of getDisplayMessages(); trackBy: trackByMessageId"
+                  class="flex items-end gap-2"
+                  [class.justify-end]="isOwnMessage(message)"
+                  [class.justify-start]="!isOwnMessage(message)">
+                  <div
+                    *ngIf="!isOwnMessage(message)"
+                    class="w-8 h-8 rounded-full bg-gray-200 dark:bg-[#4c4c50] text-gray-700 dark:text-gray-200 text-xs font-semibold flex items-center justify-center shrink-0">
+                    {{ getSenderInitial(message) }}
+                  </div>
+
+                  <div
+                    class="max-w-[88%] sm:max-w-[75%] lg:max-w-[65%]"
+                    [class.items-end]="isOwnMessage(message)"
+                    [class.items-start]="!isOwnMessage(message)">
+                    <div class="text-[11px] text-gray-500 dark:text-gray-400 mb-1 px-1">
+                      <span class="font-medium">{{ getSenderLabel(message) }}</span>
+                      <span class="mx-1">•</span>
+                      <span>{{ message.timestamp | date:'MMM d, HH:mm' }}</span>
+                      <span *ngIf="message.editedAt" class="ml-1 italic">(edited)</span>
+                    </div>
+
+                    <div class="rounded-2xl px-4 py-2.5 shadow-sm border"
+                         [ngClass]="{
+                          'bg-[#e8f1ff] border-[#bfdaff] text-[#0f172a] dark:bg-[#1b3a66] dark:border-[#2f5689] dark:text-white ring-2 ring-[#bfd7ff]/40': isOwnMessage(message),
+                          'bg-white border-gray-200 text-gray-900 dark:bg-[#3a3a3c] dark:border-[#505053] dark:text-gray-100': !isOwnMessage(message)
+                         }">
+                      <ng-container *ngIf="editingMessageId !== message.messageId; else editMode">
+                        <p class="text-sm leading-6 whitespace-pre-wrap break-words m-0">{{ message.content }}</p>
+                      </ng-container>
+                      <ng-template #editMode>
+                        <textarea
+                          [(ngModel)]="editDraftContent"
+                          rows="3"
+                          class="w-full px-3 py-2 border border-gray-300 dark:border-[#6a6a70] bg-white/90 dark:bg-[#1f2937] dark:text-white rounded-lg text-sm resize-none"></textarea>
+                        <div class="mt-2 flex items-center gap-2 justify-end">
+                          <button
+                            (click)="cancelEditingMessage()"
+                            class="px-3 py-1.5 text-xs rounded-md border border-gray-300 dark:border-[#666] text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10">
+                            Cancel
+                          </button>
+                          <button
+                            (click)="saveEditedMessage(message)"
+                            [disabled]="isSavingEdit || !editDraftContent.trim()"
+                            class="px-3 py-1.5 text-xs rounded-md bg-[#007aff] text-white hover:bg-[#005fd1] disabled:opacity-50">
+                            Save
+                          </button>
+                        </div>
+                      </ng-template>
+                    </div>
+
+                    <div *ngIf="isOwnMessage(message) && editingMessageId !== message.messageId" class="mt-1 px-1 flex items-center gap-2 justify-end">
+                      <button
+                        (click)="startEditingMessage(message)"
+                        [disabled]="deletingMessageId === message.messageId"
+                        class="text-[11px] text-[#007aff] hover:underline disabled:opacity-50">
+                        Edit
+                      </button>
+                      <button
+                        (click)="deleteMessage(message)"
+                        [disabled]="deletingMessageId === message.messageId"
+                        class="text-[11px] text-red-600 hover:underline disabled:opacity-50">
+                        {{ deletingMessageId === message.messageId ? 'Deleting...' : 'Delete' }}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="rounded-xl border border-gray-200 dark:border-[#48484a] bg-white dark:bg-[#3a3a3c] p-3 sm:p-4">
+              <div class="flex gap-3 items-end">
+                <textarea
+                  [(ngModel)]="newMessageContent"
+                  [placeholder]="activeChatTab === 'messages' ? 'Reply to this request...' : 'Add an internal note for agents...'"
+                  (keydown.enter)="$any($event).ctrlKey && sendMessage()"
+                  rows="3"
+                  class="flex-1 px-4 py-2.5 border border-gray-300 dark:border-[#57575b] dark:bg-[#2f2f33] dark:text-white rounded-xl focus:ring-2 focus:ring-[#007aff] focus:border-transparent resize-none"
+                  [disabled]="isSendingMessage"></textarea>
+                <button
+                  (click)="sendMessage()"
+                  [disabled]="isSendingMessage || !newMessageContent.trim()"
+                  class="px-5 py-2.5 bg-[#007aff] text-white rounded-xl hover:bg-[#005fd1] transition disabled:opacity-50 disabled:cursor-not-allowed">
+                  <span *ngIf="!isSendingMessage">Send</span>
+                  <span *ngIf="isSendingMessage">Sending...</span>
+                </button>
+              </div>
+              <p class="text-xs text-gray-500 dark:text-gray-400 mt-2 px-1">Press Ctrl+Enter to send</p>
+            </div>
           </div>
         </div>
       </div>
-
     </div>
 
-    <!-- Error State -->
     <div *ngIf="!isLoadingTicket && !ticket" class="text-center py-12">
       <svg class="w-16 h-16 mx-auto mb-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
       </svg>
       <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">Ticket not found</h3>
-      <p class="text-gray-600 dark:text-gray-400 mb-4">The ticket you're looking for doesn't exist or you don't have permission to view it.</p>
-      <button 
+      <p class="text-gray-600 dark:text-gray-400 mb-4">The ticket does not exist or you do not have access.</p>
+      <button
         (click)="goBack()"
-        class="px-4 py-2 bg-gray-900 dark:bg-[#007aff] text-white rounded-lg hover:bg-gray-800 dark:hover:bg-[#0051d5] transition-colors">
+        class="px-4 py-2 bg-[#007aff] text-white rounded-lg hover:bg-[#005fd1] transition">
         Back to Tickets
       </button>
     </div>
-
   </div>
 </div>

@@ -14,6 +14,7 @@ import { RouterModule } from '@angular/router';
 import { FooterComponent } from './shared/footer/footer.component';
 import { NavbarComponent } from './shared/navbar/navbar.component';
 import { SidebarComponent } from './shared/sidebar/sidebar.component';
+import { AuthService } from './services/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -25,16 +26,19 @@ import { SidebarComponent } from './shared/sidebar/sidebar.component';
 export class AppComponent extends TEMSComponent implements OnInit{
   title = 'Technical Asset Management System';
 
-  showSidebar: boolean = true;
+  showSidebar: boolean = false;
   showNavbar: boolean = true;
   showFooter: boolean = true;
   isLoading: boolean;
+  private routeShowsLayout: boolean = true;
+  private isAuthenticated: boolean = false;
 
   constructor(
     public translate: TranslateService,
     private router: Router,
     private dialogService: DialogService,
     private tokenService: TokenService,
+    private authService: AuthService,
     private systemConfigurationService: SystemConfigurationService,
     private userService: UserService,
     private lazyLoad: LazyLoaderService,
@@ -48,6 +52,7 @@ export class AppComponent extends TEMSComponent implements OnInit{
     router.events.forEach((event) => { 
       if(event instanceof NavigationStart) {
         if((event['url'] == '/auth/login') || (event['url'] == '/auth/register') || (event['url'] == '/error-pages/404') || (event['url'] == '/error-pages/500') || (event['url'] == '/error-pages/403')) {
+          this.routeShowsLayout = false;
           this.showSidebar = false;
           this.showNavbar = false;
           this.showFooter = false;
@@ -59,9 +64,10 @@ export class AppComponent extends TEMSComponent implements OnInit{
             document.querySelector('.content-wrapper').classList.add('p-0');
           }
         } else {
-          this.showSidebar = true;
-          this.showNavbar = true;
+          this.routeShowsLayout = true;
+          this.showSidebar = this.isAuthenticated;
           this.showFooter = true;
+          this.showNavbar = true;
           document.querySelector('.main-panel').classList.remove('w-100');
           document.querySelector('.page-body-wrapper').classList.remove('full-page-wrapper');
           document.querySelector('.content-wrapper').classList.remove('auth', 'auth-img-bg');
@@ -101,6 +107,14 @@ export class AppComponent extends TEMSComponent implements OnInit{
   }
   
   ngOnInit() {
+    this.subscriptions.push(
+      this.authService.isAuthenticated$.subscribe((isAuth) => {
+        this.isAuthenticated = isAuth;
+        this.showNavbar = this.routeShowsLayout;
+        this.showSidebar = this.routeShowsLayout && isAuth;
+      })
+    );
+
     this.router.events.subscribe((evt) => {
       if (!(evt instanceof NavigationEnd)) {
           return;

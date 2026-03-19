@@ -1,1 +1,28 @@
-// Custom styles for ticket detail component
+.chat-surface {
+  background:
+    radial-gradient(circle at top right, rgba(0, 122, 255, 0.06), transparent 40%),
+    radial-gradient(circle at bottom left, rgba(16, 185, 129, 0.05), transparent 42%),
+    #f8fafc;
+}
+
+.dark .chat-surface {
+  background:
+    radial-gradient(circle at top right, rgba(10, 132, 255, 0.14), transparent 42%),
+    radial-gradient(circle at bottom left, rgba(52, 211, 153, 0.1), transparent 45%),
+    #262629;
+}
+
+.chat-scroll {
+  max-height: 26rem;
+  overflow-y: auto;
+  padding-right: 0.25rem;
+}
+
+.chat-scroll::-webkit-scrollbar {
+  width: 8px;
+}
+
+.chat-scroll::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.55);
+  border-radius: 9999px;
+}

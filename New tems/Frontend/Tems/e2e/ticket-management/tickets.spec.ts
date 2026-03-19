@@ -63,51 +63,41 @@ test.describe('Tickets Management', () => {
   });
 
   test('should create a new ticket via UI and verify in backend', async ({ page, testHelper }) => {
-    test.setTimeout(10000);
+    test.setTimeout(15000);
     
     const createButton = page.locator('button:has-text("Add Ticket"), button:has-text("Create Ticket")').first();
     await createButton.click();
     
-    // Check if create form exists
-    await page.waitForTimeout(1000);
-    const titleInput = page.locator('input[formControlName="title"]');
-    const titleExists = await titleInput.count() > 0;
-    
-    if (!titleExists) {
-      console.log('✓ Create ticket form not implemented yet - skipping test');
+    await expect(page.locator('h2:has-text("Create Ticket")')).toBeVisible();
+
+    const ticketTypesResponse = await testHelper.api.get(API_CONFIG.endpoints.ticketTypes);
+    const firstTicketTypeId = ticketTypesResponse.ticketTypes?.[0]?.ticketTypeId;
+    if (!firstTicketTypeId) {
       test.skip();
       return;
     }
-    
-    const uniqueTitle = `E2E Test Ticket ${Date.now()}`;
-    await page.fill('input[formControlName="title"]', uniqueTitle);
-    await page.fill('textarea[formControlName="description"]', 'Created by E2E test');
-    
-    const ticketTypeSelect = page.locator('select[formControlName="ticketTypeId"]');
-    if (await ticketTypeSelect.isVisible()) {
-      await ticketTypeSelect.selectOption({ index: 1 });
-    }
-    
-    const prioritySelect = page.locator('select[formControlName="priority"]');
-    if (await prioritySelect.isVisible()) {
-      await prioritySelect.selectOption('Medium');
-    }
-    
-    await page.click('button[type="submit"]');
-    await page.waitForTimeout(2000);
+
+    const uniqueSummary = `E2E Test Ticket ${Date.now()}`;
+    await page.selectOption('select[formControlName="ticketTypeId"]', firstTicketTypeId);
+    await page.fill('textarea[formControlName="summary"]', uniqueSummary);
+    await page.locator('input[formControlName="priority"][value="MEDIUM"]').check();
+    await page.selectOption('select[formControlName="channelSource"]', 'WEB');
+
+    await page.click('button[type="submit"]:not([disabled])');
+    await expect(page.locator('h2:has-text("Create Ticket")')).not.toBeVisible({ timeout: 5000 });
     
     console.log('✓ Ticket creation attempted');
     
     // Verify the ticket appears in the grid
-    await expect(page.locator(`.ag-cell:has-text("${uniqueTitle}")`)).toBeVisible();
+    await expect(page.locator(`.ag-cell:has-text("${uniqueSummary}")`)).toBeVisible();
     
     // Verify in backend by making direct API call
     const ticketsResponse = await testHelper.api.get(API_CONFIG.endpoints.tickets);
-    const foundTicket = ticketsResponse.tickets.find((t: any) => t.ticketId === createdTicketId);
+    const foundTicket = ticketsResponse.tickets.find((t: any) => t.summary === uniqueSummary);
     
     expect(foundTicket).toBeDefined();
-    expect(foundTicket.title).toBe(uniqueTitle);
-    expect(foundTicket.description).toBe('Created by E2E test');
+    expect(foundTicket.summary).toBe(uniqueSummary);
+    createdTicketId = foundTicket.ticketId;
   });
 
   test('should update a ticket via UI and verify changes', async ({ page, testHelper }) => {

@@ -1,0 +1,508 @@
+{
+  "config": {
+    "configFile": "/Users/babadorin/repos/tems/New tems/Frontend/Tems/playwright.config.ts",
+    "rootDir": "/Users/babadorin/repos/tems/New tems/Frontend/Tems/e2e",
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {},
+    "preserveOutput": "always",
+    "reporter": [
+      [
+        "html",
+        null
+      ],
+      [
+        "list",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "test-results/results.json"
+        }
+      ],
+      [
+        "junit",
+        {
+          "outputFile": "test-results/results.xml"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "quiet": false,
+    "projects": [
+      {
+        "outputDir": "/Users/babadorin/repos/tems/New tems/Frontend/Tems/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {},
+        "id": "chromium",
+        "name": "chromium",
+        "testDir": "/Users/babadorin/repos/tems/New tems/Frontend/Tems/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.57.0",
+    "workers": 6,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "smoke/core-modules.spec.ts",
+      "file": "smoke/core-modules.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Core Modules Smoke Tests",
+          "file": "smoke/core-modules.spec.ts",
+          "line": 22,
+          "column": 6,
+          "specs": [
+            {
+              "title": "should load assets module and render base UI",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "49d48e039303fa29b78c-140777a471308961e8f8",
+              "file": "smoke/core-modules.spec.ts",
+              "line": 23,
+              "column": 7
+            },
+            {
+              "title": "should load locations module and render base UI",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "49d48e039303fa29b78c-4645dffb8d834b7cdb89",
+              "file": "smoke/core-modules.spec.ts",
+              "line": 35,
+              "column": 7
+            },
+            {
+              "title": "should load user management module and validate users/roles endpoints",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "49d48e039303fa29b78c-3ee1e3890ed66d9bfba9",
+              "file": "smoke/core-modules.spec.ts",
+              "line": 47,
+              "column": 7
+            },
+            {
+              "title": "should verify ticketing routes remain available",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "49d48e039303fa29b78c-a266058c15564a70cd33",
+              "file": "smoke/core-modules.spec.ts",
+              "line": 60,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "ticket-management/ticket-types.spec.ts",
+      "file": "ticket-management/ticket-types.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Ticket Types Management",
+          "file": "ticket-management/ticket-types.spec.ts",
+          "line": 8,
+          "column": 6,
+          "specs": [
+            {
+              "title": "should load ticket types page successfully",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "b8d38466ea32053e6f10-f02fbec36044aa1c8072",
+              "file": "ticket-management/ticket-types.spec.ts",
+              "line": 39,
+              "column": 7
+            },
+            {
+              "title": "should fetch ticket types from backend and display in grid",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "b8d38466ea32053e6f10-083594dd22691d2a1227",
+              "file": "ticket-management/ticket-types.spec.ts",
+              "line": 50,
+              "column": 7
+            },
+            {
+              "title": "should create a new ticket type via UI and verify in backend",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "b8d38466ea32053e6f10-a7c6aa1ab41496845e13",
+              "file": "ticket-management/ticket-types.spec.ts",
+              "line": 66,
+              "column": 7
+            },
+            {
+              "title": "should update a ticket type via UI and verify changes",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "b8d38466ea32053e6f10-845a088b479ec0b7697d",
+              "file": "ticket-management/ticket-types.spec.ts",
+              "line": 104,
+              "column": 7
+            },
+            {
+              "title": "should delete a ticket type via UI and verify removal",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "b8d38466ea32053e6f10-b3ea635b6699311fcc69",
+              "file": "ticket-management/ticket-types.spec.ts",
+              "line": 142,
+              "column": 7
+            },
+            {
+              "title": "should validate required fields in create form",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "b8d38466ea32053e6f10-92cd4fac6fae4afbc3b9",
+              "file": "ticket-management/ticket-types.spec.ts",
+              "line": 187,
+              "column": 7
+            },
+            {
+              "title": "should handle backend errors gracefully",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "b8d38466ea32053e6f10-055c3e5cfc6321893fa0",
+              "file": "ticket-management/ticket-types.spec.ts",
+              "line": 208,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "ticket-management/tickets.spec.ts",
+      "file": "ticket-management/tickets.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Tickets Management",
+          "file": "ticket-management/tickets.spec.ts",
+          "line": 8,
+          "column": 6,
+          "specs": [
+            {
+              "title": "should load tickets page successfully",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "b0af1efb9a2c410cff9b-54665037e339b8bd339f",
+              "file": "ticket-management/tickets.spec.ts",
+              "line": 37,
+              "column": 7
+            },
+            {
+              "title": "should fetch tickets from backend and display in grid",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "b0af1efb9a2c410cff9b-b4ce3cb646d4227cf887",
+              "file": "ticket-management/tickets.spec.ts",
+              "line": 49,
+              "column": 7
+            },
+            {
+              "title": "should create a new ticket via UI and verify in backend",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "b0af1efb9a2c410cff9b-51496c82baef3614d745",
+              "file": "ticket-management/tickets.spec.ts",
+              "line": 65,
+              "column": 7
+            },
+            {
+              "title": "should update a ticket via UI and verify changes",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "b0af1efb9a2c410cff9b-b6f7ef9c3f324c8d3f7e",
+              "file": "ticket-management/tickets.spec.ts",
+              "line": 103,
+              "column": 7
+            },
+            {
+              "title": "should delete a ticket via UI and verify removal",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "b0af1efb9a2c410cff9b-9444b23533abd55b0b3e",
+              "file": "ticket-management/tickets.spec.ts",
+              "line": 169,
+              "column": 7
+            },
+            {
+              "title": "should validate required fields in create form",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "b0af1efb9a2c410cff9b-3f97d9b42108748b9d94",
+              "file": "ticket-management/tickets.spec.ts",
+              "line": 244,
+              "column": 7
+            },
+            {
+              "title": "should display ticket details when clicking on a ticket",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "b0af1efb9a2c410cff9b-44418ef6b2c035100cbc",
+              "file": "ticket-management/tickets.spec.ts",
+              "line": 270,
+              "column": 7
+            },
+            {
+              "title": "should create ticket with custom attributes from ticket type",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "b0af1efb9a2c410cff9b-9466b835bc7393fcd337",
+              "file": "ticket-management/tickets.spec.ts",
+              "line": 320,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-03-18T19:38:34.840Z",
+    "duration": 77.78299999999996,
+    "expected": 0,
+    "skipped": 19,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

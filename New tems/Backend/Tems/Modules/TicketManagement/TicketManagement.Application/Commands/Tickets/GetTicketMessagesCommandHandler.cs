@@ -22,12 +22,14 @@ public class GetTicketMessagesCommandHandler : IRequestHandler<GetTicketMessages
             return new GetTicketMessagesResponse(new List<TicketMessageResponse>());
 
         var messages = conversation.Messages.Select(m => new TicketMessageResponse(
+            m.MessageId,
             m.SenderType,
             m.SenderId,
             m.Timestamp,
             m.Content,
             m.ChannelMessageId,
-            m.IsInternalNote
+            m.IsInternalNote,
+            m.EditedAt
         )).ToList();
 
         return new GetTicketMessagesResponse(messages);

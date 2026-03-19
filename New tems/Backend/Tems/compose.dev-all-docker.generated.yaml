@@ -1,0 +1,40 @@
+services:
+  backend-api:
+    image: mcr.microsoft.com/dotnet/sdk:9.0
+    container_name: tems-backend-api
+    working_dir: /src/Tems.Host
+    command: >
+      bash -lc "dotnet restore ../Tems.sln &&
+      dotnet run --project Tems.Host.csproj --urls http://0.0.0.0:5158"
+    volumes:
+      - ./:/src
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://0.0.0.0:5158
+    ports:
+      - "5158:5158"
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      keycloak:
+        condition: service_started
+      identity-server:
+        condition: service_started
+    networks:
+      - tems-network
+
+  frontend:
+    image: node:20
+    container_name: tems-frontend
+    working_dir: /app
+    command: >
+      bash -lc "npm install &&
+      npx ng serve --host 0.0.0.0 --port 4200"
+    volumes:
+      - ../../Frontend/Tems:/app
+    ports:
+      - "4200:4200"
+    depends_on:
+      - backend-api
+    networks:
+      - tems-network

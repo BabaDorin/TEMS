@@ -12,8 +12,11 @@
     "e2e:debug": "playwright test --debug",
     "e2e:ui": "playwright test --ui",
     "e2e:report": "playwright show-report",
+    "e2e:dashboard": "node scripts/generate-e2e-dashboard.mjs",
+    "e2e:with-dashboard": "playwright test && node scripts/generate-e2e-dashboard.mjs",
     "e2e:ticket-types": "playwright test e2e/ticket-management/ticket-types.spec.ts",
-    "e2e:tickets": "playwright test e2e/ticket-management/tickets.spec.ts"
+    "e2e:tickets": "playwright test e2e/ticket-management/tickets.spec.ts",
+    "e2e:smoke": "playwright test e2e/smoke/core-modules.spec.ts"
   },
   "private": true,
   "dependencies": {

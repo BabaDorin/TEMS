@@ -44,13 +44,14 @@ export interface UpdateTicketRequest {
 }
 
 export interface TicketMessage {
-  messageId: string;
+  messageId?: string;
   senderType: 'USER' | 'AGENT' | 'AI_SYSTEM';
   senderId: string;
-  timestamp: Date;
+  timestamp: Date | string;
   content: string;
   channelMessageId?: string;
   isInternalNote: boolean;
+  editedAt?: Date | string | null;
 }
 
 export interface TicketConversation {
@@ -64,4 +65,14 @@ export interface AddMessageRequest {
   senderId: string;
   content: string;
   isInternalNote: boolean;
+}
+
+export interface AddMessageResponse {
+  success: boolean;
+  message?: TicketMessage;
+}
+
+export interface EditMessageResponse {
+  success: boolean;
+  message?: TicketMessage;
 }

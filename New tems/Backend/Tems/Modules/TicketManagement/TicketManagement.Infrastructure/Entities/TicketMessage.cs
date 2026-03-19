@@ -4,6 +4,10 @@ namespace TicketManagement.Infrastructure.Entities;
 
 public class TicketMessage
 {
+    [BsonElement("message_id")]
+    [BsonIgnoreIfNull]
+    public string? MessageId { get; set; }
+
     [BsonElement("sender_type")]
     public string SenderType { get; set; } = string.Empty;
 
@@ -22,4 +26,8 @@ public class TicketMessage
 
     [BsonElement("is_internal_note")]
     public bool IsInternalNote { get; set; }
+
+    [BsonElement("edited_at")]
+    [BsonIgnoreIfNull]
+    public DateTime? EditedAt { get; set; }
 }

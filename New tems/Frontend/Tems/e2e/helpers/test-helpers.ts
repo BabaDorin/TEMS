@@ -9,6 +9,32 @@ export class ApiHelper {
   constructor(private page: Page) {}
 
   /**
+   * Make a request without asserting status code.
+   * Useful for role/permission checks where 401/403 is expected.
+   */
+  async request(
+    method: 'GET' | 'POST' | 'PUT' | 'DELETE',
+    endpoint: string,
+    data?: any
+  ) {
+    const url = `${API_CONFIG.baseURL}${endpoint}`;
+    const headers: Record<string, string> = {
+      'X-Tenant-Id': 'default',
+    };
+
+    if (data !== undefined) {
+      headers['Content-Type'] = 'application/json';
+    }
+
+    return this.page.request.fetch(url, {
+      method,
+      data,
+      timeout: API_CONFIG.timeout,
+      headers,
+    });
+  }
+
+  /**
    * Make a GET request to the API
    */
   async get(endpoint: string): Promise<any> {
@@ -94,11 +120,12 @@ export class ApiHelper {
    */
   async checkBackendHealth(): Promise<boolean> {
     try {
-      // Try to call a real endpoint instead of /health
+      // Try to call a real endpoint instead of /health.
+      // 200/401/403 all indicate backend availability.
       const response = await this.page.request.get(`${API_CONFIG.baseURL}/ticket-types`, {
         timeout: 5000,
       });
-      return response.ok();
+      return [200, 401, 403].includes(response.status());
     } catch (error) {
       return false;
     }

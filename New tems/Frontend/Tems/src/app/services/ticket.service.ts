@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, tap, catchError, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
-import { Ticket, CreateTicketRequest, UpdateTicketRequest, TicketConversation, AddMessageRequest } from '../models/ticket/ticket.model';
+import { Ticket, CreateTicketRequest, UpdateTicketRequest, TicketConversation, AddMessageRequest, AddMessageResponse, EditMessageResponse } from '../models/ticket/ticket.model';
 import { TicketManagementStateService } from '../state/ticket-management.state';
 
 @Injectable({
@@ -69,7 +69,19 @@ export class TicketService {
     return this.http.get<TicketConversation>(`${this.apiUrl}/${ticketId}/messages`, this.httpOptions);
   }
 
-  addMessage(ticketId: string, request: AddMessageRequest): Observable<void> {
-    return this.http.post<void>(`${this.apiUrl}/${ticketId}/messages`, request, this.httpOptions);
+  addMessage(ticketId: string, request: AddMessageRequest): Observable<AddMessageResponse> {
+    return this.http.post<AddMessageResponse>(`${this.apiUrl}/${ticketId}/messages`, request, this.httpOptions);
+  }
+
+  editMessage(ticketId: string, messageId: string, content: string): Observable<EditMessageResponse> {
+    return this.http.patch<EditMessageResponse>(
+      `${this.apiUrl}/${ticketId}/messages/${messageId}`,
+      { content },
+      this.httpOptions
+    );
+  }
+
+  deleteMessage(ticketId: string, messageId: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${ticketId}/messages/${messageId}`, this.httpOptions);
   }
 }

@@ -1,0 +1,669 @@
+3 REALIZAREA SISTEMULUI
+
+Capitolul de realizare documentează tranziția de la modelarea conceptuală și arhitecturală către implementarea efectivă a platformei TEMS. În această etapă, obiectivul major a fost transformarea cerințelor definite anterior într-un produs funcțional, scalabil și securizat, capabil să deservească atât utilizatorii finali ai unei organizații, cât și echipele tehnice care gestionează infrastructura digitală. Implementarea a urmat un principiu de modularitate strictă: fiecare domeniu funcțional (active, locații, tichete, utilizatori) a fost tratat ca o componentă autonomă, cu propriile contracte API, propriile reguli de validare și propriile fluxuri de integrare în interfața web.
+
+Procesul de dezvoltare a fost orientat de două criterii de calitate care au rămas constante pe tot parcursul execuției tehnice: consistența datelor în scenarii multiutilizator și claritatea fluxurilor operaționale pentru actorii non-tehnici. Astfel, fiecare funcționalitate a fost proiectată în jurul unei logici tranzacționale explicite, iar interfața Angular a fost construită în paralel cu serviciile backend pentru a evita decalajele dintre comportamentul API și așteptările utilizatorului. În locul unei dezvoltări monolitice, s-a utilizat o strategie incrementală, în care modulele au fost livrate în valuri succesive și validate pe seturi de scenarii reale de operare.
+
+Din punct de vedere tehnic, implementarea a fost realizată pe un stack modern: Angular pentru client, .NET pentru servicii backend, MongoDB pentru persistență, Keycloak pentru identitate și Docker pentru standardizarea mediilor de rulare. Interacțiunea dintre aceste componente este guvernată prin contracte stabile de date și prin politici de autorizare bazate pe roluri. Rezultatul este o platformă care nu doar acoperă fluxuri administrative clasice, ci permite și analiză operațională, auditabilitate detaliată și extindere ulterioară fără refactorizări disruptive.
+
+
+Figura 3.1 – Structura generală a proiectului în IDE
+
+
+3.1 Organizarea proiectului și mediul de dezvoltare
+
+Organizarea proiectului TEMS a fost realizată prin separarea clară a responsabilităților între straturile de prezentare, procesare și infrastructură. În repository, structura principală este împărțită în trei zone tehnice majore: Frontend, Backend și Infrastructure. Această delimitare nu este doar una estetică, ci una operațională. Frontend-ul conține aplicația Angular și componentele UI orientate către utilizator; backend-ul include modulele de business logic și endpoint-urile API; infrastructura concentrează scripturile și configurațiile de identitate, deployment și integrare cu servicii externe. Prin această organizare, echipe diferite pot lucra în paralel fără blocaje semnificative, iar procesul de release rămâne controlabil.
+
+În implementare s-a adoptat modelul modular pe domenii de business. În backend, fiecare domeniu major este reprezentat prin propriul modul: AssetManagement, TicketManagement, LocationManagement, UserManagement și ChangeLog. Fiecare modul conține proiecte separate pentru API, Application, Contract și Infrastructure, ceea ce oferă o separare explicită între contractul public, regulile de domeniu și persistență. Avantajul direct al acestui model este că schimbarea internă a unui modul nu produce efecte laterale asupra celorlalte module, atâta timp cât interfața contractului rămâne stabilă. În practică, această decuplare a redus semnificativ riscul de regresii pe parcursul iterărilor.
+
+În frontend, aplicația Angular este structurată în jurul componentelor standalone și a unei rutări lazy-loaded pe secțiunile principale. Rutele sunt organizate după fluxul operațional real: assets, locations, technical-support, administration și profile. Fiecare zonă este legată de un set de componente de vizualizare, formulare de creare/actualizare și componente de detaliu. Această structură permite reducerea timpului de încărcare inițial, deoarece secțiunile sunt încărcate doar atunci când utilizatorul le accesează. Totodată, menținerea codului devine mai simplă, întrucât fiecare modul UI are dependențe locale controlate.
+
+Mediul local de dezvoltare este standardizat prin scripturi și configurări explicite. Pentru frontend se utilizează npm start, iar pentru backend rularea se face prin proiectul host, care agregă toate modulele și configurează middleware-urile comune. Pentru testare end-to-end este utilizat Playwright, cu comenzi dedicate pentru suitele de tichete și tipuri de tichete. Prin această abordare, dezvoltatorii pot reproduce rapid același context de execuție, reducând apariția erorilor de tipul „funcționează local, nu funcționează în integrare".
+
+Un element important al mediului de dezvoltare este integrarea autentificării încă din faza locală. În locul unei simulări artificiale, aplicația este configurată să utilizeze fluxul OAuth2/OIDC și să consume token-uri valide. Astfel, verificarea rolurilor și a politicilor de acces se realizează în mod realist în timpul dezvoltării, nu doar în testele finale. În plus, configurarea cu tenant header (X-Tenant-Id) permite simularea scenariilor multitenant fără infrastructură complexă suplimentară.
+
+Fragment de cod 3.1 – Configurarea serviciilor și middleware în host
+
+builder.Services.AddAssetManagementServices(builder.Configuration);
+builder.Services.AddTicketManagementServices(builder.Configuration);
+builder.Services.AddUserManagementServices(builder.Configuration);
+builder.Services.AddLocationManagementModule();
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.Authority = builder.Configuration["Keycloak:Authority"];
+        options.Audience = "account";
+    });
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("CanManageAssets",
+        p => p.RequireRole("can_manage_assets"));
+    options.AddPolicy("CanOpenTickets",
+        p => p.RequireRole("can_open_tickets"));
+    options.AddPolicy("CanManageUsers",
+        p => p.RequireRole("can_manage_users"));
+});
+
+var app = builder.Build();
+app.UseCors();
+app.UseTenantMiddleware();
+app.UseAuthentication();
+app.UseAuthorization();
+app.UseFastEndpoints();
+
+
+Figura 3.2 – Containerele Docker active în mediul de dezvoltare
+
+
+3.2 Realizarea bazei de date
+
+Modelul de date al sistemului TEMS a fost realizat în MongoDB 7.0, într-o formă orientată pe documente, pentru a putea acomoda flexibilitatea ridicată a domeniului activelor tehnice. Spre deosebire de un model rigid relațional, platforma necesită posibilitatea de a stoca structuri variabile de specificații hardware, metadate operaționale și atribute dinamice pentru tichete, fără a fi necesară redefinirea schemei la fiecare iterare funcțională. În acest context, MongoDB oferă avantajul major de a păstra coerența datelor fără a constrânge evoluția domeniului prin migrări frecvente și costisitoare. Conexiunea cu baza de date este configurată prin secțiunea MongoDb din fișierele appsettings: în mediul local se utilizează mongodb://localhost:27017, iar în mediul Docker se folosește mongodb://mongodb:27017. Clientul MongoDB este înregistrat ca singleton, iar instanța de IMongoDatabase este injectată scoped, pentru a permite fiecărui request propria sesiune izolată.
+
+Baza de date TemsDb conține un total de 14 colecții, distribuite funcțional pe cele cinci module ale platformei. Modulul AssetManagement utilizează patru colecții: assets, asset_definitions, asset_properties și asset_types. Modulul TicketManagement consumă trei colecții: tickets, ticket_conversations și ticket_types. Modulul LocationManagement este deservit de colecțiile sites, buildings și rooms. Modulul UserManagement folosește o singură colecție: users. Modulul ChangeLog menține trei colecții de audit separate: asset_change_logs, user_change_logs și location_change_logs. Această distribuție asigură izolarea datelor pe domenii funcționale și permite evoluția independentă a schemei fiecărei colecții.
+
+Modelul activelor: entitatea Asset
+
+Entitatea centrală a platformei este Asset, stocată în colecția assets. Fiecare document asset reprezintă un echipament fizic din inventarul organizației și conține atât câmpuri de identificare directă, cât și sub-documente încorporate care descriu aspecte diferite ale ciclului de viață al echipamentului. Câmpurile de identificare sunt Id (generat automat din ObjectId, stocat ca string), SerialNumber (numărul de serie al producătorului) și AssetTag (codul intern de inventar al organizației). Câmpul Status indică starea curentă a activului (active, in_repair, decommissioned), iar câmpurile CreatedAt, UpdatedAt, CreatedBy mențin informațiile de trasabilitate temporală. Pentru ștergerea logică, entitatea include IsArchived, ArchivedAt și ArchivedBy, ceea ce permite retragerea unui activ din inventarul vizibil fără pierderea istoricului asociat.
+
+Sub-documentul AssetDefinitionSnapshot este cel mai important element structural al entității. Acesta conține o copie congelată a definiției tehnice la momentul în care activul a fost creat sau ultima dată actualizat manual. Câmpurile incluse sunt DefinitionId (legătura la definiția-sursă), Name (denumirea modelului), AssetTypeId și AssetTypeName (tipul de echipament), Manufacturer și Model (producătorul și modelul comercial), precum și o listă de AssetSpecification care conține valorile concrete ale proprietăților hardware (de exemplu: CPU = „Intel Core i7-13700", RAM = 32, Storage = 512). Fiecare specificație include PropertyId, Name, Value, DataType și opțional Unit. Câmpul IsCustomized indică dacă specificațiile au fost modificate față de definiția standard, iar SnapshotAt înregistrează momentul exact al capturii. Această alegere de design bazată pe snapshot este esențială pentru auditabilitate: chiar dacă definiția modelului hardware se schimbă ulterior în nomenclatorul de definiții, activul păstrează istoricul exact al configurației cu care a fost introdus în inventar. Prin urmare, rapoartele istorice și investigațiile post-incident rămân valide și reproductibile în timp.
+
+Sub-documentul PurchaseInfo stochează datele financiare ale achiziției: PurchaseDate (data achiziției), PurchasePrice (prețul), Currency (moneda, implicit USD), Vendor (furnizorul) și WarrantyExpiry (expirarea garanției). Aceste câmpuri sunt nullable, deoarece nu toate activele au informații de achiziție disponibile la momentul înregistrării. Sub-documentul AssetLocation conține datele de localizare fizică denormalizate: Building, Room și Desk. Denormalizarea este deliberată — permite afișarea informațiilor de locație în listele de active fără a necesita join-uri suplimentare cu colecțiile de locații. În paralel, câmpul LocationId stochează referința la entitatea Room din modulul de locații, pentru operații de mutare și raportare ierarhică.
+
+Sub-documentul AssetAssignment gestionează alocarea activului către un utilizator: AssignedToUserId, AssignedToName, AssignedAt și AssignmentType (permanent sau temporary). Separarea datelor de asignare într-un sub-document permite actualizarea alocării fără a afecta restul documentului și facilitează interogări de tip „toate activele asignate utilizatorului X". Lista MaintenanceHistory conține înregistrări de mentenanță de tip MaintenanceRecord, fiecare cu Date, Type (preventive, corrective, upgrade), Description, PerformedBy și Cost. Această listă crește organic pe durata vieții activului și oferă un istoric tehnic complet, relevant pentru decizii de înlocuire sau amortizare.
+
+Entitatea Asset suportă și relații ierarhice de tip părinte-copil prin câmpurile ParentAssetId și ChildAssetIds. Această funcționalitate permite modelarea echipamentelor compuse — de exemplu, un server poate avea ca sub-active discuri SSD individuale sau module de memorie, permițând trasabilitatea componentelor individuale în cadrul unui echipament complex.
+
+Fragment de cod 3.2 – Entitatea Asset în MongoDB
+
+public class Asset
+{
+    [BsonId]
+    [BsonRepresentation(BsonType.String)]
+    public string Id { get; set; }
+
+    [BsonElement("serial_number")]
+    public string SerialNumber { get; set; }
+
+    [BsonElement("asset_tag")]
+    public string AssetTag { get; set; }
+
+    [BsonElement("definition")]
+    public AssetDefinitionSnapshot Definition { get; set; }
+
+    [BsonElement("assignment")]
+    public AssetAssignment? Assignment { get; set; }
+
+    [BsonElement("purchase_info")]
+    public PurchaseInfo? PurchaseInfo { get; set; }
+
+    [BsonElement("location")]
+    public AssetLocation? Location { get; set; }
+
+    [BsonElement("is_archived")]
+    public bool IsArchived { get; set; }
+
+    [BsonElement("created_at")]
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+}
+
+Nomenclatorul de active: proprietăți, tipuri și definiții
+
+Pe lângă colecția de active propriu-zise, modulul AssetManagement include un sistem de nomenclatură pe trei niveluri, care permite clasificarea și descrierea structurată a echipamentelor fără codificare rigidă în codul-sursă. Cele trei niveluri sunt: proprietăți tehnice (asset_properties), tipuri de active (asset_types) și definiții de active (asset_definitions).
+
+Colecția asset_properties stochează catalogul universal de proprietăți tehnice reutilizabile. Fiecare proprietate (AssetProperty) conține un identificator unic, un nume (cu index unic pentru a preveni duplicatele), un tip de date (string, number, enum, boolean), o categorie funcțională (Hardware, Software, Network) și opțional o unitate de măsură (GB, MHz, inch). Pentru proprietățile de tip enum, câmpul EnumValues stochează lista valorilor permise. Fiecare proprietate poate include și un obiect PropertyValidation cu reguli de validare: MaxLength pentru string-uri, Min și Max pentru numere, Pattern (expresie regulată) pentru formate specifice. Acest catalog este global la nivel de platformă și servește ca sursă unică de adevăr pentru vocabularul tehnic al organizației.
+
+Colecția asset_types definește categoriile de echipamente pe care organizația le gestionează. Fiecare tip de activ (AssetType) are un identificator, un nume (de exemplu: Computer, Laptop, Monitor, Printer, Router) și o listă de proprietăți asociate (AssetTypeProperty). Fiecare proprietate asociată unui tip conține referința la proprietatea din catalogul global, un flag Required care indică dacă specificarea valorii este obligatorie la crearea unui activ, un DisplayOrder pentru controlul ordinii de afișare în formulare și opțional reguli de validare specifice tipului. Tipurile de active suportă ierarhie prin câmpul ParentTypeId, ceea ce permite definirea de subtipuri (de exemplu: Laptop ca subtip de Computer). Această structură ierarhică permite moștenirea proprietăților și filtrarea în cascadă în interfața utilizator.
+
+Colecția asset_definitions reprezintă nivelul cel mai concret al nomenclaturii: modele specifice de echipamente cu specificații pre-completate. O definiție (AssetDefinition) conține Name (numele complet al modelului), ShortName (prescurtare), AssetTypeId și AssetTypeName (tipul asociat), Manufacturer și Model (producătorul și modelul comercial), precum și o listă de AssetSpecification cu valorile concrete ale proprietăților tehnice. Câmpul UsageCount înregistrează numărul de active create pe baza acestei definiții, oferind vizibilitate asupra popularității modelelor în inventar. Definiția include și câmpuri de documentare (Description, Notes, Tags) pentru organizarea internă.
+
+Fluxul de creare al unui activ urmează pașii: utilizatorul selectează o definiție existentă, sistemul copiază specificațiile în snapshot-ul activului, iar utilizatorul poate personaliza valorile individuale. Această abordare combină eficiența creării rapide cu flexibilitatea ajustărilor per-echipament, fără a polua catalogul de definiții cu variante minore.
+
+Modelul de ticketing: separarea datelor operaționale de conversații
+
+În modulul de ticketing, datele sunt împărțite în două colecții corelate: tickets (ticketul propriu-zis) și ticket_conversations (conversația asociată). Această separare este o decizie arhitecturală deliberată cu implicații directe asupra performanței. Ticketul stochează exclusiv metadatele operaționale: HumanReadableId (un cod uman de tip INC-001 sau REQ-042, generat secvențial per tip și tenant), Summary (descrierea succintă), CurrentStateId (starea curentă din workflow), Priority (prioritatea), Reporter (sub-document cu UserId, ChannelSource și opțional ChannelThreadId), AssigneeId (tehnicianul asignat), precum și un dicționar Attributes de tip Dictionary<string, object> care stochează atribute dinamice specifice tipului de tichet. Câmpurile temporale CreatedAt, UpdatedAt și ResolvedAt permit calcularea automată a timpilor de rezolvare și a metricilor SLA.
+
+Conversația (TicketConversation) este un document separat legat de tichet prin câmpul TicketId, cu un index unic care garantează relația 1:1. Documentul conține o listă de TicketMessage, fiecare mesaj având câmpurile: SenderType (de exemplu: agent, reporter, system), SenderId (identificatorul expeditorului), Timestamp (momentul trimiterii), Content (textul mesajului), IsInternalNote (flag boolean care marchează notele vizibile doar pentru tehnicieni) și opțional ChannelMessageId (referința la mesajul original din canalul extern de comunicare). Separarea conversației de tichet asigură că operațiile frecvente de listare și filtrare a tichetelor nu sunt afectate de volumul mesajelor acumulate. Un tichet cu 200 de mesaje de suport rămâne la fel de rapid de interogat ca unul nou-creat, deoarece mesajele nu fac parte din documentul principal.
+
+Configurarea tipurilor de tichete și a fluxurilor de lucru
+
+Colecția ticket_types stochează definițiile tipurilor de tichete disponibile per tenant. Fiecare TicketType conține, pe lângă câmpurile de bază (Name, Description, ItilCategory, Version), două structuri complexe încorporate: WorkflowConfig și o listă de AttributeDefinition. WorkflowConfig definește mașina de stare a tichetului: conține InitialStateId (starea inițială) și o listă de WorkflowState. Fiecare stare are Id, Label (eticheta vizibilă), Type (open, in_progress, resolved, closed) și AllowedTransitions (lista de stări către care se poate tranziționa). Opțional, fiecare stare poate avea un AutomationHook — un identificator de automatizare care se poate declanșa la intrarea în acea stare. Acest model permite organizațiilor să definească fluxuri de lucru ITIL personalizate fără modificări de cod.
+
+Lista AttributeDefinition definește câmpurile dinamice ale formularului de creare a tichetului. Fiecare definiție de atribut conține Key (identificatorul unic), Label (eticheta afișată), DataType (string, number, enum, boolean), IsRequired (dacă este obligatoriu), IsPredefined (dacă este pre-populat din context), Options (lista de opțiuni pentru câmpuri de tip enum), ValidationRule (regulă de validare opțională) și AiExtractionHint (sugestie pentru extragerea automată din text). Câmpul ItilCategory clasifică tipul de tichet conform taxonomiei ITIL (Incident, Service Request, Change Request, Problem), ceea ce permite generarea de rapoarte și metrici aliniate standardelor din industrie. Indexul unic compus pe tenant_id + name + version asigură unicitatea fiecărei versiuni de tip de tichet în cadrul unui tenant.
+
+Modelul de locații: ierarhia fizică a organizației
+
+Datele de locații sunt organizate ierarhic pe trei niveluri în colecțiile sites, buildings și rooms, cu relații de referință între ele și filtrare pe tenant. Entitatea Site reprezintă cel mai înalt nivel al ierarhiei fizice și conține Name (numele sediului), Code (un cod scurt pentru referire rapidă), Timezone (fusul orar local, relevant pentru raportarea corelată temporal) și IsActive (flag de activare). Fiecare site este asociat unui tenant specific prin câmpul TenantId.
+
+Entitatea Building este legată de un site prin câmpul SiteId și conține, pe lângă Name, câmpurile AddressLine (adresa fizică) și ManagerContact (datele de contact ale administratorului clădirii). Entitatea Room este legată de o clădire prin BuildingId și include câmpuri detaliate: Name, RoomNumber (numărul camerei), FloorLabel (etajul), Type (office, server_room, storage, meeting_room), Capacity (capacitatea maximă de persoane), Area (suprafața în metri pătrați), Status (active, under_renovation, decommissioned) și Description. Toate cele trei entități de locații conțin câmpurile de audit CreatedAt, UpdatedAt, CreatedBy și UpdatedBy pentru trasabilitatea modificărilor.
+
+Această structură ierarhică suportă atât navigarea rapidă în interfața utilizator, cât și interogări agregate pentru distribuția activelor pe zone fizice. Într-un mediu de business real, această modelare reduce considerabil timpul de localizare a echipamentelor și elimină neconcordanțele dintre inventarul digital și distribuția fizică din organizație. Importanța câmpului Type la nivel de cameră este deosebită: permite generarea automată de rapoarte de conformitate (de exemplu, câte active se află în camere de tip server_room vs. office) și facilitează deciziile de realocare pe baza capacității și destinației spațiilor fizice.
+
+Modelul de utilizatori și sincronizarea cu Keycloak
+
+Entitatea User din colecția users conține informații de profil, chei de legătură cu providerul de identitate și apartenența la tenant. Câmpurile de bază sunt Name, Email și opțional AvatarUrl. Integrarea cu sistemul de identitate este realizată prin două câmpuri: IdentityProviderId (moștenit din sistemul anterior de autentificare) și KeycloakId (sub-claim-ul din token-ul Keycloak). Această dualitate asigură compatibilitatea cu conturile create înainte de migrarea la Keycloak. Câmpul TenantIds este o listă de string-uri care permite apartenenta unui utilizator la mai mulți tenanți simultan — un caz frecvent în organizații cu filiale sau departamente cu acces partajat. Identificatorul entității este generat prin Guid.NewGuid().ToString(), spre deosebire de restul entităților care folosesc ObjectId, pentru compatibilitate cu sistemele externe de identitate.
+
+Un aspect important este că rolurile operaționale nu sunt menținute exclusiv local, ci sincronizate bidirecțional cu Keycloak. Platforma citește rolurile din token-ul JWT și le corelează cu politicile interne de autorizare (CanManageAssets, CanOpenTickets, CanManageUsers). Modificarea rolurilor prin interfața de administrare TEMS se propagă în Keycloak prin API-ul de admin, astfel încât toate sistemele din ecosistem recunosc aceleași drepturi de acces. Acest mecanism reduce riscul apariției conturilor cu permisiuni divergente între sisteme și simplifică auditarea centralizată a drepturilor de acces.
+
+Sistemul de audit: jurnale de modificări cu discriminare polimorfică
+
+Modulul ChangeLog menține trei colecții separate de audit (asset_change_logs, user_change_logs, location_change_logs), fiecare utilizând un model de stocare polimorfic bazat pe discriminatoarele BSON ale driverului MongoDB pentru .NET. Clasa de bază a fiecărei colecții este decorată cu atributul [BsonDiscriminator(RootClass = true)] și enumeră subtipurile cunoscute prin [BsonKnownTypes(...)]. MongoDB stochează automat un câmp _t (type discriminator) în fiecare document, ceea ce permite deserializarea corectă în subtipul corespunzător.
+
+Clasa de bază AssetChangeLogEntity conține câmpurile comune: Id, TenantId, Action (numele acțiunii), Description (descrierea în limbaj natural), Timestamp, PerformedByUserId, PerformedByUserName, AssetId și AssetTag. Subtipurile acoperă șapte tipuri de evenimente: AssetCreatedLogEntity (cu informații despre definiția creată și statusul inițial), AssetUpdatedLogEntity (cu o listă de FieldChangeEntity care conțin FieldName, OldValue și NewValue pentru fiecare câmp modificat), AssetDeletedLogEntity, AssetAssignedToUserLogEntity (cu user_id, user_name și opțional utilizatorul anterior), AssetUnassignedFromUserLogEntity, AssetAssignedToLocationLogEntity și AssetUnassignedFromLocationLogEntity. Similar, colecția user_change_logs conține cinci tipuri de evenimente (creare, ștergere, actualizare roluri, asignare activ, dezasignare activ), iar location_change_logs conține tot cinci tipuri (creare, actualizare, ștergere, asignare activ, dezasignare activ).
+
+Această abordare polimorfică oferă două avantaje majore față de un audit generic cu câmpuri opționale: (1) fiecare subtip conține exact câmpurile relevante pentru tipul de eveniment, fără câmpuri nule inutile; (2) interogările de audit pot fi filtrate eficient după tipul discriminatorului _t, fără a necesita inspecția conținutului documentului. În practică, auditorul organizației poate solicita „toate asignările de active din ultima lună" printr-o singură interogare pe discriminatorul AssetAssignedToUserLogEntity, obținând direct numele utilizatorului, identificatorul activului și timestamp-ul, fără procesare suplimentară.
+
+Strategia de indexare și multi-tenancy
+
+Deși MongoDB nu impune crearea explicită de indexuri pentru funcționare, platforma TEMS definește indexuri strategice în constructorii repository-urilor pentru optimizarea interogărilor frecvente. Colecția asset_properties are un index unic pe câmpul Name, care previne crearea de proprietăți tehnice duplicate. Colecția tickets are trei indexuri: un index simplu pe tenant_id (pentru filtrarea rapidă per tenant), un index unic compus pe tenant_id + human_readable_id (care garantează unicitatea codurilor umane în cadrul aceluiași tenant) și un index compus pe tenant_id + ticket_type_id (pentru filtrarea după tipul de tichet). Colecția ticket_conversations are un index unic pe ticket_id, care asigură relația 1:1 între tichet și conversație și optimizează operațiile de lookup.
+
+Multi-tenancy la nivel de baze de date este implementat prin câmpul tenant_id prezent în colecțiile de tichete, tipuri de tichete, locații și jurnale de audit. Modulul AssetManagement nu stochează tenant_id direct pe entitățile de active — separarea datelor în acest caz se realizează prin logica aplicativă și politicile de autorizare. Entitatea User utilizează o abordare diferită: câmpul TenantIds (listă de string-uri) permite apartenența la mai mulți tenanți, iar interogările filtrează cu operatorul AnyEq pentru a verifica dacă utilizatorul aparține tenantului curent. Middleware-ul TenantMiddleware extrage valoarea X-Tenant-Id din headerul fiecărui request HTTP și o face disponibilă prin serviciul ITenantContext, pe care repository-urile îl consumă pentru construirea filtrelor de interogare.
+
+Inițializarea datelor și mecanismul de bootstrap
+
+Pe lângă modelarea entităților, un rol critic l-a avut proiectarea mecanismelor de seed și bootstrap al datelor. Sistemul include servicii de seeding care populează date minime necesare pentru funcționarea inițială: proprietăți hardware standard (CPU, RAM, Storage, Operating System), tipuri de active (Computer, Laptop, Monitor, Printer, Network Equipment), definiții de echipamente frecvente și tipuri de tichete cu workflow-uri ITIL pre-configurate (Incident cu stările Open → In Progress → Resolved → Closed, Service Request cu aprobare, Change Request cu evaluare de risc). Această etapă simplifică adoptarea platformei în organizații noi, deoarece elimină configurația manuală excesivă din primele ore de utilizare. Totodată, seed-ul este controlat prin verificarea numărului de documente existente pentru a evita suprascrierea datelor operaționale deja existente — dacă colecția conține deja cel puțin un document, procesul de seeding este omis cu un mesaj informativ în log.
+
+Fragment de cod 3.3 – Inițializare date de bootstrap pentru active
+
+public async Task SeedAsync()
+{
+    var count = await _properties.CountDocumentsAsync(
+        FilterDefinition<AssetProperty>.Empty);
+    if (count > 0)
+    {
+        logger.LogInformation("Already seeded. Skipping.");
+        return;
+    }
+
+    var properties = new List<AssetProperty>
+    {
+        new() { PropertyId = "prop_cpu", Name = "CPU",
+                DataType = "string", Category = "Hardware" },
+        new() { PropertyId = "prop_ram", Name = "RAM",
+                DataType = "number", Category = "Hardware",
+                Unit = "GB" },
+        new() { PropertyId = "prop_storage", Name = "Storage",
+                DataType = "number", Category = "Hardware",
+                Unit = "GB" },
+        new() { PropertyId = "prop_os", Name = "Operating System",
+                DataType = "enum", Category = "Software",
+                EnumValues = ["Windows 11", "macOS Sonoma",
+                              "Ubuntu 22.04"] }
+    };
+
+    await _properties.InsertManyAsync(properties);
+}
+
+Modelul de date descris susține atât operațiunile zilnice (înregistrare active, deschidere tichete, mutare echipamente) cât și analiza pe termen lung (rapoarte de inventar, metrici SLA, audit complet al modificărilor). Combinația dintre documente încorporate pentru coerență și colecții separate pentru performanță reflectă un compromis deliberat între viteza de citire și consistența logică, adaptat cerințelor reale ale unei platforme de management tehnic.
+
+
+Figura 3.3 – Document asset vizualizat în MongoDB Compass
+
+
+3.3 Realizarea backendului și a contractelor API
+
+Punctele de acces către server au fost proiectate conform principiilor arhitecturii REST (Representational State Transfer), un model de comunicare în care fiecare resursă (activ, tichet, locație, utilizator) este adresabilă printr-un URI distinct, iar operațiile asupra resursei sunt exprimate exclusiv prin metodele standard HTTP: GET pentru citire, POST pentru creare, PUT pentru actualizare completă, DELETE pentru ștergere. Această aderare la convențiile REST aduce mai multe beneficii directe: predictibilitatea API-ului (orice dezvoltator familiarizat cu HTTP știe instinctiv că un GET pe /asset returnează lista activelor, iar un DELETE pe /asset/{id} șterge un activ specific), compatibilitatea nativă cu instrumente standard de testare și documentare (Swagger/OpenAPI, Postman, curl), și capacitatea de integrare cu sisteme terțe fără adaptori specializați.
+
+Backend-ul TEMS a fost realizat ca un host unificat care încarcă module independente și expune endpoint-uri prin biblioteca FastEndpoints. Spre deosebire de controller-ele ASP.NET clasice, FastEndpoints adoptă modelul REPR (Request-Endpoint-Response): fiecare endpoint este o clasă C# autonomă care declară ruta, metoda HTTP, politica de autorizare, tipul de cerere și tipul de răspuns. Această granularitate elimină controller-ele supraîncărcate cu zeci de metode și produce un cod modular în care fiecare operațiune API este localizată într-un singur fișier. Orchestrarea logicii de business se realizează prin MediatR, care implementează pattern-ul CQRS (Command Query Responsibility Segregation): comenzile (operații de scriere) și interogările (operații de citire) sunt gestionate separat, ceea ce permite optimizarea independentă a fluxurilor de scriere și citire.
+
+Fiecare cerere HTTP parcurge un pipeline deterministic cu etape succesive: (1) TenantMiddleware extrage headerul X-Tenant-Id și setează contextul tenantului curent; (2) middleware-ul de autentificare JWT validează token-ul Bearer și extrage identitatea utilizatorului; (3) middleware-ul de autorizare verifică dacă utilizatorul deține rolurile cerute de politica endpoint-ului; (4) FastEndpoints deserializează corpul cererii în obiectul de request tipizat; (5) MediatR rutează comanda către handler-ul corespunzător; (6) handler-ul execută regulile de business, invocă repository-ul și returnează răspunsul. Această secvențiere riguroasă asigură două proprietăți fundamentale: protecția datelor — nicio operație nu se execută fără validarea prealabilă a identității și a drepturilor de acces — și claritatea diagnosticului — orice eșec poate fi localizat la etapa specifică din pipeline.
+
+Contractele API au fost definite în proiectele de tip Contract, creând o interfață stabilă între frontend și backend. Modelele de cerere și răspuns (DTO — Data Transfer Objects) sunt clase C# simple, fără logică, care descriu exact structura datelor schimbate. Această practică face contractul explicit și verificabil la compilare: dacă backend-ul modifică un câmp din răspuns, proiectul frontend care consumă același Contract nu se va mai compila, semnalând incompatibilitatea înainte de runtime.
+
+Platforma expune un total de 62 de endpoint-uri FastEndpoints, distribuite pe cinci module funcționale, plus 6 endpoint-uri MVC în serviciul de identitate. În modulul AssetManagement sunt definite 23 de endpoint-uri care acoperă patru resurse REST: active (/asset), proprietăți tehnice (/asset-property), tipuri de active (/asset-type) și definiții de echipamente (/asset-definition). Fiecare resursă implementează setul complet de operații CRUD. De exemplu, pentru active, API-ul expune: POST /asset pentru crearea unui echipament nou, GET /asset pentru listarea paginată cu filtre (assetTypeIds, definitionIds, assetTag, locationId, includeArchived, pageNumber, pageSize), GET /asset/{id} pentru vizualizarea detaliată a unui activ, PUT /asset/{id} pentru actualizare, DELETE /asset/{id} pentru ștergere. Pe lângă operațiile CRUD standard, modulul include endpoint-uri specializate de asignare: PUT /asset/{id}/room pentru mutarea activului într-o cameră, PUT /asset/{id}/user pentru alocarea către un utilizator și DELETE /asset/{id}/user pentru eliberarea din asignare. Toate endpoint-urile din acest modul sunt protejate de politica CanManageAssets.
+
+Modulul TicketManagement expune 12 endpoint-uri pentru două resurse: tichete (/tickets) și tipuri de tichete (/ticket-types). Resursele de tichete includ endpoint-uri pentru mesagerie integrată: POST /tickets/{id}/messages pentru adăugarea unui mesaj în conversația tichetului și GET /tickets/{id}/messages pentru citirea istoricului de mesaje. Diferența semnificativă față de modulul de active este politica de autorizare granulară: crearea unui tichet necesită doar rolul CanOpenTickets (permis tuturor utilizatorilor care pot raporta incidente), în timp ce gestionarea tichetelor (listare, actualizare stare, ștergere) necesită rolul CanManageTickets (rezervat tehnicienilor și administratorilor). Această separare a fost deliberată și reflectă modelul ITIL în care reporterul este un actor diferit de agentul de suport.
+
+Modulul LocationManagement definește 17 endpoint-uri organizate ierarhic pe trei sub-resurse: /location/sites, /location/buildings și /location/rooms. Fiecare nivel al ierarhiei suportă operații CRUD complete. Endpoint-ul GET /location/buildings acceptă un parametru de query siteId pentru filtrarea clădirilor dintr-un anumit sediu, iar GET /location/rooms acceptă atât siteId cât și buildingId pentru o navigare ierarhică descendentă. Un endpoint deosebit este GET /location/rooms/{roomId}/assets, care returnează lista paginată a activelor din camera specificată — realizând o interogare cross-module prin care modulul de locații consultă datele modularului de active. Endpoint-ul GET /location/hierarchy returnează arborele complet al locațiilor (sedii → clădiri → camere) într-un singur apel, optimizat pentru popularea controalelor de selecție ierarhice din interfața utilizator.
+
+Modulul UserManagement expune 8 endpoint-uri: CRUD pentru utilizatori (/users), plus endpoint-uri specializate. GET /profile este singurul endpoint marcat AllowAnonymous — creează automat profilul utilizatorului la prima autentificare, extragând datele din claim-urile JWT. PUT /users/{id}/roles actualizează rolurile utilizatorului atât în baza de date locală, cât și în Keycloak prin API-ul de admin. GET /users/{userId}/assets returnează activele asignate, iar GET /users/{userId}/assets/count returnează doar numărul total — o optimizare care evită transferul de date inutile pentru afișarea badge-urilor numerice în interfață. DELETE /users/{id} include o verificare de siguranță: utilizatorul nu poate șterge propriul cont, prevenind situații de blocare administrativă.
+
+Modulul ChangeLog expune un singur endpoint: GET /changelog/{entityType}/{entityId}, cu parametri de paginare. Acest endpoint deservește timeline-ul de audit: clientul specifică tipul entității (Asset, User sau Location) și identificatorul, iar API-ul returnează lista cronologică a evenimentelor (creare, modificare, asignare, dezasignare, ștergere). Simplitatea acestui endpoint este deliberată — toată complexitatea se află în logica de publicare a evenimentelor, distribuită în handler-ele celorlalte module.
+
+Un aspect de implementare critic este tratarea explicită a erorilor semnificative de business prin coduri HTTP semantice. La crearea unui activ, sistemul verifică în mod obligatoriu unicitatea serial number și a asset tag-ului; la conflict, endpoint-ul returnează HTTP 409 Conflict cu un mesaj descriptiv. Similar, crearea unui tip de activ cu un nume deja existent produce 409, iar operațiile care referențiază entități inexistente returnează HTTP 404 Not Found. Ștergerea propriului cont de utilizator returnează HTTP 400 Bad Request cu explicația „Cannot delete your own account". Această abordare previne inconsistențele și oferă interfaței posibilitatea de a afișa mesaje de validare precise, diferențiate pe tipul de eroare. Codurile 2xx (200 OK, 201 Created) sunt folosite exclusiv pentru operații reușite, iar codurile 4xx sunt rezervate pentru erori cauzate de datele sau contextul clientului — niciodată pentru defecte de server.
+
+Regulile de procesare sunt implementate exclusiv în handler-ele MediatR, separate complet de stratul de transport al endpoint-urilor. Un handler de creare a activului, de exemplu, validează unicitatea identificatorilor, construiește snapshot-ul definiției, setează valorile implicite, salvează documentul prin repository și publică evenimentul de audit — fără a avea vreo cunoștință despre HTTP, rute sau serializare JSON. Această separare permite testarea unitară a logicii de business fără a porni serverul web și facilitează evoluția independentă a contractelor API față de regulile domeniului. Operațiile critice — crearea activului, transferul între locații, asignarea către utilizator, schimbarea rolurilor — au primit verificări suplimentare: la transferul unui activ, se verifică existența camerei destinație și se actualizează atât referința LocationId, cât și sub-documentul denormalizat Location; la schimbarea rolurilor, se sincronizează starea atât local cât și în Keycloak, iar în caz de eșec parțial, se raportează explicit câmpurile care nu au putut fi actualizate.
+
+Fragment de cod 3.4 – Endpoint CQRS pentru crearea unui activ
+
+public class CreateAssetEndpoint(IMediator mediator)
+    : Endpoint<CreateAssetCommand, CreateAssetResponse>
+{
+    public override void Configure()
+    {
+        Post("/asset");
+        Policies("CanManageAssets");
+    }
+
+    public override async Task HandleAsync(
+        CreateAssetCommand command, CancellationToken ct)
+    {
+        try
+        {
+            var response = await mediator.Send(command, ct);
+            await Send.OkAsync(response, cancellation: ct);
+        }
+        catch (InvalidOperationException ex)
+            when (ex.Message.Contains("already exists"))
+        {
+            ThrowError(ex.Message, 409);
+        }
+    }
+}
+
+Fragment de cod 3.5 – Repository cu filtre dinamice MongoDB
+
+public async Task<(List<Asset> Assets, int TotalCount)>
+    GetPagedAsync(
+    List<string>? assetTypeIds, bool includeArchived,
+    int pageNumber, int pageSize, string? assetTag,
+    CancellationToken ct)
+{
+    var filterBuilder = Builders<DbEntity.Asset>.Filter;
+    var filters = new List<FilterDefinition<DbEntity.Asset>>();
+
+    if (!includeArchived)
+        filters.Add(filterBuilder.Eq(
+            x => x.IsArchived, false));
+    if (assetTypeIds?.Count > 0)
+        filters.Add(filterBuilder.In(
+            "definition.asset_type_id", assetTypeIds));
+    if (!string.IsNullOrWhiteSpace(assetTag))
+        filters.Add(filterBuilder.Regex(x => x.AssetTag,
+            new BsonRegularExpression(assetTag, "i")));
+
+    var filter = filters.Count > 0
+        ? filterBuilder.And(filters)
+        : filterBuilder.Empty;
+
+    var total = await _collection
+        .CountDocumentsAsync(filter, ct: ct);
+    var skip = (pageNumber - 1) * pageSize;
+    var items = await _collection.Find(filter)
+        .SortBy(x => x.AssetTag)
+        .Skip(skip).Limit(pageSize)
+        .ToListAsync(ct);
+
+    return (items.Select(x => x.ToDomain()).ToList(),
+            (int)total);
+}
+
+La nivel de integrare cu frontend-ul, contractele sunt consumate prin servicii Angular dedicate (AssetService, TicketService, LocationService, UserService). Această mapare unu-la-unu între endpoint-uri și metode client a redus ambiguitatea și a permis verificări rapide în timpul debugging-ului. Fiecare serviciu Angular corespunde unui modul backend și expune metode tipizate cu aceleași nume de operații: getAll(), getById(), create(), update(), delete(). Parametrii de paginare și filtrare sunt transmisi ca query params prin HttpParams, iar răspunsurile sunt mapate direct pe interfețele TypeScript generate pe baza contractelor C#. Prin menținerea numelor de câmp coerente și a modelelor DTO consistente, s-a minimizat nevoia de transformări artificiale în client. Această simetrie structurală permite unui dezvoltator să navigheze de la un apel HTTP în Angular direct la endpoint-ul și handler-ul corespunzător din backend, fără ambiguitate.
+
+
+Figura 3.4 – Endpoint-urile API vizualizate în Swagger
+
+
+3.4 Realizarea autentificării și a profilului utilizatorului
+
+Autentificarea în TEMS este implementată pe baza standardelor OAuth 2.0 și OpenID Connect, cu Keycloak în rol de provider de identitate. În aplicația Angular, configurarea fluxului de autorizare se face central, incluzând issuer-ul, client-ul, redirect URI și scope-urile necesare (openid, profile, email, roles). Această abordare standardizată oferă interoperabilitate ridicată și reduce dependența de implementări proprietare. Prin folosirea token-urilor scurte și a refresh token-urilor, platforma păstrează sesiuni stabile fără a sacrifica securitatea.
+
+Un element tehnic important al implementării este monitorizarea ciclului de viață al token-ului în AuthService. Serviciul pornește un timer periodic care verifică expirarea token-ului și execută refresh înainte de timeout. Astfel, utilizatorul nu este deconectat abrupt în timpul operațiunilor curente. Dacă refresh-ul eșuează, sesiunea este invalidată controlat, iar interfața este readusă într-o stare consistentă de neautentificat. Acest comportament este esențial pentru aplicații business cu sesiuni lungi și interacțiuni continue.
+
+În backend, validarea token-ului este configurată prin JWT bearer middleware, iar mapping-ul de roluri este adaptat specificului Keycloak. Deoarece claim-urile de rol pot fi transmise ca array JSON, host-ul normalizează valorile pentru a asigura compatibilitatea cu politicile de autorizare (CanManageAssets, CanOpenTickets, CanManageUsers). Fără această etapă, ar exista situații în care token-ul este valid, dar rolurile nu sunt interpretate corect de framework, ceea ce ar produce blocaje false de acces.
+
+Profilul utilizatorului este tratat ca un flux sincronizat între provider-ul extern și baza locală. La prima autentificare sau la actualizări ulterioare, sistemul caută utilizatorul după identity provider id, keycloak id sau email și creează/actualizează profilul local. Prin acest mecanism, platforma rămâne aliniată la datele organizaționale fără a impune sincronizări manuale. În plus, existența profilului local permite legarea operațiunilor (alocări, tichete, audit) de o entitate internă stabilă.
+
+Fragment de cod 3.6 – Verificare și reînnoire token în Angular
+
+private checkAndRefreshToken(): void {
+  if (!this.oauthService.hasValidAccessToken()) {
+    this.refreshToken();
+    return;
+  }
+
+  const expiresAt = this.oauthService
+    .getAccessTokenExpiration();
+  if (!expiresAt) return;
+
+  const now = Date.now();
+  const expiresIn = (expiresAt - now) / 1000;
+
+  if (expiresIn < 60) {
+    this.refreshToken();
+  }
+}
+
+async refreshToken(): Promise<void> {
+  const refresh = this.oauthService.getRefreshToken();
+  if (!refresh) {
+    this.handleTokenRefreshError();
+    return;
+  }
+  await this.oauthService.refreshToken();
+}
+
+Fluxul de autentificare este completat de guard-uri frontend (AuthGuard, GuestGuard, guard-uri pe capabilități), care controlează accesul la rute înainte de încărcarea componentelor. Astfel, utilizatorii văd doar zonele compatibile cu rolurile deținute, iar suprafața de atac este redusă. În mod practic, un utilizator fără drepturi de management active nu poate accesa secțiunile de locații sau administrare, chiar dacă încearcă acces direct prin URL.
+
+
+Figura 3.5 – Pagina de autentificare a platformei
+
+Figura 3.6 – Panoul principal după autentificare
+
+
+3.5 Realizarea modulului de gestiune a activelor
+
+Modulul de active reprezintă nucleul operațional al TEMS și a fost implementat pentru a acoperi întregul flux de inventariere, clasificare, consultare și actualizare a echipamentelor. În interfața Angular, pagina de vizualizare active folosește AG Grid pentru performanță și interacțiuni complexe: selecție multiplă, sortare, filtrare, navigare către detalii și acțiuni contextuale. În backend, datele sunt servite paginat pentru a evita supraîncărcarea UI în organizații cu mii de înregistrări.
+
+Filtrarea este implementată pe două niveluri: server-side pentru criterii structurale (tip activ, definiție, asset tag) și client-side pentru interacțiuni locale de prezentare. În frontend, introducerea căutării text este debounced pentru a preveni apelurile excesive. Această combinație a adus un echilibru bun între reactivitatea interfeței și consumul de resurse API. În practică, operatorul poate găsi rapid un activ după tag sau poate restrânge dataset-ul pe familii hardware fără timpi morți vizibili.
+
+Crearea activelor este asistată de formulare validate și de selecția dependentă tip-definiție. Când utilizatorul alege un tip, lista de definiții se actualizează automat, iar datele tehnice relevante devin disponibile pentru context. Astfel, se reduce considerabil riscul de introducere greșită a echipamentelor în inventar. În plus, sistemul permite includerea opțională a informațiilor de achiziție, locație și note, oferind atât un flux minim rapid, cât și unul extins pentru documentare completă.
+
+În backend, handler-ul de creare verifică unicitatea identificatorilor și compune snapshot-ul de definiție în interiorul activului. Dacă activul este creat direct cu alocare, se emit notificări corespunzătoare pentru jurnalul de schimbări. Această implementare orientată pe evenimente a permis decuplarea logicii de inventar de cea de audit. În consecință, modulul de active rămâne simplu, iar trasabilitatea este asigurată de module dedicate care se abonează la notificări.
+
+Fragment de cod 3.7 – Încărcarea activelor cu filtre și paginare
+
+loadAssets() {
+  this.assetService.getAll(
+    this.selectedTypeIds.length
+      ? this.selectedTypeIds : undefined,
+    this.currentPage,
+    this.paginationPageSize,
+    this.selectedDefinitionIds.length
+      ? this.selectedDefinitionIds : undefined,
+    this.assetTagSearch?.trim() || undefined
+  ).subscribe({
+    next: (response) => {
+      this.rowData = response.assets;
+      this.totalCount = response.totalCount;
+      this.totalPages = response.totalPages;
+      this.currentPage = response.pageNumber;
+      if (this.gridApi)
+        this.gridApi.setGridOption(
+          'rowData', this.rowData);
+    }
+  });
+}
+
+În componenta de detaliu, activul este prezentat cu secțiuni distincte: date generale, specificații tehnice, informații de achiziție, alocări, loguri și tichete asociate. Această structură oferă tehnicienilor o vedere de tip „single source of truth" asupra stării reale a echipamentului. Din perspectiva operațională, timpul de investigare a incidentelor scade deoarece istoricul și contextul sunt accesibile imediat, fără comutare între sisteme separate.
+
+
+Figura 3.7 – Tabelul principal cu lista activelor
+
+Figura 3.8 – Formularul de creare a unui activ nou
+
+Figura 3.9 – Pagina de detaliu a unui echipament
+
+
+3.6 Realizarea modulului de locații și alocare spațială
+
+Modulul de locații a fost implementat pentru a rezolva una dintre cele mai frecvente probleme întâlnite în organizații: necorelarea între inventarul digital și distribuția fizică a echipamentelor. În TEMS, locațiile sunt modelate ierarhic pe trei niveluri (Site, Building, Room), iar componentele frontend permit filtrare graduală pe site, clădire și cameră. Prin această abordare, utilizatorii pot porni de la o imagine globală și ajunge rapid la o zonă fizică specifică, fără căutări manuale în registre separate.
+
+Interfața de vizualizare camere utilizează AG Grid cu selecție multiplă și filtre interactive. Pentru optimizarea experienței, căutarea după nume/număr de cameră este debounced, iar datele sunt încărcate contextual în funcție de site și building. Dacă există un singur site sau o singură clădire, sistemul poate auto-selecta opțiunea pentru a reduce numărul de pași necesari operatorului. Acest detaliu, deși simplu, crește productivitatea în organizațiile cu structură compactă.
+
+Procesul de creare cameră este tratat într-un dialog modal dedicat, cu validări de câmp și persistență imediată în backend. După salvare, lista este reîmprospătată automat pentru a reflecta noile date fără refresh manual de pagină. În mod similar, din listă se poate accesa un modal de detaliu rapid sau pagina completă de detaliu cameră, care include informații despre capacitate, suprafață, descriere și lista activelor asociate. Astfel, aplicația susține atât fluxuri scurte de consultare, cât și analiză extinsă atunci când este necesară.
+
+În backend, handler-ele de room folosesc tenant context și validează existența entităților înainte de modificări. Mai mult, la listare se îmbogățesc datele camerelor cu informații despre site/building și cu numărul de active asociate, obținut prin comandă inter-modulară. Această compoziție de date oferă UI-ului un payload complet pentru luarea deciziilor fără apeluri suplimentare costisitoare.
+
+Fragment de cod 3.8 – Filtrare locală a camerelor în Angular
+
+applyFilters() {
+  let filtered = [...this.rowData];
+
+  if (this.roomNameSearch.trim()) {
+    const search = this.roomNameSearch
+      .toLowerCase().trim();
+    filtered = filtered.filter(room =>
+      room.name.toLowerCase().includes(search) ||
+      (room.roomNumber &&
+       room.roomNumber.toLowerCase()
+         .includes(search))
+    );
+  }
+
+  this.filteredRowData = filtered;
+  this.updatePagination();
+}
+
+Modulul de locații devine deosebit de util în operațiuni de audit fizic, relocări interne și mentenanță planificată. Tehnicianul poate identifica instant camerele cu densitate mare de active, poate verifica istoricul mutărilor și poate corela incidentele recurente cu anumite zone. Astfel, TEMS nu mai funcționează doar ca inventar static, ci ca instrument decizional pentru optimizarea infrastructurii la nivel spațial.
+
+
+Figura 3.10 – Lista locațiilor cu filtre ierarhice
+
+Figura 3.11 – Detaliul unei camere cu activele asociate
+
+
+3.7 Realizarea modulului de ticketing și fluxului de suport
+
+Modulul de ticketing a fost dezvoltat pentru a integra solicitările de suport tehnic în aceeași platformă care gestionează activele. În locul unui canal separat de ticketing, TEMS permite legarea operațională între incident, context tehnic și responsabilitate materială. Această integrare reduce timpul de diagnostic, deoarece tehnicianul are acces simultan la istoricul activului, datele de utilizator și conversația de suport.
+
+În partea de UI, pagina de tichete este organizată pe AG Grid cu indicatori vizuali de prioritate (LOW, MEDIUM, HIGH, CRITICAL) și include acțiuni de preview, ștergere și navigare către detaliu complet. Crearea tichetului este realizată prin formular dinamic, unde câmpurile suplimentare sunt generate în funcție de tipul de tichet selectat. Astfel, aceeași interfață poate acoperi incidente hardware, cereri de schimbare, solicitări de acces sau alerte operaționale, fără hardcodare repetitivă.
+
+Tipurile de tichete sunt configurabile prin modulul dedicat „Ticket Types", care definește categoria ITIL, starea inițială și setul de atribute. Această flexibilitate este critică pentru adaptarea la procese diferite între organizații. De exemplu, o instituție poate impune atribut obligatoriu pentru cod inventar, în timp ce o companie privată poate cere impact de business și severitate contractuală. Platforma suportă ambele scenarii prin configurare, fără schimbare de cod.
+
+În backend, la crearea tichetului se generează un ID uman lizibil pe baza categoriei ITIL și a unui contor secvențial per tenant (de exemplu, INC-001, SR-015). Acest mecanism oferă trasabilitate operațională și facilitează comunicarea între echipe. În plus, pentru fiecare tichet se creează automat conversația asociată, eliminând stările parțiale în care tichetul există dar canalul de comunicare nu este inițializat.
+
+Fragment de cod 3.9 – Generare ID uman și creare tichet
+
+var ticketType = await _ticketTypeRepository
+    .GetByIdAsync(request.TicketTypeId, tenantId, ct);
+if (ticketType == null)
+    throw new KeyNotFoundException();
+
+var prefix = GetPrefixFromItilCategory(
+    ticketType.ItilCategory);
+var nextNumber = await _ticketRepository
+    .GetNextTicketNumberAsync(tenantId, prefix, ct);
+
+var ticket = new Ticket
+{
+    TicketId = Guid.NewGuid().ToString(),
+    TenantId = tenantId,
+    HumanReadableId = $"{prefix}-{nextNumber}",
+    Summary = request.Summary,
+    CurrentStateId = ticketType
+        .WorkflowConfig.InitialStateId,
+    Priority = request.Priority,
+    Attributes = ConvertAttributes(
+        request.Attributes),
+    CreatedAt = DateTime.UtcNow
+};
+
+await _ticketRepository.CreateAsync(ticket, ct);
+await _conversationRepository.CreateAsync(
+    new TicketConversation
+    {
+        TicketId = ticket.TicketId
+    }, ct);
+
+În detaliul tichetului, sistemul de mesagerie oferă o interfață de tip conversație cu două tab-uri distincte: mesaje externe și note interne. Această delimitare este esențială în suportul profesional: conversația cu utilizatorul final rămâne curată, iar echipa tehnică poate păstra observații interne despre diagnostic sau pași următori. Din perspectivă de guvernanță, această structură susține atât transparența față de solicitant, cât și calitatea colaborării între tehnicieni.
+
+Fragment de cod 3.10 – Adăugare mesaj în conversația tichetului
+
+public async Task<AddTicketMessageResponse> Handle(
+    AddTicketMessageCommand request,
+    CancellationToken ct)
+{
+    var message = new TicketMessage
+    {
+        SenderType = request.SenderType.ToUpper(),
+        SenderId = request.SenderId,
+        Timestamp = DateTime.UtcNow,
+        Content = request.Content,
+        IsInternalNote = request.IsInternalNote
+    };
+
+    var success = await _repository
+        .AddMessageAsync(
+            request.TicketId, message, ct);
+    return new AddTicketMessageResponse(success);
+}
+
+
+Figura 3.12 – Lista tichetelor cu indicatori de prioritate
+
+Figura 3.13 – Formularul de creare a unui tichet nou
+
+Figura 3.14 – Detaliul tichetului cu conversația de suport
+
+
+3.8 Realizarea modulului de administrare utilizatori și roluri
+
+Administrarea utilizatorilor a fost implementată cu accent pe controlul accesului și consistența dintre platformă și providerul de identitate. În interfață, secțiunea Administration, accesibilă doar utilizatorilor cu rol de administrator, expune operațiile de listare utilizatori, adăugare și actualizare roluri. În backend, endpoint-urile sunt protejate prin politica CanManageUsers, astfel încât doar persoanele autorizate pot modifica drepturile de acces.
+
+Procesul de actualizare roluri este unul critic, deoarece implică două sisteme: baza locală și Keycloak. Handler-ul dedicat identifică utilizatorul, obține setul curent de roluri din Keycloak, calculează diferențele (roluri de adăugat și de eliminat), aplică modificările, actualizează timestamp-ul local și emite notificare de audit. Prin această secvență, TEMS evită scenariile în care UI afișează un rol care nu este activ în identitatea reală a utilizatorului.
+
+Din perspectivă de fiabilitate, fluxul tratează explicit cazurile de eroare: utilizator inexistent, lipsă keycloak id, indisponibilitate provider extern. Mesajele de răspuns sunt clare și pot fi prezentate în UI fără interpretări ambigue. Această abordare reduce timpul de remediere în operațiuni de administrare și crește încrederea echipelor IT în platformă.
+
+În frontend, meniul lateral este construit dinamic pe baza capabilităților token-ului, ceea ce produce o experiență adaptată fiecărui rol. De exemplu, un utilizator fără drepturi administrative nu vede secțiunea de management utilizatori, eliminând confuzia și reducând suprafața de navigare inutilă. Acest design orientat pe rol simplifică onboarding-ul pentru personalul non-tehnic.
+
+Fragment de cod 3.11 – Sincronizare roluri cu Keycloak
+
+var currentRoles = await keycloakClient
+    .GetUserRolesAsync(user.KeycloakId);
+var currentRoleNames = currentRoles
+    .Select(r => r.Name)
+    .Where(n => !string.IsNullOrEmpty(n))
+    .ToList();
+
+var rolesToAdd = request.Roles
+    .Except(currentRoleNames).ToList();
+var rolesToRemove = currentRoleNames
+    .Except(request.Roles).ToList();
+
+if (rolesToRemove.Count > 0)
+    await keycloakClient
+        .RemoveRolesFromUserAsync(
+            user.KeycloakId, rolesToRemove);
+
+if (rolesToAdd.Count > 0)
+    await keycloakClient
+        .AssignRolesToUserAsync(
+            user.KeycloakId, rolesToAdd);
+
+user.UpdatedAt = DateTime.UtcNow;
+await userRepository.UpdateAsync(
+    user, cancellationToken);
+
+Acest modul contribuie direct la securitatea operațională a sistemului. Separarea strictă între roluri (deschidere tichete, administrare active, administrare utilizatori) asigură principiul „least privilege". În același timp, sincronizarea cu providerul central permite integrarea naturală în guvernanța de identitate deja existentă în organizație.
+
+
+Figura 3.15 – Panoul de administrare a utilizatorilor
+
+Figura 3.16 – Editarea rolurilor unui utilizator
+
+
+3.9 Realizarea jurnalului de audit și trasabilității
+
+Auditabilitatea a fost tratată ca o cerință structurală a platformei, nu ca o funcționalitate opțională adăugată ulterior. În TEMS, orice operațiune semnificativă asupra activelor, utilizatorilor și locațiilor generează evenimente de schimbare care sunt prelucrate de modulul ChangeLog. Această abordare event-driven permite separarea responsabilităților: modulele de business execută operația principală, iar infrastructura de audit construiește istoricul în paralel, fără a încărca excesiv fluxul principal.
+
+Pentru active, evenimentele acoperă creare, actualizare, asignare, dezasignare și ștergere logică. Pentru utilizatori, sunt jurnalizate în special modificările de roluri și acțiunile administrative sensibile. Pentru locații, logul reține operații de creare, modificare și eliminare. Fiecare intrare de audit păstrează date despre moment, actor, tipul acțiunii și elementele afectate, oferind o cronologie completă pentru investigații și raportare.
+
+În UI, traseul de audit este expus în paginile de detaliu ale activelor și utilizatorilor printr-o componentă dedicată de timeline vizual. Fiecare eveniment este afișat cronologic cu icoane distinctive pe tipuri de acțiuni, descriere textuală, referințe navigabile către entitățile implicate și, acolo unde este relevant, vizualizarea câmpurilor modificate (valoare veche → valoare nouă). Prin această vizibilitate, administratorii pot răspunde rapid la întrebări critice: cine a mutat un activ, când s-a schimbat rolul unui utilizator, ce operații au precedat un incident.
+
+Implementarea jurnalelor ca flux asincron prin MediatR pub/sub are două avantaje majore. În primul rând, reduce latența operațiilor principale, deoarece înregistrarea auditului poate fi procesată independent de răspunsul imediat către utilizator. În al doilea rând, permite extinderea facilă: același eveniment poate fi consumat ulterior și de module de analytics, notificări sau automatizări, fără modificarea codului sursă al operației inițiale.
+
+Fragment de cod 3.12 – Publicare eveniment de audit la asignare
+
+await publisher.Publish(
+    new AssetAssignedToUserNotification(
+        asset.Id,
+        asset.AssetTag,
+        request.UserId,
+        request.UserName,
+        previousUserId,
+        previousUserName,
+        null,
+        null
+    ), cancellationToken);
+
+La nivel de guvernanță, această trasabilitate oferă un avantaj strategic. Organizația poate demonstra ușor integritatea proceselor în fața auditorilor, poate reconstrui secvențe de acțiuni în caz de incident și poate identifica modele recurente de utilizare greșită sau ineficientă a resurselor. În acest fel, jurnalul de audit devine o sursă activă de îmbunătățire continuă.
+
+
+Figura 3.17 – Timeline-ul de audit pentru un activ
+
+
+3.10 Realizarea interfeței utilizator și a internaționalizării
+
+Interfața TEMS a fost realizată pentru a oferi echilibru între densitatea informațională necesară operațiunilor tehnice și claritatea vizuală necesară utilizatorilor non-tehnici. Designul este construit pe componente reutilizabile, pagini tematice și dialoguri contextuale, astfel încât acțiunile frecvente să fie accesibile în puțini pași. De exemplu, din listele principale se pot lansa acțiuni de creare, preview și navigare spre detaliu fără schimbări inutile de context.
+
+Tabloul de bord principal (Home) oferă o imagine de ansamblu imediată la autentificare: un mesaj de bun venit personalizat, carduri statistice cu numărul de active, tichete deschise și utilizatori, acțiuni rapide de navigare către modulele principale și un feed al activității recente. Această pagină de pornire elimină necesitatea navigării manuale pentru a evalua starea generală a sistemului și permite acces instant la cele mai frecvente operațiuni.
+
+Pentru afișarea volumelor mari de date, AG Grid este utilizat în modulele esențiale (active, locații, tichete, tipuri de tichete). Configurația grilelor include sortare, filtrare, redimensionare coloane și randare condiționată pentru stări critice (priorități mari, status-uri operaționale). Această alegere oferă performanță ridicată și reduce încărcarea cognitivă, deoarece utilizatorul poate personaliza rapid vizualizarea în funcție de sarcina curentă.
+
+Interacțiunile de formular sunt construite cu Reactive Forms și validări explicite. Câmpurile obligatorii, regulile de format și feedback-ul în caz de eroare sunt aplicate direct la nivel de componentă. În plus, pentru module cu metadata dinamică (de exemplu tipuri de tichete cu atribute custom), interfața poate genera câmpuri în mod dinamic prin Formly. Astfel, aplicația rămâne flexibilă fără a sacrifica controlul validărilor.
+
+Internaționalizarea este implementată prin @ngx-translate, cu fișiere de resurse pentru limbile română și engleză. Structura cheilor permite extinderea ulterioară către alte limbi fără modificări structurale ale componentelor. Din perspectivă organizațională, acest lucru este important pentru instituții cu echipe mixte sau colaborări externe, unde aceeași platformă trebuie să deservească utilizatori cu preferințe lingvistice diferite.
+
+Fragment de cod 3.13 – Configurarea sistemului de traduceri
+
+importProvidersFrom(
+  TranslateModule.forRoot({
+    defaultLanguage: 'en',
+    loader: {
+      provide: TranslateLoader,
+      useFactory: HttpLoaderFactory,
+      deps: [HttpClient]
+    }
+  })
+)
+
+Experiența vizuală include suport complet pentru modul întunecat (dark mode), implementat prin toggle în bara de navigare și clase Tailwind CSS condiționate. Platforma include, de asemenea, pagini dedicate pentru erori de acces/execuție (403, 404, 500), animații de tranziție și un spinner de încărcare personalizat cu branding-ul platformei. Prin această abordare, sistemul rămâne robust și în scenarii neprevăzute, iar utilizatorul primește informații utile, nu mesaje tehnice opace.
+
+
+Figura 3.18 – Tabloul de bord principal al platformei
+
+Figura 3.19 – Meniu lateral și navigare pe roluri
+
+Figura 3.20 – Interfața în modul întunecat (dark mode)
+
+Figura 3.21 – Profilul utilizatorului autentificat
+
+
+3.11 Testarea sistemului
+
+Testarea în TEMS a fost abordată pe mai multe niveluri: validare funcțională manuală pe module, verificare integrare frontend-backend și scenarii automatizate end-to-end prin Playwright. Strategia generală a urmărit nu doar confirmarea funcționării operațiilor individuale, ci mai ales verificarea fluxurilor complete de business, unde mai multe componente colaborează simultan. Acest tip de testare este critic într-un sistem modular, deoarece multe erori apar la intersecția dintre module, nu în interiorul unui singur serviciu.
+
+Suitele E2E existente acoperă în principal zona de ticketing: încărcarea paginilor, listarea datelor, creare entități, validări de formular și operații de ștergere. Chiar dacă unele scenarii sunt marcate cu fallback pentru funcționalități aflate încă în evoluție, testele oferă deja o bază solidă pentru regresie automată. Ele verifică atât comportamentul UI, cât și starea reală din backend prin apeluri API directe. Această combinație este importantă, deoarece un flux poate părea corect vizual, dar să nu persiste corect datele.
+
+În testarea manuală, accentul a fost pus pe scenariile operaționale de zi cu zi: înregistrare activ, filtrare inventar, creare cameră, asignare echipament, deschidere tichet, răspuns în conversație, actualizare roluri utilizator. Pentru fiecare scenariu s-au urmărit criterii de acceptare clare: timp de răspuns, calitatea mesajelor de validare, consistența datelor afișate după refresh și comportamentul în condiții de eroare (de exemplu input invalid, lipsă drepturi, resursă inexistentă).
+
+Un punct forte al testării a fost validarea politicilor de acces pe roluri. S-au verificat explicit cazurile în care un utilizator fără permisiuni încearcă acces direct la rute administrative sau la endpoint-uri protejate. Sistemul a răspuns conform așteptărilor, blocând accesul și menținând integritatea datelor. Acest rezultat confirmă corectitudinea integrării dintre token claims, guard-uri frontend și authorization policies backend.
+
+Fragment de cod 3.14 – Test E2E pentru modulul de tichete
+
+test('should load tickets page successfully',
+  async ({ page }) => {
+  await page.goto('/technical-support/tickets');
+  await page.waitForLoadState('networkidle');
+
+  await expect(page.locator('h1'))
+    .toContainText('Tickets');
+  const createBtn = page.locator(
+    'button:has-text("Add Ticket"), ' +
+    'button:has-text("Create Ticket")'
+  ).first();
+  await expect(createBtn).toBeVisible();
+  await expect(
+    page.locator('.ag-theme-quartz')
+  ).toBeVisible();
+});
+
+În etapa de consolidare, rezultatele testelor au fost utilizate pentru ajustări iterative ale fluxurilor UI și mesajelor de eroare. De exemplu, acolo unde utilizatorul primea feedback generic, au fost introduse mesaje mai explicite, iar în zonele cu încărcări repetitive s-au optimizat apelurile prin cache de stare în serviciile dedicate. În ansamblu, strategia de testare a contribuit la maturizarea platformei și la reducerea riscului de defecte în scenarii reale de producție.
+
+
+Figura 3.22 – Rezultatele testelor E2E Playwright
+
+3.17 Realizarea testării funcționale
+
+Testarea funcțională a fost extinsă de la scenarii strict de ticketing către fluxuri reprezentative pentru modulele critice ale platformei: active, locații, tichete și administrare utilizatori/roluri. Obiectivul a fost validarea traseelor complete de utilizare și a comportamentului aplicației în condiții reale de integrare frontend-backend, nu doar validarea unor funcții izolate.
+
+În implementarea actuală, suita Playwright include:
+- scenarii detaliate pentru managementul tichetelor și tipurilor de tichete;
+- o suită smoke cross-module (`e2e/smoke/core-modules.spec.ts`) care verifică încărcarea rutelor principale (`/assets/view`, `/locations/view`, `/administration/users`, `/technical-support/*`) și validarea endpoint-urilor asociate;
+- validări de comportament pentru acces protejat pe roluri, unde răspunsurile `200`, `401` și `403` sunt tratate explicit ca rezultate funcționale valide, în funcție de contextul de autentificare/autorizare.
+
+Pentru vizibilitate și trasabilitate, raportarea testelor este standardizată în trei formate:
+- raport HTML Playwright (navigabil);
+- raport JSON (`test-results/results.json`) pentru procesare automată;
+- raport JUnit XML (`test-results/results.xml`) pentru integrare CI/CD.
+
+Peste aceste rapoarte brute este generat un dashboard tehnic în format Markdown (`test-results/dashboard.md`) prin comanda:
+`npm run e2e:dashboard`
+
+Dashboard-ul centralizează indicatori cheie: număr total de teste, procent de succes, distribuție pe fișiere de test, durată cumulată și lista testelor eșuate. Astfel, rezultatele testării pot fi prezentate atât în mod narativ (capitol), cât și prin dovezi execuționale reproducibile.
+
+[PLACEHOLDER CAPTURĂ ECRAN]
+Figura 3.18 – Rezultate testare funcțională (Playwright Report + Dashboard)
+Sugestie captură: fereastra HTML report și sumarul `test-results/dashboard.md`.

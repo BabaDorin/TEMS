@@ -1,0 +1,658 @@
+ANEXA A
+Serviciul de autentificare din interfața utilizator (fragment extins)
+
+import { Injectable, OnDestroy } from '@angular/core';
+import { Router } from '@angular/router';
+import { OAuthService, OAuthEvent } from 'angular-oauth2-oidc';
+import { authCodeFlowConfig } from '../app.config';
+import { BehaviorSubject, Observable, Subscription, filter, distinctUntilChanged, interval } from 'rxjs';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class AuthService implements OnDestroy {
+  private isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
+  public isAuthenticated$: Observable<boolean> = this.isAuthenticatedSubject.asObservable().pipe(
+    distinctUntilChanged()
+  );
+
+  private tokenRefreshSubscription?: Subscription;
+  private readonly TOKEN_REFRESH_CHECK_INTERVAL = 30000;
+  private readonly TOKEN_REFRESH_THRESHOLD = 60;
+
+  constructor(
+    private oauthService: OAuthService,
+    private router: Router
+  ) {
+    this.configure();
+  }
+
+  ngOnDestroy(): void {
+    this.stopTokenRefreshTimer();
+  }
+
+  private configure() {
+    this.oauthService.configure(authCodeFlowConfig);
+
+    const initialAuthState = this.oauthService.hasValidAccessToken();
+    this.isAuthenticatedSubject.next(initialAuthState);
+
+    this.oauthService.events.pipe(
+      filter((event: OAuthEvent) => {
+        const meaningfulEvents = [
+          'token_received',
+          'token_refreshed',
+          'token_expires',
+          'token_error',
+          'logout',
+          'session_terminated',
+          'session_error',
+          'silently_refreshed',
+          'token_refresh_error'
+        ];
+        return meaningfulEvents.includes(event.type);
+      })
+    ).subscribe((event: OAuthEvent) => {
+      if (event.type === 'token_refreshed' || event.type === 'silently_refreshed') {
+        this.isAuthenticatedSubject.next(true);
+      } else if (event.type === 'token_refresh_error') {
+        this.handleTokenRefreshError();
+      } else {
+        const hasValidToken = this.oauthService.hasValidAccessToken();
+        this.isAuthenticatedSubject.next(hasValidToken);
+      }
+    });
+
+    this.oauthService.loadDiscoveryDocumentAndTryLogin().then(() => {
+      const hasValidToken = this.oauthService.hasValidAccessToken();
+      this.isAuthenticatedSubject.next(hasValidToken);
+
+      if (hasValidToken) {
+        this.startTokenRefreshTimer();
+      }
+    });
+  }
+
+  private startTokenRefreshTimer(): void {
+    this.stopTokenRefreshTimer();
+    this.tokenRefreshSubscription = interval(this.TOKEN_REFRESH_CHECK_INTERVAL).subscribe(() => {
+      this.checkAndRefreshToken();
+    });
+    this.checkAndRefreshToken();
+  }
+
+  private stopTokenRefreshTimer(): void {
+    if (this.tokenRefreshSubscription) {
+      this.tokenRefreshSubscription.unsubscribe();
+      this.tokenRefreshSubscription = undefined;
+    }
+  }
+
+  private checkAndRefreshToken(): void {
+    if (!this.oauthService.hasValidAccessToken()) {
+      this.refreshToken();
+      return;
+    }
+
+    const expiresAt = this.oauthService.getAccessTokenExpiration();
+    if (!expiresAt) {
+      return;
+    }
+
+    const now = Date.now();
+    const expiresIn = (expiresAt - now) / 1000;
+
+    if (expiresIn < this.TOKEN_REFRESH_THRESHOLD) {
+      this.refreshToken();
+    }
+  }
+
+  private async refreshToken(): Promise<void> {
+    try {
+      const refreshToken = this.oauthService.getRefreshToken();
+
+      if (!refreshToken) {
+        this.handleTokenRefreshError();
+        return;
+      }
+
+      await this.oauthService.refreshToken();
+      this.isAuthenticatedSubject.next(true);
+    } catch (error) {
+      this.handleTokenRefreshError();
+    }
+  }
+
+  private handleTokenRefreshError(): void {
+    this.stopTokenRefreshTimer();
+    this.isAuthenticatedSubject.next(false);
+  }
+
+  logIn() {
+    this.oauthService.initCodeFlow('', { kc_idp_hint: 'duende-idp' });
+  }
+
+  signOut(): void {
+    this.stopTokenRefreshTimer();
+    this.oauthService.logOut();
+    localStorage.clear();
+    sessionStorage.clear();
+    this.isAuthenticatedSubject.next(false);
+    window.location.href = '/home';
+  }
+
+  isLoggedIn(): boolean {
+    return this.oauthService.hasValidAccessToken();
+  }
+
+  getAccessToken(): string {
+    return this.oauthService.getAccessToken();
+  }
+
+  getRefreshToken(): string {
+    return this.oauthService.getRefreshToken();
+  }
+
+  getTokenExpiration(): number | null {
+    return this.oauthService.getAccessTokenExpiration();
+  }
+
+  getIdentityClaims(): any {
+    return this.oauthService.getIdentityClaims();
+  }
+
+  getUserName(): string {
+    const claims = this.getIdentityClaims();
+    if (claims) {
+      return claims.name || claims.preferred_username || claims.email || 'User';
+    }
+    return '';
+  }
+
+  notifyLoginComplete(): void {
+    const hasValidToken = this.oauthService.hasValidAccessToken();
+    if (hasValidToken) {
+      this.isAuthenticatedSubject.next(true);
+      this.startTokenRefreshTimer();
+    }
+  }
+
+  async forceTokenRefresh(): Promise<boolean> {
+    try {
+      await this.oauthService.refreshToken();
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }
+}
+
+
+ANEXA B
+Pagina de tichete din interfață (fragment extins)
+
+import { Component, OnInit, effect } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
+import { FormBuilder, FormGroup, ReactiveFormsModule, FormsModule, Validators } from '@angular/forms';
+import { AgGridAngular } from 'ag-grid-angular';
+import { ColDef, GridApi, GridReadyEvent } from 'ag-grid-community';
+import { TicketService } from 'src/app/services/ticket.service';
+import { TicketTypeService } from 'src/app/services/ticket-type.service';
+import { ThemeService } from 'src/app/services/theme.service';
+import { Ticket, CreateTicketRequest } from 'src/app/models/ticket/ticket.model';
+import { TicketType } from 'src/app/models/ticket/ticket-type.model';
+import { TicketManagementStateService } from 'src/app/state/ticket-management.state';
+
+@Component({
+  selector: 'app-view-tickets',
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, AgGridAngular],
+  templateUrl: './view-tickets.component.html',
+  styleUrls: ['./view-tickets.component.scss']
+})
+export class ViewTicketsComponent implements OnInit {
+  rowData: Ticket[] = [];
+  ticketTypes: TicketType[] = [];
+  selectedTicketType: TicketType | null = null;
+  dynamicAttributeValues: { [key: string]: any } = {};
+  gridApi!: GridApi;
+  showCreateModal = false;
+  showPreviewModal = false;
+  selectedTicket: Ticket | null = null;
+  previewTicketType: TicketType | null = null;
+  createForm!: FormGroup;
+  isSubmitting = false;
+  gridReady = false;
+
+  priorities = [
+    { label: 'Low', value: 'LOW' },
+    { label: 'Medium', value: 'MEDIUM' },
+    { label: 'High', value: 'HIGH' },
+    { label: 'Critical', value: 'CRITICAL' }
+  ];
+
+  columnDefs: ColDef[] = [
+    { headerName: 'ID', field: 'humanReadableId', flex: 1, minWidth: 120, cellClass: 'font-medium' },
+    { headerName: 'Summary', field: 'summary', flex: 3, minWidth: 250 },
+    {
+      headerName: 'Priority',
+      field: 'priority',
+      flex: 1,
+      minWidth: 100,
+      cellRenderer: (params: any) => {
+        const priority = params.value;
+        let className = 'text-gray-600';
+        if (priority === 'CRITICAL') className = 'text-red-600 font-semibold';
+        else if (priority === 'HIGH') className = 'text-orange-600 font-semibold';
+        else if (priority === 'MEDIUM') className = 'text-yellow-600';
+        return `<span class="${className}">${priority}</span>`;
+      }
+    },
+    { headerName: 'State', field: 'currentStateId', flex: 1, minWidth: 120 },
+    { headerName: 'Channel', field: 'reporter.channelSource', flex: 1, minWidth: 100 },
+    {
+      headerName: 'Created',
+      field: 'auditMetadata.createdAt',
+      flex: 1,
+      minWidth: 150,
+      valueFormatter: (params) => {
+        if (!params.value) return '';
+        return new Date(params.value).toLocaleDateString();
+      }
+    }
+  ];
+
+  defaultColDef: ColDef = { sortable: true, filter: true, resizable: true, flex: 1 };
+
+  get gridThemeClass(): string {
+    return this.themeService.isDarkMode ? 'ag-theme-quartz-dark' : 'ag-theme-quartz';
+  }
+
+  constructor(
+    private ticketService: TicketService,
+    private ticketTypeService: TicketTypeService,
+    private stateService: TicketManagementStateService,
+    private fb: FormBuilder,
+    private router: Router,
+    private themeService: ThemeService
+  ) {
+    this.initializeForms();
+
+    effect(() => {
+      const tickets = this.stateService.tickets();
+      this.rowData = tickets || [];
+      if (this.gridApi) {
+        this.gridApi.sizeColumnsToFit();
+        if (this.rowData.length === 0) this.gridApi.showNoRowsOverlay();
+      }
+    });
+
+    effect(() => {
+      const ticketTypes = this.stateService.ticketTypes();
+      this.ticketTypes = ticketTypes?.filter(t => t.isActive !== false) || [];
+    });
+  }
+
+  ngOnInit(): void {
+    this.loadTickets();
+    this.loadTicketTypes();
+  }
+
+  initializeForms(): void {
+    this.createForm = this.fb.group({
+      ticketTypeId: ['', Validators.required],
+      summary: ['', Validators.required],
+      priority: ['MEDIUM', Validators.required],
+      channelSource: ['WEB', Validators.required]
+    });
+  }
+
+  loadTickets(): void {
+    this.ticketService.getAll().subscribe();
+  }
+
+  loadTicketTypes(): void {
+    this.ticketTypeService.getAll().subscribe();
+  }
+
+  onGridReady(params: GridReadyEvent): void {
+    this.gridApi = params.api;
+    this.gridReady = true;
+    this.gridApi.sizeColumnsToFit();
+    if (!this.rowData || this.rowData.length === 0) this.gridApi.showNoRowsOverlay();
+  }
+
+  openCreateModal(): void {
+    this.showCreateModal = true;
+    this.createForm.reset({ priority: 'MEDIUM', channelSource: 'WEB' });
+    this.selectedTicketType = null;
+    this.dynamicAttributeValues = {};
+    if (this.ticketTypes.length === 0) this.loadTicketTypes();
+  }
+
+  closeCreateModal(): void {
+    this.showCreateModal = false;
+    this.createForm.reset();
+    this.selectedTicketType = null;
+    this.dynamicAttributeValues = {};
+  }
+
+  onTicketTypeChange(ticketTypeId: string): void {
+    this.selectedTicketType = this.ticketTypes.find(tt => tt.ticketTypeId === ticketTypeId) || null;
+    this.dynamicAttributeValues = {};
+    if (this.selectedTicketType?.attributeDefinitions) {
+      this.selectedTicketType.attributeDefinitions.forEach(attr => {
+        this.dynamicAttributeValues[attr.key] = attr.dataType === 'BOOL' ? false : '';
+      });
+    }
+  }
+
+  onSubmit(): void {
+    if (this.createForm.invalid || this.isSubmitting) return;
+    this.isSubmitting = true;
+    const formValue = this.createForm.value;
+
+    const request: CreateTicketRequest = {
+      ticketTypeId: formValue.ticketTypeId,
+      summary: formValue.summary,
+      priority: formValue.priority,
+      reporter: { userId: 'current-user-id', channelSource: formValue.channelSource },
+      attributes: this.dynamicAttributeValues
+    };
+
+    this.ticketService.create(request).subscribe({
+      next: () => {
+        this.ticketService.getAll(true).subscribe();
+        this.closeCreateModal();
+        this.isSubmitting = false;
+      },
+      error: () => {
+        this.isSubmitting = false;
+      }
+    });
+  }
+}
+
+
+ANEXA C
+Handler de creare activ în backend (fragment extins)
+
+using AssetManagement.Contract.DTOs;
+using AssetManagement.Application.Domain;
+using AssetManagement.Application.Interfaces;
+using AssetManagement.Contract.Commands;
+using AssetManagement.Contract.Responses;
+using MediatR;
+using System.Text.Json;
+using Tems.Common.Notifications;
+
+namespace AssetManagement.Application.Commands;
+
+public class CreateAssetCommandHandler(
+    IAssetRepository assetRepository,
+    IAssetDefinitionRepository assetDefinitionRepository,
+    IPublisher publisher)
+    : IRequestHandler<CreateAssetCommand, CreateAssetResponse>
+{
+    public async Task<CreateAssetResponse> Handle(CreateAssetCommand request, CancellationToken cancellationToken)
+    {
+        var existingAsset = await assetRepository.GetBySerialNumberOrTagAsync(
+            request.SerialNumber,
+            request.AssetTag,
+            cancellationToken
+        );
+
+        if (existingAsset != null)
+        {
+            throw new InvalidOperationException("An asset with this Serial Number or TEMS ID already exists.");
+        }
+
+        var definition = await assetDefinitionRepository.GetByIdAsync(request.DefinitionId, cancellationToken);
+        if (definition == null)
+        {
+            throw new InvalidOperationException($"AssetDefinition with ID {request.DefinitionId} not found");
+        }
+
+        var specifications = request.CustomizeDefinition && request.CustomSpecifications != null
+            ? request.CustomSpecifications.Select(s => new AssetSpecification
+            {
+                PropertyId = s.PropertyId,
+                Name = s.Name,
+                Value = ConvertJsonElementToValue(s.Value),
+                DataType = s.DataType,
+                Unit = s.Unit
+            }).ToList()
+            : definition.Specifications;
+
+        var domainEntity = new Asset
+        {
+            Id = Guid.NewGuid().ToString(),
+            SerialNumber = request.SerialNumber,
+            AssetTag = request.AssetTag,
+            Status = request.Status,
+            Definition = new AssetDefinitionSnapshot
+            {
+                DefinitionId = request.DefinitionId,
+                IsCustomized = request.CustomizeDefinition,
+                SnapshotAt = DateTime.UtcNow,
+                Name = request.DefinitionName,
+                AssetTypeId = request.AssetTypeId,
+                AssetTypeName = request.AssetTypeName,
+                Manufacturer = request.Manufacturer,
+                Model = request.Model,
+                Specifications = specifications
+            },
+            PurchaseInfo = request.PurchaseInfo != null ? new PurchaseInfo
+            {
+                PurchaseDate = request.PurchaseInfo.PurchaseDate,
+                PurchasePrice = request.PurchaseInfo.PurchasePrice,
+                Currency = request.PurchaseInfo.Currency,
+                Vendor = request.PurchaseInfo.Vendor,
+                WarrantyExpiry = request.PurchaseInfo.WarrantyExpiry
+            } : null,
+            Location = request.Location != null ? new AssetLocation
+            {
+                Building = request.Location.Building,
+                Room = request.Location.Room,
+                Desk = request.Location.Desk
+            } : null,
+            Assignment = request.Assignment != null ? new AssetAssignment
+            {
+                AssignedToUserId = request.Assignment.AssignedToUserId,
+                AssignedToName = request.Assignment.AssignedToName,
+                AssignedAt = request.Assignment.AssignedAt,
+                AssignmentType = request.Assignment.AssignmentType
+            } : null,
+            ParentAssetId = request.ParentAssetId,
+            ChildAssetIds = request.ChildAssetIds,
+            Notes = request.Notes,
+            MaintenanceHistory = [],
+            CreatedBy = request.CreatedBy,
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow,
+            IsArchived = false
+        };
+
+        await assetRepository.CreateAsync(domainEntity, cancellationToken);
+        await assetDefinitionRepository.IncrementUsageCountAsync(definition.Id, cancellationToken);
+
+        await publisher.Publish(new AssetCreatedNotification(
+            domainEntity.Id,
+            domainEntity.AssetTag,
+            request.DefinitionName,
+            request.AssetTypeName,
+            request.Status,
+            request.CreatedBy,
+            null
+        ), cancellationToken);
+
+        if (request.Assignment?.AssignedToUserId != null)
+        {
+            await publisher.Publish(new AssetAssignedToUserNotification(
+                domainEntity.Id,
+                domainEntity.AssetTag,
+                request.Assignment.AssignedToUserId,
+                request.Assignment.AssignedToName,
+                null,
+                null,
+                request.CreatedBy,
+                null
+            ), cancellationToken);
+        }
+
+        return new CreateAssetResponse(domainEntity.Id);
+    }
+
+    private static object ConvertJsonElementToValue(object value)
+    {
+        if (value is not JsonElement jsonElement)
+            return value;
+
+        return jsonElement.ValueKind switch
+        {
+            JsonValueKind.String => jsonElement.GetString() ?? string.Empty,
+            JsonValueKind.Number => jsonElement.TryGetInt32(out var intValue)
+                ? intValue
+                : jsonElement.TryGetInt64(out var longValue)
+                    ? longValue
+                    : jsonElement.GetDouble(),
+            JsonValueKind.True => true,
+            JsonValueKind.False => false,
+            JsonValueKind.Null => string.Empty,
+            _ => jsonElement.GetRawText()
+        };
+    }
+}
+
+
+ANEXA D
+Handler pentru camere și ierarhie de locații (fragment extins)
+
+using LocationManagement.Contract.DTOs;
+using LocationManagement.Application.Domain;
+using LocationManagement.Application.Interfaces;
+using LocationManagement.Contract.Commands;
+using LocationManagement.Contract.Responses;
+using MediatR;
+using Tems.Common.Notifications;
+using Tems.Common.Tenant;
+
+namespace LocationManagement.Application.Commands;
+
+public class CreateRoomCommandHandler(IRoomRepository roomRepository, ITenantContext tenantContext, IPublisher publisher)
+    : IRequestHandler<CreateRoomCommand, CreateRoomResponse>
+{
+    public async Task<CreateRoomResponse> Handle(CreateRoomCommand request, CancellationToken cancellationToken)
+    {
+        var tenantId = tenantContext.TenantId ?? throw new InvalidOperationException("Tenant context is required");
+
+        var roomType = Enum.Parse<RoomType>(request.Type, true);
+        var roomStatus = Enum.Parse<RoomStatus>(request.Status, true);
+
+        var domainEntity = new Room
+        {
+            Id = Guid.NewGuid().ToString(),
+            BuildingId = request.BuildingId,
+            Name = request.Name.Trim(),
+            RoomNumber = request.RoomNumber,
+            FloorLabel = request.FloorLabel,
+            Type = roomType,
+            Capacity = request.Capacity,
+            Area = request.Area,
+            Status = roomStatus,
+            Description = request.Description,
+            TenantId = tenantId,
+            CreatedBy = request.CreatedBy,
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow
+        };
+
+        await roomRepository.CreateAsync(domainEntity, cancellationToken);
+
+        await publisher.Publish(new LocationCreatedNotification(
+            domainEntity.Id,
+            domainEntity.Name,
+            "Room",
+            request.BuildingId,
+            null,
+            request.CreatedBy,
+            null
+        ), cancellationToken);
+
+        var dto = new RoomDto(
+            domainEntity.Id,
+            domainEntity.BuildingId,
+            domainEntity.Name,
+            domainEntity.RoomNumber,
+            domainEntity.FloorLabel,
+            domainEntity.Type.ToString(),
+            domainEntity.Capacity,
+            domainEntity.Area,
+            domainEntity.Status.ToString(),
+            domainEntity.Description,
+            domainEntity.TenantId,
+            domainEntity.CreatedAt,
+            domainEntity.UpdatedAt,
+            null,
+            null,
+            null
+        );
+
+        return new CreateRoomResponse(true, "Room created successfully", dto);
+    }
+}
+
+public class GetAllRoomsCommandHandler(
+    IRoomRepository roomRepository,
+    IBuildingRepository buildingRepository,
+    ISiteRepository siteRepository,
+    ITenantContext tenantContext,
+    IMediator mediator)
+    : IRequestHandler<GetAllRoomsCommand, GetAllRoomsResponse>
+{
+    public async Task<GetAllRoomsResponse> Handle(GetAllRoomsCommand request, CancellationToken cancellationToken)
+    {
+        var tenantId = tenantContext.TenantId ?? throw new InvalidOperationException("Tenant context is required");
+        var rooms = await roomRepository.GetAllAsync(tenantId, request.SiteId, request.BuildingId, cancellationToken);
+
+        var buildings = await buildingRepository.GetAllAsync(tenantId, request.SiteId, cancellationToken);
+        var sites = await siteRepository.GetAllAsync(tenantId, cancellationToken);
+
+        var roomIds = rooms.Select(r => r.Id).ToList();
+        var assetCountsResponse = await mediator.Send(
+            new AssetManagement.Contract.Commands.GetAssetCountsByLocationsCommand(roomIds),
+            cancellationToken
+        );
+        var assetCounts = assetCountsResponse.Data;
+
+        var roomDtos = rooms.Select(r =>
+        {
+            var building = buildings.FirstOrDefault(b => b.Id == r.BuildingId);
+            var site = building != null ? sites.FirstOrDefault(s => s.Id == building.SiteId) : null;
+            assetCounts.TryGetValue(r.Id, out var roomAssetCounts);
+
+            return new RoomDto(
+                r.Id,
+                r.BuildingId,
+                r.Name,
+                r.RoomNumber,
+                r.FloorLabel,
+                r.Type.ToString(),
+                r.Capacity,
+                r.Area,
+                r.Status.ToString(),
+                r.Description,
+                r.TenantId,
+                r.CreatedAt,
+                r.UpdatedAt,
+                site?.Name,
+                site?.Id,
+                building?.Name,
+                roomAssetCounts
+            );
+        }).ToList();
+
+        return new GetAllRoomsResponse(true, null, roomDtos);
+    }
+}

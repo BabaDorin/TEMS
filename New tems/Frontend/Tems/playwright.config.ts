@@ -23,7 +23,8 @@ export default defineConfig({
   reporter: [
     ['html'],
     ['list'],
-    ['json', { outputFile: 'test-results/results.json' }]
+    ['json', { outputFile: 'test-results/results.json' }],
+    ['junit', { outputFile: 'test-results/results.xml' }]
   ],
   
   // Shared settings for all the projects below

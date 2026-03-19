@@ -58,20 +58,10 @@ export class SidebarComponent implements OnInit {
   }
 
   closePreviousSubmenu(clickedNavItem: RouteInfo){
-    let toBeSet = false;
-
-    if(clickedNavItem.showSubmenu != undefined)
-      toBeSet = !clickedNavItem.showSubmenu;
-
-    this.menuService.ROUTES.forEach(q => {
-      q.showSubmenu = false;
-      q.isActive = false;
-      q.submenu.forEach(q => q.isActive = false)
-    });
-
-    if(clickedNavItem.submenu != undefined){
-      clickedNavItem.showSubmenu = toBeSet;
-      clickedNavItem.isActive = toBeSet;
+    if(clickedNavItem.submenu != undefined && clickedNavItem.submenu.length > 0){
+      // Toggle only the clicked section so multiple sections can remain expanded.
+      clickedNavItem.showSubmenu = !clickedNavItem.showSubmenu;
+      clickedNavItem.isActive = clickedNavItem.showSubmenu;
       return;
     }
 

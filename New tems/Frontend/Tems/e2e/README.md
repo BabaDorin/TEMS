@@ -17,7 +17,7 @@ e2e/
 ├── fixtures/           # Test fixtures and custom test setup
 ├── helpers/           # Utility functions and configuration
 ├── ticket-management/ # Ticket management feature tests
-├── equipment-management/ # Equipment management feature tests
+├── smoke/             # Cross-module smoke coverage (assets/locations/users/roles)
 └── README.md
 ```
 
@@ -25,7 +25,7 @@ e2e/
 
 1. **Backend must be running** on `http://localhost:5158`
 2. **Identity Server must be running** on `http://localhost:5001`
-3. **Frontend dev server** will start automatically at `http://localhost:4200`
+3. **Frontend dev server** must run at `http://localhost:4200`
 
 ## Running Tests
 
@@ -62,12 +62,26 @@ npm run e2e:ticket-types
 
 # Tickets tests only
 npm run e2e:tickets
+
+# Cross-module smoke tests
+npm run e2e:smoke
 ```
 
 ### View Test Report
 ```bash
 npm run e2e:report
 ```
+
+### Generate Testing Dashboard
+```bash
+# Requires an existing test-results/results.json produced by Playwright
+npm run e2e:dashboard
+
+# Run tests and generate dashboard in one command
+npm run e2e:with-dashboard
+```
+
+Dashboard output: `test-results/dashboard.md`
 
 ## Test Structure
 
@@ -90,6 +104,12 @@ npm run e2e:report
 - ✅ Delete ticket
 - ✅ Validate form fields
 - ✅ Display ticket details
+
+**smoke/core-modules.spec.ts**
+- ✅ Assets module route + API smoke
+- ✅ Locations module route + API smoke
+- ✅ User management route + users/roles API smoke
+- ✅ Ticketing routes availability regression smoke
 
 ## Writing New Tests
 

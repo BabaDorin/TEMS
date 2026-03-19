@@ -32,17 +32,29 @@ public record ReporterResponse(
     string? ChannelThreadId
 );
 
-public record AddTicketMessageResponse(bool Success);
+public record AddTicketMessageResponse(
+    bool Success,
+    TicketMessageResponse? Message
+);
+
+public record EditTicketMessageResponse(
+    bool Success,
+    TicketMessageResponse? Message
+);
+
+public record DeleteTicketMessageResponse(bool Success);
 
 public record GetTicketMessagesResponse(
     List<TicketMessageResponse> Messages
 );
 
 public record TicketMessageResponse(
+    string MessageId,
     string SenderType,
     string SenderId,
     DateTime Timestamp,
     string Content,
     string? ChannelMessageId,
-    bool IsInternalNote
+    bool IsInternalNote,
+    DateTime? EditedAt
 );

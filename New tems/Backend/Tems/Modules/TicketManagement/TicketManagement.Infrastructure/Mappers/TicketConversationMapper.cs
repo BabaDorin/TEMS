@@ -33,12 +33,14 @@ public static class TicketConversationMapper
     {
         return new DomainEntity.TicketMessage
         {
+            MessageId = dbEntity.MessageId ?? string.Empty,
             SenderType = dbEntity.SenderType,
             SenderId = dbEntity.SenderId,
             Timestamp = dbEntity.Timestamp,
             Content = dbEntity.Content,
             ChannelMessageId = dbEntity.ChannelMessageId,
-            IsInternalNote = dbEntity.IsInternalNote
+            IsInternalNote = dbEntity.IsInternalNote,
+            EditedAt = dbEntity.EditedAt
         };
     }
 
@@ -46,12 +48,14 @@ public static class TicketConversationMapper
     {
         return new DbEntity.TicketMessage
         {
+            MessageId = domainEntity.MessageId,
             SenderType = domainEntity.SenderType,
             SenderId = domainEntity.SenderId,
             Timestamp = domainEntity.Timestamp,
             Content = domainEntity.Content,
             ChannelMessageId = domainEntity.ChannelMessageId,
-            IsInternalNote = domainEntity.IsInternalNote
+            IsInternalNote = domainEntity.IsInternalNote,
+            EditedAt = domainEntity.EditedAt
         };
     }
 }

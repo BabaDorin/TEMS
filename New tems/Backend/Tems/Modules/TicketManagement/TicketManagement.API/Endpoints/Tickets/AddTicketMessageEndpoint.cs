@@ -16,6 +16,12 @@ public class AddTicketMessageEndpoint(IMediator mediator) : Endpoint<AddTicketMe
     public override async Task HandleAsync(AddTicketMessageCommand request, CancellationToken ct)
     {
         var response = await mediator.Send(request, ct);
-        await Send.OkAsync(response, cancellation: ct);
+        if (!response.Success)
+        {
+            ThrowError("Ticket conversation not found.", 404);
+            return;
+        }
+
+        await Send.CreatedAtAsync<GetTicketMessagesEndpoint>(new { request.TicketId }, response, cancellation: ct);
     }
 }

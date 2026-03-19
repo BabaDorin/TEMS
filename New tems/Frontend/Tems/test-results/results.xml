@@ -1,0 +1,84 @@
+<testsuites id="" name="" tests="19" failures="0" skipped="19" errors="0" time="0.07778299999999996">
+<testsuite name="smoke/core-modules.spec.ts" timestamp="2026-03-18T19:38:34.917Z" hostname="chromium" tests="4" failures="0" skipped="4" time="0" errors="0">
+<testcase name="Core Modules Smoke Tests › should load assets module and render base UI" classname="smoke/core-modules.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Core Modules Smoke Tests › should load locations module and render base UI" classname="smoke/core-modules.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Core Modules Smoke Tests › should load user management module and validate users/roles endpoints" classname="smoke/core-modules.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Core Modules Smoke Tests › should verify ticketing routes remain available" classname="smoke/core-modules.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+</testsuite>
+<testsuite name="ticket-management/ticket-types.spec.ts" timestamp="2026-03-18T19:38:34.917Z" hostname="chromium" tests="7" failures="0" skipped="7" time="0" errors="0">
+<testcase name="Ticket Types Management › should load ticket types page successfully" classname="ticket-management/ticket-types.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Ticket Types Management › should fetch ticket types from backend and display in grid" classname="ticket-management/ticket-types.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Ticket Types Management › should create a new ticket type via UI and verify in backend" classname="ticket-management/ticket-types.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Ticket Types Management › should update a ticket type via UI and verify changes" classname="ticket-management/ticket-types.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Ticket Types Management › should delete a ticket type via UI and verify removal" classname="ticket-management/ticket-types.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Ticket Types Management › should validate required fields in create form" classname="ticket-management/ticket-types.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Ticket Types Management › should handle backend errors gracefully" classname="ticket-management/ticket-types.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+</testsuite>
+<testsuite name="ticket-management/tickets.spec.ts" timestamp="2026-03-18T19:38:34.917Z" hostname="chromium" tests="8" failures="0" skipped="8" time="0" errors="0">
+<testcase name="Tickets Management › should load tickets page successfully" classname="ticket-management/tickets.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Tickets Management › should fetch tickets from backend and display in grid" classname="ticket-management/tickets.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Tickets Management › should create a new ticket via UI and verify in backend" classname="ticket-management/tickets.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Tickets Management › should update a ticket via UI and verify changes" classname="ticket-management/tickets.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Tickets Management › should delete a ticket via UI and verify removal" classname="ticket-management/tickets.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Tickets Management › should validate required fields in create form" classname="ticket-management/tickets.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Tickets Management › should display ticket details when clicking on a ticket" classname="ticket-management/tickets.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="Tickets Management › should create ticket with custom attributes from ticket type" classname="ticket-management/tickets.spec.ts" time="0">
+<skipped>
+</skipped>
+</testcase>
+</testsuite>
+</testsuites>

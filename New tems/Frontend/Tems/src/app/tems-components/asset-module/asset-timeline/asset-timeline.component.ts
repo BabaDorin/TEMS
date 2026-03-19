@@ -24,6 +24,8 @@ export class AssetTimelineComponent implements OnChanges {
   pageNumber = 1;
   pageSize = 50;
   allLoaded = false;
+  private locationNameCache = new Map<string, string>();
+  private resolvingLocationIds = new Set<string>();
 
   constructor(
     private changelogService: ChangelogService,
@@ -47,6 +49,7 @@ export class AssetTimelineComponent implements OnChanges {
     this.changelogService.getTimeline('Asset', this.assetId, this.pageNumber, this.pageSize).subscribe({
       next: (response) => {
         this.entries = response.entries;
+        this.resolveMissingLocationNames(this.entries);
         this.totalCount = response.totalCount;
         this.allLoaded = this.entries.length >= this.totalCount;
         this.loading = false;
@@ -63,6 +66,7 @@ export class AssetTimelineComponent implements OnChanges {
     this.changelogService.getTimeline('Asset', this.assetId, this.pageNumber, this.pageSize).subscribe({
       next: (response) => {
         this.entries = [...this.entries, ...response.entries];
+        this.resolveMissingLocationNames(response.entries);
         this.totalCount = response.totalCount;
         this.allLoaded = this.entries.length >= this.totalCount;
       }
@@ -82,7 +86,35 @@ export class AssetTimelineComponent implements OnChanges {
   }
 
   getLocationName(entry: ChangeLogEntry): string | null {
-    return entry.details?.['locationName'] ?? null;
+    const locationId = this.getLocationId(entry);
+    if (locationId) {
+      const resolved = this.locationNameCache.get(locationId);
+      if (resolved) return resolved;
+    }
+
+    const locationName = entry.details?.['locationName'] ?? null;
+    if (typeof locationName !== 'string') return null;
+    return locationName;
+  }
+
+  getDisplayDescription(entry: ChangeLogEntry): string {
+    const locationId = this.getLocationId(entry);
+    const resolvedLocationName = locationId ? this.locationNameCache.get(locationId) : null;
+
+    if (!resolvedLocationName) return entry.description;
+
+    let result = entry.description;
+    const rawLocationName = entry.details?.['locationName'];
+
+    if (typeof rawLocationName === 'string' && rawLocationName.trim().length > 0) {
+      result = result.replace(rawLocationName, resolvedLocationName);
+    }
+
+    if (locationId && result.includes(locationId)) {
+      result = result.replace(locationId, resolvedLocationName);
+    }
+
+    return result;
   }
 
   getActionIcon(action: ChangeLogAction): string {
@@ -142,6 +174,52 @@ export class AssetTimelineComponent implements OnChanges {
 
   getReason(entry: ChangeLogEntry): string | null {
     return entry.details?.['reason'] ?? null;
+  }
+
+  private getLocationId(entry: ChangeLogEntry): string | null {
+    const locationId = entry.references?.['locationId'];
+    if (!locationId || typeof locationId !== 'string') return null;
+    return locationId;
+  }
+
+  private shouldResolveLocationName(entry: ChangeLogEntry): boolean {
+    const locationId = this.getLocationId(entry);
+    if (!locationId) return false;
+    if (this.locationNameCache.has(locationId)) return false;
+
+    const locationName = entry.details?.['locationName'];
+    if (typeof locationName !== 'string' || locationName.trim().length === 0) {
+      return true;
+    }
+
+    return locationName === locationId || this.looksLikeId(locationName);
+  }
+
+  private looksLikeId(value: string): boolean {
+    const trimmed = value.trim();
+    if (trimmed.includes(' ')) return false;
+    return /^[a-f0-9-]{20,}$/i.test(trimmed);
+  }
+
+  private resolveMissingLocationNames(entries: ChangeLogEntry[]): void {
+    entries
+      .filter((entry) => this.shouldResolveLocationName(entry))
+      .forEach((entry) => {
+        const locationId = this.getLocationId(entry);
+        if (!locationId || this.resolvingLocationIds.has(locationId)) return;
+
+        this.resolvingLocationIds.add(locationId);
+        this.locationService.getRoomById(locationId).subscribe({
+          next: (room) => {
+            const locationName = [room.buildingName, room.name].filter(Boolean).join(' / ') || room.name || locationId;
+            this.locationNameCache.set(locationId, locationName);
+            this.resolvingLocationIds.delete(locationId);
+          },
+          error: () => {
+            this.resolvingLocationIds.delete(locationId);
+          }
+        });
+      });
   }
 
   openUserModal(userId: string | null | undefined) {

@@ -46,6 +46,7 @@ curl -s -X POST "${KEYCLOAK_URL}/admin/realms" \
     -d '{
         "realm": "tems",
         "enabled": true,
+        "sslRequired": "NONE",
         "displayName": "TEMS",
         "displayNameHtml": "<b>TEMS Authentication</b>",
         "loginTheme": "keycloak",
@@ -251,7 +252,8 @@ curl -s -X PUT "${KEYCLOAK_URL}/admin/realms/${REALM}" \
     -H "Authorization: Bearer ${ADMIN_TOKEN}" \
     -H "Content-Type: application/json" \
     -d '{
-        "browserFlow": "duende-browser-flow"
+        "browserFlow": "duende-browser-flow",
+        "sslRequired": "NONE"
     }'
 
 echo "  ✅ Browser flow configured — user will always be redirected to Duende automatically"

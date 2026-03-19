@@ -12,9 +12,16 @@ export const API_CONFIG = {
     tickets: '/tickets',
     ticketMessages: (ticketId: string) => `/tickets/${ticketId}/messages`,
     
-    // Equipment Management
-    equipment: '/equipment',
-    equipmentTypes: '/equipment-types',
+    // Asset & Location Management
+    assets: '/asset',
+    assetTypes: '/asset-type',
+    assetDefinitions: '/asset-definition',
+    locations: '/location',
+    rooms: '/room',
+
+    // User & Role Management
+    users: '/users',
+    roles: '/roles',
   },
   
   // Default timeout for API calls

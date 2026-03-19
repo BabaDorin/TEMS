@@ -1,0 +1,214 @@
+4 DOCUMENTAREA PRODUSULUI REALIZAT
+
+Acest capitol prezintă documentația de utilizare a platformei TEMS, destinată operatorilor și administratorilor care interacționează zilnic cu sistemul. Scopul nu este de a repeta detaliile tehnice de implementare, ci de a oferi un ghid practic și clar care acoperă cele mai frecvente scenarii de operare. Documentarea urmărește să reducă timpul de învățare a platformei și să elimine dependența de asistență tehnică pentru activitățile curente.
+
+Platforma TEMS este accesibilă prin browser web și nu necesită instalare locală de software suplimentar. După autentificare, utilizatorul este direcționat către tabloul de bord principal, de unde poate naviga către modulele de active, locații, suport tehnic, administrare și profil. Fiecare modul acoperă un domeniu funcțional specific, iar accesul la secțiuni este controlat de rolurile atribuite contului conectat. Documentația de mai jos descrie fluxurile de lucru în ordinea în care sunt întâlnite cel mai frecvent.
+
+
+4.1 Condiții de acces și cerințe tehnice
+
+Pentru utilizarea platformei TEMS sunt necesare următoarele condiții:
+– un browser web modern (Google Chrome, Mozilla Firefox, Microsoft Edge sau Safari), actualizat la ultima versiune stabilă;
+– conexiune la internet sau acces la rețeaua internă a organizației, în funcție de modul de deployment;
+– un cont de utilizator valid, creat de administratorul platformei.
+
+Nu este necesară instalarea unor extensii de browser sau aplicații suplimentare. Platforma este compatibilă cu sisteme de operare Windows, macOS și Linux. Interfața este responsive și poate fi utilizată inclusiv de pe tablete, deși experiența optimă este pe ecrane cu rezoluție de cel puțin 1280×720 pixeli.
+
+Toate datele transmise între browser și server sunt protejate prin HTTPS. Token-urile de autentificare sunt gestionate automat de aplicație și nu necesită intervenție din partea utilizatorului.
+
+
+4.2 Autentificarea și prima accesare
+
+La accesarea adresei platformei, utilizatorul neautentificat este redirecționat automat către pagina de autentificare Keycloak. Aici se introduc credențialele (email sau username și parola) furnizate de administratorul organizației. După validarea cu succes, browserul revine în aplicația TEMS, iar utilizatorul este întâmpinat de tabloul de bord principal.
+
+Sesiunea rămâne activă pe durata utilizării continue. Dacă utilizatorul este inactiv pentru o perioadă extinsă, platforma încearcă automat reînnoirea sesiunii. Dacă reînnoirea nu reușește, utilizatorul este redirecționat din nou către pagina de autentificare. Această comportare asigură securitatea contului fără a impune reconectări frecvente în timpul lucrului normal.
+
+Pentru deconectare manuală, utilizatorul accesează meniul din colțul din dreapta sus al barei de navigare și selectează opțiunea „Logout". Sesiunea este invalidată atât local, cât și în providerul de identitate.
+
+
+Figura 4.1 – Pagina de autentificare Keycloak
+
+
+4.3 Tabloul de bord principal
+
+După autentificare, utilizatorul este direcționat către pagina Home, care servește drept punct central de orientare în platformă. Tabloul de bord conține:
+
+– Mesaj de bun venit: afișează numele utilizatorului conectat și data curentă.
+– Carduri statistice: prezintă sintetic numărul total de active, tichete deschise, utilizatori activi și locații înregistrate. Aceste valori sunt actualizate la fiecare accesare a paginii.
+– Acțiuni rapide: butoane de navigare directă către cele mai utilizate operații – vizualizare active, deschidere tichet nou, consultare locații.
+– Feed activitate recentă: listă cronologică a ultimelor acțiuni din sistem (creare active, modificări, asignări), oferind o imagine a activității curente fără a fi necesar accesul în module individuale.
+
+Din tabloul de bord, utilizatorul poate accesa orice secțiune a platformei prin meniul lateral sau prin acțiunile rapide.
+
+
+Figura 4.2 – Tabloul de bord principal al platformei
+
+
+4.4 Navigarea în platformă
+
+Navigarea principală este realizată prin meniul lateral (sidebar), care afișează secțiunile disponibile în funcție de rolurile utilizatorului:
+
+– Home: tabloul de bord principal.
+– Assets: modulul de gestiune a activelor.
+– Locations: modulul de locații și distribuție spațială.
+– Technical Support: modulul de ticketing (tichete și tipuri de tichete).
+– Administration: modulul de administrare utilizatori (vizibil doar pentru administratori).
+– Profile: pagina de profil a utilizatorului curent.
+
+Bara de navigare superioară conține:
+– Butonul de comutare dark mode / light mode, pentru ajustarea preferinței vizuale.
+– Indicatorul de notificări.
+– Meniul utilizator, cu opțiuni de profil și deconectare.
+
+Meniul lateral poate fi restrâns pentru eliberarea spațiului de lucru. Fiecare secțiune se încarcă independent, fără reîncărcarea întregii pagini.
+
+
+Figura 4.3 – Meniu lateral cu secțiunile disponibile
+
+
+4.5 Gestiunea activelor
+
+Secțiunea Assets permite evidența completă a echipamentelor tehnice din organizație. Operațiile disponibile sunt:
+
+Vizualizarea listei de active. Pagina principală afișează toate activele într-un tabel cu coloane: asset tag, tip, definiție, locație, stare și utilizator alocat. Tabelul suportă sortare pe orice coloană, filtrare după tip de activ și definiție, și căutare text după asset tag. Navigarea între pagini se realizează prin controalele de paginare din partea inferioară.
+
+Crearea unui activ nou. Din lista de active, se apasă butonul „Add Asset". Formularul de creare ghidează utilizatorul prin pași secvențiali: selectarea tipului de activ, selectarea definiției, completarea datelor de identificare (serial number, asset tag), și opțional – informații de achiziție, locație și note. Câmpurile obligatorii sunt marcate vizual, iar validarea se realizează în timp real.
+
+Consultarea detaliului. Din listă sau prin căutare directă, se poate accesa pagina de detaliu a unui activ. Aceasta conține secțiuni tabbed:
+– Overview: date generale, specificații tehnice, stare curentă.
+– Purchase: informații de achiziție (furnizor, dată, cost, garanție).
+– Maintenance: istoricul operațiunilor de mentenanță.
+– History: jurnalul complet de audit al activului, cu toate schimbările în ordine cronologică.
+
+Asignarea către un utilizator. Din detaliul activului, funcția de asignare permite legarea echipamentului de un utilizator din organizație. Orice asignare sau dezasignare este înregistrată automat în jurnalul de audit.
+
+Mutarea în locație. Activul poate fi asociat cu o locație fizică (site, clădire, cameră), iar orice mutare este înregistrată automat în jurnalul de audit.
+
+
+Figura 4.4 – Lista activelor cu filtre și paginare
+
+Figura 4.5 – Formularul de creare a unui activ
+
+Figura 4.6 – Pagina de detaliu a unui activ
+
+
+4.6 Gestiunea locațiilor
+
+Secțiunea Locations permite administrarea distribuției fizice a echipamentelor pe site-uri, clădiri și camere. Structura ierarhică pe trei niveluri reflectă organizarea reală a spațiilor și facilitează localizarea rapidă a activelor.
+
+Vizualizarea locațiilor. Pagina principală afișează camerele într-un tabel cu posibilitate de filtrare pe site și clădire. Căutarea text permite găsirea rapidă a unei camere după nume sau număr. Lista este paginată pentru a susține volume mari de date.
+
+Filtrarea ierarhică. Selectorii de site și building în partea superioară permit restrângerea vizualizării la o anumită zonă. Dacă organizația are un singur site, acesta este preselectat automat.
+
+Crearea unei camere noi. Din lista de locații, butonul „Add Room" deschide un dialog modal. Se completează: numele camerei, numărul, etajul, capacitatea, suprafața (opțional) și descrierea. Clădirea și site-ul sunt selectate din dropdown-uri. După salvare, camera apare imediat în listă.
+
+Detaliul camerei. Pagina de detaliu cameră afișează informațiile complete (capacitate, suprafață, descriere) și lista activelor asociate camerei. Aceasta permite verificarea rapidă a inventarului fizic din acel spațiu.
+
+
+Figura 4.7 – Lista locațiilor cu filtre pe site și clădire
+
+Figura 4.8 – Detaliul unei camere cu activele asociate
+
+
+4.7 Suport tehnic – tichete
+
+Secțiunea Technical Support cuprinde modulul de ticketing și permite gestionarea incidentelor, solicitărilor și problemelor tehnice.
+
+Vizualizarea tichetelor. Lista de tichete afișează: ID-ul uman (ex. INC-001), rezumatul, prioritatea (LOW, MEDIUM, HIGH, CRITICAL), starea curentă și data creării. Prioritatea este marcată vizual prin culori distinctive. Din listă se pot executa acțiuni de preview și ștergere.
+
+Crearea unui tichet. Butonul „Add Ticket" deschide formularul de creare. Se selectează tipul de tichet (Incident, Service Request, Problem, Change Request), se completează rezumatul, prioritatea și câmpurile specifice tipului ales. Câmpurile suplimentare sunt generate automat în funcție de configurația tipului de tichet, ceea ce permite adaptare fără intervenție tehnică.
+
+Detaliul tichetului. Pagina de detaliu prezintă informațiile complete ale tichetului și oferă interfața de comunicare. Sistemul de mesaje are două tab-uri:
+– Messages: conversația cu toate părțile implicate. Utilizatorul poate adăuga mesaje text care sunt stocate cu timestamp și identificator de expeditor.
+– Internal Notes: notițe vizibile doar echipei tehnice, utile pentru documentare internă a diagnosticului. Mesajele trimise ca notă internă nu sunt vizibile solicitantului.
+
+Tranziția stărilor. Starea tichetului poate fi actualizată de operatorul de suport conform workflow-ului configurat. Fiecare tranziție este înregistrată automat în jurnalul de audit.
+
+Configurarea tipurilor de tichete. Secțiunea „Ticket Types" permite definirea categoriilor de tichete, a workflow-urilor asociate și a atributelor specifice. Această configurare este accesibilă utilizatorilor cu drepturi de administrare.
+
+
+Figura 4.9 – Lista tichetelor cu indicatori vizuali
+
+Figura 4.10 – Formularul de creare a unui tichet
+
+Figura 4.11 – Conversația de suport într-un tichet
+
+
+4.8 Administrarea utilizatorilor
+
+Secțiunea Administration este accesibilă doar utilizatorilor cu rol de administrator și permite gestionarea conturilor și a drepturilor de acces.
+
+Lista utilizatorilor. Pagina afișează utilizatorii înregistrați în platformă, cu informații de bază (nume, email, roluri curente). Din listă se pot selecta utilizatori pentru editarea rolurilor.
+
+Editarea rolurilor. La selectarea unui utilizator, se pot adăuga sau elimina roluri din lista disponibilă. Rolurile definesc ce secțiuni poate accesa utilizatorul și ce operații poate executa:
+– can_manage_assets: permite accesul la modulul de active (vizualizare, creare, editare, asignare).
+– can_open_tickets: permite deschiderea și gestionarea tichetelor de suport.
+– can_manage_users: permite accesul la secțiunea de administrare utilizatori.
+
+Modificările de roluri sunt sincronizate automat cu providerul de identitate (Keycloak). Astfel, drepturile noi devin active la următoarea operație sau la reîmprospătarea token-ului, fără a fi necesară deconectarea și reconectarea manuală a utilizatorului vizat.
+
+
+Figura 4.12 – Panoul de administrare a utilizatorilor
+
+Figura 4.13 – Editarea rolurilor unui utilizator
+
+
+4.9 Profilul utilizatorului
+
+Pagina Profile este accesibilă oricărui utilizator autentificat și oferă informații despre contul propriu. Profilul este organizat pe secțiuni:
+
+– General: afișează numele complet, adresa de email, rolurile active și data ultimei actualizări.
+– Settings: permite ajustarea preferințelor de interfață (limba, modul vizual).
+– Allocations: prezintă lista activelor alocate utilizatorului curent.
+– Analytics: oferă date statistice referitoare la activitatea utilizatorului (active gestionate, tichete deschise).
+– Tickets: afișează tichetele asociate utilizatorului, cu starea curentă de rezolvare.
+
+Profilul nu permite modificarea directă a credențialelor (email, parolă). Acestea sunt gestionate exclusiv prin providerul de identitate Keycloak, în conformitate cu politicile de securitate ale organizației.
+
+
+Figura 4.14 – Pagina de profil a utilizatorului
+
+
+4.10 Jurnalul de audit și trasabilitatea
+
+Platforma TEMS păstrează un jurnal detaliat al tuturor operațiunilor semnificative. Acest jurnal nu necesită activare manuală și funcționează automat pentru orice operație de creare, actualizare, asignare sau ștergere. Utilizatorii pot consulta jurnalul în două moduri:
+
+Din detaliul unui activ. Tab-ul „History" afișează cronologic toate evenimentele asociate: creare, modificări de câmpuri, transferuri între utilizatori, mutări de locație, arhivări. Pentru fiecare eveniment sunt vizibile data exactă, actorul care a efectuat operația și, acolo unde este relevant, valorile anterioare și noi ale câmpurilor modificate.
+
+Din detaliul unui utilizator. Secțiunea de audit afișează evenimentele administrative: modificări de roluri, asignări/dezasignări de active.
+
+Jurnalul nu poate fi editat sau șters de către utilizatori. Acesta reprezintă o sursă de date de încredere pentru auditul organizațional și pentru investigarea incidentelor. Informațiile pot fi utilizate în rapoarte interne, verificări de conformitate sau analize post-incident.
+
+
+Figura 4.15 – Jurnalul de audit al unui activ
+
+
+4.11 Internaționalizare și preferințe vizuale
+
+Platforma suportă două limbi de interfață: română și engleză. Comutarea se realizează din meniul de setări sau din profilul utilizatorului. Toate etichetele, mesajele de validare, titlurile secțiunilor și descrierile acțiunilor sunt traduse conform limbii selectate. Preferința este persistentă pe sesiune.
+
+Modul vizual poate fi comutat între light mode și dark mode prin butonul dedicat din bara de navigare superioară. Modul întunecat reduce oboseala vizuală în condiții de iluminare redusă și este recomandat pentru sesiuni prelungite de lucru.
+
+Aceste preferințe sunt aplicate imediat, fără reîncărcare de pagină, și nu afectează funcționalitățile sau datele din platformă.
+
+
+Figura 4.16 – Interfața în limba română
+
+Figura 4.17 – Interfața în modul întunecat
+
+
+4.12 Recomandări practice de utilizare
+
+Pe baza experienței de dezvoltare și testare, se recomandă următoarele practici pentru utilizarea eficientă a platformei:
+
+1. Completarea informațiilor de achiziție la crearea activelor. Deși câmpurile sunt opționale, existența datelor de garanție și cost simplifică semnificativ analiza financiară și planificarea înlocuirilor.
+
+2. Menținerea structurii de locații actualizată. Adăugarea camerelor și clădirilor înainte de înregistrarea activelor permite asocierea corectă de la început și evită necesitatea corecturilor ulterioare.
+
+3. Utilizarea notelor interne în tichete. Separarea comunicărilor publice de cele interne îmbunătățește calitatea diagnosticului și reduce riscul de partajare accidentală a informațiilor tehnice sensibile.
+
+4. Verificarea periodică a rolurilor. Administratorii sunt încurajați să verifice periodic corectitudinea rolurilor atribuite, în special după schimbări organizaționale (mutări de personal, schimbări de responsabilități).
+
+5. Consultarea jurnalului de audit în caz de neconformități. Înainte de orice investigație manuală, verificarea cronologiei de audit oferă rapid contextul necesar și reduce timpul de rezolvare.
+
+6. Folosirea filtrelor pentru volume mari de date. În locul derulării manuale, utilizarea filtrelor pe tip, definiție sau asset tag permite accesul rapid la informațiile relevante.

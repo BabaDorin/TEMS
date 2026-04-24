@@ -15,7 +15,7 @@ import { Injectable } from '@angular/core';
 import { ViewProfile } from 'src/app/models/profile/view-profile.model';
 import { ViewNotification } from 'src/app/models/communication/notification/view-notification.model';
 import { UserProfile } from '../models/user/user-profile.model';
-import { GetAllUsersResponse, CreateUserRequest, CreateUserResponse, DeleteUserResponse, UpdateUserRolesRequest, UpdateUserRolesResponse, GetAllRolesResponse, UserDto, UserAssetsResponse, UserAssetCountResponse } from '../models/user/user-management.model';
+import { GetAllUsersResponse, CreateUserRequest, CreateUserResponse, DeleteUserResponse, UpdateUserRolesRequest, UpdateUserRolesResponse, GetAllRolesResponse, UserDto, UserAssetsResponse, UserAssetCountResponse, UserLookupDto } from '../models/user/user-management.model';
 
 @Injectable({
   providedIn: 'root'
@@ -258,13 +258,27 @@ export class UserService extends TEMSService {
   /**
    * Get all users with pagination (from new UserManagement module)
    */
-  getAllUsers(pageNumber: number = 1, pageSize: number = 50): Observable<GetAllUsersResponse> {
+  getAllUsers(pageNumber: number = 1, pageSize: number = 20): Observable<GetAllUsersResponse> {
     let params = new HttpParams()
       .append('pageNumber', pageNumber.toString())
       .append('pageSize', pageSize.toString());
 
     return this.http.get<GetAllUsersResponse>(
       API_USERS_URL,
+      { ...this.httpOptions, params }
+    );
+  }
+
+  /**
+   * Search users by name for dropdown lookups
+   */
+  searchUsersByName(name: string, take: number = 10): Observable<UserLookupDto[]> {
+    let params = new HttpParams()
+      .append('name', (name ?? '').trim())
+      .append('take', take.toString());
+
+    return this.http.get<UserLookupDto[]>(
+      `${API_USERS_URL}/search/by-name`,
       { ...this.httpOptions, params }
     );
   }
@@ -322,13 +336,44 @@ export class UserService extends TEMSService {
     );
   }
 
+  getUserPreviewById(userId: string): Observable<UserDto> {
+    return this.http.get<UserDto>(
+      `${API_USERS_URL}/${userId}/preview`,
+      this.httpOptions
+    );
+  }
+
   /**
    * Get assets assigned to a user
    */
-  getUserAssets(userId: string, pageNumber: number = 1, pageSize: number = 50): Observable<UserAssetsResponse> {
+  getUserAssets(
+    userId: string,
+    pageNumber: number = 1,
+    pageSize: number = 20,
+    assetTag?: string,
+    assetTypeIds?: string[],
+    definitionIds?: string[],
+    definitionNames?: string[]
+  ): Observable<UserAssetsResponse> {
     let params = new HttpParams()
       .append('pageNumber', pageNumber.toString())
       .append('pageSize', pageSize.toString());
+
+    if (assetTag && assetTag.trim().length > 0) {
+      params = params.append('assetTag', assetTag.trim());
+    }
+
+    if (assetTypeIds && assetTypeIds.length > 0) {
+      params = params.append('assetTypeIds', assetTypeIds.join(','));
+    }
+
+    if (definitionIds && definitionIds.length > 0) {
+      params = params.append('definitionIds', definitionIds.join(','));
+    }
+
+    if (definitionNames && definitionNames.length > 0) {
+      params = params.append('definitionNames', definitionNames.join(','));
+    }
 
     return this.http.get<UserAssetsResponse>(
       `${API_USERS_URL}/${userId}/assets`,

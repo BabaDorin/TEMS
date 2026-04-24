@@ -1,149 +1,139 @@
-<div>
-  <!-- Header with Create Button -->
-  <div class="flex justify-between items-center mb-4">
-    <h2 class="text-lg font-medium text-gray-900 dark:text-white">Asset Properties</h2>
-    <button
-      (click)="openCreateModal()"
-      class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200">
-      <i class="mdi mdi-plus mr-2"></i>
-      Create Property
-    </button>
-  </div>
-
-  <!-- AG Grid -->
-  <div [class]="gridThemeClass" style="height: 600px; width: 100%;">
-    <ag-grid-angular
-      [rowData]="rowData"
-      [columnDefs]="columnDefs"
-      [defaultColDef]="defaultColDef"
-      [pagination]="true"
-      [paginationPageSize]="20"
-      (gridReady)="onGridReady($event)"
-      class="w-full h-full">
-    </ag-grid-angular>
-  </div>
-
-  <!-- Create Modal -->
-  <div *ngIf="showCreateModal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50" (click)="closeCreateModal()">
-    <div class="bg-white dark:bg-[#2c2c2e] rounded-lg shadow-xl max-w-2xl w-full mx-4" (click)="$event.stopPropagation()">
-      <div class="px-6 py-4 border-b border-gray-200 dark:border-[#38383a]">
-        <h3 class="text-lg font-medium text-gray-900 dark:text-white">Create Asset Property</h3>
+<section class="tems-asset-page">
+  <header class="tems-asset-header">
+    <div>
+      <div class="tems-asset-eyebrow">
+        <i class="mdi mdi-tag-text-outline"></i>
+        <span>Asset Properties</span>
       </div>
-      
-      <form [formGroup]="createForm" (ngSubmit)="createProperty()" class="px-6 py-4">
-        <div class="grid grid-cols-2 gap-4">
-          <div class="col-span-2">
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Name *</label>
-            <input type="text" formControlName="name" 
-              class="w-full px-3 py-2 border border-gray-300 dark:border-[#48484a] bg-white dark:bg-[#3a3a3c] text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+      <h2 class="text-2xl">Define reusable technical fields</h2>
+      <p>Use properties to keep hardware metadata consistent across types and definitions.</p>
+    </div>
+
+    <button type="button" (click)="openCreateModal()" class="tems-btn tems-btn-primary">
+      <i class="mdi mdi-plus"></i>
+      <span>Create property</span>
+    </button>
+  </header>
+
+  <section class="tems-asset-card">
+    <div class="tems-asset-grid-shell ag-grid-host" [ngClass]="gridThemeClass">
+      <ag-grid-angular
+        [rowData]="rowData"
+        [columnDefs]="columnDefs"
+        [defaultColDef]="defaultColDef"
+        [pagination]="true"
+        [paginationPageSize]="20"
+        (gridReady)="onGridReady($event)"
+        class="w-full h-full">
+      </ag-grid-angular>
+    </div>
+  </section>
+
+  <div *ngIf="showCreateModal" class="tems-asset-modal-backdrop" (click)="closeCreateModal()">
+    <div class="tems-asset-dialog tems-asset-modal-card tems-asset-modal-card--narrow" (click)="$event.stopPropagation()">
+      <div class="tems-asset-modal-header">
+        <div>
+          <h3 class="text-lg font-semibold m-0 text-[color:var(--text-primary)]">Create asset property</h3>
+          <p class="tems-asset-help mt-1">Set the field name, type, and optional metadata.</p>
+        </div>
+      </div>
+
+      <form [formGroup]="createForm" (ngSubmit)="createProperty()" class="tems-asset-modal-body">
+        <div class="tems-asset-grid tems-asset-grid--two">
+          <div class="tems-asset-field col-span-2">
+            <label>Name *</label>
+            <input type="text" formControlName="name" class="tems-asset-input">
           </div>
 
-          <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Category *</label>
-            <input type="text" formControlName="category" 
-              class="w-full px-3 py-2 border border-gray-300 dark:border-[#48484a] bg-white dark:bg-[#3a3a3c] text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+          <div class="tems-asset-field">
+            <label>Category *</label>
+            <input type="text" formControlName="category" class="tems-asset-input">
           </div>
 
-          <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Data Type *</label>
-            <select formControlName="dataType" 
-              class="w-full px-3 py-2 border border-gray-300 dark:border-[#48484a] bg-white dark:bg-[#3a3a3c] text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+          <div class="tems-asset-field">
+            <label>Data type *</label>
+            <select formControlName="dataType" class="tems-asset-select">
               <option *ngFor="let type of dataTypes" [value]="type.value">{{ type.label }}</option>
             </select>
           </div>
 
-          <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Unit</label>
-            <input type="text" formControlName="unit" placeholder="e.g., GB, MHz, inches"
-              class="w-full px-3 py-2 border border-gray-300 dark:border-[#48484a] bg-white dark:bg-[#3a3a3c] text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+          <div class="tems-asset-field">
+            <label>Unit</label>
+            <input type="text" formControlName="unit" placeholder="e.g. GB, MHz, inches" class="tems-asset-input">
           </div>
 
-          <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Enum Values (comma-separated)</label>
-            <input type="text" formControlName="enumValues" placeholder="e.g., Red, Green, Blue"
-              class="w-full px-3 py-2 border border-gray-300 dark:border-[#48484a] bg-white dark:bg-[#3a3a3c] text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+          <div class="tems-asset-field">
+            <label>Enum values</label>
+            <input type="text" formControlName="enumValues" placeholder="Red, Green, Blue" class="tems-asset-input">
           </div>
 
-          <div class="col-span-2">
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Description</label>
-            <textarea formControlName="description" rows="3"
-              class="w-full px-3 py-2 border border-gray-300 dark:border-[#48484a] bg-white dark:bg-[#3a3a3c] text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"></textarea>
+          <div class="tems-asset-field col-span-2">
+            <label>Description</label>
+            <textarea formControlName="description" rows="3" class="tems-asset-textarea"></textarea>
           </div>
         </div>
 
-        <div class="flex justify-end space-x-3 mt-6">
-          <button type="button" (click)="closeCreateModal()"
-            class="px-4 py-2 border border-gray-300 dark:border-[#48484a] text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-[#3a3a3c] transition-colors duration-200">
-            Cancel
-          </button>
-          <button type="submit" [disabled]="createForm.invalid || isSubmitting"
-            class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-300 dark:disabled:bg-gray-600 disabled:cursor-not-allowed transition-colors duration-200">
+        <footer class="tems-asset-modal-footer">
+          <button type="button" (click)="closeCreateModal()" class="tems-btn tems-btn-secondary">Cancel</button>
+          <button type="submit" [disabled]="createForm.invalid || isSubmitting" class="tems-btn tems-btn-primary">
             {{ isSubmitting ? 'Creating...' : 'Create' }}
           </button>
-        </div>
+        </footer>
       </form>
     </div>
   </div>
 
-  <!-- Edit Modal -->
-  <div *ngIf="showEditModal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50" (click)="closeEditModal()">
-    <div class="bg-white dark:bg-[#2c2c2e] rounded-lg shadow-xl max-w-2xl w-full mx-4" (click)="$event.stopPropagation()">
-      <div class="px-6 py-4 border-b border-gray-200 dark:border-[#38383a]">
-        <h3 class="text-lg font-medium text-gray-900 dark:text-white">Edit Asset Property</h3>
+  <div *ngIf="showEditModal" class="tems-asset-modal-backdrop" (click)="closeEditModal()">
+    <div class="tems-asset-dialog tems-asset-modal-card tems-asset-modal-card--narrow" (click)="$event.stopPropagation()">
+      <div class="tems-asset-modal-header">
+        <div>
+          <h3 class="text-lg font-semibold m-0 text-[color:var(--text-primary)]">Edit asset property</h3>
+          <p class="tems-asset-help mt-1">Update the field details while keeping existing asset usage intact.</p>
+        </div>
       </div>
-      
-      <form [formGroup]="editForm" (ngSubmit)="updateProperty()" class="px-6 py-4">
-        <div class="grid grid-cols-2 gap-4">
-          <div class="col-span-2">
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Name *</label>
-            <input type="text" formControlName="name" 
-              class="w-full px-3 py-2 border border-gray-300 dark:border-[#48484a] bg-white dark:bg-[#3a3a3c] text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+
+      <form [formGroup]="editForm" (ngSubmit)="updateProperty()" class="tems-asset-modal-body">
+        <div class="tems-asset-grid tems-asset-grid--two">
+          <div class="tems-asset-field col-span-2">
+            <label>Name *</label>
+            <input type="text" formControlName="name" class="tems-asset-input">
           </div>
 
-          <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Category *</label>
-            <input type="text" formControlName="category" 
-              class="w-full px-3 py-2 border border-gray-300 dark:border-[#48484a] bg-white dark:bg-[#3a3a3c] text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+          <div class="tems-asset-field">
+            <label>Category *</label>
+            <input type="text" formControlName="category" class="tems-asset-input">
           </div>
 
-          <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Data Type *</label>
-            <select formControlName="dataType" 
-              class="w-full px-3 py-2 border border-gray-300 dark:border-[#48484a] bg-white dark:bg-[#3a3a3c] text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+          <div class="tems-asset-field">
+            <label>Data type *</label>
+            <select formControlName="dataType" class="tems-asset-select">
               <option *ngFor="let type of dataTypes" [value]="type.value">{{ type.label }}</option>
             </select>
           </div>
 
-          <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Unit</label>
-            <input type="text" formControlName="unit" placeholder="e.g., GB, MHz, inches"
-              class="w-full px-3 py-2 border border-gray-300 dark:border-[#48484a] bg-white dark:bg-[#3a3a3c] text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+          <div class="tems-asset-field">
+            <label>Unit</label>
+            <input type="text" formControlName="unit" placeholder="e.g. GB, MHz, inches" class="tems-asset-input">
           </div>
 
-          <div>
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Enum Values (comma-separated)</label>
-            <input type="text" formControlName="enumValues" placeholder="e.g., Red, Green, Blue"
-              class="w-full px-3 py-2 border border-gray-300 dark:border-[#48484a] bg-white dark:bg-[#3a3a3c] text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+          <div class="tems-asset-field">
+            <label>Enum values</label>
+            <input type="text" formControlName="enumValues" placeholder="Red, Green, Blue" class="tems-asset-input">
           </div>
 
-          <div class="col-span-2">
-            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Description</label>
-            <textarea formControlName="description" rows="3"
-              class="w-full px-3 py-2 border border-gray-300 dark:border-[#48484a] bg-white dark:bg-[#3a3a3c] text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"></textarea>
+          <div class="tems-asset-field col-span-2">
+            <label>Description</label>
+            <textarea formControlName="description" rows="3" class="tems-asset-textarea"></textarea>
           </div>
         </div>
 
-        <div class="flex justify-end space-x-3 mt-6">
-          <button type="button" (click)="closeEditModal()"
-            class="px-4 py-2 border border-gray-300 dark:border-[#48484a] text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-[#3a3a3c] transition-colors duration-200">
-            Cancel
-          </button>
-          <button type="submit" [disabled]="editForm.invalid || isSubmitting"
-            class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-300 dark:disabled:bg-gray-600 disabled:cursor-not-allowed transition-colors duration-200">
+        <footer class="tems-asset-modal-footer">
+          <button type="button" (click)="closeEditModal()" class="tems-btn tems-btn-secondary">Cancel</button>
+          <button type="submit" [disabled]="editForm.invalid || isSubmitting" class="tems-btn tems-btn-primary">
             {{ isSubmitting ? 'Updating...' : 'Update' }}
           </button>
-        </div>
+        </footer>
       </form>
     </div>
   </div>
-</div>
+</section>

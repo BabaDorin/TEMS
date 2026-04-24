@@ -5,6 +5,7 @@ namespace TicketManagement.Contract.Commands.Tickets;
 
 public record CreateTicketCommand(
     string TicketTypeId,
+    string Title,
     string Summary,
     string Priority,
     ReporterDto Reporter,

@@ -79,7 +79,7 @@ function handle401Error(
 function redirectToLogin(injector: Injector, snackService: SnackService): void {
   const router = injector.get(Router);
   snackService.snack({message: "Session expired, please login again", status: 0});
-  localStorage.clear();
-  sessionStorage.clear();
+  const oauthService = injector.get(OAuthService);
+  oauthService.logOut(true);
   router.navigate(['/login']);
 }

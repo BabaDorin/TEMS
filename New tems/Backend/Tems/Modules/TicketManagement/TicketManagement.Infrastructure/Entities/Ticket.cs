@@ -21,8 +21,15 @@ public class Ticket
     [BsonElement("human_readable_id")]
     public string HumanReadableId { get; set; } = string.Empty;
 
+    [BsonElement("title")]
+    public string Title { get; set; } = string.Empty;
+
     [BsonElement("summary")]
     public string Summary { get; set; } = string.Empty;
+
+    [BsonElement("ai_summary")]
+    [BsonIgnoreIfNull]
+    public string? AiSummary { get; set; }
 
     [BsonElement("current_state_id")]
     public string CurrentStateId { get; set; } = string.Empty;

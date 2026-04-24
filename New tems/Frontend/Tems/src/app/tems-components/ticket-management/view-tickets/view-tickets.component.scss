@@ -1,1 +1,27 @@
-/* Add any component-specific styles here if needed */
+.ticket-type-field {
+  width: 100%;
+}
+
+:host ::ng-deep .ticket-type-field .mat-mdc-text-field-wrapper {
+  background: transparent;
+}
+
+:host ::ng-deep .ticket-type-field .mdc-text-field--outlined {
+  border-radius: 12px;
+}
+
+:host ::ng-deep .ticket-type-field .mat-mdc-form-field-subscript-wrapper {
+  display: none;
+}
+
+:host ::ng-deep .ticket-type-field .mat-mdc-form-field-infix {
+  min-height: 44px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.ticket-type-option {
+  height: auto !important;
+  min-height: 64px;
+  align-items: flex-start !important;
+}

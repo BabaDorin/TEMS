@@ -1,5 +1,5 @@
-<div class="min-h-screen bg-gray-50/50 dark:bg-[#1c1c1e] transition-colors duration-200">
-  <div class="max-w-5xl mx-auto p-4 sm:p-6">
+<div class="min-h-[calc(100dvh-4rem)] bg-gray-50/50 dark:bg-[#1c1c1e] transition-colors duration-200">
+  <div class="max-w-7xl mx-auto w-full p-4 sm:p-6">
     <div *ngIf="isLoadingTicket" class="flex items-center justify-center h-[60vh]">
       <div class="text-center">
         <svg class="animate-spin h-10 w-10 text-[#007aff] dark:text-[#0a84ff] mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -17,7 +17,7 @@
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
           <path d="M10 12L6 8L10 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
-        Back to Tickets
+        Go Back
       </button>
 
       <div class="bg-white dark:bg-[#2c2c2e] rounded-xl shadow-sm mb-4">
@@ -27,36 +27,51 @@
               <div class="flex items-center gap-2 flex-wrap">
                 <h1 class="text-2xl font-semibold text-gray-900 dark:text-white m-0">{{ ticket.humanReadableId }}</h1>
                 <span
-                  class="px-2.5 py-1 rounded-full text-xs font-semibold"
-                  [ngClass]="{
-                    'bg-red-100 text-red-800': ticket.priority === 'CRITICAL',
-                    'bg-orange-100 text-orange-800': ticket.priority === 'HIGH',
-                    'bg-yellow-100 text-yellow-800': ticket.priority === 'MEDIUM',
-                    'bg-gray-100 text-gray-800': ticket.priority === 'LOW'
-                  }">
-                  {{ ticket.priority }}
+                  class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold"
+                  [ngClass]="getPriorityBadgeClass(ticket.priority)">
+                  <span class="w-2 h-2 rounded-full" [ngClass]="getPriorityDotClass(ticket.priority)"></span>
+                  {{ getPriorityLabel(ticket.priority) }}
                 </span>
               </div>
-              <p class="text-sm text-gray-600 dark:text-gray-400 mt-1 mb-0 truncate">{{ ticket.summary }}</p>
+              <p class="text-sm text-gray-600 dark:text-gray-400 mt-1 mb-0 truncate">{{ ticket.title || ticket.summary }}</p>
             </div>
           </div>
 
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-4 pt-4 border-t border-gray-200 dark:border-[#38383a]">
-            <div>
-              <span class="text-xs text-gray-600 dark:text-gray-400 uppercase tracking-wide">Status</span>
-              <p class="text-sm font-medium text-gray-900 dark:text-white mt-1 mb-0">{{ ticket.currentStateId }}</p>
-            </div>
-            <div>
-              <span class="text-xs text-gray-600 dark:text-gray-400 uppercase tracking-wide">Channel</span>
-              <p class="text-sm font-medium text-gray-900 dark:text-white mt-1 mb-0">{{ ticket.reporter.channelSource }}</p>
-            </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4 pt-4 border-t border-gray-200 dark:border-[#38383a]">
             <div>
               <span class="text-xs text-gray-600 dark:text-gray-400 uppercase tracking-wide">Created</span>
-              <p class="text-sm font-medium text-gray-900 dark:text-white mt-1 mb-0">{{ ticket.auditMetadata?.createdAt | date:'MMM d, y, HH:mm' }}</p>
+              <p class="text-sm font-medium text-gray-900 dark:text-white mt-1 mb-0">{{ ticket.createdAt | date:'MMM d, y, HH:mm' }}</p>
             </div>
             <div>
-              <span class="text-xs text-gray-600 dark:text-gray-400 uppercase tracking-wide">Reporter</span>
-              <p class="text-sm font-medium text-gray-900 dark:text-white mt-1 mb-0">{{ ticket.reporter.userId }}</p>
+              <span class="text-xs text-gray-600 dark:text-gray-400 uppercase tracking-wide">Created By</span>
+              <button
+                type="button"
+                *ngIf="creatorUser; else creatorLoading"
+                (click)="openCreatorPreview()"
+                class="text-sm font-medium text-[#007aff] dark:text-[#0a84ff] mt-1 mb-0 hover:underline text-left transition">
+                {{ getCreatorDisplayName() }}
+              </button>
+              <ng-template #creatorLoading>
+                <p class="text-sm font-medium text-gray-900 dark:text-white mt-1 mb-0">
+                {{ creatorUserLoading ? 'Loading creator...' : 'Unknown user' }}
+                </p>
+              </ng-template>
+            </div>
+            <div>
+              <span class="text-xs text-gray-600 dark:text-gray-400 uppercase tracking-wide">Status</span>
+              <div *ngIf="canManageTickets && getTicketStatusOptions().length > 0; else statusReadOnly" class="mt-1.5 flex items-center gap-2">
+                <select
+                  [(ngModel)]="statusDraft"
+                  (ngModelChange)="onStatusDraftChanged($event)"
+                  [disabled]="isSavingStatus"
+                  class="min-w-0 flex-1 rounded-lg border border-gray-300 dark:border-[#48484a] bg-white dark:bg-[#3a3a3c] px-3 py-2 text-sm font-medium text-gray-900 dark:text-white focus:border-[#007aff] focus:ring-2 focus:ring-[#007aff]/20">
+                  <option *ngFor="let option of getTicketStatusOptions()" [value]="option.value">{{ option.label }}</option>
+                </select>
+              </div>
+              <p *ngIf="isSavingStatus" class="text-[11px] text-gray-500 dark:text-gray-400 mt-1">Saving...</p>
+              <ng-template #statusReadOnly>
+                <p class="text-sm font-medium text-gray-900 dark:text-white mt-1 mb-0">{{ getCurrentStatusLabel() }}</p>
+              </ng-template>
             </div>
           </div>
         </div>
@@ -95,9 +110,19 @@
               <p class="text-sm font-semibold text-gray-900 dark:text-white mt-1.5 mb-0">{{ ticketType?.name || 'Loading...' }}</p>
             </div>
 
+            <div *ngIf="ticket.aiSummary?.trim()" class="ai-summary-card rounded-xl border p-4">
+              <div class="flex items-center gap-2 mb-3">
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold tracking-wide uppercase ai-summary-badge">
+                  <i class="mdi mdi-robot-outline"></i>
+                  AI Summary
+                </span>
+              </div>
+              <div class="ai-summary-markdown text-sm leading-6" [innerHTML]="renderMarkdown(ticket.aiSummary)"></div>
+            </div>
+
             <div class="bg-white dark:bg-[#3a3a3c] rounded-xl border border-gray-200 dark:border-[#48484a] p-4">
-              <span class="text-xs text-gray-600 dark:text-gray-400 uppercase tracking-wide">Summary</span>
-              <p class="text-sm font-semibold text-gray-900 dark:text-white mt-1.5 mb-0">{{ ticket.summary }}</p>
+              <span class="text-xs text-gray-600 dark:text-gray-400 uppercase tracking-wide">User provided summary</span>
+              <p class="text-sm font-semibold text-gray-900 dark:text-white mt-1.5 mb-0 whitespace-pre-wrap">{{ ticket.summary }}</p>
             </div>
 
             <div *ngIf="getAttributeKeys().length > 0" class="bg-white dark:bg-[#3a3a3c] rounded-xl border border-gray-200 dark:border-[#48484a] p-4">
@@ -250,7 +275,7 @@
       <button
         (click)="goBack()"
         class="px-4 py-2 bg-[#007aff] text-white rounded-lg hover:bg-[#005fd1] transition">
-        Back to Tickets
+        Go Back
       </button>
     </div>
   </div>

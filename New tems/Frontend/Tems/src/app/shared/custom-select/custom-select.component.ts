@@ -1,4 +1,4 @@
-import { Component, Input, forwardRef, OnInit, OnDestroy, OnChanges, SimpleChanges, ChangeDetectionStrategy, ChangeDetectorRef, ElementRef, HostListener, ViewChild, NgZone } from '@angular/core';
+import { Component, Input, Output, EventEmitter, forwardRef, OnInit, OnDestroy, OnChanges, SimpleChanges, ChangeDetectionStrategy, ChangeDetectorRef, ElementRef, HostListener, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { DropdownManagerService } from './dropdown-manager.service';
@@ -34,6 +34,8 @@ export class CustomSelectComponent implements ControlValueAccessor, OnInit, OnDe
   @Input() allowEmpty: boolean = true;
   @Input() emptyLabel: string = 'None';
   @Input() mode: 'single' | 'multiple' = 'single';
+  @Input() loading: boolean = false;
+  @Output() searchTextChange = new EventEmitter<string>();
 
   instanceId: number;
   isOpen = false;
@@ -98,6 +100,7 @@ export class CustomSelectComponent implements ControlValueAccessor, OnInit, OnDe
 
     this.ngZone.runOutsideAngular(() => {
       document.addEventListener('scroll', this.onScrollCapture, true);
+      document.addEventListener('pointerdown', this.onPointerDownCapture, true);
     });
   }
 
@@ -110,12 +113,32 @@ export class CustomSelectComponent implements ControlValueAccessor, OnInit, OnDe
   ngOnDestroy() {
     this.subscription.unsubscribe();
     document.removeEventListener('scroll', this.onScrollCapture, true);
+    document.removeEventListener('pointerdown', this.onPointerDownCapture, true);
   }
 
   private onScrollCapture = () => {
     if (this.isOpen) {
       this.ngZone.run(() => {
         this.updateDropdownPosition();
+      });
+    }
+  };
+
+  private onPointerDownCapture = (event: Event) => {
+    if (!this.isOpen) return;
+
+    const path = typeof (event as any).composedPath === 'function'
+      ? (event as any).composedPath()
+      : [];
+    const clickedInside = path.length > 0
+      ? path.includes(this.elementRef.nativeElement)
+      : this.elementRef.nativeElement.contains(event.target);
+
+    if (!clickedInside) {
+      this.ngZone.run(() => {
+        this.isOpen = false;
+        this.searchText = '';
+        this.cdr.markForCheck();
       });
     }
   };
@@ -182,6 +205,12 @@ export class CustomSelectComponent implements ControlValueAccessor, OnInit, OnDe
     if (!this.isOpen) {
       this.searchText = '';
     }
+    this.cdr.markForCheck();
+  }
+
+  onSearchInputChange(value: string): void {
+    this.searchText = value;
+    this.searchTextChange.emit(value);
     this.cdr.markForCheck();
   }
 

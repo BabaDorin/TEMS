@@ -17,7 +17,8 @@ import { MenuService } from 'src/app/services/menu.service';
     TranslateModule,
     NgbCollapseModule
   ],
-  templateUrl: './sidebar.component.html'
+  templateUrl: './sidebar.component.html',
+  styleUrls: ['./sidebar.component.scss']
 })
 export class SidebarComponent implements OnInit {
   public uiBasicCollapsed = false;

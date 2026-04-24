@@ -1,5 +1,6 @@
 using MongoDB.Driver;
 using UserManagement.Infrastructure.Entities;
+using System.Text.RegularExpressions;
 
 namespace UserManagement.Infrastructure.Repositories;
 
@@ -33,6 +34,35 @@ public class UserRepository(IMongoDatabase database) : IUserRepository
         return await _users
             .Find(u => u.KeycloakId == keycloakId)
             .FirstOrDefaultAsync(cancellationToken);
+    }
+
+    public async Task<List<User>> SearchByNameAsync(string? searchText, int take, string? tenantId = null, CancellationToken cancellationToken = default)
+    {
+        var normalizedSearchText = searchText?.Trim() ?? string.Empty;
+        var safeTake = Math.Clamp(take, 1, 25);
+
+        var filters = new List<FilterDefinition<User>>();
+
+        if (!string.IsNullOrWhiteSpace(tenantId))
+        {
+            filters.Add(Builders<User>.Filter.AnyEq(u => u.TenantIds, tenantId));
+        }
+
+        if (!string.IsNullOrWhiteSpace(normalizedSearchText))
+        {
+            var escaped = Regex.Escape(normalizedSearchText);
+            filters.Add(Builders<User>.Filter.Regex(u => u.Name, new MongoDB.Bson.BsonRegularExpression(escaped, "i")));
+        }
+
+        var filter = filters.Count > 0
+            ? Builders<User>.Filter.And(filters)
+            : Builders<User>.Filter.Empty;
+
+        return await _users
+            .Find(filter)
+            .SortBy(u => u.Name)
+            .Limit(safeTake)
+            .ToListAsync(cancellationToken);
     }
 
     public async Task<(List<User> Users, int TotalCount)> GetAllAsync(int page, int pageSize, string? tenantId = null, CancellationToken cancellationToken = default)

@@ -20,9 +20,9 @@ import { AssetLabelComponent } from '../../asset/asset-label/asset-label.compone
 import { AddAssetComponent } from '../../asset/add-asset/add-asset.component';
 import { DownloadService } from 'src/app/download.service';
 import { CustomSelectComponent, SelectOption } from 'src/app/shared/custom-select/custom-select.component';
-import { ViewUserModalComponent } from '../../admin/user-management/view-user-modal/view-user-modal.component';
 import { RoomDetailModalComponent } from '../../location-module/room-detail-modal/room-detail-modal.component';
 import { LocationService } from 'src/app/services/location.service';
+import { AssetBulkActionModalComponent } from './asset-bulk-action-modal.component';
 
 @Component({
   selector: 'app-view-assets',
@@ -68,20 +68,24 @@ export class ViewAssetsComponent implements OnInit, OnDestroy {
   // Filtering
   selectedTypeIds: string[] = [];
   selectedDefinitionIds: string[] = [];
+  selectedDefinitionNames: string[] = [];
   typeOptions: SelectOption[] = [];
   definitionOptions: SelectOption[] = [];
   availableDefinitions: AssetDefinition[] = [];
+  validUserIds = new Set<string>();
   isFiltersExpanded = false;
   assetTagSearch = '';
   private assetTagSearchSubject = new Subject<string>();
   isDefinitionExpanded = false;
   isPurchaseInfoExpanded = false;
+  selectedAssigneeName = '';
+  selectedAssigneeValid = false;
 
   @ViewChild('assetLabel') assetLabelComponent: AssetLabelComponent;
 
   // Pagination
   currentPage = 1;
-  paginationPageSize = 50;
+  paginationPageSize = 20;
   totalCount = 0;
   totalPages = 0;
   
@@ -115,13 +119,19 @@ export class ViewAssetsComponent implements OnInit, OnDestroy {
       headerName: 'Asset Tag',
       field: 'assetTag',
       flex: 1,
-      minWidth: 120,
-      cellClass: 'font-medium cursor-pointer',
+      minWidth: 180,
+      cellClass: 'font-medium',
       onCellClicked: (params) => {
-        this.viewAssetDetails(params.data);
+        const target = params.event?.target as HTMLElement;
+        if (target?.closest('.asset-identifier-link')) {
+          this.navigateToDetail(params.data.id);
+        }
       },
       cellRenderer: (params: any) => {
-        return `<span class="text-blue-600 hover:text-blue-800">${params.value}</span>`;
+        const value = params.value || '—';
+        return `
+          <button class="asset-identifier-link text-blue-600 hover:text-blue-800 hover:underline">${value}</button>
+        `;
       }
     },
     {
@@ -197,7 +207,56 @@ export class ViewAssetsComponent implements OnInit, OnDestroy {
       field: 'assignment.assignedToUserName',
       flex: 1,
       minWidth: 150,
-      valueFormatter: (params) => params.value || '—'
+      onCellClicked: (params: any) => {
+        const target = params.event?.target as HTMLElement;
+        const userId = params.data?.assignment?.assignedToUserId;
+        if (target?.closest('.asset-assignee-link') && userId && this.validUserIds.has(userId)) {
+          this.router.navigate(['/users', userId]);
+        }
+      },
+      cellRenderer: (params: any) => {
+        const userId = params.data?.assignment?.assignedToUserId;
+        const userName = params.value || params.data?.assignment?.assignedToName || '—';
+
+        if (!userId || !this.validUserIds.has(userId)) {
+          return userName;
+        }
+
+        return `
+          <button class="asset-assignee-link inline-flex items-center gap-1.5 text-gray-900 hover:text-[#007aff] hover:underline cursor-pointer">
+            <svg width="13" height="13" viewBox="0 0 16 16" fill="none" class="text-gray-500">
+              <path d="M13.333 14v-1.333c0-1.473-1.194-2.667-2.666-2.667H5.333c-1.473 0-2.666 1.194-2.666 2.667V14M8 7.333c-1.473 0-2.667-1.194-2.667-2.666C5.333 3.194 6.527 2 8 2c1.473 0 2.667 1.194 2.667 2.667C10.667 6.139 9.473 7.333 8 7.333Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span>${userName}</span>
+          </button>
+        `;
+      }
+    },
+    {
+      headerName: 'Actions',
+      field: 'id',
+      flex: 0.7,
+      minWidth: 100,
+      sortable: false,
+      filter: false,
+      cellRenderer: () => {
+        return `
+          <div class="flex items-center justify-center h-full">
+            <button class="action-view-btn text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 cursor-pointer" title="Quick preview" aria-label="Quick preview">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M1.333 8s2.667-4 6.667-4 6.667 4 6.667 4-2.667 4-6.667 4-6.667-4-6.667-4Z" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="8" cy="8" r="2" stroke="currentColor" stroke-width="1.4"/>
+              </svg>
+            </button>
+          </div>
+        `;
+      },
+      onCellClicked: (params) => {
+        const target = params.event?.target as HTMLElement;
+        if (target?.closest('.action-view-btn')) {
+          this.viewAssetDetails(params.data);
+        }
+      }
     }
   ];
 
@@ -247,6 +306,7 @@ export class ViewAssetsComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.loadAssets();
     this.loadTypes();
+    this.loadValidUsers();
     
     // Setup debounced asset tag search
     this.assetTagSearchSubject.pipe(
@@ -309,26 +369,25 @@ export class ViewAssetsComponent implements OnInit, OnDestroy {
   }
 
   loadAssets() {
-    console.log('loadAssets called with:', {
-      selectedTypeIds: this.selectedTypeIds,
-      selectedDefinitionIds: this.selectedDefinitionIds,
-      assetTagSearch: this.assetTagSearch,
-      currentPage: this.currentPage,
-      pageSize: this.paginationPageSize
-    });
     this.assetService.getAll(
       this.selectedTypeIds.length > 0 ? this.selectedTypeIds : undefined,
       this.currentPage,
       this.paginationPageSize,
-      this.selectedDefinitionIds.length > 0 ? this.selectedDefinitionIds : undefined,
-      this.assetTagSearch && this.assetTagSearch.trim().length > 0 ? this.assetTagSearch.trim() : undefined
+      undefined,
+      this.assetTagSearch && this.assetTagSearch.trim().length > 0 ? this.assetTagSearch.trim() : undefined,
+      this.selectedDefinitionNames.length > 0 ? this.selectedDefinitionNames : undefined
     ).subscribe({
       next: (response) => {
-        console.log('Assets loaded:', response);
-        this.rowData = response.assets;
-        this.totalCount = response.totalCount;
-        this.totalPages = response.totalPages;
+        const filteredAssets = this.applyActiveFilters(response.assets);
+        const clientFilterAdjusted = filteredAssets.length !== response.assets.length;
+
+        this.rowData = filteredAssets;
+        this.totalCount = clientFilterAdjusted ? filteredAssets.length : response.totalCount;
+        this.totalPages = clientFilterAdjusted
+          ? Math.max(1, Math.ceil(filteredAssets.length / this.paginationPageSize))
+          : response.totalPages;
         this.currentPage = response.pageNumber;
+        this.updateDefinitionOptionsFromAssets(filteredAssets);
         
         // Force AG-Grid to update
         if (this.gridApi) {
@@ -342,13 +401,10 @@ export class ViewAssetsComponent implements OnInit, OnDestroy {
   }
 
   loadTypes() {
-    console.log('Loading asset types from API...');
     this.assetTypeService.getAll().subscribe({
       next: (types) => {
-        console.log('Raw types received:', types);
         this.assetTypes = types.filter(t => !t.isArchived);
         this.typeOptions = this.assetTypes.map(t => ({ value: t.id, label: t.name }));
-        console.log('Asset types loaded:', this.assetTypes);
       },
       error: (error) => {
         console.error('Error loading types:', error);
@@ -359,7 +415,7 @@ export class ViewAssetsComponent implements OnInit, OnDestroy {
   loadDefinitionsForType(typeId: string) {
     this.assetDefinitionService.getAll().subscribe({
       next: (definitions) => {
-        this.filteredDefinitions = definitions.filter(d => d.assetTypeId === typeId && !d.isArchived);
+        this.filteredDefinitions = definitions.filter(d => this.matchesAssetType(d, typeId) && !d.isArchived);
       },
       error: (error) => {
         console.error('Error loading definitions:', error);
@@ -443,6 +499,7 @@ export class ViewAssetsComponent implements OnInit, OnDestroy {
   viewAssetDetails(asset: Asset) {
     this.selectedAsset = asset;
     this.showPreviewModal = true;
+    this.resolveSelectedAssignee();
   }
 
   closePreviewModal() {
@@ -476,19 +533,34 @@ export class ViewAssetsComponent implements OnInit, OnDestroy {
     if (this.selectedTypeIds.length === 0) {
       this.availableDefinitions = [];
       this.selectedDefinitionIds = [];
+      this.selectedDefinitionNames = [];
+      this.definitionOptions = [];
       return;
     }
 
-    this.assetDefinitionService.getAll().subscribe({
+    this.assetDefinitionService.getAll(true).subscribe({
       next: (definitions) => {
         this.availableDefinitions = definitions.filter(d => 
-          this.selectedTypeIds.includes(d.assetTypeId) && !d.isArchived
+          this.selectedTypeIds.some((typeId) => this.matchesAssetType(d, typeId))
         );
-        this.definitionOptions = this.availableDefinitions.map(d => ({ value: d.id, label: d.name }));
-        // Clear selected definitions that are no longer available
-        this.selectedDefinitionIds = this.selectedDefinitionIds.filter(id =>
-          this.availableDefinitions.some(d => d.id === id)
-        );
+
+        this.assetService.getAll(this.selectedTypeIds, 1, 500).subscribe({
+          next: (response) => {
+            const catalogOptions = this.availableDefinitions.map(d => ({ value: d.name, label: d.name }));
+            this.definitionOptions = this.mergeDefinitionOptions(
+              catalogOptions,
+              this.getDefinitionOptionsFromAssets(response.assets)
+            );
+            this.selectedDefinitionIds = this.selectedDefinitionIds.filter((name) =>
+              this.definitionOptions.some((option) => option.value === name)
+            );
+            this.selectedDefinitionNames = [...this.selectedDefinitionIds];
+          },
+          error: () => {
+            this.definitionOptions = this.availableDefinitions.map(d => ({ value: d.name, label: d.name }));
+            this.selectedDefinitionNames = [...this.selectedDefinitionIds];
+          }
+        });
       },
       error: (error) => {
         console.error('Error loading definitions:', error);
@@ -505,6 +577,7 @@ export class ViewAssetsComponent implements OnInit, OnDestroy {
 
   onDefinitionSelectionChange(ids: string[]) {
     this.selectedDefinitionIds = ids;
+    this.selectedDefinitionNames = [...ids];
     this.currentPage = 1;
     this.loadAssets();
   }
@@ -512,6 +585,7 @@ export class ViewAssetsComponent implements OnInit, OnDestroy {
   clearFilters() {
     this.selectedTypeIds = [];
     this.selectedDefinitionIds = [];
+    this.selectedDefinitionNames = [];
     this.availableDefinitions = [];
     this.definitionOptions = [];
     this.assetTagSearch = '';
@@ -526,13 +600,45 @@ export class ViewAssetsComponent implements OnInit, OnDestroy {
   }
 
   assignToUser() {
-    console.log('Assign to user clicked', this.selectedAssets);
-    // TODO: Implement assign to user functionality
+    if (this.selectedAssets.length === 0) return;
+
+    const dialogRef = this.dialog.open(AssetBulkActionModalComponent, {
+      width: '520px',
+      maxWidth: '95vw',
+      panelClass: 'custom-dialog-container',
+      data: {
+        mode: 'user',
+        assets: this.selectedAssets
+      }
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result?.success) {
+        this.loadAssets();
+        this.selectedAssets = [];
+      }
+    });
   }
 
   moveToRoom() {
-    console.log('Move to room clicked', this.selectedAssets);
-    // TODO: Implement move to room functionality
+    if (this.selectedAssets.length === 0) return;
+
+    const dialogRef = this.dialog.open(AssetBulkActionModalComponent, {
+      width: '520px',
+      maxWidth: '95vw',
+      panelClass: 'custom-dialog-container',
+      data: {
+        mode: 'room',
+        assets: this.selectedAssets
+      }
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result?.success) {
+        this.loadAssets();
+        this.selectedAssets = [];
+      }
+    });
   }
 
   getLocationString(location: any, asset?: Asset): string {
@@ -563,18 +669,9 @@ export class ViewAssetsComponent implements OnInit, OnDestroy {
     return !!(assetData as any)?.locationId;
   }
 
-  openAssigneeModal() {
-    if (!this.selectedAsset?.assignment?.assignedToUserId) return;
-    this.userService.getUserById(this.selectedAsset.assignment.assignedToUserId).subscribe({
-      next: (user) => {
-        this.dialog.open(ViewUserModalComponent, {
-          width: '520px',
-          maxWidth: '95vw',
-          data: { user },
-          panelClass: 'custom-dialog-container'
-        });
-      }
-    });
+  navigateToAssignee() {
+    if (!this.selectedAsset?.assignment?.assignedToUserId || !this.selectedAssigneeValid) return;
+    this.router.navigate(['/users', this.selectedAsset.assignment.assignedToUserId]);
   }
 
   openLocationModal() {
@@ -592,8 +689,110 @@ export class ViewAssetsComponent implements OnInit, OnDestroy {
   }
 
   getAssigneeName(): string {
-    if (!this.selectedAsset?.assignment) return '';
-    const a = this.selectedAsset.assignment;
-    return a.assignedToUserName || '';
+    return this.selectedAssigneeName;
+  }
+
+  private resolveSelectedAssignee() {
+    this.selectedAssigneeName = '';
+    this.selectedAssigneeValid = false;
+
+    const assignedUserId = this.selectedAsset?.assignment?.assignedToUserId;
+    if (!assignedUserId) return;
+
+    this.userService.getUserById(assignedUserId).subscribe({
+      next: (user) => {
+        const fullName = [user.firstName, user.lastName].filter(Boolean).join(' ').trim();
+        this.selectedAssigneeName = fullName || user.username || user.email || this.selectedAsset?.assignment?.assignedToUserName || '';
+        this.selectedAssigneeValid = this.selectedAssigneeName.trim().length > 0;
+      },
+      error: () => {
+        this.selectedAssigneeName = '';
+        this.selectedAssigneeValid = false;
+      }
+    });
+  }
+
+  private loadValidUsers() {
+    this.userService.getAllUsers(1, 500).subscribe({
+      next: (response) => {
+        this.validUserIds = new Set((response.users ?? []).map((user) => user.id));
+        this.gridApi?.refreshCells({ force: true });
+      },
+      error: () => {
+        this.validUserIds.clear();
+        this.gridApi?.refreshCells({ force: true });
+      }
+    });
+  }
+
+  private matchesAssetType(definition: AssetDefinition, typeId: string): boolean {
+    const def = definition as any;
+    return def.assetTypeId === typeId || def.asset_type_id === typeId || def.assetType?.id === typeId;
+  }
+
+  private getDefinitionOptionsFromAssets(assets: Asset[]): SelectOption[] {
+    const options = new Map<string, SelectOption>();
+
+    assets.forEach((asset) => {
+      const definitionName = asset.definition?.name?.trim();
+      const typeId = asset.definition?.assetTypeId;
+
+      if (!definitionName || !typeId || !this.selectedTypeIds.includes(typeId)) {
+        return;
+      }
+
+      options.set(definitionName, { value: definitionName, label: definitionName });
+    });
+
+    return Array.from(options.values()).sort((left, right) => left.label.localeCompare(right.label));
+  }
+
+  private mergeDefinitionOptions(...groups: SelectOption[][]): SelectOption[] {
+    const merged = new Map<string, SelectOption>();
+
+    groups.flat().forEach((option) => {
+      merged.set(option.value, option);
+    });
+
+    return Array.from(merged.values()).sort((left, right) => left.label.localeCompare(right.label));
+  }
+
+  private updateDefinitionOptionsFromAssets(assets: Asset[]) {
+    if (this.selectedTypeIds.length === 0) {
+      return;
+    }
+
+    this.definitionOptions = this.mergeDefinitionOptions(
+      this.definitionOptions,
+      this.getDefinitionOptionsFromAssets(assets)
+    );
+  }
+
+  private applyActiveFilters(assets: Asset[]): Asset[] {
+    return assets.filter((asset) => {
+      if (this.selectedTypeIds.length > 0) {
+        const assetTypeId = asset.definition?.assetTypeId?.trim();
+        if (!assetTypeId || !this.selectedTypeIds.includes(assetTypeId)) {
+          return false;
+        }
+      }
+
+      if (this.selectedDefinitionNames.length > 0) {
+        const definitionName = asset.definition?.name?.trim().toLowerCase();
+        const selectedNames = this.selectedDefinitionNames.map((name) => name.trim().toLowerCase());
+        if (!definitionName || !selectedNames.includes(definitionName)) {
+          return false;
+        }
+      }
+
+      if (this.assetTagSearch.trim().length > 0) {
+        const assetTag = asset.assetTag?.toLowerCase() ?? '';
+        if (!assetTag.includes(this.assetTagSearch.trim().toLowerCase())) {
+          return false;
+        }
+      }
+
+      return true;
+    });
   }
 }

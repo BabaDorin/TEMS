@@ -108,7 +108,7 @@
         <input
           type="text"
           formControlName="initialStateId"
-          placeholder="e.g., new, open, analyzing"
+          placeholder="e.g., new, in-progress, closed"
           class="w-full px-4 py-2 border border-gray-300 dark:border-[#48484a] dark:bg-[#3a3a3c] dark:text-white rounded-lg focus:ring-2 focus:ring-gray-900 dark:focus:ring-[#007aff] focus:border-transparent"
           [class.border-red-500]="createForm.get('initialStateId')?.invalid && createForm.get('initialStateId')?.touched">
         <p *ngIf="createForm.get('initialStateId')?.invalid && createForm.get('initialStateId')?.touched" class="text-red-500 text-sm mt-1">

@@ -43,6 +43,10 @@ interface GetAllRoomsResponse {
   success: boolean;
   message?: string;
   data: RoomDtoFromBackend[];
+  totalCount: number;
+  pageNumber: number;
+  pageSize: number;
+  totalPages: number;
 }
 
 @Injectable({
@@ -78,7 +82,13 @@ export class LocationService {
   }
 
   // Get rooms with hierarchy (optionally filtered by siteId and/or buildingId)
-  getRoomsWithHierarchy(siteId?: string, buildingId?: string): Observable<RoomWithHierarchy[]> {
+  getRoomsWithHierarchy(
+    siteId?: string,
+    buildingId?: string,
+    pageNumber: number = 1,
+    pageSize: number = 20,
+    searchText?: string
+  ): Observable<GetAllRoomsResponse> {
     let params = new HttpParams();
     if (siteId) {
       params = params.set('siteId', siteId);
@@ -86,34 +96,16 @@ export class LocationService {
     if (buildingId) {
       params = params.set('buildingId', buildingId);
     }
+    params = params.set('pageNumber', pageNumber.toString());
+    params = params.set('pageSize', pageSize.toString());
+    if (searchText && searchText.trim().length > 0) {
+      params = params.set('searchText', searchText.trim());
+    }
 
     return this.http.get<GetAllRoomsResponse>(`${this.baseUrl}/rooms`, {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
       params
-    }).pipe(
-      map(response => {
-        if (!response.data) return [];
-        
-        return response.data.map(room => ({
-          id: room.id,
-          buildingId: room.buildingId,
-          name: room.name,
-          roomNumber: room.roomNumber,
-          floorLabel: room.floorLabel,
-          type: room.type as any,
-          capacity: room.capacity,
-          area: room.area,
-          status: room.status as any,
-          description: room.description,
-          createdAt: new Date(room.createdAt),
-          updatedAt: new Date(room.updatedAt),
-          siteName: room.siteName,
-          siteId: room.siteId,
-          buildingName: room.buildingName,
-          assetCounts: room.assetCounts
-        }));
-      })
-    );
+    });
   }
 
   // Get room by ID
@@ -153,10 +145,34 @@ export class LocationService {
   }
 
   // Get assets by room ID
-  getAssetsByRoom(roomId: string, pageNumber: number = 1, pageSize: number = 50): Observable<any> {
-    const params = new HttpParams()
+  getAssetsByRoom(
+    roomId: string,
+    pageNumber: number = 1,
+    pageSize: number = 20,
+    assetTag?: string,
+    assetTypeIds?: string[],
+    definitionIds?: string[],
+    definitionNames?: string[]
+  ): Observable<any> {
+    let params = new HttpParams()
       .set('pageNumber', pageNumber.toString())
       .set('pageSize', pageSize.toString());
+
+    if (assetTag && assetTag.trim().length > 0) {
+      params = params.set('assetTag', assetTag.trim());
+    }
+
+    if (assetTypeIds && assetTypeIds.length > 0) {
+      params = params.set('assetTypeIds', assetTypeIds.join(','));
+    }
+
+    if (definitionIds && definitionIds.length > 0) {
+      params = params.set('definitionIds', definitionIds.join(','));
+    }
+
+    if (definitionNames && definitionNames.length > 0) {
+      params = params.set('definitionNames', definitionNames.join(','));
+    }
 
     return this.http.get<any>(`${this.baseUrl}/rooms/${roomId}/assets`, {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' }),

@@ -66,6 +66,7 @@ export interface UserAssetsResponse {
   totalCount: number;
   pageNumber: number;
   pageSize: number;
+  totalPages?: number;
 }
 
 export interface UserAssetDto {
@@ -98,4 +99,11 @@ export interface UserAssetDto {
 
 export interface UserAssetCountResponse {
   count: number;
+}
+
+export interface UserLookupDto {
+  id: string;
+  name: string;
+  email: string;
+  displayName: string;
 }

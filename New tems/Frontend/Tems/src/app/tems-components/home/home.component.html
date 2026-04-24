@@ -1,7 +1,7 @@
 <ng-container *ngIf="isAuthenticated; else loggedOutHome">
   <!-- Welcome Header -->
   <div class="bg-white dark:bg-[#2c2c2e] border-b border-gray-200 dark:border-[#38383a]" @fadeInUp>
-    <div class="max-w-5xl mx-auto px-4 py-8">
+    <div class="max-w-7xl mx-auto px-4 py-8">
       <div class="flex items-center justify-between">
         <div>
           <h1 class="text-3xl font-semibold text-gray-900 dark:text-white mb-2" style="letter-spacing: -0.5px;">
@@ -21,7 +21,7 @@
 
   <!-- Stats Section -->
   <div class="bg-[#f5f5f7] dark:bg-[#1c1c1e] py-6 border-b border-gray-200 dark:border-[#38383a]">
-    <div class="max-w-5xl mx-auto px-4">
+    <div class="max-w-7xl mx-auto px-4">
       <div class="grid grid-cols-2 md:grid-cols-4 gap-3" [@staggerFadeIn]="stats.length">
         <div *ngFor="let stat of stats"
           class="bg-white dark:bg-[#2c2c2e] rounded-lg p-4 border border-gray-200 dark:border-[#38383a]">
@@ -45,7 +45,7 @@
 
   <!-- Main Content -->
   <div class="bg-[#f5f5f7] dark:bg-[#1c1c1e] py-8">
-    <div class="max-w-5xl mx-auto px-4">
+    <div class="max-w-7xl mx-auto px-4">
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <div class="lg:col-span-2 space-y-4">
           <div class="flex items-center justify-between mb-2">
@@ -103,12 +103,12 @@
 </ng-container>
 
 <ng-template #loggedOutHome>
-  <section class="relative overflow-hidden bg-[#f4f7fb] dark:bg-[#121417] min-h-[calc(100vh-64px)]">
+  <section class="relative overflow-hidden bg-[#f4f7fb] dark:bg-[#121417] min-h-[calc(100vh-4rem)] flex items-center">
     <div class="ambient-shape shape-a"></div>
     <div class="ambient-shape shape-b"></div>
     <div class="ambient-shape shape-c"></div>
 
-    <div class="relative max-w-5xl mx-auto px-4 py-14 sm:py-20">
+    <div class="relative max-w-7xl mx-auto w-full px-4 py-8 sm:py-10">
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
         <div @fadeInUp>
           <p class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-white/80 dark:bg-white/10 text-[#1f4f84] dark:text-[#91c2ff] border border-white/60 dark:border-white/10">

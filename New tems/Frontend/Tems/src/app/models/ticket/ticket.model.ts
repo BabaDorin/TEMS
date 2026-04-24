@@ -3,13 +3,18 @@ export interface Ticket {
   tenantId: string;
   ticketTypeId: string;
   humanReadableId: string;
+  title: string;
   summary: string;
+  aiSummary?: string;
   currentStateId: string;
   priority: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
   reporter: Reporter;
   assigneeId?: string;
   attributes: { [key: string]: any };
-  auditMetadata: AuditMetadata;
+  createdAt: string;
+  updatedAt: string;
+  resolvedAt?: string | null;
+  auditMetadata?: AuditMetadata;
   assetIds?: string[];
 }
 
@@ -20,13 +25,14 @@ export interface Reporter {
 }
 
 export interface AuditMetadata {
-  createdAt: Date;
-  updatedAt: Date;
-  resolvedAt?: Date;
+  createdAt: string | Date;
+  updatedAt: string | Date;
+  resolvedAt?: string | Date;
 }
 
 export interface CreateTicketRequest {
   ticketTypeId: string;
+  title: string;
   summary: string;
   priority: string;
   reporter: Reporter;

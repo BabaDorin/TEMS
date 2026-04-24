@@ -1,104 +1,122 @@
-<div class="w-full max-w-4xl min-w-[360px] md:min-w-[720px] mx-auto" [ngClass]="dialogRef ? '' : 'py-8 px-4'">
-  <div class="relative bg-white dark:bg-[#2c2c2e] rounded-2xl shadow-xl overflow-visible">
-    <div class="px-6 py-4 border-b border-gray-200 dark:border-[#38383a] flex items-center justify-between">
-        <div>
-          <h2 class="text-xl font-semibold text-gray-900 dark:text-white m-0">{{ updateTypeId ? 'Update Type' : 'Add New Type' }}</h2>
-        </div>
-        <button *ngIf="dialogRef" type="button" (click)="dialogRef.close()" aria-label="Close"
-          class="w-9 h-9 flex items-center justify-center rounded-full bg-gray-100 dark:bg-[#3a3a3c] hover:bg-gray-200 dark:hover:bg-[#48484a] text-gray-600 dark:text-gray-300 transition shadow-sm">
-          <span class="text-lg leading-none">×</span>
-        </button>
+<div class="tems-asset-dialog tems-asset-modal-card tems-asset-modal-card--narrow mx-auto" [ngClass]="dialogRef ? '' : 'my-8'">
+  <div class="tems-asset-modal-header">
+    <div>
+      <div class="tems-asset-eyebrow">
+        <i class="mdi mdi-shape-outline"></i>
+        <span>{{ updateTypeId ? 'Edit type' : 'New type' }}</span>
+      </div>
+      <h2 class="text-xl font-semibold text-[color:var(--text-primary)] m-0 mt-2">
+        {{ updateTypeId ? 'Update asset type' : 'Create asset type' }}
+      </h2>
+      <p class="tems-asset-help mt-1">Define the structure and property requirements for this type.</p>
+    </div>
+
+    <button *ngIf="dialogRef" type="button" (click)="dialogRef.close()" aria-label="Close" class="tems-asset-cell-action">
+      <span class="text-lg leading-none">×</span>
+    </button>
+  </div>
+
+  <form [formGroup]="formGroup" (ngSubmit)="onSubmit()" class="tems-asset-modal-body">
+    <div class="tems-asset-section">
+      <div class="tems-asset-field">
+        <label>Type name *</label>
+        <input formControlName="name" type="text" placeholder="Laptop" maxlength="100" class="tems-asset-input">
       </div>
 
-      <form [formGroup]="formGroup" (ngSubmit)="onSubmit()" class="px-6 py-6 space-y-6 overflow-visible">
-        <div class="space-y-3">
-          <label class="block text-sm font-medium text-gray-800 dark:text-gray-200">Type name *</label>
-          <input formControlName="name" type="text" placeholder="Laptop" maxlength="100"
-            class="w-full rounded-xl border border-gray-200 dark:border-[#48484a] bg-white dark:bg-[#3a3a3c] text-gray-900 dark:text-white px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#007aff] focus:border-[#007aff]"
-            [class.border-red-400]="formGroup.get('name')?.invalid && formGroup.get('name')?.touched">
-        </div>
+      <div class="tems-asset-field">
+        <label>Description</label>
+        <textarea formControlName="description" rows="2" placeholder="Optional description" class="tems-asset-textarea"></textarea>
+      </div>
 
-        <div class="space-y-3">
-          <label class="block text-sm font-medium text-gray-800 dark:text-gray-200">Description</label>
-          <textarea formControlName="description" rows="2" placeholder="Optional description"
-            class="w-full rounded-xl border border-gray-200 dark:border-[#48484a] bg-white dark:bg-[#3a3a3c] text-gray-900 dark:text-white px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#007aff] focus:border-[#007aff]"></textarea>
-        </div>
+      <div class="tems-asset-field">
+        <label>Parent type</label>
+        <app-custom-select 
+          formControlName="parentTypeId"
+          [options]="parentTypeOptions"
+          [mode]="'single'"
+          [searchable]="true"
+          placeholder="Select parent type"
+          [allowEmpty]="true"
+          emptyLabel="None">
+        </app-custom-select>
+      </div>
+    </div>
 
-        <div class="space-y-3">
-          <label class="block text-sm font-medium text-gray-800 dark:text-gray-200">Parent type (optional)</label>
-          <app-custom-select 
-            formControlName="parentTypeId"
-            [options]="parentTypeOptions"
-            placeholder="Select parent type"
-            [allowEmpty]="true"
-            emptyLabel="None">
-          </app-custom-select>
-        </div>
+    <div class="tems-asset-section mt-6">
+      <div>
+        <p class="tems-asset-label m-0">Properties</p>
+        <p class="tems-asset-help m-0">Pick properties and decide which ones are required.</p>
+      </div>
 
-        <div class="space-y-3">
-          <div>
-            <p class="text-sm font-medium text-gray-800 dark:text-gray-200 m-0">Properties</p>
-            <p class="text-xs text-gray-500 dark:text-gray-400 m-0">Pick properties and mark required. Order follows the sequence you add them.</p>
-          </div>
+      <div *ngIf="propertyRows.length === 0" class="tems-asset-empty">
+        No properties yet. Add a property to define the type structure.
+      </div>
 
-          <div *ngIf="propertyRows.length === 0" class="text-center py-3">
-            <p class="text-sm font-medium text-gray-800 dark:text-gray-200 m-0">No properties yet</p>
-            <p class="text-sm text-gray-500 dark:text-gray-400 m-0 mt-1">Add properties to this type to capture specific attributes.</p>
-          </div>
-
-          <div class="space-y-4" *ngIf="propertyRows.length > 0">
-            <div *ngFor="let group of propertyRowGroups; let i = index; trackBy: trackByIndex" [formGroup]="group"
-              class="relative border border-gray-100 dark:border-[#48484a] rounded-2xl p-4 bg-white dark:bg-[#3a3a3c] shadow-[0_6px_18px_rgba(0,0,0,0.05)] dark:shadow-[0_6px_18px_rgba(0,0,0,0.2)]">
-              <button type="button" (click)="removePropertyRow(i)" aria-label="Remove"
-                class="absolute top-3 right-3 inline-flex items-center justify-center w-7 h-7 rounded-full bg-white dark:bg-[#2c2c2e] border border-gray-200 dark:border-[#48484a] text-gray-500 dark:text-gray-400 hover:text-red-500 hover:border-red-300 dark:hover:border-red-500 shadow-sm transition text-lg">
-                ×
-              </button>
-              <div class="pr-10">
-                <div class="flex items-center justify-between mb-2">
-                  <label class="text-xs text-gray-600 dark:text-gray-400">Property</label>
-                  <span class="text-xs text-gray-600 dark:text-gray-400">Required</span>
-                </div>
-                <div class="flex items-center gap-4">
-                  <div class="flex-1">
-                    <app-custom-select 
-                      formControlName="propertyId"
-                      [options]="propertyOptions"
-                      placeholder="Select property"
-                      [allowEmpty]="false">
-                    </app-custom-select>
-                  </div>
-                  <label class="relative inline-flex items-center h-7 w-14 cursor-pointer rounded-full border border-gray-200 dark:border-[#48484a] bg-white dark:bg-[#2c2c2e] shadow-sm">
-                    <input type="checkbox" formControlName="isRequired" class="sr-only peer">
-                    <span class="absolute inset-0 rounded-full bg-gray-200 dark:bg-[#48484a] peer-checked:bg-[#0a84ff] transition"></span>
-                    <span class="absolute left-1 top-1 h-5 w-5 rounded-full bg-white shadow peer-checked:translate-x-7 transition"></span>
-                  </label>
-                </div>
+      <div class="tems-asset-grid" *ngIf="propertyRows.length > 0">
+        <div *ngFor="let group of propertyRowGroups; let i = index; trackBy: trackByIndex" [formGroup]="group"
+          class="rounded-[1.15rem] border border-[color:var(--border-secondary)] bg-[color:var(--bg-secondary)] p-4">
+          <div class="pr-10">
+            <div class="flex items-center justify-between mb-2">
+              <label class="text-xs text-[color:var(--text-secondary)]">Property</label>
+              <span class="text-xs text-[color:var(--text-secondary)]">Required</span>
+            </div>
+            <div class="flex items-center gap-4">
+              <div class="flex-1">
+                <app-custom-select 
+                  formControlName="propertyId"
+                  [options]="propertyOptions"
+                  [mode]="'single'"
+                  [searchable]="true"
+                  placeholder="Select property"
+                  [allowEmpty]="false">
+                </app-custom-select>
               </div>
+              <label class="relative inline-flex items-center h-7 w-14 cursor-pointer rounded-full border border-[color:var(--border-primary)] bg-[color:var(--bg-elevated)] shadow-sm">
+                <input type="checkbox" formControlName="isRequired" class="sr-only peer">
+                <span class="absolute inset-0 rounded-full bg-gray-200 dark:bg-[#48484a] peer-checked:bg-[#0a84ff] transition"></span>
+                <span class="absolute left-1 top-1 h-5 w-5 rounded-full bg-white shadow peer-checked:translate-x-7 transition"></span>
+              </label>
             </div>
           </div>
 
-          <div class="flex justify-center pt-2">
-            <button type="button" (click)="addPropertyRow()"
-              class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold text-white bg-[#0a84ff] shadow-sm hover:bg-[#006edc] active:bg-[#005bb5] transition">
-              <span class="text-base leading-none">＋</span>
-              Add property
+          <div class="mt-4 grid grid-cols-2 gap-3">
+            <div class="tems-asset-field">
+              <label class="text-xs">Display order</label>
+              <input type="number" formControlName="displayOrder" class="tems-asset-input">
+            </div>
+            <div class="tems-asset-field">
+              <label class="text-xs">Default value</label>
+              <input type="text" formControlName="defaultValue" class="tems-asset-input">
+            </div>
+          </div>
+
+          <div class="mt-3 flex justify-end">
+            <button type="button" (click)="removePropertyRow(i)" aria-label="Remove" class="tems-asset-cell-action tems-asset-cell-action--danger">
+              Remove
             </button>
           </div>
         </div>
+      </div>
 
-        <div class="flex items-center justify-between gap-3 pt-2">
-          <div class="text-sm text-red-600 dark:text-red-400" *ngIf="shouldShowClientError">
-            Please enter a type name and select a property for every row.
-          </div>
-          <div class="text-sm text-red-600 dark:text-red-400" *ngIf="serverError">{{ serverError }}</div>
-          <div class="flex gap-3 ml-auto">
-          <button type="button" *ngIf="dialogRef" (click)="dialogRef.close()"
-            class="px-4 py-2 rounded-lg border border-gray-300 dark:border-[#48484a] text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-[#3a3a3c]">Cancel</button>
-          <button type="submit"
-            class="px-4 py-2 rounded-lg bg-[#007aff] text-white text-sm font-medium hover:bg-[#0061d5] transition disabled:bg-gray-300 dark:disabled:bg-gray-600"
-            [disabled]="!canSubmit">Save</button>
-          </div>
-        </div>
-      </form>
+      <div class="flex justify-center pt-1">
+        <button type="button" (click)="addPropertyRow()" class="tems-btn tems-btn-secondary">
+          <i class="mdi mdi-plus"></i>
+          <span>Add property</span>
+        </button>
+      </div>
     </div>
-  </div>
+
+    <div class="flex items-center justify-between gap-3 pt-2">
+      <div class="text-sm text-red-600 dark:text-red-400" *ngIf="shouldShowClientError">
+        Please enter a type name and select a property for every row.
+      </div>
+      <div class="text-sm text-red-600 dark:text-red-400" *ngIf="serverError">{{ serverError }}</div>
+      <div class="flex gap-3 ml-auto">
+        <button type="button" *ngIf="dialogRef" (click)="dialogRef.close()" class="tems-btn tems-btn-secondary">
+          Cancel
+        </button>
+        <button type="submit" class="tems-btn tems-btn-primary" [disabled]="!canSubmit">Save</button>
+      </div>
+    </div>
+  </form>
+</div>

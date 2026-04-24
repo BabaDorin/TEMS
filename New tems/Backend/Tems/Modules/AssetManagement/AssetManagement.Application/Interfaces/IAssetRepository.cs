@@ -12,6 +12,7 @@ public interface IAssetRepository
         int pageNumber = 1,
         int pageSize = 20,
         List<string>? definitionIds = null,
+        List<string>? definitionNames = null,
         string? assetTag = null,
         string? locationId = null,
         string? assignedToUserId = null,

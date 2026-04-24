@@ -32,6 +32,7 @@ export class AppComponent extends TEMSComponent implements OnInit{
   isLoading: boolean;
   private routeShowsLayout: boolean = true;
   private isAuthenticated: boolean = false;
+  private readonly fullScreenRoutes = ['/home'];
 
   constructor(
     public translate: TranslateService,
@@ -66,7 +67,7 @@ export class AppComponent extends TEMSComponent implements OnInit{
         } else {
           this.routeShowsLayout = true;
           this.showSidebar = this.isAuthenticated;
-          this.showFooter = true;
+          this.showFooter = !this.fullScreenRoutes.includes(event['url']);
           this.showNavbar = true;
           document.querySelector('.main-panel').classList.remove('w-100');
           document.querySelector('.page-body-wrapper').classList.remove('full-page-wrapper');
@@ -112,6 +113,7 @@ export class AppComponent extends TEMSComponent implements OnInit{
         this.isAuthenticated = isAuth;
         this.showNavbar = this.routeShowsLayout;
         this.showSidebar = this.routeShowsLayout && isAuth;
+        this.showFooter = this.routeShowsLayout && !this.fullScreenRoutes.includes(this.router.url);
       })
     );
 

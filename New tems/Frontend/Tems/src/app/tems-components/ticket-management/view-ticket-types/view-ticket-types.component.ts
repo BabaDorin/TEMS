@@ -76,19 +76,28 @@ export class ViewTicketTypesComponent implements OnInit {
     },
     {
       headerName: 'Actions',
+      field: 'ticketTypeId',
       flex: 0.7,
       minWidth: 100,
+      sortable: false,
+      filter: false,
       cellRenderer: (params: any) => {
         return `
-          <button class="action-delete-btn px-2 py-1 text-red-600 hover:text-red-800 text-sm">
-            Delete
-          </button>
+          <div class="flex items-center justify-center h-full">
+            <button class="action-view-btn text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 cursor-pointer" title="Quick preview" aria-label="Quick preview">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M1.333 8s2.667-4 6.667-4 6.667 4 6.667 4-2.667 4-6.667 4-6.667-4-6.667-4Z" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="8" cy="8" r="2" stroke="currentColor" stroke-width="1.4"/>
+              </svg>
+            </button>
+          </div>
         `;
       },
       onCellClicked: (params) => {
         const target = params.event?.target as HTMLElement;
-        if (target.classList.contains('action-delete-btn')) {
-          this.deleteTicketType(params.data.ticketTypeId);
+        if (target?.closest('.action-view-btn')) {
+          this.selectedTicketType = params.data;
+          this.showDetailsModal = true;
         }
       }
     }
@@ -158,7 +167,7 @@ export class ViewTicketTypesComponent implements OnInit {
 
   onRowClicked(event: any): void {
     const target = event.event?.target as HTMLElement;
-    if (!target.classList.contains('action-delete-btn')) {
+    if (!target?.closest('.action-view-btn')) {
       this.selectedTicketType = event.data;
       this.showDetailsModal = true;
     }
@@ -216,7 +225,7 @@ export class ViewTicketTypesComponent implements OnInit {
         states: [
           {
             id: formValue.initialStateId,
-            label: formValue.initialStateId.charAt(0).toUpperCase() + formValue.initialStateId.slice(1),
+            label: this.formatWorkflowStateLabel(formValue.initialStateId),
             type: 'OPEN',
             allowedTransitions: []
           }
@@ -256,5 +265,15 @@ export class ViewTicketTypesComponent implements OnInit {
         console.error('Error deleting ticket type:', error);
       }
     });
+  }
+
+  private formatWorkflowStateLabel(stateId: string): string {
+    return (stateId || '')
+      .trim()
+      .replace(/[_-]+/g, ' ')
+      .split(' ')
+      .filter(Boolean)
+      .map((part) => part.charAt(0).toUpperCase() + part.slice(1).toLowerCase())
+      .join(' ');
   }
 }

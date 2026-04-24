@@ -6,7 +6,9 @@ public class Ticket
     public string TenantId { get; set; } = string.Empty;
     public string TicketTypeId { get; set; } = string.Empty;
     public string HumanReadableId { get; set; } = string.Empty;
+    public string Title { get; set; } = string.Empty;
     public string Summary { get; set; } = string.Empty;
+    public string? AiSummary { get; set; }
     public string CurrentStateId { get; set; } = string.Empty;
     public string Priority { get; set; } = string.Empty;
     public Reporter Reporter { get; set; } = new();

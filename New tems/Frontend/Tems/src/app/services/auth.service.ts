@@ -157,8 +157,6 @@ export class AuthService implements OnDestroy {
     
     this.stopTokenRefreshTimer();
     this.oauthService.logOut();
-    localStorage.clear();
-    sessionStorage.clear();
     this.isAuthenticatedSubject.next(false);
     window.location.href = '/home';
   }

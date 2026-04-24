@@ -13,8 +13,10 @@ export class AssetDefinitionService {
 
   constructor(private http: HttpClient) {}
 
-  getAll(): Observable<AssetDefinition[]> {
-    return this.http.get<{ assetDefinitions: AssetDefinition[] }>(this.baseUrl, {
+  getAll(includeArchived: boolean = false): Observable<AssetDefinition[]> {
+    const url = includeArchived ? `${this.baseUrl}?includeArchived=true` : this.baseUrl;
+
+    return this.http.get<{ assetDefinitions: AssetDefinition[] }>(url, {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' })
     }).pipe(
       map(response => response.assetDefinitions)

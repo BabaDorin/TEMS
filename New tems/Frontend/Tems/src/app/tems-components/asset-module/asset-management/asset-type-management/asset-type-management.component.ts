@@ -63,7 +63,7 @@ export class AssetTypeManagementComponent implements OnInit {
       minWidth: 100,
       cellRenderer: (params: any) => {
         const isArchived = params.value;
-        const className = isArchived ? 'text-gray-600' : 'text-green-600';
+        const className = isArchived ? 'tems-asset-chip tems-asset-chip--archived' : 'tems-asset-chip tems-asset-chip--active';
         return `<span class="${className}">${isArchived ? 'Archived' : 'Active'}</span>`;
       }
     },
@@ -73,10 +73,10 @@ export class AssetTypeManagementComponent implements OnInit {
       minWidth: 150,
       cellRenderer: (params: any) => {
         return `
-          <button class="action-edit-btn px-2 py-1 text-blue-600 hover:text-blue-800 text-sm mr-2">
+          <button class="tems-asset-cell-action action-edit-btn mr-2">
             Edit
           </button>
-          <button class="action-delete-btn px-2 py-1 text-red-600 hover:text-red-800 text-sm">
+          <button class="tems-asset-cell-action tems-asset-cell-action--danger action-delete-btn">
             Delete
           </button>
         `;

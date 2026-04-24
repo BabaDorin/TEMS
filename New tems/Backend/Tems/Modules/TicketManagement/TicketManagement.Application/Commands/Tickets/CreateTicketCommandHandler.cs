@@ -3,6 +3,7 @@ using System.Text.Json;
 using Tems.Common.Tenant;
 using TicketManagement.Application.Domain;
 using TicketManagement.Application.Interfaces;
+using TicketManagement.Application.Models;
 using TicketManagement.Contract.Commands.Tickets;
 using TicketManagement.Contract.Responses;
 
@@ -13,17 +14,20 @@ public class CreateTicketCommandHandler : IRequestHandler<CreateTicketCommand, C
     private readonly ITicketRepository _ticketRepository;
     private readonly ITicketTypeRepository _ticketTypeRepository;
     private readonly ITicketConversationRepository _conversationRepository;
+    private readonly ITicketAiSummaryQueue _ticketAiSummaryQueue;
     private readonly ITenantContext _tenantContext;
 
     public CreateTicketCommandHandler(
         ITicketRepository ticketRepository,
         ITicketTypeRepository ticketTypeRepository,
         ITicketConversationRepository conversationRepository,
+        ITicketAiSummaryQueue ticketAiSummaryQueue,
         ITenantContext tenantContext)
     {
         _ticketRepository = ticketRepository;
         _ticketTypeRepository = ticketTypeRepository;
         _conversationRepository = conversationRepository;
+        _ticketAiSummaryQueue = ticketAiSummaryQueue;
         _tenantContext = tenantContext;
     }
 
@@ -43,7 +47,8 @@ public class CreateTicketCommandHandler : IRequestHandler<CreateTicketCommand, C
             TenantId = _tenantContext.TenantId,
             TicketTypeId = request.TicketTypeId,
             HumanReadableId = humanReadableId,
-            Summary = request.Summary,
+            Title = request.Title.Trim(),
+            Summary = request.Summary.Trim(),
             CurrentStateId = ticketType.WorkflowConfig.InitialStateId,
             Priority = request.Priority.ToUpper(),
             Reporter = new Reporter
@@ -69,6 +74,21 @@ public class CreateTicketCommandHandler : IRequestHandler<CreateTicketCommand, C
             UpdatedAt = DateTime.UtcNow
         };
         await _conversationRepository.CreateAsync(conversation, cancellationToken);
+
+        if (ShouldGenerateAiSummary(ticketType))
+        {
+            await _ticketAiSummaryQueue.EnqueueAsync(
+                new TicketAiSummaryWorkItem(
+                    created.TicketId,
+                    created.TenantId,
+                    created.TicketTypeId,
+                    ticketType.Name,
+                    created.Summary,
+                    created.Priority,
+                    created.CurrentStateId,
+                    new Dictionary<string, object>(created.Attributes)),
+                CancellationToken.None);
+        }
 
         return new CreateTicketResponse(created.TicketId, created.HumanReadableId);
     }
@@ -112,5 +132,15 @@ public class CreateTicketCommandHandler : IRequestHandler<CreateTicketCommand, C
         }
         
         return converted;
+    }
+
+    private static bool ShouldGenerateAiSummary(TicketType ticketType)
+    {
+        var name = $"{ticketType.Name} {ticketType.Description} {ticketType.TicketTypeId}".ToLowerInvariant();
+        var isHardwareIssue = name.Contains("hardware issue") || name.Contains("hardware_issue") || name.Contains("hardware");
+        var isNetworkIssue = name.Contains("network issue") || name.Contains("network_issue") || name.Contains("network");
+        var isIncident = string.Equals(ticketType.ItilCategory, "incident", StringComparison.OrdinalIgnoreCase);
+
+        return isIncident && (isHardwareIssue || isNetworkIssue);
     }
 }

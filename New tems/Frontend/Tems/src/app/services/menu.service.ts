@@ -96,6 +96,15 @@ export class MenuService implements OnDestroy {
             showSubmenu: false,
             submenu: [
               {
+                path: '/technical-support/ai-support',
+                title: 'AI Support',
+                icon: 'mdi mdi-robot-outline menu-icon',
+                isActive: false,
+                isShown: true,
+                showSubmenu: false,
+                submenu: []
+              },
+              {
                 path: '/technical-support/ticket-types',
                 title: 'Ticket Types',
                 icon: 'mdi mdi-file-document-outline menu-icon',

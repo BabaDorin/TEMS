@@ -29,6 +29,7 @@ export const API_ANALYTICS_URL = API_URL + '/analytics';
 export const API_NOTIF_URL = API_URL + '/notification';
 export const API_SYS_LOG = API_URL + '/systemlogs';
 export const API_BUG_URL = API_URL + '/bugreport';
+export const API_AI_SUPPORT_URL = API_URL + '/ai-support';
 
 
 

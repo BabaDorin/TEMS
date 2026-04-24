@@ -1,30 +1,37 @@
-<div [ngClass]="dialogRef == undefined ? 'card limit' : 'card cancel-margins limit'">
-    <div class="card-body">
-        <h2>
-            {{ property.displayName }}
-        </h2>
-        <hr class="separator">
-
-        <p class="font-weight-bold mt-2 mb-0">
-            {{ 'property.name' | translate }}
-        </p>
-        <p> {{ property.name }} </p>
-
-        <ng-container *ngIf="property.description != undefined">
-            <p class="font-weight-bold mt-2 mb-0">
-                {{ 'form.description' | translate }}:
-            </p>
-            <p> {{ property.description }} </p>
-        </ng-container>
-
-        <p class="font-weight-bold mt-2 mb-0">
-            {{ 'property.dataType' | translate }}
-        </p>
-        <p> {{ property.dataType }} </p>
-
-        <p class="font-weight-bold mt-2 mb-0">
-            {{ 'property.required' | translate }}
-        </p>
-        <p> {{ property.required }} </p>
+<div [ngClass]="dialogRef == undefined ? 'tems-asset-dialog tems-asset-modal-card tems-asset-modal-card--narrow' : 'tems-asset-dialog tems-asset-modal-card tems-asset-modal-card--narrow'">
+  <div class="tems-asset-modal-header">
+    <div>
+      <div class="tems-asset-eyebrow">
+        <i class="mdi mdi-tag-outline"></i>
+        <span>Property</span>
+      </div>
+      <h2 class="text-xl font-semibold text-[color:var(--text-primary)] m-0 mt-2">{{ property.displayName }}</h2>
+      <p class="tems-asset-help mt-1">Technical property details and metadata.</p>
     </div>
+  </div>
+
+  <div class="tems-asset-modal-body">
+    <div class="tems-asset-section">
+      <div class="tems-asset-field">
+        <span class="tems-asset-label">Name</span>
+        <p class="m-0 text-[color:var(--text-primary)]">{{ property.name }}</p>
+      </div>
+
+      <div *ngIf="property.description != undefined" class="tems-asset-field">
+        <span class="tems-asset-label">{{ 'form.description' | translate }}</span>
+        <p class="m-0 text-[color:var(--text-primary)]">{{ property.description }}</p>
+      </div>
+
+      <div class="tems-asset-grid tems-asset-grid--two">
+        <div class="tems-asset-field">
+          <span class="tems-asset-label">{{ 'property.dataType' | translate }}</span>
+          <p class="m-0 text-[color:var(--text-primary)]">{{ property.dataType }}</p>
+        </div>
+        <div class="tems-asset-field">
+          <span class="tems-asset-label">{{ 'property.required' | translate }}</span>
+          <p class="m-0 text-[color:var(--text-primary)]">{{ property.required }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

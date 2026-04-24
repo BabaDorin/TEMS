@@ -48,6 +48,7 @@ export const routes: Routes = [
     path: 'technical-support',
     children: [
       { path: '', redirectTo: 'tickets', pathMatch: 'full' },
+      { path: 'ai-support', loadComponent: () => import('./tems-components/technical-support/ai-support/ai-support.component').then(m => m.AiSupportComponent) },
       { path: 'ticket-types', loadComponent: () => import('./tems-components/ticket-management/view-ticket-types/view-ticket-types.component').then(m => m.ViewTicketTypesComponent) },
       { path: 'tickets', loadComponent: () => import('./tems-components/ticket-management/view-tickets/view-tickets.component').then(m => m.ViewTicketsComponent) },
       { path: 'tickets/:id', loadComponent: () => import('./tems-components/ticket-management/ticket-detail/ticket-detail.component').then(m => m.TicketDetailComponent) },

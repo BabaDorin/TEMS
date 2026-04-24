@@ -1,28 +1,68 @@
-<div class="min-h-screen bg-gray-50 dark:bg-[#1c1c1e] p-4 md:p-6 lg:p-8 transition-colors duration-200">
-  <div class="max-w-7xl mx-auto">
-    <!-- Header -->
-    <div class="bg-white dark:bg-[#2c2c2e] rounded-lg shadow-sm p-6 mb-6">
-      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-        <div>
-          <h1 class="text-2xl font-semibold text-gray-900 dark:text-white">Tickets</h1>
-          <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Manage and track support tickets</p>
-        </div>
-        <button
-          (click)="openCreateModal()"
-          class="inline-flex items-center justify-center px-4 py-2 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-lg hover:bg-gray-800 dark:hover:bg-gray-100 transition-colors">
-          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-          </svg>
-          Create Ticket
-        </button>
+<div class="min-h-[calc(100dvh-4rem)] bg-gray-50/50 dark:bg-[#1c1c1e] transition-colors duration-200">
+  <div class="max-w-7xl mx-auto w-full p-4 sm:p-6 overflow-x-hidden">
+    <div class="tems-asset-header mb-4">
+      <div>
+        <h1 class="text-2xl">Tickets</h1>
+        <p>Manage and track support tickets.</p>
       </div>
+      <button
+        (click)="openCreateModal()"
+        class="tems-btn tems-btn-primary">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+        </svg>
+        Create Ticket
+      </button>
     </div>
 
-    <!-- AG Grid -->
-    <div class="bg-white dark:bg-[#2c2c2e] rounded-lg shadow-sm overflow-hidden">
-      <div [class]="gridThemeClass" class="w-full" style="height: calc(100vh - 280px);">
+    <section class="tems-asset-card">
+      <nav class="flex px-4 overflow-x-auto border-b border-gray-200 dark:border-[#38383a] bg-[color:var(--bg-secondary)] dark:bg-[#1c1c1e]">
+        <button
+          type="button"
+          (click)="setStatusTab('new')"
+          [class.border-[#007aff]]="activeStatusTab === 'new'"
+          [class.dark:border-[#0a84ff]]="activeStatusTab === 'new'"
+          [class.text-[#007aff]]="activeStatusTab === 'new'"
+          [class.dark:text-[#0a84ff]]="activeStatusTab === 'new'"
+          [class.border-transparent]="activeStatusTab !== 'new'"
+          [class.text-gray-500]="activeStatusTab !== 'new'"
+          class="tems-asset-tab-button flex-[0_0_auto] min-w-[8.5rem]">
+          New
+          <span class="ml-2 text-xs font-semibold px-2 py-0.5 rounded-full bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300">{{ statusTabCounts.new }}</span>
+        </button>
+        <button
+          type="button"
+          (click)="setStatusTab('in-progress')"
+          [class.border-[#007aff]]="activeStatusTab === 'in-progress'"
+          [class.dark:border-[#0a84ff]]="activeStatusTab === 'in-progress'"
+          [class.text-[#007aff]]="activeStatusTab === 'in-progress'"
+          [class.dark:text-[#0a84ff]]="activeStatusTab === 'in-progress'"
+          [class.border-transparent]="activeStatusTab !== 'in-progress'"
+          [class.text-gray-500]="activeStatusTab !== 'in-progress'"
+          class="tems-asset-tab-button flex-[0_0_auto] min-w-[10rem]">
+          In progress
+          <span class="ml-2 text-xs font-semibold px-2 py-0.5 rounded-full bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300">{{ statusTabCounts['in-progress'] }}</span>
+        </button>
+        <button
+          type="button"
+          (click)="setStatusTab('done')"
+          [class.border-[#007aff]]="activeStatusTab === 'done'"
+          [class.dark:border-[#0a84ff]]="activeStatusTab === 'done'"
+          [class.text-[#007aff]]="activeStatusTab === 'done'"
+          [class.dark:text-[#0a84ff]]="activeStatusTab === 'done'"
+          [class.border-transparent]="activeStatusTab !== 'done'"
+          [class.text-gray-500]="activeStatusTab !== 'done'"
+          class="tems-asset-tab-button flex-[0_0_auto] min-w-[8rem]">
+          Closed
+          <span class="ml-2 text-xs font-semibold px-2 py-0.5 rounded-full bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300">{{ statusTabCounts.done }}</span>
+        </button>
+      </nav>
+
+      <div class="tems-asset-card-body p-0">
         <ag-grid-angular
-          class="w-full h-full"
+          class="w-full"
+          [class]="gridThemeClass"
+          style="height: min(58vh, calc(100dvh - 24rem)); min-height: 420px; width: 100%;"
           [rowData]="rowData"
           [columnDefs]="columnDefs"
           [defaultColDef]="defaultColDef"
@@ -34,13 +74,13 @@
           (rowClicked)="onRowClicked($event)">
         </ag-grid-angular>
       </div>
-    </div>
+    </section>
   </div>
 </div>
 
 <!-- Create Modal -->
 <div *ngIf="showCreateModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-  <div class="bg-white dark:bg-[#2c2c2e] rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto my-8">
+  <div class="bg-white dark:bg-[#2c2c2e] rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-visible my-8">
     <div class="bg-white dark:bg-[#2c2c2e] border-b border-gray-200 dark:border-[#38383a] px-6 py-4 rounded-t-lg">
       <div class="flex items-center justify-between">
         <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Create Ticket</h2>
@@ -52,37 +92,63 @@
       </div>
     </div>
 
-    <form [formGroup]="createForm" (ngSubmit)="onSubmit()" class="p-6 space-y-6">
+    <form [formGroup]="createForm" (ngSubmit)="onSubmit()" class="p-6 space-y-6 overflow-visible">
       <!-- Ticket Type -->
       <div>
         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Ticket Type *</label>
-        <select
-          formControlName="ticketTypeId"
-          (change)="onTicketTypeChange($any($event.target).value)"
-          class="w-full px-4 py-2 border border-gray-300 dark:border-[#38383a] dark:bg-[#3a3a3c] dark:text-white rounded-lg focus:ring-2 focus:ring-gray-900 dark:focus:ring-blue-500 focus:border-transparent"
-          [class.border-red-500]="createForm.get('ticketTypeId')?.invalid && createForm.get('ticketTypeId')?.touched">
-          <option value="">Select a ticket type</option>
-          <option *ngFor="let type of ticketTypes" [value]="type.ticketTypeId">
-            {{ type.name }} ({{ type.itilCategory }})
-          </option>
-        </select>
+        <mat-form-field appearance="outline" class="w-full ticket-type-field">
+          <input
+            matInput
+            type="text"
+            [formControl]="ticketTypeSearch"
+            [matAutocomplete]="ticketTypeAuto"
+            (input)="onTicketTypeSearchInput($any($event.target).value)"
+            placeholder="Search and select a ticket type" />
+          <mat-autocomplete #ticketTypeAuto="matAutocomplete" (optionSelected)="onTicketTypeSelected($event.option.value)" autoActiveFirstOption>
+            <mat-option *ngFor="let type of filteredTicketTypes" [value]="type" class="ticket-type-option">
+              <div class="flex flex-col">
+                <span class="font-medium text-gray-900 dark:text-white">{{ type.name }}</span>
+                <span *ngIf="type.description" class="text-xs text-gray-500 dark:text-gray-400">{{ type.description }}</span>
+                <span class="text-[11px] uppercase tracking-wide text-gray-400 dark:text-gray-500">{{ type.itilCategory }}</span>
+              </div>
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
         <p *ngIf="createForm.get('ticketTypeId')?.invalid && createForm.get('ticketTypeId')?.touched" class="text-red-500 dark:text-red-400 text-sm mt-1">
           Ticket type is required
         </p>
       </div>
 
-      <!-- Summary -->
+      <!-- Issue Title -->
       <div *ngIf="selectedTicketType">
-        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Summary *</label>
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Issue title *</label>
+        <input
+          type="text"
+          formControlName="title"
+          maxlength="50"
+          placeholder="Give the issue a short title"
+          class="w-full px-4 py-2 border border-gray-300 dark:border-[#38383a] dark:bg-[#3a3a3c] dark:text-white rounded-lg focus:ring-2 focus:ring-gray-900 dark:focus:ring-blue-500 focus:border-transparent"
+          [class.border-red-500]="createForm.get('title')?.invalid && createForm.get('title')?.touched">
+        <div class="mt-1 flex items-center justify-between gap-3">
+          <p *ngIf="createForm.get('title')?.invalid && createForm.get('title')?.touched" class="text-red-500 dark:text-red-400 text-sm">
+            Issue title is required and must be 50 characters or fewer
+          </p>
+          <p class="text-xs text-gray-500 dark:text-gray-400 ml-auto">{{ (createForm.get('title')?.value?.length || 0) }}/50</p>
+        </div>
+      </div>
+
+      <!-- Problem Description -->
+      <div *ngIf="selectedTicketType">
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Problem description *</label>
         <textarea
           formControlName="summary"
-          rows="3"
-          placeholder="Briefly describe the issue or request"
+          rows="4"
+          placeholder="Describe what happened, what you expected, and any useful context"
           class="w-full px-4 py-2 border border-gray-300 dark:border-[#38383a] dark:bg-[#3a3a3c] dark:text-white rounded-lg focus:ring-2 focus:ring-gray-900 dark:focus:ring-blue-500 focus:border-transparent resize-none"
           [class.border-red-500]="createForm.get('summary')?.invalid && createForm.get('summary')?.touched">
         </textarea>
         <p *ngIf="createForm.get('summary')?.invalid && createForm.get('summary')?.touched" class="text-red-500 dark:text-red-400 text-sm mt-1">
-          Summary is required
+          Problem description is required and must be 2000 characters or fewer
         </p>
       </div>
 
@@ -97,7 +163,12 @@
               [value]="priority.value"
               class="sr-only peer">
             <div class="w-full px-4 py-2 border border-gray-300 dark:border-[#38383a] rounded-lg cursor-pointer peer-checked:border-gray-900 dark:peer-checked:border-blue-500 peer-checked:bg-gray-50 dark:peer-checked:bg-blue-500/20 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors text-center">
-              <span class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ priority.label }}</span>
+              <span class="inline-flex items-center justify-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+                <span
+                  class="inline-block w-2.5 h-2.5 rounded-full ring-1 ring-black/10 dark:ring-white/10"
+                  [ngClass]="priority.dotClass"></span>
+                <span>{{ priority.label }}</span>
+              </span>
             </div>
           </label>
         </div>
@@ -106,29 +177,12 @@
         </p>
       </div>
 
-      <!-- Channel Source -->
-      <div *ngIf="selectedTicketType">
-        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Channel Source *</label>
-        <select
-          formControlName="channelSource"
-          class="w-full px-4 py-2 border border-gray-300 dark:border-[#38383a] dark:bg-[#3a3a3c] dark:text-white rounded-lg focus:ring-2 focus:ring-gray-900 dark:focus:ring-blue-500 focus:border-transparent"
-          [class.border-red-500]="createForm.get('channelSource')?.invalid && createForm.get('channelSource')?.touched">
-          <option value="">Select a channel</option>
-          <option value="WEB">Web</option>
-          <option value="TEAMS">Microsoft Teams</option>
-          <option value="SLACK">Slack</option>
-        </select>
-        <p *ngIf="createForm.get('channelSource')?.invalid && createForm.get('channelSource')?.touched" class="text-red-500 dark:text-red-400 text-sm mt-1">
-          Channel source is required
-        </p>
-      </div>
-
       <!-- Dynamic Attributes -->
-      <div *ngIf="selectedTicketType && selectedTicketType.attributeDefinitions && selectedTicketType.attributeDefinitions.length > 0" 
+      <div *ngIf="hasAdditionalFields" 
            class="border-t border-gray-200 dark:border-[#38383a] pt-6">
         <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Additional Fields</h3>
         <div class="space-y-4">
-          <div *ngFor="let attr of selectedTicketType.attributeDefinitions">
+          <div *ngFor="let attr of editableAttributeDefinitions">
             <!-- Text/String Input -->
             <div *ngIf="attr.dataType === 'STRING'" class="form-group">
               <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -195,13 +249,13 @@
         <button
           type="button"
           (click)="closeCreateModal()"
-          class="flex-1 px-4 py-2 border border-gray-300 dark:border-[#38383a] text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
+          class="tems-btn tems-btn-secondary flex-1">
           Cancel
         </button>
         <button
           type="submit"
-          [disabled]="createForm.invalid || isSubmitting || !areAllAttributesValid()"
-          class="flex-1 px-4 py-2 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-lg hover:bg-gray-800 dark:hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+          [disabled]="isSubmitDisabled"
+          class="tems-btn tems-btn-primary flex-1 disabled:opacity-50 disabled:cursor-not-allowed">
           {{ isSubmitting ? 'Creating...' : 'Create Ticket' }}
         </button>
       </div>
@@ -216,7 +270,7 @@
       <div class="flex items-center justify-between">
         <div>
           <h2 class="text-xl font-semibold text-gray-900 dark:text-white">{{ selectedTicket.humanReadableId }}</h2>
-          <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">{{ selectedTicket.summary }}</p>
+          <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">{{ selectedTicket.title || selectedTicket.summary }}</p>
         </div>
         <button (click)="closePreviewModal()" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -226,25 +280,23 @@
       </div>
     </div>
 
-    <div class="p-6 space-y-4">
+      <div class="p-6 space-y-4">
       <!-- Metadata Grid -->
       <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div>
           <label class="text-xs font-medium text-gray-500">Priority</label>
-          <p class="text-sm font-semibold mt-1" [ngClass]="{
-            'text-red-600': selectedTicket.priority === 'CRITICAL',
-            'text-orange-600': selectedTicket.priority === 'HIGH',
-            'text-yellow-600': selectedTicket.priority === 'MEDIUM',
-            'text-gray-600': selectedTicket.priority === 'LOW'
-          }">{{ selectedTicket.priority }}</p>
+          <p class="inline-flex items-center gap-1.5 text-sm font-semibold mt-1 px-2.5 py-1 rounded-full" [ngClass]="getPriorityBadgeClass(selectedTicket.priority)">
+            <span class="w-2 h-2 rounded-full" [ngClass]="getPriorityDotClass(selectedTicket.priority)"></span>
+            {{ getPriorityLabel(selectedTicket.priority) }}
+          </p>
         </div>
         <div>
           <label class="text-xs font-medium text-gray-500 dark:text-gray-400">Status</label>
-          <p class="text-sm text-gray-900 dark:text-white mt-1">{{ selectedTicket.currentStateId }}</p>
+          <p class="text-sm font-medium text-gray-900 dark:text-white mt-1">{{ getTicketStatusLabel(selectedTicket.currentStateId) }}</p>
         </div>
         <div>
           <label class="text-xs font-medium text-gray-500 dark:text-gray-400">Created</label>
-          <p class="text-sm text-gray-900 dark:text-white mt-1">{{ selectedTicket.auditMetadata?.createdAt | date:'short' }}</p>
+          <p class="text-sm text-gray-900 dark:text-white mt-1">{{ selectedTicket.createdAt | date:'short' }}</p>
         </div>
         <div>
           <label class="text-xs font-medium text-gray-500 dark:text-gray-400">Reporter</label>
@@ -256,6 +308,11 @@
       <div>
         <label class="text-xs font-medium text-gray-500 dark:text-gray-400">Type</label>
         <p class="text-sm text-gray-900 dark:text-white mt-1">{{ previewTicketType?.name || 'Loading...' }}</p>
+      </div>
+
+      <div>
+        <label class="text-xs font-medium text-gray-500 dark:text-gray-400">Problem description</label>
+        <p class="text-sm text-gray-900 dark:text-white mt-1 whitespace-pre-wrap">{{ selectedTicket.summary }}</p>
       </div>
 
       <!-- Custom Attributes -->
@@ -273,11 +330,10 @@
       <div class="pt-4 border-t border-gray-200 dark:border-[#38383a]">
         <button
           (click)="openFullTicket()"
-          class="w-full px-4 py-2 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-lg hover:bg-gray-800 dark:hover:bg-gray-100 transition-colors">
+          class="tems-btn tems-btn-primary w-full">
           Open Full Ticket
         </button>
       </div>
     </div>
   </div>
 </div>
-

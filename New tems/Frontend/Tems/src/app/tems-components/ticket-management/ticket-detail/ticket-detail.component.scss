@@ -26,3 +26,84 @@
   background: rgba(148, 163, 184, 0.55);
   border-radius: 9999px;
 }
+
+.ai-summary-card {
+  background:
+    radial-gradient(circle at top right, rgba(59, 130, 246, 0.18), transparent 40%),
+    linear-gradient(135deg, rgba(232, 241, 255, 0.96), rgba(225, 236, 255, 0.86));
+  border-color: rgba(147, 197, 253, 0.85);
+  color: #0f172a;
+  box-shadow: 0 10px 24px rgba(59, 130, 246, 0.08);
+}
+
+.dark .ai-summary-card {
+  background:
+    radial-gradient(circle at top right, rgba(59, 130, 246, 0.28), transparent 42%),
+    linear-gradient(135deg, rgba(27, 58, 102, 0.96), rgba(21, 44, 79, 0.92));
+  border-color: rgba(96, 165, 250, 0.45);
+  color: #eff6ff;
+  box-shadow: 0 12px 28px rgba(3, 7, 18, 0.24);
+}
+
+.ai-summary-badge {
+  background: rgba(37, 99, 235, 0.12);
+  color: #1d4ed8;
+}
+
+.dark .ai-summary-badge {
+  background: rgba(96, 165, 250, 0.18);
+  color: #bfdbfe;
+}
+
+.ai-summary-markdown {
+  color: inherit;
+  white-space: normal;
+  word-break: break-word;
+}
+
+.ai-summary-markdown p {
+  margin: 0 0 0.8rem;
+}
+
+.ai-summary-markdown p:last-child {
+  margin-bottom: 0;
+}
+
+.ai-summary-markdown ul {
+  margin: 0.3rem 0 0.8rem 1.05rem;
+  padding-left: 1rem;
+}
+
+.ai-summary-markdown li {
+  margin-bottom: 0.35rem;
+}
+
+.ai-summary-markdown pre {
+  margin: 0.8rem 0;
+  padding: 0.9rem 1rem;
+  border-radius: 0.9rem;
+  overflow-x: auto;
+  background: rgba(15, 23, 42, 0.9);
+  color: #e2e8f0;
+}
+
+.ai-summary-markdown code {
+  padding: 0.15rem 0.35rem;
+  border-radius: 0.35rem;
+  background: rgba(148, 163, 184, 0.18);
+}
+
+.dark .ai-summary-markdown code {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.ai-summary-markdown pre code {
+  padding: 0;
+  background: transparent;
+}
+
+.ai-summary-markdown a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}

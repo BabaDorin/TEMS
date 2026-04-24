@@ -1,8 +1,8 @@
 :host {
   display: block;
-  background-color: white;
+  background: transparent;
 }
 
 :host-context(.dark) {
-  background-color: #2c2c2e;
+  background: transparent;
 }

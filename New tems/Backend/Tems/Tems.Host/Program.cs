@@ -5,8 +5,13 @@ using FastEndpoints;
 using FastEndpoints.Swagger;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.Extensions.Options;
 using System.Security.Claims;
+using Tems.Host.Endpoints;
+using Tems.Host.Configuration;
+using Tems.Host.Services;
 using Tems.Common.Tenant;
+using TicketManagement.Application.Interfaces;
 using Tems.Host.Middleware;
 using Tems.Host.Seeding;
 using TicketManagement.API;
@@ -132,6 +137,16 @@ builder.Services.AddCors(options =>
     });
 });
 
+builder.Services.AddOptions<AiSupportOptions>()
+    .Bind(builder.Configuration.GetSection("AiSupport"))
+    .Validate(options => !string.IsNullOrWhiteSpace(options.BaseUrl), "AiSupport:BaseUrl is required.")
+    .ValidateOnStart();
+
+builder.Services.AddHttpClient("DeepSeekAiSupport");
+builder.Services.AddSingleton<DeepSeekAiSupportClient>();
+builder.Services.AddSingleton<ITicketAiSummaryQueue, TicketAiSummaryQueue>();
+builder.Services.AddHostedService<TicketAiSummaryBackgroundService>();
+
 // Add FastEndpoints - scan all assemblies including module assemblies
 builder.Services.AddFastEndpoints(options =>
 {
@@ -159,6 +174,7 @@ app.UseTenantMiddleware();
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseFastEndpoints();
+app.MapAiSupportEndpoints();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

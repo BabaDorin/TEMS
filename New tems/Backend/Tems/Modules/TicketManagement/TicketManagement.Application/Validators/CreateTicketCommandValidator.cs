@@ -10,9 +10,13 @@ public class CreateTicketCommandValidator : AbstractValidator<CreateTicketComman
         RuleFor(x => x.TicketTypeId)
             .NotEmpty().WithMessage("TicketTypeId is required");
 
+        RuleFor(x => x.Title)
+            .NotEmpty().WithMessage("Issue title is required")
+            .MaximumLength(50).WithMessage("Issue title must not exceed 50 characters");
+
         RuleFor(x => x.Summary)
-            .NotEmpty().WithMessage("Summary is required")
-            .MaximumLength(500).WithMessage("Summary must not exceed 500 characters");
+            .NotEmpty().WithMessage("Problem description is required")
+            .MaximumLength(2000).WithMessage("Problem description must not exceed 2000 characters");
 
         RuleFor(x => x.Priority)
             .NotEmpty().WithMessage("Priority is required")

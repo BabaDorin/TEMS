@@ -1,62 +1,63 @@
-<div [ngClass]="dialogRef == undefined ? 'card limit' : 'card cancel-margins limit'">
-    <div class="card-body">
-        <h2>
-            {{ definition.identifier }}
-        </h2>
-
-        <ng-container *ngIf="definition.assetType != undefined">
-            <p>
-                <button mat-button (click)="viewType(definition.assetType.value)">
-                    {{ definition.assetType.label }}
-                </button>
-            </p>
-        </ng-container>
-        <hr class="separator">
-        <ng-container *ngIf="definition.properties.length > 0">
-            <p class="font-weight-bold mt-2 mb-0">
-                {{ 'entities.properties' | translate }}
-            </p>
-
-            <table class="table" >
-                <tr *ngFor="let prop of definition.properties"  class="align-middle">
-                    <td>
-                        <p class="prop-lbl mr-3 font-weight-bold py-1 m-0">{{ prop.displayName }}
-                            <i class="mdi mdi-information-outline" *ngIf="prop.description != undefined"
-                                [matTooltip]="prop.description">
-                            </i>
-                        </p>
-                    </td>
-                    <td>
-                        <p class="py-1 m-0">{{ prop.value }}</p>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <p class="prop-lbl mr-3 font-weight-bold py-1 m-0">
-                            {{ 'form.price' | translate }}
-                        </p>
-                    </td>
-                    <td>
-                        <p class="py-1 m-0">{{ definition.price }} {{ definition.currency }}</p>
-                    </td>
-                </tr>
-            </table>
-        </ng-container>
-
-        <ng-container *ngIf = "definition.children.length > 0">
-            <p class="font-weight-bold mt-2 mb-0">
-                {{ 'definition.children' | translate }}
-            </p>
-            <ng-container *ngFor="let child of definition.children">
-                <p>
-                    <button 
-                    mat-button 
-                    (click)="viewDefinition(child.id)">
-                    {{ child.identifier }}
-                    </button> 
-                </p>
-            </ng-container> 
-        </ng-container>
-        
+<div [ngClass]="dialogRef == undefined ? 'tems-asset-dialog tems-asset-modal-card' : 'tems-asset-dialog tems-asset-modal-card'">
+  <div class="tems-asset-modal-header">
+    <div>
+      <div class="tems-asset-eyebrow">
+        <i class="mdi mdi-file-document-outline"></i>
+        <span>Definition</span>
+      </div>
+      <h2 class="text-xl font-semibold text-[color:var(--text-primary)] m-0 mt-2">{{ definition.identifier }}</h2>
+      <p class="tems-asset-help mt-1">Definition summary and associated properties.</p>
     </div>
+  </div>
+
+  <div class="tems-asset-modal-body">
+    <div class="tems-asset-section">
+      <ng-container *ngIf="definition.assetType != undefined">
+        <button type="button" (click)="viewType(definition.assetType.value)" class="tems-btn tems-btn-secondary w-fit">
+          {{ definition.assetType.label }}
+        </button>
+      </ng-container>
+
+      <ng-container *ngIf="definition.properties.length > 0">
+        <div class="tems-asset-section">
+          <span class="tems-asset-label">{{ 'entities.properties' | translate }}</span>
+
+          <div class="overflow-hidden rounded-[1rem] border border-[color:var(--border-secondary)]">
+            <table class="w-full border-collapse">
+              <tbody>
+                <tr *ngFor="let prop of definition.properties" class="border-b border-[color:var(--border-secondary)] last:border-b-0">
+                  <td class="px-4 py-3 align-top">
+                    <p class="m-0 font-semibold text-[color:var(--text-primary)]">
+                      {{ prop.displayName }}
+                      <i class="mdi mdi-information-outline ml-1 text-[color:var(--text-secondary)]" *ngIf="prop.description != undefined" [matTooltip]="prop.description"></i>
+                    </p>
+                  </td>
+                  <td class="px-4 py-3 align-top text-[color:var(--text-primary)]">
+                    {{ prop.value }}
+                  </td>
+                </tr>
+                <tr class="bg-[color:var(--bg-secondary)]">
+                  <td class="px-4 py-3 align-top">
+                    <p class="m-0 font-semibold text-[color:var(--text-primary)]">{{ 'form.price' | translate }}</p>
+                  </td>
+                  <td class="px-4 py-3 align-top text-[color:var(--text-primary)]">{{ definition.price }} {{ definition.currency }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </ng-container>
+
+      <ng-container *ngIf="definition.children.length > 0">
+        <div class="tems-asset-section">
+          <span class="tems-asset-label">{{ 'definition.children' | translate }}</span>
+          <div class="flex flex-wrap gap-2">
+            <button type="button" *ngFor="let child of definition.children" (click)="viewDefinition(child.id)" class="tems-btn tems-btn-secondary">
+              {{ child.identifier }}
+            </button>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </div>
 </div>

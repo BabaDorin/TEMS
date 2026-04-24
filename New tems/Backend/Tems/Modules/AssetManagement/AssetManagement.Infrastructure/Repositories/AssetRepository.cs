@@ -1,5 +1,6 @@
 using AssetManagement.Application.Interfaces;
 using AssetManagement.Infrastructure.Mappers;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using DomainEntity = AssetManagement.Application.Domain;
 using DbEntity = AssetManagement.Infrastructure.Entities;
@@ -37,6 +38,7 @@ public class AssetRepository(IMongoDatabase database) : IAssetRepository
         int pageNumber = 1,
         int pageSize = 20,
         List<string>? definitionIds = null,
+        List<string>? definitionNames = null,
         string? assetTag = null,
         string? locationId = null,
         string? assignedToUserId = null,
@@ -52,12 +54,44 @@ public class AssetRepository(IMongoDatabase database) : IAssetRepository
 
         if (assetTypeIds?.Count > 0)
         {
-            filters.Add(filterBuilder.In("definition.asset_type_id", assetTypeIds));
+            filters.Add(filterBuilder.Or(
+                filterBuilder.In("definition.asset_type_id", assetTypeIds),
+                filterBuilder.In("definition.assetTypeId", assetTypeIds)
+            ));
         }
 
         if (definitionIds?.Count > 0)
         {
-            filters.Add(filterBuilder.In("definition.definition_id", definitionIds));
+            filters.Add(filterBuilder.Or(
+                filterBuilder.In("definition.definition_id", definitionIds),
+                filterBuilder.In("definition.definitionId", definitionIds),
+                filterBuilder.In("definition.id", definitionIds)
+            ));
+        }
+
+        if (definitionNames?.Count > 0)
+        {
+            var normalizedDefinitionNames = definitionNames
+                .Where(name => !string.IsNullOrWhiteSpace(name))
+                .Select(name => name.Trim())
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .ToList();
+
+            if (normalizedDefinitionNames.Count > 0)
+            {
+                var exactNameFilters = normalizedDefinitionNames.Select(name =>
+                {
+                    var exactMatch = new BsonRegularExpression($"^{Regex.Escape(name)}$", "i");
+                    return filterBuilder.Or(
+                        filterBuilder.Regex("definition.name", exactMatch),
+                        filterBuilder.Regex("definition.Name", exactMatch),
+                        filterBuilder.Regex("definition.definition_name", exactMatch),
+                        filterBuilder.Regex("definition.definitionName", exactMatch)
+                    );
+                });
+
+                filters.Add(filterBuilder.Or(exactNameFilters));
+            }
         }
 
         if (!string.IsNullOrWhiteSpace(assetTag))
@@ -90,6 +124,11 @@ public class AssetRepository(IMongoDatabase database) : IAssetRepository
 
         var assets = dbEntities.Select(x => x.ToDomain()).ToList();
         return (assets, (int)totalCount);
+    }
+
+    private static class Regex
+    {
+        public static string Escape(string value) => System.Text.RegularExpressions.Regex.Escape(value);
     }
 
     public async Task<DomainEntity.Asset?> GetBySerialNumberAsync(string serialNumber, CancellationToken cancellationToken = default)

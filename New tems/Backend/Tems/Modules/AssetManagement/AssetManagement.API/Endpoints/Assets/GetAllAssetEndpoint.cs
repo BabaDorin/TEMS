@@ -19,8 +19,10 @@ public class GetAllAssetEndpoint(IMediator mediator) : EndpointWithoutRequest<Ge
         var includeArchived = Query<bool>("includeArchived", false);
         var assetTypeIdsParam = Query<string>("assetTypeIds", false);
         var definitionIdsParam = Query<string>("definitionIds", false);
+        var definitionNamesParam = Query<string>("definitionNames", false);
         var assetTag = Query<string>("assetTag", false);
         var locationId = Query<string>("locationId", false);
+        var assignedToUserId = Query<string>("assignedToUserId", false);
         var pageNumber = Query<int>("pageNumber", false);
         var pageSize = Query<int>("pageSize", false);
         
@@ -32,18 +34,24 @@ public class GetAllAssetEndpoint(IMediator mediator) : EndpointWithoutRequest<Ge
             ? null
             : definitionIdsParam.Split(',').ToList();
 
+        var definitionNameList = string.IsNullOrEmpty(definitionNamesParam)
+            ? null
+            : definitionNamesParam.Split(',').ToList();
+
         var filter = new AssetFilterDto(
             AssetTag: string.IsNullOrWhiteSpace(assetTag) ? null : assetTag,
             AssetTypeIds: typeIdList,
             DefinitionIds: definitionIdList,
+            DefinitionNames: definitionNameList,
             LocationId: string.IsNullOrWhiteSpace(locationId) ? null : locationId,
+            AssignedToUserId: string.IsNullOrWhiteSpace(assignedToUserId) ? null : assignedToUserId,
             IncludeArchived: includeArchived
         );
         
         var command = new GetAllAssetCommand(
             Filter: filter,
             PageNumber: pageNumber > 0 ? pageNumber : 1, 
-            PageSize: pageSize > 0 ? pageSize : 50);
+            PageSize: pageSize > 0 ? pageSize : 20);
         var result = await mediator.Send(command, ct);
         await Send.OkAsync(result, ct);
     }

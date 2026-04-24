@@ -1,17 +1,17 @@
-import { Component, Inject, OnInit, OnDestroy } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef, MatDialogModule } from '@angular/material/dialog';
-import { Subject } from 'rxjs';
-import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
+import { Subject, of } from 'rxjs';
+import { catchError, debounceTime, distinctUntilChanged, map, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { AssetService, AssetPageResponse } from 'src/app/services/asset.service';
-import { LocationService } from 'src/app/services/location.service';
 import { Asset } from 'src/app/models/asset/asset.model';
+import { CustomSelectComponent, SelectOption } from 'src/app/shared/custom-select/custom-select.component';
 
 @Component({
   selector: 'app-add-asset-to-room-modal',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatDialogModule],
+  imports: [CommonModule, FormsModule, MatDialogModule, CustomSelectComponent],
   templateUrl: './add-asset-to-room-modal.component.html',
   styleUrls: ['./add-asset-to-room-modal.component.scss']
 })
@@ -19,21 +19,20 @@ export class AddAssetToRoomModalComponent implements OnInit, OnDestroy {
   roomId: string;
   roomName: string;
 
-  searchText = '';
-  isDropdownOpen = false;
-  searchResults: Asset[] = [];
-  isSearching = false;
+  assetOptions: SelectOption[] = [];
+  selectedAssetId = '';
   selectedAsset: Asset | null = null;
+  isSearching = false;
   isSubmitting = false;
 
-  private searchSubject = new Subject<string>();
-  private destroy$ = new Subject<void>();
+  private readonly searchSubject = new Subject<string>();
+  private readonly destroy$ = new Subject<void>();
+  private assetLookup = new Map<string, Asset>();
 
   constructor(
     public dialogRef: MatDialogRef<AddAssetToRoomModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: { roomId: string; roomName: string },
-    private assetService: AssetService,
-    private locationService: LocationService
+    private assetService: AssetService
   ) {
     this.roomId = data.roomId;
     this.roomName = data.roomName;
@@ -43,9 +42,29 @@ export class AddAssetToRoomModalComponent implements OnInit, OnDestroy {
     this.searchSubject.pipe(
       debounceTime(300),
       distinctUntilChanged(),
+      tap((searchText) => {
+        this.isSearching = searchText.trim().length > 0;
+      }),
+      switchMap((searchText) => {
+        const query = searchText.trim();
+        if (!query) {
+          this.assetLookup.clear();
+          this.assetOptions = [];
+          this.isSearching = false;
+          return of([] as Asset[]);
+        }
+
+        return this.assetService.getAll(undefined, 1, 20, undefined, query).pipe(
+          map((response: AssetPageResponse) => response.assets || []),
+          catchError(() => of([] as Asset[]))
+        );
+      }),
       takeUntil(this.destroy$)
-    ).subscribe(searchText => {
-      this.performSearch(searchText);
+    ).subscribe((assets) => {
+      this.assetLookup = new Map(assets.map((asset) => [asset.id, asset]));
+      this.assetOptions = assets.map((asset) => this.toOption(asset));
+      this.ensureSelectedAssetVisible();
+      this.isSearching = false;
     });
   }
 
@@ -54,60 +73,14 @@ export class AddAssetToRoomModalComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  onSearchChange() {
-    this.searchSubject.next(this.searchText);
-    if (this.searchText.length > 0) {
-      this.isDropdownOpen = true;
-      this.isSearching = true;
-    } else {
-      this.isDropdownOpen = false;
-      this.searchResults = [];
-    }
+  onSearchChange(searchText: string) {
+    this.searchSubject.next(searchText);
   }
 
-  onInputFocus() {
-    if (this.searchText.length > 0 && this.searchResults.length > 0) {
-      this.isDropdownOpen = true;
-    }
-  }
-
-  performSearch(searchText: string) {
-    if (!searchText || searchText.length < 1) {
-      this.searchResults = [];
-      this.isSearching = false;
-      return;
-    }
-
-    this.isSearching = true;
-    this.assetService.getAll(undefined, 1, 20, undefined, searchText).subscribe({
-      next: (response: AssetPageResponse) => {
-        this.searchResults = response.assets || [];
-        this.isSearching = false;
-      },
-      error: () => {
-        this.searchResults = [];
-        this.isSearching = false;
-      }
-    });
-  }
-
-  selectAsset(asset: Asset) {
-    this.selectedAsset = asset;
-    this.searchText = asset.assetTag;
-    this.isDropdownOpen = false;
-    this.searchResults = [];
-  }
-
-  clearSelection() {
-    this.selectedAsset = null;
-    this.searchText = '';
-    this.searchResults = [];
-  }
-
-  toggleDropdown() {
-    if (this.searchText.length > 0 && this.searchResults.length > 0) {
-      this.isDropdownOpen = !this.isDropdownOpen;
-    }
+  onAssetSelected(assetId: string) {
+    this.selectedAssetId = assetId;
+    this.selectedAsset = this.assetLookup.get(assetId) ?? null;
+    this.ensureSelectedAssetVisible();
   }
 
   close() {
@@ -127,6 +100,11 @@ export class AddAssetToRoomModalComponent implements OnInit, OnDestroy {
         this.isSubmitting = false;
       }
     });
+  }
+
+  clearSelection() {
+    this.selectedAsset = null;
+    this.selectedAssetId = '';
   }
 
   getAssetCurrentLocation(): string {
@@ -155,10 +133,30 @@ export class AddAssetToRoomModalComponent implements OnInit, OnDestroy {
 
   formatDate(date: Date | string | undefined): string {
     if (!date) return '—';
-    return new Date(date).toLocaleDateString('en-US', { 
-      year: 'numeric', 
-      month: 'short', 
-      day: 'numeric' 
+    return new Date(date).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
     });
+  }
+
+  private toOption(asset: Asset): SelectOption {
+    const typeName = asset.definition?.assetTypeName || 'Unknown Type';
+    const definitionName = asset.definition?.name || asset.definition?.manufacturer || '';
+    const meta = definitionName ? ` · ${definitionName}` : '';
+
+    return {
+      value: asset.id,
+      label: `${asset.assetTag} — ${typeName}${meta}`
+    };
+  }
+
+  private ensureSelectedAssetVisible(): void {
+    if (!this.selectedAsset) return;
+
+    const exists = this.assetOptions.some((option) => option.value === this.selectedAsset!.id);
+    if (!exists) {
+      this.assetOptions = [this.toOption(this.selectedAsset), ...this.assetOptions];
+    }
   }
 }

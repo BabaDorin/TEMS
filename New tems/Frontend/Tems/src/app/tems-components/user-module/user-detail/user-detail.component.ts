@@ -1,5 +1,5 @@
 import { Component, OnInit, HostListener } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { trigger, transition, style, animate } from '@angular/animations';
@@ -53,8 +53,9 @@ export class UserDetailComponent implements OnInit {
   assetsLoading = false;
   assetsGridApi!: GridApi;
   assetsTotalCount = 0;
+  assetsTotalPages = 0;
   assetsCurrentPage = 1;
-  assetsPageSize = 50;
+  assetsPageSize = 20;
   selectedAssets: UserAssetDto[] = [];
   showPreviewModal = false;
   selectedAssetForPreview: UserAssetDto | null = null;
@@ -101,13 +102,18 @@ export class UserDetailComponent implements OnInit {
       headerName: 'Asset Tag',
       field: 'assetTag',
       flex: 1,
-      minWidth: 120,
-      cellClass: 'font-medium cursor-pointer',
+      minWidth: 160,
+      cellClass: 'font-medium',
       onCellClicked: (params) => {
-        this.viewAssetDetails(params.data);
+        const target = params.event?.target as HTMLElement;
+        if (target?.closest('.asset-identifier-link')) {
+          this.navigateToAssetDetail(params.data.id);
+        }
       },
       cellRenderer: (params: any) => {
-        return `<span class="text-blue-600 hover:text-blue-800">${params.value}</span>`;
+        return `
+          <button class="asset-identifier-link text-blue-600 hover:text-blue-800 hover:underline">${params.value}</button>
+        `;
       }
     },
     {
@@ -161,25 +167,27 @@ export class UserDetailComponent implements OnInit {
     {
       headerName: 'Actions',
       field: 'id',
-      flex: 1,
+      flex: 0.7,
       minWidth: 100,
       sortable: false,
       filter: false,
-      cellRenderer: (params: any) => {
-        const container = document.createElement('div');
-        container.className = 'flex gap-1 items-center h-full';
-        
-        const unassignBtn = document.createElement('button');
-        unassignBtn.className = 'p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors text-red-600 dark:text-red-400';
-        unassignBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M11 5L5 11M5 5L11 11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>';
-        unassignBtn.title = 'Unassign from user';
-        unassignBtn.onclick = (e) => {
-          e.stopPropagation();
-          this.unassignAsset(params.data);
-        };
-        
-        container.appendChild(unassignBtn);
-        return container;
+      cellRenderer: () => {
+        return `
+          <div class="flex items-center justify-center h-full">
+            <button class="action-view-btn text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 cursor-pointer" title="Quick preview" aria-label="Quick preview">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M1.333 8s2.667-4 6.667-4 6.667 4 6.667 4-2.667 4-6.667 4-6.667-4-6.667-4Z" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="8" cy="8" r="2" stroke="currentColor" stroke-width="1.4"/>
+              </svg>
+            </button>
+          </div>
+        `;
+      },
+      onCellClicked: (params) => {
+        const target = params.event?.target as HTMLElement;
+        if (target?.closest('.action-view-btn')) {
+          this.viewAssetDetails(params.data);
+        }
       }
     }
   ];
@@ -187,6 +195,7 @@ export class UserDetailComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
+    private location: Location,
     private userService: UserService,
     private assetService: AssetService,
     private assetTypeService: AssetTypeService,
@@ -198,7 +207,8 @@ export class UserDetailComponent implements OnInit {
       debounceTime(300),
       distinctUntilChanged()
     ).subscribe(() => {
-      this.applyFilters();
+      this.assetsCurrentPage = 1;
+      this.loadAssets();
     });
   }
 
@@ -227,7 +237,8 @@ export class UserDetailComponent implements OnInit {
     this.assetDefinitionService.getAll().subscribe({
       next: (definitions) => {
         this.assetDefinitions = definitions;
-        this.definitionOptions = definitions.map(d => ({ value: d.id, label: d.name }));
+        this.definitionOptions = definitions.map(d => ({ value: d.name, label: d.name }));
+        this.syncDefinitionOptions();
       }
     });
   }
@@ -260,11 +271,24 @@ export class UserDetailComponent implements OnInit {
     if (!this.user) return;
     
     this.assetsLoading = true;
-    this.userService.getUserAssets(this.user.id, this.assetsCurrentPage, this.assetsPageSize).subscribe({
+    this.selectedAssets = [];
+    this.assetsGridApi?.deselectAll();
+    this.userService.getUserAssets(
+      this.user.id,
+      this.assetsCurrentPage,
+      this.assetsPageSize,
+      this.assetTagSearch.trim() || undefined,
+      this.selectedTypeIds.length > 0 ? this.selectedTypeIds : undefined,
+      undefined,
+      this.selectedDefinitionIds.length > 0 ? this.selectedDefinitionIds : undefined
+    ).subscribe({
       next: (response) => {
         this.assets = response.assets || [];
         this.filteredAssets = [...this.assets];
         this.assetsTotalCount = response.totalCount || 0;
+        this.assetsTotalPages = response.totalPages || Math.max(1, Math.ceil(this.assetsTotalCount / this.assetsPageSize));
+        this.assetsCurrentPage = response.pageNumber || this.assetsCurrentPage;
+        this.syncDefinitionOptions();
         this.assetsLoading = false;
       },
       error: (error) => {
@@ -299,6 +323,11 @@ export class UserDetailComponent implements OnInit {
   }
 
   goBack() {
+    if (window.history.length > 1) {
+      this.location.back();
+      return;
+    }
+
     this.router.navigate(['/administration/users']);
   }
 
@@ -370,7 +399,9 @@ export class UserDetailComponent implements OnInit {
     this.assetTagSearch = '';
     this.selectedTypeIds = [];
     this.selectedDefinitionIds = [];
-    this.applyFilters();
+    this.syncDefinitionOptions();
+    this.assetsCurrentPage = 1;
+    this.loadAssets();
   }
 
   onAssetTagChange() {
@@ -379,13 +410,13 @@ export class UserDetailComponent implements OnInit {
 
   onTypeSelectionChange(ids: string[]) {
     this.selectedTypeIds = ids;
-    this.selectedDefinitionIds = this.selectedDefinitionIds.filter(defId => {
-      const def = this.assetDefinitions.find(d => d.id === defId);
-      return def && this.selectedTypeIds.includes(def.assetTypeId);
-    });
-    this.definitionOptions = this.assetDefinitions
-      .filter(d => this.selectedTypeIds.includes(d.assetTypeId))
-      .map(d => ({ value: d.id, label: d.name }));
+    this.selectedDefinitionIds = this.selectedDefinitionIds.filter(definitionName =>
+      this.assetDefinitions.some(definition =>
+        definition.name === definitionName &&
+        this.selectedTypeIds.some(typeId => this.matchesAssetType(definition, typeId))
+      )
+    );
+    this.syncDefinitionOptions();
     this.applyFilters();
   }
 
@@ -395,24 +426,8 @@ export class UserDetailComponent implements OnInit {
   }
 
   applyFilters() {
-    this.filteredAssets = this.assets.filter(asset => {
-      if (this.assetTagSearch && !asset.assetTag.toLowerCase().includes(this.assetTagSearch.toLowerCase())) {
-        return false;
-      }
-      if (this.selectedTypeIds.length > 0) {
-        const typeId = asset.definition?.assetTypeId;
-        if (!typeId || !this.selectedTypeIds.includes(typeId)) {
-          return false;
-        }
-      }
-      if (this.selectedDefinitionIds.length > 0) {
-        const defId = asset.definition?.definitionId;
-        if (!defId || !this.selectedDefinitionIds.includes(defId)) {
-          return false;
-        }
-      }
-      return true;
-    });
+    this.assetsCurrentPage = 1;
+    this.loadAssets();
   }
 
   onSelectionChanged() {
@@ -477,5 +492,39 @@ export class UserDetailComponent implements OnInit {
       console.error('Failed to unassign some assets:', error);
       this.loadAssets();
     });
+  }
+
+  private syncDefinitionOptions() {
+    const filtered = this.assetDefinitions.filter((definition) => {
+      if (this.selectedTypeIds.length === 0) {
+        return true;
+      }
+
+      return this.selectedTypeIds.some((typeId) => this.matchesAssetType(definition, typeId));
+    });
+
+    this.definitionOptions = filtered
+      .map((definition) => ({ value: definition.name, label: definition.name }))
+      .sort((left, right) => left.label.localeCompare(right.label));
+  }
+
+  goToPage(page: number) {
+    if (page < 1 || page > this.assetsTotalPages) return;
+    this.assetsCurrentPage = page;
+    this.loadAssets();
+  }
+
+  getAssetsShowingStart(): number {
+    if (this.assetsTotalCount === 0) return 0;
+    return (this.assetsCurrentPage - 1) * this.assetsPageSize + 1;
+  }
+
+  getAssetsShowingEnd(): number {
+    return Math.min(this.assetsCurrentPage * this.assetsPageSize, this.assetsTotalCount);
+  }
+
+  private matchesAssetType(definition: AssetDefinition, typeId: string): boolean {
+    const def = definition as any;
+    return def.assetTypeId === typeId || def.asset_type_id === typeId || def.assetType?.id === typeId;
   }
 }

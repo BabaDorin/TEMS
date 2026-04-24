@@ -63,7 +63,7 @@ export class ViewLocationsComponent implements OnInit, OnDestroy {
 
   // Pagination
   currentPage = 1;
-  paginationPageSize = 50;
+  paginationPageSize = 20;
   totalCount = 0;
   totalPages = 0;
   
@@ -99,14 +99,19 @@ export class ViewLocationsComponent implements OnInit, OnDestroy {
       headerName: 'Room',
       field: 'name',
       flex: 1,
-      minWidth: 180,
-      cellClass: 'font-medium cursor-pointer',
+      minWidth: 220,
+      cellClass: 'font-medium',
       onCellClicked: (params) => {
-        this.viewRoomDetails(params.data);
+        const target = params.event?.target as HTMLElement;
+        if (target?.closest('.room-identifier-link')) {
+          this.router.navigate(['/locations', params.data.id]);
+        }
       },
       cellRenderer: (params: any) => {
         const roomNumber = params.data.roomNumber ? ` (${params.data.roomNumber})` : '';
-        return `<span class="text-blue-600 hover:text-blue-800">${params.value}${roomNumber}</span>`;
+        return `
+          <button class="room-identifier-link text-blue-600 hover:text-blue-800 hover:underline">${params.value}${roomNumber}</button>
+        `;
       }
     },
     {
@@ -143,6 +148,32 @@ export class ViewLocationsComponent implements OnInit, OnDestroy {
           [RoomType.ServerRoom]: 'Server Room'
         };
         return typeLabels[params.value as RoomType] || params.value;
+      }
+    },
+    {
+      headerName: 'Actions',
+      field: 'id',
+      flex: 0.7,
+      minWidth: 100,
+      sortable: false,
+      filter: false,
+      cellRenderer: () => {
+        return `
+          <div class="flex items-center justify-center h-full">
+            <button class="action-view-btn text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 cursor-pointer" title="Quick preview" aria-label="Quick preview">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M1.333 8s2.667-4 6.667-4 6.667 4 6.667 4-2.667 4-6.667 4-6.667-4-6.667-4Z" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="8" cy="8" r="2" stroke="currentColor" stroke-width="1.4"/>
+              </svg>
+            </button>
+          </div>
+        `;
+      },
+      onCellClicked: (params) => {
+        const target = params.event?.target as HTMLElement;
+        if (target?.closest('.action-view-btn')) {
+          this.viewRoomDetails(params.data);
+        }
       }
     }
   ];
@@ -209,13 +240,40 @@ export class ViewLocationsComponent implements OnInit, OnDestroy {
   }
 
   loadRooms() {
+    this.selectedRooms = [];
+    this.gridApi?.deselectAll();
+
     this.locationService.getRoomsWithHierarchy(
       this.selectedSiteId || undefined,
-      this.selectedBuildingId || undefined
+      this.selectedBuildingId || undefined,
+      this.currentPage,
+      this.paginationPageSize,
+      this.roomNameSearch.trim() || undefined
     ).subscribe({
-      next: (rooms) => {
-        this.rowData = rooms;
-        this.applyFilters();
+      next: (response) => {
+        const rooms = response.data || [];
+        this.rowData = rooms.map(room => ({
+          id: room.id,
+          buildingId: room.buildingId,
+          name: room.name,
+          roomNumber: room.roomNumber,
+          floorLabel: room.floorLabel,
+          type: room.type as any,
+          capacity: room.capacity,
+          area: room.area,
+          status: room.status as any,
+          description: room.description,
+          createdAt: new Date(room.createdAt),
+          updatedAt: new Date(room.updatedAt),
+          siteName: room.siteName,
+          siteId: room.siteId,
+          buildingName: room.buildingName,
+          assetCounts: room.assetCounts
+        }));
+        this.filteredRowData = [...this.rowData];
+        this.totalCount = response.totalCount || 0;
+        this.totalPages = response.totalPages || Math.max(1, Math.ceil(this.totalCount / this.paginationPageSize));
+        this.currentPage = response.pageNumber || this.currentPage;
       },
       error: (error) => {
         console.error('Error loading rooms:', error);
@@ -237,7 +295,6 @@ export class ViewLocationsComponent implements OnInit, OnDestroy {
   onGridReady(params: GridReadyEvent) {
     this.gridApi = params.api;
     this.gridReady = true;
-    this.updatePagination();
   }
 
   onSelectionChanged() {
@@ -246,17 +303,10 @@ export class ViewLocationsComponent implements OnInit, OnDestroy {
     }
   }
 
-  updatePagination() {
-    this.totalCount = this.filteredRowData.length;
-    this.totalPages = Math.ceil(this.totalCount / this.paginationPageSize);
-    if (this.currentPage > this.totalPages && this.totalPages > 0) {
-      this.currentPage = this.totalPages;
-    }
-  }
-
   goToPage(page: number) {
     if (page >= 1 && page <= this.totalPages) {
       this.currentPage = page;
+      this.loadRooms();
     }
   }
 
@@ -312,6 +362,7 @@ export class ViewLocationsComponent implements OnInit, OnDestroy {
   onSiteChange() {
     // Reset building selection
     this.selectedBuildingId = null;
+    this.currentPage = 1;
     
     // Load buildings for selected site (or all if none selected)
     this.loadBuildings(this.selectedSiteId || undefined);
@@ -319,6 +370,7 @@ export class ViewLocationsComponent implements OnInit, OnDestroy {
 
   onBuildingChange() {
     // Reload rooms when building selection changes
+    this.currentPage = 1;
     this.loadRooms();
   }
 
@@ -327,25 +379,15 @@ export class ViewLocationsComponent implements OnInit, OnDestroy {
   }
 
   applyFilters() {
-    let filtered = [...this.rowData];
-
-    // Room name filtering (client-side only)
-    if (this.roomNameSearch.trim()) {
-      const search = this.roomNameSearch.toLowerCase().trim();
-      filtered = filtered.filter(room => 
-        room.name.toLowerCase().includes(search) ||
-        (room.roomNumber && room.roomNumber.toLowerCase().includes(search))
-      );
-    }
-
-    this.filteredRowData = filtered;
-    this.updatePagination();
+    this.currentPage = 1;
+    this.loadRooms();
   }
 
   clearFilters() {
     this.selectedSiteId = null;
     this.selectedBuildingId = null;
     this.roomNameSearch = '';
+    this.currentPage = 1;
     
     // Reload all data
     this.loadSites();

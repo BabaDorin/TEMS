@@ -6,6 +6,7 @@ export interface DropdownOption {
   label: string;
   value: any;
   disabled?: boolean;
+  description?: string;
 }
 
 @Component({
@@ -25,7 +26,6 @@ export interface DropdownOption {
 export class DropdownComponent implements ControlValueAccessor {
   @Input() set options(value: DropdownOption[]) {
     this._options = value;
-    console.log('Dropdown received options:', value);
   }
   get options(): DropdownOption[] {
     return this._options;
@@ -80,7 +80,6 @@ export class DropdownComponent implements ControlValueAccessor {
     event.stopPropagation();
     if (!this.disabled) {
       this.isOpen = !this.isOpen;
-      console.log('Dropdown toggled, isOpen:', this.isOpen, 'options count:', this.options.length);
       if (!this.isOpen) {
         this.onTouched();
       }
@@ -145,15 +144,10 @@ export class DropdownComponent implements ControlValueAccessor {
 
   getFilteredOptions(): DropdownOption[] {
     if (!this.searchText) {
-      console.log('getFilteredOptions returning all options:', this.options);
       return this.options;
     }
     const search = this.searchText.toLowerCase();
-    const filtered = this.options.filter(opt => 
-      opt.label.toLowerCase().includes(search)
-    );
-    console.log('getFilteredOptions returning filtered:', filtered);
-    return filtered;
+    return this.options.filter(opt => opt.label.toLowerCase().includes(search));
   }
 
   get hasSelection(): boolean {

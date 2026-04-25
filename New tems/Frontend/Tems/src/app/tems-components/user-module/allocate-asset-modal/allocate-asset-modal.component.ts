@@ -1,11 +1,12 @@
-import { Component, Inject, OnInit, OnDestroy } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef, MatDialogModule } from '@angular/material/dialog';
-import { Subject } from 'rxjs';
-import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
+import { Subject, of } from 'rxjs';
+import { catchError, debounceTime, distinctUntilChanged, map, switchMap, takeUntil, tap } from 'rxjs/operators';
 import { AssetService, AssetPageResponse } from 'src/app/services/asset.service';
 import { Asset } from 'src/app/models/asset/asset.model';
+import { CustomSelectComponent, SelectOption } from 'src/app/shared/custom-select/custom-select.component';
 
 export interface AllocateAssetModalData {
   allocationType: 'room' | 'user';
@@ -18,7 +19,7 @@ export interface AllocateAssetModalData {
 @Component({
   selector: 'app-allocate-asset-modal',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatDialogModule],
+  imports: [CommonModule, FormsModule, MatDialogModule, CustomSelectComponent],
   templateUrl: './allocate-asset-modal.component.html',
   styleUrls: ['./allocate-asset-modal.component.scss']
 })
@@ -27,15 +28,15 @@ export class AllocateAssetModalComponent implements OnInit, OnDestroy {
   targetId: string;
   targetName: string;
 
-  searchText = '';
-  isDropdownOpen = false;
-  searchResults: Asset[] = [];
-  isSearching = false;
+  assetOptions: SelectOption[] = [];
+  selectedAssetId = '';
   selectedAsset: Asset | null = null;
+  isSearching = false;
   isSubmitting = false;
 
-  private searchSubject = new Subject<string>();
-  private destroy$ = new Subject<void>();
+  private readonly searchSubject = new Subject<string>();
+  private readonly destroy$ = new Subject<void>();
+  private assetLookup = new Map<string, Asset>();
 
   constructor(
     public dialogRef: MatDialogRef<AllocateAssetModalComponent>,
@@ -56,9 +57,29 @@ export class AllocateAssetModalComponent implements OnInit, OnDestroy {
     this.searchSubject.pipe(
       debounceTime(300),
       distinctUntilChanged(),
+      tap((searchText) => {
+        this.isSearching = searchText.trim().length > 0;
+      }),
+      switchMap((searchText) => {
+        const query = searchText.trim();
+        if (!query) {
+          this.assetLookup.clear();
+          this.assetOptions = [];
+          this.isSearching = false;
+          return of([] as Asset[]);
+        }
+
+        return this.assetService.getAll(undefined, 1, 20, undefined, query).pipe(
+          map((response: AssetPageResponse) => response.assets || []),
+          catchError(() => of([] as Asset[]))
+        );
+      }),
       takeUntil(this.destroy$)
-    ).subscribe(searchText => {
-      this.performSearch(searchText);
+    ).subscribe((assets) => {
+      this.assetLookup = new Map(assets.map((asset) => [asset.id, asset]));
+      this.assetOptions = assets.map((asset) => this.toOption(asset));
+      this.ensureSelectedAssetVisible();
+      this.isSearching = false;
     });
   }
 
@@ -78,60 +99,14 @@ export class AllocateAssetModalComponent implements OnInit, OnDestroy {
     return this.allocationType === 'room' ? 'Add to Room' : 'Allocate to User';
   }
 
-  onSearchChange() {
-    this.searchSubject.next(this.searchText);
-    if (this.searchText.length > 0) {
-      this.isDropdownOpen = true;
-      this.isSearching = true;
-    } else {
-      this.isDropdownOpen = false;
-      this.searchResults = [];
-    }
+  onSearchChange(searchText: string) {
+    this.searchSubject.next(searchText);
   }
 
-  onInputFocus() {
-    if (this.searchText.length > 0 && this.searchResults.length > 0) {
-      this.isDropdownOpen = true;
-    }
-  }
-
-  performSearch(searchText: string) {
-    if (!searchText || searchText.length < 1) {
-      this.searchResults = [];
-      this.isSearching = false;
-      return;
-    }
-
-    this.isSearching = true;
-    this.assetService.getAll(undefined, 1, 20, undefined, searchText).subscribe({
-      next: (response: AssetPageResponse) => {
-        this.searchResults = response.assets || [];
-        this.isSearching = false;
-      },
-      error: () => {
-        this.searchResults = [];
-        this.isSearching = false;
-      }
-    });
-  }
-
-  selectAsset(asset: Asset) {
-    this.selectedAsset = asset;
-    this.searchText = asset.assetTag;
-    this.isDropdownOpen = false;
-    this.searchResults = [];
-  }
-
-  clearSelection() {
-    this.selectedAsset = null;
-    this.searchText = '';
-    this.searchResults = [];
-  }
-
-  toggleDropdown() {
-    if (this.searchText.length > 0 && this.searchResults.length > 0) {
-      this.isDropdownOpen = !this.isDropdownOpen;
-    }
+  onAssetSelected(assetId: string) {
+    this.selectedAssetId = assetId;
+    this.selectedAsset = this.assetLookup.get(assetId) ?? null;
+    this.ensureSelectedAssetVisible();
   }
 
   close() {
@@ -166,10 +141,15 @@ export class AllocateAssetModalComponent implements OnInit, OnDestroy {
     }
   }
 
+  clearSelection() {
+    this.selectedAsset = null;
+    this.selectedAssetId = '';
+  }
+
   getAssetCurrentAssignment(): string {
     if (!this.selectedAsset) return '—';
     const asset = this.selectedAsset as any;
-    
+
     if (this.allocationType === 'room' && asset.locationId === this.targetId) {
       return 'Already in this room';
     }
@@ -184,7 +164,7 @@ export class AllocateAssetModalComponent implements OnInit, OnDestroy {
     const loc = asset.locationDetails;
     if (loc?.fullPath) return loc.fullPath;
     if (loc?.name) return loc.name;
-    
+
     const legacyLoc = this.selectedAsset.location;
     if (legacyLoc) {
       const parts = [];
@@ -198,12 +178,11 @@ export class AllocateAssetModalComponent implements OnInit, OnDestroy {
   isAlreadyAssigned(): boolean {
     if (!this.selectedAsset) return false;
     const asset = this.selectedAsset as any;
-    
+
     if (this.allocationType === 'room') {
       return asset.locationId === this.targetId;
-    } else {
-      return asset.assignment?.assignedToUserId === this.targetId;
     }
+    return asset.assignment?.assignedToUserId === this.targetId;
   }
 
   formatStatus(status: string): string {
@@ -213,10 +192,30 @@ export class AllocateAssetModalComponent implements OnInit, OnDestroy {
 
   formatDate(date: Date | string | undefined): string {
     if (!date) return '—';
-    return new Date(date).toLocaleDateString('en-US', { 
-      year: 'numeric', 
-      month: 'short', 
-      day: 'numeric' 
+    return new Date(date).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
     });
+  }
+
+  private toOption(asset: Asset): SelectOption {
+    const typeName = asset.definition?.assetTypeName || 'Unknown Type';
+    const definitionName = asset.definition?.name || asset.definition?.manufacturer || '';
+    const meta = definitionName ? ` · ${definitionName}` : '';
+
+    return {
+      value: asset.id,
+      label: `${asset.assetTag} — ${typeName}${meta}`
+    };
+  }
+
+  private ensureSelectedAssetVisible(): void {
+    if (!this.selectedAsset) return;
+
+    const exists = this.assetOptions.some((option) => option.value === this.selectedAsset!.id);
+    if (!exists) {
+      this.assetOptions = [this.toOption(this.selectedAsset), ...this.assetOptions];
+    }
   }
 }

@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Http;
 using MediatR;
 using TicketManagement.Application.Interfaces;
 using TicketManagement.Contract.Commands.Tickets;
@@ -8,10 +9,14 @@ namespace TicketManagement.Application.Commands.Tickets;
 public class GetTicketMessagesCommandHandler : IRequestHandler<GetTicketMessagesCommand, GetTicketMessagesResponse>
 {
     private readonly ITicketConversationRepository _repository;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public GetTicketMessagesCommandHandler(ITicketConversationRepository repository)
+    public GetTicketMessagesCommandHandler(
+        ITicketConversationRepository repository,
+        IHttpContextAccessor httpContextAccessor)
     {
         _repository = repository;
+        _httpContextAccessor = httpContextAccessor;
     }
 
     public async Task<GetTicketMessagesResponse> Handle(GetTicketMessagesCommand request, CancellationToken cancellationToken)
@@ -21,7 +26,12 @@ public class GetTicketMessagesCommandHandler : IRequestHandler<GetTicketMessages
         if (conversation == null)
             return new GetTicketMessagesResponse(new List<TicketMessageResponse>());
 
-        var messages = conversation.Messages.Select(m => new TicketMessageResponse(
+        var canSeeInternalNotes = _httpContextAccessor.HttpContext?.User?.IsInRole("can_manage_tickets") == true;
+        var messages = canSeeInternalNotes
+            ? conversation.Messages.ToList()
+            : conversation.Messages.Where(m => !m.IsInternalNote).ToList();
+
+        var responseMessages = messages.Select(m => new TicketMessageResponse(
             m.MessageId,
             m.SenderType,
             m.SenderId,
@@ -32,6 +42,6 @@ public class GetTicketMessagesCommandHandler : IRequestHandler<GetTicketMessages
             m.EditedAt
         )).ToList();
 
-        return new GetTicketMessagesResponse(messages);
+        return new GetTicketMessagesResponse(responseMessages);
     }
 }

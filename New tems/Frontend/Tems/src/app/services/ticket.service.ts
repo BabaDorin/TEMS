@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, tap, catchError, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
-import { Ticket, CreateTicketRequest, UpdateTicketRequest, TicketConversation, AddMessageRequest, AddMessageResponse, EditMessageResponse } from '../models/ticket/ticket.model';
+import { Ticket, CreateTicketRequest, UpdateTicketRequest, TicketConversation, AddMessageRequest, AddMessageResponse, EditMessageResponse, ApprovalGateRequest, ApprovalGateResponse, ReviewApprovalGateRequest, ReviewApprovalGateResponse } from '../models/ticket/ticket.model';
 import { TicketManagementStateService } from '../state/ticket-management.state';
 
 @Injectable({
@@ -43,6 +43,13 @@ export class TicketService {
     );
   }
 
+  getForApproval(forceRefresh = false): Observable<Ticket[]> {
+    return this.http.get<{ tickets: Ticket[] }>(`${this.apiUrl}/for-approval`, this.httpOptions).pipe(
+      map(response => response.tickets || []),
+      catchError(() => of([] as Ticket[]))
+    );
+  }
+
   getById(id: string): Observable<Ticket> {
     return this.http.get<Ticket>(`${this.apiUrl}/${id}`, this.httpOptions);
   }
@@ -55,6 +62,24 @@ export class TicketService {
 
   update(id: string, request: UpdateTicketRequest): Observable<void> {
     return this.http.put<void>(`${this.apiUrl}/${id}`, request, this.httpOptions).pipe(
+      tap(() => this.stateService.invalidateTickets())
+    );
+  }
+
+  createApprovalGate(ticketId: string, request: ApprovalGateRequest): Observable<ApprovalGateResponse> {
+    return this.http.post<ApprovalGateResponse>(`${this.apiUrl}/${ticketId}/approval-gates`, request, this.httpOptions).pipe(
+      tap(() => this.stateService.invalidateTickets())
+    );
+  }
+
+  updateApprovalGate(ticketId: string, gateId: string, request: ApprovalGateRequest): Observable<ApprovalGateResponse> {
+    return this.http.put<ApprovalGateResponse>(`${this.apiUrl}/${ticketId}/approval-gates/${gateId}`, request, this.httpOptions).pipe(
+      tap(() => this.stateService.invalidateTickets())
+    );
+  }
+
+  reviewApprovalGate(ticketId: string, gateId: string, request: ReviewApprovalGateRequest): Observable<ReviewApprovalGateResponse> {
+    return this.http.post<ReviewApprovalGateResponse>(`${this.apiUrl}/${ticketId}/approval-gates/${gateId}/review`, request, this.httpOptions).pipe(
       tap(() => this.stateService.invalidateTickets())
     );
   }

@@ -32,6 +32,7 @@ export class AppComponent extends TEMSComponent implements OnInit{
   isLoading: boolean;
   private routeShowsLayout: boolean = true;
   private isAuthenticated: boolean = false;
+  private readonly fullScreenRoutes = ['/home'];
 
   constructor(
     public translate: TranslateService,
@@ -51,27 +52,31 @@ export class AppComponent extends TEMSComponent implements OnInit{
     // When needed (For example, when loading the page...), Feel free to add more cases here.
     router.events.forEach((event) => { 
       if(event instanceof NavigationStart) {
+        const mainPanel = document.querySelector('.main-panel') as HTMLElement | null;
+        const pageBodyWrapper = document.querySelector('.page-body-wrapper') as HTMLElement | null;
+        const contentWrapper = document.querySelector('.content-wrapper') as HTMLElement | null;
+
         if((event['url'] == '/auth/login') || (event['url'] == '/auth/register') || (event['url'] == '/error-pages/404') || (event['url'] == '/error-pages/500') || (event['url'] == '/error-pages/403')) {
           this.routeShowsLayout = false;
           this.showSidebar = false;
           this.showNavbar = false;
           this.showFooter = false;
-          document.querySelector('.main-panel').classList.add('w-100');
-          document.querySelector('.page-body-wrapper').classList.add('full-page-wrapper');
-          document.querySelector('.content-wrapper').classList.remove('auth', 'auth-img-bg', );
-          document.querySelector('.content-wrapper').classList.remove('auth', 'lock-full-bg');
+          mainPanel?.classList.add('w-100');
+          pageBodyWrapper?.classList.add('full-page-wrapper');
+          contentWrapper?.classList.remove('auth', 'auth-img-bg', );
+          contentWrapper?.classList.remove('auth', 'lock-full-bg');
           if((event['url'] == '/error-pages/404') || (event['url'] == '/error-pages/500')) {
-            document.querySelector('.content-wrapper').classList.add('p-0');
+            contentWrapper?.classList.add('p-0');
           }
         } else {
           this.routeShowsLayout = true;
           this.showSidebar = this.isAuthenticated;
-          this.showFooter = true;
+          this.showFooter = !this.fullScreenRoutes.includes(event['url']);
           this.showNavbar = true;
-          document.querySelector('.main-panel').classList.remove('w-100');
-          document.querySelector('.page-body-wrapper').classList.remove('full-page-wrapper');
-          document.querySelector('.content-wrapper').classList.remove('auth', 'auth-img-bg');
-          document.querySelector('.content-wrapper').classList.remove('p-0');
+          mainPanel?.classList.remove('w-100');
+          pageBodyWrapper?.classList.remove('full-page-wrapper');
+          contentWrapper?.classList.remove('auth', 'auth-img-bg');
+          contentWrapper?.classList.remove('p-0');
         }
       }
     });
@@ -112,6 +117,7 @@ export class AppComponent extends TEMSComponent implements OnInit{
         this.isAuthenticated = isAuth;
         this.showNavbar = this.routeShowsLayout;
         this.showSidebar = this.routeShowsLayout && isAuth;
+        this.showFooter = this.routeShowsLayout && !this.fullScreenRoutes.includes(this.router.url);
       })
     );
 

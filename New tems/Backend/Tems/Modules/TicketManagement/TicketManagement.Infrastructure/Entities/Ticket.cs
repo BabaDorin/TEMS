@@ -21,8 +21,15 @@ public class Ticket
     [BsonElement("human_readable_id")]
     public string HumanReadableId { get; set; } = string.Empty;
 
+    [BsonElement("title")]
+    public string Title { get; set; } = string.Empty;
+
     [BsonElement("summary")]
     public string Summary { get; set; } = string.Empty;
+
+    [BsonElement("ai_summary")]
+    [BsonIgnoreIfNull]
+    public string? AiSummary { get; set; }
 
     [BsonElement("current_state_id")]
     public string CurrentStateId { get; set; } = string.Empty;
@@ -40,6 +47,9 @@ public class Ticket
 
     [BsonElement("attributes")]
     public Dictionary<string, object> Attributes { get; set; } = new();
+
+    [BsonElement("approval_gates")]
+    public List<ApprovalGate> ApprovalGates { get; set; } = new();
 
     [BsonElement("created_at")]
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;

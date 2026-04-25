@@ -4,6 +4,7 @@ public record AssetFilterDto(
     string? AssetTag = null,
     List<string>? AssetTypeIds = null,
     List<string>? DefinitionIds = null,
+    List<string>? DefinitionNames = null,
     string? LocationId = null,
     string? AssignedToUserId = null,
     bool IncludeArchived = false

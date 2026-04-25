@@ -98,21 +98,20 @@ public class UpdateAssetCommandHandler(
 
             if (previousUserId != newUserId)
             {
-                if (previousUserId != null)
-                {
-                    await publisher.Publish(new AssetUnassignedFromUserNotification(
-                        request.Id, existingAsset.AssetTag,
-                        previousUserId, previousUserName ?? string.Empty,
-                        null, null, null
-                    ), cancellationToken);
-                }
-
                 if (newUserId != null)
                 {
                     await publisher.Publish(new AssetAssignedToUserNotification(
                         request.Id, existingAsset.AssetTag,
                         newUserId, newUserName ?? string.Empty,
                         previousUserId, previousUserName, null, null
+                    ), cancellationToken);
+                }
+                else if (previousUserId != null)
+                {
+                    await publisher.Publish(new AssetUnassignedFromUserNotification(
+                        request.Id, existingAsset.AssetTag,
+                        previousUserId, previousUserName ?? string.Empty,
+                        null, null, null
                     ), cancellationToken);
                 }
             }
@@ -122,9 +121,17 @@ public class UpdateAssetCommandHandler(
                 ? $"{request.Location.Building} / {request.Location.Room}".Trim(' ', '/') 
                 : null;
 
-            if (previousLocationId != newLocationId && newLocationId != null)
+            if (previousLocationId != newLocationId)
             {
-                if (previousLocationId != null)
+                if (newLocationId != null)
+                {
+                    await publisher.Publish(new AssetAssignedToLocationNotification(
+                        request.Id, existingAsset.AssetTag,
+                        newLocationId, newLocationName ?? string.Empty,
+                        previousLocationId, previousLocationName, null, null
+                    ), cancellationToken);
+                }
+                else if (previousLocationId != null)
                 {
                     await publisher.Publish(new AssetUnassignedFromLocationNotification(
                         request.Id, existingAsset.AssetTag,
@@ -132,12 +139,6 @@ public class UpdateAssetCommandHandler(
                         null, null, null
                     ), cancellationToken);
                 }
-
-                await publisher.Publish(new AssetAssignedToLocationNotification(
-                    request.Id, existingAsset.AssetTag,
-                    newLocationId, newLocationName ?? string.Empty,
-                    previousLocationId, previousLocationName, null, null
-                ), cancellationToken);
             }
 
             if (fieldChanges.Count > 0)

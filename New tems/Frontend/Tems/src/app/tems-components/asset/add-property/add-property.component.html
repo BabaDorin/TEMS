@@ -1,19 +1,25 @@
-<div [ngClass]="dialogRef == undefined ? 'card' : 'card cancel-margins'">
-    <div class="card-body">
-        <h2 *ngIf="propertyId == undefined">
-            {{ 'property.add' | translate }}
-        </h2>
-        <h2 *ngIf="propertyId != undefined">
-            {{ 'property.update' | translate }}
-        </h2>
-        <hr class="separator">
-        <form class="mt-3" [formGroup]="formlyData.form" (ngSubmit)="onSubmit()">
-            <formly-form [form]="formlyData.form" [fields]="formlyData.fields" [model]="formlyData.model">
-            </formly-form>
-            <button type="submit" class="btn btn-gradient-primary mt-2"
-                [disabled]="!formlyData.form.valid">
-                {{ 'form.submit' | translate }}
-            </button>
-        </form>
+<div class="tems-asset-dialog tems-asset-modal-card tems-asset-modal-card--narrow">
+  <div class="tems-asset-modal-header">
+    <div>
+      <div class="tems-asset-eyebrow">
+        <i class="mdi mdi-tag-outline"></i>
+        <span>{{ propertyId == undefined ? 'New property' : 'Edit property' }}</span>
+      </div>
+      <h2 class="text-xl font-semibold text-[color:var(--text-primary)] m-0 mt-2">
+        {{ propertyId == undefined ? ('property.add' | translate) : ('property.update' | translate) }}
+      </h2>
+      <p class="tems-asset-help mt-1">Use the same field style as the rest of TEMS.</p>
     </div>
+  </div>
+
+  <div class="tems-asset-modal-body">
+    <form class="mt-1" [formGroup]="formlyData.form" (ngSubmit)="onSubmit()">
+      <formly-form [form]="formlyData.form" [fields]="formlyData.fields" [model]="formlyData.model"></formly-form>
+      <div class="tems-asset-modal-footer px-0 pb-0 pt-4">
+        <button type="submit" class="tems-btn tems-btn-primary" [disabled]="!formlyData.form.valid">
+          {{ 'form.submit' | translate }}
+        </button>
+      </div>
+    </form>
+  </div>
 </div>

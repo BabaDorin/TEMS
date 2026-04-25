@@ -1,0 +1,78 @@
+<div class="tems-modal-panel">
+  <div class="tems-modal-header">
+    <div class="flex justify-between items-start gap-4">
+      <div class="flex-1">
+        <h2 class="text-xl font-semibold text-gray-900 dark:text-white m-0">
+          {{ gate ? 'Edit Approval Gate' : 'Add Approval Gate' }}
+        </h2>
+        <p class="text-sm text-gray-600 dark:text-gray-400 mt-1 mb-0">
+          Define who can approve this ticket and why.
+        </p>
+      </div>
+      <button
+        (click)="close()"
+        class="ml-4 p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-white/10 transition">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" class="text-gray-500 dark:text-gray-400">
+          <path d="M15 5L5 15M5 5L15 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="tems-modal-body space-y-4">
+    <div>
+      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Gate title</label>
+      <input
+        type="text"
+        [(ngModel)]="gateTitle"
+        maxlength="80"
+        placeholder="Example: Replace hardware before closing ticket"
+        class="w-full px-4 py-2.5 border border-gray-300 dark:border-[#38383a] rounded-xl bg-white dark:bg-[#3a3a3c] text-gray-900 dark:text-white focus:ring-2 focus:ring-[#007aff] focus:border-transparent">
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Justification</label>
+      <textarea
+        [(ngModel)]="gateJustification"
+        rows="4"
+        placeholder="Explain what this approval is for"
+        class="w-full px-4 py-2.5 border border-gray-300 dark:border-[#38383a] rounded-xl bg-white dark:bg-[#3a3a3c] text-gray-900 dark:text-white focus:ring-2 focus:ring-[#007aff] focus:border-transparent resize-none"></textarea>
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Approvers</label>
+      <app-custom-select
+        [options]="approverOptions"
+        [(ngModel)]="approverIds"
+        [mode]="'multiple'"
+        [searchable]="true"
+        [allowEmpty]="false"
+        [loading]="loading"
+        placeholder="Search and select approvers"
+        (searchTextChange)="onSearchChange($event)">
+      </app-custom-select>
+    </div>
+
+    <label class="flex items-center gap-2 cursor-pointer select-none">
+      <input
+        type="checkbox"
+        [(ngModel)]="allApproversRequired"
+        class="w-4 h-4 text-[#007aff] border-gray-300 dark:border-gray-600 rounded focus:ring-[#007aff]">
+      <span class="text-sm text-gray-700 dark:text-gray-300">
+        All approvers are required
+      </span>
+    </label>
+
+    <p *ngIf="errorMessage" class="text-sm text-red-600 dark:text-red-400">{{ errorMessage }}</p>
+  </div>
+
+  <div class="tems-modal-footer flex gap-3">
+    <button (click)="close()" class="tems-btn tems-btn-secondary flex-1">Cancel</button>
+    <button
+      (click)="save()"
+      [disabled]="submitting || !gateTitle.trim() || approverIds.length === 0"
+      class="tems-btn tems-btn-primary flex-1 disabled:opacity-50 disabled:cursor-not-allowed">
+      {{ submitting ? 'Saving...' : (gate ? 'Save Changes' : 'Add Gate') }}
+    </button>
+  </div>
+</div>

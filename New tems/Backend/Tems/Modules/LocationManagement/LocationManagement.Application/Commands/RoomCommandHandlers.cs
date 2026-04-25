@@ -77,7 +77,16 @@ public class GetAllRoomsCommandHandler(
     public async Task<GetAllRoomsResponse> Handle(GetAllRoomsCommand request, CancellationToken cancellationToken)
     {
         var tenantId = tenantContext.TenantId ?? throw new InvalidOperationException("Tenant context is required");
-        var rooms = await roomRepository.GetAllAsync(tenantId, request.SiteId, request.BuildingId, cancellationToken);
+        var pageNumber = Math.Max(request.PageNumber, 1);
+        var pageSize = Math.Max(request.PageSize, 1);
+        var (rooms, totalCount) = await roomRepository.GetAllAsync(
+            tenantId,
+            request.SiteId,
+            request.BuildingId,
+            pageNumber,
+            pageSize,
+            request.SearchText,
+            cancellationToken);
 
         // Get all buildings and sites for enrichment
         var buildings = await buildingRepository.GetAllAsync(tenantId, request.SiteId, cancellationToken);
@@ -117,7 +126,9 @@ public class GetAllRoomsCommandHandler(
             );
         }).ToList();
 
-        return new GetAllRoomsResponse(true, null, roomDtos);
+        var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
+
+        return new GetAllRoomsResponse(true, null, roomDtos, totalCount, pageNumber, pageSize, totalPages);
     }
 }
 
@@ -252,7 +263,7 @@ public class GetLocationHierarchyCommandHandler(
         
         var sites = await siteRepository.GetAllAsync(tenantId, cancellationToken);
         var buildings = await buildingRepository.GetAllAsync(tenantId, null, cancellationToken);
-        var rooms = await roomRepository.GetAllAsync(tenantId, null, null, cancellationToken);
+        var (rooms, _) = await roomRepository.GetAllAsync(tenantId, null, null, 1, 10000, null, cancellationToken);
 
         var hierarchy = new List<LocationHierarchyDto>();
 
@@ -276,7 +287,7 @@ public class GetLocationHierarchyCommandHandler(
                 building.Name,
                 "Building",
                 building.SiteId,
-                null,
+                string.Empty,
                 null,
                 null
             ));
@@ -289,7 +300,7 @@ public class GetLocationHierarchyCommandHandler(
                 room.Name,
                 "Room",
                 room.BuildingId,
-                null,
+                string.Empty,
                 room.FloorLabel,
                 room.Status.ToString()
             ));

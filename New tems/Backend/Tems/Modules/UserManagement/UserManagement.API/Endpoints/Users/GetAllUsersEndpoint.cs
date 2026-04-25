@@ -20,7 +20,7 @@ public class GetAllUsersEndpoint(IMediator mediator) : EndpointWithoutRequest<Ge
 
         var command = new GetAllUsersCommand(
             PageNumber: pageNumber > 0 ? pageNumber : 1,
-            PageSize: pageSize > 0 ? pageSize : 50
+            PageSize: pageSize > 0 ? pageSize : 20
         );
 
         var result = await mediator.Send(command, ct);

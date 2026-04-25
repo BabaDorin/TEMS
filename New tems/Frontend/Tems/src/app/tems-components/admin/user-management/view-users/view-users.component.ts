@@ -1,5 +1,6 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -45,7 +46,7 @@ export class ViewUsersComponent extends TEMSComponent implements OnInit {
 
   // Pagination
   currentPage = 1;
-  pageSize = 50;
+  pageSize = 20;
   totalCount = 0;
   totalPages = 0;
 
@@ -54,11 +55,18 @@ export class ViewUsersComponent extends TEMSComponent implements OnInit {
       headerName: 'Username',
       field: 'username',
       flex: 1,
-      minWidth: 150,
-      cellClass: 'font-medium cursor-pointer',
-      onCellClicked: (params) => this.viewUser(params.data),
+      minWidth: 190,
+      cellClass: 'font-medium',
+      onCellClicked: (params) => {
+        const target = params.event?.target as HTMLElement;
+        if (target?.closest('.user-identifier-link')) {
+          this.navigateToUserDetail(params.data.id);
+        }
+      },
       cellRenderer: (params: any) => {
-        return `<span class="text-blue-600 dark:text-blue-400 hover:underline">${params.value || '—'}</span>`;
+        return `
+          <button class="user-identifier-link text-blue-600 dark:text-blue-400 hover:underline">${params.value || '—'}</button>
+        `;
       }
     },
     {
@@ -164,7 +172,8 @@ export class ViewUsersComponent extends TEMSComponent implements OnInit {
     private tokenService: TokenService,
     private dialogService: DialogService,
     private themeService: ThemeService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private router: Router
   ) {
     super();
     this.currentUserKeycloakId = this.tokenService.getUserId();
@@ -216,6 +225,11 @@ export class ViewUsersComponent extends TEMSComponent implements OnInit {
       [{ label: 'user', value: user }],
       () => {}
     );
+  }
+
+  navigateToUserDetail(userId: string) {
+    if (!userId) return;
+    this.router.navigate(['/users', userId]);
   }
 
   editUserRoles(user: UserDto) {

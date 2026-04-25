@@ -10,24 +10,36 @@ public class EditTicketMessageEndpoint(IMediator mediator) : Endpoint<EditTicket
     public override void Configure()
     {
         Patch("/tickets/{TicketId}/messages/{MessageId}");
-        Policies("CanManageTickets");
+        Policies("Authenticated");
     }
 
     public override async Task HandleAsync(EditTicketMessageCommand request, CancellationToken ct)
     {
-        if (string.IsNullOrWhiteSpace(request.Content))
+        try
         {
-            ThrowError("Message content cannot be empty.", 400);
-            return;
-        }
+            if (string.IsNullOrWhiteSpace(request.Content))
+            {
+                ThrowError("Message content cannot be empty.", 400);
+                return;
+            }
 
-        var response = await mediator.Send(request, ct);
-        if (!response.Success)
+            var response = await mediator.Send(request, ct);
+            if (!response.Success)
+            {
+                ThrowError("Ticket message not found.", 404);
+                return;
+            }
+
+            await Send.OkAsync(response, cancellation: ct);
+        }
+        catch (UnauthorizedAccessException)
+        {
+            await Send.ForbiddenAsync(ct);
+        }
+        catch (KeyNotFoundException)
         {
             ThrowError("Ticket message not found.", 404);
             return;
         }
-
-        await Send.OkAsync(response, cancellation: ct);
     }
 }

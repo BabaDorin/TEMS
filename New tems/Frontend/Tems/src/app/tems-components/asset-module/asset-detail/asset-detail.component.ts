@@ -1,16 +1,17 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
+import { CommonModule, Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { MatDialog } from '@angular/material/dialog';
 import { AssetService } from 'src/app/services/asset.service';
 import { LocationService } from 'src/app/services/location.service';
 import { UserService } from 'src/app/services/user.service';
+import { TokenService } from 'src/app/services/token.service';
 import { Asset } from 'src/app/models/asset/asset.model';
 import { AssetLabelComponent } from '../../asset/asset-label/asset-label.component';
 import { RoomDetailModalComponent } from '../../location-module/room-detail-modal/room-detail-modal.component';
-import { ViewUserModalComponent } from '../../admin/user-management/view-user-modal/view-user-modal.component';
 import { AssetTimelineComponent } from '../asset-timeline/asset-timeline.component';
+import { AssetBulkActionModalComponent } from '../view-assets/asset-bulk-action-modal.component';
 
 @Component({
   selector: 'app-asset-detail',
@@ -41,17 +42,30 @@ export class AssetDetailComponent implements OnInit {
   showActionsDropdown = false;
   isDefinitionExpanded = true;
   private cachedAssigneeEmail: string | null = null;
+  assigneeValid = false;
+  canManageAssets = false;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
+    private location: Location,
     private assetService: AssetService,
     private dialog: MatDialog,
     private locationService: LocationService,
-    private userService: UserService
+    private userService: UserService,
+    private tokenService: TokenService
   ) {}
 
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+    const target = event.target as HTMLElement;
+    if (!target.closest('.actions-dropdown')) {
+      this.showActionsDropdown = false;
+    }
+  }
+
   ngOnInit() {
+    this.canManageAssets = this.tokenService.canManageAssets();
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.loadAsset(id);
@@ -69,7 +83,7 @@ export class AssetDetailComponent implements OnInit {
       next: (asset) => {
         this.asset = asset;
         this.loading = false;
-        this.resolveAssigneeDisplayName();
+        this.resolveAssigneeState();
       },
       error: (error) => {
         console.error('Error loading asset:', error);
@@ -80,12 +94,57 @@ export class AssetDetailComponent implements OnInit {
   }
 
   goBack() {
+    if (window.history.length > 1) {
+      this.location.back();
+      return;
+    }
+
     this.router.navigate(['/assets/view']);
   }
 
   editAsset() {
     // Future: Navigate to edit view
     console.log('Edit asset:', this.asset?.id);
+  }
+
+  assignToUser() {
+    if (!this.asset) return;
+
+    const dialogRef = this.dialog.open(AssetBulkActionModalComponent, {
+      width: '520px',
+      maxWidth: '95vw',
+      panelClass: 'custom-dialog-container',
+      data: {
+        mode: 'user',
+        assets: [this.asset]
+      }
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result?.success && this.asset) {
+        this.loadAsset(this.asset.id);
+      }
+    });
+  }
+
+  moveToRoom() {
+    if (!this.asset) return;
+
+    const dialogRef = this.dialog.open(AssetBulkActionModalComponent, {
+      width: '520px',
+      maxWidth: '95vw',
+      panelClass: 'custom-dialog-container',
+      data: {
+        mode: 'room',
+        assets: [this.asset]
+      }
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result?.success && this.asset) {
+        this.loadAsset(this.asset.id);
+      }
+    });
   }
 
   deleteAsset() {
@@ -201,18 +260,9 @@ export class AssetDetailComponent implements OnInit {
     });
   }
 
-  openAssigneeModal() {
-    if (!this.asset?.assignment?.assignedToUserId) return;
-    this.userService.getUserById(this.asset.assignment.assignedToUserId).subscribe({
-      next: (user) => {
-        this.dialog.open(ViewUserModalComponent, {
-          width: '520px',
-          maxWidth: '95vw',
-          data: { user },
-          panelClass: 'custom-dialog-container'
-        });
-      }
-    });
+  navigateToAssignee() {
+    if (!this.asset?.assignment?.assignedToUserId || !this.assigneeValid) return;
+    this.router.navigate(['/users', this.asset.assignment.assignedToUserId]);
   }
 
   hasLocationId(): boolean {
@@ -220,7 +270,7 @@ export class AssetDetailComponent implements OnInit {
   }
 
   hasAssignee(): boolean {
-    return !!this.asset?.assignment?.assignedToUserId;
+    return this.assigneeValid;
   }
 
   getAssigneeName(): string {
@@ -231,13 +281,21 @@ export class AssetDetailComponent implements OnInit {
     return '';
   }
 
-  private resolveAssigneeDisplayName() {
+  private resolveAssigneeState() {
+    this.assigneeValid = false;
+    this.cachedAssigneeEmail = null;
+
     if (!this.asset?.assignment?.assignedToUserId) return;
-    if (this.asset.assignment.assignedToUserName) return;
 
     this.userService.getUserById(this.asset.assignment.assignedToUserId).subscribe({
       next: (user) => {
-        this.cachedAssigneeEmail = user.email;
+        const fullName = [user.firstName, user.lastName].filter(Boolean).join(' ').trim();
+        this.cachedAssigneeEmail = fullName || user.username || user.email;
+        this.assigneeValid = !!this.cachedAssigneeEmail;
+      },
+      error: () => {
+        this.assigneeValid = false;
+        this.cachedAssigneeEmail = null;
       }
     });
   }

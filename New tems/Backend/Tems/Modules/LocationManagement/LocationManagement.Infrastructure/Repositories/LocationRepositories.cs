@@ -153,10 +153,20 @@ public class RoomRepository(IMongoDatabase database) : IRoomRepository
         return dbEntity?.ToDomain();
     }
 
-    public async Task<List<DomainEntity.Room>> GetAllAsync(string tenantId, string? siteId = null, string? buildingId = null, CancellationToken cancellationToken = default)
+    public async Task<(List<DomainEntity.Room> Rooms, int TotalCount)> GetAllAsync(
+        string tenantId,
+        string? siteId = null,
+        string? buildingId = null,
+        int pageNumber = 1,
+        int pageSize = 20,
+        string? searchText = null,
+        CancellationToken cancellationToken = default)
     {
         var filterBuilder = Builders<DbEntity.Room>.Filter;
-        var filter = filterBuilder.Eq(x => x.TenantId, tenantId);
+        var filters = new List<FilterDefinition<DbEntity.Room>>
+        {
+            filterBuilder.Eq(x => x.TenantId, tenantId)
+        };
 
         // If siteId is provided, we need to filter rooms by buildings in that site
         if (!string.IsNullOrEmpty(siteId))
@@ -172,25 +182,46 @@ public class RoomRepository(IMongoDatabase database) : IRoomRepository
             
             if (buildingIds.Any())
             {
-                filter = filterBuilder.And(filter, filterBuilder.In(x => x.BuildingId, buildingIds));
+                filters.Add(filterBuilder.In(x => x.BuildingId, buildingIds));
             }
             else
             {
                 // No buildings in this site, return empty list
-                return new List<DomainEntity.Room>();
+                return ([], 0);
             }
         }
 
         if (!string.IsNullOrEmpty(buildingId))
         {
-            filter = filterBuilder.And(filter, filterBuilder.Eq(x => x.BuildingId, buildingId));
+            filters.Add(filterBuilder.Eq(x => x.BuildingId, buildingId));
         }
+
+        if (!string.IsNullOrWhiteSpace(searchText))
+        {
+            var escaped = System.Text.RegularExpressions.Regex.Escape(searchText.Trim());
+            var regex = new MongoDB.Bson.BsonRegularExpression(escaped, "i");
+            filters.Add(filterBuilder.Or(
+                filterBuilder.Regex(x => x.Name, regex),
+                filterBuilder.Regex(x => x.RoomNumber, regex)
+            ));
+        }
+
+        var filter = filters.Count > 0
+            ? filterBuilder.And(filters)
+            : filterBuilder.Empty;
+
+        var totalCount = await _collection.CountDocumentsAsync(filter, cancellationToken: cancellationToken);
+        var safePageNumber = Math.Max(pageNumber, 1);
+        var safePageSize = Math.Max(pageSize, 1);
+        var skip = (safePageNumber - 1) * safePageSize;
 
         var dbEntities = await _collection.Find(filter)
             .SortBy(x => x.Name)
+            .Skip(skip)
+            .Limit(safePageSize)
             .ToListAsync(cancellationToken);
 
-        return dbEntities.Select(x => x.ToDomain()).ToList();
+        return (dbEntities.Select(x => x.ToDomain()).ToList(), (int)totalCount);
     }
 
     public async Task<DomainEntity.Room> CreateAsync(DomainEntity.Room room, CancellationToken cancellationToken = default)

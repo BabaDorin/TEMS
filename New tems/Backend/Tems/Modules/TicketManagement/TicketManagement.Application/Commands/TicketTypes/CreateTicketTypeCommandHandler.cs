@@ -2,6 +2,7 @@ using MediatR;
 using Tems.Common.Tenant;
 using TicketManagement.Application.Domain;
 using TicketManagement.Application.Interfaces;
+using TicketManagement.Application.Helpers;
 using TicketManagement.Contract.Commands.TicketTypes;
 using TicketManagement.Contract.Responses;
 
@@ -38,16 +39,11 @@ public class CreateTicketTypeCommandHandler : IRequestHandler<CreateTicketTypeCo
                     AllowedTransitions = s.AllowedTransitions ?? new List<string>(),
                     AutomationHook = s.AutomationHook
                 }).ToList() ?? new List<WorkflowState>(),
-                InitialStateId = request.WorkflowConfig.InitialStateId ?? "open"
+                InitialStateId = request.WorkflowConfig.InitialStateId ?? "new"
             } : new WorkflowConfig
             {
-                States = new List<WorkflowState>
-                {
-                    new WorkflowState { Id = "open", Label = "Open", Type = "ACTIVE", AllowedTransitions = new List<string> { "in-progress", "closed" } },
-                    new WorkflowState { Id = "in-progress", Label = "In Progress", Type = "ACTIVE", AllowedTransitions = new List<string> { "open", "closed" } },
-                    new WorkflowState { Id = "closed", Label = "Closed", Type = "CLOSED", AllowedTransitions = new List<string>() }
-                },
-                InitialStateId = "open"
+                States = TicketStateHelper.CreateDefaultWorkflowStates(),
+                InitialStateId = "new"
             },
             AttributeDefinitions = request.AttributeDefinitions?.Select(a => new AttributeDefinition
             {

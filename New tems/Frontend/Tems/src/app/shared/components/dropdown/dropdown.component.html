@@ -92,7 +92,10 @@
             <div class="radio-inner" [class.checked]="isSelected(option.value)"></div>
           </div>
 
-          <span class="option-label">{{ option.label }}</span>
+          <div class="option-copy">
+            <span class="option-label">{{ option.label }}</span>
+            <span *ngIf="option.description" class="option-description">{{ option.description }}</span>
+          </div>
         </div>
 
         <div *ngIf="getFilteredOptions().length === 0 && options.length === 0" class="no-results">

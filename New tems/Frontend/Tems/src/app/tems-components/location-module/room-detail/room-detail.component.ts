@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { trigger, transition, style, animate } from '@angular/animations';
@@ -12,6 +12,7 @@ import { LocationService } from 'src/app/services/location.service';
 import { AssetTypeService } from 'src/app/services/asset-type.service';
 import { AssetDefinitionService } from 'src/app/services/asset-definition.service';
 import { ThemeService } from 'src/app/services/theme.service';
+import { TokenService } from 'src/app/services/token.service';
 import { RoomWithHierarchy, RoomType, RoomStatus } from 'src/app/models/location/room.model';
 import { Asset } from 'src/app/models/asset/asset.model';
 import { AssetType } from 'src/app/models/asset/asset-type.model';
@@ -44,6 +45,7 @@ export class RoomDetailComponent implements OnInit {
   error: string | null = null;
   activeTab: 'overview' | 'assets' | 'allocations' = 'overview';
   showActionsDropdown = false;
+  canManageAssets = false;
 
   // Assets Tab
   assets: Asset[] = [];
@@ -51,8 +53,9 @@ export class RoomDetailComponent implements OnInit {
   assetsLoading = false;
   assetsGridApi!: GridApi;
   assetsTotalCount = 0;
+  assetsTotalPages = 0;
   assetsCurrentPage = 1;
-  assetsPageSize = 50;
+  assetsPageSize = 20;
   selectedAssets: Asset[] = [];
   showPreviewModal = false;
   selectedAssetForPreview: Asset | null = null;
@@ -92,13 +95,18 @@ export class RoomDetailComponent implements OnInit {
       headerName: 'Asset Tag',
       field: 'assetTag',
       flex: 1,
-      minWidth: 120,
-      cellClass: 'font-medium cursor-pointer',
+      minWidth: 160,
+      cellClass: 'font-medium',
       onCellClicked: (params) => {
-        this.viewAssetDetails(params.data);
+        const target = params.event?.target as HTMLElement;
+        if (target?.closest('.asset-identifier-link')) {
+          this.navigateToDetail(params.data.id);
+        }
       },
       cellRenderer: (params: any) => {
-        return `<span class="text-blue-600 hover:text-blue-800">${params.value}</span>`;
+        return `
+          <button class="asset-identifier-link text-blue-600 hover:text-blue-800 hover:underline">${params.value}</button>
+        `;
       }
     },
     {
@@ -141,27 +149,57 @@ export class RoomDetailComponent implements OnInit {
       flex: 1,
       minWidth: 150,
       valueFormatter: (params) => params.value || '—'
+    },
+    {
+      headerName: 'Actions',
+      field: 'id',
+      flex: 0.7,
+      minWidth: 100,
+      sortable: false,
+      filter: false,
+      cellRenderer: () => {
+        return `
+          <div class="flex items-center justify-center h-full">
+            <button class="action-view-btn text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 cursor-pointer" title="Quick preview" aria-label="Quick preview">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M1.333 8s2.667-4 6.667-4 6.667 4 6.667 4-2.667 4-6.667 4-6.667-4-6.667-4Z" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="8" cy="8" r="2" stroke="currentColor" stroke-width="1.4"/>
+              </svg>
+            </button>
+          </div>
+        `;
+      },
+      onCellClicked: (params) => {
+        const target = params.event?.target as HTMLElement;
+        if (target?.closest('.action-view-btn')) {
+          this.viewAssetDetails(params.data);
+        }
+      }
     }
   ];
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
+    private location: Location,
     private locationService: LocationService,
     private assetTypeService: AssetTypeService,
     private assetDefinitionService: AssetDefinitionService,
     private dialog: MatDialog,
-    private themeService: ThemeService
+    private themeService: ThemeService,
+    private tokenService: TokenService
   ) {
     this.assetTagSearchSubject.pipe(
       debounceTime(300),
       distinctUntilChanged()
     ).subscribe(() => {
-      this.applyFilters();
+      this.assetsCurrentPage = 1;
+      this.loadAssets();
     });
   }
 
   ngOnInit() {
+    this.canManageAssets = this.tokenService.canManageAssets();
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.loadRoom(id);
@@ -186,7 +224,8 @@ export class RoomDetailComponent implements OnInit {
     this.assetDefinitionService.getAll().subscribe({
       next: (definitions) => {
         this.assetDefinitions = definitions;
-        this.definitionOptions = this.assetDefinitions.map(d => ({ value: d.id, label: d.name }));
+        this.definitionOptions = this.assetDefinitions.map(d => ({ value: d.name, label: d.name }));
+        this.syncDefinitionOptions();
       }
     });
   }
@@ -219,11 +258,24 @@ export class RoomDetailComponent implements OnInit {
     if (!this.room) return;
     
     this.assetsLoading = true;
-    this.locationService.getAssetsByRoom(this.room.id, this.assetsCurrentPage, this.assetsPageSize).subscribe({
+    this.selectedAssets = [];
+    this.assetsGridApi?.deselectAll();
+    this.locationService.getAssetsByRoom(
+      this.room.id,
+      this.assetsCurrentPage,
+      this.assetsPageSize,
+      this.assetTagSearch.trim() || undefined,
+      this.selectedTypeIds.length > 0 ? this.selectedTypeIds : undefined,
+      undefined,
+      this.selectedDefinitionIds.length > 0 ? this.selectedDefinitionIds : undefined
+    ).subscribe({
       next: (response) => {
         this.assets = response.data?.assets || response.assets || [];
         this.filteredAssets = [...this.assets];
         this.assetsTotalCount = response.data?.totalCount || response.totalCount || 0;
+        this.assetsTotalPages = response.data?.totalPages || response.totalPages || Math.max(1, Math.ceil(this.assetsTotalCount / this.assetsPageSize));
+        this.assetsCurrentPage = response.data?.pageNumber || response.pageNumber || this.assetsCurrentPage;
+        this.syncDefinitionOptions();
         this.assetsLoading = false;
       },
       error: (error) => {
@@ -268,6 +320,11 @@ export class RoomDetailComponent implements OnInit {
   }
 
   goBack() {
+    if (window.history.length > 1) {
+      this.location.back();
+      return;
+    }
+
     this.router.navigate(['/locations']);
   }
 
@@ -356,7 +413,9 @@ export class RoomDetailComponent implements OnInit {
     this.assetTagSearch = '';
     this.selectedTypeIds = [];
     this.selectedDefinitionIds = [];
-    this.applyFilters();
+    this.syncDefinitionOptions();
+    this.assetsCurrentPage = 1;
+    this.loadAssets();
   }
 
   onAssetTagChange() {
@@ -365,13 +424,13 @@ export class RoomDetailComponent implements OnInit {
 
   onTypeSelectionChange(ids: string[]) {
     this.selectedTypeIds = ids;
-    this.selectedDefinitionIds = this.selectedDefinitionIds.filter(defId => {
-      const def = this.assetDefinitions.find(d => d.id === defId);
-      return def && this.selectedTypeIds.includes(def.assetTypeId);
-    });
-    this.definitionOptions = this.assetDefinitions
-      .filter(d => this.selectedTypeIds.includes(d.assetTypeId))
-      .map(d => ({ value: d.id, label: d.name }));
+    this.selectedDefinitionIds = this.selectedDefinitionIds.filter(definitionName =>
+      this.assetDefinitions.some(definition =>
+        definition.name === definitionName &&
+        this.selectedTypeIds.some(typeId => this.matchesAssetType(definition, typeId))
+      )
+    );
+    this.syncDefinitionOptions();
     this.applyFilters();
   }
 
@@ -381,24 +440,8 @@ export class RoomDetailComponent implements OnInit {
   }
 
   applyFilters() {
-    this.filteredAssets = this.assets.filter(asset => {
-      if (this.assetTagSearch && !asset.assetTag.toLowerCase().includes(this.assetTagSearch.toLowerCase())) {
-        return false;
-      }
-      if (this.selectedTypeIds.length > 0) {
-        const typeId = asset.definition?.assetTypeId;
-        if (!typeId || !this.selectedTypeIds.includes(typeId)) {
-          return false;
-        }
-      }
-      if (this.selectedDefinitionIds.length > 0) {
-        const defId = asset.definition?.definitionId;
-        if (!defId || !this.selectedDefinitionIds.includes(defId)) {
-          return false;
-        }
-      }
-      return true;
-    });
+    this.assetsCurrentPage = 1;
+    this.loadAssets();
   }
 
   onSelectionChanged() {
@@ -431,5 +474,39 @@ export class RoomDetailComponent implements OnInit {
 
   archiveAssets() {
     // Disabled for now
+  }
+
+  private syncDefinitionOptions() {
+    const filtered = this.assetDefinitions.filter((definition) => {
+      if (this.selectedTypeIds.length === 0) {
+        return true;
+      }
+
+      return this.selectedTypeIds.some((typeId) => this.matchesAssetType(definition, typeId));
+    });
+
+    this.definitionOptions = filtered
+      .map((definition) => ({ value: definition.name, label: definition.name }))
+      .sort((left, right) => left.label.localeCompare(right.label));
+  }
+
+  goToPage(page: number) {
+    if (page < 1 || page > this.assetsTotalPages) return;
+    this.assetsCurrentPage = page;
+    this.loadAssets();
+  }
+
+  getAssetsShowingStart(): number {
+    if (this.assetsTotalCount === 0) return 0;
+    return (this.assetsCurrentPage - 1) * this.assetsPageSize + 1;
+  }
+
+  getAssetsShowingEnd(): number {
+    return Math.min(this.assetsCurrentPage * this.assetsPageSize, this.assetsTotalCount);
+  }
+
+  private matchesAssetType(definition: AssetDefinition, typeId: string): boolean {
+    const def = definition as any;
+    return def.assetTypeId === typeId || def.asset_type_id === typeId || def.assetType?.id === typeId;
   }
 }

@@ -2,12 +2,20 @@ using AssetManagement.Application.Interfaces;
 using AssetManagement.Contract.Commands;
 using AssetManagement.Contract.DTOs;
 using AssetManagement.Contract.Responses;
+using LocationManagement.Application.Interfaces;
 using MediatR;
 using Tems.Common.Notifications;
+using Tems.Common.Tenant;
 
 namespace AssetManagement.Application.Commands;
 
-public class AssignAssetToRoomCommandHandler(IAssetRepository assetRepository, IPublisher publisher) 
+public class AssignAssetToRoomCommandHandler(
+    IAssetRepository assetRepository,
+    IRoomRepository roomRepository,
+    IBuildingRepository buildingRepository,
+    ISiteRepository siteRepository,
+    ITenantContext tenantContext,
+    IPublisher publisher) 
     : IRequestHandler<AssignAssetToRoomCommand, AssetDto>
 {
     public async Task<AssetDto> Handle(AssignAssetToRoomCommand request, CancellationToken cancellationToken)
@@ -24,15 +32,10 @@ public class AssignAssetToRoomCommandHandler(IAssetRepository assetRepository, I
 
         await assetRepository.UpdateAsync(asset, cancellationToken);
 
-        if (!string.IsNullOrEmpty(previousLocationId) && previousLocationId != request.RoomId)
-        {
-            await publisher.Publish(new AssetUnassignedFromLocationNotification(
-                asset.Id, asset.AssetTag, previousLocationId, previousLocationName ?? "Unknown",
-                null, null, null), cancellationToken);
-        }
+        var newLocationName = await ResolveLocationNameAsync(request.RoomId, cancellationToken);
 
         await publisher.Publish(new AssetAssignedToLocationNotification(
-            asset.Id, asset.AssetTag, request.RoomId, request.RoomId,
+            asset.Id, asset.AssetTag, request.RoomId, newLocationName,
             previousLocationId, previousLocationName, null, null), cancellationToken);
 
         return new AssetDto(
@@ -93,5 +96,20 @@ public class AssignAssetToRoomCommandHandler(IAssetRepository assetRepository, I
             asset.IsArchived,
             asset.ArchivedAt,
             asset.ArchivedBy);
+    }
+
+    private async Task<string> ResolveLocationNameAsync(string roomId, CancellationToken cancellationToken)
+    {
+        var tenantId = tenantContext.TenantId ?? "default";
+        var room = await roomRepository.GetByIdAsync(roomId, tenantId, cancellationToken);
+        if (room == null)
+        {
+            return roomId;
+        }
+
+        var building = await buildingRepository.GetByIdAsync(room.BuildingId, tenantId, cancellationToken);
+        var site = building != null ? await siteRepository.GetByIdAsync(building.SiteId, tenantId, cancellationToken) : null;
+
+        return string.Join(" > ", new[] { site?.Name, building?.Name, room.Name }.Where(part => !string.IsNullOrWhiteSpace(part)));
     }
 }

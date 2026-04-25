@@ -1,6 +1,5 @@
-<div class="bg-white dark:bg-[#2c2c2e] overflow-hidden">
-  <!-- Header -->
-  <div class="px-6 py-4">
+<div class="tems-modal-panel">
+  <div class="tems-modal-header">
     <div class="flex justify-between items-start">
       <div class="flex-1">
         <h2 class="text-xl font-semibold text-gray-900 dark:text-white m-0">{{ user.firstName && user.lastName ? user.firstName + ' ' + user.lastName : user.username }}</h2>
@@ -16,8 +15,7 @@
     </div>
   </div>
 
-  <!-- Content -->
-  <div class="px-6 pb-5 space-y-2">
+  <div class="tems-modal-body space-y-2">
     <!-- Username -->
     <div class="flex items-center gap-2 text-sm">
       <span class="text-gray-500 dark:text-gray-400">Username:</span>
@@ -88,12 +86,11 @@
     <div class="mt-6 flex justify-center">
       <button
         (click)="viewFullPage()"
-        class="px-2.5 py-1.5 text-xs text-gray-500 dark:text-gray-400 hover:text-[#007aff] hover:bg-[#007aff]/5 rounded-lg transition flex items-center gap-1.5">
+        class="tems-btn tems-btn-secondary text-xs">
         <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
           <path d="M6 2H3C2.44772 2 2 2.44772 2 3V13C2 13.5523 2.44772 14 3 14H13C13.5523 14 14 13.5523 14 13V10M9 2H14M14 2V7M14 2L7 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
         <span>See More Details</span>
       </button>
     </div>
-  </div>
 </div>

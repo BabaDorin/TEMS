@@ -39,13 +39,18 @@ export class MenuService implements OnDestroy {
   private buildRoutes(): void {
     this.translate.get(['menu'])
       .subscribe(() => {
+        const canManageAssets = this.tokenService.canManageAssets();
+        const canManageTickets = this.tokenService.canManageTickets();
+        const canOpenTickets = this.tokenService.canOpenTickets();
+        const canManageUsers = this.tokenService.canManageUsers();
+
         this.ROUTES = [
           {
             path: '',
             title: 'Assets',
             icon: 'mdi mdi-package-variant menu-icon',
             isActive: false,
-            isShown: true,
+            isShown: canManageAssets,
             showSubmenu: false,
             submenu: [
               {
@@ -53,7 +58,7 @@ export class MenuService implements OnDestroy {
                 title: 'View Assets',
                 icon: 'mdi mdi-view-list menu-icon',
                 isActive: false,
-                isShown: true,
+                isShown: canManageAssets,
                 showSubmenu: false,
                 submenu: []
               },
@@ -62,7 +67,7 @@ export class MenuService implements OnDestroy {
                 title: 'Asset Management',
                 icon: 'mdi mdi-cog menu-icon',
                 isActive: false,
-                isShown: true,
+                isShown: canManageAssets,
                 showSubmenu: false,
                 submenu: []
               }
@@ -73,7 +78,7 @@ export class MenuService implements OnDestroy {
             title: 'Locations',
             icon: 'mdi mdi-map-marker-radius menu-icon',
             isActive: false,
-            isShown: this.tokenService.canManageAssets(),
+            isShown: canManageAssets,
             showSubmenu: false,
             submenu: [
               {
@@ -81,7 +86,7 @@ export class MenuService implements OnDestroy {
                 title: 'View Locations',
                 icon: 'mdi mdi-view-list menu-icon',
                 isActive: false,
-                isShown: this.tokenService.canManageAssets(),
+                isShown: canManageAssets,
                 showSubmenu: false,
                 submenu: []
               }
@@ -91,16 +96,25 @@ export class MenuService implements OnDestroy {
             path: '',
             title: 'Technical Support',
             icon: 'mdi mdi-lifebuoy menu-icon',
-            isShown: true,
+            isShown: canOpenTickets || canManageTickets,
             isActive: false,
             showSubmenu: false,
             submenu: [
+              {
+                path: '/technical-support/ai-support',
+                title: 'AI Support',
+                icon: 'mdi mdi-robot-outline menu-icon',
+                isActive: false,
+                isShown: canOpenTickets || canManageTickets,
+                showSubmenu: false,
+                submenu: []
+              },
               {
                 path: '/technical-support/ticket-types',
                 title: 'Ticket Types',
                 icon: 'mdi mdi-file-document-outline menu-icon',
                 isActive: false,
-                isShown: true,
+                isShown: canManageTickets,
                 showSubmenu: false,
                 submenu: []
               },
@@ -109,7 +123,7 @@ export class MenuService implements OnDestroy {
                 title: 'Tickets',
                 icon: 'mdi mdi-ticket menu-icon',
                 isActive: false,
-                isShown: true,
+                isShown: canOpenTickets || canManageTickets,
                 showSubmenu: false,
                 submenu: []
               },
@@ -120,14 +134,14 @@ export class MenuService implements OnDestroy {
             title: 'User Management',
             icon: 'mdi mdi-account-multiple menu-icon',
             isActive: false,
-            isShown: this.tokenService.canManageUsers(),
+            isShown: canManageUsers,
             showSubmenu: false,
             submenu: [
               {
                 path: '/administration/users',
                 title: 'Manage Users',
                 icon: 'mdi mdi-account-multiple-outline menu-icon',
-                isShown: this.tokenService.canManageUsers(),
+                isShown: canManageUsers,
                 isActive: false,
                 showSubmenu: false,
                 submenu: []

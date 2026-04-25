@@ -1,25 +1,31 @@
-<div>
-  <!-- Header with Create Button -->
-  <div class="flex justify-between items-center mb-4">
-    <h2 class="text-lg font-medium text-gray-900 dark:text-white">Asset Definitions</h2>
-    <button
-      (click)="openCreateModal()"
-      class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200">
-      <i class="mdi mdi-plus mr-2"></i>
-      Create Definition
-    </button>
-  </div>
+<section class="tems-asset-page">
+  <header class="tems-asset-header">
+    <div>
+      <div class="tems-asset-eyebrow">
+        <i class="mdi mdi-file-document-outline"></i>
+        <span>Asset Definitions</span>
+      </div>
+      <h2 class="text-2xl">Create asset records from reusable types</h2>
+      <p>Definitions combine a type with real device metadata and inventory data.</p>
+    </div>
 
-  <!-- AG Grid -->
-  <div [class]="gridThemeClass" style="height: 600px; width: 100%;">
-    <ag-grid-angular
-      [rowData]="rowData"
-      [columnDefs]="columnDefs"
-      [defaultColDef]="defaultColDef"
-      [pagination]="true"
-      [paginationPageSize]="20"
-      (gridReady)="onGridReady($event)"
-      class="w-full h-full">
-    </ag-grid-angular>
-  </div>
-</div>
+    <button type="button" (click)="openCreateModal()" class="tems-btn tems-btn-primary">
+      <i class="mdi mdi-plus"></i>
+      <span>Create definition</span>
+    </button>
+  </header>
+
+  <section class="tems-asset-card">
+    <div class="tems-asset-grid-shell" [ngClass]="gridThemeClass">
+      <ag-grid-angular
+        [rowData]="rowData"
+        [columnDefs]="columnDefs"
+        [defaultColDef]="defaultColDef"
+        [pagination]="true"
+        [paginationPageSize]="20"
+        (gridReady)="onGridReady($event)"
+        class="w-full h-full">
+      </ag-grid-angular>
+    </div>
+  </section>
+</section>

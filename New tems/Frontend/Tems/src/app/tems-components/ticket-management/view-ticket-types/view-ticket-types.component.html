@@ -1,39 +1,38 @@
-<div class="min-h-screen bg-gray-50 dark:bg-[#1c1c1e] p-4 md:p-6 lg:p-8">
-  <div class="max-w-7xl mx-auto">
-    <!-- Header -->
-    <div class="bg-white dark:bg-[#2c2c2e] rounded-lg shadow-sm p-6 mb-6">
-      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-        <div>
-          <h1 class="text-2xl font-semibold text-gray-900 dark:text-white">Ticket Types</h1>
-          <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Manage ticket type configurations</p>
-        </div>
+<div class="bg-[#f5f5f7] dark:bg-[#1c1c1e] min-h-0 p-4 transition-colors duration-200">
+  <div class="max-w-7xl mx-auto w-full">
+    <div class="mb-4">
+      <h1 class="text-2xl font-semibold text-gray-900 dark:text-white" style="letter-spacing: -0.5px;">Ticket Types</h1>
+      <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Manage ticket type configurations.</p>
+    </div>
+
+    <div class="bg-white dark:bg-[#2c2c2e] rounded-xl border border-gray-200 dark:border-[#38383a] overflow-hidden">
+      <div class="px-4 py-3 border-b border-gray-200 dark:border-[#38383a] flex items-center justify-between bg-gray-50 dark:bg-[#1c1c1e]">
+        <span class="text-sm text-gray-600 dark:text-gray-400">
+          {{ rowData?.length || 0 }} ticket type{{ (rowData?.length || 0) === 1 ? '' : 's' }}
+        </span>
         <button
           (click)="openCreateModal()"
-          class="inline-flex items-center justify-center px-4 py-2 bg-gray-900 dark:bg-[#007aff] text-white rounded-lg hover:bg-gray-800 dark:hover:bg-[#0051d5] transition-colors">
-          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          class="tems-btn tems-btn-primary">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
           </svg>
           Add Ticket Type
         </button>
       </div>
-    </div>
 
-    <!-- AG Grid -->
-    <div class="bg-white dark:bg-[#2c2c2e] rounded-lg shadow-sm overflow-hidden">
-      <div [class]="gridThemeClass" class="w-full" style="height: calc(100vh - 280px);">
-        <ag-grid-angular
-          class="w-full h-full"
-          [rowData]="rowData"
-          [columnDefs]="columnDefs"
-          [defaultColDef]="defaultColDef"
-          [pagination]="true"
-          [paginationPageSize]="50"
-          [rowSelection]="'single'"
-          [overlayNoRowsTemplate]="'<span class=\'ag-overlay-no-rows-center\'>No ticket types found</span>'"
-          (gridReady)="onGridReady($event)"
-          (rowClicked)="onRowClicked($event)">
-        </ag-grid-angular>
-      </div>
+      <ag-grid-angular
+        [class]="gridThemeClass"
+        style="height: min(60vh, calc(100dvh - 24rem)); min-height: 420px; width: 100%;"
+        [rowData]="rowData"
+        [columnDefs]="columnDefs"
+        [defaultColDef]="defaultColDef"
+        [pagination]="true"
+        [paginationPageSize]="50"
+        [rowSelection]="'single'"
+        [overlayNoRowsTemplate]="'<span class=\'ag-overlay-no-rows-center\'>No ticket types found</span>'"
+        (gridReady)="onGridReady($event)"
+        (rowClicked)="onRowClicked($event)">
+      </ag-grid-angular>
     </div>
   </div>
 </div>
@@ -108,7 +107,7 @@
         <input
           type="text"
           formControlName="initialStateId"
-          placeholder="e.g., new, open, analyzing"
+          placeholder="e.g., new, in-progress, closed"
           class="w-full px-4 py-2 border border-gray-300 dark:border-[#48484a] dark:bg-[#3a3a3c] dark:text-white rounded-lg focus:ring-2 focus:ring-gray-900 dark:focus:ring-[#007aff] focus:border-transparent"
           [class.border-red-500]="createForm.get('initialStateId')?.invalid && createForm.get('initialStateId')?.touched">
         <p *ngIf="createForm.get('initialStateId')?.invalid && createForm.get('initialStateId')?.touched" class="text-red-500 text-sm mt-1">

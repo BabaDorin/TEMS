@@ -1,4 +1,4 @@
-<div class="bg-[#f5f5f7] dark:bg-[#1c1c1e] min-h-screen p-4 transition-colors duration-200">
+<div class="bg-[#f5f5f7] dark:bg-[#1c1c1e] min-h-0 p-4 transition-colors duration-200">
   <div class="max-w-7xl mx-auto">
     <!-- Header -->
     <div class="mb-4">
@@ -108,7 +108,7 @@
           <button
             (click)="assignToUser()"
             [disabled]="selectedAssets.length === 0"
-            class="px-3 py-1.5 bg-white dark:bg-[#2c2c2e] border border-gray-200 dark:border-[#38383a] rounded-md hover:bg-gray-50 dark:hover:bg-white/5 disabled:opacity-50 disabled:cursor-not-allowed transition flex items-center gap-1.5 text-xs text-gray-700 dark:text-gray-300">
+            class="tems-btn tems-btn-secondary">
             <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
               <path d="M8 8C10.21 8 12 6.21 12 4C12 1.79 10.21 0 8 0C5.79 0 4 1.79 4 4C4 6.21 5.79 8 8 8ZM8 10C5.33 10 0 11.34 0 14V16H16V14C16 11.34 10.67 10 8 10Z" fill="currentColor"/>
             </svg>
@@ -117,7 +117,7 @@
           <button
             (click)="moveToRoom()"
             [disabled]="selectedAssets.length === 0"
-            class="px-3 py-1.5 bg-white dark:bg-[#2c2c2e] border border-gray-200 dark:border-[#38383a] rounded-md hover:bg-gray-50 dark:hover:bg-white/5 disabled:opacity-50 disabled:cursor-not-allowed transition flex items-center gap-1.5 text-xs text-gray-700 dark:text-gray-300">
+            class="tems-btn tems-btn-secondary">
             <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
               <path d="M14 2H2C0.9 2 0 2.9 0 4V12C0 13.1 0.9 14 2 14H14C15.1 14 16 13.1 16 12V4C16 2.9 15.1 2 14 2ZM14 12H2V4H14V12Z" fill="currentColor"/>
               <path d="M4 6H12V8H4V6Z" fill="currentColor"/>
@@ -126,7 +126,7 @@
           </button>
           <button
             (click)="openCreateModal()"
-            class="px-3 py-1.5 bg-white dark:bg-[#2c2c2e] border border-gray-200 dark:border-[#38383a] rounded-md hover:bg-gray-50 dark:hover:bg-white/5 transition flex items-center gap-1.5 text-xs text-gray-700 dark:text-gray-300">
+            class="tems-btn tems-btn-primary">
             <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
               <path d="M8 0C7.44772 0 7 0.447715 7 1V7H1C0.447715 7 0 7.44772 0 8C0 8.55228 0.447715 9 1 9H7V15C7 15.5523 7.44772 16 8 16C8.55228 16 9 15.5523 9 15V9H15C15.5523 9 16 8.55228 16 8C16 7.44772 15.5523 7 15 7H9V1C9 0.447715 8.55228 0 8 0Z" fill="currentColor"/>
             </svg>
@@ -137,7 +137,7 @@
       
       <ag-grid-angular
         [class]="gridThemeClass"
-        style="height: calc(100vh - 400px); width: 100%;"
+        style="height: min(58vh, calc(100vh - 24rem)); min-height: 420px; width: 100%;"
         [rowData]="rowData"
         [columnDefs]="columnDefs"
         [defaultColDef]="defaultColDef"
@@ -191,7 +191,7 @@
   class="fixed inset-0 bg-black/50 flex items-center justify-center z-[100]"
   (click)="closeCreateModal()">
   <div
-    class="bg-white dark:bg-[#2c2c2e] rounded-lg shadow-xl max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto"
+    class="tems-modal-panel max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto"
     (click)="$event.stopPropagation()">
     <!-- Modal Header -->
     <div class="px-6 py-4 border-b dark:border-[#38383a] sticky top-0 bg-white dark:bg-[#2c2c2e] z-10">
@@ -257,10 +257,10 @@
             <span class="font-medium ml-2 dark:text-white">{{ selectedDefinition.usageCount }}</span>
           </div>
         </div>
-        <div *ngIf="selectedAsset.definition.specifications && selectedAsset.definition.specifications.length > 0" class="mt-3">
+        <div *ngIf="selectedDefinition.specifications && selectedDefinition.specifications.length > 0" class="mt-3">
           <span class="text-xs font-medium text-gray-600 dark:text-gray-400 uppercase">Specifications:</span>
           <div class="grid grid-cols-2 gap-2 mt-2">
-            <div *ngFor="let spec of selectedAsset.definition.specifications" class="text-xs">
+            <div *ngFor="let spec of selectedDefinition.specifications" class="text-xs">
               <span class="text-gray-600 dark:text-gray-400">{{ spec.name || spec.propertyId }}:</span>
               <span class="font-medium ml-1 dark:text-white">{{ formatSpecValue(spec.value, spec.unit) }}</span>
             </div>
@@ -398,13 +398,13 @@
         <button
           type="button"
           (click)="closeCreateModal()"
-          class="px-4 py-2 border border-gray-300 dark:border-[#38383a] text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-white/5">
+          class="tems-btn tems-btn-secondary">
           Cancel
         </button>
         <button
           type="submit"
           [disabled]="createForm.invalid || isSubmitting"
-          class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-300 dark:disabled:bg-gray-600 disabled:cursor-not-allowed">
+          class="tems-btn tems-btn-primary disabled:bg-gray-300 dark:disabled:bg-gray-600 disabled:cursor-not-allowed">
           {{ isSubmitting ? 'Creating...' : 'Create Asset' }}
         </button>
       </div>
@@ -418,7 +418,7 @@
   class="fixed inset-0 bg-black/50 flex items-center justify-center z-[100]"
   (click)="closePreviewModal()">
   <div
-    class="bg-white dark:bg-[#2c2c2e] rounded-lg shadow-xl max-w-3xl w-full mx-4 max-h-[90vh] overflow-y-auto"
+    class="tems-modal-panel max-w-3xl w-full mx-4 max-h-[90vh] overflow-y-auto"
     (click)="$event.stopPropagation()">
     <!-- Preview Header -->
     <div class="px-6 py-3 sticky top-0 bg-white dark:bg-[#2c2c2e] z-10 border-b border-gray-200 dark:border-[#38383a]">
@@ -482,10 +482,10 @@
       </div>
 
       <!-- Assignee Chip -->
-      <div *ngIf="selectedAsset.assignment?.assignedToUserId" class="mb-4">
+      <div *ngIf="selectedAssigneeValid" class="mb-4">
         <span class="text-sm text-gray-600 dark:text-gray-400 block mb-2">Assigned To:</span>
         <button 
-          (click)="openAssigneeModal()"
+          (click)="navigateToAssignee()"
           class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gray-100 dark:bg-[#3a3a3c] text-gray-700 dark:text-gray-200 rounded-full text-xs font-medium hover:bg-gray-200 dark:hover:bg-[#48484a] cursor-pointer transition">
           <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
             <path d="M13.333 14v-1.333c0-1.473-1.194-2.667-2.666-2.667H5.333c-1.473 0-2.666 1.194-2.666 2.667V14M8 7.333c-1.473 0-2.667-1.194-2.667-2.666C5.333 3.194 6.527 2 8 2c1.473 0 2.667 1.194 2.667 2.667C10.667 6.139 9.473 7.333 8 7.333Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>

@@ -27,6 +27,7 @@ public class GetAllAssetCommandHandler(
             pageNumber: request.PageNumber,
             pageSize: request.PageSize,
             definitionIds: filter.DefinitionIds,
+            definitionNames: filter.DefinitionNames,
             assetTag: filter.AssetTag,
             locationId: filter.LocationId,
             assignedToUserId: filter.AssignedToUserId,

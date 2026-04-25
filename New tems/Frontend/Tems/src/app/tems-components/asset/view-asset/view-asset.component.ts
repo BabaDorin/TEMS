@@ -2,9 +2,7 @@ import { IncludeAssetLabelsComponent } from './../../../shared/include-asset-tag
 import { LazyLoaderService } from './../../../services/lazy-loader.service';
 import { ReportFromFilterComponent } from './../../reports/report-from-filter/report-from-filter.component';
 import { AssetFilter } from './../../../helpers/filters/asset.filter';
-import { MultipleSelectionDropdownComponent } from './../../../shared/forms/multiple-selection-dropdown/multiple-selection-dropdown.component';
 import { TypeService } from './../../../services/type.service';
-import { TypeEndpoint } from './../../../helpers/endpoints/type.endpoint';
 import { TranslateService } from '@ngx-translate/core';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
@@ -18,6 +16,7 @@ import { IOption } from './../../../models/option.model';
 import { ClaimService } from './../../../services/claim.service';
 import { AgGridAssetComponent } from './../ag-grid-asset/ag-grid-asset.component';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
@@ -26,12 +25,14 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { SummaryAssetAnalyticsComponent } from '../../analytics/summary-asset-analytics/summary-asset-analytics.component';
+import { CustomSelectComponent, SelectOption } from 'src/app/shared/custom-select/custom-select.component';
 
 @Component({
   selector: 'app-view-asset',
   standalone: true,
   imports: [
     CommonModule,
+    FormsModule,
     RouterModule,
     MatCardModule,
     MatButtonModule,
@@ -40,7 +41,7 @@ import { SummaryAssetAnalyticsComponent } from '../../analytics/summary-asset-an
     MatTabsModule,
     TranslateModule,
     AgGridAssetComponent,
-    MultipleSelectionDropdownComponent,
+    CustomSelectComponent,
     IncludeAssetLabelsComponent,
     SummaryAssetAnalyticsComponent
   ],
@@ -49,12 +50,11 @@ import { SummaryAssetAnalyticsComponent } from '../../analytics/summary-asset-an
 })
 export class ViewAssetComponent implements OnInit {
 
-  // typePreOptions: IOption[] = [];
-  typeEndpoint: TypeEndpoint;
+  typeOptions: SelectOption[] = [];
+  selectedTypeIds: string[] = [];
   assetFilter: AssetFilter;
   defaultLabels = ['Equipment']; // When no label is selected => equipment is selected
 
-  @ViewChild('typeSelection') typeSelection: MultipleSelectionDropdownComponent;
   @ViewChild('agGridEquipment') agGridEquipment: AgGridAssetComponent;
   @ViewChild('includeEquipmentLabels') includeEquipmentLabels: IncludeAssetLabelsComponent;
 
@@ -73,20 +73,17 @@ export class ViewAssetComponent implements OnInit {
       includeDerived = this.includeEquipmentLabels.includeComponents || this.includeEquipmentLabels.includeParts;
     }
 
-    this.typeEndpoint = new TypeEndpoint(this.typeService, includeDerived);
-
     this.assetFilter = new AssetFilter();
     this.assetFilter.includeLabels = this.includeEquipmentLabels?.value ?? ['Equipment'];
   }
 
   ngOnInit(): void {
+    this.refreshTypeOptions(false);
   }
 
   typesChanged(eventData){
-    if(eventData == undefined)
-      return;
-    
-    this.assetFilter.types = eventData;
+    this.selectedTypeIds = Array.isArray(eventData) ? eventData : [];
+    this.assetFilter.types = this.selectedTypeIds;
     this.assetFilter = Object.assign(new AssetFilter(), this.assetFilter);
   }
 
@@ -171,7 +168,27 @@ export class ViewAssetComponent implements OnInit {
     this.assetFilter.includeLabels = this.includeEquipmentLabels?.value ?? ['Equipment'];
     this.assetFilter = Object.assign(new AssetFilter(), this.assetFilter);
 
-    let includeDerivedTypes = this.assetFilter.includeLabels.indexOf('Component') > -1 || this.assetFilter.includeLabels.indexOf('Part') > -1
-    this.typeEndpoint = new TypeEndpoint(this.typeService, includeDerivedTypes);
+    const includeDerivedTypes = this.assetFilter.includeLabels.indexOf('Component') > -1 || this.assetFilter.includeLabels.indexOf('Part') > -1;
+    this.refreshTypeOptions(includeDerivedTypes);
+  }
+
+  private refreshTypeOptions(includeArchived: boolean) {
+    this.typeService.getAllAutocompleteOptions(undefined, includeArchived).subscribe({
+      next: (options) => {
+        this.typeOptions = options.map((option) => ({
+          value: option.value,
+          label: option.label
+        }));
+
+        const availableIds = new Set(this.typeOptions.map((option) => option.value));
+        this.selectedTypeIds = this.selectedTypeIds.filter((typeId) => availableIds.has(typeId));
+        this.typesChanged(this.selectedTypeIds);
+      },
+      error: () => {
+        this.typeOptions = [];
+        this.selectedTypeIds = [];
+        this.typesChanged([]);
+      }
+    });
   }
 }

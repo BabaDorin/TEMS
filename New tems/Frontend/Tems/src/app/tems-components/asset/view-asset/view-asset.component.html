@@ -30,11 +30,18 @@
                         </nav>
                     </div>
                     <div class="d-block">
-                        <app-multiple-selection-dropdown
-                            [label]="translate.instant('equipment.selectTypes')" 
-                            [endPoint]="typeEndpoint"
-                            (selectionChanged)="typesChanged($event)">
-                        </app-multiple-selection-dropdown>
+                      <label class="d-block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        {{ 'equipment.selectTypes' | translate }}
+                      </label>
+                      <app-custom-select
+                        [options]="typeOptions"
+                        [mode]="'multiple'"
+                        [searchable]="true"
+                        [allowEmpty]="false"
+                        [placeholder]="translate.instant('equipment.selectTypes')"
+                        [(ngModel)]="selectedTypeIds"
+                        (ngModelChange)="typesChanged($event)">
+                      </app-custom-select>
                     </div>
                     <ng-container *ngIf="claims.canManageAssets">
                         <button mat-button class="d-md-inline d-block" (click)="addNew()">

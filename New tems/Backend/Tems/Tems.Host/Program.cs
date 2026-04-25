@@ -5,8 +5,13 @@ using FastEndpoints;
 using FastEndpoints.Swagger;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.Extensions.Options;
 using System.Security.Claims;
+using Tems.Host.Endpoints;
+using Tems.Host.Configuration;
+using Tems.Host.Services;
 using Tems.Common.Tenant;
+using TicketManagement.Application.Interfaces;
 using Tems.Host.Middleware;
 using Tems.Host.Seeding;
 using TicketManagement.API;
@@ -25,6 +30,7 @@ if (!builder.Environment.IsProduction())
 
 // Register Tenant Context as scoped
 builder.Services.AddScoped<ITenantContext, TenantContext>();
+builder.Services.AddHttpContextAccessor();
 
 // Add modules first
 // builder.Services.AddExampleServices(builder.Configuration);
@@ -102,6 +108,9 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 // Add Authorization Policies - Using roles from Keycloak
 builder.Services.AddAuthorization(options =>
 {
+    options.AddPolicy("Authenticated", policy =>
+        policy.RequireAuthenticatedUser());
+
     // Asset Management
     options.AddPolicy("CanManageAssets", policy =>
         policy.RequireRole("can_manage_assets"));
@@ -112,6 +121,11 @@ builder.Services.AddAuthorization(options =>
         
     options.AddPolicy("CanOpenTickets", policy =>
         policy.RequireRole("can_open_tickets"));
+
+    options.AddPolicy("CanOpenOrManageTickets", policy =>
+        policy.RequireAssertion(ctx =>
+            ctx.User.IsInRole("can_open_tickets") ||
+            ctx.User.IsInRole("can_manage_tickets")));
     
     // User Management
     options.AddPolicy("CanManageUsers", policy =>
@@ -131,6 +145,16 @@ builder.Services.AddCors(options =>
               .AllowCredentials();
     });
 });
+
+builder.Services.AddOptions<AiSupportOptions>()
+    .Bind(builder.Configuration.GetSection("AiSupport"))
+    .Validate(options => !string.IsNullOrWhiteSpace(options.BaseUrl), "AiSupport:BaseUrl is required.")
+    .ValidateOnStart();
+
+builder.Services.AddHttpClient("DeepSeekAiSupport");
+builder.Services.AddSingleton<DeepSeekAiSupportClient>();
+builder.Services.AddSingleton<ITicketAiSummaryQueue, TicketAiSummaryQueue>();
+builder.Services.AddHostedService<TicketAiSummaryBackgroundService>();
 
 // Add FastEndpoints - scan all assemblies including module assemblies
 builder.Services.AddFastEndpoints(options =>
@@ -159,6 +183,7 @@ app.UseTenantMiddleware();
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseFastEndpoints();
+app.MapAiSupportEndpoints();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

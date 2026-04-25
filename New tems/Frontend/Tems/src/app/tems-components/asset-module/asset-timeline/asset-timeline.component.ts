@@ -24,6 +24,7 @@ export class AssetTimelineComponent implements OnChanges {
   pageNumber = 1;
   pageSize = 50;
   allLoaded = false;
+  loadedRawCount = 0;
   private locationNameCache = new Map<string, string>();
   private resolvingLocationIds = new Set<string>();
 
@@ -48,10 +49,11 @@ export class AssetTimelineComponent implements OnChanges {
 
     this.changelogService.getTimeline('Asset', this.assetId, this.pageNumber, this.pageSize).subscribe({
       next: (response) => {
-        this.entries = response.entries;
+        this.loadedRawCount = response.entries.length;
+        this.entries = this.mergeAssignmentTransitions(response.entries);
         this.resolveMissingLocationNames(this.entries);
         this.totalCount = response.totalCount;
-        this.allLoaded = this.entries.length >= this.totalCount;
+        this.allLoaded = this.loadedRawCount >= this.totalCount;
         this.loading = false;
       },
       error: () => {
@@ -65,10 +67,11 @@ export class AssetTimelineComponent implements OnChanges {
     this.pageNumber++;
     this.changelogService.getTimeline('Asset', this.assetId, this.pageNumber, this.pageSize).subscribe({
       next: (response) => {
-        this.entries = [...this.entries, ...response.entries];
-        this.resolveMissingLocationNames(response.entries);
+        this.loadedRawCount += response.entries.length;
+        this.entries = this.mergeAssignmentTransitions([...this.entries, ...response.entries]);
+        this.resolveMissingLocationNames(this.entries);
         this.totalCount = response.totalCount;
-        this.allLoaded = this.entries.length >= this.totalCount;
+        this.allLoaded = this.loadedRawCount >= this.totalCount;
       }
     });
   }
@@ -98,6 +101,22 @@ export class AssetTimelineComponent implements OnChanges {
   }
 
   getDisplayDescription(entry: ChangeLogEntry): string {
+    if (entry.action === 'AssetAssignedToUser') {
+      const nextUserName = entry.details?.['userName'];
+      const previousUserName = entry.details?.['previousUserName'];
+      if (nextUserName && previousUserName) {
+        return `Asset moved from ${previousUserName} to ${nextUserName}`;
+      }
+    }
+
+    if (entry.action === 'AssetAssignedToLocation') {
+      const nextLocationName = entry.details?.['locationName'];
+      const previousLocationName = entry.details?.['previousLocationName'];
+      if (nextLocationName && previousLocationName) {
+        return `Asset moved from location '${previousLocationName}' to '${nextLocationName}'`;
+      }
+    }
+
     const locationId = this.getLocationId(entry);
     const resolvedLocationName = locationId ? this.locationNameCache.get(locationId) : null;
 
@@ -278,6 +297,114 @@ export class AssetTimelineComponent implements OnChanges {
   }
 
   get hasMore(): boolean {
-    return this.entries.length < this.totalCount;
+    return this.loadedRawCount < this.totalCount;
+  }
+
+  private mergeAssignmentTransitions(entries: ChangeLogEntry[]): ChangeLogEntry[] {
+    const merged: ChangeLogEntry[] = [];
+    let i = 0;
+
+    while (i < entries.length) {
+      const current = entries[i];
+      const next = entries[i + 1];
+
+      const mergedUser = this.tryMergeUserReassignment(current, next)
+        ?? this.tryMergeUserReassignment(next, current);
+      if (mergedUser) {
+        merged.push(mergedUser);
+        i += 2;
+        continue;
+      }
+
+      const mergedLocation = this.tryMergeLocationMove(current, next)
+        ?? this.tryMergeLocationMove(next, current);
+      if (mergedLocation) {
+        merged.push(mergedLocation);
+        i += 2;
+        continue;
+      }
+
+      merged.push(current);
+      i += 1;
+    }
+
+    return merged;
+  }
+
+  private tryMergeUserReassignment(
+    assigned?: ChangeLogEntry,
+    unassigned?: ChangeLogEntry
+  ): ChangeLogEntry | null {
+    if (!assigned || !unassigned) return null;
+    if (assigned.action !== 'AssetAssignedToUser' || unassigned.action !== 'AssetUnassignedFromUser') return null;
+    if (!this.isWithinMergeWindow(assigned.timestamp, unassigned.timestamp)) return null;
+
+    const assignedAssetId = assigned.references?.['assetId'];
+    const unassignedAssetId = unassigned.references?.['assetId'];
+    if (!assignedAssetId || assignedAssetId !== unassignedAssetId) return null;
+
+    const previousUserId = assigned.references?.['previousUserId'];
+    const unassignedUserId = unassigned.references?.['userId'];
+    if (previousUserId && unassignedUserId && previousUserId !== unassignedUserId) return null;
+
+    const movedFromName = unassigned.details?.['userName'] || assigned.details?.['previousUserName'] || 'previous user';
+    const movedToName = assigned.details?.['userName'] || 'new user';
+
+    return {
+      ...assigned,
+      id: `${assigned.id}__merged__${unassigned.id}`,
+      description: `Asset moved from ${movedFromName} to ${movedToName}`,
+      references: {
+        ...assigned.references,
+        previousUserId: previousUserId || unassignedUserId || null
+      },
+      details: {
+        ...(assigned.details || {}),
+        previousUserName: movedFromName,
+        userName: movedToName
+      }
+    };
+  }
+
+  private tryMergeLocationMove(
+    assigned?: ChangeLogEntry,
+    unassigned?: ChangeLogEntry
+  ): ChangeLogEntry | null {
+    if (!assigned || !unassigned) return null;
+    if (assigned.action !== 'AssetAssignedToLocation' || unassigned.action !== 'AssetUnassignedFromLocation') return null;
+    if (!this.isWithinMergeWindow(assigned.timestamp, unassigned.timestamp)) return null;
+
+    const assignedAssetId = assigned.references?.['assetId'];
+    const unassignedAssetId = unassigned.references?.['assetId'];
+    if (!assignedAssetId || assignedAssetId !== unassignedAssetId) return null;
+
+    const previousLocationId = assigned.references?.['previousLocationId'];
+    const unassignedLocationId = unassigned.references?.['locationId'];
+    if (previousLocationId && unassignedLocationId && previousLocationId !== unassignedLocationId) return null;
+
+    const movedFromName = unassigned.details?.['locationName'] || assigned.details?.['previousLocationName'] || 'previous location';
+    const movedToName = assigned.details?.['locationName'] || 'new location';
+
+    return {
+      ...assigned,
+      id: `${assigned.id}__merged__${unassigned.id}`,
+      description: `Asset moved from location '${movedFromName}' to '${movedToName}'`,
+      references: {
+        ...assigned.references,
+        previousLocationId: previousLocationId || unassignedLocationId || null
+      },
+      details: {
+        ...(assigned.details || {}),
+        previousLocationName: movedFromName,
+        locationName: movedToName
+      }
+    };
+  }
+
+  private isWithinMergeWindow(firstTimestamp: string, secondTimestamp: string): boolean {
+    const first = new Date(firstTimestamp).getTime();
+    const second = new Date(secondTimestamp).getTime();
+    if (Number.isNaN(first) || Number.isNaN(second)) return false;
+    return Math.abs(first - second) <= 120000;
   }
 }

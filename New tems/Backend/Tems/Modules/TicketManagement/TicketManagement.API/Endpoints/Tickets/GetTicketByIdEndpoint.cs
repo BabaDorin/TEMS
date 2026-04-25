@@ -17,12 +17,23 @@ public class GetTicketByIdEndpoint : Endpoint<GetTicketByIdCommand, GetTicketRes
     public override void Configure()
     {
         Get("/tickets/{TicketId}");
-        Policies("CanManageTickets");
+        Policies("CanOpenOrManageTickets");
     }
 
     public override async Task HandleAsync(GetTicketByIdCommand request, CancellationToken ct)
     {
-        var response = await _mediator.Send(request, ct);
-        await Send.OkAsync(response, cancellation: ct);
+        try
+        {
+            var response = await _mediator.Send(request, ct);
+            await Send.OkAsync(response, cancellation: ct);
+        }
+        catch (UnauthorizedAccessException)
+        {
+            await Send.ForbiddenAsync(ct);
+        }
+        catch (KeyNotFoundException)
+        {
+            await Send.NotFoundAsync(ct);
+        }
     }
 }

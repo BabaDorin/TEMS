@@ -5,6 +5,8 @@ import { HomeComponent } from './tems-components/home/home.component';
 import { AuthGuard } from './guards/auth.guard';
 import { GuestGuard } from './guards/guest.guard';
 import { canManageAssetsGuard } from './guards/can-manage-assets.guard';
+import { canManageTicketsGuard } from './guards/can-manage-tickets.guard';
+import { canOpenTicketsGuard } from './guards/can-open-tickets.guard';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
@@ -25,11 +27,12 @@ export const routes: Routes = [
   // Assets
   {
     path: 'assets',
+    canActivate: [canManageAssetsGuard],
     children: [
       { path: '', redirectTo: 'view', pathMatch: 'full' },
-      { path: 'view', loadComponent: () => import('./tems-components/asset-module/view-assets/view-assets.component').then(m => m.ViewAssetsComponent) },
-      { path: 'management', loadComponent: () => import('./tems-components/asset-module/asset-management/asset-management.component').then(m => m.AssetManagementComponent) },
-      { path: ':id', loadComponent: () => import('./tems-components/asset-module/asset-detail/asset-detail.component').then(m => m.AssetDetailComponent) }
+      { path: 'view', loadComponent: () => import('./tems-components/asset-module/view-assets/view-assets.component').then(m => m.ViewAssetsComponent), canActivate: [canManageAssetsGuard] },
+      { path: 'management', loadComponent: () => import('./tems-components/asset-module/asset-management/asset-management.component').then(m => m.AssetManagementComponent), canActivate: [canManageAssetsGuard] },
+      { path: ':id', loadComponent: () => import('./tems-components/asset-module/asset-detail/asset-detail.component').then(m => m.AssetDetailComponent), canActivate: [AuthGuard] }
     ]
   },
   
@@ -39,7 +42,7 @@ export const routes: Routes = [
     children: [
       { path: '', redirectTo: 'view', pathMatch: 'full' },
       { path: 'view', loadComponent: () => import('./tems-components/location-module/view-locations/view-locations.component').then(m => m.ViewLocationsComponent), canActivate: [canManageAssetsGuard] },
-      { path: ':id', loadComponent: () => import('./tems-components/location-module/room-detail/room-detail.component').then(m => m.RoomDetailComponent), canActivate: [canManageAssetsGuard] },
+      { path: ':id', loadComponent: () => import('./tems-components/location-module/room-detail/room-detail.component').then(m => m.RoomDetailComponent), canActivate: [AuthGuard] },
     ]
   },
   
@@ -48,9 +51,10 @@ export const routes: Routes = [
     path: 'technical-support',
     children: [
       { path: '', redirectTo: 'tickets', pathMatch: 'full' },
-      { path: 'ticket-types', loadComponent: () => import('./tems-components/ticket-management/view-ticket-types/view-ticket-types.component').then(m => m.ViewTicketTypesComponent) },
-      { path: 'tickets', loadComponent: () => import('./tems-components/ticket-management/view-tickets/view-tickets.component').then(m => m.ViewTicketsComponent) },
-      { path: 'tickets/:id', loadComponent: () => import('./tems-components/ticket-management/ticket-detail/ticket-detail.component').then(m => m.TicketDetailComponent) },
+      { path: 'ai-support', loadComponent: () => import('./tems-components/technical-support/ai-support/ai-support.component').then(m => m.AiSupportComponent), canActivate: [canOpenTicketsGuard] },
+      { path: 'ticket-types', loadComponent: () => import('./tems-components/ticket-management/view-ticket-types/view-ticket-types.component').then(m => m.ViewTicketTypesComponent), canActivate: [canManageTicketsGuard] },
+      { path: 'tickets', loadComponent: () => import('./tems-components/ticket-management/view-tickets/view-tickets.component').then(m => m.ViewTicketsComponent), canActivate: [canOpenTicketsGuard] },
+      { path: 'tickets/:id', loadComponent: () => import('./tems-components/ticket-management/ticket-detail/ticket-detail.component').then(m => m.TicketDetailComponent), canActivate: [canOpenTicketsGuard] },
     ]
   },
   
@@ -66,7 +70,8 @@ export const routes: Routes = [
   {
     path: 'users',
     children: [
-      { path: ':id', loadComponent: () => import('./tems-components/user-module/user-detail/user-detail.component').then(m => m.UserDetailComponent) }
+      { path: 'me', loadComponent: () => import('./tems-components/user-module/user-detail/user-detail.component').then(m => m.UserDetailComponent), canActivate: [AuthGuard] },
+      { path: ':id', loadComponent: () => import('./tems-components/user-module/user-detail/user-detail.component').then(m => m.UserDetailComponent), canActivate: [AuthGuard] }
     ]
   },
   

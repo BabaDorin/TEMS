@@ -13,6 +13,7 @@
           class="inline-flex items-center gap-1 px-2 py-1 bg-[#007aff] dark:bg-[#0a84ff] text-white rounded-md text-xs font-medium">
           {{ getOptionLabel(value) }}
           <button 
+            type="button"
             (click)="selectOption(value); $event.stopPropagation()"
             class="hover:bg-white/20 rounded-full p-0.5 transition">
             <svg width="12" height="12" viewBox="0 0 14 14" fill="none">
@@ -43,13 +44,20 @@
       <input 
         type="text" 
         [(ngModel)]="searchText" 
+        (ngModelChange)="onSearchInputChange($event)"
         (click)="$event.stopPropagation()" 
         placeholder="Search..." 
         class="w-full px-3 py-2 text-sm border border-gray-200 dark:border-[#48484a] dark:bg-[#2c2c2e] dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-[#007aff] focus:border-transparent">
     </div>
     <div class="max-h-52 overflow-y-auto">
+      <div *ngIf="loading" class="px-4 py-6 text-center">
+        <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-gray-500 dark:border-gray-400 mx-auto mb-2"></div>
+        <p class="text-sm text-gray-500 dark:text-gray-400 m-0">Loading...</p>
+      </div>
+      <ng-container *ngIf="!loading">
       <div 
         *ngIf="allowEmpty && mode === 'single'"
+        role="option"
         (click)="selectOption(''); $event.stopPropagation()" 
         class="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 dark:hover:bg-white/5 cursor-pointer border-b border-gray-100 dark:border-[#48484a]" 
         [class.bg-[#007aff]/5]="isSelected('')">
@@ -66,6 +74,7 @@
       </div>
       <div 
         *ngFor="let option of filteredOptions; trackBy: trackByValue" 
+        role="option"
         (click)="selectOption(option.value); $event.stopPropagation()" 
         class="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 dark:hover:bg-white/5 cursor-pointer border-b border-gray-100 dark:border-[#48484a] last:border-b-0" 
         [class.bg-[#007aff]/5]="isSelected(option.value)">
@@ -82,6 +91,10 @@
         </div>
         <span class="text-sm text-gray-900 dark:text-white">{{ option.label }}</span>
       </div>
+      <div *ngIf="filteredOptions.length === 0 && !(allowEmpty && mode === 'single')" class="px-4 py-6 text-center text-sm text-gray-500 dark:text-gray-400">
+        No options found
+      </div>
+      </ng-container>
     </div>
   </div>
 </div>

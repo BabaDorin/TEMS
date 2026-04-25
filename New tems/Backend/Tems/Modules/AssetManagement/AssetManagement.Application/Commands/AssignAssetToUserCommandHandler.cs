@@ -30,13 +30,6 @@ public class AssignAssetToUserCommandHandler(IAssetRepository assetRepository, I
 
         await assetRepository.UpdateAsync(asset, cancellationToken);
 
-        if (!string.IsNullOrEmpty(previousUserId) && previousUserId != request.UserId)
-        {
-            await publisher.Publish(new AssetUnassignedFromUserNotification(
-                asset.Id, asset.AssetTag, previousUserId, previousUserName ?? "Unknown",
-                null, null, null), cancellationToken);
-        }
-
         await publisher.Publish(new AssetAssignedToUserNotification(
             asset.Id, asset.AssetTag, request.UserId, request.UserName,
             previousUserId, previousUserName, null, null), cancellationToken);

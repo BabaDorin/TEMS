@@ -11,7 +11,7 @@ public class GetProfileEndpoint(IMediator mediator) : EndpointWithoutRequest<Get
     public override void Configure()
     {
         Get("/profile");
-        AllowAnonymous(); // Will be changed to require authentication after testing
+        Policies("Authenticated");
     }
 
     public override async Task HandleAsync(CancellationToken ct)

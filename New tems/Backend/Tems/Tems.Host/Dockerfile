@@ -1,5 +1,5 @@
-﻿# Build stage
-FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
+# Build stage
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 
@@ -26,7 +26,7 @@ RUN dotnet build "Tems.Host.csproj" -c $BUILD_CONFIGURATION -o /app/build
 RUN dotnet publish "Tems.Host.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 # Runtime stage
-FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS final
+FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS final
 WORKDIR /app
 
 # Create non-root user for security

@@ -1,6 +1,5 @@
-<div class="bg-white dark:bg-[#2c2c2e] rounded-xl max-w-md w-full mx-auto overflow-hidden">
-  <!-- Header -->
-  <div class="px-6 py-4 border-b border-gray-200 dark:border-[#38383a]">
+<div class="tems-modal-panel max-w-md w-full mx-auto">
+  <div class="tems-modal-header">
     <div class="flex items-center gap-3">
       <div class="w-10 h-10 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center flex-shrink-0">
         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" class="text-red-600 dark:text-red-400">
@@ -14,8 +13,7 @@
     </div>
   </div>
 
-  <!-- Content -->
-  <div class="px-6 py-5">
+  <div class="tems-modal-body">
     <p class="text-sm text-gray-700 dark:text-gray-300 m-0 mb-4">
       Are you sure you want to delete <span class="font-semibold">{{ getUserFullName() }}</span>?
     </p>
@@ -72,18 +70,17 @@
     </div>
   </div>
 
-  <!-- Footer -->
-  <div class="px-6 py-4 border-t border-gray-200 dark:border-[#38383a] flex items-center justify-end gap-3">
+  <div class="tems-modal-footer">
     <button
       (click)="close()"
       [disabled]="isDeleting"
-      class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg transition disabled:opacity-50">
+      class="tems-btn tems-btn-secondary disabled:opacity-50">
       Cancel
     </button>
     <button
       (click)="confirmDelete()"
       [disabled]="isDeleting || isLoadingCount"
-      class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition flex items-center gap-2">
+      class="tems-btn tems-btn-danger disabled:opacity-50 disabled:cursor-not-allowed">
       <span *ngIf="isDeleting" class="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></span>
       <span>{{ isDeleting ? 'Deleting...' : 'Delete User' }}</span>
     </button>

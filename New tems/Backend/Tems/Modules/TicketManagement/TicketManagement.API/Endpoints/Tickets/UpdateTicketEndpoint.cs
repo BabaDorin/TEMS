@@ -17,12 +17,23 @@ public class UpdateTicketEndpoint : Endpoint<UpdateTicketCommand, UpdateTicketRe
     public override void Configure()
     {
         Put("/tickets/{TicketId}");
-        Policies("CanManageTickets");
+        Policies("CanOpenOrManageTickets");
     }
 
     public override async Task HandleAsync(UpdateTicketCommand request, CancellationToken ct)
     {
-        var response = await _mediator.Send(request, ct);
-        await Send.OkAsync(response, cancellation: ct);
+        try
+        {
+            var response = await _mediator.Send(request, ct);
+            await Send.OkAsync(response, cancellation: ct);
+        }
+        catch (UnauthorizedAccessException)
+        {
+            await Send.ForbiddenAsync(ct);
+        }
+        catch (KeyNotFoundException)
+        {
+            await Send.NotFoundAsync(ct);
+        }
     }
 }

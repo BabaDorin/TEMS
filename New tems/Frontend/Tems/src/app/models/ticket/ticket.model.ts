@@ -3,13 +3,19 @@ export interface Ticket {
   tenantId: string;
   ticketTypeId: string;
   humanReadableId: string;
+  title: string;
   summary: string;
+  aiSummary?: string;
   currentStateId: string;
   priority: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
   reporter: Reporter;
   assigneeId?: string;
   attributes: { [key: string]: any };
-  auditMetadata: AuditMetadata;
+  approvalGates?: ApprovalGate[];
+  createdAt: string;
+  updatedAt: string;
+  resolvedAt?: string | null;
+  auditMetadata?: AuditMetadata;
   assetIds?: string[];
 }
 
@@ -17,16 +23,18 @@ export interface Reporter {
   userId: string;
   channelSource: 'TEAMS' | 'SLACK' | 'WEB';
   channelThreadId?: string;
+  displayName?: string | null;
 }
 
 export interface AuditMetadata {
-  createdAt: Date;
-  updatedAt: Date;
-  resolvedAt?: Date;
+  createdAt: string | Date;
+  updatedAt: string | Date;
+  resolvedAt?: string | Date;
 }
 
 export interface CreateTicketRequest {
   ticketTypeId: string;
+  title: string;
   summary: string;
   priority: string;
   reporter: Reporter;
@@ -41,6 +49,44 @@ export interface UpdateTicketRequest {
   priority?: string;
   assigneeId?: string;
   attributes?: { [key: string]: any };
+}
+
+export interface ApprovalGate {
+  approvalGateId: string;
+  title: string;
+  justification: string;
+  state: 'approved' | 'pending' | 'not-approved' | string;
+  allApproversRequired: boolean;
+  approvers: ApprovalGateApprover[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ApprovalGateApprover {
+  userId: string;
+  status: 'approved' | 'pending' | 'rejected' | string;
+  reviewedAt?: string | null;
+}
+
+export interface ApprovalGateRequest {
+  title: string;
+  justification: string;
+  allApproversRequired: boolean;
+  approverUserIds: string[];
+}
+
+export interface ApprovalGateResponse {
+  success: boolean;
+  gate?: ApprovalGate;
+}
+
+export interface ReviewApprovalGateRequest {
+  status: 'approved' | 'rejected';
+}
+
+export interface ReviewApprovalGateResponse {
+  success: boolean;
+  gate?: ApprovalGate;
 }
 
 export interface TicketMessage {

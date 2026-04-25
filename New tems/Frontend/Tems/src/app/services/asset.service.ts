@@ -21,7 +21,16 @@ export class AssetService {
 
   constructor(private http: HttpClient) {}
 
-  getAll(assetTypeIds?: string[], pageNumber: number = 1, pageSize: number = 50, definitionIds?: string[], assetTag?: string): Observable<AssetPageResponse> {
+  getAll(
+    assetTypeIds?: string[],
+    pageNumber: number = 1,
+    pageSize: number = 20,
+    definitionIds?: string[],
+    assetTag?: string,
+    definitionNames?: string[],
+    locationId?: string,
+    assignedToUserId?: string
+  ): Observable<AssetPageResponse> {
     let params = new HttpParams()
       .set('pageNumber', pageNumber.toString())
       .set('pageSize', pageSize.toString());
@@ -34,8 +43,20 @@ export class AssetService {
       params = params.set('definitionIds', definitionIds.join(','));
     }
 
+    if (definitionNames && definitionNames.length > 0) {
+      params = params.set('definitionNames', definitionNames.join(','));
+    }
+
     if (assetTag && assetTag.trim().length > 0) {
       params = params.set('assetTag', assetTag.trim());
+    }
+
+    if (locationId && locationId.trim().length > 0) {
+      params = params.set('locationId', locationId.trim());
+    }
+
+    if (assignedToUserId && assignedToUserId.trim().length > 0) {
+      params = params.set('assignedToUserId', assignedToUserId.trim());
     }
 
     return this.http.get<AssetPageResponse>(this.baseUrl, {

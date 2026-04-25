@@ -32,7 +32,15 @@ public class GetAllRoomsEndpoint(IMediator mediator) : EndpointWithoutRequest<Ge
     {
         var siteId = Query<string>("siteId", false);
         var buildingId = Query<string>("buildingId", false);
-        var response = await mediator.Send(new GetAllRoomsCommand(siteId, buildingId), ct);
+        var pageNumber = Query<int>("pageNumber", false);
+        var pageSize = Query<int>("pageSize", false);
+        var searchText = Query<string>("searchText", false);
+        var response = await mediator.Send(new GetAllRoomsCommand(
+            SiteId: siteId,
+            BuildingId: buildingId,
+            PageNumber: pageNumber > 0 ? pageNumber : 1,
+            PageSize: pageSize > 0 ? pageSize : 20,
+            SearchText: searchText), ct);
         await Send.OkAsync(response, cancellation: ct);
     }
 }
@@ -42,7 +50,7 @@ public class GetRoomByIdEndpoint(IMediator mediator) : EndpointWithoutRequest<Ge
     public override void Configure()
     {
         Get("/location/rooms/{Id}");
-        Policies("CanManageAssets");
+        Policies("Authenticated");
     }
 
     public override async Task HandleAsync(CancellationToken ct)

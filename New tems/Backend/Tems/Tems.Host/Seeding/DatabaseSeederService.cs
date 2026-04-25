@@ -19,6 +19,7 @@ public class DatabaseSeederService(
 
             await SeedLocationManagementAsync(database);
             await SeedAssetManagementAsync(database);
+            await SeedBulkEquipmentAsync(database);
             await SeedTicketManagementAsync(database);
 
             logger.LogInformation("Database seeding completed successfully.");
@@ -43,6 +44,12 @@ public class DatabaseSeederService(
     private async Task SeedAssetManagementAsync(IMongoDatabase database)
     {
         var seeder = new AssetManagementSeeder(database, serviceProvider.GetRequiredService<ILogger<AssetManagementSeeder>>());
+        await seeder.SeedAsync();
+    }
+
+    private async Task SeedBulkEquipmentAsync(IMongoDatabase database)
+    {
+        var seeder = new BulkEquipmentSeeder(database, serviceProvider.GetRequiredService<ILogger<BulkEquipmentSeeder>>());
         await seeder.SeedAsync();
     }
 

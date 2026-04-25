@@ -34,6 +34,12 @@ public record DeleteRoomCommand(string Id) : IRequest<DeleteRoomResponse>;
 
 public record GetRoomByIdCommand(string Id) : IRequest<GetRoomByIdResponse>;
 
-public record GetAllRoomsCommand(string? SiteId = null, string? BuildingId = null) : IRequest<GetAllRoomsResponse>;
+public record GetAllRoomsCommand(
+    string? SiteId = null,
+    string? BuildingId = null,
+    int PageNumber = 1,
+    int PageSize = 20,
+    string? SearchText = null
+) : IRequest<GetAllRoomsResponse>;
 
 public record GetLocationHierarchyCommand() : IRequest<GetLocationHierarchyResponse>;

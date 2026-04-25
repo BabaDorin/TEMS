@@ -11,6 +11,7 @@ export interface Ticket {
   reporter: Reporter;
   assigneeId?: string;
   attributes: { [key: string]: any };
+  approvalGates?: ApprovalGate[];
   createdAt: string;
   updatedAt: string;
   resolvedAt?: string | null;
@@ -22,6 +23,7 @@ export interface Reporter {
   userId: string;
   channelSource: 'TEAMS' | 'SLACK' | 'WEB';
   channelThreadId?: string;
+  displayName?: string | null;
 }
 
 export interface AuditMetadata {
@@ -47,6 +49,44 @@ export interface UpdateTicketRequest {
   priority?: string;
   assigneeId?: string;
   attributes?: { [key: string]: any };
+}
+
+export interface ApprovalGate {
+  approvalGateId: string;
+  title: string;
+  justification: string;
+  state: 'approved' | 'pending' | 'not-approved' | string;
+  allApproversRequired: boolean;
+  approvers: ApprovalGateApprover[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ApprovalGateApprover {
+  userId: string;
+  status: 'approved' | 'pending' | 'rejected' | string;
+  reviewedAt?: string | null;
+}
+
+export interface ApprovalGateRequest {
+  title: string;
+  justification: string;
+  allApproversRequired: boolean;
+  approverUserIds: string[];
+}
+
+export interface ApprovalGateResponse {
+  success: boolean;
+  gate?: ApprovalGate;
+}
+
+export interface ReviewApprovalGateRequest {
+  status: 'approved' | 'rejected';
+}
+
+export interface ReviewApprovalGateResponse {
+  success: boolean;
+  gate?: ApprovalGate;
 }
 
 export interface TicketMessage {

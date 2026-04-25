@@ -22,19 +22,18 @@
   <!-- Stats Section -->
   <div class="bg-[#f5f5f7] dark:bg-[#1c1c1e] py-6 border-b border-gray-200 dark:border-[#38383a]">
     <div class="max-w-7xl mx-auto px-4">
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-3" [@staggerFadeIn]="stats.length">
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-3" [@staggerFadeIn]="stats.length">
         <div *ngFor="let stat of stats"
           class="bg-white dark:bg-[#2c2c2e] rounded-lg p-4 border border-gray-200 dark:border-[#38383a]">
           <div class="flex items-center justify-between mb-2">
-            <mat-icon class="!w-5 !h-5 !text-xl text-[#007aff]">{{ stat.icon }}</mat-icon>
-            <span *ngIf="stat.trend"
-              class="text-xs font-medium px-2 py-0.5 rounded-full"
-              [class.text-[#34c759]]="stat.trend.startsWith('+')"
-              [class.bg-[#34c759]/10]="stat.trend.startsWith('+')"
-              [class.text-[#ff3b30]]="stat.trend.startsWith('-')"
-              [class.bg-[#ff3b30]/10]="stat.trend.startsWith('-')">
-              {{ stat.trend }}
-            </span>
+            <mat-icon class="!w-5 !h-5 !text-xl"
+              [class.text-[#007aff]]="stat.color === 'blue'"
+              [class.text-[#34c759]]="stat.color === 'green'"
+              [class.text-[#ff9500]]="stat.color === 'orange'"
+              [class.text-[#ffcc00]]="stat.color === 'yellow'"
+              [class.text-[#af52de]]="stat.color === 'purple'">
+              {{ stat.icon }}
+            </mat-icon>
           </div>
           <div class="text-2xl font-semibold text-gray-900 dark:text-white">{{ stat.value }}</div>
           <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">{{ stat.label }}</div>
@@ -52,13 +51,17 @@
             <h2 class="text-xl font-semibold text-gray-900 dark:text-white" style="letter-spacing: -0.3px;">Quick Actions</h2>
           </div>
 
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" [@staggerFadeIn]="quickActions.length">
-            <div *ngFor="let action of quickActions"
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" [@staggerFadeIn]="dashboardActions.length">
+            <div *ngFor="let action of dashboardActions"
               class="bg-white dark:bg-[#2c2c2e] rounded-xl p-5 border border-gray-200 dark:border-[#38383a] hover:border-gray-300 dark:hover:border-[#48484a] transition-all cursor-pointer active:scale-[0.98]"
               (click)="navigateTo(action.route)">
               <div class="flex items-start space-x-3">
-                <div class="p-2.5 rounded-lg bg-[#007aff]/10">
-                  <mat-icon class="!w-6 !h-6 !text-2xl text-[#007aff]">{{ action.icon }}</mat-icon>
+                <div class="p-2.5 rounded-lg" [class.bg-[#007aff]/10]="action.color === 'blue'" [class.bg-[#34c759]/10]="action.color === 'green'" [class.bg-[#ff9500]/10]="action.color === 'orange'" [class.bg-[#af52de]/10]="action.color === 'purple'">
+                  <mat-icon class="!w-6 !h-6 !text-2xl"
+                    [class.text-[#007aff]]="action.color === 'blue'"
+                    [class.text-[#34c759]]="action.color === 'green'"
+                    [class.text-[#ff9500]]="action.color === 'orange'"
+                    [class.text-[#af52de]]="action.color === 'purple'">{{ action.icon }}</mat-icon>
                 </div>
                 <div class="flex-1 min-w-0">
                   <h3 class="text-base font-semibold text-gray-900 dark:text-white mb-0.5" style="letter-spacing: -0.2px;">
@@ -76,23 +79,16 @@
         <div class="space-y-4">
           <div class="bg-white dark:bg-[#2c2c2e] rounded-xl p-5 border border-gray-200 dark:border-[#38383a]">
             <h3 class="text-base font-semibold text-gray-900 dark:text-white mb-4 flex items-center" style="letter-spacing: -0.2px;">
-              <mat-icon class="mr-2 !w-5 !h-5 !text-xl text-[#007aff]">health_and_safety</mat-icon>
-              System Status
+              <mat-icon class="mr-2 !w-5 !h-5 !text-xl text-[#007aff]">insights</mat-icon>
+              Access Summary
             </h3>
             <div class="space-y-3">
-              <div class="flex items-center justify-between">
-                <span class="text-sm text-gray-600 dark:text-gray-400">API Services</span>
-                <span class="flex items-center text-[#34c759] text-sm font-medium">
-                  <span class="w-2 h-2 bg-[#34c759] rounded-full mr-2"></span>
-                  Online
-                </span>
+              <div *ngFor="let item of dashboardSummaryItems" class="flex items-center justify-between gap-4">
+                <span class="text-sm text-gray-600 dark:text-gray-400">{{ item.label }}</span>
+                <span class="text-sm font-semibold text-gray-900 dark:text-white">{{ item.value }}</span>
               </div>
-              <div class="flex items-center justify-between">
-                <span class="text-sm text-gray-600 dark:text-gray-400">Database</span>
-                <span class="flex items-center text-[#34c759] text-sm font-medium">
-                  <span class="w-2 h-2 bg-[#34c759] rounded-full mr-2"></span>
-                  Connected
-                </span>
+              <div *ngIf="!dashboardSummaryItems.length" class="text-sm text-gray-500 dark:text-gray-400">
+                No role-specific summary available.
               </div>
             </div>
           </div>

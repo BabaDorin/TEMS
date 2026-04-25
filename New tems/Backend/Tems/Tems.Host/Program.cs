@@ -30,6 +30,7 @@ if (!builder.Environment.IsProduction())
 
 // Register Tenant Context as scoped
 builder.Services.AddScoped<ITenantContext, TenantContext>();
+builder.Services.AddHttpContextAccessor();
 
 // Add modules first
 // builder.Services.AddExampleServices(builder.Configuration);
@@ -107,6 +108,9 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 // Add Authorization Policies - Using roles from Keycloak
 builder.Services.AddAuthorization(options =>
 {
+    options.AddPolicy("Authenticated", policy =>
+        policy.RequireAuthenticatedUser());
+
     // Asset Management
     options.AddPolicy("CanManageAssets", policy =>
         policy.RequireRole("can_manage_assets"));
@@ -117,6 +121,11 @@ builder.Services.AddAuthorization(options =>
         
     options.AddPolicy("CanOpenTickets", policy =>
         policy.RequireRole("can_open_tickets"));
+
+    options.AddPolicy("CanOpenOrManageTickets", policy =>
+        policy.RequireAssertion(ctx =>
+            ctx.User.IsInRole("can_open_tickets") ||
+            ctx.User.IsInRole("can_manage_tickets")));
     
     // User Management
     options.AddPolicy("CanManageUsers", policy =>

@@ -9,8 +9,8 @@ public class GetUserPreviewByIdEndpoint(IMediator mediator) : EndpointWithoutReq
 {
     public override void Configure()
     {
-        Get("/users/{id}/preview");
-        Policies("CanManageTickets");
+        Get("/users/{id:guid}/preview");
+        Policies("Authenticated");
     }
 
     public override async Task HandleAsync(CancellationToken ct)

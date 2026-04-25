@@ -9,9 +9,12 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { TicketService } from 'src/app/services/ticket.service';
 import { TicketTypeService } from 'src/app/services/ticket-type.service';
+import { TokenService } from 'src/app/services/token.service';
 import { ThemeService } from 'src/app/services/theme.service';
-import { Ticket, CreateTicketRequest, TicketMessage, AddMessageRequest } from 'src/app/models/ticket/ticket.model';
+import { UserService } from 'src/app/services/user.service';
+import { Ticket, CreateTicketRequest, TicketMessage, AddMessageRequest, ApprovalGateApprover } from 'src/app/models/ticket/ticket.model';
 import { TicketType } from 'src/app/models/ticket/ticket-type.model';
+import { UserDto } from 'src/app/models/user/user-management.model';
 import { TicketManagementStateService } from 'src/app/state/ticket-management.state';
 
 @Component({
@@ -30,8 +33,9 @@ import { TicketManagementStateService } from 'src/app/state/ticket-management.st
   styleUrls: ['./view-tickets.component.scss']
 })
 export class ViewTicketsComponent implements OnInit {
-  activeStatusTab: 'new' | 'in-progress' | 'done' = 'new';
+  activeStatusTab: 'approval' | 'new' | 'in-progress' | 'closed' = 'approval';
   allTickets: Ticket[] = [];
+  approvalTickets: Ticket[] = [];
   rowData: Ticket[] = [];
   ticketTypes: TicketType[] = [];
   selectedTicketType: TicketType | null = null;
@@ -41,10 +45,16 @@ export class ViewTicketsComponent implements OnInit {
   showCreateModal = false;
   showPreviewModal = false;
   selectedTicket: Ticket | null = null;
+  previewCreatorUser: UserDto | null = null;
+  previewCreatorUserLoading = false;
   previewTicketType: TicketType | null = null;
   createForm!: FormGroup;
   isSubmitting = false;
   gridReady = false;
+  canManageTickets = false;
+  canOpenTickets = false;
+  currentUserId = '';
+  private currentUserIdentifiers = new Set<string>();
 
   priorities = [
     { label: 'Low', value: 'LOW', dotClass: 'bg-yellow-400' },
@@ -53,7 +63,10 @@ export class ViewTicketsComponent implements OnInit {
     { label: 'Critical', value: 'CRITICAL', dotClass: 'bg-black' }
   ];
 
-  columnDefs: ColDef[] = [
+  columnDefs: ColDef[] = [];
+
+  private buildColumnDefs(): ColDef[] {
+    const baseColumns: ColDef[] = [
     {
       headerName: 'ID',
       field: 'humanReadableId',
@@ -67,6 +80,19 @@ export class ViewTicketsComponent implements OnInit {
       flex: 3,
       minWidth: 250
     },
+    ...(this.activeStatusTab === 'approval' ? [{
+      headerName: 'Your status',
+      flex: 1.3,
+      minWidth: 160,
+      sortable: false,
+      filter: false,
+      cellRenderer: (params: any) => {
+        const status = this.getCurrentUserApprovalStatus(params.data);
+        const label = this.getCurrentUserApprovalStatusLabel(params.data);
+        const badgeClass = this.getApprovalStatusBadgeClass(status);
+        return `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold ${badgeClass}">${label}</span>`;
+      }
+    }] : []),
     {
       headerName: 'Priority',
       field: 'priority',
@@ -79,12 +105,6 @@ export class ViewTicketsComponent implements OnInit {
         const dotClass = this.getPriorityDotClass(priority);
         return `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold ${badgeClass}"><span class="w-2 h-2 rounded-full ${dotClass}"></span>${label}</span>`;
       }
-    },
-    {
-      headerName: 'Channel',
-      field: 'reporter.channelSource',
-      flex: 1,
-      minWidth: 100
     },
     {
       headerName: 'Created',
@@ -122,7 +142,10 @@ export class ViewTicketsComponent implements OnInit {
         }
       }
     }
-  ];
+    ];
+
+    return baseColumns;
+  }
 
   defaultColDef: ColDef = {
     sortable: true,
@@ -203,26 +226,104 @@ export class ViewTicketsComponent implements OnInit {
     return null;
   }
 
-  getTicketStatusTab(stateId: string): 'new' | 'in-progress' | 'done' | null {
+  getTicketStatusTab(stateId: string): 'new' | 'in-progress' | 'closed' | null {
     const managed = this.getManagedStatusGroup(stateId);
     if (managed === 'new') return 'new';
     if (managed === 'in-progress') return 'in-progress';
-    if (managed === 'closed') return 'done';
+    if (managed === 'closed') return 'closed';
     return null;
   }
 
-  get statusTabCounts(): Record<'new' | 'in-progress' | 'done', number> {
-    return this.allTickets.reduce((acc, ticket) => {
-      const tab = this.getTicketStatusTab(ticket.currentStateId);
-      if (tab) {
-        acc[tab] += 1;
-      }
-      return acc;
-    }, { new: 0, 'in-progress': 0, done: 0 });
+  isApprovalTicket(ticket: Ticket): boolean {
+    if (!ticket || this.isClosedTicket(ticket.currentStateId)) {
+      return false;
+    }
+
+    return (ticket.approvalGates || []).some((gate) =>
+      (gate.approvers || []).some((approver) => this.matchesCurrentUser(approver.userId)));
   }
 
-  setStatusTab(tab: 'new' | 'in-progress' | 'done'): void {
+  isClosedTicket(stateId: string): boolean {
+    return this.getManagedStatusGroup(stateId) === 'closed';
+  }
+
+  getCurrentUserApprovalStatus(ticket: Ticket): 'approved' | 'rejected' | 'pending' | '' {
+    const approvers = (ticket.approvalGates || []).reduce((acc, gate) => {
+      acc.push(...(gate.approvers || []));
+      return acc;
+    }, [] as ApprovalGateApprover[]);
+
+    const statuses = approvers
+      .filter((approver) => this.matchesCurrentUser(approver.userId))
+      .map((approver) => (approver.status || '').toLowerCase());
+
+    if (statuses.some((status) => status === 'rejected')) {
+      return 'rejected';
+    }
+
+    if (statuses.some((status) => status === 'approved')) {
+      return 'approved';
+    }
+
+    if (statuses.length > 0) {
+      return 'pending';
+    }
+
+    return '';
+  }
+
+  getCurrentUserApprovalStatusLabel(ticket: Ticket): string {
+    const status = this.getCurrentUserApprovalStatus(ticket);
+    if (status === 'approved') return 'Your status: Approved';
+    if (status === 'rejected') return 'Your status: Rejected';
+    if (status === 'pending') return 'Your status: Not provided yet';
+    return 'Your status: Not provided yet';
+  }
+
+  getApprovalStatusBadgeClass(status: 'approved' | 'rejected' | 'pending' | ''): string {
+    switch (status) {
+      case 'approved':
+        return 'bg-green-100 text-green-800 dark:bg-green-500/15 dark:text-green-300';
+      case 'rejected':
+        return 'bg-red-100 text-red-800 dark:bg-red-500/15 dark:text-red-300';
+      case 'pending':
+        return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-500/15 dark:text-yellow-300';
+      default:
+        return 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-200';
+    }
+  }
+
+  private normalizeIdentity(value: unknown): string | null {
+    if (typeof value !== 'string') return null;
+    const normalized = value.trim().toLowerCase();
+    return normalized.length > 0 ? normalized : null;
+  }
+
+  private matchesCurrentUser(userId: string): boolean {
+    const normalized = this.normalizeIdentity(userId);
+    return !!normalized && this.currentUserIdentifiers.has(normalized);
+  }
+
+  get statusTabCounts(): Record<'approval' | 'new' | 'in-progress' | 'closed', number> {
+    return this.ticketSource.reduce(
+      (acc, ticket) => {
+        const tab = this.getTicketStatusTab(ticket.currentStateId);
+        if (tab) {
+          acc[tab] += 1;
+        }
+        return acc;
+      },
+      { approval: this.approvalTickets.length, new: 0, 'in-progress': 0, closed: 0 }
+    );
+  }
+
+  get ticketSource(): Ticket[] {
+    return (this.canManageTickets || this.canOpenTickets) ? this.allTickets : [];
+  }
+
+  setStatusTab(tab: 'approval' | 'new' | 'in-progress' | 'closed'): void {
     this.activeStatusTab = tab;
+    this.refreshColumnDefs();
     this.applyActiveStatusFilter();
     if (this.gridApi) {
       this.gridApi.deselectAll();
@@ -236,7 +337,19 @@ export class ViewTicketsComponent implements OnInit {
   }
 
   private applyActiveStatusFilter(): void {
-    this.rowData = this.allTickets.filter((ticket) => this.getTicketStatusTab(ticket.currentStateId) === this.activeStatusTab);
+    const source = this.activeStatusTab === 'approval'
+      ? this.approvalTickets
+      : this.ticketSource;
+    this.rowData = source.filter((ticket) => {
+      if (this.activeStatusTab === 'approval') {
+        return this.isApprovalTicket(ticket);
+      }
+      return this.getTicketStatusTab(ticket.currentStateId) === this.activeStatusTab;
+    });
+  }
+
+  private refreshColumnDefs(): void {
+    this.columnDefs = this.buildColumnDefs();
   }
 
   constructor(
@@ -245,9 +358,15 @@ export class ViewTicketsComponent implements OnInit {
     private stateService: TicketManagementStateService,
     private fb: FormBuilder,
     private router: Router,
-    private themeService: ThemeService
+    private themeService: ThemeService,
+    private tokenService: TokenService,
+    private userService: UserService
   ) {
+    this.canManageTickets = this.tokenService.canManageTickets();
+    this.canOpenTickets = this.tokenService.canOpenTickets();
+    this.currentUserId = this.tokenService.getUserId() || '';
     this.initializeForms();
+    this.refreshColumnDefs();
     
     // React to tickets state changes
     effect(() => {
@@ -271,9 +390,51 @@ export class ViewTicketsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // Load data only if not already cached
-    this.loadTickets();
+    this.loadCurrentUserContext(() => {
+      this.loadTickets();
+      this.loadApprovalTickets();
+    });
     this.loadTicketTypes();
+  }
+
+  private loadCurrentUserContext(onReady?: () => void): void {
+    const claims = this.tokenService.getTokenObject() as any;
+    const candidates = [
+      claims?.sub,
+      claims?.oid,
+      claims?.preferred_username,
+      claims?.upn,
+      claims?.unique_name,
+      claims?.email,
+      claims?.name
+    ]
+      .map((value: unknown) => this.normalizeIdentity(value))
+      .filter((value): value is string => !!value);
+
+    this.currentUserIdentifiers = new Set(candidates);
+    this.currentUserId = candidates[0] || this.currentUserId;
+
+    this.userService.getMyUser().subscribe({
+      next: (user) => {
+        const profileCandidates = [
+          user.id,
+          user.keycloakId,
+          user.username,
+          user.email
+        ]
+          .map((value: unknown) => this.normalizeIdentity(value))
+          .filter((value): value is string => !!value);
+
+        profileCandidates.forEach((value) => this.currentUserIdentifiers.add(value));
+        this.currentUserId = user.id || this.currentUserId;
+        onReady?.();
+        this.applyActiveStatusFilter();
+      },
+      error: () => {
+        onReady?.();
+        this.applyActiveStatusFilter();
+      }
+    });
   }
 
   initializeForms(): void {
@@ -286,8 +447,46 @@ export class ViewTicketsComponent implements OnInit {
   }
 
   loadTickets(): void {
-    // The service will return cached data if available
-    this.ticketService.getAll().subscribe();
+    if (!this.canManageTickets && !this.canOpenTickets) {
+      this.allTickets = [];
+      this.applyActiveStatusFilter();
+      return;
+    }
+
+    this.ticketService.getAll(true).subscribe({
+      next: (tickets) => {
+        this.allTickets = tickets || [];
+        this.applyActiveStatusFilter();
+      }
+    });
+  }
+
+  loadApprovalTickets(): void {
+    if (!this.canManageTickets && !this.canOpenTickets) {
+      this.approvalTickets = [];
+      this.applyActiveStatusFilter();
+      return;
+    }
+
+    this.ticketService.getForApproval(true).subscribe({
+      next: (tickets) => {
+        this.approvalTickets = tickets || [];
+        if (this.activeStatusTab === 'approval' && this.approvalTickets.length === 0) {
+          this.activeStatusTab = 'new';
+        }
+        this.applyActiveStatusFilter();
+        if (this.gridApi) {
+          this.gridApi.sizeColumnsToFit();
+        }
+      },
+      error: () => {
+        this.approvalTickets = [];
+        if (this.activeStatusTab === 'approval') {
+          this.activeStatusTab = 'new';
+        }
+        this.applyActiveStatusFilter();
+      }
+    });
   }
 
   loadTicketTypes(): void {
@@ -316,14 +515,53 @@ export class ViewTicketsComponent implements OnInit {
 
   openPreviewModal(ticket: Ticket): void {
     this.selectedTicket = ticket;
+    this.previewCreatorUser = null;
+    this.previewCreatorUserLoading = false;
     this.loadPreviewTicketType(ticket.ticketTypeId);
+    if (ticket.reporter?.userId) {
+      this.loadPreviewCreatorUser(ticket.reporter.userId);
+    }
     this.showPreviewModal = true;
   }
 
   closePreviewModal(): void {
     this.showPreviewModal = false;
     this.selectedTicket = null;
+    this.previewCreatorUser = null;
+    this.previewCreatorUserLoading = false;
     this.previewTicketType = null;
+  }
+
+  private loadPreviewCreatorUser(userId: string): void {
+    this.previewCreatorUserLoading = true;
+    this.userService.getUserPreviewById(userId).subscribe({
+      next: (user) => {
+        this.previewCreatorUser = user;
+        this.previewCreatorUserLoading = false;
+      },
+      error: () => {
+        this.previewCreatorUser = null;
+        this.previewCreatorUserLoading = false;
+      }
+    });
+  }
+
+  getPreviewCreatorDisplayName(): string {
+    if (this.previewCreatorUser) {
+      return this.previewCreatorUser.firstName && this.previewCreatorUser.lastName
+        ? `${this.previewCreatorUser.firstName} ${this.previewCreatorUser.lastName}`
+        : this.previewCreatorUser.username || this.previewCreatorUser.email || this.previewCreatorUser.id;
+    }
+
+    if (!this.selectedTicket) {
+      return 'Loading...';
+    }
+
+    if (this.selectedTicket.reporter.displayName) {
+      return this.selectedTicket.reporter.displayName;
+    }
+
+    return this.previewCreatorUserLoading ? 'Loading creator...' : this.selectedTicket.reporter.userId;
   }
 
   loadPreviewTicketType(ticketTypeId: string): void {
@@ -514,7 +752,7 @@ export class ViewTicketsComponent implements OnInit {
       summary: (formValue.summary || '').trim(),
       priority: formValue.priority,
       reporter: {
-        userId: 'current-user-id', // TODO: Get from auth service
+        userId: this.currentUserId || 'current-user-id',
         channelSource: 'WEB'
       },
       attributes: this.hasAdditionalFields ? this.dynamicAttributeValues : {}

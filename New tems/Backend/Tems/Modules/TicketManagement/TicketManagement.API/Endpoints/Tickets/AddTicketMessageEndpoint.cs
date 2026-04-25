@@ -10,18 +10,25 @@ public class AddTicketMessageEndpoint(IMediator mediator) : Endpoint<AddTicketMe
     public override void Configure()
     {
         Post("/tickets/{TicketId}/messages");
-        Policies("CanManageTickets");
+        Policies("Authenticated");
     }
 
     public override async Task HandleAsync(AddTicketMessageCommand request, CancellationToken ct)
     {
-        var response = await mediator.Send(request, ct);
-        if (!response.Success)
+        try
         {
-            ThrowError("Ticket conversation not found.", 404);
-            return;
-        }
+            var response = await mediator.Send(request, ct);
+            if (!response.Success)
+            {
+                ThrowError("Ticket conversation not found.", 404);
+                return;
+            }
 
-        await Send.CreatedAtAsync<GetTicketMessagesEndpoint>(new { request.TicketId }, response, cancellation: ct);
+            await Send.CreatedAtAsync<GetTicketMessagesEndpoint>(new { request.TicketId }, response, cancellation: ct);
+        }
+        catch (UnauthorizedAccessException)
+        {
+            await Send.ForbiddenAsync(ct);
+        }
     }
 }

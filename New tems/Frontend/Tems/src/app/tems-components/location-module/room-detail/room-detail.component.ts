@@ -12,6 +12,7 @@ import { LocationService } from 'src/app/services/location.service';
 import { AssetTypeService } from 'src/app/services/asset-type.service';
 import { AssetDefinitionService } from 'src/app/services/asset-definition.service';
 import { ThemeService } from 'src/app/services/theme.service';
+import { TokenService } from 'src/app/services/token.service';
 import { RoomWithHierarchy, RoomType, RoomStatus } from 'src/app/models/location/room.model';
 import { Asset } from 'src/app/models/asset/asset.model';
 import { AssetType } from 'src/app/models/asset/asset-type.model';
@@ -44,6 +45,7 @@ export class RoomDetailComponent implements OnInit {
   error: string | null = null;
   activeTab: 'overview' | 'assets' | 'allocations' = 'overview';
   showActionsDropdown = false;
+  canManageAssets = false;
 
   // Assets Tab
   assets: Asset[] = [];
@@ -184,7 +186,8 @@ export class RoomDetailComponent implements OnInit {
     private assetTypeService: AssetTypeService,
     private assetDefinitionService: AssetDefinitionService,
     private dialog: MatDialog,
-    private themeService: ThemeService
+    private themeService: ThemeService,
+    private tokenService: TokenService
   ) {
     this.assetTagSearchSubject.pipe(
       debounceTime(300),
@@ -196,6 +199,7 @@ export class RoomDetailComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.canManageAssets = this.tokenService.canManageAssets();
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.loadRoom(id);

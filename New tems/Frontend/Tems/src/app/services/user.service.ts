@@ -38,6 +38,13 @@ export class UserService extends TEMSService {
     );
   }
 
+  getMyAssetCount(): Observable<{ count: number }> {
+    return this.http.get<{ count: number }>(
+      `${API_URL}/profile/assets/count`,
+      this.httpOptions
+    );
+  }
+
   getRoles(): IOption[]{
     return [
       { value: '1', label: 'Utilizator'},
@@ -336,6 +343,13 @@ export class UserService extends TEMSService {
     );
   }
 
+  getMyUser(): Observable<UserDto> {
+    return this.http.get<UserDto>(
+      `${API_USERS_URL}/me`,
+      this.httpOptions
+    );
+  }
+
   getUserPreviewById(userId: string): Observable<UserDto> {
     return this.http.get<UserDto>(
       `${API_USERS_URL}/${userId}/preview`,
@@ -377,6 +391,25 @@ export class UserService extends TEMSService {
 
     return this.http.get<UserAssetsResponse>(
       `${API_USERS_URL}/${userId}/assets`,
+      { ...this.httpOptions, params }
+    );
+  }
+
+  getMyUserAssets(
+    pageNumber: number = 1,
+    pageSize: number = 20,
+    assetTag?: string
+  ): Observable<UserAssetsResponse> {
+    let params = new HttpParams()
+      .append('pageNumber', pageNumber.toString())
+      .append('pageSize', pageSize.toString());
+
+    if (assetTag && assetTag.trim().length > 0) {
+      params = params.append('assetTag', assetTag.trim());
+    }
+
+    return this.http.get<UserAssetsResponse>(
+      `${API_USERS_URL}/me/assets`,
       { ...this.httpOptions, params }
     );
   }

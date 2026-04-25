@@ -10,7 +10,7 @@ public class SearchUsersEndpoint(IMediator mediator) : EndpointWithoutRequest<Li
     public override void Configure()
     {
         Get("/users/search/by-name");
-        Policies("CanManageAssets");
+        Policies("CanOpenOrManageTickets");
     }
 
     public override async Task HandleAsync(CancellationToken ct)

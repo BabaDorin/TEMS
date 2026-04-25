@@ -74,7 +74,7 @@
           </div>
           
           <!-- Actions Dropdown -->
-          <div class="relative actions-dropdown ml-4">
+          <div *ngIf="canManageUserActions && !isSelfView" class="relative actions-dropdown ml-4">
             <button
               (click)="showActionsDropdown = !showActionsDropdown"
               class="px-3 py-1.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg transition flex items-center gap-1.5 border border-gray-300 dark:border-[#48484a]">
@@ -221,15 +221,16 @@
           <div class="flex items-center justify-between mb-4">
             <div class="flex items-center gap-2">
               <button
-                (click)="openAllocateAssetModal()"
-                class="tems-btn tems-btn-primary">
+              *ngIf="canManageAssets && !isSelfView"
+              (click)="openAllocateAssetModal()"
+              class="tems-btn tems-btn-primary">
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                   <path d="M8 3V13M3 8H13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
                 </svg>
                 Allocate Asset
               </button>
               <button
-                *ngIf="selectedAssets.length > 0"
+                *ngIf="canManageAssets && !isSelfView && selectedAssets.length > 0"
                 (click)="unassignSelected()"
                 class="tems-btn tems-btn-danger">
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
@@ -294,7 +295,7 @@
                   </div>
 
                   <!-- Type Filter -->
-                  <div>
+                  <div *ngIf="canManageAssets && !isSelfView">
                     <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1.5">Asset Type</label>
                     <app-custom-select
                       [options]="typeOptions"
@@ -307,7 +308,7 @@
                   </div>
 
                   <!-- Definition Filter -->
-                  <div>
+                  <div *ngIf="canManageAssets && !isSelfView">
                     <label class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1.5">Definition</label>
                     <app-custom-select
                       [options]="definitionOptions"
@@ -344,6 +345,7 @@
             </svg>
             <p class="text-sm text-gray-500 dark:text-gray-400">No assets assigned to this user</p>
             <button
+              *ngIf="canManageAssets && !isSelfView"
               (click)="openAllocateAssetModal()"
               class="mt-3 px-4 py-2 text-sm text-[#007aff] hover:bg-[#007aff]/5 rounded-lg transition">
               Allocate an asset
@@ -445,6 +447,7 @@
       <!-- See More Button -->
       <div class="mt-6 flex justify-center">
         <button
+          *ngIf="canManageAssets && !isSelfView"
           (click)="navigateToAssetDetail(selectedAssetForPreview.id)"
           class="px-2.5 py-1.5 text-xs text-gray-500 dark:text-gray-400 hover:text-[#007aff] hover:bg-[#007aff]/5 rounded-lg transition flex items-center gap-1.5">
           <svg width="12" height="12" viewBox="0 0 16 16" fill="none">

@@ -74,7 +74,7 @@
           </div>
           
           <!-- Actions Dropdown -->
-          <div class="relative ml-4 actions-dropdown">
+          <div *ngIf="canManageAssets" class="relative ml-4 actions-dropdown">
             <button
               (click)="showActionsDropdown = !showActionsDropdown"
               class="px-3 py-1.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg transition flex items-center gap-1.5 border border-gray-300 dark:border-[#48484a]">

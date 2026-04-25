@@ -2,16 +2,18 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
 import { DialogService } from 'src/app/services/dialog.service';
 import { TicketService } from 'src/app/services/ticket.service';
 import { TicketTypeService } from 'src/app/services/ticket-type.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { TokenService } from 'src/app/services/token.service';
 import { UserService } from 'src/app/services/user.service';
-import { Ticket, TicketMessage, AddMessageRequest, UpdateTicketRequest } from 'src/app/models/ticket/ticket.model';
+import { Ticket, TicketMessage, AddMessageRequest, UpdateTicketRequest, ApprovalGate } from 'src/app/models/ticket/ticket.model';
 import { TicketType, WorkflowState } from 'src/app/models/ticket/ticket-type.model';
 import { UserDto } from 'src/app/models/user/user-management.model';
 import { ViewUserModalComponent } from '../../admin/user-management/view-user-modal/view-user-modal.component';
+import { ApprovalGateModalComponent } from '../approval-gate-modal/approval-gate-modal.component';
 
 @Component({
   selector: 'app-ticket-detail',
@@ -26,8 +28,11 @@ export class TicketDetailComponent implements OnInit {
   creatorUser: UserDto | null = null;
   creatorUserLoading = false;
   canManageTickets = false;
+  canOpenTickets = false;
   statusDraft = '';
   isSavingStatus = false;
+  summaryDraft = '';
+  isSavingSummary = false;
   messages: TicketMessage[] = [];
   internalNotes: TicketMessage[] = [];
   newMessageContent = '';
@@ -43,6 +48,7 @@ export class TicketDetailComponent implements OnInit {
   currentUserId = 'current-user';
   currentUserLabel = 'You';
   private currentUserIdentifiers = new Set<string>();
+  private approverDisplayNames = new Map<string, string>();
   private aiSummaryPollHandle: ReturnType<typeof setInterval> | null = null;
   private aiSummaryPollTicketId: string | null = null;
   private aiSummaryPollExpiresAt = 0;
@@ -56,16 +62,20 @@ export class TicketDetailComponent implements OnInit {
     private ticketTypeService: TicketTypeService,
     private authService: AuthService,
     private userService: UserService,
-    private tokenService: TokenService
+    private tokenService: TokenService,
+    private matDialog: MatDialog
   ) {}
 
   ngOnInit(): void {
     this.initializeCurrentUserContext();
     this.canManageTickets = this.tokenService.canManageTickets();
+    this.canOpenTickets = this.tokenService.canOpenTickets();
     const ticketId = this.route.snapshot.paramMap.get('id');
     if (ticketId) {
       this.loadTicket(ticketId);
-      this.loadMessages(ticketId);
+      if (this.canManageTickets || this.canOpenTickets) {
+        this.loadMessages(ticketId);
+      }
     }
   }
 
@@ -81,10 +91,13 @@ export class TicketDetailComponent implements OnInit {
         this.creatorUser = null;
         this.creatorUserLoading = false;
         this.statusDraft = this.getTicketStatusValue(ticket.currentStateId);
+        this.summaryDraft = ticket.summary || '';
+        this.approverDisplayNames.clear();
         this.isLoadingTicket = false;
         if (ticket.reporter?.userId) {
           this.loadCreatorUser(ticket.reporter.userId);
         }
+        this.loadApprovalGateUsers();
         if (ticket.ticketTypeId) {
           this.loadTicketType(ticket.ticketTypeId);
         }
@@ -325,12 +338,16 @@ export class TicketDetailComponent implements OnInit {
   }
 
   getCreatorDisplayName(): string {
-    if (!this.creatorUser) {
-      return '';
+    if (this.creatorUser) {
+      const parts = [this.creatorUser.firstName, this.creatorUser.lastName].filter((part) => !!part && part.trim().length > 0);
+      return parts.length > 0 ? parts.join(' ') : this.creatorUser.username;
     }
 
-    const parts = [this.creatorUser.firstName, this.creatorUser.lastName].filter((part) => !!part && part.trim().length > 0);
-    return parts.length > 0 ? parts.join(' ') : this.creatorUser.username;
+    if (this.ticket?.reporter?.displayName && this.ticket.reporter.displayName.trim().length > 0) {
+      return this.ticket.reporter.displayName;
+    }
+
+    return this.ticket?.reporter?.userId || '';
   }
 
   openCreatorPreview(): void {
@@ -343,6 +360,176 @@ export class TicketDetailComponent implements OnInit {
       [{ label: 'user', value: this.creatorUser }],
       () => {}
     );
+  }
+
+  canEditSummary(): boolean {
+    if (!this.ticket) {
+      return false;
+    }
+
+    const reporterId = this.ticket.reporter?.userId || '';
+    return this.matchesCurrentUser(reporterId);
+  }
+
+  canConfigureApprovalGates(): boolean {
+    return !!this.ticket && (this.canManageTickets || this.canEditSummary());
+  }
+
+  openApprovalGateModal(gate?: ApprovalGate | null): void {
+    if (!this.ticket || !this.canConfigureApprovalGates()) {
+      return;
+    }
+
+    const dialogRef = this.matDialog.open(ApprovalGateModalComponent, {
+      width: '720px',
+      maxWidth: '95vw',
+      maxHeight: '85vh',
+      autoFocus: false,
+      panelClass: 'custom-dialog-container',
+      data: {
+        ticketId: this.ticket.ticketId,
+        gate: gate ?? null
+      }
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result?.success) {
+        this.loadTicket(this.ticket!.ticketId);
+      }
+    });
+  }
+
+  saveSummary(): void {
+    if (!this.ticket || !this.canEditSummary() || this.isSavingSummary) {
+      return;
+    }
+
+    const nextSummary = this.summaryDraft.trim();
+    if (!nextSummary || nextSummary === this.ticket.summary) {
+      this.summaryDraft = this.ticket.summary;
+      return;
+    }
+
+    this.isSavingSummary = true;
+    const request: UpdateTicketRequest = {
+      summary: nextSummary,
+      currentStateId: this.ticket.currentStateId,
+      priority: this.ticket.priority,
+      assigneeId: this.ticket.assigneeId,
+      attributes: this.ticket.attributes
+    };
+
+    this.ticketService.update(this.ticket.ticketId, request).subscribe({
+      next: () => {
+        this.ticket = {
+          ...this.ticket!,
+          summary: nextSummary,
+          updatedAt: new Date().toISOString()
+        };
+        this.isSavingSummary = false;
+      },
+      error: (error) => {
+        console.error('Error updating summary:', error);
+        this.summaryDraft = this.ticket?.summary || '';
+        this.isSavingSummary = false;
+      }
+    });
+  }
+
+  reviewApprovalGate(gate: ApprovalGate, status: 'approved' | 'rejected'): void {
+    if (!this.ticket || !gate?.approvalGateId) {
+      return;
+    }
+
+    this.ticketService.reviewApprovalGate(this.ticket.ticketId, gate.approvalGateId, { status }).subscribe({
+      next: (response) => {
+        if (response.gate && this.ticket) {
+          // Update the approval gate in place instead of reassigning the ticket object
+          const index = (this.ticket!.approvalGates || []).findIndex(g => g.approvalGateId === response.gate!.approvalGateId);
+          if (index !== -1) {
+            this.ticket!.approvalGates![index] = response.gate!;
+          }
+          this.loadApprovalGateUsers();
+        }
+      },
+      error: (error) => {
+        console.error('Error reviewing approval gate:', error);
+      }
+    });
+  }
+
+  getApprovalGateStateLabel(state: string): string {
+    const normalized = this.normalizeIdentity(state);
+    if (normalized === 'approved') return 'Approved';
+    if (normalized === 'not-approved' || normalized === 'rejected') return 'Not approved';
+    return 'Pending';
+  }
+
+  getApproverStatusLabel(state: string): string {
+    const normalized = this.normalizeIdentity(state);
+    if (normalized === 'approved') return 'Approved';
+    if (normalized === 'rejected' || normalized === 'not-approved') return 'Rejected';
+    return 'Pending';
+  }
+
+  getApprovalGateStatusClass(state: string): string {
+    const normalized = this.normalizeIdentity(state);
+    if (normalized === 'approved') {
+      return 'bg-green-100 text-green-800 dark:bg-green-500/15 dark:text-green-300';
+    }
+    if (normalized === 'not-approved' || normalized === 'rejected') {
+      return 'bg-red-100 text-red-800 dark:bg-red-500/15 dark:text-red-300';
+    }
+    return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-500/15 dark:text-yellow-300';
+  }
+
+  getApproverDisplayName(userId: string): string {
+    if (!userId) return 'Unknown user';
+    if (this.matchesCurrentUser(userId)) return this.currentUserLabel;
+    return this.approverDisplayNames.get(userId) || userId;
+  }
+
+  isCurrentUserApprover(gate: ApprovalGate): boolean {
+    return (gate.approvers || []).some((approver) => this.matchesCurrentUser(approver.userId));
+  }
+
+  getCurrentUserGateStatus(gate: ApprovalGate): string {
+    const approver = (gate.approvers || []).find((item) => this.matchesCurrentUser(item.userId));
+    return approver?.status || '';
+  }
+
+  trackByGateId(index: number, gate: ApprovalGate): string {
+    return gate.approvalGateId;
+  }
+
+  private loadApprovalGateUsers(): void {
+    if (!this.ticket?.approvalGates?.length) {
+      return;
+    }
+
+    const userIds = new Set<string>();
+    this.ticket.approvalGates.forEach((gate) => {
+      (gate.approvers || []).forEach((approver) => {
+        if (approver.userId && !this.matchesCurrentUser(approver.userId)) {
+          userIds.add(approver.userId);
+        }
+      });
+    });
+
+    userIds.forEach((userId) => {
+      this.userService.getUserPreviewById(userId).subscribe({
+        next: (user) => {
+          const displayName = [user.firstName, user.lastName].filter((part) => !!part && part.trim().length > 0).join(' ')
+            || user.username
+            || user.email
+            || user.id;
+          this.approverDisplayNames.set(user.id, displayName);
+        },
+        error: () => {
+          this.approverDisplayNames.set(userId, userId);
+        }
+      });
+    });
   }
 
   private maybeStartAiSummaryPolling(): void {
@@ -429,11 +616,11 @@ export class TicketDetailComponent implements OnInit {
   }
 
   sendMessage(): void {
-    if (!this.ticket || !this.newMessageContent.trim()) {
+    if (!this.ticket || !this.newMessageContent.trim() || (!this.canManageTickets && !this.canOpenTickets)) {
       return;
     }
 
-    const isInternalNote = this.activeChatTab === 'notes';
+    const isInternalNote = this.canManageTickets && this.activeChatTab === 'notes';
     const content = this.newMessageContent.trim();
     this.isSendingMessage = true;
     this.newMessageContent = '';
@@ -452,7 +639,7 @@ export class TicketDetailComponent implements OnInit {
       senderType: 'AGENT',
       senderId: this.currentUserId,
       content,
-      isInternalNote: isInternalNote
+      isInternalNote
     };
 
     this.ticketService.addMessage(this.ticket.ticketId, request).subscribe({
@@ -499,6 +686,10 @@ export class TicketDetailComponent implements OnInit {
   }
 
   getDisplayMessages(): TicketMessage[] {
+    if (!this.canManageTickets) {
+      return this.messages;
+    }
+
     return this.activeChatTab === 'messages' ? this.messages : this.internalNotes;
   }
 
@@ -690,7 +881,10 @@ export class TicketDetailComponent implements OnInit {
     const claims = this.authService.getIdentityClaims() as any;
     const candidates = [
       claims?.sub,
+      claims?.oid,
       claims?.preferred_username,
+      claims?.upn,
+      claims?.unique_name,
       claims?.email,
       claims?.name
     ]
@@ -700,12 +894,45 @@ export class TicketDetailComponent implements OnInit {
     this.currentUserIdentifiers = new Set(candidates);
     this.currentUserId = candidates[0] ?? 'current-user';
     this.currentUserLabel = claims?.preferred_username || claims?.name || claims?.email || 'You';
+
+    this.userService.getMyUser().subscribe({
+      next: (user) => {
+        const profileCandidates = [
+          user.id,
+          user.keycloakId,
+          user.username,
+          user.email
+        ]
+          .map((value: unknown) => this.normalizeIdentity(value))
+          .filter((value): value is string => !!value);
+
+        profileCandidates.forEach((value) => this.currentUserIdentifiers.add(value));
+        this.currentUserId = user.id || this.currentUserId;
+
+        const displayName = [user.firstName, user.lastName]
+          .filter((part) => !!part && part.trim().length > 0)
+          .join(' ');
+        this.currentUserLabel = displayName || user.username || user.email || this.currentUserLabel;
+
+        if (this.ticket?.approvalGates?.length) {
+          this.loadApprovalGateUsers();
+        }
+      },
+      error: () => {
+        // Claims-based fallback remains available.
+      }
+    });
   }
 
   private normalizeIdentity(value: unknown): string | null {
     if (typeof value !== 'string') return null;
     const normalized = value.trim().toLowerCase();
     return normalized.length > 0 ? normalized : null;
+  }
+
+  private matchesCurrentUser(userId: string): boolean {
+    const normalizedUser = this.normalizeIdentity(userId);
+    return !!normalizedUser && this.currentUserIdentifiers.has(normalizedUser);
   }
 
   private normalizeMessage(message: TicketMessage): TicketMessage {

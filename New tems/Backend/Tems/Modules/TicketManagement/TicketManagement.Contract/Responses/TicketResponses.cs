@@ -15,6 +15,7 @@ public record GetTicketResponse(
     ReporterResponse Reporter,
     string? AssigneeId,
     Dictionary<string, object> Attributes,
+    List<ApprovalGateResponse> ApprovalGates,
     DateTime CreatedAt,
     DateTime UpdatedAt,
     DateTime? ResolvedAt
@@ -31,8 +32,30 @@ public record DeleteTicketResponse(bool Success);
 public record ReporterResponse(
     string UserId,
     string ChannelSource,
-    string? ChannelThreadId
+    string? ChannelThreadId,
+    string? DisplayName = null
 );
+
+public record ApprovalGateResponse(
+    string ApprovalGateId,
+    string Title,
+    string Justification,
+    string State,
+    bool AllApproversRequired,
+    List<ApprovalGateApproverResponse> Approvers,
+    DateTime CreatedAt,
+    DateTime UpdatedAt
+);
+
+public record ApprovalGateApproverResponse(
+    string UserId,
+    string Status,
+    DateTime? ReviewedAt
+);
+
+public record CreateApprovalGateResponse(bool Success, ApprovalGateResponse? Gate);
+public record UpdateApprovalGateResponse(bool Success, ApprovalGateResponse? Gate);
+public record ReviewApprovalGateResponse(bool Success, ApprovalGateResponse? Gate);
 
 public record AddTicketMessageResponse(
     bool Success,

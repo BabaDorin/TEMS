@@ -1,8 +1,11 @@
 using MediatR;
 using Tems.Common.Tenant;
+using TicketManagement.Application.Helpers;
 using TicketManagement.Application.Interfaces;
 using TicketManagement.Contract.Commands.Tickets;
 using TicketManagement.Contract.Responses;
+using Microsoft.AspNetCore.Http;
+using UserManagement.Infrastructure.Repositories;
 
 namespace TicketManagement.Application.Commands.Tickets;
 
@@ -10,11 +13,19 @@ public class GetTicketByIdCommandHandler : IRequestHandler<GetTicketByIdCommand,
 {
     private readonly ITicketRepository _repository;
     private readonly ITenantContext _tenantContext;
+    private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly IUserRepository _userRepository;
 
-    public GetTicketByIdCommandHandler(ITicketRepository repository, ITenantContext tenantContext)
+    public GetTicketByIdCommandHandler(
+        ITicketRepository repository,
+        ITenantContext tenantContext,
+        IHttpContextAccessor httpContextAccessor,
+        IUserRepository userRepository)
     {
         _repository = repository;
         _tenantContext = tenantContext;
+        _httpContextAccessor = httpContextAccessor;
+        _userRepository = userRepository;
     }
 
     public async Task<GetTicketResponse> Handle(GetTicketByIdCommand request, CancellationToken cancellationToken)
@@ -24,26 +35,20 @@ public class GetTicketByIdCommandHandler : IRequestHandler<GetTicketByIdCommand,
         if (ticket == null)
             throw new KeyNotFoundException($"Ticket with ID {request.TicketId} not found");
 
-        return new GetTicketResponse(
-            ticket.TicketId,
-            ticket.TenantId,
-            ticket.TicketTypeId,
-            ticket.HumanReadableId,
-            string.IsNullOrWhiteSpace(ticket.Title) ? ticket.Summary : ticket.Title,
-            ticket.Summary,
-            ticket.AiSummary,
-            ticket.CurrentStateId,
-            ticket.Priority,
-            new ReporterResponse(
-                ticket.Reporter.UserId,
-                ticket.Reporter.ChannelSource,
-                ticket.Reporter.ChannelThreadId
-            ),
-            ticket.AssigneeId,
-            ticket.Attributes,
-            ticket.CreatedAt,
-            ticket.UpdatedAt,
-            ticket.ResolvedAt
-        );
+        var currentUser = _httpContextAccessor.HttpContext?.User;
+        var currentUserIdentifiers = await ApprovalGateHelper.ResolveCurrentUserIdentifiersAsync(currentUser, _userRepository, cancellationToken);
+        var isManager = ApprovalGateHelper.IsManager(currentUser);
+
+        if (!ApprovalGateHelper.CanViewTicket(ticket, currentUserIdentifiers, isManager))
+        {
+            throw new UnauthorizedAccessException("You do not have access to this ticket");
+        }
+
+        if (ApprovalGateHelper.EnsureApprovalGateIds(ticket))
+        {
+            await _repository.UpdateAsync(ticket, cancellationToken);
+        }
+
+        return await TicketResponseFactory.ToResponseAsync(ticket, _userRepository, cancellationToken);
     }
 }

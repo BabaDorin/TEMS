@@ -50,7 +50,7 @@ public class GetRoomByIdEndpoint(IMediator mediator) : EndpointWithoutRequest<Ge
     public override void Configure()
     {
         Get("/location/rooms/{Id}");
-        Policies("CanManageAssets");
+        Policies("Authenticated");
     }
 
     public override async Task HandleAsync(CancellationToken ct)

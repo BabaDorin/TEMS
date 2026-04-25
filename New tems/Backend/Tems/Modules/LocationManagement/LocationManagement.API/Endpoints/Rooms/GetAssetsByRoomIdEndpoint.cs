@@ -11,7 +11,7 @@ public class GetAssetsByRoomIdEndpoint(IMediator mediator) : EndpointWithoutRequ
     public override void Configure()
     {
         Get("/location/rooms/{roomId}/assets");
-        Policies("CanManageAssets");
+        Policies("Authenticated");
     }
 
     public override async Task HandleAsync(CancellationToken ct)

@@ -9,7 +9,7 @@ public class GetUserByIdEndpoint(IMediator mediator) : EndpointWithoutRequest<Us
 {
     public override void Configure()
     {
-        Get("/users/{id}");
+        Get("/users/{id:guid}");
         Policies("CanManageUsers");
     }
 

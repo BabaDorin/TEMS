@@ -17,7 +17,7 @@ public class GetAllTicketTypesEndpoint : EndpointWithoutRequest<GetAllTicketType
     public override void Configure()
     {
         Get("/ticket-types");
-        Policies("CanManageTickets");
+        Policies("CanOpenOrManageTickets");
     }
 
     public override async Task HandleAsync(CancellationToken ct)

@@ -1,18 +1,13 @@
 <section class="tems-asset-page">
   <header class="tems-asset-header">
     <div>
-      <div class="tems-asset-eyebrow">
-        <i class="mdi mdi-cog-outline"></i>
-        <span>Asset Management</span>
-      </div>
-      <h1 class="text-2xl">Manage properties, types, and definitions</h1>
-      <p>Keep the asset model consistent across the entire TEMS platform.</p>
+      <h1 class="text-2xl font-semibold text-gray-900 dark:text-white" style="letter-spacing: -0.5px;">Asset Management</h1>
+      <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Manage properties, types, and definitions.</p>
     </div>
   </header>
 
-  <section class="tems-asset-card">
-      <div class="border-b border-[color:var(--border-secondary)] bg-[color:var(--bg-secondary)]">
-      <nav class="flex">
+  <section class="tems-asset-card overflow-hidden">
+      <nav class="flex px-4 overflow-x-auto border-b border-gray-200 dark:border-[#38383a] bg-gray-50 dark:bg-[#1c1c1e]">
         <button
           (click)="setActiveTab('properties')"
           [class.is-active]="activeTab === 'properties'"
@@ -35,12 +30,11 @@
           Definitions
         </button>
       </nav>
-    </div>
 
-    <div class="tems-asset-card-body">
-      <app-asset-property-management *ngIf="activeTab === 'properties'"></app-asset-property-management>
-      <app-asset-type-management *ngIf="activeTab === 'types'"></app-asset-type-management>
-      <app-asset-definition-management *ngIf="activeTab === 'definitions'"></app-asset-definition-management>
-    </div>
+      <div>
+        <app-asset-property-management *ngIf="activeTab === 'properties'"></app-asset-property-management>
+        <app-asset-type-management *ngIf="activeTab === 'types'"></app-asset-type-management>
+        <app-asset-definition-management *ngIf="activeTab === 'definitions'"></app-asset-definition-management>
+      </div>
+    </section>
   </section>
-</section>

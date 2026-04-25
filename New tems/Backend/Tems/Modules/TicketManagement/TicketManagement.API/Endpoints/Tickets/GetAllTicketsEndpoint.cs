@@ -17,7 +17,7 @@ public class GetAllTicketsEndpoint : EndpointWithoutRequest<GetAllTicketsRespons
     public override void Configure()
     {
         Get("/tickets");
-        Policies("CanManageTickets");
+        Policies("CanOpenOrManageTickets");
     }
 
     public override async Task HandleAsync(CancellationToken ct)

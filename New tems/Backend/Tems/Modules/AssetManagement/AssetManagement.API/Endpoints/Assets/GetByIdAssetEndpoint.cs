@@ -10,7 +10,7 @@ public class GetByIdAssetEndpoint(IMediator mediator) : EndpointWithoutRequest<G
     public override void Configure()
     {
         Get("/asset/{Id}");
-        Policies("CanManageAssets");
+        Policies("Authenticated");
     }
 
     public override async Task HandleAsync(CancellationToken ct)

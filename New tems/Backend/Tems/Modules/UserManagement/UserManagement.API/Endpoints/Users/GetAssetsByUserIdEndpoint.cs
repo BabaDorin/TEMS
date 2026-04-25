@@ -10,8 +10,8 @@ public class GetAssetsByUserIdEndpoint(IMediator mediator) : EndpointWithoutRequ
 {
     public override void Configure()
     {
-        Get("/users/{userId}/assets");
-        Policies("CanManageAssets");
+        Get("/users/{userId:guid}/assets");
+        Policies("Authenticated");
     }
 
     public override async Task HandleAsync(CancellationToken ct)

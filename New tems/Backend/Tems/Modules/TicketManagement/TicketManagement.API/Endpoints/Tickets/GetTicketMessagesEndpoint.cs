@@ -17,7 +17,7 @@ public class GetTicketMessagesEndpoint : Endpoint<GetTicketMessagesCommand, GetT
     public override void Configure()
     {
         Get("/tickets/{TicketId}/messages");
-        Policies("CanManageTickets");
+        Policies("Authenticated");
     }
 
     public override async Task HandleAsync(GetTicketMessagesCommand request, CancellationToken ct)

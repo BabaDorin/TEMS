@@ -48,6 +48,9 @@ public class Ticket
     [BsonElement("attributes")]
     public Dictionary<string, object> Attributes { get; set; } = new();
 
+    [BsonElement("approval_gates")]
+    public List<ApprovalGate> ApprovalGates { get; set; } = new();
+
     [BsonElement("created_at")]
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 

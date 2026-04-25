@@ -6,6 +6,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { AssetService } from 'src/app/services/asset.service';
 import { LocationService } from 'src/app/services/location.service';
 import { UserService } from 'src/app/services/user.service';
+import { TokenService } from 'src/app/services/token.service';
 import { Asset } from 'src/app/models/asset/asset.model';
 import { AssetLabelComponent } from '../../asset/asset-label/asset-label.component';
 import { RoomDetailModalComponent } from '../../location-module/room-detail-modal/room-detail-modal.component';
@@ -42,6 +43,7 @@ export class AssetDetailComponent implements OnInit {
   isDefinitionExpanded = true;
   private cachedAssigneeEmail: string | null = null;
   assigneeValid = false;
+  canManageAssets = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -50,7 +52,8 @@ export class AssetDetailComponent implements OnInit {
     private assetService: AssetService,
     private dialog: MatDialog,
     private locationService: LocationService,
-    private userService: UserService
+    private userService: UserService,
+    private tokenService: TokenService
   ) {}
 
   @HostListener('document:click', ['$event'])
@@ -62,6 +65,7 @@ export class AssetDetailComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.canManageAssets = this.tokenService.canManageAssets();
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.loadAsset(id);

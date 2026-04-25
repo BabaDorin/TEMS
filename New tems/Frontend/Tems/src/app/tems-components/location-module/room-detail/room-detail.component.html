@@ -58,7 +58,7 @@
           </div>
           
           <!-- Actions Dropdown -->
-          <div class="relative ml-4">
+          <div *ngIf="canManageAssets" class="relative ml-4">
             <button
               (click)="showActionsDropdown = !showActionsDropdown"
               class="px-3 py-1.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg transition flex items-center gap-1.5 border border-gray-300 dark:border-[#48484a]">
@@ -280,6 +280,7 @@
               </div>
               <div class="flex items-center gap-2">
                 <button
+                  *ngIf="canManageAssets"
                   disabled
                   class="px-3 py-1.5 bg-white dark:bg-[#2c2c2e] border border-gray-200 dark:border-[#48484a] rounded-md opacity-50 cursor-not-allowed transition flex items-center gap-1.5 text-xs text-gray-700 dark:text-gray-400">
                   <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
@@ -289,6 +290,7 @@
                   Move to Room
                 </button>
                 <button
+                  *ngIf="canManageAssets"
                   disabled
                   class="px-3 py-1.5 bg-white dark:bg-[#2c2c2e] border border-gray-200 dark:border-[#48484a] rounded-md opacity-50 cursor-not-allowed transition flex items-center gap-1.5 text-xs text-gray-700 dark:text-gray-400">
                   <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
@@ -298,6 +300,7 @@
                   Archive
                 </button>
                 <button
+                  *ngIf="canManageAssets"
                   (click)="openAddAssetModal()"
                   class="tems-btn tems-btn-primary">
                   <svg width="14" height="14" viewBox="0 0 16 16" fill="none">

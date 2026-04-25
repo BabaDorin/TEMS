@@ -15,7 +15,8 @@ export class AuthService implements OnDestroy {
 
   private tokenRefreshSubscription?: Subscription;
   private readonly TOKEN_REFRESH_CHECK_INTERVAL = 30000; // Check every 30 seconds
-  private readonly TOKEN_REFRESH_THRESHOLD = 60; // Refresh 60 seconds before expiry
+  private readonly TOKEN_REFRESH_THRESHOLD = 300; // Refresh 5 minutes before expiry
+  private lastRefreshTime = 0;
 
   constructor(
     private oauthService: OAuthService,
@@ -72,6 +73,7 @@ export class AuthService implements OnDestroy {
       this.isAuthenticatedSubject.next(hasValidToken);
       
       if (hasValidToken) {
+        this.lastRefreshTime = Date.now();
         this.startTokenRefreshTimer();
       }
     });
@@ -104,13 +106,18 @@ export class AuthService implements OnDestroy {
       return;
     }
 
+    const now = Date.now();
+    const timeSinceLastRefresh = now - this.lastRefreshTime;
+    if (timeSinceLastRefresh < 60000) { // Don't refresh if refreshed less than 1 minute ago
+      return;
+    }
+
     const expiresAt = this.oauthService.getAccessTokenExpiration();
     if (!expiresAt) {
       console.log('[AuthService] No expiration time found for access token');
       return;
     }
 
-    const now = Date.now();
     const expiresIn = (expiresAt - now) / 1000;
     
     console.log(`[AuthService] Token expires in ${Math.round(expiresIn)} seconds`);
@@ -133,6 +140,7 @@ export class AuthService implements OnDestroy {
 
       console.log('[AuthService] Refreshing token using refresh token...');
       await this.oauthService.refreshToken();
+      this.lastRefreshTime = Date.now();
       console.log('[AuthService] Token refresh successful');
       this.isAuthenticatedSubject.next(true);
       

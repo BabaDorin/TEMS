@@ -11,6 +11,7 @@ import { ViewNotification } from './../../models/communication/notification/view
 import { AuthService } from './../../services/auth.service';
 import { ViewNotificationsComponent } from './../../tems-components/notifications/view-notifications/view-notifications.component';
 import { TEMSComponent } from './../../tems/tems.component';
+import { UserProfile } from 'src/app/models/user/user-profile.model';
 
 @Component({
   selector: 'app-navbar',
@@ -27,6 +28,7 @@ export class NavbarComponent extends TEMSComponent implements OnInit {
   public iconOnlyToggled = false;
   public sidebarToggled = false;
   public username: string = '';
+  public currentUserId: string | null = null;
   public profilePhotoB64: string | undefined;
   public loggedIn: boolean = false;
   public refreshing: boolean = false;
@@ -107,10 +109,10 @@ export class NavbarComponent extends TEMSComponent implements OnInit {
         
         if (isAuth) {
           this.username = this.authService.getUserName();
-          this.fetchLastNotifications();
-          this.fetchMinifiedProfilePhoto();
+          this.loadCurrentUserProfile();
         } else {
           this.username = '';
+          this.currentUserId = null;
           this.profilePhotoB64 = undefined;
           this.notifications = [];
           this.newNotifications = [];
@@ -128,6 +130,23 @@ export class NavbarComponent extends TEMSComponent implements OnInit {
     //     this.profilePhotoB64 = result;
     //   })
     // );
+  }
+
+  private loadCurrentUserProfile(): void {
+    this.fetchLastNotifications();
+    this.fetchMinifiedProfilePhoto();
+
+    this.subscriptions.push(
+      this.userService.getProfile().subscribe({
+        next: (profile: UserProfile) => {
+          this.currentUserId = profile?.id ?? null;
+        },
+        error: (error) => {
+          console.error('[Navbar] Failed to load current user profile:', error);
+          this.currentUserId = null;
+        }
+      })
+    );
   }
 
   fetchLastNotifications(refreshTriggered: boolean = false){
@@ -177,6 +196,11 @@ export class NavbarComponent extends TEMSComponent implements OnInit {
         this.fetchLastNotifications();
       }
     );
+  }
+
+  openMyProfile(): void {
+    this.showUserMenu = false;
+    this.route.navigate(['/users/me']);
   }
 
   // Close dropdowns when clicking outside

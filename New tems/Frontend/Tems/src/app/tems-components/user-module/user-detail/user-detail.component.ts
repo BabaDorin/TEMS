@@ -13,6 +13,7 @@ import { AssetService } from 'src/app/services/asset.service';
 import { AssetTypeService } from 'src/app/services/asset-type.service';
 import { AssetDefinitionService } from 'src/app/services/asset-definition.service';
 import { ThemeService } from 'src/app/services/theme.service';
+import { TokenService } from 'src/app/services/token.service';
 import { UserDto, UserAssetDto } from 'src/app/models/user/user-management.model';
 import { AssetType } from 'src/app/models/asset/asset-type.model';
 import { AssetDefinition } from 'src/app/models/asset/asset-definition.model';
@@ -46,6 +47,9 @@ export class UserDetailComponent implements OnInit {
   error: string | null = null;
   activeTab: 'overview' | 'assets' | 'allocations' = 'overview';
   showActionsDropdown = false;
+  isSelfView = false;
+  canManageAssets = false;
+  canManageUserActions = false;
 
   // Assets Tab
   assets: UserAssetDto[] = [];
@@ -84,7 +88,9 @@ export class UserDetailComponent implements OnInit {
     }
   }
 
-  assetsColumnDefs: ColDef[] = [
+  assetsColumnDefs: ColDef[] = [];
+
+  private readonly baseAssetColumnDefs: ColDef[] = [
     {
       headerCheckboxSelection: true,
       checkboxSelection: true,
@@ -201,8 +207,13 @@ export class UserDetailComponent implements OnInit {
     private assetTypeService: AssetTypeService,
     private assetDefinitionService: AssetDefinitionService,
     private dialog: MatDialog,
-    private themeService: ThemeService
+    private themeService: ThemeService,
+    private tokenService: TokenService
   ) {
+    this.canManageAssets = this.tokenService.canManageAssets();
+    this.canManageUserActions = this.tokenService.canManageUsers();
+    this.setAssetColumnDefinitions();
+
     this.assetTagSearchSubject.pipe(
       debounceTime(300),
       distinctUntilChanged()
@@ -213,18 +224,57 @@ export class UserDetailComponent implements OnInit {
   }
 
   ngOnInit() {
+    const routePath = this.route.snapshot.routeConfig?.path ?? '';
+    const routeUrl = this.route.snapshot.url.map(segment => segment.path).join('/') || this.router.url;
     const id = this.route.snapshot.paramMap.get('id');
-    if (id) {
-      this.loadUser(id);
-      this.loadAssetTypes();
-      this.loadAssetDefinitions();
+
+    if (routePath === 'me' || routeUrl.endsWith('/users/me')) {
+      this.resolveUserContextAndLoad('me');
+    } else if (id) {
+      this.resolveUserContextAndLoad(id);
     } else {
       this.error = 'No user ID provided';
       this.loading = false;
     }
   }
 
+  private resolveUserContextAndLoad(routeId: string) {
+    this.loading = true;
+    this.error = null;
+
+    this.userService.getProfile().subscribe({
+      next: (profile) => {
+        this.isSelfView = routeId === 'me' || routeId === profile.id;
+        this.setAssetColumnDefinitions();
+
+        if (this.isSelfView) {
+          if (routeId !== 'me') {
+            this.router.navigate(['/users/me'], { replaceUrl: true });
+          }
+
+          this.loadMyUser();
+          return;
+        }
+
+        this.loadUser(routeId);
+        this.loadAssetTypes();
+        this.loadAssetDefinitions();
+      },
+      error: (error) => {
+        console.error('Error loading current profile:', error);
+        this.error = 'Failed to determine current user';
+        this.loading = false;
+      }
+    });
+  }
+
   loadAssetTypes() {
+    if (!this.canManageAssets || this.isSelfView) {
+      this.assetTypes = [];
+      this.typeOptions = [];
+      return;
+    }
+
     this.assetTypeService.getAll().subscribe({
       next: (types) => {
         this.assetTypes = types;
@@ -234,11 +284,34 @@ export class UserDetailComponent implements OnInit {
   }
 
   loadAssetDefinitions() {
+    if (!this.canManageAssets || this.isSelfView) {
+      this.assetDefinitions = [];
+      this.definitionOptions = [];
+      return;
+    }
+
     this.assetDefinitionService.getAll().subscribe({
       next: (definitions) => {
         this.assetDefinitions = definitions;
         this.definitionOptions = definitions.map(d => ({ value: d.name, label: d.name }));
         this.syncDefinitionOptions();
+      }
+    });
+  }
+
+  loadMyUser() {
+    this.loading = true;
+    this.error = null;
+
+    this.userService.getMyUser().subscribe({
+      next: (user) => {
+        this.user = user;
+        this.loading = false;
+      },
+      error: (error) => {
+        console.error('Error loading my user:', error);
+        this.error = 'Failed to load user details';
+        this.loading = false;
       }
     });
   }
@@ -263,6 +336,12 @@ export class UserDetailComponent implements OnInit {
   selectTab(tab: 'overview' | 'assets' | 'allocations') {
     this.activeTab = tab;
     if (tab === 'assets' && this.assets.length === 0 && this.user) {
+      if (this.canManageAssets && !this.isSelfView && this.assetTypes.length === 0) {
+        this.loadAssetTypes();
+      }
+      if (this.canManageAssets && !this.isSelfView && this.assetDefinitions.length === 0) {
+        this.loadAssetDefinitions();
+      }
       this.loadAssets();
     }
   }
@@ -273,15 +352,23 @@ export class UserDetailComponent implements OnInit {
     this.assetsLoading = true;
     this.selectedAssets = [];
     this.assetsGridApi?.deselectAll();
-    this.userService.getUserAssets(
-      this.user.id,
-      this.assetsCurrentPage,
-      this.assetsPageSize,
-      this.assetTagSearch.trim() || undefined,
-      this.selectedTypeIds.length > 0 ? this.selectedTypeIds : undefined,
-      undefined,
-      this.selectedDefinitionIds.length > 0 ? this.selectedDefinitionIds : undefined
-    ).subscribe({
+    const assetsRequest$ = this.isSelfView
+      ? this.userService.getMyUserAssets(
+          this.assetsCurrentPage,
+          this.assetsPageSize,
+          this.assetTagSearch.trim() || undefined
+        )
+      : this.userService.getUserAssets(
+          this.user.id,
+          this.assetsCurrentPage,
+          this.assetsPageSize,
+          this.assetTagSearch.trim() || undefined,
+          this.selectedTypeIds.length > 0 ? this.selectedTypeIds : undefined,
+          undefined,
+          this.selectedDefinitionIds.length > 0 ? this.selectedDefinitionIds : undefined
+        );
+
+    assetsRequest$.subscribe({
       next: (response) => {
         this.assets = response.assets || [];
         this.filteredAssets = [...this.assets];
@@ -349,7 +436,7 @@ export class UserDetailComponent implements OnInit {
   }
 
   deleteUser() {
-    if (!this.user) return;
+    if (!this.user || this.isSelfView) return;
     
     const dialogRef = this.dialog.open(DeleteUserConfirmModalComponent, {
       width: '520px',
@@ -438,7 +525,7 @@ export class UserDetailComponent implements OnInit {
 
   // Action Methods
   openAllocateAssetModal() {
-    if (!this.user) return;
+    if (!this.user || this.isSelfView || !this.canManageAssets) return;
     
     const dialogRef = this.dialog.open(AllocateAssetModalComponent, {
       width: '520px',
@@ -459,6 +546,7 @@ export class UserDetailComponent implements OnInit {
   }
 
   unassignAsset(asset: UserAssetDto) {
+    if (this.isSelfView || !this.canManageAssets) return;
     if (!confirm(`Are you sure you want to unassign "${asset.assetTag}" from this user?`)) {
       return;
     }
@@ -475,7 +563,7 @@ export class UserDetailComponent implements OnInit {
   }
 
   unassignSelected() {
-    if (this.selectedAssets.length === 0) return;
+    if (this.isSelfView || !this.canManageAssets || this.selectedAssets.length === 0) return;
     
     if (!confirm(`Are you sure you want to unassign ${this.selectedAssets.length} asset(s) from this user?`)) {
       return;
@@ -495,6 +583,11 @@ export class UserDetailComponent implements OnInit {
   }
 
   private syncDefinitionOptions() {
+    if (!this.canManageAssets || this.isSelfView) {
+      this.definitionOptions = [];
+      return;
+    }
+
     const filtered = this.assetDefinitions.filter((definition) => {
       if (this.selectedTypeIds.length === 0) {
         return true;
@@ -506,6 +599,28 @@ export class UserDetailComponent implements OnInit {
     this.definitionOptions = filtered
       .map((definition) => ({ value: definition.name, label: definition.name }))
       .sort((left, right) => left.label.localeCompare(right.label));
+  }
+
+  private setAssetColumnDefinitions() {
+    const includeManagementColumns = this.canManageAssets && !this.isSelfView;
+    this.assetsColumnDefs = this.buildAssetColumnDefs(includeManagementColumns);
+  }
+
+  private buildAssetColumnDefs(includeManagementColumns: boolean): ColDef[] {
+    const columns = [...this.baseAssetColumnDefs];
+    if (!includeManagementColumns) {
+      return columns.map(column => {
+        if (column.headerName === 'Actions') {
+          return { ...column, hide: true };
+        }
+        if (column.headerCheckboxSelection) {
+          return { ...column, hide: true };
+        }
+        return column;
+      }).filter(column => !column.hide);
+    }
+
+    return columns;
   }
 
   goToPage(page: number) {

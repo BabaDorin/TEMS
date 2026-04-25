@@ -1,86 +1,103 @@
-<div class="min-h-[calc(100dvh-4rem)] bg-gray-50/50 dark:bg-[#1c1c1e] transition-colors duration-200">
-  <div class="max-w-7xl mx-auto w-full p-4 sm:p-6 overflow-x-hidden">
-    <div class="tems-asset-header mb-4">
-      <div>
-        <h1 class="text-2xl">Tickets</h1>
-        <p>Manage and track support tickets.</p>
+<div class="bg-[#f5f5f7] dark:bg-[#1c1c1e] min-h-0 p-4 transition-colors duration-200">
+  <div class="max-w-7xl mx-auto w-full">
+    <div class="mb-4">
+      <div class="flex items-start justify-between gap-4">
+        <div>
+          <h1 class="text-2xl font-semibold text-gray-900 dark:text-white" style="letter-spacing: -0.5px;">Tickets</h1>
+          <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Manage and track support tickets.</p>
+        </div>
+        <button
+          *ngIf="canManageTickets || canOpenTickets"
+          (click)="openCreateModal()"
+          class="tems-btn tems-btn-primary">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+          </svg>
+          Create Ticket
+        </button>
       </div>
-      <button
-        (click)="openCreateModal()"
-        class="tems-btn tems-btn-primary">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-        </svg>
-        Create Ticket
-      </button>
     </div>
 
-    <section class="tems-asset-card">
-      <nav class="flex px-4 overflow-x-auto border-b border-gray-200 dark:border-[#38383a] bg-[color:var(--bg-secondary)] dark:bg-[#1c1c1e]">
+    <section class="bg-white dark:bg-[#2c2c2e] rounded-xl border border-gray-200 dark:border-[#38383a] overflow-hidden">
+      <nav class="flex px-4 overflow-x-auto border-b border-gray-200 dark:border-[#38383a] bg-gray-50 dark:bg-[#1c1c1e]">
         <button
+          *ngIf="statusTabCounts.approval > 0"
           type="button"
-          (click)="setStatusTab('new')"
-          [class.border-[#007aff]]="activeStatusTab === 'new'"
-          [class.dark:border-[#0a84ff]]="activeStatusTab === 'new'"
-          [class.text-[#007aff]]="activeStatusTab === 'new'"
-          [class.dark:text-[#0a84ff]]="activeStatusTab === 'new'"
-          [class.border-transparent]="activeStatusTab !== 'new'"
-          [class.text-gray-500]="activeStatusTab !== 'new'"
+          (click)="setStatusTab('approval')"
+          [class.border-[#007aff]]="activeStatusTab === 'approval'"
+          [class.dark:border-[#0a84ff]]="activeStatusTab === 'approval'"
+          [class.text-[#007aff]]="activeStatusTab === 'approval'"
+          [class.dark:text-[#0a84ff]]="activeStatusTab === 'approval'"
+          [class.border-transparent]="activeStatusTab !== 'approval'"
+          [class.text-gray-500]="activeStatusTab !== 'approval'"
           class="tems-asset-tab-button flex-[0_0_auto] min-w-[8.5rem]">
-          New
-          <span class="ml-2 text-xs font-semibold px-2 py-0.5 rounded-full bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300">{{ statusTabCounts.new }}</span>
+          For approval
+          <span class="ml-2 text-xs font-semibold px-2 py-0.5 rounded-full bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300">{{ statusTabCounts.approval }}</span>
         </button>
-        <button
-          type="button"
-          (click)="setStatusTab('in-progress')"
-          [class.border-[#007aff]]="activeStatusTab === 'in-progress'"
-          [class.dark:border-[#0a84ff]]="activeStatusTab === 'in-progress'"
-          [class.text-[#007aff]]="activeStatusTab === 'in-progress'"
-          [class.dark:text-[#0a84ff]]="activeStatusTab === 'in-progress'"
-          [class.border-transparent]="activeStatusTab !== 'in-progress'"
-          [class.text-gray-500]="activeStatusTab !== 'in-progress'"
-          class="tems-asset-tab-button flex-[0_0_auto] min-w-[10rem]">
-          In progress
-          <span class="ml-2 text-xs font-semibold px-2 py-0.5 rounded-full bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300">{{ statusTabCounts['in-progress'] }}</span>
-        </button>
-        <button
-          type="button"
-          (click)="setStatusTab('done')"
-          [class.border-[#007aff]]="activeStatusTab === 'done'"
-          [class.dark:border-[#0a84ff]]="activeStatusTab === 'done'"
-          [class.text-[#007aff]]="activeStatusTab === 'done'"
-          [class.dark:text-[#0a84ff]]="activeStatusTab === 'done'"
-          [class.border-transparent]="activeStatusTab !== 'done'"
-          [class.text-gray-500]="activeStatusTab !== 'done'"
-          class="tems-asset-tab-button flex-[0_0_auto] min-w-[8rem]">
-          Closed
-          <span class="ml-2 text-xs font-semibold px-2 py-0.5 rounded-full bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300">{{ statusTabCounts.done }}</span>
-        </button>
+        <ng-container *ngIf="canManageTickets || canOpenTickets">
+          <button
+            type="button"
+            (click)="setStatusTab('new')"
+            [class.border-[#007aff]]="activeStatusTab === 'new'"
+            [class.dark:border-[#0a84ff]]="activeStatusTab === 'new'"
+            [class.text-[#007aff]]="activeStatusTab === 'new'"
+            [class.dark:text-[#0a84ff]]="activeStatusTab === 'new'"
+            [class.border-transparent]="activeStatusTab !== 'new'"
+            [class.text-gray-500]="activeStatusTab !== 'new'"
+            class="tems-asset-tab-button flex-[0_0_auto] min-w-[8.5rem]">
+            New
+            <span class="ml-2 text-xs font-semibold px-2 py-0.5 rounded-full bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300">{{ statusTabCounts.new }}</span>
+          </button>
+          <button
+            type="button"
+            (click)="setStatusTab('in-progress')"
+            [class.border-[#007aff]]="activeStatusTab === 'in-progress'"
+            [class.dark:border-[#0a84ff]]="activeStatusTab === 'in-progress'"
+            [class.text-[#007aff]]="activeStatusTab === 'in-progress'"
+            [class.dark:text-[#0a84ff]]="activeStatusTab === 'in-progress'"
+            [class.border-transparent]="activeStatusTab !== 'in-progress'"
+            [class.text-gray-500]="activeStatusTab !== 'in-progress'"
+            class="tems-asset-tab-button flex-[0_0_auto] min-w-[10rem]">
+            In progress
+            <span class="ml-2 text-xs font-semibold px-2 py-0.5 rounded-full bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300">{{ statusTabCounts['in-progress'] }}</span>
+          </button>
+          <button
+            type="button"
+            (click)="setStatusTab('closed')"
+            [class.border-[#007aff]]="activeStatusTab === 'closed'"
+            [class.dark:border-[#0a84ff]]="activeStatusTab === 'closed'"
+            [class.text-[#007aff]]="activeStatusTab === 'closed'"
+            [class.dark:text-[#0a84ff]]="activeStatusTab === 'closed'"
+            [class.border-transparent]="activeStatusTab !== 'closed'"
+            [class.text-gray-500]="activeStatusTab !== 'closed'"
+            class="tems-asset-tab-button flex-[0_0_auto] min-w-[8rem]">
+            Closed
+            <span class="ml-2 text-xs font-semibold px-2 py-0.5 rounded-full bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300">{{ statusTabCounts.closed }}</span>
+          </button>
+        </ng-container>
       </nav>
 
-      <div class="tems-asset-card-body p-0">
-        <ag-grid-angular
-          class="w-full"
-          [class]="gridThemeClass"
-          style="height: min(58vh, calc(100dvh - 24rem)); min-height: 420px; width: 100%;"
-          [rowData]="rowData"
-          [columnDefs]="columnDefs"
-          [defaultColDef]="defaultColDef"
-          [pagination]="true"
-          [paginationPageSize]="50"
-          [rowSelection]="'single'"
-          [overlayNoRowsTemplate]="'<span class=\'ag-overlay-no-rows-center\'>No tickets found</span>'"
-          (gridReady)="onGridReady($event)"
-          (rowClicked)="onRowClicked($event)">
-        </ag-grid-angular>
-      </div>
+      <ag-grid-angular
+        class="w-full"
+        [class]="gridThemeClass"
+        style="height: min(58vh, calc(100dvh - 24rem)); min-height: 420px; width: 100%;"
+        [rowData]="rowData"
+        [columnDefs]="columnDefs"
+        [defaultColDef]="defaultColDef"
+        [pagination]="true"
+        [paginationPageSize]="50"
+        [rowSelection]="'single'"
+        [overlayNoRowsTemplate]="'<span class=\'ag-overlay-no-rows-center\'>No tickets found</span>'"
+        (gridReady)="onGridReady($event)"
+        (rowClicked)="onRowClicked($event)">
+      </ag-grid-angular>
     </section>
   </div>
 </div>
 
 <!-- Create Modal -->
 <div *ngIf="showCreateModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-  <div class="bg-white dark:bg-[#2c2c2e] rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-visible my-8">
+  <div class="bg-white dark:bg-[#2c2c2e] rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-hidden my-8">
     <div class="bg-white dark:bg-[#2c2c2e] border-b border-gray-200 dark:border-[#38383a] px-6 py-4 rounded-t-lg">
       <div class="flex items-center justify-between">
         <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Create Ticket</h2>
@@ -92,7 +109,7 @@
       </div>
     </div>
 
-    <form [formGroup]="createForm" (ngSubmit)="onSubmit()" class="p-6 space-y-6 overflow-visible">
+    <form [formGroup]="createForm" (ngSubmit)="onSubmit()" class="p-6 space-y-6 overflow-y-auto max-h-[calc(90vh-8rem)]">
       <!-- Ticket Type -->
       <div>
         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Ticket Type *</label>
@@ -300,7 +317,7 @@
         </div>
         <div>
           <label class="text-xs font-medium text-gray-500 dark:text-gray-400">Reporter</label>
-          <p class="text-sm text-gray-900 dark:text-white mt-1">{{ selectedTicket.reporter.userId }}</p>
+          <p class="text-sm text-gray-900 dark:text-white mt-1">{{ getPreviewCreatorDisplayName() }}</p>
         </div>
       </div>
 

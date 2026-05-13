@@ -1,5 +1,6 @@
 using MediatR;
 using Tems.Common.Tenant;
+using TicketManagement.Application.Helpers;
 using TicketManagement.Application.Interfaces;
 using TicketManagement.Contract.Commands.TicketTypes;
 using TicketManagement.Contract.Responses;
@@ -24,6 +25,8 @@ public class GetTicketTypeByIdCommandHandler : IRequestHandler<GetTicketTypeById
         if (ticketType == null)
             throw new KeyNotFoundException($"TicketType with ID {request.TicketTypeId} not found");
 
+        var workflowConfig = TicketStateHelper.NormalizeWorkflowConfig(ticketType.WorkflowConfig);
+
         return new GetTicketTypeResponse(
             ticketType.TicketTypeId,
             ticketType.TenantId,
@@ -32,14 +35,14 @@ public class GetTicketTypeByIdCommandHandler : IRequestHandler<GetTicketTypeById
             ticketType.ItilCategory,
             ticketType.Version,
             new WorkflowConfigResponse(
-                ticketType.WorkflowConfig.States.Select(s => new WorkflowStateResponse(
+                workflowConfig.States.Select(s => new WorkflowStateResponse(
                     s.Id,
                     s.Label,
                     s.Type,
                     s.AllowedTransitions,
                     s.AutomationHook
                 )).ToList(),
-                ticketType.WorkflowConfig.InitialStateId
+                workflowConfig.InitialStateId
             ),
             ticketType.AttributeDefinitions.Select(a => new AttributeDefinitionResponse(
                 a.Key,

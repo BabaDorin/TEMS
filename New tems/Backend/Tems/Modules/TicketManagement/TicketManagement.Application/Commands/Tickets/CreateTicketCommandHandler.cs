@@ -4,6 +4,7 @@ using Tems.Common.Tenant;
 using TicketManagement.Application.Domain;
 using TicketManagement.Application.Interfaces;
 using TicketManagement.Application.Models;
+using TicketManagement.Application.Services;
 using TicketManagement.Contract.Commands.Tickets;
 using TicketManagement.Contract.Responses;
 
@@ -16,19 +17,22 @@ public class CreateTicketCommandHandler : IRequestHandler<CreateTicketCommand, C
     private readonly ITicketConversationRepository _conversationRepository;
     private readonly ITicketAiSummaryQueue _ticketAiSummaryQueue;
     private readonly ITenantContext _tenantContext;
+    private readonly TicketHistoryLogService _ticketHistoryLogService;
 
     public CreateTicketCommandHandler(
         ITicketRepository ticketRepository,
         ITicketTypeRepository ticketTypeRepository,
         ITicketConversationRepository conversationRepository,
         ITicketAiSummaryQueue ticketAiSummaryQueue,
-        ITenantContext tenantContext)
+        ITenantContext tenantContext,
+        TicketHistoryLogService ticketHistoryLogService)
     {
         _ticketRepository = ticketRepository;
         _ticketTypeRepository = ticketTypeRepository;
         _conversationRepository = conversationRepository;
         _ticketAiSummaryQueue = ticketAiSummaryQueue;
         _tenantContext = tenantContext;
+        _ticketHistoryLogService = ticketHistoryLogService;
     }
 
     public async Task<CreateTicketResponse> Handle(CreateTicketCommand request, CancellationToken cancellationToken)
@@ -74,6 +78,7 @@ public class CreateTicketCommandHandler : IRequestHandler<CreateTicketCommand, C
             UpdatedAt = DateTime.UtcNow
         };
         await _conversationRepository.CreateAsync(conversation, cancellationToken);
+        await _ticketHistoryLogService.LogCreatedAsync(created, cancellationToken);
 
         if (ShouldGenerateAiSummary(ticketType))
         {

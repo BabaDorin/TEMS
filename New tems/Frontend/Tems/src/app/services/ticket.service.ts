@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable, tap, catchError, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { Ticket, CreateTicketRequest, UpdateTicketRequest, TicketConversation, AddMessageRequest, AddMessageResponse, EditMessageResponse, ApprovalGateRequest, ApprovalGateResponse, ReviewApprovalGateRequest, ReviewApprovalGateResponse } from '../models/ticket/ticket.model';
+import { ChangeLogTimelineResponse } from '../models/changelog.model';
 import { TicketManagementStateService } from '../state/ticket-management.state';
 
 @Injectable({
@@ -82,6 +83,23 @@ export class TicketService {
     return this.http.post<ReviewApprovalGateResponse>(`${this.apiUrl}/${ticketId}/approval-gates/${gateId}/review`, request, this.httpOptions).pipe(
       tap(() => this.stateService.invalidateTickets())
     );
+  }
+
+  deleteApprovalGate(ticketId: string, gateId: string): Observable<ApprovalGateResponse> {
+    return this.http.delete<ApprovalGateResponse>(`${this.apiUrl}/${ticketId}/approval-gates/${gateId}`, this.httpOptions).pipe(
+      tap(() => this.stateService.invalidateTickets())
+    );
+  }
+
+  getHistory(ticketId: string, pageNumber = 1, pageSize = 50): Observable<ChangeLogTimelineResponse> {
+    const params = new HttpParams()
+      .set('pageNumber', pageNumber)
+      .set('pageSize', pageSize);
+
+    return this.http.get<ChangeLogTimelineResponse>(`${this.apiUrl}/${ticketId}/history`, {
+      ...this.httpOptions,
+      params
+    });
   }
 
   delete(id: string): Observable<void> {

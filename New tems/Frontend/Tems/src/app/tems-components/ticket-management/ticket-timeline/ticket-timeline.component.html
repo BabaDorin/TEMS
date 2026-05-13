@@ -1,0 +1,62 @@
+<div *ngIf="loading" class="flex items-center justify-center py-16">
+  <div class="text-center">
+    <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-[#007aff]"></div>
+    <p class="mt-3 text-sm text-gray-500 dark:text-gray-400">Loading ticket history...</p>
+  </div>
+</div>
+
+<div *ngIf="!loading && error" class="rounded-xl border border-red-200 bg-red-50 px-4 py-5 text-sm text-red-700 dark:border-red-500/20 dark:bg-red-500/10 dark:text-red-300">
+  <div class="flex items-center justify-between gap-3">
+    <span>{{ error }}</span>
+    <button type="button" (click)="loadTimeline()" class="tems-btn tems-btn-secondary text-xs px-3 py-1.5">
+      Retry
+    </button>
+  </div>
+</div>
+
+<div *ngIf="!loading && !error && entries.length === 0" class="rounded-xl border border-dashed border-gray-300 bg-gray-50 px-4 py-10 text-center dark:border-[#48484a] dark:bg-[#2f2f33]">
+  <i class="mdi mdi-timeline-outline text-3xl text-gray-300 dark:text-gray-500"></i>
+  <p class="mt-3 text-sm text-gray-500 dark:text-gray-400 m-0">No ticket history has been recorded yet.</p>
+</div>
+
+<div *ngIf="!loading && !error && entries.length > 0" class="relative">
+  <div class="absolute left-[15px] top-2 bottom-2 w-px bg-gray-200 dark:bg-[#48484a]"></div>
+
+  <div class="space-y-4">
+    <div *ngFor="let entry of entries" class="relative pl-11">
+      <div class="absolute left-0 top-1.5 flex h-8 w-8 items-center justify-center rounded-full border ring-4 ring-white dark:ring-[#2c2c2e]" [ngClass]="getAccentClass(entry.action)">
+        <i class="mdi text-sm" [class]="getIcon(entry.action)"></i>
+      </div>
+
+      <div class="rounded-xl border border-gray-200 bg-white p-4 dark:border-[#48484a] dark:bg-[#3a3a3c]">
+        <div class="flex items-start justify-between gap-4">
+          <div class="min-w-0">
+            <h3 *ngIf="shouldShowTitle(entry)" class="text-sm font-semibold text-gray-900 dark:text-white m-0">{{ getTitle(entry) }}</h3>
+            <p class="text-sm text-gray-600 dark:text-gray-300 m-0" [class.mt-1]="shouldShowTitle(entry)">{{ entry.description }}</p>
+            <p *ngIf="entry.performedByUserName" class="mt-2 text-xs text-gray-500 dark:text-gray-400 m-0">
+              by {{ entry.performedByUserName }}
+            </p>
+          </div>
+          <span class="shrink-0 text-xs text-gray-400 dark:text-gray-500">{{ entry.timestamp | date:'MMM d, y, HH:mm' }}</span>
+        </div>
+
+        <div *ngIf="getFieldChanges(entry).length > 0" class="mt-3 space-y-2">
+          <div *ngFor="let change of getFieldChanges(entry)" class="rounded-lg bg-gray-50 px-3 py-2 text-xs dark:bg-[#2c2c2e]">
+            <span class="font-semibold text-gray-700 dark:text-gray-200">{{ change.fieldName }}</span>
+            <div class="mt-1 flex flex-wrap items-center gap-2 text-gray-500 dark:text-gray-400">
+              <span class="line-through">{{ change.oldValue || 'Empty' }}</span>
+              <i class="mdi mdi-arrow-right text-sm"></i>
+              <span class="font-medium text-gray-900 dark:text-white">{{ change.newValue || 'Empty' }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="hasMore" class="pt-4 pl-11">
+    <button type="button" (click)="loadMore()" class="tems-btn tems-btn-secondary text-xs px-3 py-1.5">
+      Load older entries
+    </button>
+  </div>
+</div>

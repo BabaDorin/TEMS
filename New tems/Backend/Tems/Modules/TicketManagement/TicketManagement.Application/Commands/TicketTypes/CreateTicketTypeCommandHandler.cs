@@ -21,6 +21,23 @@ public class CreateTicketTypeCommandHandler : IRequestHandler<CreateTicketTypeCo
 
     public async Task<CreateTicketTypeResponse> Handle(CreateTicketTypeCommand request, CancellationToken cancellationToken)
     {
+        var workflowConfig = request.WorkflowConfig != null ? new WorkflowConfig
+        {
+            States = request.WorkflowConfig.States?.Select(s => new WorkflowState
+            {
+                Id = s.Id,
+                Label = s.Label,
+                Type = s.Type?.ToUpper() ?? "ACTIVE",
+                AllowedTransitions = s.AllowedTransitions ?? new List<string>(),
+                AutomationHook = s.AutomationHook
+            }).ToList() ?? new List<WorkflowState>(),
+            InitialStateId = request.WorkflowConfig.InitialStateId ?? "new"
+        } : new WorkflowConfig
+        {
+            States = TicketStateHelper.CreateDefaultWorkflowStates(),
+            InitialStateId = "new"
+        };
+
         var ticketType = new TicketType
         {
             TicketTypeId = Guid.NewGuid().ToString(),
@@ -29,22 +46,7 @@ public class CreateTicketTypeCommandHandler : IRequestHandler<CreateTicketTypeCo
             Description = request.Description,
             ItilCategory = request.ItilCategory?.ToUpper() ?? "INCIDENT",
             Version = request.Version > 0 ? request.Version : 1,
-            WorkflowConfig = request.WorkflowConfig != null ? new WorkflowConfig
-            {
-                States = request.WorkflowConfig.States?.Select(s => new WorkflowState
-                {
-                    Id = s.Id,
-                    Label = s.Label,
-                    Type = s.Type?.ToUpper() ?? "ACTIVE",
-                    AllowedTransitions = s.AllowedTransitions ?? new List<string>(),
-                    AutomationHook = s.AutomationHook
-                }).ToList() ?? new List<WorkflowState>(),
-                InitialStateId = request.WorkflowConfig.InitialStateId ?? "new"
-            } : new WorkflowConfig
-            {
-                States = TicketStateHelper.CreateDefaultWorkflowStates(),
-                InitialStateId = "new"
-            },
+            WorkflowConfig = TicketStateHelper.NormalizeWorkflowConfig(workflowConfig),
             AttributeDefinitions = request.AttributeDefinitions?.Select(a => new AttributeDefinition
             {
                 Key = a.Key,

@@ -4,5 +4,6 @@ public enum ChangeLogEntityType
 {
     Asset,
     User,
-    Location
+    Location,
+    Ticket
 }

@@ -1,6 +1,7 @@
 using MediatR;
 using Tems.Common.Tenant;
 using TicketManagement.Application.Domain;
+using TicketManagement.Application.Helpers;
 using TicketManagement.Application.Interfaces;
 using TicketManagement.Contract.Commands.TicketTypes;
 using TicketManagement.Contract.Responses;
@@ -28,7 +29,7 @@ public class UpdateTicketTypeCommandHandler : IRequestHandler<UpdateTicketTypeCo
         existing.Description = request.Description;
         existing.ItilCategory = request.ItilCategory.ToUpper();
         existing.Version = request.Version;
-        existing.WorkflowConfig = new WorkflowConfig
+        existing.WorkflowConfig = TicketStateHelper.NormalizeWorkflowConfig(new WorkflowConfig
         {
             States = request.WorkflowConfig.States.Select(s => new WorkflowState
             {
@@ -39,7 +40,7 @@ public class UpdateTicketTypeCommandHandler : IRequestHandler<UpdateTicketTypeCo
                 AutomationHook = s.AutomationHook
             }).ToList(),
             InitialStateId = request.WorkflowConfig.InitialStateId
-        };
+        });
         existing.AttributeDefinitions = request.AttributeDefinitions.Select(a => new AttributeDefinition
         {
             Key = a.Key,

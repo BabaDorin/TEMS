@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogService } from 'src/app/services/dialog.service';
+import { ConfirmService } from 'src/app/confirm.service';
 import { TicketService } from 'src/app/services/ticket.service';
 import { TicketTypeService } from 'src/app/services/ticket-type.service';
 import { AuthService } from 'src/app/services/auth.service';
@@ -12,13 +13,15 @@ import { UserService } from 'src/app/services/user.service';
 import { Ticket, TicketMessage, AddMessageRequest, UpdateTicketRequest, ApprovalGate } from 'src/app/models/ticket/ticket.model';
 import { TicketType, WorkflowState } from 'src/app/models/ticket/ticket-type.model';
 import { UserDto } from 'src/app/models/user/user-management.model';
+import { CustomSelectComponent, SelectOption } from 'src/app/shared/custom-select/custom-select.component';
 import { ViewUserModalComponent } from '../../admin/user-management/view-user-modal/view-user-modal.component';
 import { ApprovalGateModalComponent } from '../approval-gate-modal/approval-gate-modal.component';
+import { TicketTimelineComponent } from '../ticket-timeline/ticket-timeline.component';
 
 @Component({
   selector: 'app-ticket-detail',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, CustomSelectComponent, TicketTimelineComponent],
   templateUrl: './ticket-detail.component.html',
   styleUrls: ['./ticket-detail.component.scss']
 })
@@ -33,10 +36,11 @@ export class TicketDetailComponent implements OnInit {
   isSavingStatus = false;
   summaryDraft = '';
   isSavingSummary = false;
+  deletingApprovalGateId: string | null = null;
   messages: TicketMessage[] = [];
   internalNotes: TicketMessage[] = [];
   newMessageContent = '';
-  activeMainTab: 'details' | 'chat' = 'details';
+  activeMainTab: 'details' | 'chat' | 'history' = 'details';
   activeChatTab: 'messages' | 'notes' = 'messages';
   isLoadingTicket = true;
   isLoadingMessages = false;
@@ -58,6 +62,7 @@ export class TicketDetailComponent implements OnInit {
     private router: Router,
     private location: Location,
     private dialogService: DialogService,
+    private confirmService: ConfirmService,
     private ticketService: TicketService,
     private ticketTypeService: TicketTypeService,
     private authService: AuthService,
@@ -143,8 +148,14 @@ export class TicketDetailComponent implements OnInit {
   getTicketStatusOptions(): { value: string; label: string }[] {
     const states = this.ticketType?.workflowConfig?.states || [];
     const options: { value: string; label: string; order: number }[] = [];
+    const seenValues = new Set<string>();
 
     const pushOption = (state: WorkflowState, label: string, order: number) => {
+      if (!state?.id || seenValues.has(state.id)) {
+        return;
+      }
+
+      seenValues.add(state.id);
       options.push({ value: state.id, label, order });
     };
 
@@ -153,22 +164,36 @@ export class TicketDetailComponent implements OnInit {
     const findState = (aliases: string[]) =>
       managedStates.find((state) => this.isMatchingManagedState(state, aliases)) || null;
 
-    const newState = findState(['new', 'open', 'state_new']);
+    const newState = findState(['new', 'open', 'state_new', 'state-new']);
     if (newState) pushOption(newState, 'New', 1);
 
-    const progressState = findState(['in-progress', 'in_progress', 'state_in_progress', 'state_wip', 'wip', 'progress']);
+    const progressState = findState([
+      'in-progress',
+      'in_progress',
+      'inprogress',
+      'state_in_progress',
+      'state-in-progress',
+      'state_wip',
+      'state-wip',
+      'wip',
+      'progress'
+    ]);
     if (progressState) pushOption(progressState, 'In progress', 2);
 
-    const closedState = findState(['closed', 'state_closed']);
+    const closedState = findState(['closed', 'state_closed', 'state-closed', 'done', 'resolved']);
     if (closedState) pushOption(closedState, 'Closed', 3);
 
-    if (options.length === 0) {
-      states.forEach((state, index) => pushOption(state, this.getHumanizedStateLabel(state.id || state.label), index + 1));
+    if (options.length < states.length) {
+      states.forEach((state, index) => pushOption(state, this.getHumanizedStateLabel(state.id || state.label), index + 10));
     }
 
     return options
       .sort((a, b) => a.order - b.order)
       .map(({ order, ...option }) => option);
+  }
+
+  get ticketStatusSelectOptions(): SelectOption[] {
+    return this.getTicketStatusOptions();
   }
 
   getTicketStatusLabel(stateId: string): string {
@@ -454,6 +479,29 @@ export class TicketDetailComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error reviewing approval gate:', error);
+      }
+    });
+  }
+
+  async deleteApprovalGate(gate: ApprovalGate): Promise<void> {
+    if (!this.ticket || !gate?.approvalGateId || this.deletingApprovalGateId) {
+      return;
+    }
+
+    const confirmed = await this.confirmService.confirm(`Remove approval gate "${gate.title}"?`);
+    if (!confirmed) {
+      return;
+    }
+
+    this.deletingApprovalGateId = gate.approvalGateId;
+    this.ticketService.deleteApprovalGate(this.ticket.ticketId, gate.approvalGateId).subscribe({
+      next: () => {
+        this.deletingApprovalGateId = null;
+        this.loadTicket(this.ticket!.ticketId);
+      },
+      error: (error) => {
+        console.error('Error deleting approval gate:', error);
+        this.deletingApprovalGateId = null;
       }
     });
   }

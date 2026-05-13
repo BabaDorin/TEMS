@@ -1,17 +1,25 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, OnDestroy, ViewChild, afterNextRender } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild, afterNextRender } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Subscription } from 'rxjs';
-import { AiSupportService } from 'src/app/services/ai-support.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Subject, Subscription, takeUntil } from 'rxjs';
+import {
+  AiSupportConversationDetail,
+  AiSupportConversationMessage,
+  AiSupportConversationSummary,
+  AiSupportService
+} from 'src/app/services/ai-support.service';
 
 type ChatRole = 'user' | 'assistant';
 type ChatState = 'done' | 'streaming';
+type AiSupportTab = 'chat' | 'history';
 
 interface ChatMessage {
   id: string;
   role: ChatRole;
   content: string;
   state: ChatState;
+  createdAt?: string;
 }
 
 @Component({
@@ -21,36 +29,80 @@ interface ChatMessage {
   templateUrl: './ai-support.component.html',
   styleUrls: ['./ai-support.component.scss']
 })
-export class AiSupportComponent implements OnDestroy {
+export class AiSupportComponent implements OnInit, OnDestroy {
   @ViewChild('conversationViewport') private conversationViewport?: ElementRef<HTMLDivElement>;
 
+  public activeTab: AiSupportTab = 'chat';
   public draftMessage = '';
   public isProcessing = false;
+  public isLoadingConversation = false;
+  public isLoadingConversations = false;
+  public isDeletingConversationId: string | null = null;
+  public activeConversationId: string | null = null;
+  public activeConversationTitle = 'New conversation';
+  public activeConversationCreatedAt: string | null = null;
+  public historyError: string | null = null;
+  public conversationError: string | null = null;
+  public conversations: AiSupportConversationSummary[] = [];
   public messages: ChatMessage[] = [this.createWelcomeMessage()];
 
   private activeStream?: Subscription;
+  private readonly destroy$ = new Subject<void>();
 
-  constructor(private aiSupportService: AiSupportService) {
+  constructor(
+    private aiSupportService: AiSupportService,
+    private route: ActivatedRoute,
+    private router: Router
+  ) {
     afterNextRender(() => this.scrollToBottom());
+  }
+
+  ngOnInit(): void {
+    this.loadConversationSummaries();
+
+    this.route.queryParamMap
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((params) => {
+        const conversationId = params.get('conversationId');
+
+        if (!conversationId) {
+          if (this.activeConversationId) {
+            this.resetComposerState();
+          }
+
+          return;
+        }
+
+        if (conversationId === this.activeConversationId && this.messages.length > 1) {
+          return;
+        }
+
+        this.openConversation(conversationId, false);
+      });
   }
 
   ngOnDestroy(): void {
     this.activeStream?.unsubscribe();
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   sendMessage(): void {
     const message = this.draftMessage.trim();
-    if (!message || this.isProcessing) {
+    if (!message || this.isProcessing || this.isLoadingConversation) {
       return;
     }
 
+    this.conversationError = null;
+    this.activeTab = 'chat';
     this.messages = [
       ...this.messages,
       {
         id: this.createId(),
         role: 'user',
         content: message,
-        state: 'done'
+        state: 'done',
+        createdAt: new Date().toISOString()
       },
       {
         id: this.createId(),
@@ -68,57 +120,148 @@ export class AiSupportComponent implements OnDestroy {
     let accumulatedResponse = '';
 
     this.activeStream?.unsubscribe();
-    this.activeStream = this.aiSupportService.streamResponse(message).subscribe({
-      next: (event) => {
-        if (event.type === 'delta') {
-          accumulatedResponse += event.content;
-          this.patchMessage(assistantMessageId, {
-            content: accumulatedResponse,
-            state: 'streaming'
-          });
-          this.scrollToBottom();
-          return;
-        }
+    this.activeStream = this.aiSupportService
+      .streamResponse(message, this.activeConversationId)
+      .subscribe({
+        next: (event) => {
+          if (event.type === 'conversation') {
+            this.applyConversationSummary(event.conversation, true);
+            return;
+          }
 
-        if (event.type === 'done') {
+          if (event.type === 'delta') {
+            accumulatedResponse += event.content;
+            this.patchMessage(assistantMessageId, {
+              content: accumulatedResponse,
+              state: 'streaming'
+            });
+            this.scrollToBottom();
+            return;
+          }
+
+          if (event.type === 'done') {
+            this.patchMessage(assistantMessageId, {
+              content: event.content || accumulatedResponse,
+              state: 'done',
+              createdAt: new Date().toISOString()
+            });
+
+            if (event.conversation) {
+              this.applyConversationSummary(event.conversation, true);
+            } else {
+              this.loadConversationSummaries(false);
+            }
+
+            this.isProcessing = false;
+            this.scrollToBottom();
+            return;
+          }
+
+          if (event.type === 'error') {
+            this.patchMessage(assistantMessageId, {
+              content: event.content,
+              state: 'done',
+              createdAt: new Date().toISOString()
+            });
+            this.isProcessing = false;
+            this.conversationError = event.content;
+            this.loadConversationSummaries(false);
+            this.scrollToBottom();
+          }
+        },
+        error: () => {
+          const fallbackMessage = 'Sorry, I could not reach the AI support backend right now. Please try again in a moment.';
           this.patchMessage(assistantMessageId, {
-            content: event.content || accumulatedResponse,
-            state: 'done'
+            content: fallbackMessage,
+            state: 'done',
+            createdAt: new Date().toISOString()
           });
           this.isProcessing = false;
+          this.conversationError = fallbackMessage;
+          this.loadConversationSummaries(false);
           this.scrollToBottom();
-          return;
-        }
-
-        if (event.type === 'error') {
-          this.patchMessage(assistantMessageId, {
-            content: event.content,
-            state: 'done'
-          });
+        },
+        complete: () => {
           this.isProcessing = false;
-          this.scrollToBottom();
         }
+      });
+  }
+
+  setActiveTab(tab: AiSupportTab): void {
+    this.activeTab = tab;
+
+    if (tab === 'history' && !this.conversations.length && !this.isLoadingConversations) {
+      this.loadConversationSummaries();
+    }
+  }
+
+  startNewChat(): void {
+    if (this.isProcessing) {
+      return;
+    }
+
+    this.resetComposerState();
+    this.syncRouteConversationId(null);
+  }
+
+  openConversation(conversationId: string, syncRoute = true): void {
+    if (!conversationId || this.isProcessing || this.isDeletingConversationId === conversationId) {
+      return;
+    }
+
+    this.isLoadingConversation = true;
+    this.conversationError = null;
+    this.activeTab = 'chat';
+
+    this.aiSupportService.getConversation(conversationId).subscribe({
+      next: (conversation) => {
+        this.isLoadingConversation = false;
+        this.applyConversationDetail(conversation, syncRoute);
       },
       error: () => {
-        this.patchMessage(assistantMessageId, {
-          content: 'Sorry, I could not reach the AI support backend right now. Please try again in a moment.',
-          state: 'done'
-        });
-        this.isProcessing = false;
-        this.scrollToBottom();
-      },
-      complete: () => {
-        this.isProcessing = false;
+        this.isLoadingConversation = false;
+        this.conversationError = 'That conversation could not be loaded. It may have been removed.';
+
+        if (this.activeConversationId === conversationId) {
+          this.resetComposerState();
+        }
+
+        this.loadConversationSummaries(false);
+
+        if (syncRoute) {
+          this.syncRouteConversationId(null);
+        }
       }
     });
   }
 
-  clearConversation(): void {
-    this.activeStream?.unsubscribe();
-    this.isProcessing = false;
-    this.draftMessage = '';
-    this.messages = [this.createWelcomeMessage()];
-    this.scrollToBottom();
+  deleteConversation(conversation: AiSupportConversationSummary, event?: Event): void {
+    event?.stopPropagation();
+
+    if (this.isProcessing || this.isDeletingConversationId === conversation.conversationId) {
+      return;
+    }
+
+    if (!confirm(`Delete "${conversation.title}"? This will permanently remove the saved conversation.`)) {
+      return;
+    }
+
+    this.isDeletingConversationId = conversation.conversationId;
+    this.aiSupportService.deleteConversation(conversation.conversationId).subscribe({
+      next: () => {
+        this.isDeletingConversationId = null;
+        this.conversations = this.conversations.filter(item => item.conversationId !== conversation.conversationId);
+
+        if (this.activeConversationId === conversation.conversationId) {
+          this.resetComposerState();
+          this.syncRouteConversationId(null);
+        }
+      },
+      error: () => {
+        this.isDeletingConversationId = null;
+        this.historyError = 'The conversation could not be deleted right now.';
+      }
+    });
   }
 
   onComposerKeydown(event: KeyboardEvent): void {
@@ -130,6 +273,29 @@ export class AiSupportComponent implements OnDestroy {
 
   trackByMessageId(_: number, message: ChatMessage): string {
     return message.id;
+  }
+
+  trackByConversationId(_: number, conversation: AiSupportConversationSummary): string {
+    return conversation.conversationId;
+  }
+
+  formatConversationDate(value: string | null | undefined): string {
+    if (!value) {
+      return 'Unknown date';
+    }
+
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) {
+      return 'Unknown date';
+    }
+
+    return new Intl.DateTimeFormat('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+      hour: 'numeric',
+      minute: '2-digit'
+    }).format(date);
   }
 
   renderMarkdown(text: string): string {
@@ -230,10 +396,107 @@ export class AiSupportComponent implements OnDestroy {
     return blocks.join('');
   }
 
+  loadConversationSummaries(showLoading = true): void {
+    if (showLoading) {
+      this.isLoadingConversations = true;
+    }
+
+    this.historyError = null;
+    this.aiSupportService.getConversations().subscribe({
+      next: (conversations) => {
+        this.isLoadingConversations = false;
+        this.conversations = conversations;
+
+        if (this.activeConversationId && !conversations.some(item => item.conversationId === this.activeConversationId)) {
+          this.resetComposerState();
+          this.syncRouteConversationId(null);
+        }
+      },
+      error: () => {
+        this.isLoadingConversations = false;
+        this.historyError = 'Previous conversations could not be loaded right now.';
+      }
+    });
+  }
+
+  private applyConversationDetail(conversation: AiSupportConversationDetail, syncRoute: boolean): void {
+    this.activeConversationId = conversation.conversationId;
+    this.activeConversationTitle = conversation.title || 'Conversation';
+    this.activeConversationCreatedAt = conversation.createdAt;
+    this.messages = conversation.messages.length
+      ? conversation.messages.map(message => this.toChatMessage(message))
+      : [this.createWelcomeMessage()];
+
+    this.mergeConversationSummary(conversation);
+
+    if (syncRoute) {
+      this.syncRouteConversationId(conversation.conversationId);
+    }
+
+    this.scrollToBottom();
+  }
+
+  private applyConversationSummary(conversation: AiSupportConversationSummary, syncRoute: boolean): void {
+    this.activeConversationId = conversation.conversationId;
+    this.activeConversationTitle = conversation.title || 'Conversation';
+    this.activeConversationCreatedAt = conversation.createdAt;
+    this.mergeConversationSummary(conversation);
+
+    if (syncRoute) {
+      this.syncRouteConversationId(conversation.conversationId);
+    }
+  }
+
+  private mergeConversationSummary(conversation: AiSupportConversationSummary): void {
+    const next = [...this.conversations];
+    const existingIndex = next.findIndex(item => item.conversationId === conversation.conversationId);
+
+    if (existingIndex >= 0) {
+      next.splice(existingIndex, 1);
+    }
+
+    next.unshift(conversation);
+    this.conversations = next;
+  }
+
+  private resetComposerState(): void {
+    this.activeStream?.unsubscribe();
+    this.isProcessing = false;
+    this.isLoadingConversation = false;
+    this.draftMessage = '';
+    this.conversationError = null;
+    this.activeConversationId = null;
+    this.activeConversationTitle = 'New conversation';
+    this.activeConversationCreatedAt = null;
+    this.messages = [this.createWelcomeMessage()];
+    this.scrollToBottom();
+  }
+
   private patchMessage(messageId: string, patch: Partial<ChatMessage>): void {
     this.messages = this.messages.map((message) =>
       message.id === messageId ? { ...message, ...patch } : message
     );
+  }
+
+  private toChatMessage(message: AiSupportConversationMessage): ChatMessage {
+    return {
+      id: message.messageId,
+      role: message.role,
+      content: message.content,
+      state: 'done',
+      createdAt: message.createdAt
+    };
+  }
+
+  private syncRouteConversationId(conversationId: string | null): void {
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: {
+        conversationId: conversationId || null
+      },
+      queryParamsHandling: 'merge',
+      replaceUrl: true
+    });
   }
 
   private escapeHtml(value: string): string {
@@ -262,10 +525,6 @@ export class AiSupportComponent implements OnDestroy {
     }, 0);
   }
 
-  private createId(): string {
-    return globalThis.crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(16).slice(2)}`;
-  }
-
   private createWelcomeMessage(): ChatMessage {
     return {
       id: this.createId(),
@@ -273,5 +532,9 @@ export class AiSupportComponent implements OnDestroy {
       content: "Hey, I'm your AI IT agent. Ask me anything about equipment management or technical support, and I’ll help you troubleshoot or point you in the right direction.",
       state: 'done'
     };
+  }
+
+  private createId(): string {
+    return globalThis.crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(16).slice(2)}`;
   }
 }

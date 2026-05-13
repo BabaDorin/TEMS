@@ -1,6 +1,7 @@
 using ChangeLog.Application.Domain;
 using ChangeLog.Application.Domain.AssetLogs;
 using ChangeLog.Application.Domain.LocationLogs;
+using ChangeLog.Application.Domain.TicketLogs;
 using ChangeLog.Application.Domain.UserLogs;
 using ChangeLog.Contract.Enums;
 using ChangeLog.Infrastructure.Entities;
@@ -284,6 +285,241 @@ public static class UserChangeLogMapper
                 Id = e.Id, TenantId = e.TenantId, Action = action, Description = e.Description,
                 Timestamp = e.Timestamp, PerformedByUserId = e.PerformedByUserId, PerformedByUserName = e.PerformedByUserName,
                 TargetUserId = e.TargetUserId, UserName = e.UserName, AssetId = e.AssetId, AssetTag = e.AssetTag, Reason = e.Reason
+            },
+            _ => throw new InvalidOperationException($"Unknown entity type: {entity.GetType().Name}")
+        };
+    }
+}
+
+public static class TicketChangeLogMapper
+{
+    public static TicketChangeLogEntity ToDatabase(this ChangeLogEntry entry)
+    {
+        return entry switch
+        {
+            TicketCreatedLog e => new TicketCreatedLogEntity
+            {
+                Id = e.Id,
+                TenantId = e.TenantId,
+                Action = e.Action.ToString(),
+                Description = e.Description,
+                Timestamp = e.Timestamp,
+                PerformedByUserId = e.PerformedByUserId,
+                PerformedByUserName = e.PerformedByUserName,
+                TicketId = e.TicketId,
+                HumanReadableId = e.HumanReadableId,
+                Title = e.Title,
+                Summary = e.Summary,
+                Status = e.Status
+            },
+            TicketUpdatedLog e => new TicketUpdatedLogEntity
+            {
+                Id = e.Id,
+                TenantId = e.TenantId,
+                Action = e.Action.ToString(),
+                Description = e.Description,
+                Timestamp = e.Timestamp,
+                PerformedByUserId = e.PerformedByUserId,
+                PerformedByUserName = e.PerformedByUserName,
+                TicketId = e.TicketId,
+                HumanReadableId = e.HumanReadableId,
+                Changes = e.Changes.Select(c => new FieldChangeEntity
+                {
+                    FieldName = c.FieldName,
+                    OldValue = c.OldValue,
+                    NewValue = c.NewValue
+                }).ToList()
+            },
+            TicketApprovalGateAddedLog e => new TicketApprovalGateAddedLogEntity
+            {
+                Id = e.Id,
+                TenantId = e.TenantId,
+                Action = e.Action.ToString(),
+                Description = e.Description,
+                Timestamp = e.Timestamp,
+                PerformedByUserId = e.PerformedByUserId,
+                PerformedByUserName = e.PerformedByUserName,
+                TicketId = e.TicketId,
+                HumanReadableId = e.HumanReadableId,
+                ApprovalGateId = e.ApprovalGateId,
+                GateTitle = e.GateTitle,
+                Justification = e.Justification,
+                AllApproversRequired = e.AllApproversRequired,
+                Approvers = e.Approvers.Select(a => new TicketApprovalGateApproverInfoEntity
+                {
+                    UserId = a.UserId,
+                    Name = a.Name
+                }).ToList()
+            },
+            TicketApprovalGateRemovedLog e => new TicketApprovalGateRemovedLogEntity
+            {
+                Id = e.Id,
+                TenantId = e.TenantId,
+                Action = e.Action.ToString(),
+                Description = e.Description,
+                Timestamp = e.Timestamp,
+                PerformedByUserId = e.PerformedByUserId,
+                PerformedByUserName = e.PerformedByUserName,
+                TicketId = e.TicketId,
+                HumanReadableId = e.HumanReadableId,
+                ApprovalGateId = e.ApprovalGateId,
+                GateTitle = e.GateTitle,
+                Justification = e.Justification,
+                AllApproversRequired = e.AllApproversRequired,
+                Approvers = e.Approvers.Select(a => new TicketApprovalGateApproverInfoEntity
+                {
+                    UserId = a.UserId,
+                    Name = a.Name
+                }).ToList()
+            },
+            TicketStatusUpdatedLog e => new TicketStatusUpdatedLogEntity
+            {
+                Id = e.Id,
+                TenantId = e.TenantId,
+                Action = e.Action.ToString(),
+                Description = e.Description,
+                Timestamp = e.Timestamp,
+                PerformedByUserId = e.PerformedByUserId,
+                PerformedByUserName = e.PerformedByUserName,
+                TicketId = e.TicketId,
+                HumanReadableId = e.HumanReadableId,
+                PreviousStatus = e.PreviousStatus,
+                NewStatus = e.NewStatus
+            },
+            TicketApprovalGateReviewedLog e => new TicketApprovalGateReviewedLogEntity
+            {
+                Id = e.Id,
+                TenantId = e.TenantId,
+                Action = e.Action.ToString(),
+                Description = e.Description,
+                Timestamp = e.Timestamp,
+                PerformedByUserId = e.PerformedByUserId,
+                PerformedByUserName = e.PerformedByUserName,
+                TicketId = e.TicketId,
+                HumanReadableId = e.HumanReadableId,
+                ApprovalGateId = e.ApprovalGateId,
+                GateTitle = e.GateTitle,
+                ReviewStatus = e.ReviewStatus,
+                GateState = e.GateState,
+                ApproverUserId = e.ApproverUserId,
+                ApproverName = e.ApproverName
+            },
+            _ => throw new InvalidOperationException($"Unknown ticket log type: {entry.GetType().Name}")
+        };
+    }
+
+    public static ChangeLogEntry ToDomain(this TicketChangeLogEntity entity)
+    {
+        var action = Enum.Parse<ChangeLogAction>(entity.Action);
+
+        return entity switch
+        {
+            TicketCreatedLogEntity e => new TicketCreatedLog
+            {
+                Id = e.Id,
+                TenantId = e.TenantId,
+                Action = action,
+                Description = e.Description,
+                Timestamp = e.Timestamp,
+                PerformedByUserId = e.PerformedByUserId,
+                PerformedByUserName = e.PerformedByUserName,
+                TicketId = e.TicketId,
+                HumanReadableId = e.HumanReadableId,
+                Title = e.Title,
+                Summary = e.Summary,
+                Status = e.Status
+            },
+            TicketUpdatedLogEntity e => new TicketUpdatedLog
+            {
+                Id = e.Id,
+                TenantId = e.TenantId,
+                Action = action,
+                Description = e.Description,
+                Timestamp = e.Timestamp,
+                PerformedByUserId = e.PerformedByUserId,
+                PerformedByUserName = e.PerformedByUserName,
+                TicketId = e.TicketId,
+                HumanReadableId = e.HumanReadableId,
+                Changes = e.Changes.Select(c => new FieldChange
+                {
+                    FieldName = c.FieldName,
+                    OldValue = c.OldValue,
+                    NewValue = c.NewValue
+                }).ToList()
+            },
+            TicketApprovalGateAddedLogEntity e => new TicketApprovalGateAddedLog
+            {
+                Id = e.Id,
+                TenantId = e.TenantId,
+                Action = action,
+                Description = e.Description,
+                Timestamp = e.Timestamp,
+                PerformedByUserId = e.PerformedByUserId,
+                PerformedByUserName = e.PerformedByUserName,
+                TicketId = e.TicketId,
+                HumanReadableId = e.HumanReadableId,
+                ApprovalGateId = e.ApprovalGateId,
+                GateTitle = e.GateTitle,
+                Justification = e.Justification,
+                AllApproversRequired = e.AllApproversRequired,
+                Approvers = e.Approvers.Select(a => new TicketApprovalGateApproverInfo
+                {
+                    UserId = a.UserId,
+                    Name = a.Name
+                }).ToList()
+            },
+            TicketApprovalGateRemovedLogEntity e => new TicketApprovalGateRemovedLog
+            {
+                Id = e.Id,
+                TenantId = e.TenantId,
+                Action = action,
+                Description = e.Description,
+                Timestamp = e.Timestamp,
+                PerformedByUserId = e.PerformedByUserId,
+                PerformedByUserName = e.PerformedByUserName,
+                TicketId = e.TicketId,
+                HumanReadableId = e.HumanReadableId,
+                ApprovalGateId = e.ApprovalGateId,
+                GateTitle = e.GateTitle,
+                Justification = e.Justification,
+                AllApproversRequired = e.AllApproversRequired,
+                Approvers = e.Approvers.Select(a => new TicketApprovalGateApproverInfo
+                {
+                    UserId = a.UserId,
+                    Name = a.Name
+                }).ToList()
+            },
+            TicketStatusUpdatedLogEntity e => new TicketStatusUpdatedLog
+            {
+                Id = e.Id,
+                TenantId = e.TenantId,
+                Action = action,
+                Description = e.Description,
+                Timestamp = e.Timestamp,
+                PerformedByUserId = e.PerformedByUserId,
+                PerformedByUserName = e.PerformedByUserName,
+                TicketId = e.TicketId,
+                HumanReadableId = e.HumanReadableId,
+                PreviousStatus = e.PreviousStatus,
+                NewStatus = e.NewStatus
+            },
+            TicketApprovalGateReviewedLogEntity e => new TicketApprovalGateReviewedLog
+            {
+                Id = e.Id,
+                TenantId = e.TenantId,
+                Action = action,
+                Description = e.Description,
+                Timestamp = e.Timestamp,
+                PerformedByUserId = e.PerformedByUserId,
+                PerformedByUserName = e.PerformedByUserName,
+                TicketId = e.TicketId,
+                HumanReadableId = e.HumanReadableId,
+                ApprovalGateId = e.ApprovalGateId,
+                GateTitle = e.GateTitle,
+                ReviewStatus = e.ReviewStatus,
+                GateState = e.GateState,
+                ApproverUserId = e.ApproverUserId,
+                ApproverName = e.ApproverName
             },
             _ => throw new InvalidOperationException($"Unknown entity type: {entity.GetType().Name}")
         };

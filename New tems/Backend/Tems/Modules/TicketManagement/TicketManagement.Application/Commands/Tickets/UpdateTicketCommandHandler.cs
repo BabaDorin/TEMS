@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using System.Text.Json;
 using TicketManagement.Application.Helpers;
 using TicketManagement.Application.Interfaces;
+using TicketManagement.Application.Services;
 using TicketManagement.Contract.Commands.Tickets;
 using TicketManagement.Contract.Responses;
 using UserManagement.Infrastructure.Repositories;
@@ -17,19 +18,22 @@ public class UpdateTicketCommandHandler : IRequestHandler<UpdateTicketCommand, U
     private readonly ITenantContext _tenantContext;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IUserRepository _userRepository;
+    private readonly TicketHistoryLogService _ticketHistoryLogService;
 
     public UpdateTicketCommandHandler(
         ITicketRepository repository,
         ITicketTypeRepository ticketTypeRepository,
         ITenantContext tenantContext,
         IHttpContextAccessor httpContextAccessor,
-        IUserRepository userRepository)
+        IUserRepository userRepository,
+        TicketHistoryLogService ticketHistoryLogService)
     {
         _repository = repository;
         _ticketTypeRepository = ticketTypeRepository;
         _tenantContext = tenantContext;
         _httpContextAccessor = httpContextAccessor;
         _userRepository = userRepository;
+        _ticketHistoryLogService = ticketHistoryLogService;
     }
 
     public async Task<UpdateTicketResponse> Handle(UpdateTicketCommand request, CancellationToken cancellationToken)
@@ -49,11 +53,15 @@ public class UpdateTicketCommandHandler : IRequestHandler<UpdateTicketCommand, U
         var isManager = ApprovalGateHelper.IsManager(currentUser);
         var isAuthor = ApprovalGateHelper.MatchesCurrentUser(existing.Reporter.UserId, currentUserIdentifiers);
 
-        var resolvedStateId = TicketStateHelper.ResolveManagedStatusId(ticketType.WorkflowConfig.States, request.CurrentStateId);
+        var workflowConfig = TicketStateHelper.NormalizeWorkflowConfig(ticketType.WorkflowConfig);
+        var resolvedStateId = TicketStateHelper.ResolveManagedStatusId(workflowConfig.States, request.CurrentStateId);
         if (resolvedStateId == null)
         {
             throw new InvalidOperationException($"Status '{request.CurrentStateId}' is not allowed for this ticket type");
         }
+
+        var original = CloneTicket(existing);
+        var previousStatus = existing.CurrentStateId;
 
         if (!string.Equals(existing.Summary, request.Summary, StringComparison.Ordinal))
         {
@@ -91,7 +99,64 @@ public class UpdateTicketCommandHandler : IRequestHandler<UpdateTicketCommand, U
         existing.UpdatedAt = DateTime.UtcNow;
 
         var success = await _repository.UpdateAsync(existing, cancellationToken);
+        if (success)
+        {
+            var updateChanges = await _ticketHistoryLogService.BuildTicketUpdateChangesAsync(original, existing, cancellationToken);
+            if (updateChanges.Count > 0)
+            {
+                await _ticketHistoryLogService.LogUpdatedAsync(existing, updateChanges, cancellationToken: cancellationToken);
+            }
+
+            if (!string.Equals(previousStatus, existing.CurrentStateId, StringComparison.OrdinalIgnoreCase))
+            {
+                await _ticketHistoryLogService.LogStatusChangedAsync(existing, previousStatus, existing.CurrentStateId, cancellationToken);
+            }
+        }
 
         return new UpdateTicketResponse(success);
+    }
+
+    private static Domain.Ticket CloneTicket(Domain.Ticket ticket)
+    {
+        return new Domain.Ticket
+        {
+            TicketId = ticket.TicketId,
+            TenantId = ticket.TenantId,
+            TicketTypeId = ticket.TicketTypeId,
+            HumanReadableId = ticket.HumanReadableId,
+            Title = ticket.Title,
+            Summary = ticket.Summary,
+            AiSummary = ticket.AiSummary,
+            CurrentStateId = ticket.CurrentStateId,
+            Priority = ticket.Priority,
+            Reporter = new Domain.Reporter
+            {
+                UserId = ticket.Reporter.UserId,
+                ChannelSource = ticket.Reporter.ChannelSource,
+                ChannelThreadId = ticket.Reporter.ChannelThreadId
+            },
+            AssigneeId = ticket.AssigneeId,
+            Attributes = new Dictionary<string, object>(ticket.Attributes),
+            ApprovalGates = ticket.ApprovalGates
+                .Select(gate => new Domain.ApprovalGate
+                {
+                    ApprovalGateId = gate.ApprovalGateId,
+                    Title = gate.Title,
+                    Justification = gate.Justification,
+                    State = gate.State,
+                    AllApproversRequired = gate.AllApproversRequired,
+                    Approvers = gate.Approvers.Select(approver => new Domain.ApprovalGateApprover
+                    {
+                        UserId = approver.UserId,
+                        Status = approver.Status,
+                        ReviewedAt = approver.ReviewedAt
+                    }).ToList(),
+                    CreatedAt = gate.CreatedAt,
+                    UpdatedAt = gate.UpdatedAt
+                }).ToList(),
+            CreatedAt = ticket.CreatedAt,
+            UpdatedAt = ticket.UpdatedAt,
+            ResolvedAt = ticket.ResolvedAt
+        };
     }
 }

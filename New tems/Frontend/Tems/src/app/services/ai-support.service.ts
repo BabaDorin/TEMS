@@ -1,12 +1,33 @@
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { Observable } from 'rxjs';
 import { API_AI_SUPPORT_URL } from '../models/backend.config';
 
-export interface AiSupportStreamEvent {
-  type: 'delta' | 'done' | 'error';
-  content: string;
+export interface AiSupportConversationSummary {
+  conversationId: string;
+  title: string;
+  createdAt: string;
+  updatedAt: string;
+  messageCount: number;
 }
+
+export interface AiSupportConversationMessage {
+  messageId: string;
+  role: 'user' | 'assistant';
+  content: string;
+  createdAt: string;
+}
+
+export interface AiSupportConversationDetail extends AiSupportConversationSummary {
+  messages: AiSupportConversationMessage[];
+}
+
+export type AiSupportStreamEvent =
+  | { type: 'conversation'; conversation: AiSupportConversationSummary }
+  | { type: 'delta'; content: string }
+  | { type: 'done'; content: string; conversation?: AiSupportConversationSummary }
+  | { type: 'error'; content: string };
 
 interface ParsedSseEvent {
   event: string;
@@ -18,10 +39,30 @@ interface ParsedSseEvent {
 })
 export class AiSupportService {
   private readonly requestTimeoutMs = 30 * 60 * 1000;
+  private readonly httpOptions = {
+    headers: new HttpHeaders({
+      'X-Tenant-Id': 'default'
+    })
+  };
 
-  constructor(private oauthService: OAuthService) {}
+  constructor(
+    private oauthService: OAuthService,
+    private http: HttpClient
+  ) {}
 
-  streamResponse(message: string): Observable<AiSupportStreamEvent> {
+  getConversations(): Observable<AiSupportConversationSummary[]> {
+    return this.http.get<AiSupportConversationSummary[]>(`${API_AI_SUPPORT_URL}/conversations`, this.httpOptions);
+  }
+
+  getConversation(conversationId: string): Observable<AiSupportConversationDetail> {
+    return this.http.get<AiSupportConversationDetail>(`${API_AI_SUPPORT_URL}/conversations/${conversationId}`, this.httpOptions);
+  }
+
+  deleteConversation(conversationId: string): Observable<void> {
+    return this.http.delete<void>(`${API_AI_SUPPORT_URL}/conversations/${conversationId}`, this.httpOptions);
+  }
+
+  streamResponse(message: string, conversationId?: string | null): Observable<AiSupportStreamEvent> {
     return new Observable<AiSupportStreamEvent>((observer) => {
       const controller = new AbortController();
       const timeoutId = window.setTimeout(() => controller.abort(), this.requestTimeoutMs);
@@ -29,7 +70,8 @@ export class AiSupportService {
       const token = this.oauthService.getAccessToken();
       const headers: Record<string, string> = {
         'Content-Type': 'application/json; charset=utf-8',
-        Accept: 'text/event-stream'
+        Accept: 'text/event-stream',
+        'X-Tenant-Id': 'default'
       };
 
       if (token) {
@@ -39,7 +81,10 @@ export class AiSupportService {
       fetch(`${API_AI_SUPPORT_URL}/chat/stream`, {
         method: 'POST',
         headers,
-        body: JSON.stringify({ message }),
+        body: JSON.stringify({
+          message,
+          conversationId: conversationId ?? null
+        }),
         signal: controller.signal
       })
         .then(async (response) => {
@@ -71,14 +116,20 @@ export class AiSupportService {
 
               const parsedEvent = this.parseEvent(rawEvent);
               if (parsedEvent) {
-                if (parsedEvent.event === 'delta' && typeof parsedEvent.data === 'object') {
+                if (parsedEvent.event === 'conversation' && typeof parsedEvent.data === 'object') {
+                  observer.next({
+                    type: 'conversation',
+                    conversation: this.toConversationSummary(parsedEvent.data)
+                  });
+                } else if (parsedEvent.event === 'delta' && typeof parsedEvent.data === 'object') {
                   const chunk = String(parsedEvent.data['chunk'] ?? '');
                   if (chunk) {
                     observer.next({ type: 'delta', content: chunk });
                   }
                 } else if (parsedEvent.event === 'done' && typeof parsedEvent.data === 'object') {
                   const content = String(parsedEvent.data['content'] ?? '');
-                  observer.next({ type: 'done', content });
+                  const conversation = this.tryReadConversation(parsedEvent.data['conversation']);
+                  observer.next({ type: 'done', content, conversation });
                   completed = true;
                   observer.complete();
                   controller.abort();
@@ -152,5 +203,23 @@ export class AiSupportService {
     } catch {
       return { event, data: dataString };
     }
+  }
+
+  private tryReadConversation(value: unknown): AiSupportConversationSummary | undefined {
+    if (!value || typeof value !== 'object') {
+      return undefined;
+    }
+
+    return this.toConversationSummary(value as Record<string, unknown>);
+  }
+
+  private toConversationSummary(value: Record<string, unknown>): AiSupportConversationSummary {
+    return {
+      conversationId: String(value['conversationId'] ?? ''),
+      title: String(value['title'] ?? 'Conversation'),
+      createdAt: String(value['createdAt'] ?? ''),
+      updatedAt: String(value['updatedAt'] ?? ''),
+      messageCount: Number(value['messageCount'] ?? 0)
+    };
   }
 }

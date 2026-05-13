@@ -7,6 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\ChangeLog\ChangeLog.Contract\ChangeLog.Contract.csproj" />
       <PackageReference Include="MediatR" Version="13.1.0" />
     </ItemGroup>
 

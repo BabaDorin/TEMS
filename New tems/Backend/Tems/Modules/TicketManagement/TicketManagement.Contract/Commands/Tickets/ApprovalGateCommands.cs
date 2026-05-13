@@ -1,4 +1,5 @@
 using MediatR;
+using ChangeLog.Contract.Queries;
 using TicketManagement.Contract.Responses;
 
 namespace TicketManagement.Contract.Commands.Tickets;
@@ -25,5 +26,16 @@ public record ReviewApprovalGateCommand(
     string ApprovalGateId,
     string Status
 ) : IRequest<ReviewApprovalGateResponse>;
+
+public record DeleteApprovalGateCommand(
+    string TicketId,
+    string ApprovalGateId
+) : IRequest<UpdateApprovalGateResponse>;
+
+public record GetTicketHistoryQuery(
+    string TicketId,
+    int PageNumber = 1,
+    int PageSize = 50
+) : IRequest<GetEntityTimelineResponse>;
 
 public record GetTicketsForApprovalCommand() : IRequest<GetAllTicketsResponse>;

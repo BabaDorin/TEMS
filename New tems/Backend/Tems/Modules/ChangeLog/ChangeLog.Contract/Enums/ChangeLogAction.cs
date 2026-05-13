@@ -23,5 +23,12 @@ public enum ChangeLogAction
     LocationUpdated,
     LocationDeleted,
     LocationAssetAssigned,
-    LocationAssetUnassigned
+    LocationAssetUnassigned,
+
+    TicketCreated,
+    TicketUpdated,
+    TicketApprovalGateAdded,
+    TicketApprovalGateRemoved,
+    TicketStatusUpdated,
+    TicketApprovalGateReviewed
 }

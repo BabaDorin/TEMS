@@ -7,19 +7,7 @@
           <h1 class="text-2xl font-semibold text-gray-900 dark:text-white mt-3 mb-0">AI Chat Support</h1>
           <p class="text-sm text-gray-600 dark:text-gray-400 mt-1 mb-0 max-w-3xl">
             Ask about equipment, tickets, troubleshooting, inventory, or anything else related to technical support.
-            The assistant stays focused on TEMS-related topics and responds directly in this conversation.
           </p>
-        </div>
-
-        <div class="flex items-start">
-          <button
-            type="button"
-            (click)="clearConversation()"
-            [disabled]="isProcessing"
-            class="px-3 py-1.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg transition flex items-center gap-1.5 border border-gray-300 dark:border-[#48484a] disabled:opacity-50 disabled:cursor-not-allowed">
-            <i class="mdi mdi-refresh text-base"></i>
-            <span>New Chat</span>
-          </button>
         </div>
       </div>
     </div>
@@ -28,81 +16,214 @@
       <nav class="flex px-4 overflow-x-auto border-b border-gray-200 dark:border-[#38383a]">
         <button
           type="button"
-          class="px-4 py-3 border-b-2 border-[#007aff] dark:border-[#0a84ff] text-[#007aff] dark:text-[#0a84ff] font-medium text-sm whitespace-nowrap">
-          Conversation
+          (click)="setActiveTab('chat')"
+          [class.border-[#007aff]]="activeTab === 'chat'"
+          [class.dark:border-[#0a84ff]]="activeTab === 'chat'"
+          [class.text-[#007aff]]="activeTab === 'chat'"
+          [class.dark:text-[#0a84ff]]="activeTab === 'chat'"
+          [class.border-transparent]="activeTab !== 'chat'"
+          [class.text-gray-500]="activeTab !== 'chat'"
+          class="px-4 py-3 border-b-2 font-medium text-sm hover:text-[#007aff] transition whitespace-nowrap">
+          Chat
+        </button>
+        <button
+          type="button"
+          (click)="setActiveTab('history')"
+          [class.border-[#007aff]]="activeTab === 'history'"
+          [class.dark:border-[#0a84ff]]="activeTab === 'history'"
+          [class.text-[#007aff]]="activeTab === 'history'"
+          [class.dark:text-[#0a84ff]]="activeTab === 'history'"
+          [class.border-transparent]="activeTab !== 'history'"
+          [class.text-gray-500]="activeTab !== 'history'"
+          class="px-4 py-3 border-b-2 font-medium text-sm hover:text-[#007aff] transition whitespace-nowrap">
+          Old Conversations
         </button>
       </nav>
 
       <div class="p-6">
-        <section class="rounded-xl border border-gray-200 dark:border-[#48484a] bg-white dark:bg-[#3a3a3c] overflow-hidden">
-          <div class="px-4 py-3 border-b border-gray-200 dark:border-[#48484a] bg-gray-50 dark:bg-[#1c1c1e] flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <div class="flex items-center gap-3 min-w-0">
-              <div class="message-avatar" aria-hidden="true">
-                <i class="mdi mdi-chat-outline"></i>
-              </div>
-              <div class="min-w-0">
-                <h2 class="text-sm font-medium text-gray-900 dark:text-white leading-tight m-0">Live assistant conversation</h2>
-                <p class="text-xs text-gray-500 dark:text-gray-400 leading-tight m-0">Answers stay within technical support and equipment management.</p>
-              </div>
-            </div>
-
-            <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-white/10 text-gray-700 dark:text-gray-300 self-start sm:self-auto">
-              <span class="h-2 w-2 rounded-full bg-emerald-500"></span>
-              {{ isProcessing ? 'Responding' : 'Online' }}
-            </div>
-          </div>
-
-          <div class="chat-history" #conversationViewport>
-            <div
-              *ngFor="let message of messages; trackBy: trackByMessageId"
-              class="message-row"
-              [class.user-row]="message.role === 'user'"
-              [class.assistant-row]="message.role === 'assistant'">
-              <div class="message-avatar">
-                <i [class]="message.role === 'user' ? 'mdi mdi-account-outline' : 'mdi mdi-lifebuoy'"></i>
-              </div>
-
-              <div class="message-bubble" [class.is-streaming]="message.state === 'streaming'">
-                <div
-                  class="chat-markdown"
-                  *ngIf="message.content; else typingState"
-                  [innerHTML]="renderMarkdown(message.content)"></div>
-
-                <ng-template #typingState>
-                  <div class="typing-indicator" aria-label="AI is processing">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                  </div>
-                </ng-template>
-              </div>
-            </div>
-
-            <div *ngIf="isProcessing" class="processing-banner">
-              <span class="processing-dot"></span>
-              <span>AI is thinking...</span>
-            </div>
-          </div>
-
-          <footer class="composer-shell">
-            <textarea
-              [(ngModel)]="draftMessage"
-              (keydown)="onComposerKeydown($event)"
-              [disabled]="isProcessing"
-              rows="2"
-              placeholder="Type your question here..."
-              class="composer-input"></textarea>
-
+        <div *ngIf="activeTab === 'chat'" class="space-y-4">
+          <div class="flex justify-end">
             <button
               type="button"
-              class="composer-send"
-              (click)="sendMessage()"
-              [disabled]="isProcessing || !draftMessage.trim()">
-              <i class="mdi mdi-send"></i>
-              <span>Send</span>
+              (click)="startNewChat()"
+              [disabled]="isProcessing"
+              class="tems-btn tems-btn-secondary disabled:opacity-50 disabled:cursor-not-allowed">
+              <i class="mdi mdi-plus-circle-outline text-sm"></i>
+              <span>New Chat</span>
             </button>
-          </footer>
-        </section>
+          </div>
+
+          <div *ngIf="conversationError" class="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-500/20 dark:bg-red-500/10 dark:text-red-200">
+            {{ conversationError }}
+          </div>
+
+          <section class="rounded-xl border border-gray-200 dark:border-[#48484a] bg-white dark:bg-[#3a3a3c] overflow-hidden">
+            <div class="px-4 py-3 border-b border-gray-200 dark:border-[#48484a] bg-gray-50 dark:bg-[#1c1c1e] flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div class="flex items-center gap-3 min-w-0">
+                <div class="message-avatar" aria-hidden="true">
+                  <i class="mdi mdi-chat-outline"></i>
+                </div>
+                <div class="min-w-0">
+                  <h2 class="text-sm font-medium text-gray-900 dark:text-white leading-tight m-0">Live assistant conversation</h2>
+                  <p class="text-xs text-gray-500 dark:text-gray-400 leading-tight m-0">
+                    {{ activeConversationId ? 'Reopened from your saved history.' : 'A new conversation will be saved after your first message.' }}
+                  </p>
+                </div>
+              </div>
+
+              <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-white/10 text-gray-700 dark:text-gray-300 self-start sm:self-auto">
+                <span class="h-2 w-2 rounded-full" [class.bg-amber-500]="isLoadingConversation" [class.bg-emerald-500]="!isLoadingConversation"></span>
+                {{ isLoadingConversation ? 'Loading' : (isProcessing ? 'Responding' : 'Online') }}
+              </div>
+            </div>
+
+            <div class="chat-history" #conversationViewport>
+              <div *ngIf="isLoadingConversation" class="chat-loading-state">
+                <div class="typing-indicator" aria-label="Loading conversation">
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                </div>
+                <span>Loading conversation...</span>
+              </div>
+
+              <ng-container *ngIf="!isLoadingConversation">
+                <div
+                  *ngFor="let message of messages; trackBy: trackByMessageId"
+                  class="message-row"
+                  [class.user-row]="message.role === 'user'"
+                  [class.assistant-row]="message.role === 'assistant'">
+                  <div class="message-avatar">
+                    <i [class]="message.role === 'user' ? 'mdi mdi-account-outline' : 'mdi mdi-lifebuoy'"></i>
+                  </div>
+
+                  <div class="message-bubble" [class.is-streaming]="message.state === 'streaming'">
+                    <div
+                      class="chat-markdown"
+                      *ngIf="message.content; else typingState"
+                      [innerHTML]="renderMarkdown(message.content)"></div>
+
+                    <div *ngIf="message.createdAt" class="message-meta">
+                      {{ formatConversationDate(message.createdAt) }}
+                    </div>
+
+                    <ng-template #typingState>
+                      <div class="typing-indicator" aria-label="AI is processing">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                      </div>
+                    </ng-template>
+                  </div>
+                </div>
+
+                <div *ngIf="isProcessing" class="processing-banner">
+                  <span class="processing-dot"></span>
+                  <span>AI is thinking...</span>
+                </div>
+              </ng-container>
+            </div>
+
+            <footer class="composer-shell">
+              <div class="composer-row">
+                <textarea
+                  [(ngModel)]="draftMessage"
+                  (keydown)="onComposerKeydown($event)"
+                  [disabled]="isProcessing || isLoadingConversation"
+                  rows="1"
+                  placeholder="Type your question here..."
+                  class="composer-input"></textarea>
+
+                <button
+                  type="button"
+                  class="tems-btn tems-btn-primary composer-send"
+                  (click)="sendMessage()"
+                  [disabled]="isProcessing || isLoadingConversation || !draftMessage.trim()">
+                  <i class="mdi mdi-send text-sm"></i>
+                  <span>Send</span>
+                </button>
+              </div>
+            </footer>
+          </section>
+        </div>
+
+        <div *ngIf="activeTab === 'history'" class="space-y-4">
+
+          <div *ngIf="historyError" class="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-500/20 dark:bg-red-500/10 dark:text-red-200">
+            {{ historyError }}
+          </div>
+
+          <section class="rounded-xl border border-gray-200 dark:border-[#48484a] bg-white dark:bg-[#3a3a3c] overflow-hidden">
+            <div class="px-4 py-3 border-b border-gray-200 dark:border-[#48484a] bg-gray-50 dark:bg-[#1c1c1e] flex items-center justify-between gap-3">
+              <div>
+                <h2 class="text-sm font-medium text-gray-900 dark:text-white leading-tight m-0">Saved conversations</h2>
+                <p class="text-xs text-gray-500 dark:text-gray-400 leading-tight m-0">Open a thread to continue it, or remove it if it is no longer needed.</p>
+              </div>
+
+              <button
+                type="button"
+                (click)="loadConversationSummaries()"
+                [disabled]="isLoadingConversations"
+                class="tems-btn tems-btn-secondary disabled:opacity-50 disabled:cursor-not-allowed">
+                <i class="mdi mdi-refresh text-sm"></i>
+                <span>Refresh</span>
+              </button>
+            </div>
+
+            <div *ngIf="isLoadingConversations" class="history-state">
+              <div class="typing-indicator" aria-label="Loading conversations">
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+              <span>Loading saved conversations...</span>
+            </div>
+
+            <div *ngIf="!isLoadingConversations && conversations.length === 0" class="history-empty-state">
+              <i class="mdi mdi-message-outline text-4xl text-gray-300 dark:text-gray-600"></i>
+              <h3 class="text-base font-medium text-gray-900 dark:text-white mt-3 mb-1">No saved conversations yet</h3>
+              <p class="text-sm text-gray-500 dark:text-gray-400 mb-0">
+                Start a chat and your thread will appear here automatically after the first message.
+              </p>
+            </div>
+
+            <div *ngIf="!isLoadingConversations && conversations.length > 0" class="divide-y divide-gray-200 dark:divide-[#48484a]">
+              <button
+                *ngFor="let conversation of conversations; trackBy: trackByConversationId"
+                type="button"
+                (click)="openConversation(conversation.conversationId)"
+                [disabled]="isProcessing"
+                class="history-row"
+                [class.is-active]="conversation.conversationId === activeConversationId">
+                <div class="history-row-main">
+                  <div class="history-row-title">
+                    {{ conversation.title }}
+                  </div>
+                  <div class="history-row-meta">
+                    <span>{{ formatConversationDate(conversation.createdAt) }}</span>
+                    <span>{{ conversation.messageCount }} message{{ conversation.messageCount === 1 ? '' : 's' }}</span>
+                  </div>
+                </div>
+
+                <div class="history-row-actions">
+                  <span *ngIf="conversation.conversationId === activeConversationId" class="history-current-pill">
+                    Current
+                  </span>
+
+                  <button
+                    type="button"
+                    (click)="deleteConversation(conversation, $event)"
+                    [disabled]="isDeletingConversationId === conversation.conversationId || isProcessing"
+                    class="history-delete-button"
+                    aria-label="Delete conversation">
+                    <i *ngIf="isDeletingConversationId !== conversation.conversationId" class="mdi mdi-trash-can-outline"></i>
+                    <i *ngIf="isDeletingConversationId === conversation.conversationId" class="mdi mdi-loading mdi-spin"></i>
+                  </button>
+                </div>
+              </button>
+            </div>
+          </section>
+        </div>
       </div>
     </div>
   </div>

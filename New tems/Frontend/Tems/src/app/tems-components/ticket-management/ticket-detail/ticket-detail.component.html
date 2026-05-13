@@ -59,14 +59,16 @@
             </div>
             <div>
               <span class="text-xs text-gray-600 dark:text-gray-400 uppercase tracking-wide">Status</span>
-              <div *ngIf="canManageTickets && getTicketStatusOptions().length > 0; else statusReadOnly" class="mt-1.5 flex items-center gap-2">
-                <select
+              <div *ngIf="canManageTickets && ticketStatusSelectOptions.length > 0; else statusReadOnly" class="mt-1.5 max-w-[220px]">
+                <app-custom-select
                   [(ngModel)]="statusDraft"
                   (ngModelChange)="onStatusDraftChanged($event)"
                   [disabled]="isSavingStatus"
-                  class="min-w-0 flex-1 rounded-lg border border-gray-300 dark:border-[#48484a] bg-white dark:bg-[#3a3a3c] px-3 py-2 text-sm font-medium text-gray-900 dark:text-white focus:border-[#007aff] focus:ring-2 focus:ring-[#007aff]/20">
-                  <option *ngFor="let option of getTicketStatusOptions()" [value]="option.value">{{ option.label }}</option>
-                </select>
+                  [options]="ticketStatusSelectOptions"
+                  [searchable]="false"
+                  [allowEmpty]="false"
+                  placeholder="Select status">
+                </app-custom-select>
               </div>
               <p *ngIf="isSavingStatus" class="text-[11px] text-gray-500 dark:text-gray-400 mt-1">Saving...</p>
               <ng-template #statusReadOnly>
@@ -101,6 +103,17 @@
             [class.text-gray-500]="activeMainTab !== 'chat'"
             class="px-4 py-3 border-b-2 font-medium text-sm hover:text-[#007aff] transition whitespace-nowrap">
             Chat
+          </button>
+          <button
+            (click)="activeMainTab = 'history'"
+            [class.border-[#007aff]]="activeMainTab === 'history'"
+            [class.dark:border-[#0a84ff]]="activeMainTab === 'history'"
+            [class.text-[#007aff]]="activeMainTab === 'history'"
+            [class.dark:text-[#0a84ff]]="activeMainTab === 'history'"
+            [class.border-transparent]="activeMainTab !== 'history'"
+            [class.text-gray-500]="activeMainTab !== 'history'"
+            class="px-4 py-3 border-b-2 font-medium text-sm hover:text-[#007aff] transition whitespace-nowrap">
+            History
           </button>
         </nav>
 
@@ -144,7 +157,7 @@
                       *ngIf="canConfigureApprovalGates()"
                       type="button"
                       (click)="openApprovalGateModal(gate)"
-                      class="text-xs font-semibold text-[#007aff] dark:text-[#0a84ff] hover:underline">
+                      class="tems-btn tems-btn-secondary text-xs px-3 py-1.5">
                       Edit
                     </button>
                   </div>
@@ -186,6 +199,16 @@
                         </span>
                       </div>
                     </div>
+                  </div>
+
+                  <div *ngIf="canConfigureApprovalGates()" class="mt-4 flex justify-end">
+                    <button
+                      type="button"
+                      (click)="deleteApprovalGate(gate)"
+                      [disabled]="deletingApprovalGateId === gate.approvalGateId"
+                      class="tems-btn tems-btn-danger text-xs px-3 py-1.5 disabled:opacity-50 disabled:cursor-not-allowed">
+                      {{ deletingApprovalGateId === gate.approvalGateId ? 'Removing...' : 'Remove Gate' }}
+                    </button>
                   </div>
                 </div>
               </div>
@@ -374,6 +397,19 @@
                 Press Ctrl+Enter to send
                 <span *ngIf="canManageTickets && activeChatTab === 'notes'">. Internal notes are visible only to ticket managers.</span>
               </p>
+            </div>
+          </div>
+
+          <div *ngIf="activeMainTab === 'history'" class="space-y-4">
+            <div class="rounded-xl border border-gray-200 dark:border-[#48484a] bg-white dark:bg-[#3a3a3c] p-4">
+              <div class="mb-4">
+                <h3 class="text-sm font-semibold text-gray-900 dark:text-white m-0">Ticket History</h3>
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1 mb-0">
+                  System-generated timeline of ticket, status, and approval activity.
+                </p>
+              </div>
+
+              <app-ticket-timeline [ticketId]="ticket.ticketId"></app-ticket-timeline>
             </div>
           </div>
         </div>

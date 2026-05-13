@@ -10,9 +10,8 @@ public sealed class DeepSeekAiSupportClient(IHttpClientFactory httpClientFactory
 {
     private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web);
 
-    public async Task StreamResponseAsync(
-        string message,
-        HttpContext context,
+    public async Task<string> StreamResponseAsync(
+        IReadOnlyCollection<AiSupportConversationMessage> messages,
         Func<string, CancellationToken, Task> onDelta,
         CancellationToken cancellationToken)
     {
@@ -33,11 +32,7 @@ public sealed class DeepSeekAiSupportClient(IHttpClientFactory httpClientFactory
             JsonSerializer.Serialize(new
             {
                 model = settings.Model,
-                messages = new object[]
-                {
-                    new { role = "system", content = settings.SystemPrompt },
-                    new { role = "user", content = message }
-                },
+                messages = BuildRequestMessages(settings.SystemPrompt, messages),
                 stream = true,
                 temperature = settings.Temperature,
                 max_tokens = settings.MaxTokens
@@ -116,7 +111,7 @@ public sealed class DeepSeekAiSupportClient(IHttpClientFactory httpClientFactory
             }
         }
 
-        context.Items["ai-support-final-response"] = accumulatedContent.ToString();
+        return accumulatedContent.ToString();
     }
 
     public async Task<string> GenerateCompletionAsync(
@@ -189,4 +184,22 @@ public sealed class DeepSeekAiSupportClient(IHttpClientFactory httpClientFactory
 
     private static string EnsureTrailingSlash(string value)
         => value.EndsWith('/') ? value : value + "/";
+
+    private static object[] BuildRequestMessages(
+        string systemPrompt,
+        IReadOnlyCollection<AiSupportConversationMessage> messages)
+    {
+        var requestMessages = new List<object>(messages.Count + 1)
+        {
+            new { role = "system", content = systemPrompt }
+        };
+
+        requestMessages.AddRange(messages.Select(message => new
+        {
+            role = message.Role,
+            content = message.Content
+        }));
+
+        return requestMessages.ToArray();
+    }
 }

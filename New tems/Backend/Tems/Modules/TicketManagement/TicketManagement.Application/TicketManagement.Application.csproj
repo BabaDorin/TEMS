@@ -17,6 +17,8 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\ChangeLog\ChangeLog.Application\ChangeLog.Application.csproj" />
+      <ProjectReference Include="..\..\ChangeLog\ChangeLog.Contract\ChangeLog.Contract.csproj" />
       <ProjectReference Include="..\TicketManagement.Contract\TicketManagement.Contract.csproj" />
       <ProjectReference Include="..\..\..\Tems.Common\Tems.Common.csproj" />
       <ProjectReference Include="..\..\UserManagement\UserManagement.Infrastructure\UserManagement.Infrastructure.csproj" />

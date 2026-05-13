@@ -2,6 +2,7 @@ using FluentValidation;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using TicketManagement.Application.Commands.TicketTypes;
+using TicketManagement.Application.Services;
 using TicketManagement.Infrastructure;
 
 namespace TicketManagement.API;
@@ -15,6 +16,7 @@ public static class TicketManagementServiceRegistration
         services.AddValidatorsFromAssemblyContaining<CreateTicketTypeCommandHandler>();
 
         services.AddInfrastructureServices(configuration);
+        services.AddScoped<TicketHistoryLogService>();
         
         return services;
     }

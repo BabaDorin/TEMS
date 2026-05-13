@@ -57,6 +57,70 @@ public static class TicketStateHelper
         return ResolveManagedStatusId(workflowStates, stateId) != null;
     }
 
+    public static WorkflowConfig NormalizeWorkflowConfig(WorkflowConfig? workflowConfig)
+    {
+        var states = workflowConfig?.States ?? new List<WorkflowState>();
+        if (states.Count == 0)
+        {
+            return new WorkflowConfig
+            {
+                States = CreateDefaultWorkflowStates(),
+                InitialStateId = "new"
+            };
+        }
+
+        var allManaged = states.All(state =>
+            GetManagedStatusGroup(state.Id) != null ||
+            GetManagedStatusGroup(state.Label) != null);
+
+        if (!allManaged)
+        {
+            return workflowConfig ?? new WorkflowConfig
+            {
+                States = CreateDefaultWorkflowStates(),
+                InitialStateId = "new"
+            };
+        }
+
+        var newState = states.FirstOrDefault(state => GetManagedStatusGroup(state.Id) == "new" || GetManagedStatusGroup(state.Label) == "new");
+        var inProgressState = states.FirstOrDefault(state => GetManagedStatusGroup(state.Id) == "in-progress" || GetManagedStatusGroup(state.Label) == "in-progress");
+        var closedState = states.FirstOrDefault(state => GetManagedStatusGroup(state.Id) == "closed" || GetManagedStatusGroup(state.Label) == "closed");
+
+        var normalizedStates = new List<WorkflowState>
+        {
+            new()
+            {
+                Id = newState?.Id ?? "new",
+                Label = "New",
+                Type = "OPEN",
+                AllowedTransitions = new List<string> { inProgressState?.Id ?? "in-progress", closedState?.Id ?? "closed" },
+                AutomationHook = newState?.AutomationHook
+            },
+            new()
+            {
+                Id = inProgressState?.Id ?? "in-progress",
+                Label = "In Progress",
+                Type = "ACTIVE",
+                AllowedTransitions = new List<string> { newState?.Id ?? "new", closedState?.Id ?? "closed" },
+                AutomationHook = inProgressState?.AutomationHook
+            },
+            new()
+            {
+                Id = closedState?.Id ?? "closed",
+                Label = "Closed",
+                Type = "CLOSED",
+                AllowedTransitions = new List<string>(),
+                AutomationHook = closedState?.AutomationHook
+            }
+        };
+
+        return new WorkflowConfig
+        {
+            States = normalizedStates,
+            InitialStateId = ResolveManagedStatusId(normalizedStates, workflowConfig?.InitialStateId) ?? normalizedStates[0].Id
+        };
+    }
+
     public static string? ResolveManagedStatusId(IEnumerable<WorkflowState> workflowStates, string? stateId)
     {
         if (string.IsNullOrWhiteSpace(stateId))

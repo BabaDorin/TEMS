@@ -152,6 +152,7 @@ builder.Services.AddOptions<AiSupportOptions>()
     .ValidateOnStart();
 
 builder.Services.AddHttpClient("DeepSeekAiSupport");
+builder.Services.AddScoped<IAiSupportConversationRepository, AiSupportConversationRepository>();
 builder.Services.AddSingleton<DeepSeekAiSupportClient>();
 builder.Services.AddSingleton<ITicketAiSummaryQueue, TicketAiSummaryQueue>();
 builder.Services.AddHostedService<TicketAiSummaryBackgroundService>();

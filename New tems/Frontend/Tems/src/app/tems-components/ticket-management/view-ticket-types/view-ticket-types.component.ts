@@ -222,14 +222,7 @@ export class ViewTicketTypesComponent implements OnInit {
       description: formValue.description,
       itilCategory: formValue.itilCategory,
       workflowConfig: {
-        states: [
-          {
-            id: formValue.initialStateId,
-            label: this.formatWorkflowStateLabel(formValue.initialStateId),
-            type: 'OPEN',
-            allowedTransitions: []
-          }
-        ],
+        states: this.buildManagedWorkflowStates(),
         initialStateId: formValue.initialStateId
       },
       attributeDefinitions: this.attributeDefinitions
@@ -275,5 +268,28 @@ export class ViewTicketTypesComponent implements OnInit {
       .filter(Boolean)
       .map((part) => part.charAt(0).toUpperCase() + part.slice(1).toLowerCase())
       .join(' ');
+  }
+
+  private buildManagedWorkflowStates() {
+    return [
+      {
+        id: 'new',
+        label: 'New',
+        type: 'OPEN' as const,
+        allowedTransitions: ['in-progress', 'closed']
+      },
+      {
+        id: 'in-progress',
+        label: 'In Progress',
+        type: 'WIP' as const,
+        allowedTransitions: ['new', 'closed']
+      },
+      {
+        id: 'closed',
+        label: 'Closed',
+        type: 'CLOSED' as const,
+        allowedTransitions: []
+      }
+    ];
   }
 }

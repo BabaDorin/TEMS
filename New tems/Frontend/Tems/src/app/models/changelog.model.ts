@@ -34,6 +34,12 @@ export type ChangeLogAction =
   | 'LocationUpdated'
   | 'LocationDeleted'
   | 'LocationAssetAssigned'
-  | 'LocationAssetUnassigned';
+  | 'LocationAssetUnassigned'
+  | 'TicketCreated'
+  | 'TicketUpdated'
+  | 'TicketApprovalGateAdded'
+  | 'TicketApprovalGateRemoved'
+  | 'TicketStatusUpdated'
+  | 'TicketApprovalGateReviewed';
 
-export type ChangeLogEntityType = 'Asset' | 'User' | 'Location';
+export type ChangeLogEntityType = 'Asset' | 'User' | 'Location' | 'Ticket';

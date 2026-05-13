@@ -1,5 +1,6 @@
 using AssetManagement.Contract.DTOs;
 using AssetManagement.Application.Interfaces;
+using AssetManagement.Application.Mappers;
 using AssetManagement.Contract.Commands;
 using AssetManagement.Contract.Responses;
 using LocationManagement.Application.Interfaces;
@@ -44,65 +45,7 @@ public class GetAllAssetCommandHandler(
                 locationDetails = await FetchLocationDetailsAsync(a.LocationId, tenantId, cancellationToken);
             }
 
-            assetDtos.Add(new AssetDto(
-                a.Id,
-                a.SerialNumber,
-                a.AssetTag,
-                a.Status,
-                new AssetDefinitionSnapshotDto(
-                a.Definition.DefinitionId,
-                a.Definition.IsCustomized,
-                a.Definition.SnapshotAt,
-                a.Definition.Name,
-                a.Definition.AssetTypeId,
-                a.Definition.AssetTypeName,
-                a.Definition.Manufacturer,
-                a.Definition.Model,
-                a.Definition.Specifications.Select(s => new AssetSpecificationDto(
-                    s.PropertyId,
-                    s.Name,
-                    s.Value,
-                    s.DataType,
-                    s.Unit
-                )).ToList()
-            ),
-            a.PurchaseInfo != null ? new PurchaseInfoDto(
-                a.PurchaseInfo.PurchaseDate,
-                a.PurchaseInfo.PurchasePrice,
-                a.PurchaseInfo.Currency,
-                a.PurchaseInfo.Vendor,
-                a.PurchaseInfo.WarrantyExpiry
-            ) : null,
-            a.LocationId,
-            locationDetails,
-            a.Location != null ? new AssetLocationDto(
-                a.Location.Building,
-                a.Location.Room,
-                a.Location.Desk
-            ) : null,
-            a.Assignment != null ? new AssetAssignmentDto(
-                a.Assignment.AssignedToUserId,
-                a.Assignment.AssignedToName,
-                a.Assignment.AssignedAt,
-                a.Assignment.AssignmentType
-            ) : null,
-            a.ParentAssetId,
-            a.ChildAssetIds,
-            a.Notes,
-            a.MaintenanceHistory.Select(m => new MaintenanceRecordDto(
-                m.Date,
-                m.Type,
-                m.Description,
-                m.PerformedBy,
-                m.Cost
-            )).ToList(),
-            a.CreatedAt,
-            a.UpdatedAt,
-            a.CreatedBy,
-            a.IsArchived,
-            a.ArchivedAt,
-            a.ArchivedBy
-            ));
+            assetDtos.Add(a.ToDto(locationDetails));
         }
 
         return new GetAllAssetResponse(

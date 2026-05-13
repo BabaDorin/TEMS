@@ -36,6 +36,11 @@ export class UserManagementComponent extends TEMSComponent implements OnInit {
       undefined,
       () => {
         this.viewUsers.fetchUsers();
+      },
+      {
+        width: '90vw',
+        maxWidth: '1200px',
+        maxHeight: '90vh'
       }
     )
   }

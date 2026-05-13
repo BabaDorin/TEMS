@@ -178,3 +178,39 @@ public class AssetUnassignedFromLocationLog : ChangeLogEntry
         return details;
     }
 }
+
+public class AssetManualLogAddedLog : ChangeLogEntry
+{
+    public string AssetId { get; set; } = string.Empty;
+    public string AssetTag { get; set; } = string.Empty;
+    public string LogType { get; set; } = string.Empty;
+    public string LogDescription { get; set; } = string.Empty;
+    public decimal? CostAmount { get; set; }
+    public string? CostCurrency { get; set; }
+
+    public override ChangeLogEntityType EntityType => ChangeLogEntityType.Asset;
+    public override string EntityId => AssetId;
+
+    public override Dictionary<string, string?> GetReferences() => new()
+    {
+        ["assetId"] = AssetId
+    };
+
+    public override Dictionary<string, object?>? GetDetails()
+    {
+        var details = new Dictionary<string, object?>
+        {
+            ["assetTag"] = AssetTag,
+            ["logType"] = LogType,
+            ["logDescription"] = LogDescription
+        };
+
+        if (CostAmount.HasValue)
+        {
+            details["costAmount"] = CostAmount.Value;
+            details["costCurrency"] = CostCurrency;
+        }
+
+        return details;
+    }
+}

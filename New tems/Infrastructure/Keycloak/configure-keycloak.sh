@@ -4,6 +4,7 @@
 # This script configures Keycloak realm, clients, and identity provider
 
 KEYCLOAK_URL="http://localhost:8080"
+KEYCLOAK_CONTAINER="tems-keycloak"
 ADMIN_USER="admin"
 ADMIN_PASSWORD="admin"
 REALM="tems"
@@ -22,14 +23,42 @@ until curl -sf "${KEYCLOAK_URL}/realms/master" > /dev/null 2>&1; do
 done
 echo "Keycloak is ready!"
 
+echo "Ensuring master realm allows HTTP for local development..."
+docker exec "$KEYCLOAK_CONTAINER" /opt/keycloak/bin/kcadm.sh config credentials \
+    --server "${KEYCLOAK_URL}" \
+    --realm master \
+    --user "${ADMIN_USER}" \
+    --password "${ADMIN_PASSWORD}" >/dev/null 2>&1
+docker exec "$KEYCLOAK_CONTAINER" /opt/keycloak/bin/kcadm.sh update realms/master -s sslRequired=NONE >/dev/null 2>&1
+
+get_admin_token() {
+    local token=""
+
+    # First try the direct host request, which is the simplest path when Keycloak allows it.
+    token=$(curl -s -X POST "${KEYCLOAK_URL}/realms/master/protocol/openid-connect/token" \
+        -H "Content-Type: application/x-www-form-urlencoded" \
+        -d "username=${ADMIN_USER}" \
+        -d "password=${ADMIN_PASSWORD}" \
+        -d "grant_type=password" \
+        -d "client_id=admin-cli" | jq -r '.access_token')
+
+    if [ -n "$token" ] && [ "$token" != "null" ]; then
+        printf '%s' "$token"
+        return 0
+    fi
+
+    # Fallback: authenticate from inside the running container, where kcadm.sh can bootstrap cleanly.
+    token=$(docker exec "$KEYCLOAK_CONTAINER" sh -lc \
+        "/opt/keycloak/bin/kcadm.sh config credentials --server ${KEYCLOAK_URL} --realm master --user ${ADMIN_USER} --password ${ADMIN_PASSWORD} >/dev/null 2>&1 && \
+         cat /opt/keycloak/.keycloak/kcadm.config" \
+        | jq -r '.endpoints["http://localhost:8080"].master.token // empty')
+
+    printf '%s' "$token"
+}
+
 # Get admin token
 echo "Getting admin access token..."
-ADMIN_TOKEN=$(curl -s -X POST "${KEYCLOAK_URL}/realms/master/protocol/openid-connect/token" \
-    -H "Content-Type: application/x-www-form-urlencoded" \
-    -d "username=${ADMIN_USER}" \
-    -d "password=${ADMIN_PASSWORD}" \
-    -d "grant_type=password" \
-    -d "client_id=admin-cli" | jq -r '.access_token')
+ADMIN_TOKEN=$(get_admin_token)
 
 if [ -z "$ADMIN_TOKEN" ] || [ "$ADMIN_TOKEN" = "null" ]; then
     echo "Failed to get admin token"

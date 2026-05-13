@@ -80,6 +80,20 @@
             <span class="text-xs text-gray-500 dark:text-gray-400 italic">Reason: {{ getReason(entry) }}</span>
           </div>
 
+          <div *ngIf="getManualLogDescription(entry)" class="mt-3 space-y-2">
+            <div class="flex flex-wrap items-center gap-2">
+              <span *ngIf="getLogType(entry)" class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-sky-50 text-sky-700 border border-sky-100 dark:bg-sky-500/10 dark:text-sky-300 dark:border-sky-500/20">
+                {{ getLogType(entry) }}
+              </span>
+              <span *ngIf="getManualLogCost(entry)" class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-100 dark:bg-emerald-500/10 dark:text-emerald-300 dark:border-emerald-500/20">
+                {{ getManualLogCost(entry) }}
+              </span>
+            </div>
+            <p class="text-sm text-gray-700 dark:text-gray-200 whitespace-pre-wrap m-0">
+              {{ getManualLogDescription(entry) }}
+            </p>
+          </div>
+
           <!-- Reference Pills -->
           <div *ngIf="entry.references" class="mt-2.5 flex gap-2 flex-wrap">
             <button *ngIf="entry.references['userId'] && getUserName(entry)"

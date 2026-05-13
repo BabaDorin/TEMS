@@ -146,6 +146,10 @@ html.dark body {
   padding: var(--tems-page-padding);
 }
 
+.tems-route-shell--full-bleed {
+  padding: 0;
+}
+
 .tems-page-frame {
   width: min(100%, var(--tems-page-max-width));
   flex: 1;
@@ -169,6 +173,10 @@ html.dark body {
   display: flex;
   flex-direction: column;
   flex: 1;
+}
+
+.tems-page-surface--full-bleed {
+  min-height: 100%;
 }
 
 .tems-asset-page {

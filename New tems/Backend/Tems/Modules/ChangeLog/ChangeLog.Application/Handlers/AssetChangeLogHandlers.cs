@@ -250,3 +250,30 @@ public class AssetUnassignedFromLocationNotificationHandler(
         }, ct);
     }
 }
+
+public class AssetManualLogAddedNotificationHandler(
+    IChangeLogRepository repository,
+    ITenantContext tenantContext,
+    ILogger<AssetManualLogAddedNotificationHandler> logger
+) : INotificationHandler<AssetManualLogAddedNotification>
+{
+    public async Task Handle(AssetManualLogAddedNotification n, CancellationToken ct)
+    {
+        logger.LogInformation("Logging AssetManualLogAdded for {AssetTag}: {LogType}", n.AssetTag, n.LogType);
+
+        await repository.CreateAsync(new AssetManualLogAddedLog
+        {
+            TenantId = tenantContext.TenantId ?? "default",
+            Action = ChangeLogAction.AssetManualLogAdded,
+            Description = $"Added {n.LogType.ToLowerInvariant()} entry",
+            AssetId = n.AssetId,
+            AssetTag = n.AssetTag,
+            LogType = n.LogType,
+            LogDescription = n.LogDescription,
+            CostAmount = n.CostAmount,
+            CostCurrency = n.CostCurrency,
+            PerformedByUserId = n.PerformedByUserId,
+            PerformedByUserName = n.PerformedByUserName
+        }, ct);
+    }
+}

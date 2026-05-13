@@ -13,6 +13,14 @@ export interface AssetPageResponse {
   totalPages: number;
 }
 
+export interface AddAssetHistoryLogRequest {
+  type: string;
+  description: string;
+  costIncluded: boolean;
+  costAmount?: number | null;
+  costCurrency?: string | null;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -117,6 +125,12 @@ export class AssetService {
 
   delete(id: string): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/${id}`, {
+      headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+    });
+  }
+
+  addHistoryLog(assetId: string, payload: AddAssetHistoryLogRequest): Observable<{ success: boolean }> {
+    return this.http.post<{ success: boolean }>(`${this.baseUrl}/${assetId}/history-log`, payload, {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' })
     });
   }

@@ -3,6 +3,7 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace AssetManagement.Infrastructure.Entities;
 
+[BsonIgnoreExtraElements]
 public class Asset
 {
     [BsonId]
@@ -42,9 +43,6 @@ public class Asset
 
     [BsonElement("notes")]
     public string Notes { get; set; } = string.Empty;
-
-    [BsonElement("maintenance_history")]
-    public List<MaintenanceRecord> MaintenanceHistory { get; set; } = [];
 
     [BsonElement("created_at")]
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
@@ -141,22 +139,4 @@ public class AssetAssignment
 
     [BsonElement("assignment_type")]
     public string AssignmentType { get; set; } = "permanent";
-}
-
-public class MaintenanceRecord
-{
-    [BsonElement("date")]
-    public DateTime Date { get; set; }
-
-    [BsonElement("type")]
-    public string Type { get; set; } = string.Empty;
-
-    [BsonElement("description")]
-    public string Description { get; set; } = string.Empty;
-
-    [BsonElement("performed_by")]
-    public string PerformedBy { get; set; } = string.Empty;
-
-    [BsonElement("cost")]
-    public decimal? Cost { get; set; }
 }

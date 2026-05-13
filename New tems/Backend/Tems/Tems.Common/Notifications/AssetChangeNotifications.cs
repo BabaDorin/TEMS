@@ -74,3 +74,14 @@ public record AssetUnassignedFromLocationNotification(
     string? PerformedByUserId,
     string? PerformedByUserName
 ) : INotification;
+
+public record AssetManualLogAddedNotification(
+    string AssetId,
+    string AssetTag,
+    string LogType,
+    string LogDescription,
+    decimal? CostAmount,
+    string? CostCurrency,
+    string? PerformedByUserId,
+    string? PerformedByUserName
+) : INotification;

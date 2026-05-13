@@ -1,73 +1,109 @@
-<section class="tems-asset-page">
-  <header class="tems-asset-header">
-    <div>
-      <h1 class="text-2xl font-semibold text-gray-900 dark:text-white" style="letter-spacing: -0.5px;">AI Support</h1>
-      <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Ask about equipment, tickets, troubleshooting, inventory, or anything else related to technical support. The assistant will stay focused on TEMS-related topics only.</p>
+<div class="min-h-[calc(100dvh-4rem)] bg-gray-50/50 dark:bg-[#1c1c1e] transition-colors duration-200">
+  <div class="max-w-7xl mx-auto w-full p-4 sm:p-6 overflow-x-hidden">
+    <div class="bg-white dark:bg-[#2c2c2e] rounded-xl shadow-sm mb-4">
+      <div class="px-6 py-4 flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+        <div class="flex-1 min-w-0">
+          <span class="tems-asset-eyebrow">Technical Support</span>
+          <h1 class="text-2xl font-semibold text-gray-900 dark:text-white mt-3 mb-0">AI Chat Support</h1>
+          <p class="text-sm text-gray-600 dark:text-gray-400 mt-1 mb-0 max-w-3xl">
+            Ask about equipment, tickets, troubleshooting, inventory, or anything else related to technical support.
+            The assistant stays focused on TEMS-related topics and responds directly in this conversation.
+          </p>
+        </div>
+
+        <div class="flex items-start">
+          <button
+            type="button"
+            (click)="clearConversation()"
+            [disabled]="isProcessing"
+            class="px-3 py-1.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg transition flex items-center gap-1.5 border border-gray-300 dark:border-[#48484a] disabled:opacity-50 disabled:cursor-not-allowed">
+            <i class="mdi mdi-refresh text-base"></i>
+            <span>New Chat</span>
+          </button>
+        </div>
+      </div>
     </div>
-  </header>
 
-    <section class="tems-asset-card chat-window">
-      <div class="chat-toolbar">
-        <div class="chat-toolbar-left">
-          <div class="message-avatar" aria-hidden="true">
-            <i class="mdi mdi-chat-outline"></i>
-          </div>
-          <div class="chat-toolbar-label">
-            <strong>TEMS AI Agent</strong>
-            <span>Answers stay within technical support and equipment management.</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="chat-history" #conversationViewport>
-        <div
-          *ngFor="let message of messages; trackBy: trackByMessageId"
-          class="message-row"
-          [class.user-row]="message.role === 'user'"
-          [class.assistant-row]="message.role === 'assistant'">
-          <div class="message-avatar">
-            <i [class]="message.role === 'user' ? 'mdi mdi-account-outline' : 'mdi mdi-lifebuoy'"></i>
-          </div>
-
-          <div class="message-bubble" [class.is-streaming]="message.state === 'streaming'">
-            <div
-              class="chat-markdown"
-              *ngIf="message.content; else typingState"
-              [innerHTML]="renderMarkdown(message.content)"></div>
-
-            <ng-template #typingState>
-              <div class="typing-indicator" aria-label="AI is processing">
-                <span></span>
-                <span></span>
-                <span></span>
-              </div>
-            </ng-template>
-          </div>
-        </div>
-
-        <div *ngIf="isProcessing" class="processing-banner">
-          <span class="processing-dot"></span>
-          <span>AI is thinking...</span>
-        </div>
-      </div>
-
-      <footer class="composer-shell">
-        <textarea
-          [(ngModel)]="draftMessage"
-          (keydown)="onComposerKeydown($event)"
-          [disabled]="isProcessing"
-          rows="2"
-          placeholder="Type your question here..."
-          class="composer-input"></textarea>
-
+    <div class="bg-white dark:bg-[#2c2c2e] rounded-xl shadow-sm overflow-hidden">
+      <nav class="flex px-4 overflow-x-auto border-b border-gray-200 dark:border-[#38383a]">
         <button
           type="button"
-          class="composer-send"
-          (click)="sendMessage()"
-          [disabled]="isProcessing || !draftMessage.trim()">
-          <i class="mdi mdi-send"></i>
-          <span>Send</span>
+          class="px-4 py-3 border-b-2 border-[#007aff] dark:border-[#0a84ff] text-[#007aff] dark:text-[#0a84ff] font-medium text-sm whitespace-nowrap">
+          Conversation
         </button>
-      </footer>
-    </section>
-  </section>
+      </nav>
+
+      <div class="p-6">
+        <section class="rounded-xl border border-gray-200 dark:border-[#48484a] bg-white dark:bg-[#3a3a3c] overflow-hidden">
+          <div class="px-4 py-3 border-b border-gray-200 dark:border-[#48484a] bg-gray-50 dark:bg-[#1c1c1e] flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div class="flex items-center gap-3 min-w-0">
+              <div class="message-avatar" aria-hidden="true">
+                <i class="mdi mdi-chat-outline"></i>
+              </div>
+              <div class="min-w-0">
+                <h2 class="text-sm font-medium text-gray-900 dark:text-white leading-tight m-0">Live assistant conversation</h2>
+                <p class="text-xs text-gray-500 dark:text-gray-400 leading-tight m-0">Answers stay within technical support and equipment management.</p>
+              </div>
+            </div>
+
+            <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-white/10 text-gray-700 dark:text-gray-300 self-start sm:self-auto">
+              <span class="h-2 w-2 rounded-full bg-emerald-500"></span>
+              {{ isProcessing ? 'Responding' : 'Online' }}
+            </div>
+          </div>
+
+          <div class="chat-history" #conversationViewport>
+            <div
+              *ngFor="let message of messages; trackBy: trackByMessageId"
+              class="message-row"
+              [class.user-row]="message.role === 'user'"
+              [class.assistant-row]="message.role === 'assistant'">
+              <div class="message-avatar">
+                <i [class]="message.role === 'user' ? 'mdi mdi-account-outline' : 'mdi mdi-lifebuoy'"></i>
+              </div>
+
+              <div class="message-bubble" [class.is-streaming]="message.state === 'streaming'">
+                <div
+                  class="chat-markdown"
+                  *ngIf="message.content; else typingState"
+                  [innerHTML]="renderMarkdown(message.content)"></div>
+
+                <ng-template #typingState>
+                  <div class="typing-indicator" aria-label="AI is processing">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                  </div>
+                </ng-template>
+              </div>
+            </div>
+
+            <div *ngIf="isProcessing" class="processing-banner">
+              <span class="processing-dot"></span>
+              <span>AI is thinking...</span>
+            </div>
+          </div>
+
+          <footer class="composer-shell">
+            <textarea
+              [(ngModel)]="draftMessage"
+              (keydown)="onComposerKeydown($event)"
+              [disabled]="isProcessing"
+              rows="2"
+              placeholder="Type your question here..."
+              class="composer-input"></textarea>
+
+            <button
+              type="button"
+              class="composer-send"
+              (click)="sendMessage()"
+              [disabled]="isProcessing || !draftMessage.trim()">
+              <i class="mdi mdi-send"></i>
+              <span>Send</span>
+            </button>
+          </footer>
+        </section>
+      </div>
+    </div>
+  </div>
+</div>

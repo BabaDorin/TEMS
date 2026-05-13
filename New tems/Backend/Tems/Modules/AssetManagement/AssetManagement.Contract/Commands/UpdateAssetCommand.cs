@@ -17,6 +17,5 @@ public record UpdateAssetCommand(
     AssetAssignmentDto? Assignment,
     string? ParentAssetId,
     List<string> ChildAssetIds,
-    string Notes,
-    List<MaintenanceRecordDto> MaintenanceHistory) 
+    string Notes) 
     : IRequest<UpdateAssetResponse>;

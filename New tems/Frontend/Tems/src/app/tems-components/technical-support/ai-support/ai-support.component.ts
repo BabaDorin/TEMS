@@ -26,14 +26,7 @@ export class AiSupportComponent implements OnDestroy {
 
   public draftMessage = '';
   public isProcessing = false;
-  public messages: ChatMessage[] = [
-    {
-      id: this.createId(),
-      role: 'assistant',
-      content: "Hey, I'm your AI IT agent. Ask me anything about equipment management or technical support, and I’ll help you troubleshoot or point you in the right direction.",
-      state: 'done'
-    }
-  ];
+  public messages: ChatMessage[] = [this.createWelcomeMessage()];
 
   private activeStream?: Subscription;
 
@@ -118,6 +111,14 @@ export class AiSupportComponent implements OnDestroy {
         this.isProcessing = false;
       }
     });
+  }
+
+  clearConversation(): void {
+    this.activeStream?.unsubscribe();
+    this.isProcessing = false;
+    this.draftMessage = '';
+    this.messages = [this.createWelcomeMessage()];
+    this.scrollToBottom();
   }
 
   onComposerKeydown(event: KeyboardEvent): void {
@@ -263,5 +264,14 @@ export class AiSupportComponent implements OnDestroy {
 
   private createId(): string {
     return globalThis.crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+  }
+
+  private createWelcomeMessage(): ChatMessage {
+    return {
+      id: this.createId(),
+      role: 'assistant',
+      content: "Hey, I'm your AI IT agent. Ask me anything about equipment management or technical support, and I’ll help you troubleshoot or point you in the right direction.",
+      state: 'done'
+    };
   }
 }

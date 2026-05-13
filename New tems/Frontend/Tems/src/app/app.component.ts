@@ -29,6 +29,7 @@ export class AppComponent extends TEMSComponent implements OnInit{
   showSidebar: boolean = false;
   showNavbar: boolean = true;
   showFooter: boolean = true;
+  isFullBleedHome: boolean = false;
   isLoading: boolean;
   private routeShowsLayout: boolean = true;
   private isAuthenticated: boolean = false;
@@ -52,11 +53,14 @@ export class AppComponent extends TEMSComponent implements OnInit{
     // When needed (For example, when loading the page...), Feel free to add more cases here.
     router.events.forEach((event) => { 
       if(event instanceof NavigationStart) {
+        const nextUrl = event.url.split('?')[0];
         const mainPanel = document.querySelector('.main-panel') as HTMLElement | null;
         const pageBodyWrapper = document.querySelector('.page-body-wrapper') as HTMLElement | null;
         const contentWrapper = document.querySelector('.content-wrapper') as HTMLElement | null;
 
-        if((event['url'] == '/auth/login') || (event['url'] == '/auth/register') || (event['url'] == '/error-pages/404') || (event['url'] == '/error-pages/500') || (event['url'] == '/error-pages/403')) {
+        this.isFullBleedHome = !this.isAuthenticated && nextUrl === '/home';
+
+        if((nextUrl == '/auth/login') || (nextUrl == '/auth/register') || (nextUrl == '/error-pages/404') || (nextUrl == '/error-pages/500') || (nextUrl == '/error-pages/403')) {
           this.routeShowsLayout = false;
           this.showSidebar = false;
           this.showNavbar = false;
@@ -71,7 +75,7 @@ export class AppComponent extends TEMSComponent implements OnInit{
         } else {
           this.routeShowsLayout = true;
           this.showSidebar = this.isAuthenticated;
-          this.showFooter = !this.fullScreenRoutes.includes(event['url']);
+          this.showFooter = !this.fullScreenRoutes.includes(nextUrl);
           this.showNavbar = true;
           mainPanel?.classList.remove('w-100');
           pageBodyWrapper?.classList.remove('full-page-wrapper');
@@ -115,9 +119,10 @@ export class AppComponent extends TEMSComponent implements OnInit{
     this.subscriptions.push(
       this.authService.isAuthenticated$.subscribe((isAuth) => {
         this.isAuthenticated = isAuth;
+        this.isFullBleedHome = !isAuth && this.router.url.split('?')[0] === '/home';
         this.showNavbar = this.routeShowsLayout;
         this.showSidebar = this.routeShowsLayout && isAuth;
-        this.showFooter = this.routeShowsLayout && !this.fullScreenRoutes.includes(this.router.url);
+        this.showFooter = this.routeShowsLayout && !this.fullScreenRoutes.includes(this.router.url.split('?')[0]);
       })
     );
 
@@ -125,6 +130,7 @@ export class AppComponent extends TEMSComponent implements OnInit{
       if (!(evt instanceof NavigationEnd)) {
           return;
       }
+      this.isFullBleedHome = !this.isAuthenticated && this.router.url.split('?')[0] === '/home';
       window.scrollTo(0, 0);
     });
 

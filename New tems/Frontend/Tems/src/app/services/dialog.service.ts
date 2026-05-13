@@ -1,7 +1,7 @@
 import { IOption } from '../models/option.model';
 import { ComponentType } from '@angular/cdk/portal';
 import { Injectable } from '@angular/core';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +16,12 @@ export class DialogService {
 
   }
 
-  openDialog(component: ComponentType<any>, keyValue?: IOption[], afterClosed?: Function): MatDialogRef<any> {
+  openDialog(
+    component: ComponentType<any>,
+    keyValue?: IOption[],
+    afterClosed?: Function,
+    configOverrides?: MatDialogConfig
+  ): MatDialogRef<any> {
     let dialogRef: MatDialogRef<any>;
     
     let data = {
@@ -36,7 +41,8 @@ export class DialogService {
       maxHeight: '80vh',
       autoFocus: false,
       panelClass: 'custom-dialog-container',
-      data: data
+      data: data,
+      ...configOverrides
     });
 
     dialogRef.componentInstance["dialogRef"] = dialogRef;

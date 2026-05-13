@@ -13,7 +13,6 @@ export interface Asset {
   assignment?: AssetAssignment;
   parentAssetId?: string;
   childAssetIds?: string[];
-  maintenanceHistory?: MaintenanceRecord[];
   customFields?: { [key: string]: any };
   notes?: string;
   isArchived?: boolean;
@@ -89,14 +88,6 @@ export interface AssetAssignment {
   assignedBy?: string;
   notes?: string;
   dueDate?: Date;
-}
-
-export interface MaintenanceRecord {
-  date: Date;
-  description: string;
-  performedBy?: string;
-  cost?: number;
-  notes?: string;
 }
 
 export enum AssetStatus {

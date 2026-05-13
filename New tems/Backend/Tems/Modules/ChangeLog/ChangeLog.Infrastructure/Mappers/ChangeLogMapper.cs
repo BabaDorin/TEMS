@@ -120,6 +120,27 @@ public static class AssetChangeLogMapper
                 LocationName = e.LocationName,
                 Reason = e.Reason
             },
+            AssetManualLogAddedLog e => new AssetManualLogAddedLogEntity
+            {
+                Id = e.Id,
+                TenantId = e.TenantId,
+                Action = e.Action.ToString(),
+                Description = e.Description,
+                Timestamp = e.Timestamp,
+                PerformedByUserId = e.PerformedByUserId,
+                PerformedByUserName = e.PerformedByUserName,
+                AssetId = e.AssetId,
+                AssetTag = e.AssetTag,
+                LogType = e.LogType,
+                LogDescription = e.LogDescription,
+                Cost = e.CostAmount.HasValue
+                    ? new AssetManualLogCostEntity
+                    {
+                        Amount = e.CostAmount.Value,
+                        Currency = e.CostCurrency ?? string.Empty
+                    }
+                    : null
+            },
             _ => throw new InvalidOperationException($"Unknown asset log type: {entry.GetType().Name}")
         };
     }
@@ -175,6 +196,13 @@ public static class AssetChangeLogMapper
                 Id = e.Id, TenantId = e.TenantId, Action = action, Description = e.Description,
                 Timestamp = e.Timestamp, PerformedByUserId = e.PerformedByUserId, PerformedByUserName = e.PerformedByUserName,
                 AssetId = e.AssetId, AssetTag = e.AssetTag, LocationId = e.LocationId, LocationName = e.LocationName, Reason = e.Reason
+            },
+            AssetManualLogAddedLogEntity e => new AssetManualLogAddedLog
+            {
+                Id = e.Id, TenantId = e.TenantId, Action = action, Description = e.Description,
+                Timestamp = e.Timestamp, PerformedByUserId = e.PerformedByUserId, PerformedByUserName = e.PerformedByUserName,
+                AssetId = e.AssetId, AssetTag = e.AssetTag, LogType = e.LogType, LogDescription = e.LogDescription,
+                CostAmount = e.Cost?.Amount, CostCurrency = e.Cost?.Currency
             },
             _ => throw new InvalidOperationException($"Unknown entity type: {entity.GetType().Name}")
         };

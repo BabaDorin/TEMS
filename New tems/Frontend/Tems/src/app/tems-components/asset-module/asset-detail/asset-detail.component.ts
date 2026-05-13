@@ -12,6 +12,7 @@ import { AssetLabelComponent } from '../../asset/asset-label/asset-label.compone
 import { RoomDetailModalComponent } from '../../location-module/room-detail-modal/room-detail-modal.component';
 import { AssetTimelineComponent } from '../asset-timeline/asset-timeline.component';
 import { AssetBulkActionModalComponent } from '../view-assets/asset-bulk-action-modal.component';
+import { AssetHistoryLogModalComponent } from '../asset-history-log-modal/asset-history-log-modal.component';
 
 @Component({
   selector: 'app-asset-detail',
@@ -38,7 +39,7 @@ export class AssetDetailComponent implements OnInit {
   asset: Asset | null = null;
   loading = true;
   error: string | null = null;
-  activeTab: 'overview' | 'acc' | 'purchase' | 'maintenance' | 'history' = 'overview';
+  activeTab: 'overview' | 'acc' | 'purchase' | 'history' = 'overview';
   showActionsDropdown = false;
   isDefinitionExpanded = true;
   private cachedAssigneeEmail: string | null = null;
@@ -137,6 +138,26 @@ export class AssetDetailComponent implements OnInit {
       data: {
         mode: 'room',
         assets: [this.asset]
+      }
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result?.success && this.asset) {
+        this.loadAsset(this.asset.id);
+      }
+    });
+  }
+
+  addHistoryLog() {
+    if (!this.asset) return;
+
+    const dialogRef = this.dialog.open(AssetHistoryLogModalComponent, {
+      width: '640px',
+      maxWidth: '95vw',
+      panelClass: 'custom-dialog-container',
+      data: {
+        assetId: this.asset.id,
+        assetTag: this.asset.assetTag
       }
     });
 

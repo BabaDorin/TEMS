@@ -29,33 +29,29 @@ export class CallbackComponent implements OnInit {
   ngOnInit() {
     console.log('[Callback] Processing OAuth callback...');
     console.log('[Callback] Current URL:', window.location.href);
-    
-    this.oauthService.loadDiscoveryDocumentAndTryLogin().then(() => {
-      // Give a small delay to ensure token is processed
-      setTimeout(() => {
-        const hasToken = this.oauthService.hasValidAccessToken();
-        const accessToken = this.oauthService.getAccessToken();
-        console.log('[Callback] Has valid token:', hasToken);
-        console.log('[Callback] Access token exists:', !!accessToken);
-        
-        if (hasToken && accessToken) {
-          console.log('[Callback] Login successful, notifying auth service and redirecting to home');
-          // Notify auth service to update authentication state
-          this.authService.notifyLoginComplete();
-          this.router.navigate(['/home']);
-        } else {
-          console.error('[Callback] No valid access token after login');
-          console.error('[Callback] Token details:', {
-            hasValidToken: hasToken,
-            tokenExists: !!accessToken,
-            claims: this.oauthService.getIdentityClaims()
-          });
-          this.router.navigate(['/login']);
-        }
-      }, 100);
-    }).catch(err => {
-      console.error('[Callback] Error during login callback:', err);
-      this.router.navigate(['/login']);
-    });
+
+    // AuthService already processes the authorization code during app startup.
+    // The callback page should only verify the token and continue, not exchange
+    // the same code a second time.
+    setTimeout(() => {
+      const hasToken = this.oauthService.hasValidAccessToken();
+      const accessToken = this.oauthService.getAccessToken();
+      console.log('[Callback] Has valid token:', hasToken);
+      console.log('[Callback] Access token exists:', !!accessToken);
+
+      if (hasToken && accessToken) {
+        console.log('[Callback] Login successful, notifying auth service and redirecting to home');
+        this.authService.notifyLoginComplete();
+        this.router.navigate(['/home']);
+      } else {
+        console.error('[Callback] No valid access token after login');
+        console.error('[Callback] Token details:', {
+          hasValidToken: hasToken,
+          tokenExists: !!accessToken,
+          claims: this.oauthService.getIdentityClaims()
+        });
+        this.router.navigate(['/login']);
+      }
+    }, 100);
   }
 }

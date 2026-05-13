@@ -80,14 +80,6 @@ public class UpdateAssetCommandHandler(
         existingAsset.ParentAssetId = request.ParentAssetId;
         existingAsset.ChildAssetIds = request.ChildAssetIds;
         existingAsset.Notes = request.Notes;
-        existingAsset.MaintenanceHistory = request.MaintenanceHistory.Select(m => new MaintenanceRecord
-        {
-            Date = m.Date,
-            Type = m.Type,
-            Description = m.Description,
-            PerformedBy = m.PerformedBy,
-            Cost = m.Cost
-        }).ToList();
 
         var success = await assetRepository.UpdateAsync(existingAsset, cancellationToken);
 

@@ -1,8 +1,8 @@
-<div class="tems-modal-panel w-full max-w-4xl mx-auto max-h-[80vh] flex flex-col">
+<div class="tems-modal-panel w-full max-w-3xl mx-auto max-h-[calc(100dvh-2rem)] flex flex-col overflow-hidden">
   <div class="tems-modal-header flex items-start justify-between gap-4">
     <div class="flex-1">
       <h1 class="text-2xl font-semibold text-gray-900 dark:text-white m-0" style="letter-spacing: -0.5px;">Add New User</h1>
-      <p class="text-sm text-gray-500 dark:text-gray-400 mt-1 m-0">Fill in the details to add a new user to the system</p>
+      <p class="text-sm text-gray-500 dark:text-gray-400 mt-1 m-0">Create a user account with optional profile details and roles.</p>
     </div>
     <button
       *ngIf="dialogRef"
@@ -16,13 +16,10 @@
     </button>
   </div>
 
-  <!-- Main Form -->
   <div class="tems-modal-body flex-1 min-h-0 overflow-y-auto">
     <div class="space-y-4">
-      
-      <!-- Error Message -->
-      <div *ngIf="errorMessage" class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl">
-        <div class="px-4 py-3 flex items-start gap-3">
+      <div *ngIf="errorMessage" class="rounded-xl border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/20 px-4 py-3">
+        <div class="flex items-start gap-3">
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none" class="flex-shrink-0 mt-0.5 text-red-600 dark:text-red-400">
             <circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.5"/>
             <path d="M10 6V11M10 13.5V14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
@@ -32,165 +29,97 @@
       </div>
 
       <form [formGroup]="userForm" (ngSubmit)="onSubmit()" class="space-y-4">
-        
-        <!-- Account Information -->
-        <div class="bg-white dark:bg-[#2c2c2e] rounded-xl border border-gray-200 dark:border-[#48484a]">
-          <div class="px-4 py-3">
-            <div class="flex items-start justify-between gap-4 mb-3">
-              <div class="flex-1">
-                <h3 class="text-sm font-medium text-gray-900 dark:text-white m-0">Account Information</h3>
-                <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5 m-0">Basic account credentials</p>
-              </div>
-            </div>
-            
-            <div class="space-y-4">
-              <!-- Username -->
-              <div>
-                <label class="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Username
-                  <div class="flex items-center gap-1.5 px-2 py-1 bg-blue-50 dark:bg-blue-900/20 rounded-md">
-                    <span class="text-xs font-medium text-blue-600 dark:text-blue-400">Required</span>
-                  </div>
-                </label>
-                <input 
-                  type="text" 
-                  formControlName="username"
-                  placeholder="Enter username"
-                  class="w-full px-3 py-2 border border-gray-200 dark:border-[#48484a] dark:bg-[#3a3a3c] dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-[#007aff] focus:border-transparent text-sm transition">
-                <p *ngIf="userForm.get('username')?.hasError('required') && userForm.get('username')?.touched" class="mt-1.5 text-xs text-red-500 dark:text-red-400">Username is required</p>
-                <p *ngIf="userForm.get('username')?.hasError('minlength') && userForm.get('username')?.touched" class="mt-1.5 text-xs text-red-500 dark:text-red-400">Username must be at least 3 characters</p>
-              </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+              Username
+              <span class="inline-flex items-center px-2 py-0.5 rounded-md bg-blue-50 dark:bg-blue-900/20 text-xs font-medium text-blue-600 dark:text-blue-400">Required</span>
+            </label>
+            <input
+              type="text"
+              formControlName="username"
+              placeholder="Enter username"
+              class="w-full px-3 py-2 border border-gray-200 dark:border-[#48484a] dark:bg-[#3a3a3c] dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-[#007aff] focus:border-transparent text-sm transition">
+            <p *ngIf="userForm.get('username')?.hasError('required') && userForm.get('username')?.touched" class="mt-1.5 text-xs text-red-500 dark:text-red-400">Username is required</p>
+            <p *ngIf="userForm.get('username')?.hasError('minlength') && userForm.get('username')?.touched" class="mt-1.5 text-xs text-red-500 dark:text-red-400">Username must be at least 3 characters</p>
+          </div>
 
-              <!-- Email -->
-              <div>
-                <label class="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Email
-                  <div class="flex items-center gap-1.5 px-2 py-1 bg-blue-50 dark:bg-blue-900/20 rounded-md">
-                    <span class="text-xs font-medium text-blue-600 dark:text-blue-400">Required</span>
-                  </div>
-                </label>
-                <input 
-                  type="email" 
-                  formControlName="email"
-                  placeholder="Enter email address"
-                  class="w-full px-3 py-2 border border-gray-200 dark:border-[#48484a] dark:bg-[#3a3a3c] dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-[#007aff] focus:border-transparent text-sm transition">
-                <p *ngIf="userForm.get('email')?.hasError('required') && userForm.get('email')?.touched" class="mt-1.5 text-xs text-red-500 dark:text-red-400">Email is required</p>
-                <p *ngIf="userForm.get('email')?.hasError('email') && userForm.get('email')?.touched" class="mt-1.5 text-xs text-red-500 dark:text-red-400">Please enter a valid email</p>
-              </div>
-            </div>
+          <div>
+            <label class="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+              Email
+              <span class="inline-flex items-center px-2 py-0.5 rounded-md bg-blue-50 dark:bg-blue-900/20 text-xs font-medium text-blue-600 dark:text-blue-400">Required</span>
+            </label>
+            <input
+              type="email"
+              formControlName="email"
+              placeholder="Enter email address"
+              class="w-full px-3 py-2 border border-gray-200 dark:border-[#48484a] dark:bg-[#3a3a3c] dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-[#007aff] focus:border-transparent text-sm transition">
+            <p *ngIf="userForm.get('email')?.hasError('required') && userForm.get('email')?.touched" class="mt-1.5 text-xs text-red-500 dark:text-red-400">Email is required</p>
+            <p *ngIf="userForm.get('email')?.hasError('email') && userForm.get('email')?.touched" class="mt-1.5 text-xs text-red-500 dark:text-red-400">Please enter a valid email</p>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">First Name</label>
+            <input
+              type="text"
+              formControlName="firstName"
+              placeholder="Enter first name"
+              class="w-full px-3 py-2 border border-gray-200 dark:border-[#48484a] dark:bg-[#3a3a3c] dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-[#007aff] focus:border-transparent text-sm transition">
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Last Name</label>
+            <input
+              type="text"
+              formControlName="lastName"
+              placeholder="Enter last name"
+              class="w-full px-3 py-2 border border-gray-200 dark:border-[#48484a] dark:bg-[#3a3a3c] dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-[#007aff] focus:border-transparent text-sm transition">
+          </div>
+
+          <div class="md:col-span-2">
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Temporary Password</label>
+            <input
+              type="password"
+              formControlName="temporaryPassword"
+              placeholder="Leave empty for auto-generated password"
+              class="w-full px-3 py-2 border border-gray-200 dark:border-[#48484a] dark:bg-[#3a3a3c] dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-[#007aff] focus:border-transparent text-sm transition">
+            <p class="mt-1.5 text-xs text-gray-500 dark:text-gray-400">The user will be asked to change it on first login.</p>
+            <p *ngIf="userForm.get('temporaryPassword')?.hasError('minlength') && userForm.get('temporaryPassword')?.touched" class="mt-1.5 text-xs text-red-500 dark:text-red-400">Password must be at least 8 characters</p>
+          </div>
+
+          <div class="md:col-span-2">
+            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">Initial Roles</label>
+            <app-custom-select
+              [options]="roleOptions"
+              [mode]="'multiple'"
+              [searchable]="true"
+              [allowEmpty]="true"
+              [placeholder]="isLoadingRoles ? 'Loading roles...' : 'Select roles...'"
+              [disabled]="isLoadingRoles"
+              [(ngModel)]="selectedRoleIds"
+              [ngModelOptions]="{standalone: true}"
+              (ngModelChange)="onRoleSelectionChange($event)">
+            </app-custom-select>
+            <p class="mt-1.5 text-xs text-gray-500 dark:text-gray-400">Permissions can be adjusted later if needed.</p>
           </div>
         </div>
 
-        <!-- Personal Information -->
-        <div class="bg-white dark:bg-[#2c2c2e] rounded-xl border border-gray-200 dark:border-[#48484a]">
-          <div class="px-4 py-3">
-            <div class="flex items-start justify-between gap-4 mb-3">
-              <div class="flex-1">
-                <h3 class="text-sm font-medium text-gray-900 dark:text-white m-0">Personal Information</h3>
-                <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5 m-0">Optional profile details</p>
-              </div>
-            </div>
-            
-            <div class="grid grid-cols-2 gap-4">
-              <!-- First Name -->
-              <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">First Name</label>
-                <input 
-                  type="text" 
-                  formControlName="firstName"
-                  placeholder="Enter first name"
-                  class="w-full px-3 py-2 border border-gray-200 dark:border-[#48484a] dark:bg-[#3a3a3c] dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-[#007aff] focus:border-transparent text-sm transition">
-              </div>
-
-              <!-- Last Name -->
-              <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Last Name</label>
-                <input 
-                  type="text" 
-                  formControlName="lastName"
-                  placeholder="Enter last name"
-                  class="w-full px-3 py-2 border border-gray-200 dark:border-[#48484a] dark:bg-[#3a3a3c] dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-[#007aff] focus:border-transparent text-sm transition">
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Security -->
-        <div class="bg-white dark:bg-[#2c2c2e] rounded-xl border border-gray-200 dark:border-[#48484a]">
-          <div class="px-4 py-3">
-            <div class="flex items-start justify-between gap-4 mb-3">
-              <div class="flex-1">
-                <h3 class="text-sm font-medium text-gray-900 dark:text-white m-0">Security</h3>
-                <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5 m-0">Password settings</p>
-              </div>
-            </div>
-            
-            <div>
-              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Temporary Password</label>
-              <input 
-                type="password" 
-                formControlName="temporaryPassword"
-                placeholder="Leave empty for auto-generated password"
-                class="w-full px-3 py-2 border border-gray-200 dark:border-[#48484a] dark:bg-[#3a3a3c] dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-[#007aff] focus:border-transparent text-sm transition">
-              <p class="mt-1.5 text-xs text-gray-500 dark:text-gray-400">User will be required to change on first login</p>
-              <p *ngIf="userForm.get('temporaryPassword')?.hasError('minlength') && userForm.get('temporaryPassword')?.touched" class="mt-1.5 text-xs text-red-500 dark:text-red-400">Password must be at least 8 characters</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Roles -->
-        <div class="bg-white dark:bg-[#2c2c2e] rounded-xl border border-gray-200 dark:border-[#48484a]">
-          <div class="px-4 py-3">
-            <div class="flex items-start justify-between gap-4 mb-3">
-              <div class="flex-1">
-                <h3 class="text-sm font-medium text-gray-900 dark:text-white m-0">Initial Roles</h3>
-                <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5 m-0">Assign permissions to the user</p>
-              </div>
-            </div>
-            
-            <div>
-              <app-custom-select
-                [options]="roleOptions"
-                [mode]="'multiple'"
-                [searchable]="true"
-                [allowEmpty]="true"
-                [placeholder]="isLoadingRoles ? 'Loading roles...' : 'Select roles...'"
-                [disabled]="isLoadingRoles"
-                [(ngModel)]="selectedRoleIds"
-                [ngModelOptions]="{standalone: true}"
-                (ngModelChange)="onRoleSelectionChange($event)">
-              </app-custom-select>
-            </div>
-          </div>
-        </div>
-
-        <!-- Info Banner -->
-        <div class="bg-[#007aff]/5 dark:bg-[#0a84ff]/10 border border-[#007aff]/20 dark:border-[#0a84ff]/20 rounded-xl">
-          <div class="px-4 py-3 flex items-start gap-3">
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" class="flex-shrink-0 mt-0.5 text-[#007aff] dark:text-[#0a84ff]">
-              <circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.5"/>
-              <path d="M10 9V14M10 6V7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-            </svg>
-            <p class="text-sm text-[#007aff] dark:text-[#0a84ff]">
-              User will be assigned to the default tenant automatically and created in all connected systems.
-            </p>
-          </div>
-        </div>
-
-        </form>
+        <p class="text-xs text-gray-500 dark:text-gray-400">
+          The user will be assigned to the default tenant automatically and created in all connected systems.
+        </p>
+      </form>
     </div>
   </div>
 
-  <!-- Submit Button Section -->
   <div class="tems-modal-footer">
-    <button 
+    <button
       type="button"
       (click)="close()"
       [disabled]="isSaving"
       class="tems-btn tems-btn-secondary disabled:opacity-50 disabled:cursor-not-allowed">
       Cancel
     </button>
-    <button 
+    <button
       type="button"
       (click)="onSubmit()"
       [disabled]="userForm.invalid || isSaving"

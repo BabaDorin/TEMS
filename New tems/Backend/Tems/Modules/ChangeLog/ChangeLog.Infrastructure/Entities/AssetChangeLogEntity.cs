@@ -11,7 +11,8 @@ namespace ChangeLog.Infrastructure.Entities;
     typeof(AssetAssignedToUserLogEntity),
     typeof(AssetUnassignedFromUserLogEntity),
     typeof(AssetAssignedToLocationLogEntity),
-    typeof(AssetUnassignedFromLocationLogEntity)
+    typeof(AssetUnassignedFromLocationLogEntity),
+    typeof(AssetManualLogAddedLogEntity)
 )]
 public class AssetChangeLogEntity
 {
@@ -118,6 +119,28 @@ public class AssetUnassignedFromLocationLogEntity : AssetChangeLogEntity
     [BsonElement("reason")]
     [BsonIgnoreIfNull]
     public string? Reason { get; set; }
+}
+
+public class AssetManualLogAddedLogEntity : AssetChangeLogEntity
+{
+    [BsonElement("log_type")]
+    public string LogType { get; set; } = string.Empty;
+
+    [BsonElement("log_description")]
+    public string LogDescription { get; set; } = string.Empty;
+
+    [BsonElement("cost")]
+    [BsonIgnoreIfNull]
+    public AssetManualLogCostEntity? Cost { get; set; }
+}
+
+public class AssetManualLogCostEntity
+{
+    [BsonElement("amount")]
+    public decimal Amount { get; set; }
+
+    [BsonElement("currency")]
+    public string Currency { get; set; } = string.Empty;
 }
 
 public class FieldChangeEntity

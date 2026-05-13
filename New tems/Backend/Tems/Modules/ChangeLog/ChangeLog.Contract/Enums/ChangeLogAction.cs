@@ -9,6 +9,7 @@ public enum ChangeLogAction
     AssetUnassignedFromUser,
     AssetAssignedToLocation,
     AssetUnassignedFromLocation,
+    AssetManualLogAdded,
     AssetArchived,
     AssetRestored,
 

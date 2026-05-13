@@ -43,10 +43,3 @@ public record AssetAssignmentDto(
     string AssignedToName,
     DateTime? AssignedAt,
     string AssignmentType);
-
-public record MaintenanceRecordDto(
-    DateTime Date,
-    string Type,
-    string Description,
-    string PerformedBy,
-    decimal? Cost);

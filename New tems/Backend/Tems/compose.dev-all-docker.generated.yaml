@@ -11,6 +11,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://0.0.0.0:5158
+      - Keycloak__BaseUrl=http://keycloak:8080
     ports:
       - "5158:5158"
     depends_on:

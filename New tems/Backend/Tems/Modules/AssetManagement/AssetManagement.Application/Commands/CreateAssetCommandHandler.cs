@@ -84,7 +84,6 @@ public class CreateAssetCommandHandler(
             ParentAssetId = request.ParentAssetId,
             ChildAssetIds = request.ChildAssetIds,
             Notes = request.Notes,
-            MaintenanceHistory = [],
             CreatedBy = request.CreatedBy,
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow,

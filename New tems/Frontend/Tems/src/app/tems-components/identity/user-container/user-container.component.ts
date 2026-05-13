@@ -59,6 +59,11 @@ export class UserContainerComponent extends TEMSComponent implements OnInit {
           
           this.user = result;
         })
+      },
+      {
+        width: '90vw',
+        maxWidth: '1200px',
+        maxHeight: '90vh'
       }
     )
   }

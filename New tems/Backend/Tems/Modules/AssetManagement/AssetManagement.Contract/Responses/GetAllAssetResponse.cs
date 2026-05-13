@@ -25,7 +25,6 @@ public record AssetDto(
     string? ParentAssetId,
     List<string> ChildAssetIds,
     string Notes,
-    List<MaintenanceRecordDto> MaintenanceHistory,
     DateTime CreatedAt,
     DateTime UpdatedAt,
     string CreatedBy,

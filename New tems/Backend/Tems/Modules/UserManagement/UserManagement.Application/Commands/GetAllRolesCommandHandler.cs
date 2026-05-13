@@ -32,7 +32,7 @@ public class GetAllRolesCommandHandler(
         catch (Exception ex)
         {
             logger.LogError(ex, "Failed to get roles from Keycloak");
-            return new GetAllRolesResponse(Roles: new List<RoleDto>());
+            throw;
         }
     }
 }

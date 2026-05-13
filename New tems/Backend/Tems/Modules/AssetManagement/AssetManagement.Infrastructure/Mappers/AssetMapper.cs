@@ -21,7 +21,6 @@ public static class AssetMapper
             ParentAssetId = dbEntity.ParentAssetId,
             ChildAssetIds = dbEntity.ChildAssetIds,
             Notes = dbEntity.Notes,
-            MaintenanceHistory = dbEntity.MaintenanceHistory.Select(m => m.ToDomain()).ToList(),
             CreatedAt = dbEntity.CreatedAt,
             UpdatedAt = dbEntity.UpdatedAt,
             CreatedBy = dbEntity.CreatedBy,
@@ -47,7 +46,6 @@ public static class AssetMapper
             ParentAssetId = domainEntity.ParentAssetId,
             ChildAssetIds = domainEntity.ChildAssetIds,
             Notes = domainEntity.Notes,
-            MaintenanceHistory = domainEntity.MaintenanceHistory.Select(m => m.ToDatabase()).ToList(),
             CreatedAt = domainEntity.CreatedAt,
             UpdatedAt = domainEntity.UpdatedAt,
             CreatedBy = domainEntity.CreatedBy,
@@ -166,30 +164,6 @@ public static class AssetMapper
             AssignedToName = domainEntity.AssignedToName,
             AssignedAt = domainEntity.AssignedAt,
             AssignmentType = domainEntity.AssignmentType
-        };
-    }
-
-    public static DomainEntity.MaintenanceRecord ToDomain(this DbEntity.MaintenanceRecord dbEntity)
-    {
-        return new DomainEntity.MaintenanceRecord
-        {
-            Date = dbEntity.Date,
-            Type = dbEntity.Type,
-            Description = dbEntity.Description,
-            PerformedBy = dbEntity.PerformedBy,
-            Cost = dbEntity.Cost
-        };
-    }
-
-    public static DbEntity.MaintenanceRecord ToDatabase(this DomainEntity.MaintenanceRecord domainEntity)
-    {
-        return new DbEntity.MaintenanceRecord
-        {
-            Date = domainEntity.Date,
-            Type = domainEntity.Type,
-            Description = domainEntity.Description,
-            PerformedBy = domainEntity.PerformedBy,
-            Cost = domainEntity.Cost
         };
     }
 }

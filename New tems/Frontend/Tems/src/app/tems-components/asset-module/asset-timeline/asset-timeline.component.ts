@@ -101,6 +101,10 @@ export class AssetTimelineComponent implements OnChanges {
   }
 
   getDisplayDescription(entry: ChangeLogEntry): string {
+    if (entry.action === 'AssetManualLogAdded') {
+      return `${entry.details?.['logType'] || 'Manual log'} added`;
+    }
+
     if (entry.action === 'AssetAssignedToUser') {
       const nextUserName = entry.details?.['userName'];
       const previousUserName = entry.details?.['previousUserName'];
@@ -156,6 +160,8 @@ export class AssetTimelineComponent implements OnChanges {
       case 'AssetUnassignedFromLocation':
       case 'LocationAssetUnassigned':
         return 'M15 10.5a3 3 0 11-6 0 3 3 0 016 0z M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z';
+      case 'AssetManualLogAdded':
+        return 'M12 6v6l4 2M8.25 4.5h7.5A2.25 2.25 0 0118 6.75v10.5A2.25 2.25 0 0115.75 19.5h-7.5A2.25 2.25 0 016 17.25V6.75A2.25 2.25 0 018.25 4.5zM9 1.5h6';
       default:
         return 'M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0z';
     }
@@ -181,6 +187,8 @@ export class AssetTimelineComponent implements OnChanges {
       case 'AssetUnassignedFromLocation':
       case 'LocationAssetUnassigned':
         return 'bg-amber-100 text-amber-600 dark:bg-amber-500/20 dark:text-amber-400';
+      case 'AssetManualLogAdded':
+        return 'bg-sky-100 text-sky-600 dark:bg-sky-500/20 dark:text-sky-400';
       default:
         return 'bg-gray-100 text-gray-600 dark:bg-gray-500/20 dark:text-gray-400';
     }
@@ -193,6 +201,34 @@ export class AssetTimelineComponent implements OnChanges {
 
   getReason(entry: ChangeLogEntry): string | null {
     return entry.details?.['reason'] ?? null;
+  }
+
+  getLogType(entry: ChangeLogEntry): string | null {
+    if (entry.action !== 'AssetManualLogAdded') return null;
+    return typeof entry.details?.['logType'] === 'string' ? entry.details['logType'] : null;
+  }
+
+  getManualLogDescription(entry: ChangeLogEntry): string | null {
+    if (entry.action !== 'AssetManualLogAdded') return null;
+    return typeof entry.details?.['logDescription'] === 'string' ? entry.details['logDescription'] : null;
+  }
+
+  getManualLogCost(entry: ChangeLogEntry): string | null {
+    if (entry.action !== 'AssetManualLogAdded') return null;
+
+    const amount = entry.details?.['costAmount'];
+    const currency = entry.details?.['costCurrency'];
+
+    if (amount === null || amount === undefined || !currency) {
+      return null;
+    }
+
+    const numericAmount = Number(amount);
+    if (Number.isNaN(numericAmount)) {
+      return null;
+    }
+
+    return `${numericAmount.toFixed(2)} ${currency}`;
   }
 
   private getLocationId(entry: ChangeLogEntry): string | null {

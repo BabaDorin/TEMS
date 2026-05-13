@@ -12,7 +12,6 @@ public class Asset
     public string? ParentAssetId { get; set; }
     public List<string> ChildAssetIds { get; set; } = [];
     public string Notes { get; set; } = string.Empty;
-    public List<MaintenanceRecord> MaintenanceHistory { get; set; } = [];
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
     public string CreatedBy { get; set; } = string.Empty;
@@ -56,13 +55,4 @@ public class AssetAssignment
     public string AssignedToName { get; set; } = string.Empty;
     public DateTime? AssignedAt { get; set; }
     public string AssignmentType { get; set; } = "permanent";
-}
-
-public class MaintenanceRecord
-{
-    public DateTime Date { get; set; }
-    public string Type { get; set; } = string.Empty;
-    public string Description { get; set; } = string.Empty;
-    public string PerformedBy { get; set; } = string.Empty;
-    public decimal? Cost { get; set; }
 }

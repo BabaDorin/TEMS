@@ -102,19 +102,8 @@ test.describe('Ticket Types Management', () => {
   });
 
   test('should update a ticket type via UI and verify changes', async ({ page, testHelper }) => {
-    test.setTimeout(5000);
-    
-    // Check if edit functionality exists in the UI
-    const editButton = page.locator('button:has-text("Edit")').first();
-    const editExists = await editButton.count() > 0;
-    
-    if (!editExists) {
-      console.log('✓ Edit functionality not implemented yet - skipping test');
-      test.skip();
-      return;
-    }
-    
-    // If edit exists, test it...
+    test.setTimeout(10000);
+
     const testTicketType = {
       name: `E2E Update Test ${Date.now()}`,
       description: 'To be updated',
@@ -127,32 +116,22 @@ test.describe('Ticket Types Management', () => {
     
     await page.reload();
     await page.waitForTimeout(1000);
-    
+
     const rowWithTicketType = page.locator(`.ag-row:has-text("${testTicketType.name}")`);
-    await rowWithTicketType.click();
-    await editButton.click();
-    
+    await expect(rowWithTicketType).toBeVisible();
+    await rowWithTicketType.locator('button[aria-label="Edit ticket type"]').click();
+
+    await expect(page.locator('h2:has-text("Edit Ticket Type")')).toBeVisible();
     await page.fill('textarea[formControlName="description"]', 'Updated by E2E test');
     await page.click('button[type="submit"]');
-    
+
     const updatedTicketType = await testHelper.api.get(`${API_CONFIG.endpoints.ticketTypes}/${createdTicketTypeId}`);
     expect(updatedTicketType.description).toBe('Updated by E2E test');
   });
 
   test('should delete a ticket type via UI and verify removal', async ({ page, testHelper }) => {
-    test.setTimeout(5000);
-    
-    // Check if delete functionality exists in the UI
-    const deleteButton = page.locator('button:has-text("Delete")').first();
-    const deleteExists = await deleteButton.count() > 0;
-    
-    if (!deleteExists) {
-      console.log('✓ Delete functionality not implemented yet - skipping test');
-      test.skip();
-      return;
-    }
-    
-    // If delete exists, test it...
+    test.setTimeout(10000);
+
     const testTicketType = {
       name: `E2E Delete Test ${Date.now()}`,
       description: 'To be deleted',
@@ -165,15 +144,16 @@ test.describe('Ticket Types Management', () => {
     
     await page.reload();
     await page.waitForTimeout(1000);
-    
+
     const rowWithTicketType = page.locator(`.ag-row:has-text("${testTicketType.name}")`);
-    await rowWithTicketType.click();
-    
-    page.on('dialog', dialog => dialog.accept());
-    await deleteButton.click();
-    
+    await expect(rowWithTicketType).toBeVisible();
+    await rowWithTicketType.locator('button[aria-label="Delete ticket type"]').click();
+
+    await expect(page.locator('h2:has-text("Delete Ticket Type")')).toBeVisible();
+    await page.click('button:has-text("Delete Ticket Type")');
+
     await expect(page.locator(`.ag-cell:has-text("${testTicketType.name}")`)).not.toBeVisible();
-    
+
     try {
       await testHelper.api.get(`${API_CONFIG.endpoints.ticketTypes}/${createdTicketTypeId}`);
       expect(true).toBe(false);

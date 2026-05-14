@@ -98,6 +98,17 @@ public class TicketRepository : ITicketRepository
         return result.DeletedCount > 0;
     }
 
+    public async Task<long> DeleteByTicketTypeIdAsync(string ticketTypeId, string tenantId, CancellationToken cancellationToken = default)
+    {
+        var filter = Builders<DbEntity.Ticket>.Filter.And(
+            Builders<DbEntity.Ticket>.Filter.Eq(x => x.TicketTypeId, ticketTypeId),
+            Builders<DbEntity.Ticket>.Filter.Eq(x => x.TenantId, tenantId)
+        );
+        var result = await _collection.DeleteManyAsync(filter, cancellationToken);
+
+        return result.DeletedCount;
+    }
+
     public async Task<bool> ExistsAsync(string ticketId, string tenantId, CancellationToken cancellationToken = default)
     {
         var filter = Builders<DbEntity.Ticket>.Filter.And(

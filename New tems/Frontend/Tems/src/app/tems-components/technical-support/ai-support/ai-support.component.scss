@@ -296,13 +296,13 @@ html.dark .composer-input::placeholder,
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  padding: 1rem 1.25rem;
+  padding: 1rem 0.25rem;
   text-align: left;
   transition: background 160ms ease;
 }
 
 .history-row:hover:not(:disabled) {
-  background: #f9fafb;
+  background: rgba(15, 23, 42, 0.02);
 }
 
 html.dark .history-row:hover:not(:disabled),
@@ -312,6 +312,7 @@ html.dark .history-row:hover:not(:disabled),
 
 .history-row.is-active {
   background: rgba(0, 122, 255, 0.08);
+  border-radius: 0.9rem;
 }
 
 html.dark .history-row.is-active,

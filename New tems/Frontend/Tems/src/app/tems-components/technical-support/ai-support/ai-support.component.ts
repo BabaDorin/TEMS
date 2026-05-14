@@ -30,6 +30,7 @@ interface ChatMessage {
   styleUrls: ['./ai-support.component.scss']
 })
 export class AiSupportComponent implements OnInit, OnDestroy {
+  private static readonly historyPageSize = 10;
   @ViewChild('conversationViewport') private conversationViewport?: ElementRef<HTMLDivElement>;
 
   public activeTab: AiSupportTab = 'chat';
@@ -44,6 +45,7 @@ export class AiSupportComponent implements OnInit, OnDestroy {
   public historyError: string | null = null;
   public conversationError: string | null = null;
   public conversations: AiSupportConversationSummary[] = [];
+  public visibleConversationCount = AiSupportComponent.historyPageSize;
   public messages: ChatMessage[] = [this.createWelcomeMessage()];
 
   private activeStream?: Subscription;
@@ -298,6 +300,21 @@ export class AiSupportComponent implements OnInit, OnDestroy {
     }).format(date);
   }
 
+  get visibleConversations(): AiSupportConversationSummary[] {
+    return this.conversations.slice(0, this.visibleConversationCount);
+  }
+
+  get canLoadMoreConversations(): boolean {
+    return this.visibleConversationCount < this.conversations.length;
+  }
+
+  loadMoreConversations(): void {
+    this.visibleConversationCount = Math.min(
+      this.visibleConversationCount + AiSupportComponent.historyPageSize,
+      this.conversations.length
+    );
+  }
+
   renderMarkdown(text: string): string {
     if (!text) {
       return '';
@@ -406,6 +423,10 @@ export class AiSupportComponent implements OnInit, OnDestroy {
       next: (conversations) => {
         this.isLoadingConversations = false;
         this.conversations = conversations;
+        this.visibleConversationCount = Math.min(
+          Math.max(this.visibleConversationCount, AiSupportComponent.historyPageSize),
+          conversations.length || AiSupportComponent.historyPageSize
+        );
 
         if (this.activeConversationId && !conversations.some(item => item.conversationId === this.activeConversationId)) {
           this.resetComposerState();
@@ -420,14 +441,15 @@ export class AiSupportComponent implements OnInit, OnDestroy {
   }
 
   private applyConversationDetail(conversation: AiSupportConversationDetail, syncRoute: boolean): void {
+    const normalizedConversation = this.normalizeConversationSummary(conversation);
     this.activeConversationId = conversation.conversationId;
-    this.activeConversationTitle = conversation.title || 'Conversation';
+    this.activeConversationTitle = normalizedConversation.title;
     this.activeConversationCreatedAt = conversation.createdAt;
     this.messages = conversation.messages.length
       ? conversation.messages.map(message => this.toChatMessage(message))
       : [this.createWelcomeMessage()];
 
-    this.mergeConversationSummary(conversation);
+    this.mergeConversationSummary(normalizedConversation);
 
     if (syncRoute) {
       this.syncRouteConversationId(conversation.conversationId);
@@ -437,26 +459,32 @@ export class AiSupportComponent implements OnInit, OnDestroy {
   }
 
   private applyConversationSummary(conversation: AiSupportConversationSummary, syncRoute: boolean): void {
-    this.activeConversationId = conversation.conversationId;
-    this.activeConversationTitle = conversation.title || 'Conversation';
-    this.activeConversationCreatedAt = conversation.createdAt;
-    this.mergeConversationSummary(conversation);
+    const normalizedConversation = this.normalizeConversationSummary(conversation);
+    this.activeConversationId = normalizedConversation.conversationId;
+    this.activeConversationTitle = normalizedConversation.title;
+    this.activeConversationCreatedAt = normalizedConversation.createdAt;
+    this.mergeConversationSummary(normalizedConversation);
 
     if (syncRoute) {
-      this.syncRouteConversationId(conversation.conversationId);
+      this.syncRouteConversationId(normalizedConversation.conversationId);
     }
   }
 
   private mergeConversationSummary(conversation: AiSupportConversationSummary): void {
+    const normalizedConversation = this.normalizeConversationSummary(conversation);
     const next = [...this.conversations];
-    const existingIndex = next.findIndex(item => item.conversationId === conversation.conversationId);
+    const existingIndex = next.findIndex(item => item.conversationId === normalizedConversation.conversationId);
 
     if (existingIndex >= 0) {
       next.splice(existingIndex, 1);
     }
 
-    next.unshift(conversation);
+    next.unshift(normalizedConversation);
     this.conversations = next;
+    this.visibleConversationCount = Math.min(
+      Math.max(this.visibleConversationCount, AiSupportComponent.historyPageSize),
+      this.conversations.length
+    );
   }
 
   private resetComposerState(): void {
@@ -486,6 +514,74 @@ export class AiSupportComponent implements OnInit, OnDestroy {
       state: 'done',
       createdAt: message.createdAt
     };
+  }
+
+  private normalizeConversationSummary(conversation: AiSupportConversationSummary): AiSupportConversationSummary {
+    const existingConversation = this.conversations.find(
+      (item) => item.conversationId === conversation.conversationId
+    );
+    const normalizedTitle = this.resolveConversationTitle(conversation.title);
+    const normalizedCreatedAt = this.resolveConversationCreatedAt(conversation.createdAt, existingConversation?.createdAt);
+    const normalizedMessageCount = this.resolveConversationMessageCount(conversation.messageCount, existingConversation?.messageCount);
+
+    return {
+      ...conversation,
+      title: normalizedTitle,
+      createdAt: normalizedCreatedAt,
+      updatedAt: conversation.updatedAt || existingConversation?.updatedAt || normalizedCreatedAt,
+      messageCount: normalizedMessageCount
+    };
+  }
+
+  private resolveConversationTitle(title: string | null | undefined): string {
+    const trimmedTitle = (title || '').trim();
+    if (trimmedTitle && trimmedTitle.toLowerCase() !== 'conversation') {
+      return trimmedTitle;
+    }
+
+    const firstUserMessage = this.messages.find((message) => message.role === 'user' && message.content.trim().length > 0);
+    if (!firstUserMessage) {
+      return 'Conversation';
+    }
+
+    const compactTitle = firstUserMessage.content.replace(/\s+/g, ' ').trim();
+    return compactTitle.length > 80 ? `${compactTitle.slice(0, 77).trimEnd()}...` : compactTitle;
+  }
+
+  private resolveConversationCreatedAt(
+    createdAt: string | null | undefined,
+    existingCreatedAt?: string | null
+  ): string {
+    if (createdAt && !Number.isNaN(new Date(createdAt).getTime())) {
+      return createdAt;
+    }
+
+    if (existingCreatedAt && !Number.isNaN(new Date(existingCreatedAt).getTime())) {
+      return existingCreatedAt;
+    }
+
+    const firstMessageDate = this.messages.find((message) => !!message.createdAt)?.createdAt;
+    if (firstMessageDate && !Number.isNaN(new Date(firstMessageDate).getTime())) {
+      return firstMessageDate;
+    }
+
+    return new Date().toISOString();
+  }
+
+  private resolveConversationMessageCount(
+    messageCount: number | null | undefined,
+    existingMessageCount?: number | null
+  ): number {
+    if (typeof messageCount === 'number' && messageCount > 0) {
+      return messageCount;
+    }
+
+    if (typeof existingMessageCount === 'number' && existingMessageCount > 0) {
+      return existingMessageCount;
+    }
+
+    const persistedMessagesCount = this.messages.filter((message) => message.state === 'done' && message.content.trim().length > 0).length;
+    return persistedMessagesCount > 0 ? persistedMessagesCount : 0;
   }
 
   private syncRouteConversationId(conversationId: string | null): void {

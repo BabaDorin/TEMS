@@ -40,8 +40,9 @@ export class TicketDetailComponent implements OnInit {
   messages: TicketMessage[] = [];
   internalNotes: TicketMessage[] = [];
   newMessageContent = '';
-  activeMainTab: 'details' | 'chat' | 'history' = 'details';
+  activeMainTab: 'details' | 'approval' | 'chat' | 'history' = 'details';
   activeChatTab: 'messages' | 'notes' = 'messages';
+  aiSummaryExpanded = false;
   isLoadingTicket = true;
   isLoadingMessages = false;
   isSendingMessage = false;
@@ -53,6 +54,7 @@ export class TicketDetailComponent implements OnInit {
   currentUserLabel = 'You';
   private currentUserIdentifiers = new Set<string>();
   private approverDisplayNames = new Map<string, string>();
+  private messageSenderDisplayNames = new Map<string, string>();
   private aiSummaryPollHandle: ReturnType<typeof setInterval> | null = null;
   private aiSummaryPollTicketId: string | null = null;
   private aiSummaryPollExpiresAt = 0;
@@ -537,6 +539,10 @@ export class TicketDetailComponent implements OnInit {
     return this.approverDisplayNames.get(userId) || userId;
   }
 
+  hasMultipleApprovalGates(): boolean {
+    return (this.ticket?.approvalGates?.length || 0) > 1;
+  }
+
   isCurrentUserApprover(gate: ApprovalGate): boolean {
     return (gate.approvers || []).some((approver) => this.matchesCurrentUser(approver.userId));
   }
@@ -544,6 +550,17 @@ export class TicketDetailComponent implements OnInit {
   getCurrentUserGateStatus(gate: ApprovalGate): string {
     const approver = (gate.approvers || []).find((item) => this.matchesCurrentUser(item.userId));
     return approver?.status || '';
+  }
+
+  hasPendingApprovalAction(): boolean {
+    return (this.ticket?.approvalGates || []).some((gate) => {
+      if (!this.isCurrentUserApprover(gate)) {
+        return false;
+      }
+
+      const status = this.normalizeIdentity(this.getCurrentUserGateStatus(gate));
+      return status !== 'approved' && status !== 'rejected' && status !== 'not-approved';
+    });
   }
 
   trackByGateId(index: number, gate: ApprovalGate): string {
@@ -575,6 +592,35 @@ export class TicketDetailComponent implements OnInit {
         },
         error: () => {
           this.approverDisplayNames.set(userId, userId);
+        }
+      });
+    });
+  }
+
+  private resolveMessageUsers(messages: TicketMessage[]): void {
+    const userIds = new Set<string>();
+
+    messages.forEach((message) => {
+      if (!message.senderId || message.senderType === 'AI_SYSTEM' || this.matchesCurrentUser(message.senderId)) {
+        return;
+      }
+
+      if (!this.messageSenderDisplayNames.has(message.senderId)) {
+        userIds.add(message.senderId);
+      }
+    });
+
+    userIds.forEach((userId) => {
+      this.userService.getUserPreviewById(userId).subscribe({
+        next: (user) => {
+          const displayName = [user.firstName, user.lastName].filter((part) => !!part && part.trim().length > 0).join(' ')
+            || user.username
+            || user.email
+            || 'Unknown user';
+          this.messageSenderDisplayNames.set(userId, displayName);
+        },
+        error: () => {
+          this.messageSenderDisplayNames.set(userId, 'Unknown user');
         }
       });
     });
@@ -632,6 +678,10 @@ export class TicketDetailComponent implements OnInit {
     return isIncident && (isHardwareIssue || isNetworkIssue);
   }
 
+  shouldShowAiSummarySection(): boolean {
+    return !!this.ticket?.aiSummary?.trim() || this.shouldPollForAiSummary();
+  }
+
   private clearAiSummaryPolling(): void {
     if (this.aiSummaryPollHandle) {
       clearInterval(this.aiSummaryPollHandle);
@@ -643,6 +693,7 @@ export class TicketDetailComponent implements OnInit {
 
   loadMessages(ticketId: string): void {
     this.isLoadingMessages = true;
+    this.messageSenderDisplayNames.clear();
     this.ticketService.getMessages(ticketId).subscribe({
       next: (conversation) => {
         const allMessages = conversation.messages || [];
@@ -654,6 +705,7 @@ export class TicketDetailComponent implements OnInit {
           .filter(m => m.isInternalNote)
           .map((m) => this.normalizeMessage(m))
           .sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
+        this.resolveMessageUsers(allMessages);
         this.isLoadingMessages = false;
       },
       error: (error) => {
@@ -841,7 +893,7 @@ export class TicketDetailComponent implements OnInit {
   getSenderLabel(message: TicketMessage): string {
     if (this.isOwnMessage(message)) return this.currentUserLabel;
     if (message.senderType === 'AI_SYSTEM') return 'System';
-    return message.senderId || 'Unknown';
+    return this.messageSenderDisplayNames.get(message.senderId) || 'Unknown user';
   }
 
   getSenderInitial(message: TicketMessage): string {
@@ -852,6 +904,10 @@ export class TicketDetailComponent implements OnInit {
 
   trackByMessageId(_: number, message: TicketMessage): string {
     return message.messageId || this.buildMessageId(message);
+  }
+
+  canEditMessage(message: TicketMessage): boolean {
+    return this.isOwnMessage(message) && !!message.messageId;
   }
 
   startEditingMessage(message: TicketMessage): void {

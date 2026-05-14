@@ -2,16 +2,18 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AttributeDefinition } from '../../../models/ticket/ticket-type.model';
+import { CustomSelectComponent, SelectOption } from 'src/app/shared/custom-select/custom-select.component';
 
 @Component({
   selector: 'app-attribute-builder',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, CustomSelectComponent],
   templateUrl: './attribute-builder.html',
   styleUrl: './attribute-builder.scss',
 })
 export class AttributeBuilder {
   @Input() attributes: AttributeDefinition[] = [];
   @Output() attributesChange = new EventEmitter<AttributeDefinition[]>();
+  maxAttributes = 50;
 
   dataTypes = [
     { value: 'STRING', label: 'Text' },
@@ -19,9 +21,12 @@ export class AttributeBuilder {
     { value: 'DROPDOWN', label: 'Dropdown' }
   ];
 
+  get dataTypeOptions(): SelectOption[] {
+    return this.dataTypes.map((type) => ({ value: type.value, label: type.label }));
+  }
+
   addAttribute(): void {
-    if (this.attributes.length >= 50) {
-      alert('Maximum 50 attributes allowed');
+    if (this.attributes.length >= this.maxAttributes) {
       return;
     }
 

@@ -45,7 +45,10 @@ export interface CreateTicketTypeRequest {
 }
 
 export interface UpdateTicketTypeRequest {
-  name?: string;
-  description?: string;
-  isActive?: boolean;
+  name: string;
+  description: string;
+  itilCategory: string;
+  version: number;
+  workflowConfig: WorkflowConfig;
+  attributeDefinitions: AttributeDefinition[];
 }

@@ -105,6 +105,28 @@ public class TicketConversationRepository : ITicketConversationRepository
         return result.ModifiedCount > 0;
     }
 
+    public async Task<bool> DeleteByTicketIdAsync(string ticketId, CancellationToken cancellationToken = default)
+    {
+        var filter = Builders<DbEntity.TicketConversation>.Filter.Eq(x => x.TicketId, ticketId);
+        var result = await _collection.DeleteOneAsync(filter, cancellationToken);
+        return result.DeletedCount > 0;
+    }
+
+    public async Task<long> DeleteByTicketIdsAsync(IEnumerable<string> ticketIds, CancellationToken cancellationToken = default)
+    {
+        var ids = ticketIds
+            .Where(id => !string.IsNullOrWhiteSpace(id))
+            .Distinct(StringComparer.Ordinal)
+            .ToList();
+
+        if (ids.Count == 0)
+            return 0;
+
+        var filter = Builders<DbEntity.TicketConversation>.Filter.In(x => x.TicketId, ids);
+        var result = await _collection.DeleteManyAsync(filter, cancellationToken);
+        return result.DeletedCount;
+    }
+
     public async Task<bool> ExistsAsync(string ticketId, CancellationToken cancellationToken = default)
     {
         var filter = Builders<DbEntity.TicketConversation>.Filter.Eq(x => x.TicketId, ticketId);

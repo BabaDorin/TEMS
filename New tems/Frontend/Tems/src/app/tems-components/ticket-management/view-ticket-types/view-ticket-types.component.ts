@@ -5,9 +5,18 @@ import { AgGridAngular } from 'ag-grid-angular';
 import { ColDef, GridApi, GridReadyEvent } from 'ag-grid-community';
 import { TicketTypeService } from 'src/app/services/ticket-type.service';
 import { ThemeService } from 'src/app/services/theme.service';
-import { TicketType, CreateTicketTypeRequest, AttributeDefinition } from 'src/app/models/ticket/ticket-type.model';
+import {
+  AttributeDefinition,
+  CreateTicketTypeRequest,
+  TicketType,
+  UpdateTicketTypeRequest
+} from 'src/app/models/ticket/ticket-type.model';
 import { TicketManagementStateService } from 'src/app/state/ticket-management.state';
 import { AttributeBuilder } from 'src/app/components/ticket-type/attribute-builder/attribute-builder';
+import { TokenService } from 'src/app/services/token.service';
+import { CustomSelectComponent, SelectOption } from 'src/app/shared/custom-select/custom-select.component';
+
+type TicketTypeModalMode = 'create' | 'edit';
 
 @Component({
   selector: 'app-view-ticket-types',
@@ -16,7 +25,8 @@ import { AttributeBuilder } from 'src/app/components/ticket-type/attribute-build
     CommonModule,
     ReactiveFormsModule,
     AgGridAngular,
-    AttributeBuilder
+    AttributeBuilder,
+    CustomSelectComponent
   ],
   templateUrl: './view-ticket-types.component.html',
   styleUrls: ['./view-ticket-types.component.scss']
@@ -24,20 +34,34 @@ import { AttributeBuilder } from 'src/app/components/ticket-type/attribute-build
 export class ViewTicketTypesComponent implements OnInit {
   rowData: TicketType[] = [];
   gridApi!: GridApi;
-  showCreateModal = false;
+  showTypeFormModal = false;
   showDetailsModal = false;
+  showDeleteModal = false;
   selectedTicketType: TicketType | null = null;
-  createForm!: FormGroup;
+  ticketTypePendingDelete: TicketType | null = null;
+  typeForm!: FormGroup;
   isSubmitting = false;
+  isDeleteSubmitting = false;
   gridReady = false;
   attributeDefinitions: AttributeDefinition[] = [];
+  validationMessage = '';
+  formModalMode: TicketTypeModalMode = 'create';
+  canManageTickets = false;
+  itilCategoryOptions: SelectOption[] = [
+    { value: 'INCIDENT', label: 'Incident' },
+    { value: 'PROBLEM', label: 'Problem' },
+    { value: 'CHANGE', label: 'Change Request' },
+    { value: 'REQUEST', label: 'Service Request' },
+    { value: 'SECURITY_INCIDENT', label: 'Security Incident' },
+    { value: 'ALERT', label: 'Alert / Event' }
+  ];
 
   columnDefs: ColDef[] = [
     {
       headerName: 'Name',
       field: 'name',
       flex: 2,
-      minWidth: 200,
+      minWidth: 150,
       cellClass: 'font-medium'
     },
     {
@@ -47,57 +71,46 @@ export class ViewTicketTypesComponent implements OnInit {
       minWidth: 150
     },
     {
-      headerName: 'Version',
-      field: 'version',
-      flex: 0.5,
-      minWidth: 80,
-      type: 'numericColumn'
-    },
-    {
-      headerName: 'Status',
-      field: 'isActive',
-      flex: 0.7,
-      minWidth: 100,
-      cellRenderer: (params: any) => {
-        const isActive = params.value;
-        const className = isActive ? 'text-green-600' : 'text-gray-600';
-        return `<span class="${className}">${isActive ? 'Active' : 'Inactive'}</span>`;
-      }
-    },
-    {
       headerName: 'Created',
       field: 'createdAt',
       flex: 1,
       minWidth: 150,
       valueFormatter: (params) => {
         if (!params.value) return '';
-        return new Date(params.value).toLocaleDateString();
+        return new Date(params.value).toLocaleDateString('en-GB', {
+          day: '2-digit',
+          month: 'short',
+          year: 'numeric'
+        });
       }
     },
     {
       headerName: 'Actions',
       field: 'ticketTypeId',
-      flex: 0.7,
-      minWidth: 100,
+      flex: 0.9,
+      minWidth: 132,
       sortable: false,
       filter: false,
-      cellRenderer: (params: any) => {
-        return `
-          <div class="flex items-center justify-center h-full">
-            <button class="action-view-btn text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 cursor-pointer" title="Quick preview" aria-label="Quick preview">
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                <path d="M1.333 8s2.667-4 6.667-4 6.667 4 6.667 4-2.667 4-6.667 4-6.667-4-6.667-4Z" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
-                <circle cx="8" cy="8" r="2" stroke="currentColor" stroke-width="1.4"/>
-              </svg>
-            </button>
-          </div>
-        `;
-      },
+      cellRenderer: () => this.renderActionsCell(),
       onCellClicked: (params) => {
         const target = params.event?.target as HTMLElement;
+
         if (target?.closest('.action-view-btn')) {
-          this.selectedTicketType = params.data;
-          this.showDetailsModal = true;
+          this.openDetailsModal(params.data);
+          return;
+        }
+
+        if (!this.canManageTickets) {
+          return;
+        }
+
+        if (target?.closest('.action-edit-btn')) {
+          this.openEditModal(params.data);
+          return;
+        }
+
+        if (target?.closest('.action-delete-btn')) {
+          this.openDeleteModal(params.data);
         }
       }
     }
@@ -114,15 +127,28 @@ export class ViewTicketTypesComponent implements OnInit {
     return this.themeService.isDarkMode ? 'ag-theme-quartz-dark' : 'ag-theme-quartz';
   }
 
+  get formModalTitle(): string {
+    return this.formModalMode === 'create' ? 'Create Ticket Type' : 'Edit Ticket Type';
+  }
+
+  get formSubmitLabel(): string {
+    if (this.isSubmitting) {
+      return this.formModalMode === 'create' ? 'Creating...' : 'Saving...';
+    }
+
+    return this.formModalMode === 'create' ? 'Create Ticket Type' : 'Save Changes';
+  }
+
   constructor(
     private ticketTypeService: TicketTypeService,
     private stateService: TicketManagementStateService,
     private fb: FormBuilder,
-    private themeService: ThemeService
+    private themeService: ThemeService,
+    private tokenService: TokenService
   ) {
     this.initializeForm();
-    
-    // React to state changes using Angular signals effect
+    this.canManageTickets = this.tokenService.canManageTickets();
+
     effect(() => {
       const ticketTypes = this.stateService.ticketTypes();
       this.rowData = ticketTypes || [];
@@ -136,12 +162,11 @@ export class ViewTicketTypesComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // Load data only if not already cached
     this.loadTicketTypes();
   }
 
   initializeForm(): void {
-    this.createForm = this.fb.group({
+    this.typeForm = this.fb.group({
       name: ['', Validators.required],
       description: ['', Validators.required],
       itilCategory: ['', Validators.required],
@@ -150,7 +175,6 @@ export class ViewTicketTypesComponent implements OnInit {
   }
 
   loadTicketTypes(): void {
-    // The service will return cached data if available
     this.ticketTypeService.getAll().subscribe();
   }
 
@@ -158,8 +182,7 @@ export class ViewTicketTypesComponent implements OnInit {
     this.gridApi = params.api;
     this.gridReady = true;
     this.gridApi.sizeColumnsToFit();
-    
-    // Ensure we show empty state if no data
+
     if (!this.rowData || this.rowData.length === 0) {
       this.gridApi.showNoRowsOverlay();
     }
@@ -167,21 +190,62 @@ export class ViewTicketTypesComponent implements OnInit {
 
   onRowClicked(event: any): void {
     const target = event.event?.target as HTMLElement;
-    if (!target?.closest('.action-view-btn')) {
-      this.selectedTicketType = event.data;
-      this.showDetailsModal = true;
+    if (!target?.closest('.ticket-type-action-btn')) {
+      this.openDetailsModal(event.data);
     }
   }
 
   openCreateModal(): void {
-    this.showCreateModal = true;
-    this.createForm.reset();
+    if (!this.canManageTickets) {
+      return;
+    }
+
+    this.formModalMode = 'create';
+    this.selectedTicketType = null;
+    this.validationMessage = '';
+    this.attributeDefinitions = [];
+    this.typeForm.reset({
+      name: '',
+      description: '',
+      itilCategory: '',
+      initialStateId: ''
+    });
+    this.showTypeFormModal = true;
   }
 
-  closeCreateModal(): void {
-    this.showCreateModal = false;
-    this.createForm.reset();
+  openEditModal(ticketType: TicketType): void {
+    if (!this.canManageTickets) {
+      return;
+    }
+
+    this.formModalMode = 'edit';
+    this.selectedTicketType = ticketType;
+    this.validationMessage = '';
+    this.attributeDefinitions = this.cloneAttributes(ticketType.attributeDefinitions || []);
+    this.typeForm.reset({
+      name: ticketType.name,
+      description: ticketType.description,
+      itilCategory: ticketType.itilCategory,
+      initialStateId: ticketType.workflowConfig?.initialStateId || ''
+    });
+    this.showTypeFormModal = true;
+  }
+
+  closeTypeFormModal(): void {
+    this.showTypeFormModal = false;
+    this.isSubmitting = false;
+    this.validationMessage = '';
     this.attributeDefinitions = [];
+    this.typeForm.reset();
+
+    if (this.formModalMode === 'create') {
+      this.selectedTicketType = null;
+    }
+  }
+
+  openDetailsModal(ticketType: TicketType): void {
+    this.selectedTicketType = ticketType;
+    this.showDetailsModal = true;
   }
 
   closeDetailsModal(): void {
@@ -189,75 +253,163 @@ export class ViewTicketTypesComponent implements OnInit {
     this.selectedTicketType = null;
   }
 
+  openDeleteModal(ticketType: TicketType): void {
+    if (!this.canManageTickets) {
+      return;
+    }
+
+    this.ticketTypePendingDelete = ticketType;
+    this.showDeleteModal = true;
+  }
+
+  closeDeleteModal(): void {
+    this.showDeleteModal = false;
+    this.ticketTypePendingDelete = null;
+    this.isDeleteSubmitting = false;
+  }
+
   onSubmit(): void {
-    if (this.createForm.invalid || this.isSubmitting) {
+    if (this.typeForm.invalid || this.isSubmitting) {
+      this.typeForm.markAllAsTouched();
       return;
     }
 
-    // Validate dropdown attributes have options
-    const invalidDropdown = this.attributeDefinitions.find(
-      attr => attr.dataType === 'DROPDOWN' && (!attr.options || attr.options.length === 0)
-    );
-    
-    if (invalidDropdown) {
-      alert(`Dropdown attribute "${invalidDropdown.label}" must have at least one option.`);
+    const validationMessage = this.validateAttributes();
+    if (validationMessage) {
+      this.validationMessage = validationMessage;
       return;
     }
 
-    // Validate all attributes have required fields
-    const invalidAttribute = this.attributeDefinitions.find(
-      attr => !attr.key || !attr.label || !attr.dataType
-    );
-    
-    if (invalidAttribute) {
-      alert('All attributes must have a key, label, and data type.');
-      return;
-    }
-
+    this.validationMessage = '';
     this.isSubmitting = true;
-    const formValue = this.createForm.value;
 
-    const request: CreateTicketTypeRequest = {
+    const formValue = this.typeForm.getRawValue();
+    const workflowConfig = {
+      states: this.buildManagedWorkflowStates(),
+      initialStateId: formValue.initialStateId
+    };
+
+    if (this.formModalMode === 'create') {
+      const request: CreateTicketTypeRequest = {
+        name: formValue.name,
+        description: formValue.description,
+        itilCategory: formValue.itilCategory,
+        workflowConfig,
+        attributeDefinitions: this.cloneAttributes(this.attributeDefinitions)
+      };
+
+      this.ticketTypeService.create(request).subscribe({
+        next: () => {
+          this.ticketTypeService.getAll(true).subscribe();
+          this.closeTypeFormModal();
+        },
+        error: (error) => {
+          console.error('Error creating ticket type:', error);
+          this.validationMessage = 'Failed to create ticket type. Please review the form and try again.';
+          this.isSubmitting = false;
+        }
+      });
+      return;
+    }
+
+    if (!this.selectedTicketType) {
+      this.validationMessage = 'No ticket type selected for editing.';
+      this.isSubmitting = false;
+      return;
+    }
+
+    const request: UpdateTicketTypeRequest = {
       name: formValue.name,
       description: formValue.description,
       itilCategory: formValue.itilCategory,
-      workflowConfig: {
-        states: this.buildManagedWorkflowStates(),
-        initialStateId: formValue.initialStateId
-      },
-      attributeDefinitions: this.attributeDefinitions
+      version: this.selectedTicketType.version,
+      workflowConfig,
+      attributeDefinitions: this.cloneAttributes(this.attributeDefinitions)
     };
 
-    this.ticketTypeService.create(request).subscribe({
-      next: (response) => {
-        console.log('Ticket type created:', response);
-        // Reload data from API (will update state)
+    this.ticketTypeService.update(this.selectedTicketType.ticketTypeId, request).subscribe({
+      next: () => {
         this.ticketTypeService.getAll(true).subscribe();
-        this.closeCreateModal();
-        this.isSubmitting = false;
+        this.closeTypeFormModal();
       },
       error: (error) => {
-        console.error('Error creating ticket type:', error);
-        alert('Failed to create ticket type. Please check the form and try again.');
+        console.error('Error updating ticket type:', error);
+        this.validationMessage = 'Failed to save ticket type changes. Please try again.';
         this.isSubmitting = false;
       }
     });
   }
 
-  deleteTicketType(id: string): void {
-    if (!confirm('Are you sure you want to delete this ticket type?')) {
+  confirmDelete(): void {
+    if (!this.ticketTypePendingDelete || this.isDeleteSubmitting) {
       return;
     }
 
-    this.ticketTypeService.delete(id).subscribe({
+    this.isDeleteSubmitting = true;
+    this.ticketTypeService.delete(this.ticketTypePendingDelete.ticketTypeId).subscribe({
       next: () => {
-        console.log('Ticket type deleted');
-        // State is automatically updated by the service
+        this.ticketTypeService.getAll(true).subscribe();
+        this.closeDeleteModal();
       },
       error: (error) => {
         console.error('Error deleting ticket type:', error);
+        this.isDeleteSubmitting = false;
       }
     });
+  }
+
+  private validateAttributes(): string {
+    const invalidDropdown = this.attributeDefinitions.find(
+      (attr) => attr.dataType === 'DROPDOWN' && (!attr.options || attr.options.every((option) => !option.trim()))
+    );
+
+    if (invalidDropdown) {
+      return `Dropdown attribute "${invalidDropdown.label || invalidDropdown.key || 'Untitled'}" must have at least one option.`;
+    }
+
+    const invalidAttribute = this.attributeDefinitions.find(
+      (attr) => !attr.key?.trim() || !attr.label?.trim() || !attr.dataType
+    );
+
+    if (invalidAttribute) {
+      return 'Each attribute needs a key, label, and data type before saving.';
+    }
+
+    return '';
+  }
+
+  private renderActionsCell(): string {
+    const manageActions = this.canManageTickets ? `
+      <button class="ticket-type-action-btn action-edit-btn" title="Edit ticket type" aria-label="Edit ticket type">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+          <path d="M11.333 2.001a1.414 1.414 0 0 1 2 2L6 11.334 3.333 12l.666-2.667 7.334-7.332Z" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <button class="ticket-type-action-btn action-delete-btn" title="Delete ticket type" aria-label="Delete ticket type">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+          <path d="M2.667 4h10.666M6.667 6.667v4.666M9.333 6.667v4.666M4 4.667l.333 7A1.333 1.333 0 0 0 5.666 13h4.668a1.333 1.333 0 0 0 1.333-1.333l.333-7M6 4V2.667h4V4" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    ` : '';
+
+    return `
+      <div class="ticket-type-actions-cell">
+        <button class="ticket-type-action-btn action-view-btn" title="Preview ticket type" aria-label="Preview ticket type">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+            <path d="M1.333 8s2.667-4 6.667-4 6.667 4 6.667 4-2.667 4-6.667 4-6.667-4-6.667-4Z" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="8" cy="8" r="2" stroke="currentColor" stroke-width="1.35"/>
+          </svg>
+        </button>
+        ${manageActions}
+      </div>
+    `;
+  }
+
+  private cloneAttributes(attributes: AttributeDefinition[]): AttributeDefinition[] {
+    return attributes.map((attribute) => ({
+      ...attribute,
+      options: attribute.options ? [...attribute.options] : []
+    }));
   }
 
   private formatWorkflowStateLabel(stateId: string): string {
@@ -271,25 +423,24 @@ export class ViewTicketTypesComponent implements OnInit {
   }
 
   private buildManagedWorkflowStates() {
-    return [
-      {
-        id: 'new',
-        label: 'New',
-        type: 'OPEN' as const,
-        allowedTransitions: ['in-progress', 'closed']
-      },
-      {
-        id: 'in-progress',
-        label: 'In Progress',
-        type: 'WIP' as const,
-        allowedTransitions: ['new', 'closed']
-      },
-      {
-        id: 'closed',
-        label: 'Closed',
-        type: 'CLOSED' as const,
-        allowedTransitions: []
-      }
+    const rawInitialStateId = this.typeForm.get('initialStateId')?.value ?? '';
+    const initialStateId = rawInitialStateId.trim();
+
+    const terminalStates = [
+      { id: 'resolved', type: 'RESOLVED' as const },
+      { id: 'closed', type: 'CLOSED' as const }
     ];
+
+    const orderedStates = [
+      { id: initialStateId, type: 'OPEN' as const },
+      ...terminalStates.filter((state) => state.id !== initialStateId)
+    ];
+
+    return orderedStates.map((state, index) => ({
+      id: state.id,
+      label: this.formatWorkflowStateLabel(state.id),
+      type: state.type,
+      allowedTransitions: orderedStates.slice(index + 1).map((nextState) => nextState.id)
+    }));
   }
 }

@@ -1,12 +1,9 @@
 import { Component, OnInit, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, FormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, FormsModule, Validators } from '@angular/forms';
 import { AgGridAngular } from 'ag-grid-angular';
 import { ColDef, GridApi, GridReadyEvent } from 'ag-grid-community';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
 import { TicketService } from 'src/app/services/ticket.service';
 import { TicketTypeService } from 'src/app/services/ticket-type.service';
 import { TokenService } from 'src/app/services/token.service';
@@ -16,6 +13,7 @@ import { Ticket, CreateTicketRequest, TicketMessage, AddMessageRequest, Approval
 import { TicketType } from 'src/app/models/ticket/ticket-type.model';
 import { UserDto } from 'src/app/models/user/user-management.model';
 import { TicketManagementStateService } from 'src/app/state/ticket-management.state';
+import { CustomSelectComponent, SelectOption } from 'src/app/shared/custom-select/custom-select.component';
 
 @Component({
   selector: 'app-view-tickets',
@@ -25,9 +23,7 @@ import { TicketManagementStateService } from 'src/app/state/ticket-management.st
     ReactiveFormsModule,
     FormsModule,
     AgGridAngular,
-    MatAutocompleteModule,
-    MatFormFieldModule,
-    MatInputModule
+    CustomSelectComponent
   ],
   templateUrl: './view-tickets.component.html',
   styleUrls: ['./view-tickets.component.scss']
@@ -40,7 +36,6 @@ export class ViewTicketsComponent implements OnInit {
   ticketTypes: TicketType[] = [];
   selectedTicketType: TicketType | null = null;
   dynamicAttributeValues: { [key: string]: any } = {};
-  ticketTypeSearch: FormControl<string | null> = new FormControl('');
   gridApi!: GridApi;
   showCreateModal = false;
   showPreviewModal = false;
@@ -65,14 +60,41 @@ export class ViewTicketsComponent implements OnInit {
 
   columnDefs: ColDef[] = [];
 
+  get ticketTypeOptions(): SelectOption[] {
+    return this.ticketTypes.map((type) => ({
+      value: type.ticketTypeId,
+      label: type.name
+    }));
+  }
+
   private buildColumnDefs(): ColDef[] {
     const baseColumns: ColDef[] = [
     {
       headerName: 'ID',
       field: 'humanReadableId',
       flex: 1,
-      minWidth: 120,
+      minWidth: 80,
       cellClass: 'font-medium'
+    },
+    {
+      headerName: 'Priority',
+      field: 'priority',
+      flex: 1,
+      minWidth: 120,
+      cellRenderer: (params: any) => {
+        const priority = params.value;
+        const label = this.getPriorityLabel(priority);
+        const badgeClass = this.getPriorityBadgeClass(priority);
+        const dotClass = this.getPriorityDotClass(priority);
+        return `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold ${badgeClass}"><span class="w-2 h-2 rounded-full ${dotClass}"></span>${label}</span>`;
+      }
+    },
+    {
+      headerName: 'Type',
+      field: 'ticketTypeId',
+      flex: 1.4,
+      minWidth: 170,
+      valueGetter: (params) => this.getTicketTypeName(params.data)
     },
     {
       headerName: 'Title',
@@ -94,26 +116,17 @@ export class ViewTicketsComponent implements OnInit {
       }
     }] : []),
     {
-      headerName: 'Priority',
-      field: 'priority',
-      flex: 1,
-      minWidth: 100,
-      cellRenderer: (params: any) => {
-        const priority = params.value;
-        const label = this.getPriorityLabel(priority);
-        const badgeClass = this.getPriorityBadgeClass(priority);
-        const dotClass = this.getPriorityDotClass(priority);
-        return `<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold ${badgeClass}"><span class="w-2 h-2 rounded-full ${dotClass}"></span>${label}</span>`;
-      }
-    },
-    {
       headerName: 'Created',
       field: 'createdAt',
       flex: 1,
       minWidth: 150,
       valueFormatter: (params) => {
         if (!params.value) return '';
-        return new Date(params.value).toLocaleDateString();
+        return new Date(params.value).toLocaleDateString('en-GB', {
+          day: '2-digit',
+          month: 'short',
+          year: 'numeric'
+        });
       }
     },
     {
@@ -192,6 +205,15 @@ export class ViewTicketsComponent implements OnInit {
       default:
         return 'bg-gray-400';
     }
+  }
+
+  getTicketTypeName(ticket: Ticket | null | undefined): string {
+    if (!ticket?.ticketTypeId) {
+      return '—';
+    }
+
+    const ticketType = this.ticketTypes.find((type) => type.ticketTypeId === ticket.ticketTypeId);
+    return ticketType?.name || '—';
   }
 
   getTicketStatusLabel(stateId: string): string {
@@ -274,10 +296,10 @@ export class ViewTicketsComponent implements OnInit {
 
   getCurrentUserApprovalStatusLabel(ticket: Ticket): string {
     const status = this.getCurrentUserApprovalStatus(ticket);
-    if (status === 'approved') return 'Your status: Approved';
-    if (status === 'rejected') return 'Your status: Rejected';
-    if (status === 'pending') return 'Your status: Not provided yet';
-    return 'Your status: Not provided yet';
+    if (status === 'approved') return 'Approved';
+    if (status === 'rejected') return 'Rejected';
+    if (status === 'pending') return 'Not provided yet';
+    return 'Not provided yet';
   }
 
   getApprovalStatusBadgeClass(status: 'approved' | 'rejected' | 'pending' | ''): string {
@@ -386,6 +408,8 @@ export class ViewTicketsComponent implements OnInit {
       const ticketTypes = this.stateService.ticketTypes();
       // Filter by isActive only if the property exists (backend may not return it)
       this.ticketTypes = ticketTypes?.filter(t => t.isActive !== false) || [];
+      this.refreshColumnDefs();
+      this.gridApi?.refreshCells({ force: true });
     });
   }
 
@@ -443,6 +467,10 @@ export class ViewTicketsComponent implements OnInit {
       title: ['', [Validators.required, Validators.maxLength(50)]],
       summary: ['', [Validators.required, Validators.maxLength(2000)]],
       priority: ['MEDIUM', Validators.required]
+    });
+
+    this.createForm.get('ticketTypeId')?.valueChanges.subscribe((ticketTypeId) => {
+      this.onTicketTypeChange(ticketTypeId);
     });
   }
 
@@ -621,7 +649,6 @@ export class ViewTicketsComponent implements OnInit {
       title: '',
       summary: ''
     });
-    this.ticketTypeSearch.setValue('');
     this.selectedTicketType = null;
     this.dynamicAttributeValues = {};
     
@@ -634,7 +661,6 @@ export class ViewTicketsComponent implements OnInit {
   closeCreateModal(): void {
     this.showCreateModal = false;
     this.createForm.reset();
-    this.ticketTypeSearch.setValue('');
     this.selectedTicketType = null;
     this.dynamicAttributeValues = {};
   }
@@ -647,20 +673,6 @@ export class ViewTicketsComponent implements OnInit {
     return this.selectedTicketType?.attributeDefinitions?.filter(attr => !attr.isPredefined) ?? [];
   }
 
-  get filteredTicketTypes(): TicketType[] {
-    const search = (this.ticketTypeSearch.value || '').toString().trim().toLowerCase();
-    if (!search) {
-      return this.ticketTypes;
-    }
-
-    return this.ticketTypes.filter(type => {
-      const name = (type.name || '').toLowerCase();
-      const description = (type.description || '').toLowerCase();
-      const category = (type.itilCategory || '').toLowerCase();
-      return name.includes(search) || description.includes(search) || category.includes(search);
-    });
-  }
-
   get isSubmitDisabled(): boolean {
     return this.createForm.invalid || this.isSubmitting || (this.hasAdditionalFields && !this.areAllAttributesValid());
   }
@@ -671,41 +683,6 @@ export class ViewTicketsComponent implements OnInit {
     
     if (this.editableAttributeDefinitions.length > 0) {
       this.editableAttributeDefinitions.forEach(attr => {
-        if (attr.dataType === 'BOOL') {
-          this.dynamicAttributeValues[attr.key] = false;
-        } else {
-          this.dynamicAttributeValues[attr.key] = '';
-        }
-      });
-    }
-  }
-
-  onTicketTypeSearchInput(value: string): void {
-    const normalized = value?.trim().toLowerCase() || '';
-    const matchedType = this.ticketTypes.find(type =>
-      type.name.trim().toLowerCase() === normalized ||
-      type.ticketTypeId === value
-    );
-
-    if (!matchedType) {
-      this.selectedTicketType = null;
-      this.createForm.get('ticketTypeId')?.setValue('');
-      this.dynamicAttributeValues = {};
-      return;
-    }
-
-    this.onTicketTypeChange(matchedType.ticketTypeId);
-  }
-
-  onTicketTypeSelected(type: TicketType): void {
-    this.selectedTicketType = type;
-    this.createForm.get('ticketTypeId')?.setValue(type.ticketTypeId);
-    this.ticketTypeSearch.setValue(type.name, { emitEvent: false });
-    this.dynamicAttributeValues = {};
-
-    const editableAttributes = type.attributeDefinitions?.filter(attr => !attr.isPredefined) ?? [];
-    if (editableAttributes.length > 0) {
-      editableAttributes.forEach(attr => {
         if (attr.dataType === 'BOOL') {
           this.dynamicAttributeValues[attr.key] = false;
         } else {

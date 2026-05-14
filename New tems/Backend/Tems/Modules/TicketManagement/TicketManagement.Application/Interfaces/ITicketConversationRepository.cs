@@ -9,5 +9,7 @@ public interface ITicketConversationRepository
     Task<bool> AddMessageAsync(string ticketId, TicketMessage message, CancellationToken cancellationToken = default);
     Task<TicketMessage?> EditMessageAsync(string ticketId, string messageId, string content, CancellationToken cancellationToken = default);
     Task<bool> DeleteMessageAsync(string ticketId, string messageId, CancellationToken cancellationToken = default);
+    Task<bool> DeleteByTicketIdAsync(string ticketId, CancellationToken cancellationToken = default);
+    Task<long> DeleteByTicketIdsAsync(IEnumerable<string> ticketIds, CancellationToken cancellationToken = default);
     Task<bool> ExistsAsync(string ticketId, CancellationToken cancellationToken = default);
 }

@@ -1,19 +1,5 @@
-.chat-surface {
-  background:
-    radial-gradient(circle at top right, rgba(0, 122, 255, 0.06), transparent 40%),
-    radial-gradient(circle at bottom left, rgba(16, 185, 129, 0.05), transparent 42%),
-    #f8fafc;
-}
-
-.dark .chat-surface {
-  background:
-    radial-gradient(circle at top right, rgba(10, 132, 255, 0.14), transparent 42%),
-    radial-gradient(circle at bottom left, rgba(52, 211, 153, 0.1), transparent 45%),
-    #262629;
-}
-
 .chat-scroll {
-  max-height: 26rem;
+  max-height: 25rem;
   overflow-y: auto;
   padding-right: 0.25rem;
 }
@@ -106,4 +92,86 @@
   color: inherit;
   text-decoration: underline;
   text-underline-offset: 2px;
+}
+
+.chat-bubble {
+  border-radius: 1rem;
+  padding: 0.8rem 0.95rem;
+}
+
+.chat-bubble-own {
+  background: #e8f1ff;
+  color: #0f172a;
+}
+
+.chat-bubble-other {
+  background: #f3f4f6;
+  color: #111827;
+}
+
+.dark .chat-bubble-own {
+  background: #1b3a66;
+  color: #ffffff;
+}
+
+.dark .chat-bubble-other {
+  background: #343438;
+  color: #f3f4f6;
+}
+
+.chat-composer {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.75rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+.dark .chat-composer {
+  border-top-color: #48484a;
+}
+
+.chat-composer-input {
+  flex: 1;
+  min-height: 3.5rem;
+  max-height: 7rem;
+  resize: vertical;
+  border: 1px solid #e5e7eb;
+  border-radius: 1rem;
+  background: #f9fafb;
+  color: #111827;
+  padding: 0.75rem 0.9rem;
+}
+
+.chat-composer-input:focus {
+  outline: none;
+  border-color: #007aff;
+  box-shadow: 0 0 0 2px rgba(0, 122, 255, 0.14);
+}
+
+.dark .chat-composer-input {
+  border-color: #4b4b51;
+  background: #2f2f33;
+  color: #ffffff;
+}
+
+.chat-send-btn {
+  height: 2.5rem;
+  min-width: 4.75rem;
+  align-self: flex-end;
+  border: 0;
+  border-radius: 9999px;
+  background: transparent;
+  color: #007aff;
+  font-size: 0.875rem;
+  font-weight: 600;
+  padding: 0 0.35rem;
+}
+
+.chat-send-btn:hover:not(:disabled) {
+  text-decoration: underline;
+}
+
+.dark .chat-send-btn {
+  color: #0a84ff;
 }

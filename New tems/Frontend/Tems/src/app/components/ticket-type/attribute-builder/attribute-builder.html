@@ -1,14 +1,18 @@
 <div class="attribute-builder">
   <div class="attributes-header">
     <h3>Attributes</h3>
-    <button type="button" class="add-button" (click)="addAttribute()" [disabled]="attributes.length >= 50">
+    <button type="button" class="add-button" (click)="addAttribute()" [disabled]="attributes.length >= maxAttributes">
       <span class="plus-icon">+</span>
       Add Attribute
     </button>
   </div>
 
   <div class="attributes-count" *ngIf="attributes.length > 0">
-    {{ attributes.length }} / 50 attributes
+    {{ attributes.length }} / {{ maxAttributes }} attributes
+  </div>
+
+  <div class="limit-note" *ngIf="attributes.length >= maxAttributes">
+    You have reached the maximum of {{ maxAttributes }} custom attributes for this ticket type.
   </div>
 
   <div class="attributes-list">
@@ -43,13 +47,14 @@
 
         <div class="form-group">
           <label>Data Type</label>
-          <select 
-            [(ngModel)]="attribute.dataType" 
+          <app-custom-select
+            [(ngModel)]="attribute.dataType"
             (ngModelChange)="onDataTypeChange(attribute)"
-            class="form-control" 
-            required>
-            <option *ngFor="let type of dataTypes" [value]="type.value">{{ type.label }}</option>
-          </select>
+            [options]="dataTypeOptions"
+            [searchable]="true"
+            [allowEmpty]="false"
+            placeholder="Select data type">
+          </app-custom-select>
         </div>
 
         <div class="form-group checkbox-group">

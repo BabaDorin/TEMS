@@ -1,8 +1,22 @@
 <div class="bg-[#f5f5f7] dark:bg-[#1c1c1e] min-h-0 p-4 transition-colors duration-200">
   <div class="max-w-7xl mx-auto w-full">
     <div class="mb-4">
-      <h1 class="text-2xl font-semibold text-gray-900 dark:text-white" style="letter-spacing: -0.5px;">Ticket Types</h1>
-      <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Manage ticket type configurations.</p>
+      <div class="flex items-start justify-between gap-4">
+        <div>
+          <h1 class="text-2xl font-semibold text-gray-900 dark:text-white" style="letter-spacing: -0.5px;">Ticket Types</h1>
+          <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Manage ticket type configurations.</p>
+        </div>
+        <button
+          *ngIf="canManageTickets"
+          type="button"
+          (click)="openCreateModal()"
+          class="ticket-type-link-button">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+          </svg>
+          Add Ticket Type
+        </button>
+      </div>
     </div>
 
     <div class="bg-white dark:bg-[#2c2c2e] rounded-xl border border-gray-200 dark:border-[#38383a] overflow-hidden">
@@ -10,14 +24,6 @@
         <span class="text-sm text-gray-600 dark:text-gray-400">
           {{ rowData?.length || 0 }} ticket type{{ (rowData?.length || 0) === 1 ? '' : 's' }}
         </span>
-        <button
-          (click)="openCreateModal()"
-          class="tems-btn tems-btn-primary">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-          </svg>
-          Add Ticket Type
-        </button>
       </div>
 
       <ag-grid-angular
@@ -37,220 +43,215 @@
   </div>
 </div>
 
-<!-- Create Modal -->
-<div *ngIf="showCreateModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-  <div class="bg-white dark:bg-[#2c2c2e] rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-    <div class="sticky top-0 bg-white dark:bg-[#2c2c2e] border-b border-gray-200 dark:border-[#38383a] px-6 py-4">
-      <div class="flex items-center justify-between">
-        <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Create Ticket Type</h2>
-        <button (click)="closeCreateModal()" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+<div *ngIf="showTypeFormModal" class="ticket-type-modal-backdrop" (click)="closeTypeFormModal()">
+  <div class="ticket-type-modal-panel ticket-type-modal-panel--create" (click)="$event.stopPropagation()">
+    <form [formGroup]="typeForm" (ngSubmit)="onSubmit()" class="ticket-type-create-card">
+      <div class="ticket-type-create-heading">
+        <div>
+          <h2 class="ticket-type-create-title">{{ formModalTitle }}</h2>
+          <p class="ticket-type-create-subtitle">
+            {{ formModalMode === 'create'
+              ? 'Define how tickets should be categorized, routed, and structured.'
+              : 'Update the ticket type details, workflow, and custom fields.' }}
+          </p>
+        </div>
+        <button type="button" (click)="closeTypeFormModal()" class="ticket-type-modal-close" aria-label="Close modal">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
           </svg>
         </button>
       </div>
-    </div>
 
-    <form [formGroup]="createForm" (ngSubmit)="onSubmit()" class="p-6 space-y-6">
-      <!-- Name -->
-      <div>
-        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Name *</label>
-        <input
-          type="text"
-          formControlName="name"
-          placeholder="e.g., Security Incident"
-          class="w-full px-4 py-2 border border-gray-300 dark:border-[#48484a] dark:bg-[#3a3a3c] dark:text-white rounded-lg focus:ring-2 focus:ring-gray-900 dark:focus:ring-[#007aff] focus:border-transparent"
-          [class.border-red-500]="createForm.get('name')?.invalid && createForm.get('name')?.touched">
-        <p *ngIf="createForm.get('name')?.invalid && createForm.get('name')?.touched" class="text-red-500 text-sm mt-1">
-          Name is required
-        </p>
-      </div>
+      <div class="ticket-type-create-body">
+        <div class="ticket-type-create-fields">
+          <div class="ticket-type-form-grid">
+            <div class="ticket-type-form-field">
+              <label>Name *</label>
+              <input
+                type="text"
+                formControlName="name"
+                placeholder="e.g., Security Incident"
+                class="ticket-type-form-control"
+                [class.ticket-type-form-control--invalid]="typeForm.get('name')?.invalid && typeForm.get('name')?.touched">
+              <p *ngIf="typeForm.get('name')?.invalid && typeForm.get('name')?.touched" class="ticket-type-field-error">
+                Name is required.
+              </p>
+            </div>
 
-      <!-- Description -->
-      <div>
-        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Description *</label>
-        <textarea
-          formControlName="description"
-          rows="3"
-          placeholder="Describe the purpose of this ticket type"
-          class="w-full px-4 py-2 border border-gray-300 dark:border-[#48484a] dark:bg-[#3a3a3c] dark:text-white rounded-lg focus:ring-2 focus:ring-gray-900 dark:focus:ring-[#007aff] focus:border-transparent resize-none"
-          [class.border-red-500]="createForm.get('description')?.invalid && createForm.get('description')?.touched">
-        </textarea>
-        <p *ngIf="createForm.get('description')?.invalid && createForm.get('description')?.touched" class="text-red-500 text-sm mt-1">
-          Description is required
-        </p>
-      </div>
+            <div class="ticket-type-form-field">
+              <label>ITIL Category *</label>
+              <app-custom-select
+                formControlName="itilCategory"
+                [options]="itilCategoryOptions"
+                [searchable]="true"
+                [allowEmpty]="false"
+                placeholder="Select a category">
+              </app-custom-select>
+              <p *ngIf="typeForm.get('itilCategory')?.invalid && typeForm.get('itilCategory')?.touched" class="ticket-type-field-error">
+                Category is required.
+              </p>
+            </div>
+          </div>
 
-      <!-- ITIL Category -->
-      <div>
-        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">ITIL Category *</label>
-        <select
-          formControlName="itilCategory"
-          class="w-full px-4 py-2 border border-gray-300 dark:border-[#48484a] dark:bg-[#3a3a3c] dark:text-white rounded-lg focus:ring-2 focus:ring-gray-900 dark:focus:ring-[#007aff] focus:border-transparent"
-          [class.border-red-500]="createForm.get('itilCategory')?.invalid && createForm.get('itilCategory')?.touched">
-          <option value="">Select a category</option>
-          <option value="INCIDENT">Incident</option>
-          <option value="PROBLEM">Problem</option>
-          <option value="CHANGE">Change Request</option>
-          <option value="REQUEST">Service Request</option>
-          <option value="SECURITY_INCIDENT">Security Incident</option>
-          <option value="ALERT">Alert / Event</option>
-        </select>
-        <p *ngIf="createForm.get('itilCategory')?.invalid && createForm.get('itilCategory')?.touched" class="text-red-500 text-sm mt-1">
-          Category is required
-        </p>
-      </div>
+          <div class="ticket-type-form-field">
+            <label>Description *</label>
+            <textarea
+              formControlName="description"
+              rows="3"
+              placeholder="Describe the purpose of this ticket type"
+              class="ticket-type-form-control ticket-type-form-control--textarea"
+              [class.ticket-type-form-control--invalid]="typeForm.get('description')?.invalid && typeForm.get('description')?.touched">
+            </textarea>
+            <p *ngIf="typeForm.get('description')?.invalid && typeForm.get('description')?.touched" class="ticket-type-field-error">
+              Description is required.
+            </p>
+          </div>
 
-      <!-- Initial State -->
-      <div>
-        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Initial State ID *</label>
-        <input
-          type="text"
-          formControlName="initialStateId"
-          placeholder="e.g., new, in-progress, closed"
-          class="w-full px-4 py-2 border border-gray-300 dark:border-[#48484a] dark:bg-[#3a3a3c] dark:text-white rounded-lg focus:ring-2 focus:ring-gray-900 dark:focus:ring-[#007aff] focus:border-transparent"
-          [class.border-red-500]="createForm.get('initialStateId')?.invalid && createForm.get('initialStateId')?.touched">
-        <p *ngIf="createForm.get('initialStateId')?.invalid && createForm.get('initialStateId')?.touched" class="text-red-500 text-sm mt-1">
-          Initial state ID is required
-        </p>
-      </div>
+          <div class="ticket-type-form-field">
+            <label>Initial State ID *</label>
+            <input
+              type="text"
+              formControlName="initialStateId"
+              placeholder="e.g., open"
+              class="ticket-type-form-control"
+              [class.ticket-type-form-control--invalid]="typeForm.get('initialStateId')?.invalid && typeForm.get('initialStateId')?.touched">
+            <p *ngIf="typeForm.get('initialStateId')?.invalid && typeForm.get('initialStateId')?.touched" class="ticket-type-field-error">
+              Initial state ID is required.
+            </p>
+          </div>
 
-      <!-- Attributes Section -->
-      <div class="border-t border-gray-200 dark:border-[#38383a] pt-6">
-        <app-attribute-builder 
-          [(attributes)]="attributeDefinitions">
-        </app-attribute-builder>
-      </div>
+          <div *ngIf="validationMessage" class="ticket-type-inline-alert">
+            {{ validationMessage }}
+          </div>
 
-      <!-- Actions -->
-      <div class="flex flex-col sm:flex-row gap-3 pt-4 border-t border-gray-200 dark:border-[#38383a]">
-        <button
-          type="button"
-          (click)="closeCreateModal()"
-          class="flex-1 px-4 py-2 border border-gray-300 dark:border-[#48484a] text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
-          Cancel
-        </button>
-        <button
-          type="submit"
-          [disabled]="createForm.invalid || isSubmitting"
-          class="flex-1 px-4 py-2 bg-gray-900 dark:bg-[#007aff] text-white rounded-lg hover:bg-gray-800 dark:hover:bg-[#0051d5] transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
-          {{ isSubmitting ? 'Creating...' : 'Create Ticket Type' }}
-        </button>
+          <div class="ticket-type-form-section">
+            <app-attribute-builder [(attributes)]="attributeDefinitions"></app-attribute-builder>
+          </div>
+        </div>
+
+        <div class="ticket-type-create-actions">
+          <button type="button" (click)="closeTypeFormModal()" class="tems-btn tems-btn-secondary flex-1 ticket-type-action-btn-ref">
+            Cancel
+          </button>
+          <button type="submit" [disabled]="typeForm.invalid || isSubmitting" class="tems-btn tems-btn-primary flex-1 ticket-type-action-btn-ref">
+            {{ formSubmitLabel }}
+          </button>
+        </div>
       </div>
     </form>
   </div>
 </div>
 
-<!-- Details Modal -->
-<div *ngIf="showDetailsModal && selectedTicketType" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-  <div class="bg-white dark:bg-[#2c2c2e] rounded-lg shadow-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
-    <div class="sticky top-0 bg-white dark:bg-[#2c2c2e] border-b border-gray-200 dark:border-[#38383a] px-6 py-4">
-      <div class="flex items-center justify-between">
-        <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Ticket Type Details</h2>
-        <button (click)="closeDetailsModal()" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-          </svg>
-        </button>
+<div *ngIf="showDetailsModal && selectedTicketType" class="ticket-type-modal-backdrop" (click)="closeDetailsModal()">
+  <div class="ticket-type-modal-panel ticket-type-modal-panel--wide" (click)="$event.stopPropagation()">
+    <div class="ticket-type-modal-header">
+      <div>
+        <h2 class="ticket-type-modal-title">Ticket Type Details</h2>
+        <p class="ticket-type-modal-subtitle">Preview the workflow and field structure used when creating tickets.</p>
       </div>
+      <button type="button" (click)="closeDetailsModal()" class="ticket-type-modal-close" aria-label="Close modal">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      </button>
     </div>
 
-    <div class="p-6 space-y-6">
-      <!-- Basic Info -->
-      <div class="space-y-4">
-        <div>
-          <label class="text-sm font-medium text-gray-500 dark:text-gray-400">Name</label>
-          <p class="text-base text-gray-900 dark:text-white mt-1">{{ selectedTicketType.name }}</p>
+    <div class="ticket-type-modal-body">
+      <div class="ticket-type-info-grid">
+        <div class="ticket-type-info-block">
+          <label>Name</label>
+          <p>{{ selectedTicketType.name }}</p>
         </div>
-        <div>
-          <label class="text-sm font-medium text-gray-500 dark:text-gray-400">Description</label>
-          <p class="text-base text-gray-900 dark:text-white mt-1">{{ selectedTicketType.description }}</p>
+        <div class="ticket-type-info-block">
+          <label>ITIL Category</label>
+          <p>{{ selectedTicketType.itilCategory }}</p>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label class="text-sm font-medium text-gray-500 dark:text-gray-400">ITIL Category</label>
-            <p class="text-base text-gray-900 dark:text-white mt-1">{{ selectedTicketType.itilCategory }}</p>
-          </div>
-          <div>
-            <label class="text-sm font-medium text-gray-500 dark:text-gray-400">Version</label>
-            <p class="text-base text-gray-900 dark:text-white mt-1">{{ selectedTicketType.version }}</p>
-          </div>
+        <div class="ticket-type-info-block ticket-type-info-block--full">
+          <label>Description</label>
+          <p>{{ selectedTicketType.description }}</p>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label class="text-sm font-medium text-gray-500 dark:text-gray-400">Status</label>
-            <p class="text-base text-gray-900 dark:text-white mt-1">
-              <span [class]="selectedTicketType.isActive ? 'text-green-600' : 'text-gray-600 dark:text-gray-400'">
-                {{ selectedTicketType.isActive ? 'Active' : 'Inactive' }}
-              </span>
+        <div class="ticket-type-info-block">
+          <label>Initial State</label>
+          <p>{{ selectedTicketType.workflowConfig.initialStateId }}</p>
+        </div>
+        <div class="ticket-type-info-block">
+          <label>Version</label>
+          <p>{{ selectedTicketType.version }}</p>
+        </div>
+      </div>
+
+      <div class="ticket-type-preview-section">
+        <label class="ticket-type-section-label">Workflow States</label>
+        <div class="ticket-type-preview-list">
+          <div *ngFor="let state of selectedTicketType.workflowConfig.states" class="ticket-type-preview-card">
+            <div class="flex items-start justify-between gap-3">
+              <div>
+                <p class="ticket-type-preview-title">{{ state.label }}</p>
+                <p class="ticket-type-preview-meta">ID: {{ state.id }} | Type: {{ state.type }}</p>
+              </div>
+            </div>
+            <p *ngIf="state.allowedTransitions?.length" class="ticket-type-preview-note">
+              Can transition to: {{ state.allowedTransitions.join(', ') }}
             </p>
           </div>
-          <div>
-            <label class="text-sm font-medium text-gray-500 dark:text-gray-400">Initial State</label>
-            <p class="text-base text-gray-900 dark:text-white mt-1">{{ selectedTicketType.workflowConfig.initialStateId }}</p>
-          </div>
         </div>
       </div>
 
-      <!-- Workflow States -->
-      <div>
-        <label class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3 block">Workflow States</label>
-        <div class="space-y-2">
-          <div *ngFor="let state of selectedTicketType.workflowConfig.states"
-            class="p-3 bg-gray-50 dark:bg-[#3a3a3c] rounded-lg border border-gray-200 dark:border-[#48484a]">
-            <div class="flex items-center justify-between">
-              <div>
-                <p class="font-medium text-gray-900 dark:text-white">{{ state.label }}</p>
-                <p class="text-sm text-gray-600 dark:text-gray-400">ID: {{ state.id }} | Type: {{ state.type }}</p>
-              </div>
-            </div>
-            <div *ngIf="state.allowedTransitions && state.allowedTransitions.length > 0" class="mt-2">
-              <p class="text-xs text-gray-500 dark:text-gray-400">Can transition to: {{ state.allowedTransitions.join(', ') }}</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Attribute Definitions -->
-      <div *ngIf="selectedTicketType.attributeDefinitions && selectedTicketType.attributeDefinitions.length > 0">
-        <label class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3 block">Attribute Definitions</label>
-        <div class="space-y-2">
-          <div *ngFor="let attr of selectedTicketType.attributeDefinitions"
-            class="p-3 bg-gray-50 dark:bg-[#3a3a3c] rounded-lg border border-gray-200 dark:border-[#48484a]">
-            <div class="flex items-center justify-between">
+      <div *ngIf="selectedTicketType.attributeDefinitions?.length" class="ticket-type-preview-section">
+        <label class="ticket-type-section-label">Attribute Definitions</label>
+        <div class="ticket-type-preview-list">
+          <div *ngFor="let attr of selectedTicketType.attributeDefinitions" class="ticket-type-preview-card">
+            <div class="flex items-start justify-between gap-3">
               <div class="flex-1">
-                <p class="font-medium text-gray-900 dark:text-white">{{ attr.label }}</p>
-                <p class="text-sm text-gray-600 dark:text-gray-400">Key: {{ attr.key }} | Type: {{ attr.dataType }}</p>
-                <div *ngIf="attr.dataType === 'DROPDOWN' && attr.options && attr.options.length > 0" class="mt-2">
-                  <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Options:</p>
-                  <div class="flex flex-wrap gap-1">
-                    <span *ngFor="let option of attr.options" 
-                      class="px-2 py-1 text-xs bg-white dark:bg-[#2c2c2e] border border-gray-300 dark:border-[#48484a] dark:text-white rounded">
-                      {{ option }}
-                    </span>
-                  </div>
+                <p class="ticket-type-preview-title">{{ attr.label }}</p>
+                <p class="ticket-type-preview-meta">Key: {{ attr.key }} | Type: {{ attr.dataType }}</p>
+                <div *ngIf="attr.dataType === 'DROPDOWN' && attr.options?.length" class="ticket-type-tag-row">
+                  <span *ngFor="let option of attr.options" class="ticket-type-tag">{{ option }}</span>
                 </div>
               </div>
-              <span *ngIf="attr.isRequired" class="px-2 py-1 text-xs font-medium bg-gray-900 text-white rounded">
-                Required
-              </span>
+              <span *ngIf="attr.isRequired" class="ticket-type-required-badge">Required</span>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Timestamps -->
-      <div class="pt-4 border-t border-gray-200 dark:border-[#38383a]">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-          <div>
-            <span class="text-gray-500 dark:text-gray-400">Created:</span>
-            <span class="text-gray-900 dark:text-white ml-2">{{ selectedTicketType.createdAt | date: 'short' }}</span>
-          </div>
-          <div>
-            <span class="text-gray-500 dark:text-gray-400">Updated:</span>
-            <span class="text-gray-900 dark:text-white ml-2">{{ selectedTicketType.updatedAt | date: 'short' }}</span>
-          </div>
-        </div>
+      <div class="ticket-type-meta-row">
+        <span>Created: {{ selectedTicketType.createdAt | date: 'short' }}</span>
+        <span>Updated: {{ selectedTicketType.updatedAt | date: 'short' }}</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="showDeleteModal && ticketTypePendingDelete" class="ticket-type-modal-backdrop" (click)="closeDeleteModal()">
+  <div class="ticket-type-modal-panel ticket-type-modal-panel--compact" (click)="$event.stopPropagation()">
+    <div class="ticket-type-modal-header">
+      <div>
+        <h2 class="ticket-type-modal-title">Delete Ticket Type</h2>
+        <p class="ticket-type-modal-subtitle">This action permanently removes the type and every ticket created from it.</p>
+      </div>
+      <button type="button" (click)="closeDeleteModal()" class="ticket-type-modal-close" aria-label="Close modal">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="ticket-type-modal-body">
+      <div class="ticket-type-danger-box">
+        <p class="ticket-type-danger-title">{{ ticketTypePendingDelete.name }}</p>
+        <p class="ticket-type-danger-copy">
+          Deleting this ticket type will also delete all tickets associated with it, including their conversation history.
+        </p>
+      </div>
+
+      <div class="ticket-type-modal-footer">
+        <button type="button" (click)="closeDeleteModal()" class="ticket-type-secondary-btn">
+          Cancel
+        </button>
+        <button type="button" (click)="confirmDelete()" [disabled]="isDeleteSubmitting" class="ticket-type-danger-btn">
+          {{ isDeleteSubmitting ? 'Deleting...' : 'Delete Ticket Type' }}
+        </button>
       </div>
     </div>
   </div>

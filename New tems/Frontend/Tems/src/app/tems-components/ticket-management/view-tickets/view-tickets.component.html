@@ -128,7 +128,7 @@
 
       <!-- Issue Title -->
       <div *ngIf="selectedTicketType">
-        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Issue title *</label>
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Ticket title *</label>
         <input
           type="text"
           formControlName="title"
@@ -146,7 +146,7 @@
 
       <!-- Problem Description -->
       <div *ngIf="selectedTicketType">
-        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Problem description *</label>
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Ticket description *</label>
         <textarea
           formControlName="summary"
           rows="4"
@@ -186,8 +186,7 @@
 
       <!-- Dynamic Attributes -->
       <div *ngIf="hasAdditionalFields" 
-           class="border-t border-gray-200 dark:border-[#38383a] pt-6">
-        <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Additional Fields</h3>
+           class="pt-6">
         <div class="space-y-4">
           <div *ngFor="let attr of editableAttributeDefinitions">
             <!-- Text/String Input -->
@@ -229,17 +228,18 @@
                 {{ attr.label }}
                 <span *ngIf="attr.isRequired" class="text-red-500">*</span>
               </label>
-              <select
+              <app-custom-select
                 [(ngModel)]="dynamicAttributeValues[attr.key]"
                 [ngModelOptions]="{standalone: true}"
+                [options]="getAttributeDropdownOptions(attr)"
+                [searchable]="true"
+                [allowEmpty]="!attr.isRequired"
                 [disabled]="!attr.options || attr.options.length === 0"
-                class="w-full px-4 py-2 border border-gray-300 dark:border-[#38383a] dark:bg-[#3a3a3c] dark:text-white rounded-lg focus:ring-2 focus:ring-gray-900 dark:focus:ring-blue-500 focus:border-transparent"
-                [class.border-red-500]="attr.isRequired && !isAttributeValid(attr.key)"
-                [class.bg-gray-100]="!attr.options || attr.options.length === 0"
-                [class.dark:bg-[#1c1c1e]]="!attr.options || attr.options.length === 0">
-                <option value="">{{ (!attr.options || attr.options.length === 0) ? 'No options available' : 'Select ' + attr.label }}</option>
-                <option *ngFor="let option of attr.options" [value]="option">{{ option }}</option>
-              </select>
+                [placeholder]="(!attr.options || attr.options.length === 0) ? 'No options available' : 'Search and select ' + attr.label.toLowerCase()"
+                class="ticket-attribute-dropdown"
+                [class.ticket-attribute-dropdown--invalid]="attr.isRequired && !isAttributeValid(attr.key)"
+                [class.ticket-attribute-dropdown--disabled]="!attr.options || attr.options.length === 0">
+              </app-custom-select>
               <p *ngIf="!attr.options || attr.options.length === 0" class="text-amber-600 dark:text-amber-400 text-sm mt-1">
                 ⚠️ No options configured for this dropdown. Please edit the ticket type to add options.
               </p>

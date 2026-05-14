@@ -36,6 +36,15 @@ public static class TicketStateHelper
         };
     }
 
+    public static WorkflowConfig CreateManagedWorkflowConfig()
+    {
+        return new WorkflowConfig
+        {
+            States = CreateDefaultWorkflowStates(),
+            InitialStateId = "new"
+        };
+    }
+
     public static bool IsManagedTicketStatus(string? stateId)
     {
         return GetManagedStatusGroup(stateId) != null;
@@ -64,7 +73,7 @@ public static class TicketStateHelper
         {
             return new WorkflowConfig
             {
-                States = CreateDefaultWorkflowStates(),
+                States = CreateManagedWorkflowConfig().States,
                 InitialStateId = "new"
             };
         }
@@ -77,7 +86,7 @@ public static class TicketStateHelper
         {
             return workflowConfig ?? new WorkflowConfig
             {
-                States = CreateDefaultWorkflowStates(),
+                States = CreateManagedWorkflowConfig().States,
                 InitialStateId = "new"
             };
         }

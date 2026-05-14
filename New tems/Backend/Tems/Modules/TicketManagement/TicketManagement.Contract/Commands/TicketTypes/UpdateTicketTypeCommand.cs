@@ -10,6 +10,5 @@ public record UpdateTicketTypeCommand(
     string Description,
     string ItilCategory,
     int Version,
-    WorkflowConfigDto? WorkflowConfig,
     List<AttributeDefinitionDto>? AttributeDefinitions
 ) : IRequest<UpdateTicketTypeResponse>;

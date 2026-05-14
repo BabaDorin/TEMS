@@ -76,8 +76,8 @@ test.describe('Ticket Types Management', () => {
     const uniqueName = `E2E Test Type ${Date.now()}`;
     await page.fill('input[formControlName="name"]', uniqueName);
     await page.fill('textarea[formControlName="description"]', 'Created by E2E test');
-    await page.selectOption('select[formControlName="itilCategory"]', 'INCIDENT');
-    await page.fill('input[formControlName="initialStateId"]', 'open');
+    await page.locator('app-custom-select[formControlName="itilCategory"] .select-trigger').click();
+    await page.locator('[role="option"]').filter({ hasText: 'Incident' }).click();
     
     // Submit the form (button should be enabled now)
     await page.click('button[type="submit"]:not([disabled])');
@@ -107,8 +107,7 @@ test.describe('Ticket Types Management', () => {
     const testTicketType = {
       name: `E2E Update Test ${Date.now()}`,
       description: 'To be updated',
-      itilCategory: 'REQUEST',
-      initialStateId: 'open',
+      itilCategory: 'REQUEST'
     };
     
     const createdTicketType = await testHelper.api.post(API_CONFIG.endpoints.ticketTypes, testTicketType);
@@ -135,8 +134,7 @@ test.describe('Ticket Types Management', () => {
     const testTicketType = {
       name: `E2E Delete Test ${Date.now()}`,
       description: 'To be deleted',
-      itilCategory: 'ALERT',
-      initialStateId: 'open',
+      itilCategory: 'ALERT'
     };
     
     const createdTicketType = await testHelper.api.post(API_CONFIG.endpoints.ticketTypes, testTicketType);
@@ -194,8 +192,8 @@ test.describe('Ticket Types Management', () => {
     // Fill with valid data
     await page.fill('input[formControlName="name"]', 'Error Test');
     await page.fill('textarea[formControlName="description"]', 'Testing error handling');
-    await page.selectOption('select[formControlName="itilCategory"]', 'INCIDENT');
-    await page.fill('input[formControlName="initialStateId"]', 'open');
+    await page.locator('app-custom-select[formControlName="itilCategory"] .select-trigger').click();
+    await page.locator('[role="option"]').filter({ hasText: 'Incident' }).click();
     
     // Submit - backend should accept this
     await page.click('button[type="submit"]');

@@ -10,7 +10,7 @@ import { TokenService } from 'src/app/services/token.service';
 import { ThemeService } from 'src/app/services/theme.service';
 import { UserService } from 'src/app/services/user.service';
 import { Ticket, CreateTicketRequest, TicketMessage, AddMessageRequest, ApprovalGateApprover } from 'src/app/models/ticket/ticket.model';
-import { TicketType } from 'src/app/models/ticket/ticket-type.model';
+import { AttributeDefinition, TicketType } from 'src/app/models/ticket/ticket-type.model';
 import { UserDto } from 'src/app/models/user/user-management.model';
 import { TicketManagementStateService } from 'src/app/state/ticket-management.state';
 import { CustomSelectComponent, SelectOption } from 'src/app/shared/custom-select/custom-select.component';
@@ -690,6 +690,13 @@ export class ViewTicketsComponent implements OnInit {
         }
       });
     }
+  }
+
+  getAttributeDropdownOptions(attribute: AttributeDefinition): SelectOption[] {
+    return (attribute.options ?? []).map((option) => ({
+      value: option,
+      label: option
+    }));
   }
 
   isAttributeValid(key: string): boolean {

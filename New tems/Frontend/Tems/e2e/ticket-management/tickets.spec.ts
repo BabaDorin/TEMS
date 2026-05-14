@@ -326,16 +326,6 @@ test.describe('Tickets Management', () => {
       description: 'Test type with custom attributes',
       itilCategory: 'INCIDENT',
       version: 1,
-      workflowConfig: {
-        states: [{
-          id: 'new',
-          label: 'New',
-          type: 'OPEN',
-          allowedTransitions: [],
-          automationHook: null
-        }],
-        initialStateId: 'new'
-      },
       attributeDefinitions: [
         {
           key: 'severity',

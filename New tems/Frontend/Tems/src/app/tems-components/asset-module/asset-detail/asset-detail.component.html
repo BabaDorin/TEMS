@@ -1,4 +1,4 @@
-<div class="min-h-[calc(100dvh-4rem)] bg-gray-50/50 dark:bg-[#1c1c1e] transition-colors duration-200">
+<div class="asset-detail-shell min-h-[calc(100dvh-4rem)] bg-gray-50/50 dark:bg-[#1c1c1e] transition-colors duration-200">
   <!-- Loading State -->
   <div *ngIf="loading" class="flex items-center justify-center min-h-[calc(100dvh-10rem)]">
     <div class="text-center">
@@ -38,24 +38,24 @@
     </button>
 
     <!-- Header Card -->
-    <div class="bg-white dark:bg-[#2c2c2e] rounded-xl shadow-sm mb-4">
+    <div class="asset-detail-card bg-white dark:bg-[#2c2c2e] rounded-xl shadow-sm mb-4">
       <div class="px-6 py-4">
-        <div class="flex justify-between items-start">
+        <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
           <div class="flex-1">
-            <div class="flex items-center gap-3">
+            <div class="flex items-center gap-2 flex-wrap">
               <h1 class="text-2xl font-semibold text-gray-900 dark:text-white m-0">{{ asset.assetTag }}</h1>
               <span [class]="'inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ' + getStatusClass(asset.status)">
                 {{ getStatusLabel(asset.status) }}
               </span>
             </div>
-            <p class="text-sm text-gray-600 dark:text-gray-400 mt-1 mb-0">{{ asset.definition?.name || 'Asset Details' }}</p>
+            <p class="text-sm text-gray-600 dark:text-gray-400 mt-2 mb-0">{{ asset.definition?.name || 'Asset Details' }}</p>
             
             <!-- Info Pills -->
-            <div class="flex gap-2 mt-3 mb-1">
+            <div class="flex flex-wrap gap-2 mt-3 mb-1">
               <button 
                 *ngIf="asset.locationId" 
                 (click)="openLocationModal()"
-                class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gray-100 dark:bg-white/10 text-gray-700 dark:text-gray-300 rounded-full text-xs font-medium hover:bg-gray-200 dark:hover:bg-white/20 cursor-pointer transition">
+                class="asset-detail-pill inline-flex items-center gap-1.5 px-3 py-1.5 bg-gray-100 dark:bg-white/10 text-gray-700 dark:text-gray-300 rounded-full text-xs font-medium hover:bg-gray-200 dark:hover:bg-white/20 cursor-pointer transition">
                 <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
                   <path d="M8 1.333C6.23189 1.333 4.83325 2.73165 4.83325 4.5C4.83325 6.26835 6.23189 7.667 8 7.667C9.76811 7.667 11.1666 6.26835 11.1666 4.5C11.1666 2.73165 9.76811 1.333 8 1.333ZM8 1.333C10.3932 1.333 12.3333 3.27315 12.3333 5.66634C12.3333 9.33301 8 14.6663 8 14.6663C8 14.6663 3.66659 9.33301 3.66659 5.66634C3.66659 3.27315 5.60672 1.333 8 1.333Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
@@ -64,7 +64,7 @@
               <button 
                 *ngIf="hasAssignee()" 
                 (click)="navigateToAssignee()"
-                class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gray-100 dark:bg-white/10 text-gray-700 dark:text-gray-300 rounded-full text-xs font-medium hover:bg-gray-200 dark:hover:bg-white/20 cursor-pointer transition">
+                class="asset-detail-pill inline-flex items-center gap-1.5 px-3 py-1.5 bg-gray-100 dark:bg-white/10 text-gray-700 dark:text-gray-300 rounded-full text-xs font-medium hover:bg-gray-200 dark:hover:bg-white/20 cursor-pointer transition">
                 <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
                   <path d="M13.333 14v-1.333c0-1.473-1.194-2.667-2.666-2.667H5.333c-1.473 0-2.666 1.194-2.666 2.667V14M8 7.333c-1.473 0-2.667-1.194-2.667-2.666C5.333 3.194 6.527 2 8 2c1.473 0 2.667 1.194 2.667 2.667C10.667 6.139 9.473 7.333 8 7.333Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
@@ -74,10 +74,10 @@
           </div>
           
           <!-- Actions Dropdown -->
-          <div *ngIf="canManageAssets" class="relative ml-4 actions-dropdown">
+          <div *ngIf="canManageAssets" class="relative actions-dropdown lg:ml-4">
             <button
               (click)="showActionsDropdown = !showActionsDropdown"
-              class="px-3 py-1.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg transition flex items-center gap-1.5 border border-gray-300 dark:border-[#48484a]">
+              class="asset-action-button px-3 py-1.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg transition flex items-center gap-1.5 border border-gray-300 dark:border-[#48484a]">
               <span>Actions</span>
               <svg width="14" height="14" viewBox="0 0 16 16" fill="none" class="transition-transform" [class.rotate-180]="showActionsDropdown">
                 <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -135,7 +135,7 @@
     </div>
 
     <!-- Tabs -->
-    <div class="bg-white dark:bg-[#2c2c2e] rounded-xl shadow-sm">
+    <div class="asset-detail-card bg-white dark:bg-[#2c2c2e] rounded-xl shadow-sm">
       <div>
         <nav class="flex px-4 overflow-x-auto border-b border-gray-200 dark:border-[#38383a]">
           <button
@@ -148,20 +148,6 @@
             [class.text-gray-500]="activeTab !== 'overview'"
             class="px-4 py-3 border-b-2 font-medium text-sm hover:text-[#007aff] transition whitespace-nowrap">
             Overview
-          </button>
-          <button
-            (click)="activeTab = 'acc'"
-            [class.border-[#007aff]]="activeTab === 'acc'"
-            [class.text-[#007aff]]="activeTab === 'acc'"
-            [class.border-transparent]="activeTab !== 'acc'"
-            [class.text-gray-500]="activeTab !== 'acc'"
-            class="px-4 py-3 border-b-2 font-medium text-sm hover:text-[#007aff] transition whitespace-nowrap">
-            ACC
-          </button>
-          <button
-            disabled
-            class="px-4 py-3 border-b-2 border-transparent text-gray-400 text-sm cursor-not-allowed whitespace-nowrap">
-            Purchase Info
           </button>
           <button
             (click)="activeTab = 'history'"
@@ -202,7 +188,7 @@
           </div>
 
           <!-- Definition Information (Collapsible) -->
-          <div *ngIf="asset.definition" class="bg-white dark:bg-[#3a3a3c] rounded-xl border border-gray-200 dark:border-[#48484a]">
+          <div *ngIf="asset.definition" class="asset-detail-section bg-white dark:bg-[#3a3a3c] rounded-xl border border-gray-200 dark:border-[#48484a]">
             <div 
               class="px-4 py-3 cursor-pointer hover:bg-gray-50 dark:hover:bg-white/5 transition flex items-center justify-between" 
               (click)="isDefinitionExpanded = !isDefinitionExpanded">
@@ -250,63 +236,13 @@
           </div>
 
           <!-- Notes -->
-          <div *ngIf="asset.notes" class="bg-white dark:bg-[#3a3a3c] rounded-xl border border-gray-200 dark:border-[#48484a]">
+          <div *ngIf="asset.notes" class="asset-detail-section bg-white dark:bg-[#3a3a3c] rounded-xl border border-gray-200 dark:border-[#48484a]">
             <div class="px-4 py-3 border-b border-gray-100 dark:border-[#48484a]">
               <h3 class="text-sm font-semibold text-gray-900 dark:text-white m-0">Notes</h3>
             </div>
             <div class="p-4">
               <p class="text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap m-0">{{ asset.notes }}</p>
             </div>
-          </div>
-        </div>
-
-        <!-- ACC Tab -->
-        <div *ngIf="activeTab === 'acc'">
-          <div class="space-y-3">
-            <div *ngFor="let item of getAccData()" class="flex items-start justify-between py-3 border-b border-gray-100 dark:border-[#48484a] last:border-0">
-              <div class="flex-1">
-                <div class="text-xs text-gray-600 dark:text-gray-400 uppercase tracking-wide mb-1">{{ item.key }}</div>
-                <div class="text-sm font-medium text-gray-900 dark:text-white">{{ item.value }}</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Purchase Info Tab -->
-        <div *ngIf="activeTab === 'purchase'">
-          <div *ngIf="asset.purchaseInfo" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div class="bg-white dark:bg-[#3a3a3c] rounded-xl border border-gray-200 dark:border-[#48484a] p-4">
-              <span class="text-xs text-gray-600 dark:text-gray-400 uppercase tracking-wide">Vendor</span>
-              <p class="text-sm font-semibold text-gray-900 dark:text-white mt-1.5 mb-0">{{ asset.purchaseInfo.vendor || '—' }}</p>
-            </div>
-            <div class="bg-white dark:bg-[#3a3a3c] rounded-xl border border-gray-200 dark:border-[#48484a] p-4">
-              <span class="text-xs text-gray-600 dark:text-gray-400 uppercase tracking-wide">Purchase Date</span>
-              <p class="text-sm font-semibold text-gray-900 dark:text-white mt-1.5 mb-0">
-                {{ asset.purchaseInfo.purchaseDate ? (asset.purchaseInfo.purchaseDate | date:'MMMM d, y') : '—' }}
-              </p>
-            </div>
-            <div class="bg-white dark:bg-[#3a3a3c] rounded-xl border border-gray-200 dark:border-[#48484a] p-4">
-              <span class="text-xs text-gray-600 dark:text-gray-400 uppercase tracking-wide">Purchase Price</span>
-              <p class="text-sm font-semibold text-gray-900 dark:text-white mt-1.5 mb-0">
-                {{ asset.purchaseInfo.purchasePrice ? (asset.purchaseInfo.purchasePrice | currency) : '—' }}
-              </p>
-            </div>
-            <div class="bg-white dark:bg-[#3a3a3c] rounded-xl border border-gray-200 dark:border-[#48484a] p-4">
-              <span class="text-xs text-gray-600 dark:text-gray-400 uppercase tracking-wide">Warranty Expiration</span>
-              <p class="text-sm font-semibold text-gray-900 dark:text-white mt-1.5 mb-0">
-                {{ asset.purchaseInfo.warrantyExpiration ? (asset.purchaseInfo.warrantyExpiration | date:'MMMM d, y') : '—' }}
-              </p>
-            </div>
-            <div class="bg-white dark:bg-[#3a3a3c] rounded-xl border border-gray-200 dark:border-[#48484a] p-4 sm:col-span-2">
-              <span class="text-xs text-gray-600 dark:text-gray-400 uppercase tracking-wide">Invoice Number</span>
-              <p class="text-sm font-semibold text-gray-900 dark:text-white mt-1.5 mb-0">{{ asset.purchaseInfo.invoiceNumber || '—' }}</p>
-            </div>
-          </div>
-          <div *ngIf="!asset.purchaseInfo" class="text-center py-16">
-            <svg class="h-12 w-12 text-gray-300 dark:text-gray-600 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z" />
-            </svg>
-            <p class="mt-3 text-sm text-gray-500 dark:text-gray-400">No purchase information available</p>
           </div>
         </div>
 

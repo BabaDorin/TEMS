@@ -1,6 +1,7 @@
 using MediatR;
 using System.Text.Json;
 using Tems.Common.Tenant;
+using TicketManagement.Application.Helpers;
 using TicketManagement.Application.Domain;
 using TicketManagement.Application.Interfaces;
 using TicketManagement.Application.Models;
@@ -44,6 +45,7 @@ public class CreateTicketCommandHandler : IRequestHandler<CreateTicketCommand, C
         var prefix = GetPrefixFromItilCategory(ticketType.ItilCategory);
         var nextNumber = await _ticketRepository.GetNextTicketNumberAsync(_tenantContext.TenantId, prefix, cancellationToken);
         var humanReadableId = $"{prefix}-{nextNumber}";
+        var workflowConfig = TicketStateHelper.NormalizeWorkflowConfig(ticketType.WorkflowConfig);
 
         var ticket = new Ticket
         {
@@ -53,7 +55,7 @@ public class CreateTicketCommandHandler : IRequestHandler<CreateTicketCommand, C
             HumanReadableId = humanReadableId,
             Title = request.Title.Trim(),
             Summary = request.Summary.Trim(),
-            CurrentStateId = ticketType.WorkflowConfig.InitialStateId,
+            CurrentStateId = workflowConfig.InitialStateId,
             Priority = request.Priority.ToUpper(),
             Reporter = new Reporter
             {

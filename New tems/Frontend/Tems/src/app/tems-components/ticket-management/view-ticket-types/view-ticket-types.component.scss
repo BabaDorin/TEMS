@@ -76,6 +76,8 @@
 
 .ticket-type-modal-panel--create {
   max-width: 42rem;
+  display: flex;
+  flex-direction: column;
   background: var(--bg-elevated);
   border-color: var(--border-primary);
   box-shadow: 0 24px 60px rgba(15, 23, 42, 0.18);
@@ -151,7 +153,10 @@
 }
 
 .ticket-type-create-card {
-  display: block;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  max-height: min(92vh, 900px);
   font-family: Roboto, "Helvetica Neue", sans-serif;
 }
 
@@ -168,6 +173,7 @@
 }
 
 .ticket-type-create-heading {
+  flex-shrink: 0;
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
@@ -176,9 +182,10 @@
 }
 
 .ticket-type-create-body {
-  padding: 1.25rem 1.5rem 1.5rem;
+  flex: 1 1 auto;
+  min-height: 0;
+  padding: 1.25rem 1.5rem;
   overflow-y: auto;
-  max-height: calc(90vh - 8rem);
 }
 
 .ticket-type-create-fields {
@@ -215,6 +222,18 @@
   padding: 1rem 1.15rem 1.15rem;
   overflow-y: auto;
   max-height: calc(min(92vh, 900px) - 5.75rem);
+}
+
+.ticket-type-create-actions {
+  flex-shrink: 0;
+  display: flex;
+  gap: 0.75rem;
+  padding: 0 1.5rem 1.5rem;
+  border-top: 1px solid #e5e7eb;
+
+  :host-context(.dark) & {
+    border-top-color: #38383a;
+  }
 }
 
 .ticket-type-form-grid,

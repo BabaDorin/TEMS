@@ -29,19 +29,8 @@ public class UpdateTicketTypeCommandHandler : IRequestHandler<UpdateTicketTypeCo
         existing.Description = request.Description;
         existing.ItilCategory = request.ItilCategory.ToUpper();
         existing.Version = request.Version;
-        existing.WorkflowConfig = TicketStateHelper.NormalizeWorkflowConfig(new WorkflowConfig
-        {
-            States = request.WorkflowConfig.States.Select(s => new WorkflowState
-            {
-                Id = s.Id,
-                Label = s.Label,
-                Type = s.Type.ToUpper(),
-                AllowedTransitions = s.AllowedTransitions,
-                AutomationHook = s.AutomationHook
-            }).ToList(),
-            InitialStateId = request.WorkflowConfig.InitialStateId
-        });
-        existing.AttributeDefinitions = request.AttributeDefinitions.Select(a => new AttributeDefinition
+        existing.WorkflowConfig = TicketStateHelper.CreateManagedWorkflowConfig();
+        existing.AttributeDefinitions = request.AttributeDefinitions?.Select(a => new AttributeDefinition
         {
             Key = a.Key,
             Label = a.Label,
@@ -51,7 +40,7 @@ public class UpdateTicketTypeCommandHandler : IRequestHandler<UpdateTicketTypeCo
             Options = a.Options,
             AiExtractionHint = a.AiExtractionHint,
             ValidationRule = a.ValidationRule
-        }).ToList();
+        }).ToList() ?? new List<AttributeDefinition>();
 
         var success = await _repository.UpdateAsync(existing, cancellationToken);
 

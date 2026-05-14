@@ -39,7 +39,7 @@ export class AssetDetailComponent implements OnInit {
   asset: Asset | null = null;
   loading = true;
   error: string | null = null;
-  activeTab: 'overview' | 'acc' | 'purchase' | 'history' = 'overview';
+  activeTab: 'overview' | 'history' = 'overview';
   showActionsDropdown = false;
   isDefinitionExpanded = true;
   private cachedAssigneeEmail: string | null = null;
@@ -321,16 +321,4 @@ export class AssetDetailComponent implements OnInit {
     });
   }
 
-  getAccData(): { key: string; value: string }[] {
-    return [
-      { key: 'CPU Temperature', value: '52°C' },
-      { key: 'Memory Usage', value: '4.2 GB / 8 GB' },
-      { key: 'Disk Space', value: '125 GB / 256 GB' },
-      { key: 'Network Status', value: 'Connected' },
-      { key: 'Last Sync', value: '2 minutes ago' },
-      { key: 'Battery Health', value: '92%' },
-      { key: 'Screen Brightness', value: '75%' },
-      { key: 'OS Version', value: 'macOS 14.2' }
-    ];
-  }
 }

@@ -83,8 +83,9 @@ public class UpdateTicketCommandHandler : IRequestHandler<UpdateTicketCommand, U
             existing.CurrentStateId = resolvedStateId;
         }
 
+        var normalizedRequestAttributes = ConvertAttributes(request.Attributes);
         var existingAttributesJson = JsonSerializer.Serialize(existing.Attributes);
-        var requestAttributesJson = JsonSerializer.Serialize(request.Attributes);
+        var requestAttributesJson = JsonSerializer.Serialize(normalizedRequestAttributes);
 
         if (!isManager && (!string.Equals(existing.Priority, request.Priority, StringComparison.OrdinalIgnoreCase) ||
                            !string.Equals(existing.AssigneeId ?? string.Empty, request.AssigneeId ?? string.Empty, StringComparison.OrdinalIgnoreCase) ||
@@ -95,7 +96,7 @@ public class UpdateTicketCommandHandler : IRequestHandler<UpdateTicketCommand, U
 
         existing.Priority = request.Priority.ToUpper();
         existing.AssigneeId = request.AssigneeId;
-        existing.Attributes = request.Attributes;
+        existing.Attributes = normalizedRequestAttributes;
         existing.UpdatedAt = DateTime.UtcNow;
 
         var success = await _repository.UpdateAsync(existing, cancellationToken);
@@ -114,6 +115,33 @@ public class UpdateTicketCommandHandler : IRequestHandler<UpdateTicketCommand, U
         }
 
         return new UpdateTicketResponse(success);
+    }
+
+    private static Dictionary<string, object> ConvertAttributes(Dictionary<string, object> attributes)
+    {
+        var converted = new Dictionary<string, object>();
+
+        foreach (var kvp in attributes)
+        {
+            if (kvp.Value is JsonElement jsonElement)
+            {
+                converted[kvp.Key] = jsonElement.ValueKind switch
+                {
+                    JsonValueKind.String => jsonElement.GetString() ?? string.Empty,
+                    JsonValueKind.Number => jsonElement.TryGetInt64(out var longValue) ? longValue : jsonElement.GetDouble(),
+                    JsonValueKind.True => true,
+                    JsonValueKind.False => false,
+                    JsonValueKind.Null => null!,
+                    _ => kvp.Value
+                };
+            }
+            else
+            {
+                converted[kvp.Key] = kvp.Value;
+            }
+        }
+
+        return converted;
     }
 
     private static Domain.Ticket CloneTicket(Domain.Ticket ticket)

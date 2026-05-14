@@ -107,19 +107,6 @@
             </p>
           </div>
 
-          <div class="ticket-type-form-field">
-            <label>Initial State ID *</label>
-            <input
-              type="text"
-              formControlName="initialStateId"
-              placeholder="e.g., open"
-              class="ticket-type-form-control"
-              [class.ticket-type-form-control--invalid]="typeForm.get('initialStateId')?.invalid && typeForm.get('initialStateId')?.touched">
-            <p *ngIf="typeForm.get('initialStateId')?.invalid && typeForm.get('initialStateId')?.touched" class="ticket-type-field-error">
-              Initial state ID is required.
-            </p>
-          </div>
-
           <div *ngIf="validationMessage" class="ticket-type-inline-alert">
             {{ validationMessage }}
           </div>
@@ -128,15 +115,15 @@
             <app-attribute-builder [(attributes)]="attributeDefinitions"></app-attribute-builder>
           </div>
         </div>
+      </div>
 
-        <div class="ticket-type-create-actions">
-          <button type="button" (click)="closeTypeFormModal()" class="tems-btn tems-btn-secondary flex-1 ticket-type-action-btn-ref">
-            Cancel
-          </button>
-          <button type="submit" [disabled]="typeForm.invalid || isSubmitting" class="tems-btn tems-btn-primary flex-1 ticket-type-action-btn-ref">
-            {{ formSubmitLabel }}
-          </button>
-        </div>
+      <div class="ticket-type-create-actions">
+        <button type="button" (click)="closeTypeFormModal()" class="tems-btn tems-btn-secondary flex-1 ticket-type-action-btn-ref">
+          Cancel
+        </button>
+        <button type="submit" [disabled]="typeForm.invalid || isSubmitting" class="tems-btn tems-btn-primary flex-1 ticket-type-action-btn-ref">
+          {{ formSubmitLabel }}
+        </button>
       </div>
     </form>
   </div>
@@ -169,10 +156,6 @@
         <div class="ticket-type-info-block ticket-type-info-block--full">
           <label>Description</label>
           <p>{{ selectedTicketType.description }}</p>
-        </div>
-        <div class="ticket-type-info-block">
-          <label>Initial State</label>
-          <p>{{ selectedTicketType.workflowConfig.initialStateId }}</p>
         </div>
         <div class="ticket-type-info-block">
           <label>Version</label>

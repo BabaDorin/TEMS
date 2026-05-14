@@ -169,8 +169,7 @@ export class ViewTicketTypesComponent implements OnInit {
     this.typeForm = this.fb.group({
       name: ['', Validators.required],
       description: ['', Validators.required],
-      itilCategory: ['', Validators.required],
-      initialStateId: ['', Validators.required]
+      itilCategory: ['', Validators.required]
     });
   }
 
@@ -207,8 +206,7 @@ export class ViewTicketTypesComponent implements OnInit {
     this.typeForm.reset({
       name: '',
       description: '',
-      itilCategory: '',
-      initialStateId: ''
+      itilCategory: ''
     });
     this.showTypeFormModal = true;
   }
@@ -225,8 +223,7 @@ export class ViewTicketTypesComponent implements OnInit {
     this.typeForm.reset({
       name: ticketType.name,
       description: ticketType.description,
-      itilCategory: ticketType.itilCategory,
-      initialStateId: ticketType.workflowConfig?.initialStateId || ''
+      itilCategory: ticketType.itilCategory
     });
     this.showTypeFormModal = true;
   }
@@ -284,17 +281,12 @@ export class ViewTicketTypesComponent implements OnInit {
     this.isSubmitting = true;
 
     const formValue = this.typeForm.getRawValue();
-    const workflowConfig = {
-      states: this.buildManagedWorkflowStates(),
-      initialStateId: formValue.initialStateId
-    };
 
     if (this.formModalMode === 'create') {
       const request: CreateTicketTypeRequest = {
         name: formValue.name,
         description: formValue.description,
         itilCategory: formValue.itilCategory,
-        workflowConfig,
         attributeDefinitions: this.cloneAttributes(this.attributeDefinitions)
       };
 
@@ -323,7 +315,6 @@ export class ViewTicketTypesComponent implements OnInit {
       description: formValue.description,
       itilCategory: formValue.itilCategory,
       version: this.selectedTicketType.version,
-      workflowConfig,
       attributeDefinitions: this.cloneAttributes(this.attributeDefinitions)
     };
 
@@ -409,38 +400,6 @@ export class ViewTicketTypesComponent implements OnInit {
     return attributes.map((attribute) => ({
       ...attribute,
       options: attribute.options ? [...attribute.options] : []
-    }));
-  }
-
-  private formatWorkflowStateLabel(stateId: string): string {
-    return (stateId || '')
-      .trim()
-      .replace(/[_-]+/g, ' ')
-      .split(' ')
-      .filter(Boolean)
-      .map((part) => part.charAt(0).toUpperCase() + part.slice(1).toLowerCase())
-      .join(' ');
-  }
-
-  private buildManagedWorkflowStates() {
-    const rawInitialStateId = this.typeForm.get('initialStateId')?.value ?? '';
-    const initialStateId = rawInitialStateId.trim();
-
-    const terminalStates = [
-      { id: 'resolved', type: 'RESOLVED' as const },
-      { id: 'closed', type: 'CLOSED' as const }
-    ];
-
-    const orderedStates = [
-      { id: initialStateId, type: 'OPEN' as const },
-      ...terminalStates.filter((state) => state.id !== initialStateId)
-    ];
-
-    return orderedStates.map((state, index) => ({
-      id: state.id,
-      label: this.formatWorkflowStateLabel(state.id),
-      type: state.type,
-      allowedTransitions: orderedStates.slice(index + 1).map((nextState) => nextState.id)
     }));
   }
 }

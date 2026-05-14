@@ -25,3 +25,29 @@
   min-height: 64px;
   align-items: flex-start !important;
 }
+
+:host ::ng-deep .ticket-attribute-dropdown .select-trigger {
+  min-height: 42px;
+  border-radius: 0.5rem;
+  border-color: rgb(209 213 219);
+}
+
+:host-context(.dark) ::ng-deep .ticket-attribute-dropdown .select-trigger {
+  border-color: #38383a;
+  background: #3a3a3c;
+  color: #fff;
+}
+
+:host ::ng-deep .ticket-attribute-dropdown--invalid .select-trigger {
+  border-color: rgb(239 68 68);
+}
+
+:host ::ng-deep .ticket-attribute-dropdown--disabled .select-trigger {
+  background: rgb(243 244 246);
+  color: rgb(107 114 128);
+}
+
+:host-context(.dark) ::ng-deep .ticket-attribute-dropdown--disabled .select-trigger {
+  background: #1c1c1e;
+  color: #9ca3af;
+}

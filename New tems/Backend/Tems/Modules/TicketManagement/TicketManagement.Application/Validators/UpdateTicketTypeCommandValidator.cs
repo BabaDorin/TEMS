@@ -25,15 +25,6 @@ public class UpdateTicketTypeCommandValidator : AbstractValidator<UpdateTicketTy
         RuleFor(x => x.Version)
             .GreaterThan(0).WithMessage("Version must be greater than 0");
 
-        When(x => x.WorkflowConfig != null, () =>
-        {
-            RuleFor(x => x.WorkflowConfig!.States)
-                .NotEmpty().WithMessage("At least one workflow state is required");
-
-            RuleFor(x => x.WorkflowConfig!.InitialStateId)
-                .NotEmpty().WithMessage("Initial state ID is required");
-        });
-
         RuleFor(x => x.AttributeDefinitions)
             .Must(attributes => attributes == null || attributes.Count <= 50)
             .WithMessage("Maximum 50 attributes allowed per ticket type");

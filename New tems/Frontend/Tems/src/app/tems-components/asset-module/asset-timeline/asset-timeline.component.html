@@ -44,7 +44,7 @@
       </div>
 
       <!-- Content Card -->
-      <div class="bg-white dark:bg-[#3a3a3c] rounded-lg border border-gray-200 dark:border-[#48484a] overflow-hidden">
+      <div class="bg-white dark:bg-[#3a3a3c] rounded-lg border border-gray-200 dark:border-[#38383a] overflow-hidden">
         <div class="px-4 py-3">
           <!-- Header -->
           <div class="flex items-start justify-between gap-3">
@@ -111,6 +111,15 @@
                 <path d="M8 1.333C6.23189 1.333 4.83325 2.73165 4.83325 4.5C4.83325 6.26835 6.23189 7.667 8 7.667C9.76811 7.667 11.1666 6.26835 11.1666 4.5C11.1666 2.73165 9.76811 1.333 8 1.333ZM8 1.333C10.3932 1.333 12.3333 3.27315 12.3333 5.66634C12.3333 9.33301 8 14.6663 8 14.6663C8 14.6663 3.66659 9.33301 3.66659 5.66634C3.66659 3.27315 5.60672 1.333 8 1.333Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
               {{ getLocationName(entry) }}
+            </button>
+            <button *ngIf="entry.references['ticketId'] && getTicketHumanReadableId(entry)"
+                    (click)="openTicketPreview(entry.references['ticketId'])"
+                    class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-indigo-50 dark:bg-indigo-500/10 text-indigo-700 dark:text-indigo-300 rounded-full text-xs font-medium hover:bg-indigo-100 dark:hover:bg-indigo-500/20 cursor-pointer transition">
+              <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
+                <path d="M4 2.667H12C12.7364 2.667 13.3333 3.26395 13.3333 4.00033V12C13.3333 12.7364 12.7364 13.3333 12 13.3333H4C3.26362 13.3333 2.66667 12.7364 2.66667 12V4.00033C2.66667 3.26395 3.26362 2.667 4 2.667Z" stroke="currentColor" stroke-width="1.5"/>
+                <path d="M5.33337 5.33301H10.6667M5.33337 7.99967H10.6667M5.33337 10.6663H8.66671" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+              {{ getTicketHumanReadableId(entry) }}
             </button>
           </div>
         </div>

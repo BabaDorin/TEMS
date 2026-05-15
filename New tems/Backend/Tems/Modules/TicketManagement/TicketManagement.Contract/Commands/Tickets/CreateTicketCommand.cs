@@ -9,8 +9,10 @@ public record CreateTicketCommand(
     string Summary,
     string Priority,
     ReporterDto Reporter,
+    string? AccountableUserId,
     string? AssigneeId,
-    Dictionary<string, object> Attributes
+    Dictionary<string, object> Attributes,
+    List<string>? AssetIds
 ) : IRequest<CreateTicketResponse>;
 
 public record ReporterDto(

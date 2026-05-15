@@ -109,6 +109,13 @@ public class PurchaseInfo
     [BsonElement("vendor")]
     public string Vendor { get; set; } = string.Empty;
 
+    [BsonElement("purchase_order_id")]
+    [BsonRepresentation(BsonType.String)]
+    public string? PurchaseOrderId { get; set; }
+
+    [BsonElement("purchase_order_number")]
+    public string? PurchaseOrderNumber { get; set; }
+
     [BsonElement("warranty_expiry")]
     public DateTime? WarrantyExpiry { get; set; }
 }

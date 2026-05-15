@@ -36,6 +36,8 @@ internal static class AssetDtoMapper
                 asset.PurchaseInfo.PurchasePrice,
                 asset.PurchaseInfo.Currency,
                 asset.PurchaseInfo.Vendor,
+                asset.PurchaseInfo.PurchaseOrderId,
+                asset.PurchaseInfo.PurchaseOrderNumber,
                 asset.PurchaseInfo.WarrantyExpiry
             ) : null,
             asset.LocationId,

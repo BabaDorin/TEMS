@@ -244,6 +244,11 @@ public static class ApprovalGateHelper
             return true;
         }
 
+        if (MatchesCurrentUser(ticket.AccountableUserId, currentUserIdentifiers))
+        {
+            return true;
+        }
+
         return (ticket.ApprovalGates ?? new List<ApprovalGate>()).Any(gate =>
             gate.Approvers.Any(approver => MatchesCurrentUser(approver.UserId, currentUserIdentifiers)));
     }
@@ -255,7 +260,9 @@ public static class ApprovalGateHelper
             return false;
         }
 
-        return isManager || MatchesCurrentUser(ticket.Reporter.UserId, currentUserIdentifiers);
+        return isManager
+            || MatchesCurrentUser(ticket.Reporter.UserId, currentUserIdentifiers)
+            || MatchesCurrentUser(ticket.AccountableUserId, currentUserIdentifiers);
     }
 
     public static bool CanReviewGate(ApprovalGate gate, ISet<string>? currentUserIdentifiers)

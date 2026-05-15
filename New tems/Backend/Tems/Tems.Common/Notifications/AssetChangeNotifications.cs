@@ -85,3 +85,13 @@ public record AssetManualLogAddedNotification(
     string? PerformedByUserId,
     string? PerformedByUserName
 ) : INotification;
+
+public record AssetMentionedInTicketNotification(
+    string AssetId,
+    string AssetTag,
+    string TicketId,
+    string TicketHumanReadableId,
+    string TicketTitle,
+    string? PerformedByUserId,
+    string? PerformedByUserName
+) : INotification;

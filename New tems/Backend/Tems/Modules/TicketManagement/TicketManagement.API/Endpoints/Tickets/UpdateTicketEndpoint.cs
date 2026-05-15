@@ -35,5 +35,9 @@ public class UpdateTicketEndpoint : Endpoint<UpdateTicketCommand, UpdateTicketRe
         {
             await Send.NotFoundAsync(ct);
         }
+        catch (InvalidOperationException ex)
+        {
+            ThrowError(ex.Message, 400);
+        }
     }
 }

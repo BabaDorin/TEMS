@@ -4,16 +4,13 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { AddEquipment } from 'src/app/models/asset/add-asset.model';
-import { DefinitionService } from 'src/app/services/definition.service';
 import { AssetDefinitionService } from 'src/app/services/asset-definition.service';
 import { AssetDefinition } from 'src/app/models/asset/asset-definition.model';
 import { TEMSComponent } from 'src/app/tems/tems.component';
-import { Definition } from '../../../models/asset/add-definition.model';
 import { DialogService } from '../../../services/dialog.service';
 import { FormlyParserService } from '../../../services/formly-parser.service';
 import { SnackService } from '../../../services/snack.service';
 import { ErrorMessageService } from '../../../services/error-message.service';
-import { TypeService } from '../../../services/type.service';
 import { AddTypeComponent } from '.././add-type/add-type.component';
 import { BulkUploadComponent } from '../bulk-upload/bulk-upload.component';
 import { SICFileUploadResult } from './../../../models/asset/bulk-upload-result.model';
@@ -31,6 +28,15 @@ import { MatSelectModule } from '@angular/material/select';
 import { TranslateModule } from '@ngx-translate/core';
 import { TEMS_FORMS_IMPORTS } from 'src/app/shared/constants/tems-forms-imports.const';
 import { BulkUploadResultsComponent } from '../bulk-upload-results/bulk-upload-results.component';
+import { PurchaseOrder } from 'src/app/models/purchase-order/purchase-order.model';
+import { PurchaseOrderService } from 'src/app/services/purchase-order.service';
+import { TokenService } from 'src/app/services/token.service';
+import { AssetTypeService } from 'src/app/services/asset-type.service';
+import { CustomSelectComponent, SelectOption } from 'src/app/shared/custom-select/custom-select.component';
+import { LocationService } from 'src/app/services/location.service';
+import { RoomWithHierarchy } from 'src/app/models/location/room.model';
+import { UserService } from 'src/app/services/user.service';
+import { UserDto } from 'src/app/models/user/user-management.model';
 
 @Component({
   selector: 'app-add-asset',
@@ -46,6 +52,7 @@ import { BulkUploadResultsComponent } from '../bulk-upload-results/bulk-upload-r
     MatSelectModule,
     TranslateModule,
     BulkUploadResultsComponent,
+    CustomSelectComponent,
     ...TEMS_FORMS_IMPORTS
   ],
   templateUrl: './add-asset.component.html',
@@ -129,17 +136,34 @@ export class AddAssetComponent extends TEMSComponent implements OnInit {
   formlyData = new FormlyData();
 
   bulkUploadResults: SICFileUploadResult[];
+  purchaseOrders: PurchaseOrder[] = [];
+  purchaseOrderOptions: SelectOption[] = [];
+  purchaseOrdersLoading = false;
+  selectedPurchaseOrderId = '';
+  selectedPurchaseOrder: PurchaseOrder | null = null;
+  roomOptions: SelectOption[] = [];
+  roomsLoading = false;
+  selectedRoomId = '';
+  selectedRoom: RoomWithHierarchy | null = null;
+  userOptions: SelectOption[] = [];
+  usersLoading = false;
+  selectedUserId = '';
+  selectedUser: UserDto | null = null;
+  currentUserId = '';
 
   constructor(
     private assetService: AssetService,
-    private typeService: TypeService,
-    private definitionService: DefinitionService,
+    private assetTypeService: AssetTypeService,
     private assetDefinitionService: AssetDefinitionService,
     private formlyParserService: FormlyParserService,
     private dialogService: DialogService,
     private snackService: SnackService,
     private errorMessageService: ErrorMessageService,
     private router: Router,
+    private purchaseOrderService: PurchaseOrderService,
+    private tokenService: TokenService,
+    private locationService: LocationService,
+    private userService: UserService,
     private elementRef: ElementRef,
     private cdr: ChangeDetectorRef,
     @Optional() public dialogRef: MatDialogRef<AddAssetComponent>,
@@ -149,7 +173,11 @@ export class AddAssetComponent extends TEMSComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log('AddAssetComponent ngOnInit called, updateEquipmentId:', this.updateEquipmentId);
+    this.currentUserId = this.tokenService.getUserId() || '';
+    this.loadPurchaseOrders();
+    this.loadRooms();
+    this.loadUsers();
+
     if (this.updateEquipmentId != undefined) {
       this.edit();
       return;
@@ -159,22 +187,217 @@ export class AddAssetComponent extends TEMSComponent implements OnInit {
   }
 
   fetchTypes() {
-    console.log('Fetching asset types from backend...');
     this.subscriptions.push(
-      this.typeService.getAllAutocompleteOptions()
+      this.assetTypeService.getAll()
         .subscribe({
-          next: (response) => {
-            console.log('Asset types received:', response);
-            if (this.snackService.snackIfError(response))
-              return;
-
-            this.types = response;
-            console.log('Asset types set:', this.types);
+          next: (assetTypes) => {
+            this.types = assetTypes
+              .filter(assetType => !assetType.isArchived)
+              .map(assetType => ({
+                value: assetType.id,
+                label: assetType.name,
+                additional: assetType.description
+              } as IOption));
           },
           error: (error) => {
             console.error('Error fetching asset types:', error);
+            this.types = [];
+            this.snackService.snack({ message: 'Failed to load asset types', status: 0 });
           }
         }));
+  }
+
+  loadPurchaseOrders() {
+    this.purchaseOrdersLoading = true;
+    this.subscriptions.push(
+      this.purchaseOrderService.getAll()
+        .subscribe({
+          next: purchaseOrders => {
+            this.purchaseOrders = purchaseOrders;
+            this.purchaseOrderOptions = purchaseOrders.map(purchaseOrder => ({
+              value: purchaseOrder.id,
+              label: this.formatPurchaseOrderOption(purchaseOrder)
+            }));
+            this.purchaseOrdersLoading = false;
+          },
+          error: error => {
+            console.error('Error fetching purchase orders:', error);
+            this.purchaseOrders = [];
+            this.purchaseOrderOptions = [];
+            this.purchaseOrdersLoading = false;
+          }
+        })
+    );
+  }
+
+  loadRooms(): void {
+    this.roomsLoading = true;
+    this.subscriptions.push(
+      this.locationService.getRoomsWithHierarchy(undefined, undefined, 1, 500)
+        .subscribe({
+          next: response => {
+            const rooms = response.data || [];
+            this.roomOptions = rooms.map(room => ({
+              value: room.id,
+              label: this.formatRoomOption(room)
+            }));
+            this.roomsLoading = false;
+          },
+          error: error => {
+            console.error('Error fetching rooms:', error);
+            this.roomOptions = [];
+            this.roomsLoading = false;
+          }
+        })
+    );
+  }
+
+  loadUsers(): void {
+    this.usersLoading = true;
+    this.subscriptions.push(
+      this.userService.getAllUsers(1, 500)
+        .subscribe({
+          next: response => {
+            this.userOptions = (response.users || []).map(user => ({
+              value: user.id,
+              label: this.getUserDisplayLabel(user)
+            }));
+            this.usersLoading = false;
+          },
+          error: error => {
+            console.error('Error fetching users:', error);
+            this.userOptions = [];
+            this.usersLoading = false;
+          }
+        })
+    );
+  }
+
+  onRoomChanged(roomId: string): void {
+    this.selectedRoomId = roomId;
+
+    if (!roomId) {
+      this.selectedRoom = null;
+      return;
+    }
+
+    this.roomsLoading = true;
+    this.subscriptions.push(
+      this.locationService.getRoomById(roomId)
+        .subscribe({
+          next: room => {
+            this.selectedRoom = room;
+            this.roomsLoading = false;
+          },
+          error: error => {
+            console.error('Error fetching room:', error);
+            this.selectedRoom = null;
+            this.roomsLoading = false;
+          }
+        })
+    );
+  }
+
+  onUserChanged(userId: string): void {
+    this.selectedUserId = userId;
+
+    if (!userId) {
+      this.selectedUser = null;
+      return;
+    }
+
+    this.usersLoading = true;
+    this.subscriptions.push(
+      this.userService.getUserById(userId)
+        .subscribe({
+          next: user => {
+            this.selectedUser = user;
+            this.usersLoading = false;
+          },
+          error: error => {
+            console.error('Error fetching user:', error);
+            this.selectedUser = null;
+            this.usersLoading = false;
+            this.snackService.snack({ message: 'Failed to load user details', status: 0 });
+          }
+        })
+    );
+  }
+
+  clearRoomSelection(): void {
+    this.selectedRoomId = '';
+    this.selectedRoom = null;
+  }
+
+  clearUserSelection(): void {
+    this.selectedUserId = '';
+    this.selectedUser = null;
+  }
+
+  private formatRoomOption(room: Pick<RoomWithHierarchy, 'siteName' | 'buildingName' | 'name' | 'roomNumber' | 'floorLabel'>): string {
+    const hierarchy = [room.siteName, room.buildingName, room.name].filter(part => !!part && part.trim().length > 0);
+    const roomMeta = [room.roomNumber, room.floorLabel].filter(part => !!part && part.trim().length > 0).join(' • ');
+    return roomMeta ? `${hierarchy.join(' / ')} • ${roomMeta}` : hierarchy.join(' / ');
+  }
+
+  private buildLocationPayload() {
+    if (!this.selectedRoom) {
+      return null;
+    }
+
+    return {
+      building: this.selectedRoom.buildingName || '',
+      room: this.selectedRoom.name || this.selectedRoom.roomNumber || '',
+      desk: ''
+    };
+  }
+
+  private buildAssignmentPayload() {
+    if (!this.selectedUser) {
+      return null;
+    }
+
+    return {
+      assignedToUserId: this.selectedUser.id,
+      assignedToName: this.getUserDisplayLabel(this.selectedUser),
+      assignedAt: new Date().toISOString(),
+      assignmentType: 'permanent'
+    };
+  }
+
+  private getUserDisplayLabel(user: UserDto): string {
+    const fullName = [user.firstName, user.lastName]
+      .filter(part => !!part && part.trim().length > 0)
+      .join(' ')
+      .trim();
+    return fullName || user.username || user.email;
+  }
+
+  private getSelectedStatusValue(): 'new' | 'used' | 'defect' | undefined {
+    if (this.selectedStatus) {
+      return this.selectedStatus;
+    }
+
+    if (this.formlyData.model?.isDefect) {
+      return 'defect';
+    }
+
+    if (this.formlyData.model?.isUsed) {
+      return 'used';
+    }
+
+    return undefined;
+  }
+
+  private syncStatusFlags(): void {
+    const status = this.getSelectedStatusValue();
+    if (!status || !this.formlyData.model) {
+      return;
+    }
+
+    this.selectedStatus = status;
+    this.formlyData.model.isUsed = status !== 'new';
+    this.formlyData.model.isDefect = status === 'defect';
   }
 
   // Fetches all of selected type's definitions (called after selecting a type in order to display 
@@ -187,12 +410,22 @@ export class AddAssetComponent extends TEMSComponent implements OnInit {
     }
 
     this.subscriptions.push(
-      this.definitionService.getDefinitionsOfType(this.selectedType)
-        .subscribe(response => {
-          if (this.snackService.snackIfError(response))
-            return;
-
-          this.definitionsOfType = response;
+      this.assetDefinitionService.getByAssetTypeId(this.selectedType)
+        .subscribe({
+          next: (definitions) => {
+            this.definitionsOfType = definitions
+              .filter(definition => !definition.isArchived)
+              .map(definition => ({
+                value: definition.id,
+                label: definition.name,
+                additional: definition.model || definition.manufacturer || ''
+              } as IOption));
+          },
+          error: (error) => {
+            console.error('Error fetching asset definitions:', error);
+            this.definitionsOfType = [];
+            this.snackService.snack({ message: 'Failed to load asset definitions', status: 0 });
+          }
         }))
   }
 
@@ -217,9 +450,8 @@ export class AddAssetComponent extends TEMSComponent implements OnInit {
     this.subscriptions.push(
       this.assetDefinitionService.getById(eventData.value)
         .subscribe({
-          next: (result: any) => {
-            // Unwrap the assetDefinition property if it exists
-            this.selectedFullDefinition = result.assetDefinition || result;
+          next: (definition: AssetDefinition) => {
+            this.selectedFullDefinition = definition;
             // Store original definition for restore
             this.originalDefinition = JSON.parse(JSON.stringify(this.selectedFullDefinition));
             
@@ -228,15 +460,14 @@ export class AddAssetComponent extends TEMSComponent implements OnInit {
             this.isEditingAssetName = false;
             this.editingSpecificationIndex = null;
             this.editedSpecificationValue = null;
-            
-            // Show the form
-            this.formlyData.isVisible = true;
+
+            this.createAddAssetFormly();
             this.cdr.markForCheck();
           },
           error: (err) => {
             console.error('Error fetching definition:', err);
             this.snackService.snack({ message: 'Failed to load asset definition', status: 0 });
-            this.formlyData.isVisible = true;
+            this.formlyData.isVisible = false;
           }
         }));
   }
@@ -280,6 +511,7 @@ export class AddAssetComponent extends TEMSComponent implements OnInit {
         price: legacyDefinition.price,
         currency: legacyDefinition.currency,
         purchaseDate: new Date().toISOString().split('T')[0],
+        vendor: '',
         description: '',
         isUsed: false,
         isDefect: false
@@ -402,7 +634,7 @@ export class AddAssetComponent extends TEMSComponent implements OnInit {
     const assetData = {
       serialNumber: this.formlyData.model.serialNumber,
       assetTag: this.formlyData.model.temsid,
-      status: this.selectedStatus || 'used',
+      status: this.getSelectedStatusValue() || 'used',
       assetTypeId: this.selectedType,
       assetTypeName: this.selectedFullDefinition?.assetTypeName || '',
       definitionId: this.selectedDefinition?.value || '',
@@ -413,7 +645,11 @@ export class AddAssetComponent extends TEMSComponent implements OnInit {
       customizeDefinition: isCustomized,
       customSpecifications: customSpecifications,
       notes: this.formlyData.model.description || '',
-      createdBy: 'current-user' // TODO: Get from auth service
+      createdBy: this.currentUserId || 'current-user',
+      purchaseInfo: this.buildPurchaseInfoPayload(),
+      locationId: this.selectedRoom?.id || null,
+      location: this.buildLocationPayload(),
+      assignment: this.buildAssignmentPayload()
     };
 
     const endPoint = this.updateEquipmentId == undefined
@@ -429,7 +665,7 @@ export class AddAssetComponent extends TEMSComponent implements OnInit {
               // Clear mandatory fields
               this.formlyData.model.temsid = '';
               this.formlyData.model.serialNumber = '';
-              this.selectedStatus = undefined;
+              this.syncStatusFlags();
               // Keep customized definition - user can reset manually if needed
             } else {
               this.snackService.snack({ status: 1, message: 'Asset updated successfully!' });
@@ -621,13 +857,67 @@ export class AddAssetComponent extends TEMSComponent implements OnInit {
            !!this.selectedDefinition && 
            !!this.formlyData.model.temsid?.trim() && 
            !!this.formlyData.model.serialNumber?.trim() && 
-           !!this.selectedStatus;
+           !!this.selectedStatus &&
+           (!this.selectedPurchaseOrder || this.hasValidPurchasePrice());
   }
 
   openInFullPage() {
     if (this.dialogRef) {
       this.dialogRef.close();
     }
-    this.router.navigate(['/asset/add']);
+    this.router.navigate(['/assets/add']);
+  }
+
+  onPurchaseOrderChanged(purchaseOrderId: string): void {
+    this.selectedPurchaseOrderId = purchaseOrderId;
+    this.selectedPurchaseOrder = this.purchaseOrders.find(purchaseOrder => purchaseOrder.id === purchaseOrderId) || null;
+
+    if (this.selectedPurchaseOrder) {
+      this.formlyData.model.vendor = this.selectedPurchaseOrder.vendor;
+      this.formlyData.model.currency = this.selectedPurchaseOrder.currency;
+      this.formlyData.model.purchaseDate = this.formlyData.model.purchaseDate || new Date().toISOString().split('T')[0];
+      return;
+    }
+
+    this.formlyData.model.currency = '';
+    this.formlyData.model.vendor = '';
+  }
+
+  clearPurchaseOrderSelection(): void {
+    this.selectedPurchaseOrderId = '';
+    this.selectedPurchaseOrder = null;
+    this.formlyData.model.currency = '';
+    this.formlyData.model.vendor = '';
+  }
+
+  hasValidPurchasePrice(): boolean {
+    const price = Number(this.formlyData.model?.price);
+    return Number.isFinite(price) && price > 0;
+  }
+
+  formatPurchaseOrderOption(purchaseOrder: PurchaseOrder): string {
+    return `${purchaseOrder.poNumber} • ${purchaseOrder.vendor} • ${purchaseOrder.availableAmount.toFixed(2)} ${purchaseOrder.currency} available`;
+  }
+
+  private buildPurchaseInfoPayload() {
+    const purchasePrice = this.hasValidPurchasePrice() ? Number(this.formlyData.model.price) : null;
+    const purchaseDate = this.formlyData.model.purchaseDate || null;
+    const vendor = (this.formlyData.model.vendor || '').trim();
+    const currency = (this.formlyData.model.currency || '').trim();
+    const warrantyExpiry = this.formlyData.model.warrantyExpiration || null;
+
+    if (!this.selectedPurchaseOrder && !purchasePrice && !purchaseDate && !vendor && !currency && !warrantyExpiry) {
+      return null;
+    }
+
+    return {
+      purchaseDate,
+      purchasePrice,
+      currency: this.selectedPurchaseOrder?.currency || currency || '',
+      vendor: this.selectedPurchaseOrder?.vendor || vendor || '',
+      purchaseOrderId: this.selectedPurchaseOrder?.id || null,
+      purchaseOrderNumber: this.selectedPurchaseOrder?.poNumber || null,
+      warrantyExpiry
+    };
   }
 }

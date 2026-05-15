@@ -57,17 +57,6 @@ export class AssetTypeManagementComponent implements OnInit {
       valueFormatter: (params) => params.value?.length || 0
     },
     {
-      headerName: 'Status',
-      field: 'isArchived',
-      flex: 0.7,
-      minWidth: 100,
-      cellRenderer: (params: any) => {
-        const isArchived = params.value;
-        const className = isArchived ? 'tems-asset-chip tems-asset-chip--archived' : 'tems-asset-chip tems-asset-chip--active';
-        return `<span class="${className}">${isArchived ? 'Archived' : 'Active'}</span>`;
-      }
-    },
-    {
       headerName: 'Actions',
       flex: 1,
       minWidth: 150,

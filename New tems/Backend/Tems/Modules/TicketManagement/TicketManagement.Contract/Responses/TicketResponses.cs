@@ -13,12 +13,21 @@ public record GetTicketResponse(
     string CurrentStateId,
     string Priority,
     ReporterResponse Reporter,
+    string AccountableUserId,
+    string? AccountableDisplayName,
     string? AssigneeId,
     Dictionary<string, object> Attributes,
+    List<string> AssetIds,
+    List<AssetLinkResponse> LinkedAssets,
     List<ApprovalGateResponse> ApprovalGates,
     DateTime CreatedAt,
     DateTime UpdatedAt,
     DateTime? ResolvedAt
+);
+
+public record AssetLinkResponse(
+    string AssetId,
+    string AssetTag
 );
 
 public record GetAllTicketsResponse(

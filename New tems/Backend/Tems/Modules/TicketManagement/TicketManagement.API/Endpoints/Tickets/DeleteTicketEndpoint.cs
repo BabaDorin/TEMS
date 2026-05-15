@@ -17,12 +17,23 @@ public class DeleteTicketEndpoint : Endpoint<DeleteTicketCommand, DeleteTicketRe
     public override void Configure()
     {
         Delete("/tickets/{TicketId}");
-        Policies("CanManageTickets");
+        Policies("CanOpenOrManageTickets");
     }
 
     public override async Task HandleAsync(DeleteTicketCommand request, CancellationToken ct)
     {
-        var response = await _mediator.Send(request, ct);
-        await Send.OkAsync(response, cancellation: ct);
+        try
+        {
+            var response = await _mediator.Send(request, ct);
+            await Send.OkAsync(response, cancellation: ct);
+        }
+        catch (UnauthorizedAccessException)
+        {
+            await Send.ForbiddenAsync(ct);
+        }
+        catch (KeyNotFoundException)
+        {
+            await Send.NotFoundAsync(ct);
+        }
     }
 }

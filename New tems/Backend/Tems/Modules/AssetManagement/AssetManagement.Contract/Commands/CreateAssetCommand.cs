@@ -18,6 +18,7 @@ public record CreateAssetCommand(
     bool CustomizeDefinition,
     List<AssetSpecificationDto>? CustomSpecifications,
     PurchaseInfoDto? PurchaseInfo,
+    string? LocationId,
     AssetLocationDto? Location,
     AssetAssignmentDto? Assignment,
     string? ParentAssetId,
@@ -31,6 +32,8 @@ public record PurchaseInfoDto(
     decimal? PurchasePrice,
     string Currency,
     string Vendor,
+    string? PurchaseOrderId,
+    string? PurchaseOrderNumber,
     DateTime? WarrantyExpiry);
 
 public record AssetLocationDto(

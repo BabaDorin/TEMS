@@ -9,11 +9,13 @@ import { TicketTypeService } from 'src/app/services/ticket-type.service';
 import { TokenService } from 'src/app/services/token.service';
 import { ThemeService } from 'src/app/services/theme.service';
 import { UserService } from 'src/app/services/user.service';
+import { AssetService } from 'src/app/services/asset.service';
 import { Ticket, CreateTicketRequest, TicketMessage, AddMessageRequest, ApprovalGateApprover } from 'src/app/models/ticket/ticket.model';
 import { AttributeDefinition, TicketType } from 'src/app/models/ticket/ticket-type.model';
-import { UserDto } from 'src/app/models/user/user-management.model';
+import { UserDto, UserLookupDto } from 'src/app/models/user/user-management.model';
 import { TicketManagementStateService } from 'src/app/state/ticket-management.state';
 import { CustomSelectComponent, SelectOption } from 'src/app/shared/custom-select/custom-select.component';
+import { PURCHASE_ORDER_ACCOUNTABLE_ATTRIBUTE_KEY, PURCHASE_ORDER_TICKET_TYPE_ID } from 'src/app/shared/constants/purchase-order.constants';
 
 @Component({
   selector: 'app-view-tickets',
@@ -43,6 +45,11 @@ export class ViewTicketsComponent implements OnInit {
   previewCreatorUser: UserDto | null = null;
   previewCreatorUserLoading = false;
   previewTicketType: TicketType | null = null;
+  accountableUserOptions: SelectOption[] = [];
+  accountableUsersLoading = false;
+  linkedAssetIds: string[] = [];
+  linkedAssetOptions: SelectOption[] = [];
+  linkedAssetsLoading = false;
   createForm!: FormGroup;
   isSubmitting = false;
   gridReady = false;
@@ -217,12 +224,14 @@ export class ViewTicketsComponent implements OnInit {
   }
 
   getTicketStatusLabel(stateId: string): string {
+    const normalized = this.normalizeStateId(stateId);
+    if (normalized === 'approved' || normalized === 'state-approved') return 'Approved';
+
     const managed = this.getManagedStatusGroup(stateId);
     if (managed === 'new') return 'New';
     if (managed === 'in-progress') return 'In progress';
     if (managed === 'closed') return 'Closed';
 
-    const normalized = this.normalizeStateId(stateId);
     if (!normalized) return '—';
     return normalized
       .split('-')
@@ -244,7 +253,7 @@ export class ViewTicketsComponent implements OnInit {
     if (!normalized) return null;
     if (['new', 'open', 'state-new'].includes(normalized)) return 'new';
     if (['in-progress', 'state-in-progress', 'state-wip', 'state-wip', 'wip', 'progress'].includes(normalized)) return 'in-progress';
-    if (['closed', 'state-closed'].includes(normalized)) return 'closed';
+    if (['closed', 'state-closed', 'approved', 'state-approved'].includes(normalized)) return 'closed';
     return null;
   }
 
@@ -382,7 +391,8 @@ export class ViewTicketsComponent implements OnInit {
     private router: Router,
     private themeService: ThemeService,
     private tokenService: TokenService,
-    private userService: UserService
+    private userService: UserService,
+    private assetService: AssetService
   ) {
     this.canManageTickets = this.tokenService.canManageTickets();
     this.canOpenTickets = this.tokenService.canOpenTickets();
@@ -472,6 +482,60 @@ export class ViewTicketsComponent implements OnInit {
     this.createForm.get('ticketTypeId')?.valueChanges.subscribe((ticketTypeId) => {
       this.onTicketTypeChange(ticketTypeId);
     });
+  }
+
+  private isPurchaseOrderType(ticketTypeId: string | null | undefined): boolean {
+    return (ticketTypeId || '').toLowerCase() === PURCHASE_ORDER_TICKET_TYPE_ID;
+  }
+
+  supportsAssetLinking(ticketType: TicketType | null | undefined): boolean {
+    if (!ticketType) {
+      return false;
+    }
+
+    const normalized = `${ticketType.name || ''} ${ticketType.description || ''} ${ticketType.ticketTypeId || ''}`.toLowerCase();
+    return normalized.includes('hardware issue')
+      || normalized.includes('hardware_issue')
+      || normalized.includes('network issue')
+      || normalized.includes('network_issue');
+  }
+
+  private ensureAccountableUserOptionsLoaded(): void {
+    if (this.accountableUserOptions.length > 0 || this.accountableUsersLoading) {
+      return;
+    }
+
+    this.accountableUsersLoading = true;
+    this.userService.searchUsersByName('', 200).subscribe({
+      next: (users: UserLookupDto[]) => {
+        this.accountableUserOptions = users.map(user => ({
+          value: user.id,
+          label: user.displayName
+        }));
+        this.addCurrentUserAsAccountableOption();
+        this.accountableUsersLoading = false;
+      },
+      error: () => {
+        this.addCurrentUserAsAccountableOption();
+        this.accountableUsersLoading = false;
+      }
+    });
+  }
+
+  private addCurrentUserAsAccountableOption(): void {
+    if (!this.currentUserId) {
+      return;
+    }
+
+    if (!this.accountableUserOptions.some(option => option.value === this.currentUserId)) {
+      this.accountableUserOptions = [
+        {
+          value: this.currentUserId,
+          label: 'You'
+        },
+        ...this.accountableUserOptions
+      ];
+    }
   }
 
   loadTickets(): void {
@@ -651,6 +715,8 @@ export class ViewTicketsComponent implements OnInit {
     });
     this.selectedTicketType = null;
     this.dynamicAttributeValues = {};
+    this.linkedAssetIds = [];
+    this.linkedAssetOptions = [];
     
     // Ensure ticket types are loaded
     if (this.ticketTypes.length === 0) {
@@ -663,6 +729,8 @@ export class ViewTicketsComponent implements OnInit {
     this.createForm.reset();
     this.selectedTicketType = null;
     this.dynamicAttributeValues = {};
+    this.linkedAssetIds = [];
+    this.linkedAssetOptions = [];
   }
 
   get hasAdditionalFields(): boolean {
@@ -680,16 +748,63 @@ export class ViewTicketsComponent implements OnInit {
   onTicketTypeChange(ticketTypeId: string | null): void {
     this.selectedTicketType = this.ticketTypes.find(tt => tt.ticketTypeId === ticketTypeId) || null;
     this.dynamicAttributeValues = {};
+    this.linkedAssetIds = [];
     
     if (this.editableAttributeDefinitions.length > 0) {
       this.editableAttributeDefinitions.forEach(attr => {
-        if (attr.dataType === 'BOOL') {
-          this.dynamicAttributeValues[attr.key] = false;
-        } else {
-          this.dynamicAttributeValues[attr.key] = '';
-        }
+        this.dynamicAttributeValues[attr.key] = this.getInitialAttributeValue(attr);
       });
     }
+
+    if (this.isPurchaseOrderType(ticketTypeId)) {
+      this.ensureAccountableUserOptionsLoaded();
+    }
+
+    if (this.supportsAssetLinking(this.selectedTicketType)) {
+      this.loadLinkedAssetOptions();
+    } else {
+      this.linkedAssetOptions = [];
+    }
+  }
+
+  onLinkedAssetSearch(term: string): void {
+    this.loadLinkedAssetOptions(term);
+  }
+
+  private loadLinkedAssetOptions(searchTerm = ''): void {
+    if (!this.supportsAssetLinking(this.selectedTicketType)) {
+      return;
+    }
+
+    this.linkedAssetsLoading = true;
+    this.assetService.getAll(undefined, 1, 50, undefined, searchTerm.trim() || undefined).subscribe({
+      next: (response) => {
+        const fetchedOptions = (response.assets || []).map((asset) => ({
+          value: asset.id,
+          label: asset.assetTag
+        }));
+        const existingSelectedOptions = this.linkedAssetOptions.filter((option) => this.linkedAssetIds.includes(option.value));
+        const optionMap = new Map<string, SelectOption>();
+        [...existingSelectedOptions, ...fetchedOptions].forEach((option) => optionMap.set(option.value, option));
+        this.linkedAssetOptions = Array.from(optionMap.values()).sort((left, right) => left.label.localeCompare(right.label));
+        this.linkedAssetsLoading = false;
+      },
+      error: () => {
+        this.linkedAssetsLoading = false;
+      }
+    });
+  }
+
+  private getInitialAttributeValue(attribute: AttributeDefinition): any {
+    if (attribute.dataType === 'BOOL') {
+      return false;
+    }
+
+    if (attribute.dataType === 'USER' && attribute.key === PURCHASE_ORDER_ACCOUNTABLE_ATTRIBUTE_KEY) {
+      return this.currentUserId || '';
+    }
+
+    return '';
   }
 
   getAttributeDropdownOptions(attribute: AttributeDefinition): SelectOption[] {
@@ -739,7 +854,11 @@ export class ViewTicketsComponent implements OnInit {
         userId: this.currentUserId || 'current-user-id',
         channelSource: 'WEB'
       },
-      attributes: this.hasAdditionalFields ? this.dynamicAttributeValues : {}
+      accountableUserId: this.isPurchaseOrderType(formValue.ticketTypeId)
+        ? (this.dynamicAttributeValues[PURCHASE_ORDER_ACCOUNTABLE_ATTRIBUTE_KEY] || this.currentUserId || undefined)
+        : undefined,
+      attributes: this.hasAdditionalFields ? this.dynamicAttributeValues : {},
+      assetIds: this.supportsAssetLinking(this.selectedTicketType) ? this.linkedAssetIds : []
     };
 
     this.ticketService.create(request).subscribe({
@@ -755,6 +874,27 @@ export class ViewTicketsComponent implements OnInit {
         this.isSubmitting = false;
       }
     });
+  }
+
+  shouldShowPreviewAccountable(): boolean {
+    if (!this.selectedTicket?.accountableUserId) {
+      return false;
+    }
+
+    return (this.selectedTicket.accountableUserId || '').toLowerCase() !== (this.selectedTicket.reporter?.userId || '').toLowerCase();
+  }
+
+  getPreviewAccountableDisplayName(): string {
+    if (!this.selectedTicket?.accountableUserId) {
+      return '—';
+    }
+
+    if (this.selectedTicket.accountableDisplayName) {
+      return this.selectedTicket.accountableDisplayName;
+    }
+
+    const option = this.accountableUserOptions.find(item => item.value === this.selectedTicket?.accountableUserId);
+    return option?.label || this.selectedTicket.accountableUserId;
   }
 
 

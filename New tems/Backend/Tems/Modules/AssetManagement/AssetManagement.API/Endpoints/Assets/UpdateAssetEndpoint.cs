@@ -15,7 +15,14 @@ public class UpdateAssetEndpoint(IMediator mediator) : Endpoint<UpdateAssetComma
 
     public override async Task HandleAsync(UpdateAssetCommand command, CancellationToken ct)
     {
-        var response = await mediator.Send(command, ct);
-        await Send.OkAsync(response, cancellation: ct);
+        try
+        {
+            var response = await mediator.Send(command, ct);
+            await Send.OkAsync(response, cancellation: ct);
+        }
+        catch (InvalidOperationException ex)
+        {
+            ThrowError(ex.Message, 400);
+        }
     }
 }

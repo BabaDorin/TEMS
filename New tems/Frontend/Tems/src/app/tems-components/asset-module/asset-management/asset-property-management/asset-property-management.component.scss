@@ -1,1 +1,109 @@
-// Component-specific styles
+.tems-asset-page__actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1rem;
+}
+
+.asset-admin-modal {
+  color: var(--text-primary);
+}
+
+.asset-admin-modal__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.5rem 1.5rem 0;
+}
+
+.asset-admin-modal__subtitle {
+  margin: 0.35rem 0 0;
+  color: rgb(107 114 128);
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.asset-admin-modal__form {
+  padding: 1.5rem;
+  overflow-y: auto;
+  max-height: calc(90vh - 5rem);
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.asset-admin-modal__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.asset-admin-modal__label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: rgb(55 65 81);
+}
+
+.asset-admin-modal__input {
+  width: 100%;
+  min-height: 44px;
+  padding: 0.625rem 1rem;
+  border: 1px solid rgb(209 213 219);
+  border-radius: 0.5rem;
+  background: rgb(255 255 255);
+  color: rgb(17 24 39);
+  font: inherit;
+  outline: none;
+  transition: border-color 160ms ease, box-shadow 160ms ease;
+}
+
+.asset-admin-modal__input:focus {
+  border-color: transparent;
+  box-shadow: 0 0 0 2px rgb(17 24 39 / 0.16);
+}
+
+.asset-admin-modal__textarea {
+  min-height: 104px;
+  resize: vertical;
+}
+
+.asset-admin-modal__close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border: 0;
+  border-radius: 9999px;
+  background: transparent;
+  color: rgb(156 163 175);
+  transition: color 160ms ease, background-color 160ms ease;
+}
+
+.asset-admin-modal__close:hover {
+  color: rgb(75 85 99);
+  background: rgb(243 244 246);
+}
+
+:host-context(.dark) .asset-admin-modal__subtitle {
+  color: rgb(156 163 175);
+}
+
+:host-context(.dark) .asset-admin-modal__label {
+  color: rgb(209 213 219);
+}
+
+:host-context(.dark) .asset-admin-modal__input {
+  background: #3a3a3c;
+  border-color: #38383a;
+  color: white;
+}
+
+:host-context(.dark) .asset-admin-modal__input:focus {
+  box-shadow: 0 0 0 2px rgb(59 130 246 / 0.35);
+}
+
+:host-context(.dark) .asset-admin-modal__close:hover {
+  color: rgb(209 213 219);
+  background: rgb(255 255 255 / 0.06);
+}

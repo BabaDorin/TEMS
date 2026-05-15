@@ -1,11 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { NavigationEnd, Router, RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
-import { NgbCollapseModule } from '@ng-bootstrap/ng-bootstrap';
+import { filter, Subscription } from 'rxjs';
 import { ClaimService } from 'src/app/services/claim.service';
 import { RouteInfo } from './sidebar.metadata';
-import { SidebarManager } from './sidebar-shared-functionalities';
 import { MenuService } from 'src/app/services/menu.service';
 
 @Component({
@@ -14,22 +13,20 @@ import { MenuService } from 'src/app/services/menu.service';
   imports: [
     CommonModule,
     RouterModule,
-    TranslateModule,
-    NgbCollapseModule
+    TranslateModule
   ],
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.scss']
 })
-export class SidebarComponent implements OnInit {
-  public uiBasicCollapsed = false;
-  public samplePagesCollapsed = false;
-  public sidebarNavItems: RouteInfo[] = [];
-  private sidebarManager: SidebarManager;
+export class SidebarComponent implements OnInit, OnDestroy {
   public isVisible = true;
+  private bodyClassObserver?: MutationObserver;
+  private routerSubscription?: Subscription;
 
   constructor(
     public claims: ClaimService,
-    public menuService: MenuService
+    public menuService: MenuService,
+    private router: Router
   ) {
 
   }
@@ -39,14 +36,25 @@ export class SidebarComponent implements OnInit {
     this.isVisible = !document.body.classList.contains('sidebar-hidden');
     
     // Listen to body class changes for sidebar toggle
-    const observer = new MutationObserver(() => {
+    this.bodyClassObserver = new MutationObserver(() => {
       this.isVisible = !document.body.classList.contains('sidebar-hidden');
     });
     
-    observer.observe(document.body, {
+    this.bodyClassObserver.observe(document.body, {
       attributes: true,
       attributeFilter: ['class']
     });
+
+    this.syncMenuStateWithRoute();
+
+    this.routerSubscription = this.router.events
+      .pipe(filter(event => event instanceof NavigationEnd))
+      .subscribe(() => this.syncMenuStateWithRoute());
+  }
+
+  ngOnDestroy() {
+    this.bodyClassObserver?.disconnect();
+    this.routerSubscription?.unsubscribe();
   }
 
   optionSelected(){
@@ -60,12 +68,41 @@ export class SidebarComponent implements OnInit {
 
   closePreviousSubmenu(clickedNavItem: RouteInfo){
     if(clickedNavItem.submenu != undefined && clickedNavItem.submenu.length > 0){
-      // Toggle only the clicked section so multiple sections can remain expanded.
       clickedNavItem.showSubmenu = !clickedNavItem.showSubmenu;
-      clickedNavItem.isActive = clickedNavItem.showSubmenu;
+      clickedNavItem.isActive = clickedNavItem.showSubmenu || this.hasActiveSubmenu(clickedNavItem);
       return;
     }
 
     clickedNavItem.isActive = !clickedNavItem.isActive;
+  }
+
+  hasActiveSubmenu(navItem: RouteInfo): boolean {
+    return navItem.submenu?.some(submenu => this.isCurrentRoute(submenu.path)) ?? false;
+  }
+
+  private syncMenuStateWithRoute(): void {
+    for (const navItem of this.menuService.ROUTES) {
+      if (!navItem.submenu?.length) {
+        navItem.isActive = this.isCurrentRoute(navItem.path);
+        continue;
+      }
+
+      const hasActiveSubmenu = this.hasActiveSubmenu(navItem);
+      navItem.isActive = hasActiveSubmenu;
+      navItem.showSubmenu = hasActiveSubmenu || navItem.showSubmenu;
+    }
+  }
+
+  private isCurrentRoute(path: string): boolean {
+    if (!path) {
+      return false;
+    }
+
+    return this.router.isActive(path, {
+      paths: 'exact',
+      queryParams: 'ignored',
+      fragment: 'ignored',
+      matrixParams: 'ignored'
+    });
   }
 }

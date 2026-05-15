@@ -134,7 +134,7 @@
           formControlName="title"
           maxlength="50"
           placeholder="Give the issue a short title"
-          class="w-full px-4 py-2 border border-gray-300 dark:border-[#38383a] dark:bg-[#3a3a3c] dark:text-white rounded-lg focus:ring-2 focus:ring-gray-900 dark:focus:ring-blue-500 focus:border-transparent"
+          class="w-full px-4 py-2 border border-gray-200 dark:border-[#38383a] dark:bg-[#3a3a3c] dark:text-white rounded-lg focus:ring-2 focus:ring-gray-900 dark:focus:ring-blue-500 focus:border-transparent"
           [class.border-red-500]="createForm.get('title')?.invalid && createForm.get('title')?.touched">
         <div class="mt-1 flex items-center justify-between gap-3">
           <p *ngIf="createForm.get('title')?.invalid && createForm.get('title')?.touched" class="text-red-500 dark:text-red-400 text-sm">
@@ -151,7 +151,7 @@
           formControlName="summary"
           rows="4"
           placeholder="Describe what happened, what you expected, and any useful context"
-          class="w-full px-4 py-2 border border-gray-300 dark:border-[#38383a] dark:bg-[#3a3a3c] dark:text-white rounded-lg focus:ring-2 focus:ring-gray-900 dark:focus:ring-blue-500 focus:border-transparent resize-none"
+          class="w-full px-4 py-2 border border-gray-200 dark:border-[#38383a] dark:bg-[#3a3a3c] dark:text-white rounded-lg focus:ring-2 focus:ring-gray-900 dark:focus:ring-blue-500 focus:border-transparent resize-none"
           [class.border-red-500]="createForm.get('summary')?.invalid && createForm.get('summary')?.touched">
         </textarea>
         <p *ngIf="createForm.get('summary')?.invalid && createForm.get('summary')?.touched" class="text-red-500 dark:text-red-400 text-sm mt-1">
@@ -169,7 +169,7 @@
               formControlName="priority"
               [value]="priority.value"
               class="sr-only peer">
-            <div class="w-full px-4 py-2 border border-gray-300 dark:border-[#38383a] rounded-lg cursor-pointer peer-checked:border-gray-900 dark:peer-checked:border-blue-500 peer-checked:bg-gray-50 dark:peer-checked:bg-blue-500/20 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors text-center">
+            <div class="w-full px-4 py-2 border border-gray-200 dark:border-[#38383a] rounded-lg cursor-pointer peer-checked:border-gray-900 dark:peer-checked:border-blue-500 peer-checked:bg-gray-50 dark:peer-checked:bg-blue-500/20 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors text-center">
               <span class="inline-flex items-center justify-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300">
                 <span
                   class="inline-block w-2.5 h-2.5 rounded-full ring-1 ring-black/10 dark:ring-white/10"
@@ -181,6 +181,24 @@
         </div>
         <p *ngIf="createForm.get('priority')?.invalid && createForm.get('priority')?.touched" class="text-red-500 dark:text-red-400 text-sm mt-1">
           Priority is required
+        </p>
+      </div>
+
+      <div *ngIf="supportsAssetLinking(selectedTicketType)" class="pt-1">
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Linked assets</label>
+        <app-custom-select
+          [(ngModel)]="linkedAssetIds"
+          [ngModelOptions]="{standalone: true}"
+          [options]="linkedAssetOptions"
+          [mode]="'multiple'"
+          [searchable]="true"
+          [allowEmpty]="true"
+          [loading]="linkedAssetsLoading"
+          placeholder="Search by asset tag and optionally link assets"
+          (searchTextChange)="onLinkedAssetSearch($event)">
+        </app-custom-select>
+        <p class="text-xs text-gray-500 dark:text-gray-400 mt-2 mb-0">
+          Optional for hardware and network issue tickets.
         </p>
       </div>
 
@@ -200,8 +218,47 @@
                 [(ngModel)]="dynamicAttributeValues[attr.key]"
                 [ngModelOptions]="{standalone: true}"
                 [placeholder]="attr.label"
-                class="w-full px-4 py-2 border border-gray-300 dark:border-[#38383a] dark:bg-[#3a3a3c] dark:text-white rounded-lg focus:ring-2 focus:ring-gray-900 dark:focus:ring-blue-500 focus:border-transparent"
+                class="w-full px-4 py-2 border border-gray-200 dark:border-[#38383a] dark:bg-[#3a3a3c] dark:text-white rounded-lg focus:ring-2 focus:ring-gray-900 dark:focus:ring-blue-500 focus:border-transparent"
                 [class.border-red-500]="attr.isRequired && !isAttributeValid(attr.key)" />
+              <p *ngIf="attr.isRequired && !isAttributeValid(attr.key)" class="text-red-500 dark:text-red-400 text-sm mt-1">
+                {{ attr.label }} is required
+              </p>
+            </div>
+
+            <!-- Number Input -->
+            <div *ngIf="attr.dataType === 'NUMBER'" class="form-group">
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                {{ attr.label }}
+                <span *ngIf="attr.isRequired" class="text-red-500">*</span>
+              </label>
+              <input
+                type="number"
+                step="0.01"
+                [(ngModel)]="dynamicAttributeValues[attr.key]"
+                [ngModelOptions]="{standalone: true}"
+                [placeholder]="attr.label"
+                class="w-full px-4 py-2 border border-gray-200 dark:border-[#38383a] dark:bg-[#3a3a3c] dark:text-white rounded-lg focus:ring-2 focus:ring-gray-900 dark:focus:ring-blue-500 focus:border-transparent"
+                [class.border-red-500]="attr.isRequired && !isAttributeValid(attr.key)" />
+              <p *ngIf="attr.isRequired && !isAttributeValid(attr.key)" class="text-red-500 dark:text-red-400 text-sm mt-1">
+                {{ attr.label }} is required
+              </p>
+            </div>
+
+            <!-- User Select -->
+            <div *ngIf="attr.dataType === 'USER'" class="form-group">
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                {{ attr.label }}
+                <span *ngIf="attr.isRequired" class="text-red-500">*</span>
+              </label>
+              <app-custom-select
+                [(ngModel)]="dynamicAttributeValues[attr.key]"
+                [ngModelOptions]="{standalone: true}"
+                [options]="accountableUserOptions"
+                [searchable]="true"
+                [allowEmpty]="!attr.isRequired"
+                [loading]="accountableUsersLoading"
+                [placeholder]="accountableUsersLoading ? 'Loading users...' : 'Search and select a user'">
+              </app-custom-select>
               <p *ngIf="attr.isRequired && !isAttributeValid(attr.key)" class="text-red-500 dark:text-red-400 text-sm mt-1">
                 {{ attr.label }} is required
               </p>
@@ -214,7 +271,7 @@
                   type="checkbox"
                   [(ngModel)]="dynamicAttributeValues[attr.key]"
                   [ngModelOptions]="{standalone: true}"
-                  class="w-4 h-4 text-gray-900 dark:text-blue-500 border-gray-300 dark:border-gray-600 rounded focus:ring-gray-900 dark:focus:ring-blue-500" />
+                  class="w-4 h-4 text-gray-900 dark:text-blue-500 border-gray-200 dark:border-[#38383a] rounded focus:ring-gray-900 dark:focus:ring-blue-500" />
                 <span class="text-sm font-medium text-gray-700 dark:text-gray-300">
                   {{ attr.label }}
                   <span *ngIf="attr.isRequired" class="text-red-500">*</span>
@@ -309,6 +366,11 @@
           <label class="text-xs font-medium text-gray-500 dark:text-gray-400">Reporter</label>
           <p class="text-sm text-gray-900 dark:text-white mt-1">{{ getPreviewCreatorDisplayName() }}</p>
         </div>
+      </div>
+
+      <div *ngIf="shouldShowPreviewAccountable()">
+        <label class="text-xs font-medium text-gray-500 dark:text-gray-400">Accountable</label>
+        <p class="text-sm text-gray-900 dark:text-white mt-1">{{ getPreviewAccountableDisplayName() }}</p>
       </div>
 
       <!-- Ticket Type -->

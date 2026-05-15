@@ -1,5 +1,5 @@
 <!-- Modern iOS-style Navbar with backdrop blur -->
-<nav class="fixed top-0 left-0 right-0 bg-white/80 dark:bg-[#1c1c1e]/80 backdrop-blur-md z-50 border-b border-gray-200/50 dark:border-white/10">
+<nav class="fixed top-0 left-0 right-0 bg-white/80 dark:bg-[#1c1c1e]/80 backdrop-blur-md z-50 border-b border-gray-200 dark:border-[#38383a]">
   <div class="flex items-center justify-between h-16 px-6">
     <!-- Left: Sidebar Toggle, Logo -->
     <div class="flex items-center space-x-3">
@@ -40,8 +40,8 @@
 
           <!-- Notifications Dropdown -->
           <div *ngIf="showNotifications"
-            class="absolute right-0 mt-3 w-80 bg-white/95 dark:bg-[#2c2c2e]/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-gray-200/50 dark:border-white/10 overflow-hidden">
-            <div class="px-4 py-3 border-b border-gray-200/50 dark:border-white/10 flex justify-between items-center">
+            class="absolute right-0 mt-3 w-80 bg-white/95 dark:bg-[#2c2c2e]/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-gray-200 dark:border-[#38383a] overflow-hidden">
+            <div class="px-4 py-3 border-b border-gray-200 dark:border-[#38383a] flex justify-between items-center">
               <h6 class="font-semibold text-gray-800 dark:text-white text-sm">{{ 'navbar.notifications' | translate }}</h6>
               <button (click)="fetchLastNotifications(true)" [disabled]="refreshing"
                 class="p-1.5 hover:bg-gray-100 dark:hover:bg-white/10 rounded-full transition-colors"
@@ -58,7 +58,7 @@
               </div>
 
               <div *ngFor="let noti of notifications" 
-                class="px-4 py-3 hover:bg-gray-50/80 dark:hover:bg-white/5 cursor-pointer border-b border-gray-100/50 dark:border-white/10 transition-colors"
+                class="px-4 py-3 hover:bg-gray-50/80 dark:hover:bg-white/5 cursor-pointer border-b border-gray-200 dark:border-[#38383a] transition-colors"
                 [class.bg-blue-50/50]="!noti.seen"
                 [class.dark:bg-blue-900/20]="!noti.seen">
                 <p class="font-medium text-sm text-gray-800 dark:text-white">{{ noti.title }}</p>
@@ -67,7 +67,7 @@
               </div>
             </div>
 
-            <div *ngIf="notifications?.length" class="px-2 py-2 border-t border-gray-200/50 dark:border-white/10 bg-gray-50/50 dark:bg-[#1c1c1e]/50">
+            <div *ngIf="notifications?.length" class="px-2 py-2 border-t border-gray-200 dark:border-[#38383a] bg-gray-50/50 dark:bg-[#1c1c1e]/50">
               <button (click)="displayAllNotifications()"
                 class="w-full py-2 text-center text-sm font-medium text-blue-600 dark:text-blue-400 hover:bg-white/80 dark:hover:bg-white/10 rounded-lg transition-colors">
                 {{ 'navbar.viewAll' | translate }}
@@ -100,7 +100,7 @@
 
           <!-- User Dropdown Menu -->
           <div *ngIf="showUserMenu"
-            class="absolute right-0 mt-3 w-56 bg-white/95 dark:bg-[#2c2c2e]/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-gray-200/50 dark:border-white/10 py-2 overflow-hidden">
+            class="absolute right-0 mt-3 w-56 bg-white/95 dark:bg-[#2c2c2e]/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-gray-200 dark:border-[#38383a] py-2 overflow-hidden">
             <button type="button" (click)="openMyProfile()"
               class="flex items-center space-x-3 px-4 py-2.5 hover:bg-gray-50/80 dark:hover:bg-white/5 active:bg-gray-100/80 dark:active:bg-white/10 transition-all duration-150 no-underline">
               <svg class="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -135,7 +135,7 @@
               </div>
             </button>
 
-            <div class="my-1.5 mx-2 border-t border-gray-200/50 dark:border-white/10"></div>
+            <div class="my-1.5 mx-2 border-t border-gray-200 dark:border-[#38383a]"></div>
 
             <button (click)="signOut()"
               class="w-full flex items-center space-x-3 px-4 py-2.5 hover:bg-red-50/80 dark:hover:bg-red-500/10 active:bg-red-100/80 dark:active:bg-red-500/20 transition-all duration-150 text-left group">

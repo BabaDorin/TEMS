@@ -277,3 +277,29 @@ public class AssetManualLogAddedNotificationHandler(
         }, ct);
     }
 }
+
+public class AssetMentionedInTicketNotificationHandler(
+    IChangeLogRepository repository,
+    ITenantContext tenantContext,
+    ILogger<AssetMentionedInTicketNotificationHandler> logger
+) : INotificationHandler<AssetMentionedInTicketNotification>
+{
+    public async Task Handle(AssetMentionedInTicketNotification n, CancellationToken ct)
+    {
+        logger.LogInformation("Logging AssetMentionedInTicket for {AssetTag} in {TicketHumanReadableId}", n.AssetTag, n.TicketHumanReadableId);
+
+        await repository.CreateAsync(new AssetMentionedInTicketLog
+        {
+            TenantId = tenantContext.TenantId ?? "default",
+            Action = ChangeLogAction.AssetMentionedInTicket,
+            Description = $"Asset '{n.AssetTag}' was mentioned in ticket {n.TicketHumanReadableId}",
+            AssetId = n.AssetId,
+            AssetTag = n.AssetTag,
+            TicketId = n.TicketId,
+            TicketHumanReadableId = n.TicketHumanReadableId,
+            TicketTitle = n.TicketTitle,
+            PerformedByUserId = n.PerformedByUserId,
+            PerformedByUserName = n.PerformedByUserName
+        }, ct);
+    }
+}

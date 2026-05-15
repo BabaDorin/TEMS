@@ -1,17 +1,13 @@
 <section class="tems-asset-page">
-  <header class="tems-asset-header">
+  <header class="tems-asset-header m-1 border-0 shadow-none">
     <div>
-      <div class="tems-asset-eyebrow">
-        <i class="mdi mdi-shape-outline"></i>
-        <span>Asset Types</span>
-      </div>
       <h2 class="text-2xl">Group properties into reusable device families</h2>
       <p>Types define how assets inherit structure, validation, and relationships.</p>
     </div>
 
-    <button type="button" (click)="openCreateModal()" class="tems-btn tems-btn-primary">
+    <button type="button" (click)="openCreateModal()" class="tems-asset-link-button">
       <i class="mdi mdi-plus"></i>
-      <span>Create type</span>
+      <span>Add new type</span>
     </button>
   </header>
 
@@ -30,40 +26,45 @@
   </section>
 
   <div *ngIf="showEditModal" class="tems-asset-modal-backdrop" (click)="closeEditModal()">
-    <div class="tems-asset-dialog tems-asset-modal-card" (click)="$event.stopPropagation()">
-      <div class="tems-asset-modal-header">
+    <div class="tems-asset-dialog tems-asset-modal-card asset-admin-modal bg-white dark:bg-[#2c2c2e] rounded-lg shadow-xl my-8" (click)="$event.stopPropagation()">
+      <div class="asset-admin-modal__header">
         <div>
-          <h3 class="text-lg font-semibold m-0 text-[color:var(--text-primary)]">Edit asset type</h3>
-          <p class="tems-asset-help mt-1">Adjust the type structure, parent type, and property mapping.</p>
+          <h2 class="text-xl font-semibold text-gray-900 dark:text-white m-0">Edit Asset Type</h2>
+          <p class="asset-admin-modal__subtitle">Adjust the type structure, parent type, and property mapping.</p>
         </div>
+        <button type="button" (click)="closeEditModal()" aria-label="Close" class="asset-admin-modal__close">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
       </div>
 
-      <form [formGroup]="editForm" (ngSubmit)="updateType()" class="tems-asset-modal-body">
-        <div class="tems-asset-section">
-          <div class="tems-asset-field">
-            <label>Name *</label>
-            <input type="text" formControlName="name" class="tems-asset-input">
+      <form [formGroup]="editForm" (ngSubmit)="updateType()" class="asset-admin-modal__form">
+        <div class="space-y-4">
+          <div class="asset-admin-modal__field">
+            <label class="asset-admin-modal__label">Name *</label>
+            <input type="text" formControlName="name" class="asset-admin-modal__input">
           </div>
 
-          <div class="tems-asset-field">
-            <label>Description</label>
-            <textarea formControlName="description" rows="2" class="tems-asset-textarea"></textarea>
+          <div class="asset-admin-modal__field">
+            <label class="asset-admin-modal__label">Description</label>
+            <textarea formControlName="description" rows="4" class="asset-admin-modal__input asset-admin-modal__textarea"></textarea>
           </div>
 
-          <div class="tems-asset-field">
-            <label>Parent type</label>
-            <select formControlName="parentTypeId" class="tems-asset-select">
+          <div class="asset-admin-modal__field">
+            <label class="asset-admin-modal__label">Parent type</label>
+            <select formControlName="parentTypeId" class="asset-admin-modal__input">
               <option value="">None (Root type)</option>
               <option *ngFor="let type of parentTypes" [value]="type.id">{{ type.name }}</option>
             </select>
           </div>
         </div>
 
-        <div class="tems-asset-section mt-6">
-          <div class="flex items-center justify-between gap-3">
+        <div class="space-y-4">
+          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div>
-              <p class="tems-asset-label m-0">Properties</p>
-              <p class="tems-asset-help m-0">Pick the fields this type should expose.</p>
+              <p class="asset-admin-modal__section-title m-0">Properties</p>
+              <p class="asset-admin-modal__subtitle m-0">Pick the fields this type should expose.</p>
             </div>
             <button type="button" (click)="addPropertyToEdit()" class="tems-btn tems-btn-secondary">
               <i class="mdi mdi-plus"></i>
@@ -75,32 +76,32 @@
             No properties added yet.
           </div>
 
-          <div class="tems-asset-grid" *ngIf="editSelectedProperties.length > 0">
+          <div class="grid gap-4" *ngIf="editSelectedProperties.length > 0">
             <div *ngFor="let prop of editSelectedProperties.controls; let i = index" [formGroup]="$any(prop)"
-              class="rounded-[1.15rem] border border-[color:var(--border-secondary)] bg-[color:var(--bg-secondary)] p-4">
-              <div class="grid grid-cols-12 gap-3">
-                <div class="col-span-5">
-                  <label class="tems-asset-label text-xs">Property</label>
-                  <select formControlName="propertyId" class="tems-asset-select mt-1">
+              class="asset-admin-modal__card">
+              <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+                <div class="lg:col-span-5 asset-admin-modal__field">
+                  <label class="asset-admin-modal__micro-label">Property</label>
+                  <select formControlName="propertyId" class="asset-admin-modal__input">
                     <option value="">Select property</option>
                     <option *ngFor="let p of availableProperties" [value]="p.id">{{ p.name }}</option>
                   </select>
                 </div>
-                <div class="col-span-2 flex items-end">
-                  <label class="inline-flex items-center gap-2 text-sm text-[color:var(--text-secondary)]">
+                <div class="lg:col-span-2 flex items-end">
+                  <label class="inline-flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
                     <input type="checkbox" formControlName="isRequired">
                     Required
                   </label>
                 </div>
-                <div class="col-span-2">
-                  <label class="tems-asset-label text-xs">Order</label>
-                  <input type="number" formControlName="displayOrder" class="tems-asset-input mt-1">
+                <div class="lg:col-span-2 asset-admin-modal__field">
+                  <label class="asset-admin-modal__micro-label">Order</label>
+                  <input type="number" formControlName="displayOrder" class="asset-admin-modal__input">
                 </div>
-                <div class="col-span-2">
-                  <label class="tems-asset-label text-xs">Default</label>
-                  <input type="text" formControlName="defaultValue" class="tems-asset-input mt-1">
+                <div class="lg:col-span-2 asset-admin-modal__field">
+                  <label class="asset-admin-modal__micro-label">Default</label>
+                  <input type="text" formControlName="defaultValue" class="asset-admin-modal__input">
                 </div>
-                <div class="col-span-1 flex items-end justify-end">
+                <div class="lg:col-span-1 flex items-end justify-end">
                   <button type="button" (click)="removePropertyFromEdit(i)" class="tems-asset-cell-action tems-asset-cell-action--danger">
                     <i class="mdi mdi-close"></i>
                   </button>
@@ -110,12 +111,12 @@
           </div>
         </div>
 
-        <footer class="tems-asset-modal-footer">
-          <button type="button" (click)="closeEditModal()" class="tems-btn tems-btn-secondary">Cancel</button>
-          <button type="submit" [disabled]="editForm.invalid || isSubmitting" class="tems-btn tems-btn-primary">
+        <div class="flex flex-col sm:flex-row gap-3 pt-2">
+          <button type="button" (click)="closeEditModal()" class="tems-btn tems-btn-secondary flex-1">Cancel</button>
+          <button type="submit" [disabled]="editForm.invalid || isSubmitting" class="tems-btn tems-btn-primary flex-1">
             {{ isSubmitting ? 'Updating...' : 'Update' }}
           </button>
-        </footer>
+        </div>
       </form>
     </div>
   </div>

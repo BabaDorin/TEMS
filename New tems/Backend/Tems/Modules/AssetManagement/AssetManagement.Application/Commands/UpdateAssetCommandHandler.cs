@@ -5,11 +5,14 @@ using AssetManagement.Contract.Commands;
 using AssetManagement.Contract.Responses;
 using MediatR;
 using Tems.Common.Notifications;
+using Tems.Common.Tenant;
 
 namespace AssetManagement.Application.Commands;
 
 public class UpdateAssetCommandHandler(
     IAssetRepository assetRepository,
+    IPurchaseOrderRepository purchaseOrderRepository,
+    ITenantContext tenantContext,
     IPublisher publisher) 
     : IRequestHandler<UpdateAssetCommand, UpdateAssetResponse>
 {
@@ -46,18 +49,11 @@ public class UpdateAssetCommandHandler(
         {
             PropertyId = s.PropertyId,
             Name = s.Name,
-            Value = s.Value,
+            Value = AssetSpecificationValueConverter.Convert(s.Value),
             DataType = s.DataType,
             Unit = s.Unit
         }).ToList();
-        existingAsset.PurchaseInfo = request.PurchaseInfo != null ? new PurchaseInfo
-        {
-            PurchaseDate = request.PurchaseInfo.PurchaseDate,
-            PurchasePrice = request.PurchaseInfo.PurchasePrice,
-            Currency = request.PurchaseInfo.Currency,
-            Vendor = request.PurchaseInfo.Vendor,
-            WarrantyExpiry = request.PurchaseInfo.WarrantyExpiry
-        } : null;
+        existingAsset.PurchaseInfo = await ResolvePurchaseInfoAsync(request.PurchaseInfo, purchaseOrderRepository, tenantContext.TenantId, cancellationToken);
         
         if (request.LocationId != null)
         {
@@ -142,5 +138,53 @@ public class UpdateAssetCommandHandler(
         }
 
         return new UpdateAssetResponse(success);
+    }
+
+    private static async Task<PurchaseInfo?> ResolvePurchaseInfoAsync(
+        PurchaseInfoDto? requestPurchaseInfo,
+        IPurchaseOrderRepository purchaseOrderRepository,
+        string tenantId,
+        CancellationToken cancellationToken)
+    {
+        if (requestPurchaseInfo == null)
+        {
+            return null;
+        }
+
+        if (!string.IsNullOrWhiteSpace(requestPurchaseInfo.PurchaseOrderId))
+        {
+            var purchaseOrder = await purchaseOrderRepository.GetByIdAsync(requestPurchaseInfo.PurchaseOrderId, tenantId, cancellationToken);
+            if (purchaseOrder == null)
+            {
+                throw new InvalidOperationException("The selected purchase order no longer exists.");
+            }
+
+            if (requestPurchaseInfo.PurchasePrice is null or <= 0)
+            {
+                throw new InvalidOperationException("A linked purchase order requires a valid asset item price.");
+            }
+
+            return new PurchaseInfo
+            {
+                PurchaseDate = requestPurchaseInfo.PurchaseDate,
+                PurchasePrice = requestPurchaseInfo.PurchasePrice,
+                Currency = purchaseOrder.Currency,
+                Vendor = purchaseOrder.Vendor,
+                PurchaseOrderId = purchaseOrder.Id,
+                PurchaseOrderNumber = purchaseOrder.PoNumber,
+                WarrantyExpiry = requestPurchaseInfo.WarrantyExpiry
+            };
+        }
+
+        return new PurchaseInfo
+        {
+            PurchaseDate = requestPurchaseInfo.PurchaseDate,
+            PurchasePrice = requestPurchaseInfo.PurchasePrice,
+            Currency = requestPurchaseInfo.Currency,
+            Vendor = requestPurchaseInfo.Vendor,
+            PurchaseOrderId = requestPurchaseInfo.PurchaseOrderId,
+            PurchaseOrderNumber = requestPurchaseInfo.PurchaseOrderNumber,
+            WarrantyExpiry = requestPurchaseInfo.WarrantyExpiry
+        };
     }
 }

@@ -109,6 +109,8 @@ public static class AssetMapper
             PurchasePrice = dbEntity.PurchasePrice,
             Currency = dbEntity.Currency,
             Vendor = dbEntity.Vendor,
+            PurchaseOrderId = dbEntity.PurchaseOrderId,
+            PurchaseOrderNumber = dbEntity.PurchaseOrderNumber,
             WarrantyExpiry = dbEntity.WarrantyExpiry
         };
     }
@@ -121,6 +123,8 @@ public static class AssetMapper
             PurchasePrice = domainEntity.PurchasePrice,
             Currency = domainEntity.Currency,
             Vendor = domainEntity.Vendor,
+            PurchaseOrderId = domainEntity.PurchaseOrderId,
+            PurchaseOrderNumber = domainEntity.PurchaseOrderNumber,
             WarrantyExpiry = domainEntity.WarrantyExpiry
         };
     }

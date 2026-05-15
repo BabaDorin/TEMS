@@ -70,6 +70,16 @@
                 </svg>
                 {{ getAssigneeName() }}
               </button>
+              <button
+                *ngIf="asset.purchaseInfo?.purchaseOrderNumber"
+                (click)="openPurchaseOrderPreview()"
+                class="asset-detail-pill inline-flex items-center gap-1.5 px-3 py-1.5 bg-gray-100 dark:bg-white/10 text-gray-700 dark:text-gray-300 rounded-full text-xs font-medium hover:bg-gray-200 dark:hover:bg-white/20 cursor-pointer transition">
+                <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
+                  <path d="M3 2.667H13C13.3682 2.667 13.6667 2.96548 13.6667 3.33367V12.667C13.6667 13.0352 13.3682 13.3337 13 13.3337H3C2.63181 13.3337 2.33333 13.0352 2.33333 12.667V3.33367C2.33333 2.96548 2.63181 2.667 3 2.667Z" stroke="currentColor" stroke-width="1.5"/>
+                  <path d="M5 5.333H11M5 8H11M5 10.667H8.333" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+                PO {{ asset.purchaseInfo?.purchaseOrderNumber }}
+              </button>
             </div>
           </div>
           
@@ -77,7 +87,7 @@
           <div *ngIf="canManageAssets" class="relative actions-dropdown lg:ml-4">
             <button
               (click)="showActionsDropdown = !showActionsDropdown"
-              class="asset-action-button px-3 py-1.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg transition flex items-center gap-1.5 border border-gray-300 dark:border-[#48484a]">
+              class="asset-action-button px-3 py-1.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg transition flex items-center gap-1.5 border border-gray-200 dark:border-[#38383a]">
               <span>Actions</span>
               <svg width="14" height="14" viewBox="0 0 16 16" fill="none" class="transition-transform" [class.rotate-180]="showActionsDropdown">
                 <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -187,8 +197,51 @@
             </div>
           </div>
 
+          <div *ngIf="asset.purchaseInfo" class="asset-detail-section bg-white dark:bg-[#3a3a3c] rounded-xl border border-gray-200 dark:border-[#38383a]">
+            <div class="px-4 py-3 border-b border-gray-200 dark:border-[#38383a] flex items-center justify-between gap-4">
+              <div>
+                <h3 class="text-sm font-semibold text-gray-900 dark:text-white m-0">Purchase Information</h3>
+                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1 mb-0">Vendor, pricing, and purchase order details for this asset.</p>
+              </div>
+              <button
+                *ngIf="asset.purchaseInfo.purchaseOrderNumber"
+                type="button"
+                (click)="openPurchaseOrderPreview()"
+                class="px-3 py-1.5 text-xs font-medium text-[#007aff] dark:text-[#0a84ff] hover:bg-[#007aff]/5 dark:hover:bg-[#0a84ff]/10 rounded-lg transition">
+                Open PO {{ asset.purchaseInfo.purchaseOrderNumber }}
+              </button>
+            </div>
+            <div class="p-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-sm">
+              <div>
+                <span class="text-gray-600 dark:text-gray-400">PO Number:</span>
+                <p class="font-medium dark:text-white mt-1 mb-0">
+                  <button
+                    *ngIf="asset.purchaseInfo.purchaseOrderNumber; else noPurchaseOrder"
+                    type="button"
+                    (click)="openPurchaseOrderPreview()"
+                    class="text-left text-[#007aff] dark:text-[#0a84ff] hover:underline">
+                    {{ asset.purchaseInfo.purchaseOrderNumber }}
+                  </button>
+                  <ng-template #noPurchaseOrder>—</ng-template>
+                </p>
+              </div>
+              <div>
+                <span class="text-gray-600 dark:text-gray-400">Vendor:</span>
+                <p class="font-medium dark:text-white mt-1 mb-0">{{ asset.purchaseInfo.vendor || '—' }}</p>
+              </div>
+              <div>
+                <span class="text-gray-600 dark:text-gray-400">Purchase Date:</span>
+                <p class="font-medium dark:text-white mt-1 mb-0">{{ asset.purchaseInfo.purchaseDate ? (asset.purchaseInfo.purchaseDate | date:'MMMM d, y') : '—' }}</p>
+              </div>
+              <div>
+                <span class="text-gray-600 dark:text-gray-400">Purchase Price:</span>
+                <p class="font-medium dark:text-white mt-1 mb-0">{{ formatPurchaseCurrency(asset.purchaseInfo.purchasePrice, asset.purchaseInfo.currency) }}</p>
+              </div>
+            </div>
+          </div>
+
           <!-- Definition Information (Collapsible) -->
-          <div *ngIf="asset.definition" class="asset-detail-section bg-white dark:bg-[#3a3a3c] rounded-xl border border-gray-200 dark:border-[#48484a]">
+          <div *ngIf="asset.definition" class="asset-detail-section bg-white dark:bg-[#3a3a3c] rounded-xl border border-gray-200 dark:border-[#38383a]">
             <div 
               class="px-4 py-3 cursor-pointer hover:bg-gray-50 dark:hover:bg-white/5 transition flex items-center justify-between" 
               (click)="isDefinitionExpanded = !isDefinitionExpanded">
@@ -222,7 +275,7 @@
                     <span class="font-medium ml-2 dark:text-white">{{ asset.definition.description }}</span>
                   </div>
                 </div>
-                <div *ngIf="asset.definition.specifications && asset.definition.specifications.length > 0" class="mt-3 pt-3 border-t border-gray-100 dark:border-[#48484a]">
+                <div *ngIf="asset.definition.specifications && asset.definition.specifications.length > 0" class="mt-3 pt-3 border-t border-gray-200 dark:border-[#38383a]">
                   <span class="text-xs font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wide">Specifications</span>
                   <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-2">
                     <div *ngFor="let spec of asset.definition.specifications" class="text-xs">
@@ -236,8 +289,8 @@
           </div>
 
           <!-- Notes -->
-          <div *ngIf="asset.notes" class="asset-detail-section bg-white dark:bg-[#3a3a3c] rounded-xl border border-gray-200 dark:border-[#48484a]">
-            <div class="px-4 py-3 border-b border-gray-100 dark:border-[#48484a]">
+          <div *ngIf="asset.notes" class="asset-detail-section bg-white dark:bg-[#3a3a3c] rounded-xl border border-gray-200 dark:border-[#38383a]">
+            <div class="px-4 py-3 border-b border-gray-200 dark:border-[#38383a]">
               <h3 class="text-sm font-semibold text-gray-900 dark:text-white m-0">Notes</h3>
             </div>
             <div class="p-4">
@@ -277,3 +330,12 @@
     </div>
   </div>
 </div>
+
+<app-purchase-order-preview-modal
+  [show]="showPurchaseOrderPreviewModal"
+  [purchaseOrder]="selectedPurchaseOrder"
+  [canDelete]="canDeletePurchaseOrder(selectedPurchaseOrder)"
+  (closed)="closePurchaseOrderPreview()"
+  (deleteRequested)="deleteSelectedPurchaseOrder()"
+  (assetSelected)="openLinkedAssetFromPurchaseOrder($event)">
+</app-purchase-order-preview-modal>

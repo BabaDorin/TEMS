@@ -69,6 +69,9 @@ export interface PurchaseInfo {
   vendor?: string;
   purchaseDate?: Date;
   purchasePrice?: number;
+  currency?: string;
+  purchaseOrderId?: string;
+  purchaseOrderNumber?: string;
   warrantyExpiration?: Date;
   invoiceNumber?: string;
 }

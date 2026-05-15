@@ -39,6 +39,8 @@ public class PurchaseInfo
     public decimal? PurchasePrice { get; set; }
     public string Currency { get; set; } = "USD";
     public string Vendor { get; set; } = string.Empty;
+    public string? PurchaseOrderId { get; set; }
+    public string? PurchaseOrderNumber { get; set; }
     public DateTime? WarrantyExpiry { get; set; }
 }
 

@@ -24,16 +24,16 @@ export class AssetDefinitionService {
   }
 
   getById(id: string): Observable<AssetDefinition> {
-    return this.http.get<AssetDefinition>(`${this.baseUrl}/${id}`, {
+    return this.http.get<{ assetDefinition: AssetDefinition }>(`${this.baseUrl}/${id}`, {
       headers: new HttpHeaders({ 'Content-Type': 'application/json' })
-    });
+    }).pipe(
+      map(response => response.assetDefinition)
+    );
   }
 
   getByAssetTypeId(assetTypeId: string): Observable<AssetDefinition[]> {
-    return this.http.get<{ assetDefinitions: AssetDefinition[] }>(`${this.baseUrl}?assetTypeId=${assetTypeId}`, {
-      headers: new HttpHeaders({ 'Content-Type': 'application/json' })
-    }).pipe(
-      map(response => response.assetDefinitions)
+    return this.getAll().pipe(
+      map(definitions => definitions.filter(definition => definition.assetTypeId === assetTypeId))
     );
   }
 

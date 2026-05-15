@@ -63,6 +63,15 @@ export class MenuService implements OnDestroy {
                 submenu: []
               },
               {
+                path: '/assets/purchase-orders',
+                title: 'View Purchase Orders',
+                icon: 'mdi mdi-file-document-outline menu-icon',
+                isActive: false,
+                isShown: canManageAssets,
+                showSubmenu: false,
+                submenu: []
+              },
+              {
                 path: '/assets/management',
                 title: 'Asset Management',
                 icon: 'mdi mdi-cog menu-icon',

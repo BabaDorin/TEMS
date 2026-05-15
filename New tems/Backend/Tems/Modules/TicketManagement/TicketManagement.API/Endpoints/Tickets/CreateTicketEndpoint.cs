@@ -22,7 +22,14 @@ public class CreateTicketEndpoint : Endpoint<CreateTicketCommand, CreateTicketRe
 
     public override async Task HandleAsync(CreateTicketCommand request, CancellationToken ct)
     {
-        var response = await _mediator.Send(request, ct);
-        await Send.OkAsync(response, cancellation: ct);
+        try
+        {
+            var response = await _mediator.Send(request, ct);
+            await Send.OkAsync(response, cancellation: ct);
+        }
+        catch (InvalidOperationException ex)
+        {
+            ThrowError(ex.Message, 400);
+        }
     }
 }

@@ -186,7 +186,28 @@ export class AssetService {
     customizeDefinition: boolean,
     customSpecifications: any[] | null,
     notes: string,
-    createdBy: string
+    createdBy: string,
+    purchaseInfo?: {
+      purchaseDate?: string | null,
+      purchasePrice?: number | null,
+      currency?: string | null,
+      vendor?: string | null,
+      purchaseOrderId?: string | null,
+      purchaseOrderNumber?: string | null,
+      warrantyExpiry?: string | null
+    } | null,
+    locationId?: string | null,
+    location?: {
+      building?: string | null,
+      room?: string | null,
+      desk?: string | null
+    } | null,
+    assignment?: {
+      assignedToUserId?: string | null,
+      assignedToName: string,
+      assignedAt?: string | null,
+      assignmentType: string
+    } | null
   }): Observable<any> {
     return this.http.post<any>(this.baseUrl, assetData);
   }

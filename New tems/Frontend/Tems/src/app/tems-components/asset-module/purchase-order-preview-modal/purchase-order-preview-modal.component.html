@@ -1,0 +1,105 @@
+<div
+  *ngIf="show && purchaseOrder"
+  class="fixed inset-0 bg-black/50 flex items-center justify-center z-[100]"
+  (click)="close()">
+  <div
+    class="tems-modal-panel max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto"
+    (click)="$event.stopPropagation()">
+    <div class="px-6 py-3 sticky top-0 bg-white dark:bg-[#2c2c2e] z-10 border-b border-gray-200 dark:border-[#38383a]">
+      <div class="flex justify-between items-center gap-4">
+        <div>
+          <h2 class="text-lg font-semibold text-gray-900 dark:text-white m-0">Purchase Order</h2>
+          <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Linked ticket: {{ purchaseOrder.ticketHumanReadableId }}</p>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <span class="text-sm text-gray-600 dark:text-gray-400">PO Number:</span>
+          <span class="text-base font-medium text-gray-900 dark:text-white">{{ purchaseOrder.poNumber }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="px-6 py-4 space-y-5">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div>
+          <span class="text-sm text-gray-600 dark:text-gray-400">Vendor:</span>
+          <p class="font-medium dark:text-white">{{ purchaseOrder.vendor }}</p>
+        </div>
+        <div>
+          <span class="text-sm text-gray-600 dark:text-gray-400">Created:</span>
+          <p class="font-medium dark:text-white">{{ purchaseOrder.createdAt | date:'MMMM d, y' }}</p>
+        </div>
+        <div>
+          <span class="text-sm text-gray-600 dark:text-gray-400">Accountable:</span>
+          <p class="font-medium dark:text-white">{{ purchaseOrder.accountableDisplayName }}</p>
+        </div>
+        <div>
+          <span class="text-sm text-gray-600 dark:text-gray-400">PO Amount:</span>
+          <p class="font-medium dark:text-white">{{ formatCurrency(purchaseOrder.amount) }}</p>
+        </div>
+        <div>
+          <span class="text-sm text-gray-600 dark:text-gray-400">Used Amount:</span>
+          <p class="font-medium dark:text-white">{{ formatCurrency(purchaseOrder.usedAmount) }}</p>
+        </div>
+        <div>
+          <span class="text-sm text-gray-600 dark:text-gray-400">Available Amount:</span>
+          <p class="font-medium dark:text-white">{{ formatCurrency(purchaseOrder.availableAmount) }}</p>
+        </div>
+      </div>
+
+      <div *ngIf="hasAmountWarning()" class="rounded-xl border border-amber-200 dark:border-amber-500/30 bg-amber-50 dark:bg-amber-500/10 px-4 py-3">
+        <p class="text-sm text-amber-800 dark:text-amber-300 m-0">{{ getAmountWarning() }}</p>
+      </div>
+
+      <div>
+        <span class="text-sm text-gray-600 dark:text-gray-400 block mb-2">Description:</span>
+        <p class="text-sm text-gray-900 dark:text-white whitespace-pre-wrap m-0">{{ purchaseOrder.description }}</p>
+      </div>
+
+      <div class="bg-white dark:bg-[#2c2c2e] rounded-xl border border-gray-200 dark:border-[#38383a]">
+        <div class="px-4 py-3 border-b border-gray-200 dark:border-[#38383a] flex items-center justify-between">
+          <div>
+            <h3 class="text-sm font-medium text-gray-900 dark:text-white m-0">Assets in Purchase Order</h3>
+            <p class="text-xs text-gray-500 dark:text-gray-400 mt-1 m-0">{{ purchaseOrder.itemCount }} linked asset{{ purchaseOrder.itemCount !== 1 ? 's' : '' }}</p>
+          </div>
+        </div>
+
+        <div *ngIf="purchaseOrder.items.length > 0; else noItems" class="divide-y divide-gray-200 dark:divide-[#38383a]">
+          <button
+            *ngFor="let item of purchaseOrder.items"
+            type="button"
+            (click)="openAsset(item.assetId)"
+            class="w-full px-4 py-3 text-left hover:bg-gray-50 dark:hover:bg-white/5 transition flex items-center justify-between gap-4">
+            <div>
+              <p class="text-sm font-medium text-[#007aff] dark:text-[#0a84ff] m-0">{{ item.assetTag }}</p>
+              <p class="text-xs text-gray-500 dark:text-gray-400 mt-1 m-0">Asset ID: {{ item.assetId }}<span *ngIf="item.serialNumber"> • SN: {{ item.serialNumber }}</span></p>
+            </div>
+            <p class="text-sm font-medium text-gray-900 dark:text-white m-0">{{ formatCurrency(item.price) }}</p>
+          </button>
+        </div>
+
+        <ng-template #noItems>
+          <div class="px-4 py-8 text-center">
+            <p class="text-sm text-gray-500 dark:text-gray-400 m-0">No assets are linked to this purchase order yet.</p>
+          </div>
+        </ng-template>
+      </div>
+
+      <div class="flex flex-col sm:flex-row justify-end gap-3 pt-2">
+        <button
+          type="button"
+          (click)="printToPdf()"
+          class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 border border-gray-200 dark:border-[#38383a] rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 transition">
+          Print / Save PDF
+        </button>
+        <button
+          *ngIf="canDelete"
+          type="button"
+          (click)="requestDelete()"
+          class="px-4 py-2 text-sm font-medium text-red-600 dark:text-red-400 border border-red-200 dark:border-red-500/30 rounded-lg hover:bg-red-50 dark:hover:bg-red-500/10 transition">
+          Delete Purchase Order
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

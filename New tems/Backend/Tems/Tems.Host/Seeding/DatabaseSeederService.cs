@@ -10,24 +10,17 @@ public class DatabaseSeederService(
     {
         logger.LogInformation("Starting database seeding...");
 
-        try
-        {
-            using var scope = serviceProvider.CreateScope();
-            
-            // Use the configured IMongoDatabase from DI instead of hardcoding database name
-            var database = scope.ServiceProvider.GetRequiredService<IMongoDatabase>();
+        using var scope = serviceProvider.CreateScope();
 
-            await SeedLocationManagementAsync(database);
-            await SeedAssetManagementAsync(database);
-            await SeedBulkEquipmentAsync(database);
-            await SeedTicketManagementAsync(database);
+        // Use the configured IMongoDatabase from DI instead of hardcoding database name
+        var database = scope.ServiceProvider.GetRequiredService<IMongoDatabase>();
 
-            logger.LogInformation("Database seeding completed successfully.");
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "Error occurred while seeding database.");
-        }
+        await RunSeederStepAsync("location management", () => SeedLocationManagementAsync(database));
+        await RunSeederStepAsync("asset management", () => SeedAssetManagementAsync(database));
+        await RunSeederStepAsync("ticket management", () => SeedTicketManagementAsync(database));
+        await RunSeederStepAsync("bulk equipment", () => SeedBulkEquipmentAsync(database));
+
+        logger.LogInformation("Database seeding completed.");
     }
 
     public Task StopAsync(CancellationToken cancellationToken)
@@ -57,5 +50,17 @@ public class DatabaseSeederService(
     {
         var seeder = new TicketManagementSeeder(database, serviceProvider.GetRequiredService<ILogger<TicketManagementSeeder>>());
         await seeder.SeedAsync();
+    }
+
+    private async Task RunSeederStepAsync(string stepName, Func<Task> seedAction)
+    {
+        try
+        {
+            await seedAction();
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error occurred while seeding {StepName}. Continuing with remaining seeders.", stepName);
+        }
     }
 }

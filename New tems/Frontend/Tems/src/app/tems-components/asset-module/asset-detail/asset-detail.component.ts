@@ -5,19 +5,22 @@ import { trigger, transition, style, animate } from '@angular/animations';
 import { MatDialog } from '@angular/material/dialog';
 import { AssetService } from 'src/app/services/asset.service';
 import { LocationService } from 'src/app/services/location.service';
+import { PurchaseOrderService } from 'src/app/services/purchase-order.service';
 import { UserService } from 'src/app/services/user.service';
 import { TokenService } from 'src/app/services/token.service';
 import { Asset } from 'src/app/models/asset/asset.model';
+import { PurchaseOrder } from 'src/app/models/purchase-order/purchase-order.model';
 import { AssetLabelComponent } from '../../asset/asset-label/asset-label.component';
 import { RoomDetailModalComponent } from '../../location-module/room-detail-modal/room-detail-modal.component';
 import { AssetTimelineComponent } from '../asset-timeline/asset-timeline.component';
 import { AssetBulkActionModalComponent } from '../view-assets/asset-bulk-action-modal.component';
 import { AssetHistoryLogModalComponent } from '../asset-history-log-modal/asset-history-log-modal.component';
+import { PurchaseOrderPreviewModalComponent } from '../purchase-order-preview-modal/purchase-order-preview-modal.component';
 
 @Component({
   selector: 'app-asset-detail',
   standalone: true,
-  imports: [CommonModule, AssetLabelComponent, AssetTimelineComponent],
+  imports: [CommonModule, AssetLabelComponent, AssetTimelineComponent, PurchaseOrderPreviewModalComponent],
   templateUrl: './asset-detail.component.html',
   styleUrls: ['./asset-detail.component.scss'],
   animations: [
@@ -45,6 +48,10 @@ export class AssetDetailComponent implements OnInit {
   private cachedAssigneeEmail: string | null = null;
   assigneeValid = false;
   canManageAssets = false;
+  currentUserId = '';
+  showPurchaseOrderPreviewModal = false;
+  selectedPurchaseOrder: PurchaseOrder | null = null;
+  loadingPurchaseOrder = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -53,6 +60,7 @@ export class AssetDetailComponent implements OnInit {
     private assetService: AssetService,
     private dialog: MatDialog,
     private locationService: LocationService,
+    private purchaseOrderService: PurchaseOrderService,
     private userService: UserService,
     private tokenService: TokenService
   ) {}
@@ -67,6 +75,7 @@ export class AssetDetailComponent implements OnInit {
 
   ngOnInit() {
     this.canManageAssets = this.tokenService.canManageAssets();
+    this.currentUserId = this.tokenService.getUserId() || '';
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.loadAsset(id);
@@ -246,6 +255,69 @@ export class AssetDetailComponent implements OnInit {
     if (this.assetLabel) {
       this.assetLabel.downloadLabel();
     }
+  }
+
+  openPurchaseOrderPreview(): void {
+    const purchaseOrderId = this.asset?.purchaseInfo?.purchaseOrderId;
+    if (!purchaseOrderId || this.loadingPurchaseOrder) {
+      return;
+    }
+
+    this.loadingPurchaseOrder = true;
+    this.purchaseOrderService.getById(purchaseOrderId).subscribe({
+      next: purchaseOrder => {
+        this.selectedPurchaseOrder = purchaseOrder;
+        this.showPurchaseOrderPreviewModal = !!purchaseOrder;
+        this.loadingPurchaseOrder = false;
+      },
+      error: error => {
+        console.error('Error loading purchase order:', error);
+        this.loadingPurchaseOrder = false;
+      }
+    });
+  }
+
+  closePurchaseOrderPreview(): void {
+    this.showPurchaseOrderPreviewModal = false;
+    this.selectedPurchaseOrder = null;
+  }
+
+  deleteSelectedPurchaseOrder(): void {
+    if (!this.selectedPurchaseOrder || !this.asset) {
+      return;
+    }
+
+    this.purchaseOrderService.delete(this.selectedPurchaseOrder.id).subscribe({
+      next: () => {
+        this.closePurchaseOrderPreview();
+        this.loadAsset(this.asset!.id);
+      },
+      error: error => {
+        console.error('Error deleting purchase order:', error);
+      }
+    });
+  }
+
+  canDeletePurchaseOrder(purchaseOrder: PurchaseOrder | null): boolean {
+    if (!purchaseOrder || !this.currentUserId) {
+      return false;
+    }
+
+    return purchaseOrder.createdByUserId === this.currentUserId ||
+      purchaseOrder.accountableUserId === this.currentUserId;
+  }
+
+  formatPurchaseCurrency(amount?: number | null, currency?: string | null): string {
+    if (amount == null) {
+      return '—';
+    }
+
+    return `${Number(amount).toFixed(2)} ${(currency || '').trim()}`.trim();
+  }
+
+  openLinkedAssetFromPurchaseOrder(assetId: string): void {
+    this.closePurchaseOrderPreview();
+    this.router.navigate(['/assets', assetId]);
   }
 
   getLocationString(location: any): string {

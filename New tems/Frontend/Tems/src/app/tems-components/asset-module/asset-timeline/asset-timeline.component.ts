@@ -7,6 +7,7 @@ import { LocationService } from 'src/app/services/location.service';
 import { ChangeLogAction, ChangeLogEntry } from 'src/app/models/changelog.model';
 import { ViewUserModalComponent } from '../../admin/user-management/view-user-modal/view-user-modal.component';
 import { RoomDetailModalComponent } from '../../location-module/room-detail-modal/room-detail-modal.component';
+import { TicketPreviewModalComponent } from '../../ticket-management/ticket-preview-modal/ticket-preview-modal.component';
 
 @Component({
   selector: 'app-asset-timeline',
@@ -105,6 +106,13 @@ export class AssetTimelineComponent implements OnChanges {
       return `${entry.details?.['logType'] || 'Manual log'} added`;
     }
 
+    if (entry.action === 'AssetMentionedInTicket') {
+      const ticketId = entry.details?.['ticketHumanReadableId'];
+      if (typeof ticketId === 'string' && ticketId.trim().length > 0) {
+        return `Asset mentioned in ticket ${ticketId}`;
+      }
+    }
+
     if (entry.action === 'AssetAssignedToUser') {
       const nextUserName = entry.details?.['userName'];
       const previousUserName = entry.details?.['previousUserName'];
@@ -162,6 +170,8 @@ export class AssetTimelineComponent implements OnChanges {
         return 'M15 10.5a3 3 0 11-6 0 3 3 0 016 0z M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z';
       case 'AssetManualLogAdded':
         return 'M12 6v6l4 2M8.25 4.5h7.5A2.25 2.25 0 0118 6.75v10.5A2.25 2.25 0 0115.75 19.5h-7.5A2.25 2.25 0 016 17.25V6.75A2.25 2.25 0 018.25 4.5zM9 1.5h6';
+      case 'AssetMentionedInTicket':
+        return 'M7.5 3.75h9a1.5 1.5 0 011.5 1.5v9a1.5 1.5 0 01-1.5 1.5h-9a1.5 1.5 0 01-1.5-1.5v-9a1.5 1.5 0 011.5-1.5zM3.75 7.5h6m-6 4.5h9';
       default:
         return 'M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0z';
     }
@@ -189,6 +199,8 @@ export class AssetTimelineComponent implements OnChanges {
         return 'bg-amber-100 text-amber-600 dark:bg-amber-500/20 dark:text-amber-400';
       case 'AssetManualLogAdded':
         return 'bg-sky-100 text-sky-600 dark:bg-sky-500/20 dark:text-sky-400';
+      case 'AssetMentionedInTicket':
+        return 'bg-indigo-100 text-indigo-600 dark:bg-indigo-500/20 dark:text-indigo-300';
       default:
         return 'bg-gray-100 text-gray-600 dark:bg-gray-500/20 dark:text-gray-400';
     }
@@ -229,6 +241,25 @@ export class AssetTimelineComponent implements OnChanges {
     }
 
     return `${numericAmount.toFixed(2)} ${currency}`;
+  }
+
+  getTicketHumanReadableId(entry: ChangeLogEntry): string | null {
+    if (entry.action !== 'AssetMentionedInTicket') return null;
+    const value = entry.details?.['ticketHumanReadableId'];
+    return typeof value === 'string' && value.trim().length > 0 ? value : null;
+  }
+
+  openTicketPreview(ticketId: string | null | undefined): void {
+    if (!ticketId) {
+      return;
+    }
+
+    this.dialog.open(TicketPreviewModalComponent, {
+      width: '720px',
+      maxWidth: '95vw',
+      panelClass: 'custom-dialog-container',
+      data: { ticketId }
+    });
   }
 
   private getLocationId(entry: ChangeLogEntry): string | null {

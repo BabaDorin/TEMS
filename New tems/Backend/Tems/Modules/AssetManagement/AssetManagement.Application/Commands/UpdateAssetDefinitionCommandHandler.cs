@@ -28,7 +28,7 @@ public class UpdateAssetDefinitionCommandHandler(IAssetDefinitionRepository asse
         {
             PropertyId = s.PropertyId,
             Name = s.Name,
-            Value = s.Value,
+            Value = AssetSpecificationValueConverter.Convert(s.Value),
             DataType = s.DataType,
             Unit = s.Unit
         }).ToList();

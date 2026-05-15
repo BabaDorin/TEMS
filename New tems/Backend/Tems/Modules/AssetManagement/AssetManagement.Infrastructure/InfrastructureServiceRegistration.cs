@@ -14,6 +14,7 @@ public static class InfrastructureServiceRegistration
         services.AddScoped<IAssetTypeRepository, AssetTypeRepository>();
         services.AddScoped<IAssetDefinitionRepository, AssetDefinitionRepository>();
         services.AddScoped<IAssetRepository, AssetRepository>();
+        services.AddScoped<IPurchaseOrderRepository, PurchaseOrderRepository>();
         
         services.AddMongoDb(configuration);
 

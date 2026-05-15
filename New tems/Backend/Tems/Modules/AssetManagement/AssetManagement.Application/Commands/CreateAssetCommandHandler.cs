@@ -4,14 +4,16 @@ using AssetManagement.Application.Interfaces;
 using AssetManagement.Contract.Commands;
 using AssetManagement.Contract.Responses;
 using MediatR;
-using System.Text.Json;
 using Tems.Common.Notifications;
+using Tems.Common.Tenant;
 
 namespace AssetManagement.Application.Commands;
 
 public class CreateAssetCommandHandler(
     IAssetRepository assetRepository,
     IAssetDefinitionRepository assetDefinitionRepository,
+    IPurchaseOrderRepository purchaseOrderRepository,
+    ITenantContext tenantContext,
     IPublisher publisher) 
     : IRequestHandler<CreateAssetCommand, CreateAssetResponse>
 {
@@ -36,11 +38,13 @@ public class CreateAssetCommandHandler(
             {
                 PropertyId = s.PropertyId,
                 Name = s.Name,
-                Value = ConvertJsonElementToValue(s.Value),
+                Value = AssetSpecificationValueConverter.Convert(s.Value),
                 DataType = s.DataType,
                 Unit = s.Unit
             }).ToList()
             : definition.Specifications;
+
+        var resolvedPurchaseInfo = await ResolvePurchaseInfoAsync(request.PurchaseInfo, purchaseOrderRepository, tenantContext.TenantId, cancellationToken);
 
         var domainEntity = new Asset
         {
@@ -60,14 +64,8 @@ public class CreateAssetCommandHandler(
                 Model = request.Model,
                 Specifications = specifications
             },
-            PurchaseInfo = request.PurchaseInfo != null ? new PurchaseInfo
-            {
-                PurchaseDate = request.PurchaseInfo.PurchaseDate,
-                PurchasePrice = request.PurchaseInfo.PurchasePrice,
-                Currency = request.PurchaseInfo.Currency,
-                Vendor = request.PurchaseInfo.Vendor,
-                WarrantyExpiry = request.PurchaseInfo.WarrantyExpiry
-            } : null,
+            PurchaseInfo = resolvedPurchaseInfo,
+            LocationId = request.LocationId,
             Location = request.Location != null ? new AssetLocation
             {
                 Building = request.Location.Building,
@@ -118,24 +116,71 @@ public class CreateAssetCommandHandler(
             ), cancellationToken);
         }
 
+        if (!string.IsNullOrWhiteSpace(request.LocationId))
+        {
+            var locationName = request.Location != null
+                ? $"{request.Location.Building} / {request.Location.Room}".Trim(' ', '/')
+                : string.Empty;
+
+            await publisher.Publish(new AssetAssignedToLocationNotification(
+                domainEntity.Id,
+                domainEntity.AssetTag,
+                request.LocationId,
+                locationName,
+                null,
+                null,
+                request.CreatedBy,
+                null
+            ), cancellationToken);
+        }
+
         return new CreateAssetResponse(domainEntity.Id);
     }
-
-    private static object ConvertJsonElementToValue(object value)
+    private static async Task<PurchaseInfo?> ResolvePurchaseInfoAsync(
+        PurchaseInfoDto? requestPurchaseInfo,
+        IPurchaseOrderRepository purchaseOrderRepository,
+        string tenantId,
+        CancellationToken cancellationToken)
     {
-        if (value is not JsonElement jsonElement)
-            return value;
-
-        return jsonElement.ValueKind switch
+        if (requestPurchaseInfo == null)
         {
-            JsonValueKind.String => jsonElement.GetString() ?? string.Empty,
-            JsonValueKind.Number => jsonElement.TryGetInt32(out var intValue) ? intValue : 
-                                   jsonElement.TryGetInt64(out var longValue) ? longValue : 
-                                   jsonElement.GetDouble(),
-            JsonValueKind.True => true,
-            JsonValueKind.False => false,
-            JsonValueKind.Null => string.Empty,
-            _ => jsonElement.GetRawText()
+            return null;
+        }
+
+        if (!string.IsNullOrWhiteSpace(requestPurchaseInfo.PurchaseOrderId))
+        {
+            var purchaseOrder = await purchaseOrderRepository.GetByIdAsync(requestPurchaseInfo.PurchaseOrderId, tenantId, cancellationToken);
+            if (purchaseOrder == null)
+            {
+                throw new InvalidOperationException("The selected purchase order no longer exists.");
+            }
+
+            if (requestPurchaseInfo.PurchasePrice is null or <= 0)
+            {
+                throw new InvalidOperationException("A linked purchase order requires a valid asset item price.");
+            }
+
+            return new PurchaseInfo
+            {
+                PurchaseDate = requestPurchaseInfo.PurchaseDate,
+                PurchasePrice = requestPurchaseInfo.PurchasePrice,
+                Currency = purchaseOrder.Currency,
+                Vendor = purchaseOrder.Vendor,
+                PurchaseOrderId = purchaseOrder.Id,
+                PurchaseOrderNumber = purchaseOrder.PoNumber,
+                WarrantyExpiry = requestPurchaseInfo.WarrantyExpiry
+            };
+        }
+
+        return new PurchaseInfo
+        {
+            PurchaseDate = requestPurchaseInfo.PurchaseDate,
+            PurchasePrice = requestPurchaseInfo.PurchasePrice,
+            Currency = requestPurchaseInfo.Currency,
+            Vendor = requestPurchaseInfo.Vendor,
+            PurchaseOrderId = requestPurchaseInfo.PurchaseOrderId,
+            PurchaseOrderNumber = requestPurchaseInfo.PurchaseOrderNumber,
+            WarrantyExpiry = requestPurchaseInfo.WarrantyExpiry
         };
     }
 }

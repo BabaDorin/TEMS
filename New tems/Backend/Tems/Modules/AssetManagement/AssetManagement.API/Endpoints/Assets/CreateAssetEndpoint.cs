@@ -24,5 +24,9 @@ public class CreateAssetEndpoint(IMediator mediator) : Endpoint<CreateAssetComma
         {
             ThrowError(ex.Message, 409);
         }
+        catch (InvalidOperationException ex)
+        {
+            ThrowError(ex.Message, 400);
+        }
     }
 }

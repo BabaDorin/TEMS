@@ -1,23 +1,24 @@
-<div class="tems-asset-dialog tems-asset-modal-card mx-auto" [ngClass]="dialogRef ? '' : 'my-8'">
-  <div class="tems-asset-modal-header">
+<div class="tems-asset-dialog tems-asset-modal-card asset-admin-modal bg-white dark:bg-[#2c2c2e] rounded-lg shadow-xl mx-auto" [ngClass]="dialogRef ? '' : 'my-8'">
+  <div class="asset-admin-modal__header">
     <div>
-      <div class="tems-asset-eyebrow">
-        <i class="mdi mdi-file-document-outline"></i>
-        <span>{{ isUpdateMode ? 'Edit definition' : 'New definition' }}</span>
-      </div>
-      <h2 class="text-xl font-semibold text-[color:var(--text-primary)] m-0 mt-2">
-        {{ isUpdateMode ? 'Update asset definition' : 'Create asset definition' }}
+      <h2 class="text-xl font-semibold text-gray-900 dark:text-white m-0">
+        {{ isUpdateMode ? 'Edit Asset Definition' : 'Create Asset Definition' }}
       </h2>
-      <p class="tems-asset-help mt-1">Bind a type and describe the inventory record that will be created from it.</p>
+      <p class="asset-admin-modal__subtitle">Bind a type and describe the inventory record that will be created from it.</p>
     </div>
-    <div *ngIf="dialogRef" class="text-xs text-[color:var(--text-secondary)]">Dialog</div>
+    <button *ngIf="dialogRef" type="button" (click)="dialogRef.close()" aria-label="Close" class="asset-admin-modal__close">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+      </svg>
+    </button>
   </div>
 
-  <form [formGroup]="formGroup" (ngSubmit)="onSubmit()" class="tems-asset-modal-body">
-    <div class="tems-asset-grid tems-asset-grid--two">
-      <div class="tems-asset-field col-span-2">
-        <label>Asset type *</label>
-        <app-custom-select 
+  <form [formGroup]="formGroup" (ngSubmit)="onSubmit()" class="asset-admin-modal__form">
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div class="asset-admin-modal__field sm:col-span-2">
+        <label class="asset-admin-modal__label">Asset type *</label>
+        <app-custom-select
+          class="asset-admin-modal__select"
           formControlName="assetTypeId"
           [options]="assetTypeOptions"
           [mode]="'single'"
@@ -26,35 +27,35 @@
           [disabled]="assetTypeLocked"
           [allowEmpty]="false">
         </app-custom-select>
-        <p *ngIf="assetTypeLocked" class="tems-asset-help">Asset type locked for this action.</p>
+        <p *ngIf="assetTypeLocked" class="asset-admin-modal__subtitle mt-1">Asset type locked for this action.</p>
       </div>
 
-      <div class="tems-asset-field col-span-2">
-        <label>Name *</label>
-        <input formControlName="name" type="text" placeholder="MacBook Pro 14" maxlength="150" class="tems-asset-input">
+      <div class="asset-admin-modal__field sm:col-span-2">
+        <label class="asset-admin-modal__label">Name *</label>
+        <input formControlName="name" type="text" placeholder="MacBook Pro 14" maxlength="150" class="asset-admin-modal__input">
       </div>
 
-      <div class="tems-asset-field">
-        <label>Manufacturer</label>
-        <input formControlName="manufacturer" type="text" placeholder="Apple" class="tems-asset-input">
+      <div class="asset-admin-modal__field">
+        <label class="asset-admin-modal__label">Manufacturer</label>
+        <input formControlName="manufacturer" type="text" placeholder="Apple" class="asset-admin-modal__input">
       </div>
 
-      <div class="tems-asset-field">
-        <label>Model</label>
-        <input formControlName="model" type="text" placeholder="A2992" class="tems-asset-input">
+      <div class="asset-admin-modal__field">
+        <label class="asset-admin-modal__label">Model</label>
+        <input formControlName="model" type="text" placeholder="A2992" class="asset-admin-modal__input">
       </div>
 
-      <div class="tems-asset-field col-span-2">
-        <label>Tags</label>
-        <input formControlName="tags" type="text" placeholder="laptop, m1, 14" class="tems-asset-input">
+      <div class="asset-admin-modal__field sm:col-span-2">
+        <label class="asset-admin-modal__label">Tags</label>
+        <input formControlName="tags" type="text" placeholder="laptop, m1, 14" class="asset-admin-modal__input">
       </div>
     </div>
 
-    <div class="tems-asset-section mt-6">
-      <div class="flex items-center justify-between gap-3">
+    <div class="space-y-4">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
-          <p class="tems-asset-label m-0">Specifications</p>
-          <p class="tems-asset-help m-0">Link properties or add custom values when needed.</p>
+          <p class="asset-admin-modal__section-title m-0">Specifications</p>
+          <p class="asset-admin-modal__subtitle m-0">Link properties or add custom values when needed.</p>
         </div>
         <button type="button" (click)="addSpecification()" [disabled]="isSubmitting" class="tems-btn tems-btn-secondary">
           <i class="mdi mdi-plus"></i>
@@ -62,65 +63,35 @@
         </button>
       </div>
 
-      <div class="tems-asset-grid mt-2">
+      <div class="grid gap-4">
         <div *ngFor="let spec of specsControls; let i = index" [formGroup]="spec"
-          class="rounded-[1.15rem] border border-[color:var(--border-secondary)] bg-[color:var(--bg-secondary)] p-4">
-          <div class="grid grid-cols-12 gap-3">
-            <div class="col-span-3">
-              <label class="tems-asset-label text-xs">Property</label>
-            </div>
-            <div class="col-span-2">
-              <label class="tems-asset-label text-xs">Name *</label>
-            </div>
-            <div class="col-span-2">
-              <label class="tems-asset-label text-xs">Value *</label>
-            </div>
-            <div class="col-span-2">
-              <label class="tems-asset-label text-xs">Type</label>
-            </div>
-            <div class="col-span-1">
-              <label class="tems-asset-label text-xs">Unit</label>
-            </div>
-            <div class="col-span-2">
-              <label class="tems-asset-label text-xs">Required</label>
-            </div>
-
-            <div class="col-span-3">
-              <app-custom-select 
+          class="asset-admin-modal__card">
+          <div class="grid grid-cols-1 lg:grid-cols-10 gap-4 items-end">
+            <div class="lg:col-span-5 asset-admin-modal__field">
+              <label class="asset-admin-modal__micro-label">Property</label>
+              <app-custom-select
+                class="asset-admin-modal__select"
                 formControlName="propertyId"
                 [options]="propertyOptions"
                 [mode]="'single'"
                 [searchable]="true"
-                placeholder="Custom"
-                [allowEmpty]="true"
-                emptyLabel="Custom">
+                placeholder="Select property"
+                [allowEmpty]="false">
               </app-custom-select>
             </div>
-            <div class="col-span-2">
-              <input formControlName="name" type="text" class="tems-asset-input">
-            </div>
-            <div class="col-span-2">
-              <input formControlName="value" type="text" class="tems-asset-input">
-            </div>
-            <div class="col-span-2">
-              <select formControlName="dataType" class="tems-asset-select">
-                <option value="string">String</option>
-                <option value="number">Number</option>
-                <option value="boolean">Boolean</option>
-              </select>
-            </div>
-            <div class="col-span-1">
-              <input formControlName="unit" type="text" class="tems-asset-input">
-            </div>
-            <div class="col-span-2 flex items-center gap-2">
-              <label class="relative inline-block w-10 h-6">
-                <input type="checkbox" formControlName="isRequired" class="sr-only peer">
-                <span class="absolute inset-0 bg-gray-200 rounded-full transition peer-checked:bg-[#34c759] cursor-pointer"></span>
-                <span class="absolute left-1 top-1 w-4 h-4 bg-white rounded-full transition peer-checked:translate-x-4 cursor-pointer"></span>
+            <div class="lg:col-span-5 asset-admin-modal__field">
+              <label class="asset-admin-modal__micro-label">
+                Value<span *ngIf="isSpecificationRequired(spec)"> *</span>
               </label>
+              <div class="asset-admin-modal__input-wrap">
+                <input formControlName="value" type="text" class="asset-admin-modal__input" [class.asset-admin-modal__input--with-unit]="spec.get('unit')?.value">
+                <span *ngIf="spec.get('unit')?.value" class="asset-admin-modal__input-unit">
+                  {{ spec.get('unit')?.value }}
+                </span>
+              </div>
             </div>
 
-            <div class="col-span-12 flex justify-end pt-2">
+            <div class="col-span-12 flex justify-end pt-1">
               <button type="button" (click)="removeSpecification(i)" aria-label="Remove" class="tems-asset-cell-action tems-asset-cell-action--danger">
                 Remove
               </button>
@@ -131,11 +102,11 @@
       </div>
     </div>
 
-    <footer class="tems-asset-modal-footer">
-      <button type="button" *ngIf="dialogRef" (click)="dialogRef.close()" class="tems-btn tems-btn-secondary">Cancel</button>
-      <button type="submit" class="tems-btn tems-btn-primary" [disabled]="formGroup.invalid || isSubmitting">
-        {{ isUpdateMode ? 'Update' : 'Save' }}
+    <div class="flex flex-col sm:flex-row gap-3 pt-2">
+      <button type="button" *ngIf="dialogRef" (click)="dialogRef.close()" class="tems-btn tems-btn-secondary flex-1">Cancel</button>
+      <button type="submit" class="tems-btn tems-btn-primary flex-1" [disabled]="formGroup.invalid || isSubmitting">
+        {{ isUpdateMode ? 'Update' : 'Create' }}
       </button>
-    </footer>
+    </div>
   </form>
 </div>

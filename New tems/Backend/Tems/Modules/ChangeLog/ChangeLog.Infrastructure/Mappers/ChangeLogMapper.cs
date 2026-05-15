@@ -142,6 +142,21 @@ public static class AssetChangeLogMapper
                     }
                     : null
             },
+            AssetMentionedInTicketLog e => new AssetMentionedInTicketLogEntity
+            {
+                Id = e.Id,
+                TenantId = e.TenantId,
+                Action = e.Action.ToString(),
+                Description = e.Description,
+                Timestamp = e.Timestamp,
+                PerformedByUserId = e.PerformedByUserId,
+                PerformedByUserName = e.PerformedByUserName,
+                AssetId = e.AssetId,
+                AssetTag = e.AssetTag,
+                TicketId = e.TicketId,
+                TicketHumanReadableId = e.TicketHumanReadableId,
+                TicketTitle = e.TicketTitle
+            },
             _ => throw new InvalidOperationException($"Unknown asset log type: {entry.GetType().Name}")
         };
     }
@@ -204,6 +219,13 @@ public static class AssetChangeLogMapper
                 Timestamp = e.Timestamp, PerformedByUserId = e.PerformedByUserId, PerformedByUserName = e.PerformedByUserName,
                 AssetId = e.AssetId, AssetTag = e.AssetTag, LogType = e.LogType, LogDescription = e.LogDescription,
                 CostAmount = e.Cost?.Amount, CostCurrency = e.Cost?.Currency
+            },
+            AssetMentionedInTicketLogEntity e => new AssetMentionedInTicketLog
+            {
+                Id = e.Id, TenantId = e.TenantId, Action = action, Description = e.Description,
+                Timestamp = e.Timestamp, PerformedByUserId = e.PerformedByUserId, PerformedByUserName = e.PerformedByUserName,
+                AssetId = e.AssetId, AssetTag = e.AssetTag, TicketId = e.TicketId,
+                TicketHumanReadableId = e.TicketHumanReadableId, TicketTitle = e.TicketTitle
             },
             _ => throw new InvalidOperationException($"Unknown entity type: {entity.GetType().Name}")
         };

@@ -6,6 +6,7 @@ using TicketManagement.Contract.Commands.Tickets;
 using TicketManagement.Contract.Responses;
 using TicketManagement.Application.Helpers;
 using UserManagement.Infrastructure.Repositories;
+using AssetManagement.Application.Interfaces;
 
 namespace TicketManagement.Application.Commands.Tickets;
 
@@ -15,17 +16,20 @@ public class GetAllTicketsCommandHandler : IRequestHandler<GetAllTicketsCommand,
     private readonly ITenantContext _tenantContext;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IUserRepository _userRepository;
+    private readonly IAssetRepository _assetRepository;
 
     public GetAllTicketsCommandHandler(
         ITicketRepository repository,
         ITenantContext tenantContext,
         IHttpContextAccessor httpContextAccessor,
-        IUserRepository userRepository)
+        IUserRepository userRepository,
+        IAssetRepository assetRepository)
     {
         _repository = repository;
         _tenantContext = tenantContext;
         _httpContextAccessor = httpContextAccessor;
         _userRepository = userRepository;
+        _assetRepository = assetRepository;
     }
 
     public async Task<GetAllTicketsResponse> Handle(GetAllTicketsCommand request, CancellationToken cancellationToken)
@@ -50,7 +54,7 @@ public class GetAllTicketsCommandHandler : IRequestHandler<GetAllTicketsCommand,
                 await _repository.UpdateAsync(ticket, cancellationToken);
             }
 
-            response.Add(await TicketResponseFactory.ToResponseAsync(ticket, _userRepository, cancellationToken));
+            response.Add(await TicketResponseFactory.ToResponseAsync(ticket, _assetRepository, _userRepository, cancellationToken));
         }
 
         return new GetAllTicketsResponse(response);

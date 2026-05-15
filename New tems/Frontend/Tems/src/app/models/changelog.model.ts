@@ -25,6 +25,7 @@ export type ChangeLogAction =
   | 'AssetAssignedToLocation'
   | 'AssetUnassignedFromLocation'
   | 'AssetManualLogAdded'
+  | 'AssetMentionedInTicket'
   | 'UserCreated'
   | 'UserDeleted'
   | 'UserRolesUpdated'

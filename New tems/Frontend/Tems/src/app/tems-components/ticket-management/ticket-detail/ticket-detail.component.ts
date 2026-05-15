@@ -10,6 +10,7 @@ import { TicketTypeService } from 'src/app/services/ticket-type.service';
 import { AuthService } from 'src/app/services/auth.service';
 import { TokenService } from 'src/app/services/token.service';
 import { UserService } from 'src/app/services/user.service';
+import { AssetService } from 'src/app/services/asset.service';
 import { Ticket, TicketMessage, AddMessageRequest, UpdateTicketRequest, ApprovalGate } from 'src/app/models/ticket/ticket.model';
 import { TicketType, WorkflowState } from 'src/app/models/ticket/ticket-type.model';
 import { UserDto } from 'src/app/models/user/user-management.model';
@@ -17,6 +18,8 @@ import { CustomSelectComponent, SelectOption } from 'src/app/shared/custom-selec
 import { ViewUserModalComponent } from '../../admin/user-management/view-user-modal/view-user-modal.component';
 import { ApprovalGateModalComponent } from '../approval-gate-modal/approval-gate-modal.component';
 import { TicketTimelineComponent } from '../ticket-timeline/ticket-timeline.component';
+import { PURCHASE_ORDER_ACCOUNTABLE_ATTRIBUTE_KEY, PURCHASE_ORDER_TICKET_TYPE_ID } from 'src/app/shared/constants/purchase-order.constants';
+import { AssetPreviewModalComponent } from '../../asset-module/asset-preview-modal/asset-preview-modal.component';
 
 @Component({
   selector: 'app-ticket-detail',
@@ -29,7 +32,9 @@ export class TicketDetailComponent implements OnInit {
   ticket: Ticket | null = null;
   ticketType: TicketType | null = null;
   creatorUser: UserDto | null = null;
+  accountableUser: UserDto | null = null;
   creatorUserLoading = false;
+  accountableUserLoading = false;
   canManageTickets = false;
   canOpenTickets = false;
   statusDraft = '';
@@ -52,6 +57,10 @@ export class TicketDetailComponent implements OnInit {
   deletingMessageId: string | null = null;
   currentUserId = 'current-user';
   currentUserLabel = 'You';
+  linkedAssetDraft: string[] = [];
+  linkedAssetOptions: SelectOption[] = [];
+  linkedAssetsLoading = false;
+  isSavingLinkedAssets = false;
   private currentUserIdentifiers = new Set<string>();
   private approverDisplayNames = new Map<string, string>();
   private messageSenderDisplayNames = new Map<string, string>();
@@ -70,7 +79,8 @@ export class TicketDetailComponent implements OnInit {
     private authService: AuthService,
     private userService: UserService,
     private tokenService: TokenService,
-    private matDialog: MatDialog
+    private matDialog: MatDialog,
+    private assetService: AssetService
   ) {}
 
   ngOnInit(): void {
@@ -96,13 +106,19 @@ export class TicketDetailComponent implements OnInit {
       next: (ticket) => {
         this.ticket = ticket;
         this.creatorUser = null;
+        this.accountableUser = null;
         this.creatorUserLoading = false;
+        this.accountableUserLoading = false;
         this.statusDraft = this.getTicketStatusValue(ticket.currentStateId);
         this.summaryDraft = ticket.summary || '';
+        this.linkedAssetDraft = [...(ticket.assetIds || [])];
         this.approverDisplayNames.clear();
         this.isLoadingTicket = false;
         if (ticket.reporter?.userId) {
           this.loadCreatorUser(ticket.reporter.userId);
+        }
+        if (this.shouldShowAccountable()) {
+          this.loadAccountableUser(ticket.accountableUserId);
         }
         this.loadApprovalGateUsers();
         if (ticket.ticketTypeId) {
@@ -121,6 +137,11 @@ export class TicketDetailComponent implements OnInit {
     this.ticketTypeService.getById(ticketTypeId).subscribe({
       next: (ticketType) => {
         this.ticketType = ticketType;
+        if (this.supportsAssetLinking()) {
+          this.loadLinkedAssetOptions();
+        } else {
+          this.linkedAssetOptions = [];
+        }
         if (this.ticket) {
           this.statusDraft = this.getTicketStatusValue(this.ticket.currentStateId);
         }
@@ -147,18 +168,39 @@ export class TicketDetailComponent implements OnInit {
     });
   }
 
-  getTicketStatusOptions(): { value: string; label: string }[] {
+  loadAccountableUser(userId: string): void {
+    if (!userId || this.ticket?.reporter?.userId?.toLowerCase() === userId.toLowerCase()) {
+      this.accountableUser = null;
+      this.accountableUserLoading = false;
+      return;
+    }
+
+    this.accountableUserLoading = true;
+    this.userService.getUserPreviewById(userId).subscribe({
+      next: (user) => {
+        this.accountableUser = user;
+        this.accountableUserLoading = false;
+      },
+      error: (error) => {
+        console.error('Error loading accountable user:', error);
+        this.accountableUser = null;
+        this.accountableUserLoading = false;
+      }
+    });
+  }
+
+  getTicketStatusOptions(): SelectOption[] {
     const states = this.ticketType?.workflowConfig?.states || [];
-    const options: { value: string; label: string; order: number }[] = [];
+    const options: Array<SelectOption & { order: number }> = [];
     const seenValues = new Set<string>();
 
-    const pushOption = (state: WorkflowState, label: string, order: number) => {
+    const pushOption = (state: WorkflowState, label: string, order: number, disabled = false) => {
       if (!state?.id || seenValues.has(state.id)) {
         return;
       }
 
       seenValues.add(state.id);
-      options.push({ value: state.id, label, order });
+      options.push({ value: state.id, label, order, disabled });
     };
 
     const managedStates = this.ticketType?.workflowConfig?.states || [];
@@ -182,11 +224,19 @@ export class TicketDetailComponent implements OnInit {
     ]);
     if (progressState) pushOption(progressState, 'In progress', 2);
 
+    const approvedState = findState(['approved', 'state-approved', 'state_approved']);
+    if (approvedState) pushOption(approvedState, 'Approved', 3, this.isApprovedStatusDisabled(approvedState.id));
+
     const closedState = findState(['closed', 'state_closed', 'state-closed', 'done', 'resolved']);
-    if (closedState) pushOption(closedState, 'Closed', 3);
+    if (closedState) pushOption(closedState, 'Closed', 4);
 
     if (options.length < states.length) {
-      states.forEach((state, index) => pushOption(state, this.getHumanizedStateLabel(state.id || state.label), index + 10));
+      states.forEach((state, index) => pushOption(
+        state,
+        this.getHumanizedStateLabel(state.id || state.label),
+        index + 10,
+        this.isApprovedStatusDisabled(state.id)
+      ));
     }
 
     return options
@@ -200,6 +250,10 @@ export class TicketDetailComponent implements OnInit {
 
   getTicketStatusLabel(stateId: string): string {
     return this.getHumanizedStateLabel(stateId);
+  }
+
+  private isApprovedStatusDisabled(stateId: string): boolean {
+    return this.isPurchaseOrderTicket() && this.isApprovedStateValue(stateId) && !this.areAllApprovalGatesApproved();
   }
 
   getPriorityLabel(priority: string): string {
@@ -268,7 +322,8 @@ export class TicketDetailComponent implements OnInit {
       currentStateId: targetValue,
       priority: this.ticket.priority,
       assigneeId: this.ticket.assigneeId,
-      attributes: this.ticket.attributes
+      attributes: this.ticket.attributes,
+      assetIds: this.ticket.assetIds || []
     };
 
     this.ticketService.update(this.ticket.ticketId, request).subscribe({
@@ -333,7 +388,7 @@ export class TicketDetailComponent implements OnInit {
     if (['in-progress', 'state-in-progress', 'state-wip', 'wip', 'progress'].includes(normalized)) {
       return 'in-progress';
     }
-    if (['closed', 'state-closed'].includes(normalized)) {
+    if (['closed', 'state-closed', 'approved', 'state-approved'].includes(normalized)) {
       return 'closed';
     }
 
@@ -341,6 +396,11 @@ export class TicketDetailComponent implements OnInit {
   }
 
   private getHumanizedStateLabel(value: string): string {
+    const normalized = this.normalizeStateId(value);
+    if (normalized === 'approved' || normalized === 'state-approved') {
+      return 'Approved';
+    }
+
     const managed = this.getManagedStatusGroup(value);
     if (managed === 'new') {
       return 'New';
@@ -352,7 +412,6 @@ export class TicketDetailComponent implements OnInit {
       return 'Closed';
     }
 
-    const normalized = this.normalizeStateId(value);
     if (!normalized) {
       return '';
     }
@@ -377,6 +436,28 @@ export class TicketDetailComponent implements OnInit {
     return this.ticket?.reporter?.userId || '';
   }
 
+  shouldShowAccountable(): boolean {
+    if (!this.ticket?.accountableUserId) {
+      return false;
+    }
+
+    return (this.ticket.accountableUserId || '').toLowerCase() !== (this.ticket.reporter?.userId || '').toLowerCase();
+  }
+
+  getAccountableDisplayName(): string {
+    if (!this.ticket?.accountableUserId) {
+      return '—';
+    }
+
+    if (this.accountableUser) {
+      const parts = [this.accountableUser.firstName, this.accountableUser.lastName]
+        .filter((part) => !!part && part.trim().length > 0);
+      return parts.length > 0 ? parts.join(' ') : this.accountableUser.username;
+    }
+
+    return this.ticket.accountableDisplayName || this.ticket.accountableUserId;
+  }
+
   openCreatorPreview(): void {
     if (!this.creatorUser) {
       return;
@@ -389,17 +470,117 @@ export class TicketDetailComponent implements OnInit {
     );
   }
 
+  openAccountablePreview(): void {
+    if (!this.accountableUser) {
+      return;
+    }
+
+    this.dialogService.openDialog(
+      ViewUserModalComponent,
+      [{ label: 'user', value: this.accountableUser }],
+      () => {}
+    );
+  }
+
   canEditSummary(): boolean {
     if (!this.ticket) {
       return false;
     }
 
     const reporterId = this.ticket.reporter?.userId || '';
-    return this.matchesCurrentUser(reporterId);
+    return this.matchesCurrentUser(reporterId) || this.matchesCurrentUser(this.ticket.accountableUserId || '');
+  }
+
+  canEditLinkedAssets(): boolean {
+    return !!this.ticket && (this.canManageTickets || this.canEditSummary());
   }
 
   canConfigureApprovalGates(): boolean {
     return !!this.ticket && (this.canManageTickets || this.canEditSummary());
+  }
+
+  private isPurchaseOrderTicket(): boolean {
+    return (this.ticket?.ticketTypeId || '').toLowerCase() === PURCHASE_ORDER_TICKET_TYPE_ID;
+  }
+
+  private isApprovedStateValue(value: string): boolean {
+    const normalized = this.normalizeStateId(value);
+    return normalized === 'approved' || normalized === 'state-approved';
+  }
+
+  private areAllApprovalGatesApproved(): boolean {
+    return (this.ticket?.approvalGates || []).every(gate => (gate.state || '').toLowerCase() === 'approved');
+  }
+
+  getApprovedStatusHint(): string {
+    if (!this.isPurchaseOrderTicket() || this.areAllApprovalGatesApproved()) {
+      return '';
+    }
+
+    return 'Approved becomes available after every approval gate is approved.';
+  }
+
+  supportsAssetLinking(): boolean {
+    const ticketType = this.ticketType;
+    if (!ticketType) {
+      return false;
+    }
+
+    const normalized = `${ticketType.name || ''} ${ticketType.description || ''} ${ticketType.ticketTypeId || ''}`.toLowerCase();
+    return normalized.includes('hardware issue')
+      || normalized.includes('hardware_issue')
+      || normalized.includes('network issue')
+      || normalized.includes('network_issue');
+  }
+
+  onLinkedAssetSearch(term: string): void {
+    this.loadLinkedAssetOptions(term);
+  }
+
+  saveLinkedAssets(): void {
+    if (!this.ticket || !this.canEditLinkedAssets() || this.isSavingLinkedAssets) {
+      return;
+    }
+
+    const nextAssetIds = Array.from(new Set((this.linkedAssetDraft || []).filter((value) => !!value)));
+    const currentAssetIds = Array.from(new Set((this.ticket.assetIds || []).filter((value) => !!value)));
+    const unchanged = currentAssetIds.length === nextAssetIds.length
+      && currentAssetIds.every((value) => nextAssetIds.includes(value));
+
+    if (unchanged) {
+      return;
+    }
+
+    this.isSavingLinkedAssets = true;
+    const request: UpdateTicketRequest = {
+      summary: this.ticket.summary,
+      currentStateId: this.ticket.currentStateId,
+      priority: this.ticket.priority,
+      assigneeId: this.ticket.assigneeId,
+      attributes: this.ticket.attributes,
+      assetIds: nextAssetIds
+    };
+
+    this.ticketService.update(this.ticket.ticketId, request).subscribe({
+      next: () => {
+        this.isSavingLinkedAssets = false;
+        this.loadTicket(this.ticket!.ticketId);
+      },
+      error: (error) => {
+        console.error('Error updating linked assets:', error);
+        this.linkedAssetDraft = [...(this.ticket?.assetIds || [])];
+        this.isSavingLinkedAssets = false;
+      }
+    });
+  }
+
+  openLinkedAssetPreview(assetId: string): void {
+    this.matDialog.open(AssetPreviewModalComponent, {
+      width: '720px',
+      maxWidth: '95vw',
+      panelClass: 'custom-dialog-container',
+      data: { assetId }
+    });
   }
 
   openApprovalGateModal(gate?: ApprovalGate | null): void {
@@ -443,7 +624,8 @@ export class TicketDetailComponent implements OnInit {
       currentStateId: this.ticket.currentStateId,
       priority: this.ticket.priority,
       assigneeId: this.ticket.assigneeId,
-      attributes: this.ticket.attributes
+      attributes: this.ticket.attributes,
+      assetIds: this.ticket.assetIds || []
     };
 
     this.ticketService.update(this.ticket.ticketId, request).subscribe({
@@ -775,6 +957,63 @@ export class TicketDetailComponent implements OnInit {
     return attr?.label || key;
   }
 
+  isUserAttribute(key: string): boolean {
+    const attr = this.ticketType?.attributeDefinitions?.find(a => a.key === key);
+    return attr?.dataType === 'USER';
+  }
+
+  shouldRenderAttributeAsUserLink(key: string): boolean {
+    return this.isUserAttribute(key) && !!this.getAttributeUserId(key);
+  }
+
+  getAttributeUserDisplayName(key: string): string {
+    if (key === PURCHASE_ORDER_ACCOUNTABLE_ATTRIBUTE_KEY) {
+      return this.getAccountableDisplayName();
+    }
+
+    return this.formatAttributeValue(this.ticket?.attributes?.[key]);
+  }
+
+  openCreatorProfile(): void {
+    const creatorId = this.ticket?.reporter?.userId;
+    if (!creatorId) {
+      return;
+    }
+
+    this.router.navigate(['/profile/view', creatorId]);
+  }
+
+  openAccountableProfile(): void {
+    const accountableUserId = this.ticket?.accountableUserId;
+    if (!accountableUserId) {
+      return;
+    }
+
+    this.router.navigate(['/profile/view', accountableUserId]);
+  }
+
+  getAttributeUserId(key: string): string | null {
+    if (key === PURCHASE_ORDER_ACCOUNTABLE_ATTRIBUTE_KEY) {
+      return this.ticket?.accountableUserId || null;
+    }
+
+    const value = this.ticket?.attributes?.[key];
+    if (typeof value !== 'string' || !value.trim()) {
+      return null;
+    }
+
+    return value;
+  }
+
+  openAttributeUserProfile(key: string): void {
+    const userId = this.getAttributeUserId(key);
+    if (!userId) {
+      return;
+    }
+
+    this.router.navigate(['/profile/view', userId]);
+  }
+
   formatAttributeValue(value: any): string {
     if (typeof value === 'boolean') {
       return value ? 'Yes' : 'No';
@@ -783,6 +1022,35 @@ export class TicketDetailComponent implements OnInit {
       return 'N/A';
     }
     return String(value);
+  }
+
+  private loadLinkedAssetOptions(searchTerm = ''): void {
+    if (!this.supportsAssetLinking()) {
+      return;
+    }
+
+    this.linkedAssetsLoading = true;
+    this.assetService.getAll(undefined, 1, 50, undefined, searchTerm.trim() || undefined).subscribe({
+      next: (response) => {
+        const fetchedOptions = (response.assets || []).map((asset) => ({
+          value: asset.id,
+          label: asset.assetTag
+        }));
+        const selectedOptions = (this.ticket?.linkedAssets || []).map((asset) => ({
+          value: asset.assetId,
+          label: asset.assetTag
+        }));
+
+        const optionMap = new Map<string, SelectOption>();
+        [...selectedOptions, ...fetchedOptions].forEach((option) => optionMap.set(option.value, option));
+        this.linkedAssetOptions = Array.from(optionMap.values())
+          .sort((left, right) => left.label.localeCompare(right.label));
+        this.linkedAssetsLoading = false;
+      },
+      error: () => {
+        this.linkedAssetsLoading = false;
+      }
+    });
   }
 
   getDisplayMessages(): TicketMessage[] {

@@ -9,6 +9,8 @@ export interface Ticket {
   currentStateId: string;
   priority: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
   reporter: Reporter;
+  accountableUserId: string;
+  accountableDisplayName?: string | null;
   assigneeId?: string;
   attributes: { [key: string]: any };
   approvalGates?: ApprovalGate[];
@@ -17,6 +19,12 @@ export interface Ticket {
   resolvedAt?: string | null;
   auditMetadata?: AuditMetadata;
   assetIds?: string[];
+  linkedAssets?: LinkedAsset[];
+}
+
+export interface LinkedAsset {
+  assetId: string;
+  assetTag: string;
 }
 
 export interface Reporter {
@@ -38,6 +46,7 @@ export interface CreateTicketRequest {
   summary: string;
   priority: string;
   reporter: Reporter;
+  accountableUserId?: string;
   assigneeId?: string;
   attributes: { [key: string]: any };
   assetIds?: string[];
@@ -49,6 +58,7 @@ export interface UpdateTicketRequest {
   priority?: string;
   assigneeId?: string;
   attributes?: { [key: string]: any };
+  assetIds?: string[];
 }
 
 export interface ApprovalGate {

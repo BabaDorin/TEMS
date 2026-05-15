@@ -1,1 +1,31 @@
-// Component-specific styles can go here if needed
+:host {
+  display: block;
+}
+
+.asset-management-content {
+  background: transparent;
+}
+
+.asset-management-content :is(.tems-asset-page) {
+  padding: 0;
+  gap: 0;
+}
+
+.asset-management-content :is(.tems-asset-header) {
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.asset-management-content :is(.tems-asset-card) {
+  margin: 0;
+  border: 0;
+  border-top: 1px solid rgba(229, 231, 235, 1);
+  border-radius: 0;
+  box-shadow: none;
+}
+
+:host-context(html.dark) .asset-management-content :is(.tems-asset-card) {
+  border-top-color: #38383a;
+}

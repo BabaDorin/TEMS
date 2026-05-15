@@ -12,7 +12,8 @@ namespace ChangeLog.Infrastructure.Entities;
     typeof(AssetUnassignedFromUserLogEntity),
     typeof(AssetAssignedToLocationLogEntity),
     typeof(AssetUnassignedFromLocationLogEntity),
-    typeof(AssetManualLogAddedLogEntity)
+    typeof(AssetManualLogAddedLogEntity),
+    typeof(AssetMentionedInTicketLogEntity)
 )]
 public class AssetChangeLogEntity
 {
@@ -132,6 +133,18 @@ public class AssetManualLogAddedLogEntity : AssetChangeLogEntity
     [BsonElement("cost")]
     [BsonIgnoreIfNull]
     public AssetManualLogCostEntity? Cost { get; set; }
+}
+
+public class AssetMentionedInTicketLogEntity : AssetChangeLogEntity
+{
+    [BsonElement("ticket_id")]
+    public string TicketId { get; set; } = string.Empty;
+
+    [BsonElement("ticket_human_readable_id")]
+    public string TicketHumanReadableId { get; set; } = string.Empty;
+
+    [BsonElement("ticket_title")]
+    public string TicketTitle { get; set; } = string.Empty;
 }
 
 public class AssetManualLogCostEntity

@@ -9,5 +9,6 @@ public record UpdateTicketCommand(
     string CurrentStateId,
     string Priority,
     string? AssigneeId,
-    Dictionary<string, object> Attributes
+    Dictionary<string, object> Attributes,
+    List<string>? AssetIds
 ) : IRequest<UpdateTicketResponse>;

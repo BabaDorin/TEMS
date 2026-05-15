@@ -1,40 +1,40 @@
-<section class="tems-asset-page">
-  <header class="tems-asset-header">
-    <div>
+<div class="bg-[#f5f5f7] dark:bg-[#1c1c1e] min-h-0 p-4 transition-colors duration-200">
+  <div class="max-w-7xl mx-auto w-full">
+    <div class="mb-4">
       <h1 class="text-2xl font-semibold text-gray-900 dark:text-white" style="letter-spacing: -0.5px;">Asset Management</h1>
       <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Manage properties, types, and definitions.</p>
     </div>
-  </header>
 
-  <section class="tems-asset-card overflow-hidden">
+    <section class="bg-white dark:bg-[#2c2c2e] rounded-xl border border-gray-200 dark:border-[#38383a] overflow-hidden">
       <nav class="flex px-4 overflow-x-auto border-b border-gray-200 dark:border-[#38383a] bg-gray-50 dark:bg-[#1c1c1e]">
         <button
           (click)="setActiveTab('properties')"
           [class.is-active]="activeTab === 'properties'"
-          class="tems-asset-tab-button">
+          class="tems-asset-tab-button flex-[0_0_auto] min-w-[10rem]">
           <i class="mdi mdi-format-list-bulleted mr-2"></i>
           Properties
         </button>
         <button
           (click)="setActiveTab('types')"
           [class.is-active]="activeTab === 'types'"
-          class="tems-asset-tab-button">
+          class="tems-asset-tab-button flex-[0_0_auto] min-w-[10rem]">
           <i class="mdi mdi-shape mr-2"></i>
           Types
         </button>
         <button
           (click)="setActiveTab('definitions')"
           [class.is-active]="activeTab === 'definitions'"
-          class="tems-asset-tab-button">
+          class="tems-asset-tab-button flex-[0_0_auto] min-w-[10rem]">
           <i class="mdi mdi-file-document-outline mr-2"></i>
           Definitions
         </button>
       </nav>
 
-      <div>
+      <div class="asset-management-content">
         <app-asset-property-management *ngIf="activeTab === 'properties'"></app-asset-property-management>
         <app-asset-type-management *ngIf="activeTab === 'types'"></app-asset-type-management>
         <app-asset-definition-management *ngIf="activeTab === 'definitions'"></app-asset-definition-management>
       </div>
     </section>
-  </section>
+  </div>
+</div>

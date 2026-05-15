@@ -21,14 +21,7 @@ public class TicketManagementSeeder(IMongoDatabase database, ILogger<TicketManag
 
     private async Task SeedTicketTypesAsync()
     {
-        var count = await _ticketTypes.CountDocumentsAsync(FilterDefinition<TicketType>.Empty);
-        if (count > 0)
-        {
-            logger.LogInformation("Ticket types already seeded. Skipping.");
-            return;
-        }
-
-        logger.LogInformation("Seeding ticket types...");
+        logger.LogInformation("Ensuring seeded ticket types exist...");
 
         var ticketTypes = new List<TicketType>
         {
@@ -461,11 +454,112 @@ public class TicketManagementSeeder(IMongoDatabase database, ILogger<TicketManag
                         AiExtractionHint = "Which system the password/account is for"
                     }
                 ]
+            },
+            new()
+            {
+                TicketTypeId = "ticket_type_purchase_order",
+                TenantId = DefaultTenantId,
+                Name = "Purchase Order",
+                Description = "Purchase order request that becomes an active purchase order after approval",
+                ItilCategory = "service_request",
+                Version = 1,
+                WorkflowConfig = new WorkflowConfig
+                {
+                    InitialStateId = "new",
+                    States =
+                    [
+                        new WorkflowState
+                        {
+                            Id = "new",
+                            Label = "New",
+                            Type = "OPEN",
+                            AllowedTransitions = ["in-progress", "approved"]
+                        },
+                        new WorkflowState
+                        {
+                            Id = "in-progress",
+                            Label = "In Progress",
+                            Type = "ACTIVE",
+                            AllowedTransitions = ["new", "approved"]
+                        },
+                        new WorkflowState
+                        {
+                            Id = "approved",
+                            Label = "Approved",
+                            Type = "CLOSED",
+                            AllowedTransitions = []
+                        }
+                    ]
+                },
+                AttributeDefinitions =
+                [
+                    new AttributeDefinition
+                    {
+                        Key = "po_number",
+                        Label = "PO Number",
+                        DataType = "STRING",
+                        IsRequired = true,
+                        IsPredefined = false
+                    },
+                    new AttributeDefinition
+                    {
+                        Key = "vendor",
+                        Label = "Vendor",
+                        DataType = "STRING",
+                        IsRequired = true,
+                        IsPredefined = false
+                    },
+                    new AttributeDefinition
+                    {
+                        Key = "amount",
+                        Label = "Amount",
+                        DataType = "NUMBER",
+                        IsRequired = true,
+                        IsPredefined = false
+                    },
+                    new AttributeDefinition
+                    {
+                        Key = "currency",
+                        Label = "Currency",
+                        DataType = "STRING",
+                        IsRequired = true,
+                        IsPredefined = false
+                    },
+                    new AttributeDefinition
+                    {
+                        Key = "accountable_person",
+                        Label = "Accountable Person",
+                        DataType = "USER",
+                        IsRequired = true,
+                        IsPredefined = false
+                    },
+                    new AttributeDefinition
+                    {
+                        Key = "description",
+                        Label = "Description",
+                        DataType = "STRING",
+                        IsRequired = true,
+                        IsPredefined = false
+                    }
+                ]
             }
         };
 
-        await _ticketTypes.InsertManyAsync(ticketTypes);
-        logger.LogInformation("Seeded {Count} ticket types.", ticketTypes.Count);
+        var seededCount = 0;
+        foreach (var ticketType in ticketTypes)
+        {
+            var exists = await _ticketTypes.Find(x => x.TicketTypeId == ticketType.TicketTypeId && x.TenantId == ticketType.TenantId)
+                .AnyAsync();
+            if (exists)
+            {
+                continue;
+            }
+
+            await _ticketTypes.InsertOneAsync(ticketType);
+            seededCount++;
+        }
+
+        logger.LogInformation("Added {Count} missing seeded ticket types.", seededCount);
     }
 
     private async Task SeedTicketsAsync()

@@ -194,7 +194,7 @@
     class="tems-modal-panel max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto"
     (click)="$event.stopPropagation()">
     <!-- Modal Header -->
-    <div class="px-6 py-4 border-b dark:border-[#38383a] sticky top-0 bg-white dark:bg-[#2c2c2e] z-10">
+    <div class="px-6 py-4 border-b border-gray-200 dark:border-[#38383a] sticky top-0 bg-white dark:bg-[#2c2c2e] z-10">
       <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Create New Asset</h2>
       <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Select type and definition, then fill asset details</p>
     </div>
@@ -208,7 +208,7 @@
         </label>
         <select
           formControlName="assetTypeId"
-          class="w-full px-3 py-2 border border-gray-300 dark:border-[#38383a] dark:bg-[#3a3a3c] dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500">
+          class="w-full px-3 py-2 border border-gray-200 dark:border-[#38383a] dark:bg-[#3a3a3c] dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500">
           <option value="">-- Select Type --</option>
           <option *ngFor="let type of assetTypes" [value]="type.id">{{ type.name }}</option>
         </select>
@@ -223,7 +223,7 @@
         <select
           formControlName="definitionId"
           [disabled]="!createForm.get('assetTypeId')?.value"
-          class="w-full px-3 py-2 border border-gray-300 dark:border-[#38383a] dark:bg-[#3a3a3c] dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 disabled:bg-gray-100 dark:disabled:bg-[#1c1c1e] disabled:cursor-not-allowed">
+          class="w-full px-3 py-2 border border-gray-200 dark:border-[#38383a] dark:bg-[#3a3a3c] dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 disabled:bg-gray-100 dark:disabled:bg-[#1c1c1e] disabled:cursor-not-allowed">
           <option value="">-- Select Definition --</option>
           <option *ngFor="let def of filteredDefinitions" [value]="def.id">
             {{ def.name }} ({{ def.manufacturer }} {{ def.model }})
@@ -237,7 +237,7 @@
       </div>
 
       <!-- Definition Preview -->
-      <div *ngIf="selectedDefinition" class="mb-6 p-4 bg-gray-50 dark:bg-[#1c1c1e] rounded-lg border border-gray-300 dark:border-[#38383a]">
+      <div *ngIf="selectedDefinition" class="mb-6 p-4 bg-gray-50 dark:bg-[#1c1c1e] rounded-lg border border-gray-200 dark:border-[#38383a]">
         <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Selected Definition Preview</h3>
         <div class="grid grid-cols-2 gap-3 text-sm">
           <div>
@@ -282,7 +282,7 @@
               type="text"
               formControlName="assetTag"
               placeholder="e.g., TEMS-LAP-001"
-              class="w-full px-3 py-2 border border-gray-300 dark:border-[#38383a] dark:bg-[#3a3a3c] dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500">
+              class="w-full px-3 py-2 border border-gray-200 dark:border-[#38383a] dark:bg-[#3a3a3c] dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500">
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Serial Number</label>
@@ -290,7 +290,7 @@
               type="text"
               formControlName="serialNumber"
               placeholder="Manufacturer serial number"
-              class="w-full px-3 py-2 border border-gray-300 dark:border-[#38383a] dark:bg-[#3a3a3c] dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500">
+              class="w-full px-3 py-2 border border-gray-200 dark:border-[#38383a] dark:bg-[#3a3a3c] dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500">
           </div>
         </div>
 
@@ -300,13 +300,13 @@
           </label>
           <select
             formControlName="status"
-            class="w-full px-3 py-2 border border-gray-300 dark:border-[#38383a] dark:bg-[#3a3a3c] dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500">
+            class="w-full px-3 py-2 border border-gray-200 dark:border-[#38383a] dark:bg-[#3a3a3c] dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500">
             <option *ngFor="let status of statusOptions" [value]="status.value">{{ status.label }}</option>
           </select>
         </div>
 
         <!-- Purchase Information -->
-        <div class="mt-4 pt-4 border-t dark:border-[#38383a]">
+        <div class="mt-4 pt-4 border-t border-gray-200 dark:border-[#38383a]">
           <h4 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Purchase Information</h4>
           <div class="grid grid-cols-2 gap-4">
             <div>
@@ -315,14 +315,14 @@
                 type="text"
                 formControlName="purchaseVendor"
                 placeholder="Company/Supplier name"
-                class="w-full px-3 py-2 border border-gray-300 dark:border-[#38383a] dark:bg-[#3a3a3c] dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500">
+                class="w-full px-3 py-2 border border-gray-200 dark:border-[#38383a] dark:bg-[#3a3a3c] dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500">
             </div>
             <div>
               <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Purchase Date</label>
               <input
                 type="date"
                 formControlName="purchaseDate"
-                class="w-full px-3 py-2 border border-gray-300 dark:border-[#38383a] dark:bg-[#3a3a3c] dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500">
+                class="w-full px-3 py-2 border border-gray-200 dark:border-[#38383a] dark:bg-[#3a3a3c] dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500">
             </div>
             <div>
               <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Purchase Price</label>
@@ -331,14 +331,14 @@
                 formControlName="purchasePrice"
                 placeholder="0.00"
                 step="0.01"
-                class="w-full px-3 py-2 border border-gray-300 dark:border-[#38383a] dark:bg-[#3a3a3c] dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500">
+                class="w-full px-3 py-2 border border-gray-200 dark:border-[#38383a] dark:bg-[#3a3a3c] dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500">
             </div>
             <div>
               <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Warranty Expiration</label>
               <input
                 type="date"
                 formControlName="warrantyExpiration"
-                class="w-full px-3 py-2 border border-gray-300 dark:border-[#38383a] dark:bg-[#3a3a3c] dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500">
+                class="w-full px-3 py-2 border border-gray-200 dark:border-[#38383a] dark:bg-[#3a3a3c] dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500">
             </div>
             <div class="col-span-2">
               <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Invoice Number</label>
@@ -346,13 +346,13 @@
                 type="text"
                 formControlName="invoiceNumber"
                 placeholder="Invoice reference"
-                class="w-full px-3 py-2 border border-gray-300 dark:border-[#38383a] dark:bg-[#3a3a3c] dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500">
+                class="w-full px-3 py-2 border border-gray-200 dark:border-[#38383a] dark:bg-[#3a3a3c] dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500">
             </div>
           </div>
         </div>
 
         <!-- Location Information -->
-        <div class="mt-4 pt-4 border-t dark:border-[#38383a]">
+        <div class="mt-4 pt-4 border-t border-gray-200 dark:border-[#38383a]">
           <h4 class="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Location</h4>
           <div class="grid grid-cols-3 gap-4">
             <div>
@@ -361,7 +361,7 @@
                 type="text"
                 formControlName="locationBuilding"
                 placeholder="Building name/number"
-                class="w-full px-3 py-2 border border-gray-300 dark:border-[#38383a] dark:bg-[#3a3a3c] dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500">
+                class="w-full px-3 py-2 border border-gray-200 dark:border-[#38383a] dark:bg-[#3a3a3c] dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500">
             </div>
             <div>
               <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Floor</label>
@@ -369,7 +369,7 @@
                 type="text"
                 formControlName="locationFloor"
                 placeholder="Floor number"
-                class="w-full px-3 py-2 border border-gray-300 dark:border-[#38383a] dark:bg-[#3a3a3c] dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500">
+                class="w-full px-3 py-2 border border-gray-200 dark:border-[#38383a] dark:bg-[#3a3a3c] dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500">
             </div>
             <div>
               <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Room</label>
@@ -377,24 +377,24 @@
                 type="text"
                 formControlName="locationRoom"
                 placeholder="Room number"
-                class="w-full px-3 py-2 border border-gray-300 dark:border-[#38383a] dark:bg-[#3a3a3c] dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500">
+                class="w-full px-3 py-2 border border-gray-200 dark:border-[#38383a] dark:bg-[#3a3a3c] dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500">
             </div>
           </div>
         </div>
 
         <!-- Notes -->
-        <div class="mt-4 pt-4 border-t dark:border-[#38383a]">
+        <div class="mt-4 pt-4 border-t border-gray-200 dark:border-[#38383a]">
           <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Notes</label>
           <textarea
             formControlName="notes"
             rows="3"
             placeholder="Additional notes or comments"
-            class="w-full px-3 py-2 border border-gray-300 dark:border-[#38383a] dark:bg-[#3a3a3c] dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 resize-none"></textarea>
+            class="w-full px-3 py-2 border border-gray-200 dark:border-[#38383a] dark:bg-[#3a3a3c] dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-blue-500 resize-none"></textarea>
         </div>
       </div>
 
       <!-- Form Actions -->
-      <div class="flex justify-end gap-3 sticky bottom-0 bg-white dark:bg-[#2c2c2e] pt-4 border-t dark:border-[#38383a]">
+      <div class="flex justify-end gap-3 sticky bottom-0 bg-white dark:bg-[#2c2c2e] pt-4 border-t border-gray-200 dark:border-[#38383a]">
         <button
           type="button"
           (click)="closeCreateModal()"

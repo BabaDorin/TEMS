@@ -1,3 +1,150 @@
 :host {
   display: block;
 }
+
+.asset-admin-modal {
+  color: var(--text-primary);
+}
+
+.asset-admin-modal__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.5rem 1.5rem 0;
+}
+
+.asset-admin-modal__subtitle {
+  margin: 0.35rem 0 0;
+  color: rgb(107 114 128);
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.asset-admin-modal__form {
+  padding: 1.5rem;
+  overflow-y: auto;
+  max-height: calc(90vh - 5rem);
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.asset-admin-modal__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.asset-admin-modal__label,
+.asset-admin-modal__section-title {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: rgb(55 65 81);
+}
+
+.asset-admin-modal__section-title {
+  font-size: 1rem;
+}
+
+.asset-admin-modal__micro-label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: rgb(107 114 128);
+}
+
+.asset-admin-modal__input {
+  width: 100%;
+  min-height: 44px;
+  padding: 0.625rem 1rem;
+  border: 1px solid rgb(209 213 219);
+  border-radius: 0.5rem;
+  background: rgb(255 255 255);
+  color: rgb(17 24 39);
+  font: inherit;
+  outline: none;
+  transition: border-color 160ms ease, box-shadow 160ms ease;
+}
+
+.asset-admin-modal__input:focus {
+  border-color: transparent;
+  box-shadow: 0 0 0 2px rgb(17 24 39 / 0.16);
+}
+
+.asset-admin-modal__textarea {
+  min-height: 104px;
+  resize: vertical;
+}
+
+.asset-admin-modal__card {
+  border: 1px solid rgb(229 231 235);
+  border-radius: 0.75rem;
+  background: rgb(249 250 251);
+  padding: 1rem;
+}
+
+.asset-admin-modal__close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border: 0;
+  border-radius: 9999px;
+  background: transparent;
+  color: rgb(156 163 175);
+  transition: color 160ms ease, background-color 160ms ease;
+}
+
+.asset-admin-modal__close:hover {
+  color: rgb(75 85 99);
+  background: rgb(243 244 246);
+}
+
+:host ::ng-deep .asset-admin-modal__select .select-trigger {
+  min-height: 44px;
+  padding: 0.625rem 1rem;
+  border-radius: 0.5rem;
+  border-color: rgb(209 213 219);
+  background: rgb(255 255 255);
+}
+
+:host ::ng-deep .asset-admin-modal__select .select-trigger span {
+  font-size: 0.875rem;
+}
+
+:host-context(.dark) .asset-admin-modal__subtitle,
+:host-context(.dark) .asset-admin-modal__micro-label {
+  color: rgb(156 163 175);
+}
+
+:host-context(.dark) .asset-admin-modal__label,
+:host-context(.dark) .asset-admin-modal__section-title {
+  color: rgb(209 213 219);
+}
+
+:host-context(.dark) .asset-admin-modal__input {
+  background: #3a3a3c;
+  border-color: #38383a;
+  color: white;
+}
+
+:host-context(.dark) .asset-admin-modal__input:focus {
+  box-shadow: 0 0 0 2px rgb(59 130 246 / 0.35);
+}
+
+:host-context(.dark) .asset-admin-modal__card {
+  background: rgb(255 255 255 / 0.03);
+  border-color: #38383a;
+}
+
+:host-context(.dark) .asset-admin-modal__close:hover {
+  color: rgb(209 213 219);
+  background: rgb(255 255 255 / 0.06);
+}
+
+:host-context(.dark) ::ng-deep .asset-admin-modal__select .select-trigger {
+  border-color: #38383a;
+  background: #3a3a3c;
+  color: white;
+}

@@ -8,7 +8,8 @@ import { AssetDefinitionService } from 'src/app/services/asset-definition.servic
 import { AssetTypeService } from 'src/app/services/asset-type.service';
 import { AssetPropertyService } from 'src/app/services/asset-property.service';
 import { AssetSpecification } from 'src/app/models/asset/asset.model';
-import { AssetType } from 'src/app/models/asset/asset-type.model';
+import { AssetType, AssetTypeProperty } from 'src/app/models/asset/asset-type.model';
+import { AssetProperty, PropertyDataType } from 'src/app/models/asset/asset-property.model';
 import { CustomSelectComponent, SelectOption } from 'src/app/shared/custom-select/custom-select.component';
 
 @Component({
@@ -27,10 +28,12 @@ export class AddDefinitionComponent extends TEMSComponent implements OnInit {
   updateDefinitionId: string;
   @Input() typeId: string;
   assetTypes: AssetType[] = [];
-  availableProperties: any[] = [];
+  availableProperties: AssetProperty[] = [];
+  propertyMap: Record<string, AssetProperty> = {};
   formGroup: FormGroup;
   isSubmitting = false;
   assetTypeLocked = false;
+  private loadedDefinitionSpecifications: AssetSpecification[] = [];
 
   get specs(): FormArray {
     return this.formGroup.get('specifications') as FormArray;
@@ -45,12 +48,26 @@ export class AddDefinitionComponent extends TEMSComponent implements OnInit {
   }
 
   get propertyOptions(): SelectOption[] {
-    return this.availableProperties
-      .filter(p => (p as any)?.id || (p as any)?.propertyId)
+    const options = this.availableProperties
+      .filter(p => p?.id)
       .map(p => ({
-        value: (p as any).id ?? (p as any).propertyId,
+        value: p.id,
         label: p.name
       }));
+
+    const optionMap = new Map(options.map(option => [option.value, option]));
+    this.specsControls.forEach(group => {
+      const propertyId = group.get('propertyId')?.value;
+      const propertyName = group.get('name')?.value;
+      if (propertyId && !optionMap.has(propertyId)) {
+        optionMap.set(propertyId, {
+          value: propertyId,
+          label: propertyName || propertyId
+        });
+      }
+    });
+
+    return Array.from(optionMap.values());
   }
 
   constructor(
@@ -80,6 +97,7 @@ export class AddDefinitionComponent extends TEMSComponent implements OnInit {
     this.typeId = this.typeId ?? this.dialogData?.typeId;
     this.updateDefinitionId = this.updateDefinitionId ?? this.dialogData?.updateDefinitionId;
 
+    this.watchAssetTypeSelection();
     this.fetchTypes();
     this.fetchProperties();
 
@@ -93,14 +111,16 @@ export class AddDefinitionComponent extends TEMSComponent implements OnInit {
       this.loadDefinition(this.updateDefinitionId);
       return;
     }
-
-    this.addSpecification();
   }
 
   fetchTypes() {
     this.subscriptions.push(
       this.assetTypeService.getAll().subscribe(types => {
         this.assetTypes = types.filter(t => !t.isArchived);
+        const selectedTypeId = this.formGroup.getRawValue().assetTypeId;
+        if (selectedTypeId) {
+          this.hydrateSpecificationsForType(selectedTypeId, this.loadedDefinitionSpecifications);
+        }
       })
     );
   }
@@ -109,6 +129,11 @@ export class AddDefinitionComponent extends TEMSComponent implements OnInit {
     this.subscriptions.push(
       this.assetPropertyService.getAll().subscribe(props => {
         this.availableProperties = props;
+        this.propertyMap = (props || []).reduce((acc, property) => {
+          acc[property.id] = property;
+          return acc;
+        }, {} as Record<string, AssetProperty>);
+        this.refreshSpecificationMetadata();
       })
     );
   }
@@ -130,14 +155,135 @@ export class AddDefinitionComponent extends TEMSComponent implements OnInit {
     this.specs.removeAt(index);
   }
 
-  private buildSpecificationGroup(spec?: AssetSpecification): FormGroup {
-    return this.fb.group({
-      propertyId: [spec?.propertyId || ''],
-      name: [spec?.name || '', Validators.required],
-      value: [spec?.value ?? '', Validators.required],
-      dataType: [spec?.dataType || 'string'],
+  getSpecificationUnit(spec: FormGroup): string {
+    return spec.get('unit')?.value || 'No unit';
+  }
+
+  isSpecificationRequired(spec: FormGroup): boolean {
+    return !!spec.get('isRequired')?.value;
+  }
+
+  private watchAssetTypeSelection() {
+    this.subscriptions.push(
+      this.formGroup.get('assetTypeId')!.valueChanges.subscribe(assetTypeId => {
+        if (this.isUpdateMode) return;
+
+        if (!assetTypeId) {
+          this.specs.clear();
+          return;
+        }
+
+        this.hydrateSpecificationsForType(assetTypeId);
+      })
+    );
+  }
+
+  private buildSpecificationGroup(spec?: Partial<AssetSpecification> & { isRequired?: boolean }): FormGroup {
+    const group = this.fb.group({
+      propertyId: [spec?.propertyId || '', Validators.required],
+      name: [spec?.name || ''],
+      value: [spec?.value ?? ''],
+      dataType: [spec?.dataType || PropertyDataType.String],
       unit: [spec?.unit || ''],
       isRequired: [spec?.isRequired || false]
+    });
+
+    this.applySpecificationMetadata(group, spec?.propertyId || '', spec);
+    this.registerPropertySync(group);
+
+    return group;
+  }
+
+  private registerPropertySync(group: FormGroup) {
+    this.subscriptions.push(
+      group.get('propertyId')!.valueChanges.subscribe(propertyId => {
+        this.applySpecificationMetadata(group, propertyId);
+      })
+    );
+  }
+
+  private applySpecificationMetadata(
+    group: FormGroup,
+    propertyId: string,
+    existingSpec?: Partial<AssetSpecification> & { isRequired?: boolean }
+  ) {
+    const property = propertyId ? this.propertyMap[propertyId] : undefined;
+    const typeProperty = propertyId ? this.getSelectedTypeProperty(propertyId) : undefined;
+    const valueControl = group.get('value');
+    const isRequired = existingSpec?.isRequired ?? typeProperty?.isRequired ?? false;
+    const defaultValue = typeProperty?.defaultValue ?? '';
+
+    group.patchValue({
+      name: existingSpec?.name || typeProperty?.propertyName || property?.name || '',
+      dataType: existingSpec?.dataType || property?.dataType || PropertyDataType.String,
+      unit: existingSpec?.unit || typeProperty?.validation?.unit || property?.unit || '',
+      isRequired
+    }, { emitEvent: false });
+
+    if (valueControl) {
+      valueControl.setValidators(isRequired ? [Validators.required] : []);
+      if ((valueControl.value === null || valueControl.value === undefined || valueControl.value === '') && existingSpec?.value === undefined && defaultValue) {
+        valueControl.setValue(defaultValue, { emitEvent: false });
+      }
+      valueControl.updateValueAndValidity({ emitEvent: false });
+    }
+  }
+
+  private getSelectedTypeProperty(propertyId: string): AssetTypeProperty | undefined {
+    const selectedTypeId = this.formGroup.getRawValue().assetTypeId;
+    const selectedType = this.assetTypes.find(type => type.id === selectedTypeId);
+    return selectedType?.properties?.find(property => property.propertyId === propertyId);
+  }
+
+  private hydrateSpecificationsForType(assetTypeId: string, existingSpecs: AssetSpecification[] = []) {
+    const assetType = this.assetTypes.find(type => type.id === assetTypeId);
+
+    if (!assetType) {
+      this.subscriptions.push(
+        this.assetTypeService.getById(assetTypeId).subscribe({
+          next: (type) => {
+            const existingIndex = this.assetTypes.findIndex(item => item.id === type.id);
+            if (existingIndex >= 0) {
+              this.assetTypes[existingIndex] = type;
+            } else {
+              this.assetTypes = [...this.assetTypes, type];
+            }
+            this.hydrateSpecificationsForType(assetTypeId, existingSpecs);
+          },
+          error: (error) => {
+            console.error('Error loading asset type:', error);
+          }
+        })
+      );
+      return;
+    }
+
+    const existingSpecMap = new Map(existingSpecs.map(spec => [spec.propertyId, spec]));
+    const orderedTypeSpecs = [...(assetType.properties || [])]
+      .sort((left, right) => (left.displayOrder ?? 0) - (right.displayOrder ?? 0))
+      .map(typeProperty => {
+        const existingSpec = existingSpecMap.get(typeProperty.propertyId);
+        existingSpecMap.delete(typeProperty.propertyId);
+
+        return this.buildSpecificationGroup({
+          propertyId: typeProperty.propertyId,
+          name: existingSpec?.name || typeProperty.propertyName,
+          value: existingSpec?.value ?? typeProperty.defaultValue ?? '',
+          dataType: existingSpec?.dataType,
+          unit: existingSpec?.unit || typeProperty.validation?.unit,
+          isRequired: typeProperty.isRequired
+        });
+      });
+
+    const extraSpecGroups = Array.from(existingSpecMap.values()).map(spec => this.buildSpecificationGroup(spec));
+
+    this.specs.clear();
+    [...orderedTypeSpecs, ...extraSpecGroups].forEach(group => this.specs.push(group));
+  }
+
+  private refreshSpecificationMetadata() {
+    this.specsControls.forEach(group => {
+      this.applySpecificationMetadata(group, group.get('propertyId')?.value);
     });
   }
 
@@ -152,13 +298,8 @@ export class AddDefinitionComponent extends TEMSComponent implements OnInit {
             model: definition.model || '',
             tags: definition.tags?.join(', ') || ''
           });
-
-          this.specs.clear();
-          if (definition.specifications?.length) {
-            definition.specifications.forEach(spec => this.specs.push(this.buildSpecificationGroup(spec)));
-          } else {
-            this.addSpecification();
-          }
+          this.loadedDefinitionSpecifications = definition.specifications || [];
+          this.hydrateSpecificationsForType(definition.assetTypeId, this.loadedDefinitionSpecifications);
         },
         error: (err) => {
           console.error('Error loading definition', err);
@@ -176,12 +317,11 @@ export class AddDefinitionComponent extends TEMSComponent implements OnInit {
 
     const formValue = this.formGroup.getRawValue();
     const specifications: AssetSpecification[] = (formValue.specifications || []).map((s: any) => ({
-      propertyId: s.propertyId || s.name.toLowerCase().replace(/\s+/g, '_'),
+      propertyId: s.propertyId,
       name: s.name,
       value: s.value,
       dataType: s.dataType,
-      unit: s.unit || undefined,
-      isRequired: s.isRequired || false
+      unit: s.unit || undefined
     }));
 
     const tags = formValue.tags

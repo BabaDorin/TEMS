@@ -7,6 +7,7 @@ import { Subscription } from 'rxjs';
 export interface SelectOption {
   value: string;
   label: string;
+  disabled?: boolean;
 }
 
 let instanceCounter = 0;
@@ -215,6 +216,11 @@ export class CustomSelectComponent implements ControlValueAccessor, OnInit, OnDe
   }
 
   selectOption(value: string): void {
+    const option = this.options.find(opt => opt.value === value);
+    if (option?.disabled) {
+      return;
+    }
+
     if (this.mode === 'single') {
       this._selectedValue = value;
       this.onChange(value);

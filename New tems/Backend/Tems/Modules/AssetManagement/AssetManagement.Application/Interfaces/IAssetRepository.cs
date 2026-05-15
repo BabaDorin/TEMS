@@ -29,6 +29,7 @@ public interface IAssetRepository
     Task<List<DomainEntity.Asset>> GetByAssetTypeIdAsync(string assetTypeId, CancellationToken cancellationToken = default);
     Task<List<DomainEntity.Asset>> GetByAssignedUserIdAsync(string userId, CancellationToken cancellationToken = default);
     Task<List<DomainEntity.Asset>> GetByLocationIdAsync(string locationId, CancellationToken cancellationToken = default);
+    Task<List<DomainEntity.Asset>> GetByPurchaseOrderIdAsync(string purchaseOrderId, CancellationToken cancellationToken = default);
     Task<List<DomainEntity.Asset>> GetByParentAssetIdAsync(string parentAssetId, CancellationToken cancellationToken = default);
     Task<List<DomainEntity.Asset>> GetByStatusAsync(string status, CancellationToken cancellationToken = default);
     Task<Dictionary<string, Dictionary<string, int>>> GetAssetCountsByLocationIdsAsync(List<string> locationIds, CancellationToken cancellationToken = default);

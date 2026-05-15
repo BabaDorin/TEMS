@@ -23,7 +23,7 @@
 <div *ngIf="profile && !loading" class="min-h-[calc(100dvh-4rem)] bg-[#f5f5f7] dark:bg-[#1c1c1e] px-4 py-6">
   <div class="max-w-7xl mx-auto w-full space-y-4">
     <!-- Profile Header Card -->
-    <div class="bg-white dark:bg-[#2c2c2e] border border-gray-200 dark:border-[#2f2f31] rounded-xl shadow-sm overflow-hidden">
+    <div class="bg-white dark:bg-[#2c2c2e] border border-gray-200 dark:border-[#38383a] rounded-xl shadow-sm overflow-hidden">
       <div class="p-6">
         <div class="flex items-center space-x-4">
           <!-- Avatar -->
@@ -51,8 +51,8 @@
     <!-- Profile Details Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
       <!-- Account Information -->
-      <div class="bg-white dark:bg-[#2c2c2e] border border-gray-200 dark:border-[#2f2f31] rounded-xl shadow-sm overflow-hidden">
-        <div class="px-6 py-4 border-b border-gray-100 dark:border-[#38383a]">
+      <div class="bg-white dark:bg-[#2c2c2e] border border-gray-200 dark:border-[#38383a] rounded-xl shadow-sm overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-200 dark:border-[#38383a]">
           <h2 class="text-lg font-semibold text-gray-900 dark:text-white" style="letter-spacing: -0.3px;">Account Information</h2>
         </div>
 
@@ -73,26 +73,26 @@
       </div>
 
       <!-- Activity & Stats -->
-      <div class="bg-white dark:bg-[#2c2c2e] border border-gray-200 dark:border-[#2f2f31] rounded-xl shadow-sm overflow-hidden">
-        <div class="px-6 py-4 border-b border-gray-100 dark:border-[#38383a]">
+      <div class="bg-white dark:bg-[#2c2c2e] border border-gray-200 dark:border-[#38383a] rounded-xl shadow-sm overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-200 dark:border-[#38383a]">
           <h2 class="text-lg font-semibold text-gray-900 dark:text-white" style="letter-spacing: -0.3px;">Activity Overview</h2>
         </div>
 
         <div class="p-6">
           <div class="grid grid-cols-2 gap-3">
-            <div class="bg-[#f5f5f7] dark:bg-[#3a3a3c] rounded-lg p-4 text-center border border-gray-200 dark:border-[#2f2f31]">
+            <div class="bg-[#f5f5f7] dark:bg-[#3a3a3c] rounded-lg p-4 text-center border border-gray-200 dark:border-[#38383a]">
               <div class="text-2xl font-semibold text-[#007aff] mb-1">{{ assetCount }}</div>
               <div class="text-xs text-gray-600 dark:text-gray-400">Assets Assigned</div>
             </div>
-            <div class="bg-[#f5f5f7] dark:bg-[#3a3a3c] rounded-lg p-4 text-center border border-gray-200 dark:border-[#2f2f31]">
+            <div class="bg-[#f5f5f7] dark:bg-[#3a3a3c] rounded-lg p-4 text-center border border-gray-200 dark:border-[#38383a]">
               <div class="text-2xl font-semibold text-[#007aff] mb-1">{{ ticketCount }}</div>
               <div class="text-xs text-gray-600 dark:text-gray-400">My Tickets</div>
             </div>
-            <div class="bg-[#f5f5f7] dark:bg-[#3a3a3c] rounded-lg p-4 text-center border border-gray-200 dark:border-[#2f2f31]">
+            <div class="bg-[#f5f5f7] dark:bg-[#3a3a3c] rounded-lg p-4 text-center border border-gray-200 dark:border-[#38383a]">
               <div class="text-2xl font-semibold text-[#34c759] mb-1">{{ openTicketCount }}</div>
               <div class="text-xs text-gray-600 dark:text-gray-400">Open / In Progress</div>
             </div>
-            <div class="bg-[#f5f5f7] dark:bg-[#3a3a3c] rounded-lg p-4 text-center border border-gray-200 dark:border-[#2f2f31]">
+            <div class="bg-[#f5f5f7] dark:bg-[#3a3a3c] rounded-lg p-4 text-center border border-gray-200 dark:border-[#38383a]">
               <div class="text-2xl font-semibold text-[#007aff] mb-1">{{ closedTicketCount }}</div>
               <div class="text-xs text-gray-600 dark:text-gray-400">Closed</div>
             </div>
@@ -102,12 +102,12 @@
     </div>
 
     <!-- Quick Actions -->
-    <div class="bg-white dark:bg-[#2c2c2e] border border-gray-200 dark:border-[#2f2f31] rounded-xl shadow-sm overflow-hidden">
-      <div class="px-6 py-4 border-b border-gray-100 dark:border-[#38383a]">
+    <div class="bg-white dark:bg-[#2c2c2e] border border-gray-200 dark:border-[#38383a] rounded-xl shadow-sm overflow-hidden">
+      <div class="px-6 py-4 border-b border-gray-200 dark:border-[#38383a]">
         <h2 class="text-lg font-semibold text-gray-900 dark:text-white" style="letter-spacing: -0.3px;">Quick Actions</h2>
       </div>
       <div class="p-6 grid grid-cols-1 sm:grid-cols-3 gap-3">
-        <button class="flex items-center p-4 bg-[#f5f5f7] dark:bg-[#3a3a3c] hover:bg-[#e5e5e7] dark:hover:bg-[#48484a] rounded-lg border border-gray-200 dark:border-[#2f2f31] transition-colors">
+        <button class="flex items-center p-4 bg-[#f5f5f7] dark:bg-[#3a3a3c] hover:bg-[#e5e5e7] dark:hover:bg-[#48484a] rounded-lg border border-gray-200 dark:border-[#38383a] transition-colors">
           <mat-icon class="mr-3 text-[#007aff]">devices</mat-icon>
           <div class="text-left">
             <div class="font-medium text-gray-900 dark:text-white text-sm">My Assets</div>
@@ -115,7 +115,7 @@
           </div>
         </button>
 
-        <button class="flex items-center p-4 bg-[#f5f5f7] dark:bg-[#3a3a3c] hover:bg-[#e5e5e7] dark:hover:bg-[#48484a] rounded-lg border border-gray-200 dark:border-[#2f2f31] transition-colors">
+        <button class="flex items-center p-4 bg-[#f5f5f7] dark:bg-[#3a3a3c] hover:bg-[#e5e5e7] dark:hover:bg-[#48484a] rounded-lg border border-gray-200 dark:border-[#38383a] transition-colors">
           <mat-icon class="mr-3 text-[#007aff]">confirmation_number</mat-icon>
           <div class="text-left">
             <div class="font-medium text-gray-900 dark:text-white text-sm">My Tickets</div>
@@ -123,7 +123,7 @@
           </div>
         </button>
 
-        <button class="flex items-center p-4 bg-[#f5f5f7] dark:bg-[#3a3a3c] hover:bg-[#e5e5e7] dark:hover:bg-[#48484a] rounded-lg border border-gray-200 dark:border-[#2f2f31] transition-colors">
+        <button class="flex items-center p-4 bg-[#f5f5f7] dark:bg-[#3a3a3c] hover:bg-[#e5e5e7] dark:hover:bg-[#48484a] rounded-lg border border-gray-200 dark:border-[#38383a] transition-colors">
           <mat-icon class="mr-3 text-[#007aff]">settings</mat-icon>
           <div class="text-left">
             <div class="font-medium text-gray-900 dark:text-white text-sm">Settings</div>

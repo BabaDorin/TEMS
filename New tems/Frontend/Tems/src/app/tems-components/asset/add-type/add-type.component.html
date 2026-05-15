@@ -1,36 +1,35 @@
-<div class="tems-asset-dialog tems-asset-modal-card tems-asset-modal-card--narrow mx-auto" [ngClass]="dialogRef ? '' : 'my-8'">
-  <div class="tems-asset-modal-header">
+<div class="tems-asset-dialog tems-asset-modal-card tems-asset-modal-card--narrow asset-admin-modal bg-white dark:bg-[#2c2c2e] rounded-lg shadow-xl mx-auto" [ngClass]="dialogRef ? '' : 'my-8'">
+  <div class="asset-admin-modal__header">
     <div>
-      <div class="tems-asset-eyebrow">
-        <i class="mdi mdi-shape-outline"></i>
-        <span>{{ updateTypeId ? 'Edit type' : 'New type' }}</span>
-      </div>
-      <h2 class="text-xl font-semibold text-[color:var(--text-primary)] m-0 mt-2">
-        {{ updateTypeId ? 'Update asset type' : 'Create asset type' }}
+      <h2 class="text-xl font-semibold text-gray-900 dark:text-white m-0">
+        {{ updateTypeId ? 'Edit Asset Type' : 'Create Asset Type' }}
       </h2>
-      <p class="tems-asset-help mt-1">Define the structure and property requirements for this type.</p>
+      <p class="asset-admin-modal__subtitle">Define the structure and property requirements for this type.</p>
     </div>
 
-    <button *ngIf="dialogRef" type="button" (click)="dialogRef.close()" aria-label="Close" class="tems-asset-cell-action">
-      <span class="text-lg leading-none">×</span>
+    <button *ngIf="dialogRef" type="button" (click)="dialogRef.close()" aria-label="Close" class="asset-admin-modal__close">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+      </svg>
     </button>
   </div>
 
-  <form [formGroup]="formGroup" (ngSubmit)="onSubmit()" class="tems-asset-modal-body">
-    <div class="tems-asset-section">
-      <div class="tems-asset-field">
-        <label>Type name *</label>
-        <input formControlName="name" type="text" placeholder="Laptop" maxlength="100" class="tems-asset-input">
+  <form [formGroup]="formGroup" (ngSubmit)="onSubmit()" class="asset-admin-modal__form">
+    <div class="space-y-4">
+      <div class="asset-admin-modal__field">
+        <label class="asset-admin-modal__label">Type name *</label>
+        <input formControlName="name" type="text" placeholder="Laptop" maxlength="100" class="asset-admin-modal__input">
       </div>
 
-      <div class="tems-asset-field">
-        <label>Description</label>
-        <textarea formControlName="description" rows="2" placeholder="Optional description" class="tems-asset-textarea"></textarea>
+      <div class="asset-admin-modal__field">
+        <label class="asset-admin-modal__label">Description</label>
+        <textarea formControlName="description" rows="4" placeholder="Optional description" class="asset-admin-modal__input asset-admin-modal__textarea"></textarea>
       </div>
 
-      <div class="tems-asset-field">
-        <label>Parent type</label>
-        <app-custom-select 
+      <div class="asset-admin-modal__field">
+        <label class="asset-admin-modal__label">Parent type</label>
+        <app-custom-select
+          class="asset-admin-modal__select"
           formControlName="parentTypeId"
           [options]="parentTypeOptions"
           [mode]="'single'"
@@ -42,27 +41,28 @@
       </div>
     </div>
 
-    <div class="tems-asset-section mt-6">
+    <div class="space-y-4">
       <div>
-        <p class="tems-asset-label m-0">Properties</p>
-        <p class="tems-asset-help m-0">Pick properties and decide which ones are required.</p>
+        <p class="asset-admin-modal__section-title m-0">Properties</p>
+        <p class="asset-admin-modal__subtitle m-0">Pick properties and decide which ones are required.</p>
       </div>
 
       <div *ngIf="propertyRows.length === 0" class="tems-asset-empty">
         No properties yet. Add a property to define the type structure.
       </div>
 
-      <div class="tems-asset-grid" *ngIf="propertyRows.length > 0">
+      <div class="grid gap-4" *ngIf="propertyRows.length > 0">
         <div *ngFor="let group of propertyRowGroups; let i = index; trackBy: trackByIndex" [formGroup]="group"
-          class="rounded-[1.15rem] border border-[color:var(--border-secondary)] bg-[color:var(--bg-secondary)] p-4">
-          <div class="pr-10">
-            <div class="flex items-center justify-between mb-2">
-              <label class="text-xs text-[color:var(--text-secondary)]">Property</label>
-              <span class="text-xs text-[color:var(--text-secondary)]">Required</span>
+          class="asset-admin-modal__card">
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <label class="asset-admin-modal__micro-label">Property</label>
+              <span class="asset-admin-modal__micro-label">Required</span>
             </div>
             <div class="flex items-center gap-4">
               <div class="flex-1">
-                <app-custom-select 
+                <app-custom-select
+                  class="asset-admin-modal__select"
                   formControlName="propertyId"
                   [options]="propertyOptions"
                   [mode]="'single'"
@@ -80,13 +80,13 @@
           </div>
 
           <div class="mt-4 grid grid-cols-2 gap-3">
-            <div class="tems-asset-field">
-              <label class="text-xs">Display order</label>
-              <input type="number" formControlName="displayOrder" class="tems-asset-input">
+            <div class="asset-admin-modal__field">
+              <label class="asset-admin-modal__micro-label">Display order</label>
+              <input type="number" formControlName="displayOrder" class="asset-admin-modal__input">
             </div>
-            <div class="tems-asset-field">
-              <label class="text-xs">Default value</label>
-              <input type="text" formControlName="defaultValue" class="tems-asset-input">
+            <div class="asset-admin-modal__field">
+              <label class="asset-admin-modal__micro-label">Default value</label>
+              <input type="text" formControlName="defaultValue" class="asset-admin-modal__input">
             </div>
           </div>
 
@@ -106,16 +106,16 @@
       </div>
     </div>
 
-    <div class="flex items-center justify-between gap-3 pt-2">
+    <div class="space-y-3 pt-2">
       <div class="text-sm text-red-600 dark:text-red-400" *ngIf="shouldShowClientError">
         Please enter a type name and select a property for every row.
       </div>
       <div class="text-sm text-red-600 dark:text-red-400" *ngIf="serverError">{{ serverError }}</div>
-      <div class="flex gap-3 ml-auto">
-        <button type="button" *ngIf="dialogRef" (click)="dialogRef.close()" class="tems-btn tems-btn-secondary">
+      <div class="flex flex-col sm:flex-row gap-3">
+        <button type="button" *ngIf="dialogRef" (click)="dialogRef.close()" class="tems-btn tems-btn-secondary flex-1">
           Cancel
         </button>
-        <button type="submit" class="tems-btn tems-btn-primary" [disabled]="!canSubmit">Save</button>
+        <button type="submit" class="tems-btn tems-btn-primary flex-1" [disabled]="!canSubmit">{{ updateTypeId ? 'Update' : 'Create' }}</button>
       </div>
     </div>
   </form>

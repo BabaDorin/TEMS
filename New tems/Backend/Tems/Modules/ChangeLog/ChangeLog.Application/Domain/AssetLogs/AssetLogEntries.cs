@@ -214,3 +214,28 @@ public class AssetManualLogAddedLog : ChangeLogEntry
         return details;
     }
 }
+
+public class AssetMentionedInTicketLog : ChangeLogEntry
+{
+    public string AssetId { get; set; } = string.Empty;
+    public string AssetTag { get; set; } = string.Empty;
+    public string TicketId { get; set; } = string.Empty;
+    public string TicketHumanReadableId { get; set; } = string.Empty;
+    public string TicketTitle { get; set; } = string.Empty;
+
+    public override ChangeLogEntityType EntityType => ChangeLogEntityType.Asset;
+    public override string EntityId => AssetId;
+
+    public override Dictionary<string, string?> GetReferences() => new()
+    {
+        ["assetId"] = AssetId,
+        ["ticketId"] = TicketId
+    };
+
+    public override Dictionary<string, object?>? GetDetails() => new()
+    {
+        ["assetTag"] = AssetTag,
+        ["ticketHumanReadableId"] = TicketHumanReadableId,
+        ["ticketTitle"] = TicketTitle
+    };
+}

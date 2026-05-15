@@ -137,7 +137,7 @@ public class BulkEquipmentSeeder(IMongoDatabase database, ILogger<BulkEquipmentS
                 asset.Assignment = new AssetAssignment
                 {
                     AssignedToUserId = user.Id,
-                    AssignedToName = user.Name,
+                    AssignedToName = user.GetDisplayName(),
                     AssignedAt = now.AddMonths(-(assetNumber % 12)),
                     AssignmentType = "permanent"
                 };

@@ -1,12 +1,13 @@
-using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using UserManagement.Infrastructure.Serialization;
 
 namespace UserManagement.Infrastructure.Entities;
 
+[BsonIgnoreExtraElements]
 public class User
 {
     [BsonId]
-    [BsonRepresentation(BsonType.String)]
+    [BsonSerializer(typeof(FlexibleStringObjectIdSerializer))]
     public string Id { get; set; } = Guid.NewGuid().ToString();
 
     [BsonElement("name")]
@@ -14,6 +15,12 @@ public class User
 
     [BsonElement("email")]
     public string Email { get; set; } = string.Empty;
+
+    [BsonElement("Username")]
+    public string? LegacyUsername { get; set; }
+
+    [BsonElement("FullName")]
+    public string? LegacyFullName { get; set; }
 
     [BsonElement("avatar_url")]
     public string? AvatarUrl { get; set; }
@@ -38,4 +45,22 @@ public class User
 
     [BsonElement("updated_at")]
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+
+    public string GetDisplayName()
+    {
+        return FirstNonEmpty(Name, LegacyFullName, LegacyUsername, Email, Id);
+    }
+
+    private static string FirstNonEmpty(params string?[] values)
+    {
+        foreach (var value in values)
+        {
+            if (!string.IsNullOrWhiteSpace(value))
+            {
+                return value.Trim();
+            }
+        }
+
+        return string.Empty;
+    }
 }

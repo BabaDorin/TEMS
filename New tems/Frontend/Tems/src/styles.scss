@@ -511,6 +511,25 @@ html.dark .tems-asset-tab-button.is-active {
   background: rgba(10, 132, 255, 0.08);
 }
 
+.tems-asset-link-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  align-self: flex-start;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  color: var(--accent-color);
+  font-size: 0.95rem;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: opacity 160ms ease, color 160ms ease;
+}
+
+.tems-asset-link-button:hover {
+  opacity: 0.82;
+}
+
 formly-field-mat-radio {
   .mat-radio-group {
     display: inline-flex;

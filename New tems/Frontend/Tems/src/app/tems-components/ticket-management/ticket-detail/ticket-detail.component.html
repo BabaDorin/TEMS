@@ -40,8 +40,8 @@
                 Ticket created on {{ ticket.createdAt | date:'MMM d, y, HH:mm' }} by
                 <button
                   type="button"
-                  *ngIf="creatorUser; else creatorLoading"
-                  (click)="openCreatorPreview()"
+                  *ngIf="ticket.reporter?.userId; else creatorLoading"
+                  (click)="openCreatorProfile()"
                   class="text-sm font-medium text-[#007aff] dark:text-[#0a84ff] hover:underline transition">
                   {{ getCreatorDisplayName() }}
                 </button>
@@ -50,6 +50,21 @@
                     {{ creatorUserLoading ? 'Loading creator...' : 'Unknown user' }}
                   </span>
                 </ng-template>
+                <ng-container *ngIf="shouldShowAccountable()">
+                  <span> • Accountable: </span>
+                  <button
+                    type="button"
+                    *ngIf="ticket.accountableUserId; else accountableFallback"
+                    (click)="openAccountableProfile()"
+                    class="text-sm font-medium text-[#007aff] dark:text-[#0a84ff] hover:underline transition">
+                    {{ getAccountableDisplayName() }}
+                  </button>
+                  <ng-template #accountableFallback>
+                    <span class="text-sm font-medium text-gray-900 dark:text-white">
+                      {{ accountableUserLoading ? 'Loading accountable...' : getAccountableDisplayName() }}
+                    </span>
+                  </ng-template>
+                </ng-container>
               </p>
               <p class="text-sm text-gray-600 dark:text-gray-400 mt-1 mb-0 truncate">{{ ticket.title || ticket.summary }}</p>
             </div>
@@ -67,6 +82,7 @@
                 </app-custom-select>
               </div>
               <p *ngIf="isSavingStatus" class="text-[11px] text-gray-500 dark:text-gray-400 mt-1 lg:text-right">Saving...</p>
+              <p *ngIf="getApprovedStatusHint()" class="text-[11px] text-amber-600 dark:text-amber-400 mt-1 lg:text-right">{{ getApprovedStatusHint() }}</p>
               <ng-template #statusReadOnlyHeader>
                 <p class="text-sm font-medium text-gray-900 dark:text-white mt-1 mb-0 lg:text-right">{{ getCurrentStatusLabel() }}</p>
               </ng-template>
@@ -169,7 +185,7 @@
                   [(ngModel)]="summaryDraft"
                   rows="5"
                   placeholder="Describe the problem in more detail"
-                  class="w-full px-4 py-3 border border-gray-300 dark:border-[#38383a] rounded-xl bg-white dark:bg-[#2c2c2e] text-gray-900 dark:text-white focus:ring-2 focus:ring-[#007aff] focus:border-transparent resize-none"></textarea>
+                  class="w-full px-4 py-3 border border-gray-200 dark:border-[#38383a] rounded-xl bg-white dark:bg-[#2c2c2e] text-gray-900 dark:text-white focus:ring-2 focus:ring-[#007aff] focus:border-transparent resize-none"></textarea>
                 <p class="text-sm text-gray-500 dark:text-gray-400 mt-2 mb-0">Only the ticket author can edit this summary.</p>
               </ng-container>
               <ng-template #readOnlySummary>
@@ -177,11 +193,78 @@
               </ng-template>
             </div>
 
+            <div *ngIf="supportsAssetLinking()" class="pt-3 mt-3 border-t border-gray-100 dark:border-[#3f3f42]">
+              <div class="flex items-center justify-between gap-3 mb-3">
+                <div>
+                  <span class="text-sm font-semibold text-gray-900 dark:text-white">Linked assets</span>
+                  <p class="text-xs text-gray-500 dark:text-gray-400 mt-1 mb-0">Optional asset mentions for hardware and network issue tickets.</p>
+                </div>
+                <button
+                  *ngIf="canEditLinkedAssets()"
+                  type="button"
+                  (click)="saveLinkedAssets()"
+                  [disabled]="isSavingLinkedAssets"
+                  class="tems-btn tems-btn-primary text-xs px-3 py-1.5 disabled:opacity-50 disabled:cursor-not-allowed">
+                  {{ isSavingLinkedAssets ? 'Saving...' : 'Save assets' }}
+                </button>
+              </div>
+
+              <div *ngIf="canEditLinkedAssets(); else readOnlyLinkedAssets">
+                <app-custom-select
+                  [(ngModel)]="linkedAssetDraft"
+                  [options]="linkedAssetOptions"
+                  [mode]="'multiple'"
+                  [searchable]="true"
+                  [allowEmpty]="true"
+                  [loading]="linkedAssetsLoading"
+                  placeholder="Search by asset tag and link one or more assets"
+                  (searchTextChange)="onLinkedAssetSearch($event)">
+                </app-custom-select>
+              </div>
+
+              <ng-template #readOnlyLinkedAssets>
+                <div *ngIf="ticket.linkedAssets?.length; else noLinkedAssets" class="flex flex-wrap gap-2">
+                  <button
+                    *ngFor="let asset of ticket.linkedAssets"
+                    type="button"
+                    (click)="openLinkedAssetPreview(asset.assetId)"
+                    class="inline-flex items-center px-3 py-1.5 rounded-full bg-gray-100 dark:bg-white/10 text-sm font-medium text-[#007aff] dark:text-[#0a84ff] hover:underline">
+                    {{ asset.assetTag }}
+                  </button>
+                </div>
+              </ng-template>
+
+              <div *ngIf="ticket.linkedAssets?.length" class="mt-3 flex flex-wrap gap-2">
+                <button
+                  *ngFor="let asset of ticket.linkedAssets"
+                  type="button"
+                  (click)="openLinkedAssetPreview(asset.assetId)"
+                  class="inline-flex items-center px-3 py-1.5 rounded-full bg-gray-100 dark:bg-white/10 text-sm font-medium text-[#007aff] dark:text-[#0a84ff] hover:underline">
+                  {{ asset.assetTag }}
+                </button>
+              </div>
+
+              <ng-template #noLinkedAssets>
+                <p class="text-sm text-gray-500 dark:text-gray-400 mt-1 mb-0">No assets linked to this ticket.</p>
+              </ng-template>
+            </div>
+
             <div *ngIf="getAttributeKeys().length > 0" class="pt-3 mt-3 border-t border-gray-100 dark:border-[#3f3f42]">
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div *ngFor="let key of getAttributeKeys()">
                   <span class="text-sm font-semibold text-gray-900 dark:text-white">{{ getAttributeLabel(key) }}</span>
-                  <p class="text-sm text-gray-500 dark:text-gray-400 mt-1 mb-0">{{ formatAttributeValue(ticket.attributes[key]) }}</p>
+                  <div class="mt-1">
+                    <button
+                      type="button"
+                      *ngIf="shouldRenderAttributeAsUserLink(key); else attributeValueText"
+                      (click)="openAttributeUserProfile(key)"
+                      class="text-sm font-medium text-[#007aff] dark:text-[#0a84ff] hover:underline transition">
+                      {{ getAttributeUserDisplayName(key) }}
+                    </button>
+                    <ng-template #attributeValueText>
+                      <p class="text-sm text-gray-500 dark:text-gray-400 mb-0">{{ formatAttributeValue(ticket.attributes[key]) }}</p>
+                    </ng-template>
+                  </div>
                 </div>
               </div>
             </div>
@@ -209,7 +292,7 @@
                 class="py-4"
                 [class.border-t]="hasMultipleApprovalGates() && i > 0"
                 [class.border-gray-200]="hasMultipleApprovalGates() && i > 0"
-                [class.dark:border-[#48484a]]="hasMultipleApprovalGates() && i > 0">
+                [class.dark:border-[#38383a]]="hasMultipleApprovalGates() && i > 0">
                 <div class="flex items-start gap-4">
                   <div>
                     <div class="flex items-center gap-2 flex-wrap">

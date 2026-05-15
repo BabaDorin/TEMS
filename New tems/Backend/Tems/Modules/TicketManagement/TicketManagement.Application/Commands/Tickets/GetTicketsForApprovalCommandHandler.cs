@@ -6,6 +6,7 @@ using TicketManagement.Application.Interfaces;
 using TicketManagement.Contract.Commands.Tickets;
 using TicketManagement.Contract.Responses;
 using UserManagement.Infrastructure.Repositories;
+using AssetManagement.Application.Interfaces;
 
 namespace TicketManagement.Application.Commands.Tickets;
 
@@ -15,17 +16,20 @@ public class GetTicketsForApprovalCommandHandler : IRequestHandler<GetTicketsFor
     private readonly ITenantContext _tenantContext;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IUserRepository _userRepository;
+    private readonly IAssetRepository _assetRepository;
 
     public GetTicketsForApprovalCommandHandler(
         ITicketRepository repository,
         ITenantContext tenantContext,
         IHttpContextAccessor httpContextAccessor,
-        IUserRepository userRepository)
+        IUserRepository userRepository,
+        IAssetRepository assetRepository)
     {
         _repository = repository;
         _tenantContext = tenantContext;
         _httpContextAccessor = httpContextAccessor;
         _userRepository = userRepository;
+        _assetRepository = assetRepository;
     }
 
     public async Task<GetAllTicketsResponse> Handle(GetTicketsForApprovalCommand request, CancellationToken cancellationToken)
@@ -39,7 +43,7 @@ public class GetTicketsForApprovalCommandHandler : IRequestHandler<GetTicketsFor
         var tickets = await _repository.GetAllAsync(_tenantContext.TenantId, cancellationToken);
 
         var approvedTickets = tickets
-            .Where(ticket => !string.Equals(TicketStateHelper.GetManagedStatusLabel(ticket.CurrentStateId), "Closed", StringComparison.OrdinalIgnoreCase))
+            .Where(ticket => !IsTerminalState(ticket.CurrentStateId))
             .Where(ticket => ticket.ApprovalGates.Any(gate =>
                 gate.Approvers.Any(approver => ApprovalGateHelper.MatchesCurrentUser(approver.UserId, currentUserIdentifiers))))
             .ToList();
@@ -52,9 +56,20 @@ public class GetTicketsForApprovalCommandHandler : IRequestHandler<GetTicketsFor
                 await _repository.UpdateAsync(ticket, cancellationToken);
             }
 
-            response.Add(await TicketResponseFactory.ToResponseAsync(ticket, _userRepository, cancellationToken));
+            response.Add(await TicketResponseFactory.ToResponseAsync(ticket, _assetRepository, _userRepository, cancellationToken));
         }
 
         return new GetAllTicketsResponse(response);
+    }
+
+    private static bool IsTerminalState(string? stateId)
+    {
+        var normalized = (stateId ?? string.Empty)
+            .Trim()
+            .ToLowerInvariant()
+            .Replace("_", "-")
+            .Replace(" ", "-");
+
+        return normalized is "closed" or "state-closed" or "approved" or "state-approved";
     }
 }

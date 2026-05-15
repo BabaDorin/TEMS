@@ -27,6 +27,11 @@ public class TicketRepository : ITicketRepository
             .Ascending(x => x.TenantId)
             .Ascending(x => x.TicketTypeId);
         _collection.Indexes.CreateOneAsync(new CreateIndexModel<DbEntity.Ticket>(ticketTypeIndex));
+
+        var accountableIndex = Builders<DbEntity.Ticket>.IndexKeys
+            .Ascending(x => x.TenantId)
+            .Ascending(x => x.AccountableUserId);
+        _collection.Indexes.CreateOneAsync(new CreateIndexModel<DbEntity.Ticket>(accountableIndex));
     }
 
     public async Task<DomainEntity.Ticket?> GetByIdAsync(string ticketId, string tenantId, CancellationToken cancellationToken = default)
@@ -116,6 +121,31 @@ public class TicketRepository : ITicketRepository
             Builders<DbEntity.Ticket>.Filter.Eq(x => x.TenantId, tenantId)
         );
         var count = await _collection.CountDocumentsAsync(filter, cancellationToken: cancellationToken);
+
+        return count > 0;
+    }
+
+    public async Task<bool> ExistsByAttributeValueAsync(
+        string tenantId,
+        string attributeKey,
+        string attributeValue,
+        string? excludeTicketId = null,
+        CancellationToken cancellationToken = default)
+    {
+        var filters = new List<FilterDefinition<DbEntity.Ticket>>
+        {
+            Builders<DbEntity.Ticket>.Filter.Eq(x => x.TenantId, tenantId),
+            Builders<DbEntity.Ticket>.Filter.Eq($"attributes.{attributeKey}", attributeValue)
+        };
+
+        if (!string.IsNullOrWhiteSpace(excludeTicketId))
+        {
+            filters.Add(Builders<DbEntity.Ticket>.Filter.Ne(x => x.TicketId, excludeTicketId));
+        }
+
+        var count = await _collection.CountDocumentsAsync(
+            Builders<DbEntity.Ticket>.Filter.And(filters),
+            cancellationToken: cancellationToken);
 
         return count > 0;
     }

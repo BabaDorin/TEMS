@@ -12,5 +12,6 @@ public interface ITicketRepository
     Task<bool> DeleteAsync(string ticketId, string tenantId, CancellationToken cancellationToken = default);
     Task<long> DeleteByTicketTypeIdAsync(string ticketTypeId, string tenantId, CancellationToken cancellationToken = default);
     Task<bool> ExistsAsync(string ticketId, string tenantId, CancellationToken cancellationToken = default);
+    Task<bool> ExistsByAttributeValueAsync(string tenantId, string attributeKey, string attributeValue, string? excludeTicketId = null, CancellationToken cancellationToken = default);
     Task<int> GetNextTicketNumberAsync(string tenantId, string prefix, CancellationToken cancellationToken = default);
 }

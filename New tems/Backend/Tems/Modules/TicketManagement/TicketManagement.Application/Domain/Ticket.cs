@@ -12,8 +12,10 @@ public class Ticket
     public string CurrentStateId { get; set; } = string.Empty;
     public string Priority { get; set; } = string.Empty;
     public Reporter Reporter { get; set; } = new();
+    public string AccountableUserId { get; set; } = string.Empty;
     public string? AssigneeId { get; set; }
     public Dictionary<string, object> Attributes { get; set; } = new();
+    public List<string> AssetIds { get; set; } = new();
     public List<ApprovalGate> ApprovalGates { get; set; } = new();
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }

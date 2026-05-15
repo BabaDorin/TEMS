@@ -85,7 +85,7 @@ export class ViewProfileComponent implements OnInit, OnDestroy {
           this.assetCount = assets.count || 0;
           const authoredTickets = this.tokenService.canManageTickets()
             ? tickets
-            : tickets.filter(ticket => this.profile && (ticket.reporter?.userId || '').toLowerCase() === this.profile.id.toLowerCase());
+            : tickets.filter(ticket => this.profile && this.isOwnedByProfile(ticket, this.profile.id));
 
           this.ticketCount = authoredTickets.length;
           this.openTicketCount = authoredTickets.filter(ticket => this.normalizeTicketStatus(ticket.currentStateId) === 'new' || this.normalizeTicketStatus(ticket.currentStateId) === 'in-progress').length;
@@ -104,8 +104,14 @@ export class ViewProfileComponent implements OnInit, OnDestroy {
     const normalized = (stateId || '').trim().toLowerCase().replace(/\s+/g, '-').replace(/_+/g, '-');
     if (['new', 'open', 'state-new'].includes(normalized)) return 'new';
     if (['in-progress', 'state-in-progress', 'state-wip', 'wip', 'progress'].includes(normalized)) return 'in-progress';
-    if (['closed', 'state-closed'].includes(normalized)) return 'closed';
+    if (['closed', 'state-closed', 'approved', 'state-approved'].includes(normalized)) return 'closed';
     return null;
+  }
+
+  private isOwnedByProfile(ticket: Ticket, profileId: string): boolean {
+    const normalizedProfileId = (profileId || '').toLowerCase();
+    return (ticket.reporter?.userId || '').toLowerCase() === normalizedProfileId ||
+      (ticket.accountableUserId || '').toLowerCase() === normalizedProfileId;
   }
 
   ngOnDestroy(): void {

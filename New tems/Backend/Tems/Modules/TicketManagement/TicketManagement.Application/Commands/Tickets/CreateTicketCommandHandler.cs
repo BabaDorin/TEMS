@@ -1,5 +1,6 @@
+using AssetManagement.Application.Interfaces;
 using MediatR;
-using System.Text.Json;
+using Tems.Common.Notifications;
 using Tems.Common.Tenant;
 using TicketManagement.Application.Helpers;
 using TicketManagement.Application.Domain;
@@ -19,6 +20,9 @@ public class CreateTicketCommandHandler : IRequestHandler<CreateTicketCommand, C
     private readonly ITicketAiSummaryQueue _ticketAiSummaryQueue;
     private readonly ITenantContext _tenantContext;
     private readonly TicketHistoryLogService _ticketHistoryLogService;
+    private readonly IPurchaseOrderRepository _purchaseOrderRepository;
+    private readonly IAssetRepository _assetRepository;
+    private readonly IPublisher _publisher;
 
     public CreateTicketCommandHandler(
         ITicketRepository ticketRepository,
@@ -26,7 +30,10 @@ public class CreateTicketCommandHandler : IRequestHandler<CreateTicketCommand, C
         ITicketConversationRepository conversationRepository,
         ITicketAiSummaryQueue ticketAiSummaryQueue,
         ITenantContext tenantContext,
-        TicketHistoryLogService ticketHistoryLogService)
+        TicketHistoryLogService ticketHistoryLogService,
+        IPurchaseOrderRepository purchaseOrderRepository,
+        IAssetRepository assetRepository,
+        IPublisher publisher)
     {
         _ticketRepository = ticketRepository;
         _ticketTypeRepository = ticketTypeRepository;
@@ -34,6 +41,9 @@ public class CreateTicketCommandHandler : IRequestHandler<CreateTicketCommand, C
         _ticketAiSummaryQueue = ticketAiSummaryQueue;
         _tenantContext = tenantContext;
         _ticketHistoryLogService = ticketHistoryLogService;
+        _purchaseOrderRepository = purchaseOrderRepository;
+        _assetRepository = assetRepository;
+        _publisher = publisher;
     }
 
     public async Task<CreateTicketResponse> Handle(CreateTicketCommand request, CancellationToken cancellationToken)
@@ -46,6 +56,36 @@ public class CreateTicketCommandHandler : IRequestHandler<CreateTicketCommand, C
         var nextNumber = await _ticketRepository.GetNextTicketNumberAsync(_tenantContext.TenantId, prefix, cancellationToken);
         var humanReadableId = $"{prefix}-{nextNumber}";
         var workflowConfig = TicketStateHelper.NormalizeWorkflowConfig(ticketType.WorkflowConfig);
+        var normalizedAttributes = TicketAttributeHelper.NormalizeAttributes(request.Attributes);
+        var normalizedAssetIds = TicketAssetLinkingHelper.NormalizeAssetIds(request.AssetIds);
+        var linkedAssets = await TicketAssetLinkingHelper.ResolveLinkedAssetsAsync(ticketType, normalizedAssetIds, _assetRepository, cancellationToken);
+        TicketAttributeHelper.ValidateRequiredAttributes(ticketType, normalizedAttributes);
+
+        if (PurchaseOrderTicketConstants.IsPurchaseOrderTicketType(ticketType.TicketTypeId))
+        {
+            var poNumber = TicketAttributeHelper.GetRequiredString(
+                normalizedAttributes,
+                PurchaseOrderTicketConstants.PoNumberAttributeKey,
+                "PO Number");
+
+            if (await _ticketRepository.ExistsByAttributeValueAsync(
+                    _tenantContext.TenantId,
+                    PurchaseOrderTicketConstants.PoNumberAttributeKey,
+                    poNumber,
+                    cancellationToken: cancellationToken))
+            {
+                throw new InvalidOperationException("A purchase order ticket with this PO Number already exists.");
+            }
+
+            if (await _purchaseOrderRepository.ExistsByPoNumberAsync(_tenantContext.TenantId, poNumber, cancellationToken: cancellationToken))
+            {
+                throw new InvalidOperationException("A purchase order with this PO Number already exists.");
+            }
+        }
+
+        var accountableUserId = string.IsNullOrWhiteSpace(request.AccountableUserId)
+            ? request.Reporter.UserId
+            : request.AccountableUserId.Trim();
 
         var ticket = new Ticket
         {
@@ -63,8 +103,10 @@ public class CreateTicketCommandHandler : IRequestHandler<CreateTicketCommand, C
                 ChannelSource = request.Reporter.ChannelSource.ToUpper(),
                 ChannelThreadId = request.Reporter.ChannelThreadId
             },
+            AccountableUserId = accountableUserId,
             AssigneeId = request.AssigneeId,
-            Attributes = ConvertAttributes(request.Attributes),
+            Attributes = normalizedAttributes,
+            AssetIds = normalizedAssetIds,
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow
         };
@@ -81,6 +123,7 @@ public class CreateTicketCommandHandler : IRequestHandler<CreateTicketCommand, C
         };
         await _conversationRepository.CreateAsync(conversation, cancellationToken);
         await _ticketHistoryLogService.LogCreatedAsync(created, cancellationToken);
+        await PublishAssetMentionsAsync(created, linkedAssets, cancellationToken);
 
         if (ShouldGenerateAiSummary(ticketType))
         {
@@ -114,33 +157,6 @@ public class CreateTicketCommandHandler : IRequestHandler<CreateTicketCommand, C
         };
     }
 
-    private Dictionary<string, object> ConvertAttributes(Dictionary<string, object> attributes)
-    {
-        var converted = new Dictionary<string, object>();
-        
-        foreach (var kvp in attributes)
-        {
-            if (kvp.Value is JsonElement jsonElement)
-            {
-                converted[kvp.Key] = jsonElement.ValueKind switch
-                {
-                    JsonValueKind.String => jsonElement.GetString() ?? string.Empty,
-                    JsonValueKind.Number => jsonElement.TryGetInt64(out var longValue) ? longValue : jsonElement.GetDouble(),
-                    JsonValueKind.True => true,
-                    JsonValueKind.False => false,
-                    JsonValueKind.Null => null!,
-                    _ => kvp.Value
-                };
-            }
-            else
-            {
-                converted[kvp.Key] = kvp.Value;
-            }
-        }
-        
-        return converted;
-    }
-
     private static bool ShouldGenerateAiSummary(TicketType ticketType)
     {
         var name = $"{ticketType.Name} {ticketType.Description} {ticketType.TicketTypeId}".ToLowerInvariant();
@@ -149,5 +165,21 @@ public class CreateTicketCommandHandler : IRequestHandler<CreateTicketCommand, C
         var isIncident = string.Equals(ticketType.ItilCategory, "incident", StringComparison.OrdinalIgnoreCase);
 
         return isIncident && (isHardwareIssue || isNetworkIssue);
+    }
+
+    private async Task PublishAssetMentionsAsync(Ticket ticket, IEnumerable<AssetManagement.Application.Domain.Asset> assets, CancellationToken cancellationToken)
+    {
+        foreach (var asset in assets)
+        {
+            await _publisher.Publish(new AssetMentionedInTicketNotification(
+                asset.Id,
+                asset.AssetTag,
+                ticket.TicketId,
+                ticket.HumanReadableId,
+                string.IsNullOrWhiteSpace(ticket.Title) ? ticket.Summary : ticket.Title,
+                null,
+                null
+            ), cancellationToken);
+        }
     }
 }

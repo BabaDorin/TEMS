@@ -30,9 +30,18 @@ export const routes: Routes = [
     canActivate: [canManageAssetsGuard],
     children: [
       { path: '', redirectTo: 'view', pathMatch: 'full' },
+      { path: 'add', loadComponent: () => import('./tems-components/asset/add-asset/add-asset.component').then(m => m.AddAssetComponent), canActivate: [canManageAssetsGuard] },
       { path: 'view', loadComponent: () => import('./tems-components/asset-module/view-assets/view-assets.component').then(m => m.ViewAssetsComponent), canActivate: [canManageAssetsGuard] },
+      { path: 'purchase-orders', loadComponent: () => import('./tems-components/asset-module/view-purchase-orders/view-purchase-orders.component').then(m => m.ViewPurchaseOrdersComponent), canActivate: [canManageAssetsGuard] },
       { path: 'management', loadComponent: () => import('./tems-components/asset-module/asset-management/asset-management.component').then(m => m.AssetManagementComponent), canActivate: [canManageAssetsGuard] },
       { path: ':id', loadComponent: () => import('./tems-components/asset-module/asset-detail/asset-detail.component').then(m => m.AssetDetailComponent), canActivate: [AuthGuard] }
+    ]
+  },
+
+  {
+    path: 'asset',
+    children: [
+      { path: 'add', redirectTo: '/assets/add', pathMatch: 'full' }
     ]
   },
   

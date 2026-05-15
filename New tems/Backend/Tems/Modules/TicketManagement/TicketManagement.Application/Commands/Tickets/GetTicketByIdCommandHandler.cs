@@ -6,6 +6,7 @@ using TicketManagement.Contract.Commands.Tickets;
 using TicketManagement.Contract.Responses;
 using Microsoft.AspNetCore.Http;
 using UserManagement.Infrastructure.Repositories;
+using AssetManagement.Application.Interfaces;
 
 namespace TicketManagement.Application.Commands.Tickets;
 
@@ -15,17 +16,20 @@ public class GetTicketByIdCommandHandler : IRequestHandler<GetTicketByIdCommand,
     private readonly ITenantContext _tenantContext;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IUserRepository _userRepository;
+    private readonly IAssetRepository _assetRepository;
 
     public GetTicketByIdCommandHandler(
         ITicketRepository repository,
         ITenantContext tenantContext,
         IHttpContextAccessor httpContextAccessor,
-        IUserRepository userRepository)
+        IUserRepository userRepository,
+        IAssetRepository assetRepository)
     {
         _repository = repository;
         _tenantContext = tenantContext;
         _httpContextAccessor = httpContextAccessor;
         _userRepository = userRepository;
+        _assetRepository = assetRepository;
     }
 
     public async Task<GetTicketResponse> Handle(GetTicketByIdCommand request, CancellationToken cancellationToken)
@@ -49,6 +53,6 @@ public class GetTicketByIdCommandHandler : IRequestHandler<GetTicketByIdCommand,
             await _repository.UpdateAsync(ticket, cancellationToken);
         }
 
-        return await TicketResponseFactory.ToResponseAsync(ticket, _userRepository, cancellationToken);
+        return await TicketResponseFactory.ToResponseAsync(ticket, _assetRepository, _userRepository, cancellationToken);
     }
 }

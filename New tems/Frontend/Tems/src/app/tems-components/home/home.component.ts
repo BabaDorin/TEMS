@@ -188,7 +188,7 @@ export class HomeComponent implements OnInit {
 
     const authoredTickets = this.tokenService.canManageTickets()
       ? tickets
-      : tickets.filter(ticket => (ticket.reporter?.userId || '').toLowerCase() === this.currentUserId.toLowerCase());
+      : tickets.filter(ticket => this.isOwnedByCurrentUser(ticket));
 
     const approvalTickets = tickets.filter(ticket =>
       (ticket.approvalGates || []).some(gate =>
@@ -405,8 +405,14 @@ export class HomeComponent implements OnInit {
     const normalized = (stateId || '').trim().toLowerCase().replace(/\s+/g, '-').replace(/_+/g, '-');
     if (['new', 'open', 'state-new'].includes(normalized)) return 'new';
     if (['in-progress', 'state-in-progress', 'state-wip', 'wip', 'progress'].includes(normalized)) return 'in-progress';
-    if (['closed', 'state-closed'].includes(normalized)) return 'closed';
+    if (['closed', 'state-closed', 'approved', 'state-approved'].includes(normalized)) return 'closed';
     return null;
+  }
+
+  private isOwnedByCurrentUser(ticket: Ticket): boolean {
+    const currentUserId = this.currentUserId.toLowerCase();
+    return (ticket.reporter?.userId || '').toLowerCase() === currentUserId ||
+      (ticket.accountableUserId || '').toLowerCase() === currentUserId;
   }
 
   login(): void {

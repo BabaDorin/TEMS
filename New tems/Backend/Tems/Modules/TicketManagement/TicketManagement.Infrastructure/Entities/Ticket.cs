@@ -40,6 +40,10 @@ public class Ticket
     [BsonElement("reporter")]
     public Reporter Reporter { get; set; } = new();
 
+    [BsonElement("accountable_user_id")]
+    [BsonRepresentation(BsonType.String)]
+    public string AccountableUserId { get; set; } = string.Empty;
+
     [BsonElement("assignee_id")]
     [BsonIgnoreIfNull]
     [BsonRepresentation(BsonType.String)]
@@ -47,6 +51,10 @@ public class Ticket
 
     [BsonElement("attributes")]
     public Dictionary<string, object> Attributes { get; set; } = new();
+
+    [BsonElement("asset_ids")]
+    [BsonIgnoreIfNull]
+    public List<string> AssetIds { get; set; } = new();
 
     [BsonElement("approval_gates")]
     public List<ApprovalGate> ApprovalGates { get; set; } = new();
